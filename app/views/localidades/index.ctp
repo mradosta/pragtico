@@ -2,7 +2,7 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-$condiciones['Condicion.Localidad-provincia_id'] = array("options"=>$provincias, "empty"=>true);
+$condiciones['Condicion.Localidad-provincia_id'] = array("options"=>"listable", "model"=>"Provincia", "displayField"=>array("Provincia.nombre"), "empty"=>true);
 $condiciones['Condicion.Localidad-codigo'] = array();
 $condiciones['Condicion.Localidad-nombre'] = array("label"=>"Localidad");
 $fieldsets[] = array("campos"=>$condiciones);

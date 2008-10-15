@@ -24,13 +24,5 @@
 class LocalidadesController extends AppController {
 
 
-/**
- * Realiza los seteos especificos (valores por defecto) al agregar y/o editar.
- */
-	function __seteos() {
-		$this->set("provincias", $this->Localidad->Provincia->find("list", array("recursive"=>-1, "fields"=>array("Provincia.nombre"))));
-	}
-
-
 }	
 ?>

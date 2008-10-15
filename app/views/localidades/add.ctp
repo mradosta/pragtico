@@ -4,7 +4,7 @@
 */
 $campos = null;
 $campos['Localidad.id'] = array();
-$campos['Localidad.provincia_id'] = array("options"=>$provincias);
+$campos['Localidad.provincia_id'] = array("options"=>"listable", "model"=>"Provincia", "displayField"=>array("Provincia.nombre"));
 $campos['Localidad.codigo'] = array();
 $campos['Localidad.nombre'] = array();
 $campos['Localidad.codigo_zona'] = array("aclaracion"=>"Indica el codigo de la zona para AFIP.");
