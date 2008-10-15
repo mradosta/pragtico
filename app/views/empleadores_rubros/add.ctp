@@ -8,7 +8,7 @@ $campos['EmpleadoresRubro.empleador_id'] = array(	"lov"=>array("controller"	=>	"
 																"seleccionMultiple"	=> 	0,
 																	"camposRetorno"	=>	array(	"Empleador.cuit",
 																								"Empleador.nombre")));
-$campos['EmpleadoresRubro.rubro_id'] = array("options"=>$rubros);
+$campos['EmpleadoresRubro.rubro_id'] = array("options"=>"listable", "model"=>"Rubro", "displayField"=>array("Rubro.nombre"));
 $fieldsets[] = array("campos"=>$campos);
 $fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"rubro del empleador", "imagen"=>"rubros.gif")));
 

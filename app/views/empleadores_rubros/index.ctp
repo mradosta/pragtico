@@ -5,7 +5,7 @@
 $condiciones['Condicion.EmpleadoresRubro-empleador_id'] = array(	"lov"=>array("controller"	=>	"empleadores",
 																		"camposRetorno"	=>array("Empleador.cuit",
 																								"Empleador.nombre")));
-$condiciones['Condicion.EmpleadoresRubro-rubro_id'] = array("options"=>$rubros, "empty"=>true, "label"=>"Rubro");
+$condiciones['Condicion.EmpleadoresRubro-rubro_id'] = array("options"=>"listable", "model"=>"Rubro", "displayField"=>array("Rubro.nombre"), "empty"=>true, "label"=>"Rubro");
 $fieldsets[] = array("campos"=>$condiciones);
 $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"Rubros de los Empleadores", "imagen"=>"rubros.gif")));
 
