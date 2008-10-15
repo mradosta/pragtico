@@ -20,9 +20,5 @@ svn propset svn:ignore "*" ./developer_data
 svn propset svn:externals "cake https://svn.cakephp.org/repo/branches/1.2.x.x/cake" ../
 
 #Le pongo los datos de cada revision dentro del archivo
-svn propset svn:keywords "Revision" ../app/controllers/*.php
-svn propset svn:keywords "Revision" ../app/models/*.php
-svn propset svn:keywords "LastChangedBy" ../app/controllers/*.php
-svn propset svn:keywords "LastChangedBy" ../app/models/*.php
-svn propset svn:keywords "Date" ../app/controllers/*.php
-svn propset svn:keywords "Date" ../app/models/*.php
+svn propset svn:keywords "Revision LastChangedBy Date" ../app/controllers/*.php
+svn propset svn:keywords "Revision LastChangedBy Date" ../app/models/*.php
