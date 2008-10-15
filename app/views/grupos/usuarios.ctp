@@ -1,0 +1,20 @@
+<?php
+
+/**
+* Creo el cuerpo de la tabla.
+*/
+$cuerpo = null;
+foreach ($this->data['Usuario'] as $k=>$v) {
+	$fila = null;
+	$fila[] = array("model"=>"GruposUsuario", "field"=>"id", "valor"=>$v['GruposUsuario']['id'], "write"=>$v['GruposUsuario']['write'], "delete"=>$v['GruposUsuario']['delete']);
+	$fila[] = array("model"=>"Usuario", "field"=>"nombre", "valor"=>$v['nombre']);
+	$fila[] = array("model"=>"Usuario", "field"=>"nombre_completo", "valor"=>$v['nombre_completo']);
+ 	$fila[] = array("model"=>"Usuario", "field"=>"ultimo_ingreso", "valor"=>$v['ultimo_ingreso']);
+ 	$fila[] = array("model"=>"Usuario", "field"=>"estado", "valor"=>$v['estado']);
+	$cuerpo[] = $fila;
+}
+
+$url = array("controller"=>"grupos_usuarios", "action"=>"add", "GruposUsuario.grupo_id"=>$this->data['Grupo']['id']);
+echo $this->renderElement("desgloses/agregar", array("url"=>$url, "titulo"=>"Usuarios", "cuerpo"=>$cuerpo));
+
+?>

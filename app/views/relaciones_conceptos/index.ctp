@@ -1,0 +1,41 @@
+<?php
+/**
+* Especifico los campos para ingresar las condiciones.
+*/
+$condiciones['Condicion.Relacion-trabajador_id'] = array(	"lov"=>array("controller"		=>	"trabajadores",
+																		"separadorRetorno"	=>	" ",
+																		"camposRetorno"		=>array("Trabajador.apellido",
+																									"Trabajador.nombre")));
+
+$condiciones['Condicion.Relacion-empleador_id'] = array(	"lov"=>array("controller"	=> "empleadores",
+																		"camposRetorno"	=> array("Empleador.nombre")));
+
+$condiciones['Condicion.RelacionesConcepto-relacion_id'] = array(	"lov"=>array("controller"	=>	"relaciones",
+																		"camposRetorno"	=>array("Empleador.nombre",
+																								"Trabajador.apellido")));
+
+$condiciones['Condicion.RelacionesConcepto-concepto_id'] = array(	"lov"=>array("controller"	=>	"conceptos",
+																		"camposRetorno"	=>array("Concepto.codigo",
+																								"Concepto.nombre")));
+$fieldsets[] = array("campos"=>$condiciones);
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"concepto de la relacion laboral", "imagen"=>"conceptos.gif")));
+
+
+/**
+* Creo el cuerpo de la tabla.
+*/
+$cuerpo = null;
+foreach ($registros as $k=>$v) {
+	$fila = null;
+	$fila[] = array("model"=>"RelacionesConcepto", "field"=>"id", "valor"=>$v['RelacionesConcepto']['id'], "write"=>$v['RelacionesConcepto']['write'], "delete"=>$v['RelacionesConcepto']['delete']);
+	$fila[] = array("model"=>"Empleador", "field"=>"nombre", "valor"=>$v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
+	$fila[] = array("model"=>"Trabajador", "field"=>"numero_documento", "class"=>"derecha", "valor"=>$v['Relacion']['Trabajador']['numero_documento'], "nombreEncabezado"=>"Documento");
+	$fila[] = array("model"=>"Trabajador", "field"=>"apellido", "valor"=>$v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
+	$fila[] = array("model"=>"Concepto", "field"=>"codigo", "valor"=>$v['Concepto']['codigo'], "nombreEncabezado"=>"Concepto");
+	$cuerpo[] = $fila;
+}
+
+echo $this->renderElement("index/index", array("condiciones"=>$fieldset, "cuerpo"=>$cuerpo));
+
+
+?>

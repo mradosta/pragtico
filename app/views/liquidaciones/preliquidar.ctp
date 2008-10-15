@@ -1,0 +1,94 @@
+<?php
+/**
+* Especifico los campos para ingresar las condiciones.
+*/
+$condiciones['Condicion.Relacion-empleador_id'] = array(	"lov"=>array("controller"	=>	"empleadores",
+																		"camposRetorno"	=>array("Empleador.cuit",
+																								"Empleador.nombre")));
+
+$condiciones['Condicion.Relacion-trabajador_id'] = array(	"lov"=>array("controller"	=>	"trabajadores",
+																		"camposRetorno"	=>array("Trabajador.cuil",
+																								"Trabajador.nombre",
+																								"Trabajador.apellido")));
+
+$condiciones['Condicion.Relacion-id'] = array(	"label" => "Relacion",
+												"lov"=>array("controller"	=>	"relaciones",
+																		"camposRetorno"	=>array("Empleador.cuit",
+																								"Empleador.nombre",
+																								"Trabajador.cuil",
+																								"Trabajador.nombre",
+																								"Trabajador.apellido")));
+
+//$condiciones['Condicion.ConveniosCategoria-jornada'] = array();
+//$condiciones['Condicion.Liquidacion-estado'] = array("value"=>"Sin Confirmar", "type"=>"hidden");
+
+//$condiciones['Condicion.Liquidacion-mes'] = array("options"=>$meses);
+//$condiciones['Condicion.Liquidacion-ano'] = array("class"=>"derecha");
+//$condiciones['Condicion.Liquidacion-periodo'] = array("options"=>$periodos);
+$condiciones['Extras.Liquidacion-tipo'] = array("options"=>$tipos, "label"=>"Tipo");
+$condiciones['Extras.Liquidacion-periodo'] = array("label"=>"Periodo", "type"=>"periodo");
+$fieldsets[] = array("campos"=>$condiciones);
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"Preliquidar","imagen"=>"preliquidar.gif")));
+
+
+/**
+* Creo el cuerpo de la tabla.
+*/
+$cuerpo = null;
+foreach ($registros as $k=>$v) {
+	$fila = null;
+	$id = $v['Liquidacion']['id'];
+	$fila[] = array("tipo"=>"desglose", "id"=>$id, "update"=>"desglose1", "imagen"=>array("nombre"=>"liquidaciones.gif", "alt"=>"liquidaciones"), "url"=>"recibo_html");
+	$fila[] = array("tipo"=>"desglose", "id"=>$id, "update"=>"desglose2", "imagen"=>array("nombre"=>"liquidaciones.gif", "alt"=>"liquidaciones (debug)"), "url"=>"recibo_html_debug");
+	$fila[] = array("tipo"=>"desglose", "id"=>$id, "update"=>"desglose3", "imagen"=>array("nombre"=>"observaciones.gif", "alt"=>"Agregar Observacion"), "url"=>'agregar_observacion');
+	//$fila[] = array("tipo"=>"desglose", "id"=>$id, "update"=>"desglose3", "imagen"=>array("nombre"=>"observaciones.gif", "alt"=>"Agregar Observacion"), "url"=>"add");
+	$fila[] = array("tipo"=>"accion", "valor"=>$formulario->link($formulario->image("excel.gif", array("alt"=>"Generar recibo excel", "title"=>"Generar recibo excel")), "recibo_excel/" . $id));
+
+	$fila[] = array("model"=>"Liquidacion", "field"=>"id", "valor"=>$id);
+	$fila[] = array("model"=>"Trabajador", "field"=>"apellido", "valor"=>$v['Relacion']['Trabajador']['cuil'] . " - " . $v['Relacion']['Trabajador']['nombre'] . " " . $v['Relacion']['Trabajador']['apellido'], "nombreEncabezado"=>"Trabajador");
+	$fila[] = array("model"=>"Empleador", "field"=>"nombre", "valor"=>$v['Relacion']['Empleador']['cuit'] . " - " . $v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
+	$fila[] = array("model"=>"Liquidacion", "field"=>"remunerativo", "valor"=>$formato->format($v['Liquidacion']['remunerativo'], array("before"=>"$ ")));
+	$fila[] = array("model"=>"Liquidacion", "field"=>"deduccion", "valor"=>$formato->format($v['Liquidacion']['deduccion'], array("before"=>"$ ")));
+	$fila[] = array("model"=>"Liquidacion", "field"=>"no_remunerativo", "valor"=>$formato->format($v['Liquidacion']['no_remunerativo'], array("before"=>"$ ")));
+	$fila[] = array("model"=>"Liquidacion", "field"=>"total", "valor"=>$formato->format($v['Liquidacion']['total'], array("before"=>"$ ")));
+	
+	if(in_array($v['Liquidacion']['relacion_id'], $liquidacionesYaConfirmadas)) {
+		$cuerpo[] = array("contenido"=>$fila, "opciones"=>array("title"=>"Ya se ha liquidado a esta Relacion para el periodo especificado.", "class"=>"fila_resaltada", "seleccionMultiple"=>false));
+	}
+	else {
+		if(!empty($v['LiquidacionesError'])) {
+			$fila[] = array("tipo"=>"desglose", "id"=>$id, "update"=>"desglose4", "imagen"=>array("nombre"=>"liquidaciones_errores.gif", "alt"=>"Errores"), "url"=>'errores');
+			$cuerpo[] = array("contenido"=>$fila, "opciones"=>array("title"=>"Se han encontrado errores en esta liquidacion.", "class"=>"fila_resaltada", "seleccionMultiple"=>false));			
+		}
+		else {
+			$cuerpo[] = $fila;
+		}
+	}
+}
+
+$opcionesTabla =  array("tabla"=> array("ordenEnEncabezados"=> false,
+										"modificar"			=> false,
+										"seleccionMultiple"	=> true,
+										"eliminar"			=> false,
+										"permisos"			=> false));
+
+$accionesExtra['opciones'] = array("acciones"=>array($formulario->link("Confirmar", null, array("class"=>"link_boton", "id"=>"confirmar", "title"=>"Confirma las liquidaciones seleccionadas"))));
+echo $this->renderElement("index/index", array("accionesExtra"=>$accionesExtra, "condiciones"=>$fieldset, "cuerpo"=>$cuerpo, "opcionesTabla"=>$opcionesTabla, "opcionesForm"=>array("action"=>"preliquidar")));
+/**
+* Agrego el evento click asociado al boton confirmar.
+*/
+$formulario->addScript('
+	jQuery("#confirmar").click(
+		function() {
+			var c = jQuery(".tabla input[@type=\'checkbox\']").checkbox("contar");
+			if (c>0) {
+				jQuery("#form")[0].action = "' . router::url("/") . $this->params['controller'] . "/confirmar" . '";
+				jQuery("#form")[0].submit();
+			}
+			else {
+				alert("Debe seleccionar al menos una pre-liquidacion para confirmar.");
+			}
+		}
+	);', 'ready');
+
+?>

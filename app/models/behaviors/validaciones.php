@@ -1,0 +1,530 @@
+<?php
+/**
+ * Behavior que contiene las validaciones.
+ *
+ * PHP versions 5
+ *
+ * @filesource
+ * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
+ * @link			http://www.pragmatia.com
+ * @package			practico
+ * @subpackage		app.models
+ * @since			Practico v 1.0.0
+ * @version			1.0.0
+ * @author      	Martin Radosta <mradosta@pragmatia.com>
+ */
+/**
+ * Especifico todos los metodos de validacion que requiera.
+ * Es importante que cada metodo que agregue tenga el prefijo "valid", ej:
+ *		validRule(&$model, $rule, $ruleParams)
+ * Esto para no ser confundido con algun otro metodo de algun otro behavior.
+ *
+ * @package		pragtico
+ * @subpackage	app.models.behaviors
+ */
+class ValidacionesBehavior extends ModelBehavior {
+
+/**
+ * Valida que un campo sea cargado siempre y cuando no lo sean los demas.
+ *
+ * @param object $model Model que esta siendo validado.
+ * @param array $rule La regla que se debe validar.
+ * @param array $ruleParams Parametros adicionales que puedo pasarle a la regla de validacion.
+ * @return boolean True si los demas campos estan vacios, false en caso contrario.
+ * @access public
+ *
+ * Ej:
+ * Esto indica que el campo dias, validara siempre y cuando el campo1 y el campo2 hayan quedado vacios.
+ *
+ *       'dias' => array(
+ *			array(
+ *				'rule'	=> 'validExcluyente',
+ *				'otrosCampos'=> array('campo1', 'campo2'),
+ *				'message'	=>'Debe especificar el numero de dias y dejar vacios los campos: campo1 y campo2.')
+ *       ),
+ */
+	function validExcluyente(&$model, $rule, $ruleParams) {
+		$value = $this->__getValue($rule);
+
+		/**
+		* Si es un campo float (decimal) o integer y su valor es 0, lo considero vacio.
+		*/
+		$tipoDato = $model->schema($this->__getField($rule));
+		$campoNumericos = array("integer", "float");
+		if(in_array($tipoDato['type'], $campoNumericos) && $value == 0) {
+			return true;
+		}
+		elseif(!empty($value)) {
+			if(!empty($ruleParams['opciones']['otrosCampos'])) {
+				if(is_string($ruleParams['opciones']['otrosCampos'])) {
+					$ruleParams['opciones']['otrosCampos'] = array($ruleParams['opciones']['otrosCampos']);
+				}
+				foreach($ruleParams['opciones']['otrosCampos'] as $campo) {
+					$tipoDato = $model->schema($campo);
+					if(in_array($tipoDato['type'], $campoNumericos) && $model->data[$model->name][$campo] == 0) {
+						continue;
+					}
+					elseif(!empty($model->data[$model->name][$campo])) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+
+/**
+ * Valida que el extremo superior del rango sea mayor al inferior en caso de que ambos esten seteados.
+ *
+ * @param object $model Model que esta siendo validado.
+ * @param array $rule La regla que se debe validar.
+ * @param array $ruleParams Parametros adicionales que puedo pasarle a la regla de validacion.
+ * @return boolean True si se cumple la condicion de que el extremo superior del rango sea mayor al inferior,
+ * false en caso contrario.
+ * @access public
+ */
+    function validRango(&$model, $rule, $ruleParams) {
+		$value = $this->__getValue($rule);
+		if(empty($value)) {
+    		return true;
+    	}
+    	
+		if(empty($ruleParams['opciones']['condicion'])) {
+			trigger_error("Debe especificar la condicion en el model " . $model->name . " para la validacion (validRango).", E_USER_WARNING);
+			return false;
+		}
+		else {
+			$posiblesCondiciones = array(">", ">=", "<", "<=");
+			$condicion = $ruleParams['opciones']['condicion'];
+			if(!in_array($condicion, $posiblesCondiciones)) {
+				trigger_error("La condicion en el model " . $model->name . " para la validacion (validRango) solo puede ser " . implode(", ", $posiblesCondiciones) . ".", E_USER_WARNING);
+				return false;
+			}
+		}
+		
+    	if(!empty($ruleParams['opciones']['limiteInferior']) && !empty($model->data[$model->name][$ruleParams['opciones']['limiteInferior']])) {
+    		$campoAComparar = $ruleParams['opciones']['limiteInferior'];
+    	}
+    	if(!empty($ruleParams['opciones']['limiteSuperior']) && !empty($model->data[$model->name][$ruleParams['opciones']['limiteSuperior']])) {
+    		$campoAComparar = $ruleParams['opciones']['limiteSuperior'];
+    	}
+
+		$valorAComparar = $model->data[$model->name][$campoAComparar];
+		$campo = $this->__getField($rule);
+
+		$schema = $model->schema();
+		$tipoCampo = $schema[$campo]['type'];
+		$tipoCampoAComparar = $schema[$campoAComparar]['type'];
+
+		if($tipoCampo != $tipoCampoAComparar) {
+			trigger_error("Debe especificar campos del mismo tipo en el model " . $model->name . " para la validacion (validRango).", E_USER_WARNING);
+			return false;
+		}
+
+		if($tipoCampo == "date" || $tipoCampo == "datetime") {
+			$tmp = substr($value, 0, 10);
+			if(preg_match(VALID_DATE, $tmp, $matches)) {
+				$value = $matches[3] . "-" . $matches[2] . "-" . $matches[1] . " " . substr($value, 10);
+			}
+			$tmp = substr($valorAComparar, 0, 10);
+			if(preg_match(VALID_DATE, $tmp, $matches)) {
+				$valorAComparar = $matches[3] . "-" . $matches[2] . "-" . $matches[1] . " " . substr($valorAComparar, 10);
+			}
+		}
+			
+		switch($condicion) {
+			case ">":
+				if($value > $valorAComparar) {
+					return true;
+				}
+				break;
+			case ">=":
+				if($value >= $valorAComparar) {
+					return true;
+				}
+				break;
+			case "<":
+				if($value < $valorAComparar) {
+					return true;
+				}
+				break;
+			case "<=":
+				if($value <= $valorAComparar) {
+					return true;
+				}
+				break;
+			default:
+				return false;
+		}
+    }
+    
+
+/**
+ * Valida que entre una serie de campos, por lo menos uno de ellos contenga algun valor y no esten todos vacios.
+ *
+ * @param object $model Model que esta siendo validado.
+ * @param array $rule La regla que se debe validar.
+ * @param array $ruleParams Parametros adicionales que puedo pasarle a la regla de validacion.
+ * @return boolean True si por lo menos uno de los campos del conjunto tiene algun valor, false en caso contrario.
+ * @access public
+ *
+ * Ej:
+ * Esto indica que el campo dias, validara siempre y cuando el campo1 y el campo2 hayan quedado vacios.
+ *
+ *       'dias' => array(
+ *			array(
+ *				'rule'	=> 'validUnoPorLoMenos',
+ *				'otrosCampos'=> array('campo1', 'campo2'),
+ *				'message'	=>'Debe especificar por lo menos algun valor para campo1, campo2 o dias.')
+ *       ),
+ */
+    function validUnoPorLoMenos(&$model, $rule, $ruleParams) {
+    	$value = $this->__getValue($rule);
+		if(!empty($value)) {
+			return true;
+		}
+		elseif(!empty($ruleParams['opciones']['otrosCampos'])) {
+			if(is_string($ruleParams['opciones']['otrosCampos'])) {
+				$ruleParams['opciones']['otrosCampos'] = array($ruleParams['opciones']['otrosCampos']);
+			}
+			foreach($ruleParams['opciones']['otrosCampos'] as $campo) {
+				if(!empty($model->data[$model->name][$campo])) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	
+/**
+ * Valida que un numero de cuit o cuil sea valido.
+ *
+ * @param object $model Model que esta siendo validado.
+ * @param array $rule La regla que se debe validar.
+ * @param array $ruleParams Parametros adicionales que puedo pasarle a la regla de validacion.
+ * @return boolean True si el cuit/cuil es valido, false en caso contrario.
+ * @access public
+ */
+	function validCuitCuil(&$model, $rule, $ruleParams) {
+
+		$value = $this->__getValue($rule);
+		/**
+		* Si viene vacio lo valida como correcto, ya que la funcion valida si un cuit/cuil es valido o no. No valida
+		* que este deba venir necesariamente. 
+		*/
+		if(empty($value)) {
+			return true;
+		}
+
+		$coeficiente[0]=5;
+		$coeficiente[1]=4;
+		$coeficiente[2]=3;
+		$coeficiente[3]=2;
+		$coeficiente[4]=7;
+		$coeficiente[5]=6;
+		$coeficiente[6]=5;
+		$coeficiente[7]=4;
+		$coeficiente[8]=3;
+		$coeficiente[9]=2;
+
+		$resultado=1;
+		$value_rearmado = "";
+
+		/**
+		* Separo cualquier caracter que no tenga que ver con numeros.
+		*/
+		$value_rearmado = preg_replace("/[^0-9]/","", $value);
+		/*
+		for ($i=0; $i < strlen($value); $i= $i +1) {
+			if ((Ord(substr($value, $i, 1)) >= 48) && (Ord(substr($value, $i, 1)) <= 57)) {
+				$value_rearmado .= substr($value, $i, 1);
+			}
+		}
+		*/
+		
+		/**
+		* Si to estan todos los digitos.
+		*/
+		If (strlen($value_rearmado) <> 11) {  
+			return false;
+		}
+		else {
+			$sumador = 0;
+			/**
+			*  Tomo el digito verificador.
+			*/
+			$verificador = substr($value_rearmado, 10, 1);
+
+			for ($i=0; $i <=9; $i=$i+1) {
+				$sumador = $sumador + (substr($value_rearmado, $i, 1)) * $coeficiente[$i];//separo cada digito y lo multiplico por el coeficiente
+			}
+
+			$resultado = $sumador % 11;
+			/**
+			* Saco el digito verificador.
+			*/
+			$resultado = 11 - $resultado;  
+			$veri_nro = intval($verificador);
+
+			If ($veri_nro <> $resultado) {
+				return false;
+			}
+			else {
+				/**
+				* Lo formateo para que se guarde formateado.
+				*/
+				$field = $this->__getField($rule);
+				$model->data[$model->name][$field] = preg_replace("/(\d{2})(\d{8})(\d{1})/", "$1-$2-$3", $value_rearmado);
+				return true;
+			}
+		}
+	}
+
+
+/**
+ * Valida que un Cbu sea valido.
+ *
+ * @param object $model Model que esta siendo validado.
+ * @param array $rule La regla que se debe validar.
+ * @param array $ruleParams Parametros adicionales que puedo pasarle a la regla de validacion.
+ * @return boolean True si el cuit/cuil es valido, false en caso contrario.
+ * @access public
+ */
+	function validCbu(&$model, $rule, $ruleParams) {
+		$value = $this->__getValue($rule);
+		/**
+		* Si viene vacio lo valida como correcto, ya que la funcion valida si un Cbu es valido o no. No valida
+		* que este deba necesariamente venir.
+		*/
+		if(empty($value)) {
+			return true;
+		}
+
+		/**
+		* Formato del CBU:
+		*   EEESSSS-V TTTTTTTTTTTTT-V
+		* Bloque 1:
+		*   EEE - Número de entidad (3 posiciones)
+		*   SSSS - Número de sucursal (4 posiciones)
+		*   V - Dígito verificador de las primeras 7 posiciones
+		* Bloque 2:
+		*   TTTTTTTTTTTTT - Identificación de la cuenta individual
+		*   V - Dígito verificador de las anteriores 13 posiciones
+		*
+		* Para el cálculo de los dígitos verificadores se
+		* debe aplicar la clave 10 con el ponderador 9713
+		*
+		* Cbus validas
+		* 2850381130000000040036
+		* 3870081 9 0080160004003 2
+		* 2650450202145056396676
+		*/
+
+		$value = str_replace("-", "", $value);
+		if(strlen($value) == 22) {
+			$parteA = substr($value, 0, 7);
+			$digitoParteA = substr($value, 7, 1);
+			$parteB = substr($value, 8, 13);
+			$digitoParteB = substr($value, 21, 1);
+			if($this->__getDigitoVerificador($parteA) == $digitoParteA && $this->__getDigitoVerificador($parteB) == $digitoParteB) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+/**
+ * Calcula el digito verificador del cbu.
+ *
+ * @param string $lcBloque Bloque de numeros a los cuales calcular el digito verificador.
+ * @return integer El digito verificador calculado.
+ * @access private
+ */	
+	function __getDigitoVerificador($lcBloque) {
+		$Pond = 9713;
+		$lnSuma = 0;
+		$lnLargo = strlen($lcBloque);
+		$j=3;
+		for($i=1;$i<=$lnLargo;$i++){
+			$lnSuma = $lnSuma + (substr($lcBloque, $lnLargo - $i, 1)) * (substr($Pond, $j, 1));
+			if($j==0) {
+				$j=3;
+			}
+			else {
+				$j--;
+			}
+		}
+		return ((10 - ($lnSuma%10))%10);
+	}
+
+
+/**
+ * Retorna el valor ingresado por el usuario.
+ *
+ * @param array $rule Un regla de validacion.
+ * @return string El valor contenido dentro de la regla (lo que el usuario ingreso).
+ * @access private
+ */
+	function __getValue($rule) {
+		if(!empty($rule)) {
+			if(is_string(key($rule))) {
+				if(!empty($rule[key($rule)])) {
+					return $rule[key($rule)];
+				}
+			}
+		}
+		return "";
+	}
+
+
+/**
+ * Retorna el nombre del campo que contiene el valor ingresado por el usuario.
+ *
+ * @param array $rule Un regla de validacion.
+ * @return string El nombre del campo contenido dentro de la regla.
+ * @access private
+ */
+	function __getField($rule) {
+		if(!empty($rule)) {
+			if(is_string(key($rule))) {
+				return key($rule);
+			}
+		}
+		return "";
+	}
+
+
+/**
+ * Before save callback
+ *
+ * @return boolean True if the operation should continue, false if it should abort
+ */    
+    function beforeSave(&$model) {
+    	$this->setDBFieldValue($model);
+    	return true;
+	}
+
+
+	/**
+	* Si hay un campo fecha o fechahora, lo hago db compatible (yyyy-mm-dd).
+	* Si hay un float o integer y no puede ser null, lo hago 0.
+	* Si hay un campo que debe ser null y viene vacio, lo hago null.
+	*/
+	function __setDBFieldValue($fieldDescriptor, $value) {
+		if(!$fieldDescriptor['null']) {
+			if(!empty($fieldDescriptor['default']) && empty($value)) {
+				return $fieldDescriptor['default'];
+			}
+			elseif(in_array($fieldDescriptor['type'], array("datetime", "date"))) {
+				if(empty($value)) {
+					return "0000-00-00";
+				}
+				return $this->__getMySqlDate($value);
+			}
+			elseif(in_array($fieldDescriptor['type'], array("float", "integer", "binary")) && empty($value)) {
+				return 0;
+			}
+			elseif(in_array($fieldDescriptor['type'], array("string", "text")) && empty($value)) {
+				return "";
+			}
+		}
+		else {
+			if(empty($value)) {
+				return null;
+			}
+		}
+		return $value;
+	}
+	
+/**
+ *
+ */	
+    function setDBFieldValue(&$model, &$modelDetail = null, $field = null, $value = null, $returnValue = false) {
+		if(!empty($modelDetail) && !empty($field)) {
+			if($returnValue === true) {
+				$fieldDescriptor = $modelDetail->schema($field);
+				return $this->__setDBFieldValue($fieldDescriptor, $value);
+			}
+		}
+		else {
+			foreach($model->data as $k=>$v) {
+				if($model->name == $k) {
+					foreach($model->schema() as $field=>$fieldDescriptor) {
+						if(in_array($field, array("created", "modified", "user_id", "group_id", "group_group_id", "permissions"))) {
+							continue;
+						}
+
+						/**
+						* Cuando es un edit (el campo id tiene valor), solo formateo los campos que se editaron.
+						* Para un add, debo formatear todo.
+						*/
+						$value = null;
+						if(isset($model->data[$model->name][$field])) {
+							$value = $model->data[$model->name][$field];
+						}
+						if(empty($model->data[$model->name][$model->primaryKey])) {
+							$model->data[$model->name][$field] = $this->__setDBFieldValue($fieldDescriptor, $value);
+						}
+						elseif(!is_null($value)){
+							$model->data[$model->name][$field] = $this->__setDBFieldValue($fieldDescriptor, $value);
+						}
+					}
+				}
+				else {
+					foreach($model->data[$k] as $kDetail=>$vDetail) {
+						foreach($vDetail as $field=>$v) {
+							if(in_array($field, array("created", "modified", "user_id", "group_id", "group_group_id", "permissions"))) {
+								continue;
+							}
+							
+							$value = null;
+							if(isset($model->data[$k][$kDetail][$field])) {
+								$value = $model->data[$k][$kDetail][$field];
+							}
+							if(empty($model->data[$k][$kDetail]['id'])) {
+								$model->data[$k][$kDetail][$field] = $this->__setDBFieldValue($model->{$k}->schema($field), $value);
+							}
+							elseif(!is_null($value)){
+								$model->data[$k][$kDetail][$field] = $this->__setDBFieldValue($model->{$k}->schema($field), $value);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+/**
+ * Convierte cualquier fecha a formato yyyy-mm-dd.
+ *
+ * @param object $model Model que esta siendo validado.
+ * @param string $fecha La fecha en algun formato.
+ * @return mixed La fecha en formato yyyy-mm-dd, false si no fue posible o no se trataba de una fecha valida.
+ * @access private
+ */
+	function __getMySqlDate($fecha) {
+		if(!empty($fecha) && (preg_match(VALID_DATETIME, $fecha, $matches) || preg_match(VALID_DATE, $fecha, $matches))) {
+			return $matches[3] . "-" . $matches[2] . "-" . $matches[1] . substr($fecha, 10);
+		}
+		elseif(preg_match(VALID_DATE_MYSQL, $fecha)) {
+			return $fecha;
+		}
+		return false;
+	}
+
+	
+/**
+ * Convierte cualquier fecha a formato yyyy-mm-dd.
+ *
+ * @param string $fecha La fecha en algun formato.
+ * @return mixed La fecha en formato yyyy-mm-dd, false si no fue posible o no se trataba de una fecha valida.
+ * @access public
+ */
+	function getMySqlDate(&$model, $fecha) {
+		return $this->__getMySqlDate($fecha);
+	}	
+}
+?>

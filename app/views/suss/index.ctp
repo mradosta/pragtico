@@ -1,0 +1,27 @@
+<?php
+/**
+* Especifico los campos para ingresar las condiciones.
+*/
+$condiciones['Condicion.Suss-periodo'] = array("type"=>"periodo", "periodo"=>array("soloAAAAMM"), "aclaracion"=>"De la forma AAAAMM");
+$condiciones['Condicion.Suss-banco_id'] = array("options"=>"listable", "model"=>"Banco", "empty"=>true, "displayField"=>array("Banco.nombre"));
+$condiciones['Condicion.Suss-fecha'] = array();
+$fieldsets[] = array("campos"=>$condiciones);
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"Suss", "imagen"=>"suss.gif")));
+
+
+/**
+* Creo el cuerpo de la tabla.
+*/
+$cuerpo = null;
+foreach ($registros as $k=>$v) {
+	$fila = null;
+	$fila[] = array("model"=>"Suss", "field"=>"id", "valor"=>$v['Suss']['id'], "write"=>$v['Suss']['write'], "delete"=>$v['Suss']['delete']);
+	$fila[] = array("model"=>"Suss", "field"=>"periodo", "valor"=>$v['Suss']['periodo']);
+	$fila[] = array("model"=>"Suss", "field"=>"fecha", "valor"=>$v['Suss']['fecha']);
+	$fila[] = array("model"=>"Banco", "field"=>"nombre", "valor"=>$v['Banco']['nombre']);
+	$cuerpo[] = $fila;
+}
+
+echo $this->renderElement("index/index", array("condiciones"=>$fieldset, "cuerpo"=>$cuerpo));
+
+?>

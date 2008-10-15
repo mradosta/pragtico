@@ -1,0 +1,39 @@
+<?php
+/**
+* Especifico los campos de ingreso de datos.
+*/
+$campos = null;
+$campos['Documento.id'] = array("label"=>"Documento", "options"=>$documentos, "verificarRequerido"=>"forzado");
+if(!empty($model) && !empty($id)) {
+	$campos['Extra.model'] = array("type"=>"hidden", "value"=>$model);
+	$campos['Extra.id'] = array("type"=>"hidden", "value"=>$id);
+}
+if(!empty($contain)) {
+	$campos['Extra.contain'] = array("type"=>"hidden", "value"=>$contain);
+}
+$fieldsets[] = array("campos"=>$campos);
+
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Generar Documento", "imagen"=>"documentos.gif")));
+
+/**
+* Pinto el element add con todos los fieldsets que he definido.
+*/
+
+$bloqueAdicional = $formulario->image("detalles.gif", array("id"=>"mostrar_data", "style"=>"cursor:pointer;", "alt"=>"Mostrar los posibles campos que se pueden utilizar"));
+$bloqueAdicional .= $formulario->tag("span", " Mostrar los posibles campos que se pueden utilizar");
+$bloqueAdicional .= $formulario->tag("div", $data, array("class"=>"unica", "id"=>"data", "style"=>"display:none;"));
+
+$accionesExtra['opciones'] = array("acciones"=>array("cancelar", $formulario->button("Generar", array("class"=>"boton", "onclick"=>"form.submit();"))));
+echo $this->renderElement("add/add", array("accionesExtra"=>$accionesExtra, "bloqueAdicional"=>$bloqueAdicional, "fieldset"=>$fieldset, "opcionesForm"=>array("action"=>"generar")));
+
+/**
+* Agrego el evento click asociado al boton confirmar.
+*/
+$js = '
+	jQuery("#mostrar_data").click(
+		function() {
+			jQuery("#data").toggle();
+		}
+	);';
+$formulario->addScript($js);
+?>
