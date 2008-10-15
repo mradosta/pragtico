@@ -111,7 +111,8 @@ class AssetHelper extends Helper {
     	* Me aseguro que existe la carpeta de cache.
     	*/
    		if(!$folder->create($path . $this->cachePath, "777")) {
-      		trigger_error("No es posible crear el directorio '" . $path . $this->cachePath . "'. Por favor creelo manualmente con permisos 777", E_USER_WARNING);
+   			Configure::write('debug', 1);
+      		trigger_error("No es posible crear el directorio '" . $path . $this->cachePath . "'. Por favor creelo manualmente con permisos 777");
     	}
 
 		/**
