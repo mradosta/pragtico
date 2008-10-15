@@ -1,6 +1,6 @@
-# $Id: i18n.sql 5669 2007-09-18 04:16:04Z phpnut $
+# $Id: i18n.sql 7118 2008-06-04 20:49:29Z gwoo $
 #
-# Copyright 2005-2007,	Cake Software Foundation, Inc.
+# Copyright 2005-2008,	Cake Software Foundation, Inc.
 #								1785 E. Sahara Avenue, Suite 490-204
 #								Las Vegas, Nevada 89104
 #

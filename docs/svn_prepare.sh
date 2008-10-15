@@ -10,7 +10,11 @@ svn propset svn:ignore "*" ../app/tmp -R
 svn propset svn:ignore "pragtico.webprj
 pragtico.session" ../
 
+#Ignoro los archivos de manuales propios del desarrollador
+svn propset svn:ignore "*" ./developer_manuals
+
+#Ignoro los archivos de data propios del desarrollador
+svn propset svn:ignore "*" ./developer_data
+
 #Agrego como repositorio externo a la rama 1.2 de cakePHP
 svn propset svn:externals "cake https://svn.cakephp.org/repo/branches/1.2.x.x/cake" ../
-#svn propget svn:externals cake
-#../cake https://svn.cakephp.org/repo/branches/1.2.x.x/cake
