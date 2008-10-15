@@ -6,6 +6,10 @@ svn-commit*" ../app/config
 #Ignoro el directorio tmp
 svn propset svn:ignore "*" ../app/tmp -R 
 
+#Ignoro el contenido de las versiones packed de css y js 
+svn propset svn:ignore "*" ../app/webroot/css/packed
+svn propset svn:ignore "*" ../app/webroot/js/packed
+
 #Ignoro los archivos del proyecto quanta
 svn propset svn:ignore "pragtico.webprj
 pragtico.session" ../
