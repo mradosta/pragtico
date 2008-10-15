@@ -10,7 +10,9 @@
  * @package			practico
  * @subpackage		app.models
  * @since			Pragtico v 1.0.0
- * @version			1.0.0
+ * @version			$Revision$
+ * @modifiedby		$LastChangedBy$
+ * @lastmodified	$Date$
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
 /**
