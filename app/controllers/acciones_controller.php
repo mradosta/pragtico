@@ -25,12 +25,6 @@
  */
 class AccionesController extends AppController {
 
-/**
- * Realiza los seteos especificos (valores por defecto) al agregar y/o editar.
- */
-	function __seteos() {
-		$this->set("controladores", $this->Accion->Controlador->find("list", array("recursive"=>-1, "fields"=>array("Controlador.nombre"))));
-	}
 
 }
 ?>

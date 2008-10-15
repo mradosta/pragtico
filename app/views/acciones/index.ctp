@@ -2,7 +2,7 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-$condiciones['Condicion.Accion-controlador_id'] = array("options"=>$controladores, "empty"=>true);
+$condiciones['Condicion.Accion-controlador_id'] = array("options"=>"listable", "model"=>"Controlador", "displayField"=>array("Controlador.nombre"), "empty"=>true);
 $condiciones['Condicion.Accion-nombre'] = array();
 $condiciones['Condicion.Accion-etiqueta'] = array();
 $condiciones['Condicion.Accion-estado'] = array();
