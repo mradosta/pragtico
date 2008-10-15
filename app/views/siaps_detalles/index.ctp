@@ -2,7 +2,7 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-$condiciones['Condicion.Siap-version'] = array();
+$condiciones['Condicion.Siap-version'] = array("options"=>"listable", "model"=>"Siap", "displayField"=>array("Siap.version"), "empty"=>true);
 $condiciones['Condicion.SiapsDetalle-elemento'] = array();
 $condiciones['Condicion.SiapsDetalle-descripcion'] = array();
 $fieldsets[] = array("campos"=>$condiciones);

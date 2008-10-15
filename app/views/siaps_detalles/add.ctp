@@ -5,6 +5,7 @@
 $campos = null;
 $campos['SiapsDetalle.id'] = array();
 $campos['SiapsDetalle.siap_id'] = array("options"=>$siaps);
+$campos['SiapsDetalle.siap_id'] = array("options"=>"listable", "model"=>"Siap", "displayField"=>array("Siap.version"));
 $campos['SiapsDetalle.elemento'] = array();
 $campos['SiapsDetalle.valor'] = array();
 $campos['SiapsDetalle.descripcion'] = array();

@@ -25,11 +25,6 @@
  */
 class SiapsDetallesController extends AppController {
 	
-/**
- * Realiza los seteos especificos (valores por defecto) al agregar y/o editar.
- */
-	function __seteos() {
-        $this->set("siaps", $this->SiapsDetalle->Siap->find("list", array("recursive"=>-1, "fields"=>array("Siap.version"))));
-	}
+
 }
 ?>
