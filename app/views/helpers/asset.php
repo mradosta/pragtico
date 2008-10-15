@@ -5,14 +5,22 @@
  * www.PseudoCoder.com
  * http://www.pseudocoder.com/archives/2007/08/08/automatic-asset-packer-cakephp-helper
  *
- * @author      mattc <matt@pseudocoder.com>
- * @version     1.2
- * @license     MIT
+ * @author      	mattc <matt@pseudocoder.com>
+ * @version     	1.2
+ * @license     	MIT
+ * @version			$Revision:$
+ * @modifiedby		$LastChangedBy$
+ * @lastmodified	$Date$
  *
  */
 /**
- * Cuando esta en debug level 0, retorna unaa packed version de todos los scripts (incluso los inline).
- * En otro debug level, retorna los script tal cual se agregaron.
+ * Modifica mradosta para ser compatible con las necesidades de pragtico.
+ *
+ * Cuando esta en debug level 0, retorna una packed version de todos los scripts (incluso los inline).
+ * En otro debug level, retorna los script tal cual se fueron agregando desde las vistas o los layouts.
+ *
+ * @package		pragtico
+ * @subpackage	app.views.helpers
  */
 class AssetHelper extends Helper {
 
@@ -22,13 +30,12 @@ class AssetHelper extends Helper {
 	var $cachePath = 'packed/';
 
 	function scripts_for_layout() {
-    	
 		$view =& ClassRegistry::getObject('view');
 
 		/**
 		* Si no hay scripts, salgo porque no hay nada que hacer.
 		*/
-		if (empty($view->__scripts) && empty($view->__myScripts)) {
+		if(empty($view->__scripts) && empty($view->__myScripts)) {
 			return;
 		}
 		
@@ -38,7 +45,7 @@ class AssetHelper extends Helper {
 		* los scripts como los fui agregando.
 		*/
 		$view->__myScripts = am(array("view"=>array(), "ready"=>array(), "links"=>array()), $view->__myScripts);
-		if (Configure::read('debug') > 0) {
+		if(Configure::read('debug') > 0) {
 			$scripts_for_layout = "\n\n";
 			$scripts_for_layout .= join("\n\t", $view->__scripts);
 			$scripts_for_layout .= $this->Javascript->link($view->__myScripts['links']);
@@ -49,7 +56,7 @@ class AssetHelper extends Helper {
 			/**
 			* Armo los Css
 			*/
-			foreach ($view->__scripts as $i=>$script) {
+			foreach($view->__scripts as $i=>$script) {
 				if (preg_match('/css\/(.*).css/', $script, $match)) {
 					$temp = array();
 					$temp['script'] = $match[1];
@@ -72,10 +79,10 @@ class AssetHelper extends Helper {
 			}
 			
 			$linkeados = "";
-			if (!empty($js)) {
+			if(!empty($js)) {
 				$linkeados .= $this->Javascript->link($this->cachePath . $this->process("js", $js));
 			}
-			if (!empty($css)) {
+			if(!empty($css)) {
 				$linkeados .= $this->Html->css($this->cachePath . $this->process("css", $css));
 			}
 			$scripts_for_layout = "";
@@ -103,7 +110,7 @@ class AssetHelper extends Helper {
     	/**
     	* Me aseguro que existe la carpeta de cache.
     	*/
-   		if (!$folder->create($path . $this->cachePath, "777")) {
+   		if(!$folder->create($path . $this->cachePath, "777")) {
       		trigger_error("No es posible crear el directorio '" . $path . $this->cachePath . "'. Por favor creelo manualmente con permisos 777", E_USER_WARNING);
     	}
 
@@ -113,20 +120,19 @@ class AssetHelper extends Helper {
 		$names = Set::extract($data, '{n}.name');
 		$folder->cd($path . $this->cachePath);
 		$fileName = $folder->find($this->__generateFileName($names) . '_([0-9]{10}).' . $type);
-		if ($fileName) {
+		if(!empty($fileName)) {
 			/**
 			* Tomo el primer archivo, porque en realidad debe ser solo 1 ya
 			* que hice un merge de los que hayan sido en solo uno.
 			*/
 			$fileName = $fileName[0];
 		}
-    
 
 		/**
 		* Me aseguro de que todos los archivos que formaron el packet script,
 		* son mas viejos que la packed version.
 		*/
-    	if ($this->checkTS && $fileName) {
+    	if($this->checkTS && $fileName) {
       		$packed_ts = filemtime($path . $this->cachePath . $fileName);
 
 			$latest_ts = 0;
@@ -138,7 +144,7 @@ class AssetHelper extends Helper {
 			/**
 			* Si un archivo origen es mas nuevo, entonces debo crear nuevamente el packed script.
 			*/
-			if ($latest_ts > $packed_ts) {
+			if($latest_ts > $packed_ts) {
 				unlink($path . $this->cachePath . $fileName);
 				$fileName = null;
 			}
@@ -147,7 +153,7 @@ class AssetHelper extends Helper {
 		/**
 		* Si no existe, lo creo.
 		*/
-		if (!$fileName) {
+		if(empty($fileName)) {
     		$ts = time();
 
 			/**
@@ -185,9 +191,11 @@ class AssetHelper extends Helper {
 			*/
 			$fileName = $this->__generateFileName($names) . '_' . $ts . '.' . $type;
 			$file = new File($path . $this->cachePath . $fileName);
-			$file->write(trim($scriptBuffer));
+			if(!$file->write(trim($scriptBuffer))) {
+				Configure::write('debug', 1);
+				trigger_error("No fue posible crear el archivo " . $path . $this->cachePath . $fileName . ". Verifique que la ruta exista y tenga los permisos correctos.");
+			}
     	}
-
     	return $fileName;
   	}
 
