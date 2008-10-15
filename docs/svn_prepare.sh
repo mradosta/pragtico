@@ -18,3 +18,8 @@ svn propset svn:ignore "*" ./developer_data
 
 #Agrego como repositorio externo a la rama 1.2 de cakePHP
 svn propset svn:externals "cake https://svn.cakephp.org/repo/branches/1.2.x.x/cake" ../
+
+#Le pongo los datos de cada revision dentro del archivo
+svn propset svn:keywords "Revision" ../app/*
+svn propset svn:keywords "LastChangedBy" ../app/*
+svn propset svn:keywords "Date" ../app/*
