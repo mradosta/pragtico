@@ -1286,6 +1286,10 @@ class FormularioHelper extends AppHelper {
 			}
 			$texto = str_replace("_id", "", str_replace("__hasta", "", str_replace("__desde", "", $texto)));
 			$options['label'] = inflector::humanize($texto);
+
+			if(empty($options['value']) && !empty($this->data['Condicion'][$model . "-" . $field])) {
+				$options['value'] = $this->data['Condicion'][$model . "-" . $field];
+			}
 		}
 
 		if(!isset($model) && !isset($field)) {
@@ -1418,7 +1422,7 @@ class FormularioHelper extends AppHelper {
 			/**
 			* Manejo los tipos de datos date para que me arme el control seleccion de fechas.
 			*/
-			if($tipoCampo == "date") {
+			if($tipoCampo === "date") {
 				/**
 				* Cuando el campo ya tiene un valor y este es una fecha valida, no lo vuelvo a formatear.
 				* si lo mando al helper, me lo formatear para mysql. Esto puede darse durante un add al volver a insertar
@@ -1438,7 +1442,7 @@ class FormularioHelper extends AppHelper {
 			/**
 			* Manejo los tipos de datos datetime para que me arme el control seleccion de fechas con hora.
 			*/
-			elseif($tipoCampo == "datetime") {
+			elseif($tipoCampo === "datetime") {
 				if(preg_match(VALID_DATE, $valorCampo)) {
 					$options['value'] = $valorCampo;
 				}
@@ -1453,7 +1457,7 @@ class FormularioHelper extends AppHelper {
 			/**
 			* Agrega el link para poder descargar en caso de que sea un edit.
 			*/
-			elseif($tipoCampo == "file") {
+			elseif($tipoCampo === "file") {
 				if(!empty($options['descargar']) && $options['descargar'] === true && $this->action == "edit") {
 					if($this->params['action'] == "edit" && !empty($this->params['pass'][0])) {
 						$options['aclaracion'] = "Puede descargar el archivo y ver su contenido desde aca " . $this->link($this->image("archivo.gif", array("alt"=>"Descargar")), "descargar/" . $this->params['pass'][0]);
@@ -1486,7 +1490,7 @@ class FormularioHelper extends AppHelper {
 			*	}
 			*
 			*/
-			elseif($tipoCampo == "autocomplete") {
+			elseif($tipoCampo === "autocomplete") {
 				$rnd = intval(rand());
 				$options['id'] = $rnd;
 				$options['type'] = "text";
@@ -1601,7 +1605,7 @@ class FormularioHelper extends AppHelper {
 			/**
 			* Manejo los campos periodo.
 			*/
-			elseif($tipoCampo == "periodo") {
+			elseif($tipoCampo === "periodo") {
 				$rnd = intval(rand());
 				$options['type'] = "text";
 				$options['class'] = "periodo";
@@ -1634,7 +1638,7 @@ class FormularioHelper extends AppHelper {
 				$options['after'] = $after . $options['after'];
 			}
 			
-			elseif($tipoCampo == "radio") {
+			elseif($tipoCampo === "radio") {
 				$options['type'] = "radio";
 				$options['legend'] = false;
 				if(!isset($options['label'])) {
@@ -1664,11 +1668,9 @@ class FormularioHelper extends AppHelper {
 				if(empty($options['value'])) {
 					$options['value'] = "/**VACIO**/";
 					if(!empty($options['name'])) {
-						//$options['before'] .= $this->input($tagName, array("name"=>$options['name'], "type"=>"hidden", "value"=>""));
 						$options['before'] .= $this->Form->hidden($tagName, array("name"=>$options['name'], "value"=>""));
 					}
 					else {
-						//$options['before'] .= $this->input($tagName, array("type"=>"hidden", "value"=>""));
 						$options['before'] .= $this->Form->hidden($tagName, array("value"=>""));
 					}
 				}
@@ -1678,7 +1680,7 @@ class FormularioHelper extends AppHelper {
 			* El array parametros posteara (si los encuentra) via params->named los valores de los controles especificados.
 			* $formulario->input('Banco.id', array("label"=>"Cuenta", "type"=>"relacionado", "valor"=>"Banco.id", "relacion"=>"Soporte.modo", "parametros"=>array("Soporte.empleador_id", "Soporte.grupo_id"), "url"=>"pagos/cuentas_relacionado"));
 			*/
-			elseif($tipoCampo == "relacionado") {
+			elseif($tipoCampo === "relacionado") {
 
 				$tmp = explode(".", $tagName);
 				$id = Inflector::camelize($tmp[0]) . Inflector::camelize($tmp[1]);
@@ -1776,15 +1778,15 @@ class FormularioHelper extends AppHelper {
 			/**
 			* Manejo los tipos de datos numericos.
 			*/
-			elseif($tipoCampo == "float" || $tipoCampo == "integer") {
+			elseif($tipoCampo === "float" || $tipoCampo === "integer") {
 				$options['class'] = "derecha";
 			}
 
-			elseif($tipoCampo == "checkboxMultiple") {
+			elseif($tipoCampo === "checkboxMultiple") {
 				return $this->checkboxMultiple($tagName, $options);
 			}
 		
-			elseif($tipoCampo == "lov"
+			elseif($tipoCampo === "lov"
 				&& isset($options['lov']['controller'])
 					&& !empty($options['lov']['controller'])
 						&& is_string($options['lov']['controller'])) {
@@ -1917,18 +1919,10 @@ class FormularioHelper extends AppHelper {
 												'type'		=>$type,
 												'class'		=>'izquierda'));
 
-				/**
-				* Si es un add, significa que no valido, entonces dejo el valor que tenia antes.
-				*/
-				//if($this->action == "add") {
-				//	unset($options['value']);
-				//}
 				list($model, $field) = explode(".", $tagName);
 				if(!empty($this->data[$model][$field . "__"])) {
 					$options['value'] = $this->data[$model][$field . "__"];
 				}
-				//$options['label'] = false;
-				//unset($options['label']);
 				return $this->input($tagName . "__", $options);
 			}
 		}
@@ -1939,7 +1933,6 @@ class FormularioHelper extends AppHelper {
 		}
 
 		$options['after'] .= $aclaracion . $requerido;
-		//d($this->Form->input($tagName, $options));
 		return $this->Form->input($tagName, $options);
 	}
 
