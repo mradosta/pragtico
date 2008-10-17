@@ -1,21 +1,53 @@
 <?php
+/**
+ * Paginador Component.
+ * Se encarga de la paginacion en las grillas.
+ *
+ * PHP versions 5
+ *
+ * @filesource
+ * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
+ * @link			http://www.pragmatia.com
+ * @package			pragtico
+ * @subpackage		app.controllers.components
+ * @since			Pragtico v 1.0.0
+ * @version			$Revision$
+ * @modifiedby		$LastChangedBy$
+ * @lastmodified	$Date$
+ * @author      	Martin Radosta <mradosta@pragmatia.com>
+ */
+/**
+ * La clase encapsula la logica de la paginacion.
+ * Se encarga de la paginacion, de armar las condiciones de busqueda y mantenerlas en la session.
+ *
+ * @package		pragtico
+ * @subpackage	app.controllers.components
+ */
 class PaginadorComponent extends Object {
 
 	var $components = array("Util");
 
     var $controller;
     
-    function startup(&$controller) {
+/**
+ * Initializes el Component para usar en el controller
+ *
+ * @param object $controller Una referencia a la controller que lo esta instanciando al component.
+ * @return void
+ * @access public
+ */
+    function initialize(&$controller) {
         $this->controller = &$controller;
     }
+
 
 /**
  * Genera las condiciones para el paginador a partir de los datos que vengan cargados en
  * $this->data['Condicion']. Si este esta vacio, intenta leerlos desde la sesion si esta existe
  * en caso de que se haya paginado.
  *
- * @access public
  * @return array Un array con las condiciones de la forma que exige el framework para el metodo findAll.
+ * @access public
  */
     function generarCondicion() {
     	$condiciones = $valoresLov = array();
@@ -29,14 +61,17 @@ class PaginadorComponent extends Object {
 				if(empty($v)) {
 					unset($this->controller->data['Condicion'][$k]);
 				}
+				elseif(is_array($v)) {
+					$v = implode("**||**", $v);
+				}
 				
 				if(strpos($k, "-") && is_string($v) && strlen($v) > 0) {
 					$t = explode("-", $k);
 					if(count($t) == 2) {
 						if(substr($t[1], -2) != "__") {
 							/**
-							* La seleccion multiple desde una lov viene separada por **||**. En este caso
-							* debo armar un IN
+							* La seleccion multiple desde una lov o desde un checkMultiple viene separada
+							* por **||**. En este caso, debo armar un IN
 							*/
 							if(strpos($v, "**||**") > 0) {
 								$condiciones[$t[0] . "." . $t[1]] = explode("**||**", $v);
@@ -68,14 +103,6 @@ class PaginadorComponent extends Object {
 						unset($condiciones[$campo]);
 						$condiciones[$r['key']] = $r['value'];
 					}
-					/*
-					else {
-						$c = array('and' => array(array($nuevoCampo => $condiciones[$nuevoCampo]), array($nuevoCampo => $this->__reemplazos($campo, $valor))));
-						unset($condiciones[$campo]);
-						unset($condiciones[$nuevoCampo]);
-						$condiciones = am($c, $condiciones);
-					}
-					*/
 				}
 				elseif(substr($campo, strlen($campo) - 7) == "__hasta") {
 					$nuevoCampo = str_replace("__hasta", "", $campo);
@@ -84,14 +111,6 @@ class PaginadorComponent extends Object {
 						unset($condiciones[$campo]);
 						$condiciones[$r['key']] = $r['value'];
 					}
-					/*
-					else {
-						$c = array('and' => array(array($nuevoCampo => $condiciones[$nuevoCampo]), array($nuevoCampo => $this->__reemplazos($campo, $valor))));
-						unset($condiciones[$campo]);
-						unset($condiciones[$nuevoCampo]);
-						$condiciones = am($c, $condiciones);
-					}
-					*/
 				}
 				else {
 					$r = $this->__reemplazos($campo, $valor);
@@ -101,16 +120,6 @@ class PaginadorComponent extends Object {
 			}
 		}
 		else {
-			/**
-			* Verifico que no haya parametros porque ha paginado.
-			* Si pagino, la variable page viene seteada.
-			*/
-			/*
-			if(!isset($this->controller->params['pass']['page'])) {
-				$this->controller->Session->del($this->controller->name . "." . $this->controller->action);
-			}
-			else*/
-
 			/**
 			* Siempre quedan los filtros hasta que efectivamente limpie
 			*/
@@ -131,11 +140,13 @@ class PaginadorComponent extends Object {
 		return $condiciones;
     }
 
+
 /**
  * Genera el array para $this->data a partir de las condiciones para que el helper pinte nuevamente
  * los valores en la vista.
  *
  * @access public
+ * @return void
  */
     function generarData() {
 		if($this->controller->Session->check("filtros." . $this->controller->name . "." . $this->controller->action)) {
@@ -198,19 +209,19 @@ class PaginadorComponent extends Object {
 					}
 					else {
 						$this->controller->data['Condicion'][$k] = $this->__removerReemplazos($v);
-					}		
+					}
 				//}
 			}
         }
-        //d($this->controller->data['Condicion']);
 	}
+
 
 /**
  * Establece las condiciones, realiza las consultas a la base y deja el array $this->data['Condicion']
  * de manera que el helper pueda cargar los valores de las busquedas.
  *
- * @access public
  * @return array Resultados de la paginacion.
+ * @access public
  */
 	function paginar($condicion = array()) {
 		$condiciones = am($this->generarCondicion(), $condicion);
@@ -260,13 +271,14 @@ class PaginadorComponent extends Object {
 		return array("registros"=>$registros, "totales"=>$resultado);
 	}
 	
+	
 /**
  * Realiza los reemplazos necesarios en funcion del tipo de campo para ser entendidos por un query SQL.
  *
- * @access private
  * @param string $modelCampo El nombre del model y del campo en la forma Model.Campo.
  * @param array	 $v El valor que tiene el campo.
  * @return string Valor del campo ya reemplazado en funcion de su tipo.
+ * @access private
  */
 	function __reemplazos($modelCampo, $v) {
  		$valor = $v;
@@ -326,13 +338,14 @@ class PaginadorComponent extends Object {
 		return array("key"=>$key, "value"=>$valor);
 	}
 
+
 /**
  * Quita los reemplazos realizados por el metodo "__reemplazos" de manera de volver el valor del campo a su estado
  * original.
  *
- * @access private
  * @param string $valor Un valor con caracteres agregados por el metodo reemplazos.
  * @return string El Valor del campo sin los reemplazos.
+ * @access private
  */
 	function __removerReemplazos($valor) {
 		if(is_string($valor)) {
