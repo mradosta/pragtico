@@ -47,16 +47,11 @@ $css[] = "aplicacion.default.screen";
 $css[] = "jquery.autocomplete";
 */
 $css[] = "aplicacion.default.screen";
-//$css[] = "new";
-//$css[] = "interstitial";
 
 if($formulario->traerPreferencia("lov_apertura") != "popup") {
 	$css[] = "jquery.jqmodal";
-	
 }
 $html->css($css, null, array("media"=>"screen"), false);
-//"jquery.autocomplete","jquery.bgiframe","jquery.dimensions",
-//"interstitial",
 
 $formulario->addScript("default", "links");
 $formulario->addScript("datetimepicker", "links");
@@ -89,8 +84,8 @@ $codigo_html[] = "<body>";
 $codigo_html[] = $flash;
 $codigo_html[] = $encabezado;
 $codigo_html[] = $barra;
-$contenido = $formulario->bloque($content_for_layout, array("div"=>array("class"=>"cuerpo")));
-$codigo_html[] = $formulario->tag("div", am($menu, $contenido), array("class"=>"contenido"));
+$contenido = $formulario->tag("div", $content_for_layout, array("class"=>"cuerpo"));
+$codigo_html[] = $formulario->tag("div", $menu . $contenido, array("class"=>"contenido"));
 $codigo_html[] = $cakeDebug;
 $codigo_html[] = "</body>";
 $codigo_html[] = "</html>";

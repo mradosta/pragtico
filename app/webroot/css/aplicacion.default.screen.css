@@ -161,7 +161,7 @@ div.index div.cantidad_a_mostrar span {
 div.contenido {
 	background: transparent url(img/fondo_cuerpo.gif) no-repeat;
 	margin-top: -4px;
-	height: 100%;
+	min-height: 650px;
 }
 
 div.cuerpo {
@@ -662,7 +662,6 @@ textarea {
  */
 div.checkboxMultiple {
 	float:left;
-	1overflow: auto;
 }
 
 div.checkboxMultiple label{
@@ -1029,8 +1028,6 @@ div.quitarDetalle {
 div.agregarDetalle {
 	float: right;
 	padding-right: 28px;
-	1padding-bottom: 5px;
-	1background-color:red;
 }
 
 div.add .submit {
