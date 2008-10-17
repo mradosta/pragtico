@@ -14,6 +14,10 @@ svn propset svn:ignore "*" ../app/webroot/js/packed
 svn propset svn:ignore "pragtico.webprj
 pragtico.session" ../
 
+#Ignoro los archivos de plantillas del proyecto quanta
+svn propset svn:ignore ".dirinfo
+.tmpl" ./plantillas
+
 #Ignoro los archivos de manuales propios del desarrollador
 svn propset svn:ignore "*" ./developer_manuals
 
@@ -25,4 +29,6 @@ svn propset svn:externals "cake https://svn.cakephp.org/repo/branches/1.2.x.x/ca
 
 #Le pongo los datos de cada revision dentro del archivo
 svn propset svn:keywords "Revision LastChangedBy Date" ../app/controllers/*.php
+svn propset svn:keywords "Revision LastChangedBy Date" ../app/controllers/components/*.php
 svn propset svn:keywords "Revision LastChangedBy Date" ../app/models/*.php
+find ../app/views/ -type f -name *.ctp|xargs svn propset svn:keywords "Revision LastChangedBy Date"
