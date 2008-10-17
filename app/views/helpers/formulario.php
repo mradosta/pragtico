@@ -1255,6 +1255,7 @@ class FormularioHelper extends AppHelper {
 		}
 		else {
 			$verificarRequerido = $options['verificarRequerido'];
+			unset($options['verificarRequerido']);
 		}
 		
 		/**
@@ -1373,7 +1374,7 @@ class FormularioHelper extends AppHelper {
 
 
 			/**
-			* Verifico el largo del campo para setear el maxLenght
+			* Verifico el largo del campo para setear el maxLength
 			*/
 			if(!empty($tableInfo[$field]['length']) && !isset($options['maxlength']) && $tipoCampo != "float") {
 				$options['maxlength'] = $tableInfo[$field]['length'];
@@ -1716,7 +1717,7 @@ class FormularioHelper extends AppHelper {
 					$jsParametros ="parametros = {" . implode(", ", $jsParametrosArray) . "};";
 				}
 				
-				$requestAjax = $this->codeBlock('
+				$requestAjax = '
 					jQuery("#' . $id . '").bind("click", function () {
 						var valor = jQuery("#' . $idHiddenRelacionado . '").val();
 						var parametros = {}; ' .
@@ -1768,10 +1769,13 @@ class FormularioHelper extends AppHelper {
 								}
 							);
 						}
-					})');
+					})';
 				
-				$options['after'] .= $requestAjax;
-				$options = am($options, array("type"=>"select"), array("options"=>$value));
+				$this->addScript($requestAjax);
+				$options = am($options, array("type"=>"select"), array("options"=>$value), array("maxlength"=>false));
+				unset($options['url']);
+				unset($options['relacion']);
+				unset($options['valor']);
 				return $this->input($tagName, $options);
 			}
 
@@ -1906,18 +1910,17 @@ class FormularioHelper extends AppHelper {
 				*/
 				if(!isset($options['label'])) {
 					if(isset($tmpName)) {
-						$options['label'] = $this->label($tmpName);
+						$options['label'] = Inflector::humanize(array_pop(explode(".", str_replace("_id", "", $tmpName))));
 					}
 					else {
-						$options['label'] = $this->label($tagName);
+						$options['label'] = Inflector::humanize(array_pop(explode(".", str_replace("_id", "", $tagName))));
 					}
-					$options['label'] = inflector::humanize($options['label']);
 				}
 				
-				$options = am($options, array(	'id'		=>$id . "__",
-												'readonly'	=>true,
-												'type'		=>$type,
-												'class'		=>'izquierda'));
+				$options = am($options, array(	'id'		=> $id . "__",
+												'readonly'	=> true,
+												'type'		=> $type,
+												'class'		=> 'izquierda'));
 
 				list($model, $field) = explode(".", $tagName);
 				if(!empty($this->data[$model][$field . "__"])) {
@@ -1933,6 +1936,9 @@ class FormularioHelper extends AppHelper {
 		}
 
 		$options['after'] .= $aclaracion . $requerido;
+		if(isset($options['maxlength']) && $options['maxlength'] === false) {
+			unset($options['maxlength']);
+		}
 		return $this->Form->input($tagName, $options);
 	}
 
@@ -1967,7 +1973,6 @@ class FormularioHelper extends AppHelper {
  * @return string A HTML button tag.
  * @access public
  */
-	//function button($params, $type = 'button', $options = array()) {
 	function button($caption = '', $options = array()) {
 		$return = '<div class="submit">';
 		$return .= '<input type="button" value="' . $caption . '" ' . $this->_parseAttributes($options, null, '', '') . ' />';
