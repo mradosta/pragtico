@@ -1,4 +1,21 @@
 <?php
+/**
+ * Este archivo contiene la presentacion.
+ *
+ * PHP versions 5
+ *
+ * @filesource
+ * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
+ * @link			http://www.pragmatia.com
+ * @package			pragtico
+ * @subpackage		app.views
+ * @since			Pragtico v 1.0.0
+ * @version			$Revision$
+ * @modifiedby		$LastChangedBy$
+ * @lastmodified	$Date$
+ * @author      	Martin Radosta <mradosta@pragmatia.com>
+ */
+ 
 $codigo_html = "\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 $codigo_html .= "\n<html xmlns=\"http://www.w3.org/1999/xhtml\">";
 

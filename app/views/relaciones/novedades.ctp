@@ -1,71 +1,169 @@
 <?php
 /**
-* Especifico los campos para ingresar las condiciones.
-*/
-$condiciones['Condicion.Relacion-empleador_id'] = array(	"lov"=>array("controller"	=> "empleadores",
-																		"camposRetorno"	=> array("Empleador.nombre")));
+ * Este archivo contiene la presentacion.
+ *
+ * PHP versions 5
+ *
+ * @filesource
+ * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
+ * @link			http://www.pragmatia.com
+ * @package			pragtico
+ * @subpackage		app.views
+ * @since			Pragtico v 1.0.0
+ * @version			$Revision$
+ * @modifiedby		$LastChangedBy$
+ * @lastmodified	$Date$
+ * @author      	Martin Radosta <mradosta@pragmatia.com>
+ */
+ 
+if(!empty($registros)) {
+	$documento->create();
+	$fila = $filaInicio = 8;
+
+	/**
+	* Oculto la columna donde tengo los identificadores de la relacion.
+	*/
+	$documento->doc->getActiveSheet()->getColumnDimension('A')->setVisible(false);
+
+	/**
+	* Pongo el titulo de la planilla.
+	*/
+	$documento->setCellValue("E1:M3", "Novedades - " . date("d/m/Y"),
+		array("style"=>array("font"		=> array("bold" => true, "size" => 14),
+							"alignment" => array("horizontal" => PHPExcel_Style_Alignment::HORIZONTAL_CENTER))
+			));
+	
+	/**
+	* Agrego el logo de Pragtico.
+	*/
+	$objDrawing = new PHPExcel_Worksheet_Drawing();
+	$objDrawing->setName('Pragtico');
+	$objDrawing->setDescription('Pragtico');
+	$objDrawing->setPath(WWW_ROOT . "img/logo_pragtico.jpg");
+	$objDrawing->setCoordinates('B1');
+	$objDrawing->setHeight(130);
+	$objDrawing->setWidth(260);
+	$objDrawing->getShadow()->setVisible(true);
+	$objDrawing->setWorksheet($documento->doc->getActiveSheet());
+	
+	/**
+	* Pongo las columnas en auto ajuste del ancho.
+	*/
+	$documento->doc->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+	$documento->doc->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+	$documento->doc->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+	
+	/**
+	* Pongo los titulos de las columnas.
+	*/
+	$estiloTituloColumna =
+		array(
+			'font'    => array(
+				'bold'      => true
+			),
+			'alignment' => array(
+				'vertical' 	 => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+				'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+			),
+			'fill' => array(
+				'type'       => PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
+				'rotation'   => 90,
+				'startcolor' => array(
+					'argb' => 'FFA0A0A0'
+				),
+				'endcolor'   => array(
+					'argb' => 'FFFFFFFF'
+				)
+			)
+		);
+
+	$documento->setCellValue("A" . $fila . ":A" . ($fila+1), "Relacion");
+	$documento->setCellValue("B" . $fila . ":B" . ($fila+1), "Empleador", array("style"=>$estiloTituloColumna));
+	$documento->setCellValue("C" . $fila . ":C" . ($fila+1), "Trabajador", array("style"=>$estiloTituloColumna));
+	$documento->setCellValue("D" . $fila . ":D" . ($fila+1), "Categoria", array("style"=>$estiloTituloColumna));
+
+	$documento->setCellValue("E" . $fila . ":G" . $fila, "Horas", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('E')->setWidth(6);
+	$documento->setCellValue("E" . ($fila+1), "Normal", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('F')->setWidth(6);
+	$documento->setCellValue("F" . ($fila+1), "50%", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('G')->setWidth(6);
+	$documento->setCellValue("G" . ($fila+1), "100%", array("style"=>$estiloTituloColumna));
+	
+	$documento->setCellValue("H" . $fila . ":J" . $fila, "Horas Ajuste", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('H')->setWidth(6);
+	$documento->setCellValue("H" . ($fila+1), "Normal", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('I')->setWidth(6);
+	$documento->setCellValue("I" . ($fila+1), "50%", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('J')->setWidth(6);
+	$documento->setCellValue("J" . ($fila+1), "100%", array("style"=>$estiloTituloColumna));
+	
+	$documento->setCellValue("K" . $fila . ":L" . $fila, "Ausencias", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('K')->setWidth(15);
+	$documento->setCellValue("K" . ($fila+1), "Motivo", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('L')->setWidth(6);
+	$documento->setCellValue("L" . ($fila+1), "Dias", array("style"=>$estiloTituloColumna));
+
+	$documento->setCellValue("M" . $fila . ":M" . $fila, "Vales", array("style"=>$estiloTituloColumna));
+	$documento->setCellValue("M" . ($fila+1) . ":M" . ($fila+1), "$", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('M')->setWidth(9);
+
+	/**
+	* Protejo la hoja para que no me la modifiquen, excepto lo que realmente necesito que modifique que lo desbloqueo luego.
+	*/
+	$documento->doc->getActiveSheet()->getProtection()->setPassword(substr(Configure::read('Security.salt'), 0, 10));
+	$documento->doc->getActiveSheet()->getProtection()->setSheet(true);
+
+	$fila++;
+	foreach($registros as $registro) {
+		$fila++;
+		$documento->setCellValue("A" . $fila, $registro['Relacion']['id']);
+		$documento->setCellValue("B" . $fila, $registro['Empleador']['nombre']);
+		$documento->setCellValue("C" . $fila, $registro['Trabajador']['nombre']);
+		$documento->setCellValue("D" . $fila, $registro['ConveniosCategoria']['nombre']);
 
 
-$fieldsets[] = array("campos"=>$condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"Novedades", "imagen"=>"novedades.gif")));
-
-
-$documento->create();
-$documento->setCellValue("A1", "XXXXX");
-$documento->setCellValue("A2", "MARTIN");
-//$documento->save("/tmp/x1.xlsx");
-$documento->save("/tmp/x1.html", "HTML");
-exit;
-d($documento);
-d($registros);
-
-/**
-* Creo el cuerpo de la tabla.
-*/
-$cuerpo = null;
-foreach ($registros as $k=>$v) {
-	$fila = null;
-	$id = $v['Hora']['id'];
-	$fila[] = array("model"=>"Hora", "field"=>"id", "valor"=>$v['Hora']['id'], "write"=>$v['Hora']['write'], "delete"=>$v['Hora']['delete']);
-	$fila[] = array("model"=>"Empleador", "field"=>"nombre", "valor"=>$v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
-	$fila[] = array("model"=>"Trabajador", "field"=>"numero_documento", "valor"=>$v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
-	$fila[] = array("model"=>"Trabajador", "field"=>"apellido", "valor"=>$v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
-	$fila[] = array("model"=>"Hora", "field"=>"periodo", "valor"=>$v['Hora']['periodo']);
-	$fila[] = array("model"=>"Hora", "field"=>"cantidad", "valor"=>$v['Hora']['cantidad']);
-	$fila[] = array("model"=>"Hora", "field"=>"tipo", "valor"=>$v['Hora']['tipo']);
-	$fila[] = array("model"=>"Hora", "field"=>"estado", "valor"=>$v['Hora']['estado']);
-	if($v['Hora']['estado'] == "Liquidada") {
-		$cuerpo[] = array("contenido"=>$fila, "opciones"=>array("seleccionMultiple"=>false, "eliminar"=>false, "modificar"=>false));
+		foreach(str_split("EFGHIJKLM") as $col) {
+			$documento->setDataValidation($col . $fila, "decimal");
+			
+			/**
+			* Debo especificamente desbloquear las celdas que le permitire introducir al usuario.
+			*/
+			$documento->doc->getActiveSheet()->getStyle($col . $fila)->getProtection()->setLocked(PHPExcel_Style_Protection::PROTECTION_UNPROTECTED);
+		}
+		
+		/**
+		* El combo con los posibles motivos.
+		*/
+		$documento->setDataValidation("K" . $fila, "lista", array("valores"=>$motivos));
+		
+		$objValidation = $documento->doc->getActiveSheet()->getCell("K" . $fila)->getDataValidation();
+		$objValidation->setType( PHPExcel_Cell_DataValidation::TYPE_LIST );
+		$objValidation->setErrorStyle( PHPExcel_Cell_DataValidation::STYLE_INFORMATION );
+		$objValidation->setAllowBlank(false);
+		$objValidation->setShowInputMessage(true);
+		$objValidation->setShowErrorMessage(true);
+		$objValidation->setShowDropDown(true);
+		$objValidation->setError("Debe seleccionar un valor de la lista");
+		$objValidation->setFormula1('"' . implode(",", $motivos) . '"');
+		$documento->doc->getActiveSheet()->getCell("K" . $fila)->setDataValidation($objValidation);
 	}
-	else {
-		$cuerpo[] = $fila;
-	}
+	$documento->save($tipo);
 }
-$fila = null;
-$fila[] = array("model"=>"Hora", "field"=>"id", "valor"=>"");
-$fila[] = array("model"=>"Empleador", "field"=>"nombre", "valor"=>"");
-$fila[] = array("model"=>"Trabajador", "field"=>"numero_documento", "valor"=>"");
-$fila[] = array("model"=>"Trabajador", "field"=>"apellido", "valor"=>"");
-$fila[] = array("model"=>"Hora", "field"=>"periodo", "valor"=>"");
-$fila[] = array("model"=>"Hora", "field"=>"cantidad", "valor"=>$totales['cantidad']);
-$fila[] = array("model"=>"Hora", "field"=>"tipo", "valor"=>"");
-$fila[] = array("model"=>"Hora", "field"=>"estado", "valor"=>"");
+else {
+	/**
+	* Especifico los campos para ingresar las condiciones.
+	*/
+	$condiciones['Condicion.Relacion-empleador_id'] = array(	"lov"=>array("controller"	=> "empleadores",
+																			"camposRetorno"	=> array("Empleador.nombre")));
+	$condiciones['Condicion.Bar-tipo'] = array("options"=>$tipos, "type"=>"radio");
 
-$pie[] = $fila;
-$accionesExtra[] = $formulario->link("Generar Planilla", null, array("title"=>"Genera las planillas para el ingreso masivo de horas", "class"=>"link_boton", "id"=>"botonGenerarPlanilla"));
-$accionesExtra[] = $formulario->link("Importar Planilla", "importar_planilla", array("class"=>"link_boton", "title"=>"Importa las planillas de ingreso masivo de horas"));
+	$fieldsets[] = array("campos"=>$condiciones);
+	$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"Novedades", "imagen"=>"novedades.gif")));
+	$opcionesTabla['tabla']['omitirMensajeVacio'] = true;
+	$accionesExtra['opciones'] = array("acciones"=>array($formulario->link("Generar", null, array("class"=>"link_boton", "id"=>"confirmar", "title"=>"Confirma las liquidaciones seleccionadas"))));
+	$botonesExtra['opciones'] = array("botones"=>array("limpiar", $formulario->submit("Generar", array("title"=>"Genera la planilla base para importar novedades"))));
+	echo $this->renderElement("index/index", array("botonesExtra"=>$botonesExtra, "condiciones"=>$fieldset, "opcionesForm"=>array("action"=>"novedades"), "opcionesTabla"=>$opcionesTabla));
+}
 
-$accionesExtra['opciones'] = array("acciones"=>array());
-$botonesExtra[] = $formulario->button("Cancelar", array("title"=>"Cancelar", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='cancelar';form.submit();"));
-$botonesExtra[] = $formulario->submit("Generar", array("title"=>"Generar la PLanilla para el Ingreso de Novedades", "onclick"=>"document.getElementById('accion').value='generar'"));
-echo $this->renderElement("index/index", array("opcionesForm"=>array("action"=>"novedades"), "condiciones"=>$fieldset, "cuerpo"=>$cuerpo, "pie"=>$pie, "botonesExtra"=>array("opciones"=>array("botones"=>$botonesExtra)), "accionesExtra"=>$accionesExtra));
-
-$js = "
-	jQuery('#botonGenerarPlanilla').bind('click', function() {
-		jQuery('#form').attr('action', '" . router::url("/") . $this->params['controller'] . "/generar_planilla');
-		jQuery('#accion').attr('value', 'generar_planilla');
-		jQuery('#form').submit();
-	});
-";
-$formulario->addScript($js);
 ?>

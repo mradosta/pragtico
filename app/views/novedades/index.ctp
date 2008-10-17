@@ -1,6 +1,6 @@
 <?php
 /**
- * Este archivo contiene toda la presentacion.
+ * Este archivo contiene la presentacion.
  *
  * PHP versions 5
  *
@@ -15,8 +15,7 @@
  * @lastmodified	$Date$
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
-
-
+ 
 /**
 * Especifico los campos para ingresar las condiciones.
 */
