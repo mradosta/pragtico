@@ -53,6 +53,7 @@
  */
 	$irregularPlural = array(
 								'actividad'					=> 'actividades',
+								'novedad'					=> 'novedades',
 								'empleador'					=> 'empleadores',
 								'localidad'					=> 'localidades',
 								'trabajador'				=> 'trabajadores',
