@@ -50,6 +50,16 @@ class AppModel extends Model {
 	//var $actsAs = array('Bindable'); 
 	//var $actsAs   = array('transaction');
 	
+
+/**
+ * Los permisos con los que se guardaran los datos.
+ *
+ * @var integer
+ * @access protected
+ */
+	protected $__permissions = "496";
+	
+	
 /**
  * Variable que guarda la informacion de errores que se generen al intentar ejecutar consultas SQL.
  *
@@ -399,7 +409,7 @@ class AppModel extends Model {
 /**
  * Retorna la variable $this->dbError con los errores que puedan haber surgido de alguna query.
  *
-*/
+ */
     function getError() {
     	return $this->dbError;
     }
@@ -408,7 +418,7 @@ class AppModel extends Model {
 /**
  * Retorna la variable $this->dbError con los warnings que puedan haber surgido de alguna query.
  *
-*/
+ */
     function getWarning() {
     	return $this->dbWarning;
     }
@@ -462,6 +472,33 @@ class AppModel extends Model {
  	}
 
 
+/**
+ * Setea los permisos con los que se guardaran los registros.
+ *
+ * @param integer $permisos con los que se guardaran los datos.
+ * @return boolean True si puedieron setearse los permisos, false en cualquier otro caso.
+ * @access public
+ */
+    function setPermissions($permissions) {
+    	if(is_numeric($permissions) && $permissions >= 0 && $permissions <= 511) {
+    		$this->__permissions = $permissions;
+    		return true;
+    	}
+    	return false;
+	}
+
+
+/**
+ * Retorna los permisos con los que se guardaran los registros.
+ *
+ * @return integer $permisos con los que se guardaran los datos.
+ * @access public
+ */
+	function getPermissions() {
+		return $this->__permissions;
+	}
+	
+	
 /**
  * Carga la variable (array) $this->dbError de la clase con los errores.
  * Si un mensaje especifico para el motor no ha sido definido, retorna el mensaje de error que genero la DB.

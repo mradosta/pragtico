@@ -19,7 +19,7 @@
  * Especifico todos los metodos que me garantizan que de manera automagica cada registro que es recuperado o
  * guardado, siempre contendra el usuario y el grupo correcto, como asi tambien los permisos.
  *
- * Me baso en la idea de:
+ * Me baso en la idea expuesta por:
  * http://www.xaprb.com/blog/2006/08/16/how-to-build-role-based-access-control-in-sql/
  *
  * @package		pragtico
@@ -27,7 +27,13 @@
  */
 class PermisosBehavior extends ModelBehavior {
 
-	var $permisos = array(
+/**
+ * Los equivalentes numericos de los permisos para el dueno, el grupo o rol y los otros.
+ *
+ * @var array
+ * @access private
+ */
+	var $__permisos = array(
 		"owner_read"   => 256,
 		"owner_write"  => 128,
 		"owner_delete" => 64,
@@ -39,7 +45,7 @@ class PermisosBehavior extends ModelBehavior {
 	   	"other_delete" => 1
 	);
 
-
+	
 /**
  * Before save callback
  *
@@ -62,11 +68,12 @@ class PermisosBehavior extends ModelBehavior {
     			$model->data[$model->name]['group_id'] = $usuario['Usuario']['preferencias']['grupo_default_id'];
     		}
     		if(!isset($model->data[$model->name]['permissions'])) {
-    			$model->data[$model->name]['permissions'] = "496";
+    			$model->data[$model->name]['permissions'] = $model->getPermissions();
     		}
     	}
     	return true;
     }
+
 
 /**
  * Una vez que recupero los datos, recorro el array y agrego los permisos (delete o write).
@@ -114,6 +121,7 @@ class PermisosBehavior extends ModelBehavior {
 		return $results;
 	}
 
+
 /**
  * Esta funcion indica si un usuario puede o no realizar un acceso sobre un registro dependiendo del
  * dueno, el grupo y rol y los demas (otros).
@@ -138,7 +146,7 @@ class PermisosBehavior extends ModelBehavior {
 		* Verifico lo que puede hacer el dueno.
 		*/
 		if(($usuario['Usuario']['id'] === $registro['user_id'])
-			&& ((int)$registro['permissions'] & (int)$this->permisos['owner_' . $acceso])) {
+			&& ((int)$registro['permissions'] & (int)$this->__permisos['owner_' . $acceso])) {
 			return true;
 		}
 
@@ -146,16 +154,16 @@ class PermisosBehavior extends ModelBehavior {
 		* Verifico lo que pueden hacer el grupo en funcion del rol.
 		*/
 		if((((int)$usuario['Usuario']['grupos'] & (int)$registro['group_id'])
-			&& ((int)$registro['permissions'] & (int)$this->permisos['group_' . $acceso])) &&
+			&& ((int)$registro['permissions'] & (int)$this->__permisos['group_' . $acceso])) &&
 		   (((int)$usuario['Usuario']['roles'] & (int)$registro['role_id'])
-			&& ((int)$registro['permissions'] & (int)$this->permisos['group_' . $acceso]))) {
+			&& ((int)$registro['permissions'] & (int)$this->__permisos['group_' . $acceso]))) {
 			return true;
 		}
 
 		/**
 		* Verifico lo que pueden hacer los otros.
 		*/
-		if((int)$registro['permissions'] & (int)$this->permisos['other_' . $acceso]) {
+		if((int)$registro['permissions'] & (int)$this->__permisos['other_' . $acceso]) {
 			return true;
 		}
 		return false;
@@ -260,31 +268,27 @@ class PermisosBehavior extends ModelBehavior {
 			$seguridad['OR'][] =
 				array(
 					$modelName . ".user_id" => $usuarioId,
-					"(" . $modelName . ".permissions) & " . $this->permisos['owner_' . $acceso] => $this->permisos['owner_' . $acceso]
+					"(" . $modelName . ".permissions) & " . $this->__permisos['owner_' . $acceso] => $this->__permisos['owner_' . $acceso]
 				);
 			
 			$seguridad['OR'][] =
 				array("AND" => array(
 					array(
 						"(" . $modelName . ".role_id) & " . $roles . " >" => 0,
-						"(" . $modelName . ".permissions) & " . $this->permisos['group_' . $acceso] => $this->permisos['group_' . $acceso]
+						"(" . $modelName . ".permissions) & " . $this->__permisos['group_' . $acceso] => $this->__permisos['group_' . $acceso]
 					),
 					array(
 						"(" . $modelName . ".group_id) & " . $grupos . " >" => 0,
-						"(" . $modelName . ".permissions) & " . $this->permisos['group_' . $acceso] => $this->permisos['group_' . $acceso]
+						"(" . $modelName . ".permissions) & " . $this->__permisos['group_' . $acceso] => $this->__permisos['group_' . $acceso]
 					)
 				));
 			
 			$seguridad['OR'][] =
 				array(
-					"(" . $modelName . ".permissions) & " . $this->permisos['other_' . $acceso] => $this->permisos['other_' . $acceso]
+					"(" . $modelName . ".permissions) & " . $this->__permisos['other_' . $acceso] => $this->__permisos['other_' . $acceso]
 				);
 		}
 		return $seguridad;
 	}
-	
-
-
-	
 }
 ?>
