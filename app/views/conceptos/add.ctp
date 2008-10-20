@@ -24,11 +24,10 @@ $campos['Concepto.id'] = array();
 $campos['Concepto.codigo'] = array("aclaracion"=>"Utilizara este valor en las formulas.");
 $campos['Concepto.nombre'] = array();
 $campos['Concepto.nombre_formula'] = array("aclaracion"=>"Utilizara este valor en las impresiones.");
-//$campos['Concepto.coeficiente_id'] = array("options"=>$coeficientes, "empty"=>true);
 $campos['Concepto.coeficiente_id'] = array(	"empty"			=> true,
 											"options"		=> "listable",
 											"recursive"		=> -1,
-											"order"			=> "Coeficiente.tipo, Coeficiente.nombre",
+											"order"			=> "Coeficiente.tipo desc, Coeficiente.nombre",
 											"displayField"	=> "Coeficiente.nombre",
 											"groupField"	=> "Coeficiente.tipo",
 											"model"			=> "Coeficiente");
