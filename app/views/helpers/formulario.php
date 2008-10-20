@@ -2117,7 +2117,9 @@ class FormularioHelper extends AppHelper {
             $elementosHtmlAttributes['value'] = $id;
 			if(!empty($this->data[$model][$field])) {
 				$seleccionados = $this->data[$model][$field];
-				if($id & $seleccionados || (!empty($options['value']) && is_array($options['value']) && in_array($id, $options['value']))) {
+				if((is_numeric($id) && is_numeric($seleccionados) && ($id & $seleccionados))
+					|| (!empty($options['value']) && is_array($options['value']) && in_array($id, $options['value']))
+					|| (is_string($id) && is_string($options['value']) && $id === $options['value'])) {
 					$checked['checked'] = 'checked';
 					$checkbox[] = "<li>" . sprintf($this->tags['checkboxmultiple'], $model, $field, $this->Html->_parseAttributes(am($elementosHtmlAttributes, $checked))) . $this->Form->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
 				}
