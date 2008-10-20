@@ -86,6 +86,8 @@ class UtilBehavior extends ModelBehavior {
 		}
 		return true;
 	}
+
+	
 /**
  * A partir de un periodo expresado en formato string, retorna un array de ano, mes y periodo.
  *
@@ -118,19 +120,27 @@ class UtilBehavior extends ModelBehavior {
 
 
 /**
- * Una vez que haya realizado una busqueda, verifico el tipo de campo de cada registro y le doy formato.
+ * A partir de un array de Condiciones propio (con campos lov de selecciona multiple, por ejemplo), genero un array
+ * de condiciones de acuerdo a lo que cakePHP necesita.
  *
  * @param object $model Model que usa este behavior.
- * @param array $results Los resultados que retorno alguna query.
- * @param boolean $primary Indica si este resultado viene de una query principal o de una query que
- *						   es generada por otra (recursive > 1)
- * @return array array $results Los resultados con los campos de cada registro ya formateados.
+ * @param array $condiciones Las condiciones para formar el where de la query.
+ * @return array Las condiciones para ser utilizados por el metodo find de cakePHP.
  * @access public
  */
 	function getConditions(&$model, $condiciones) {
 		return $this->__getConditions($condiciones);
 	}
 	
+	
+/**
+ * A partir de un array de Condiciones propio (con campos lov de selecciona multiple, por ejemplo), genero un array
+ * de condiciones de acuerdo a lo que cakePHP necesita.
+ *
+ * @param array $condiciones Las condiciones para formar el where de la query.
+ * @return array Las condiciones para ser utilizados por el metodo find de cakePHP.
+ * @access private
+ */
 	function __getConditions($condiciones) {
 		$return = array();
 		if(!empty($condiciones['Condicion']) && is_array($condiciones['Condicion'])) {
@@ -159,6 +169,16 @@ class UtilBehavior extends ModelBehavior {
 	}
 
 
+/**
+ * Genera una query.
+ * En debug level > 0, tambien la formatea para una mejor visualizacion.
+ *
+ * @param object $model Model que usa este behavior.
+ * @param array $data Los datos para generar una query.
+ * @param object $modelPreferido Model que usa deberia utilizar en lugar del model que usa el behavior para armar la query.
+ * @return string Una query lista para ser ejecuta en la DB.
+ * @access public
+ */
 	function generarSql(&$model, $data, &$modelPreferido = null) {
 
 		if(empty($modelPreferido)) {
@@ -297,9 +317,7 @@ class UtilBehavior extends ModelBehavior {
 			}
 			return date("Y-m-d", mktime($h ,$n, $s,$m ,$d, $y));
 		}
-		else {
-			return false;
-		}
+		return false;
 	}
 
 
@@ -479,7 +497,6 @@ class UtilBehavior extends ModelBehavior {
 			$diferencia['segundos']=$secsDiff;
 			return $diferencia;
 		}
-			d($diferencia);
 		return false;
 	}
 
