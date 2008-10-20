@@ -1,55 +1,45 @@
 <?php
-/* SVN FILE: $Id: app_model.php 5118 2007-05-18 17:19:53Z phpnut $ */
-
 /**
- * Application model for Cake.
+ * Model de la aplicacion.
  *
- * This file is application-wide model file. You can put all
- * application-wide model-related methods here.
+ * Todos los model heredan desde esta clase, por lo que defino metodos que usare en todos los models aca.
  *
- * PHP versions 4 and 5
- *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2007, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
- *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
+ * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2005-2007, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.app
- * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 5118 $
- * @modifiedby		$LastChangedBy: phpnut $
+ * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
+ * @link			http://www.pragmatia.com
+ * @package			pragtico
+ * @subpackage		app
+ * @since			Pragtico v 1.0.0
+ * @version			$Revision$
+ * @modifiedby		$LastChangedBy$
  * @lastmodified	$Date$
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
-
 /**
- * Application model for Cake.
+ * La clase encapsula la logica de acceso a datos de todo la aplicacion.
  *
- * Add your application-wide methods in the class below, your models
- * will inherit them.
- *
- * @package		cake
- * @subpackage	cake.app
+ * @package		pragtico
+ * @subpackage	app
  */
 class AppModel extends Model {
 
-	//var $recursive = -1;
-	
-	var $actsAs   = array('Util', 'Permisos', 'Containable', 'Validaciones');
-	//var $actsAs   = array('Util');
-	//var $actsAs   = array('Transaction', 'Permisos', 'Containable', 'Util');
-	//var $actsAs   = array('Transaction', 'Containable', 'Util');
-	//var $actsAs   = array('Transaction', 'Permisos', 'Bindable' => array('notices' => true));
-	//var $actsAs = array('Bindable'); 
-	//var $actsAs   = array('transaction');
-	
+	/**
+	* TODO:
+	* Deberia asegurarme que todo sea recursive = -1, y cuando lo necesite algun level mas de recursive,
+	* logralo con el behavior contain().
+	* var $recursive = -1;
+	*/
+
+/**
+ * Los behaviors que uso en todos los models.
+ *
+ * @var array
+ * @access public
+ */
+	var $actsAs = array("Util", "Permisos", "Containable", "Validaciones");
+
 
 /**
  * Los permisos con los que se guardaran los datos.
@@ -61,23 +51,28 @@ class AppModel extends Model {
 	
 	
 /**
- * Variable que guarda la informacion de errores que se generen al intentar ejecutar consultas SQL.
+ * Mantiene informacion de errores que se generen al intentar ejecutar consultas SQL.
  *
+ * @var array
+ * @access public
  */
 	var $dbError;
 
 
 /**
- * Variable que guarda la informacion de warnings que se generen al intentar ejecutar consultas SQL.
+ * Mantiene informacion de warnings que se generen al intentar ejecutar consultas SQL.
  *
+ * @var array
+ * @access public
  */
 	var $dbWarning;
 
 
-
-
 /**
-* Cuando se genera un error, lo busco y lo dejo disponible.
+ * Cuando se genera un error, lo busco y lo dejo disponible.
+ *
+ * @return void.
+ * @access public
 */
 	function onError() {
 		$this->__buscarError();
@@ -91,7 +86,7 @@ class AppModel extends Model {
  * @param boolean $cascade Si es true, elimina los registros que dependen de estos.
  * @param boolean $callbacks Ejecuta callbacks (No se usa de momento).
  * @param boolean $manejarTransaccion Indica si deben manejarse transacciones o no.
- * @return boolean True si todo salio bien, False en otro caso.
+ * @return boolean True si se pudieron eliminar todos los registros, False en otro caso.
  * @access public
  */
 	function deleteAll($conditions, $cascade = true, $callbacks = false, $manejarTransaccion = true) {
@@ -103,8 +98,13 @@ class AppModel extends Model {
 			return false;
 		}
 	
+		/**
+		* Quito el orden y las relacines belongsTo, ya que no las necesito y solo volverias mas lenta la query.
+		*/
+		$this->order = null;
+		$this->belongsTo = null;
 		$ids = Set::extract("/" . $this->alias . "/" . $this->primaryKey,
-			$this->find("all", array(	'fields'	=>$this->alias . "." . $this->primaryKey,
+			$this->find("all", array(	'fields'	=> $this->alias . "." . $this->primaryKey,
 										'recursive' => -1,
 										'conditions'=> $conditions)));
 		
@@ -142,9 +142,13 @@ class AppModel extends Model {
 	
 /**
  * Sobreescribo la function del(),
+ * Maneja transacciones por defecto cuando de hay una relacion de tipo hasMany (master/detail).
  * 
- * Maneja transacciones SOLO cuando de hay una relacion de tipo hasMany (master/detail).
- * Chequeo por errores al borrar y llamo a la funcion afterSaveFailed.
+ * @param mixed $id El identificador unica de registro (clave primaria).
+ * @param boolean $cascade Si es true, elimina los registros que dependen de estos.
+ * @param boolean $manejarTransaccion Indica si deben manejarse transacciones o no.
+ * @return boolean True si se pudo eliminar el registro, False en otro caso.
+ * @access public
  */
 	function del($id = null, $cascade = true, $manejarTransaccion = true) {
 		$returnVal = false;
@@ -230,18 +234,24 @@ class AppModel extends Model {
 		
         if($returnVal === false) {
         	$this->__buscarError();
-            $this->afterDeleteFailed($id);
         }
         return $returnVal;
 	}    
     
+    
 /**
  * Sobreescribo la function save().
- * Maneja transacciones SOLO cuando de hay una relacion de tipo hasMany (master/detail).
+ * Maneja transacciones por defecto cuando de hay una relacion de tipo hasMany (master/detail).
+ * 
  * Por una cuestion de implementacion en el model detail, debo definir un array (unique) que contendra el nombre
  * de los campos que componen la Unique del model. Esto usara para buscar y borrar y re-insertar ante un update.
- * Chequeo por errores al guardar y llamo a la funcion afterSaveFailed.
- */
+ * 
+ * @param array $data El array con los datos a guardar.
+ * @param boolean $validate Indica si debo verificar las validaciones antes de guardar o no.
+ * @param array $fieldList Lista de campos que estan permitido que sean escritos.
+ * @return boolean True si se pudo guardar el registro, False en otro caso.
+ * @access public
+ */    
     function save($data = null, $validate = true, $fieldList = array(), $manejarTransaccion = true) {
 		/**
 		* Solo guardo master/detail cuando es una relacion hasMany y en el vector vienen componentes
@@ -350,9 +360,6 @@ class AppModel extends Model {
 								else {
 									$this->validationErrors[$this->name][$key][$k] = $this->$key->validationErrors;
 									unset($this->$key->validationErrors);
-									//if($manejarTransaccion === true) {
-									//	$this->rollback();
-									//}
 									$returnVal = false;
 								}
 							}
@@ -387,7 +394,6 @@ class AppModel extends Model {
 
         if($returnVal === false) {
 			$this->__buscarError();
-            $this->afterSaveFailed();
             return false;
         }
         else {
@@ -396,25 +402,8 @@ class AppModel extends Model {
 		$returnValParent[$this->name][$this->primaryKey] = $this->id;
         return $returnValParent;
     }
-    
-/**
- * Llama a la funcion invalidate().
- * Lo hago de esta forma para que este metodo pueda ser sobreescrito desde el model.
- *
-*/
-    function afterSaveFailed() {
-        //$this->invalidate('DbError');
-        return false;
-    }
-    
-/**
- * Lo hago de esta forma para que este metodo pueda ser sobreescrito desde el model.
-*/
-    function afterDeleteFailed($id) {
-        return true;
-    }
-    
-    
+
+
 /**
  * Retorna la variable $this->dbError con los errores que puedan haber surgido de alguna query.
  *
@@ -591,18 +580,6 @@ class AppModel extends Model {
 							}
 							$i++;
 						}
-						/*
-						$tableInfo = $this->_schema;
-						$c=0;
-						foreach($tableInfo as $k=>$v) {
-							if(!empty($v['key'])) {
-								$vCampos[$c] = $v;
-								$vCampos[$c]['nombre'] = $k;
-								$c++;
-							}
-						}
-						$this->dbError['errorDescripcion'] = "Ha intentado grabar un valor que ya existe en el campo " . up($vCampos[$key]['nombre']) . " de la tabla " . up($this->useTable) . ".";
-						*/
 					}
 				break;
 			}
