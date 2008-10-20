@@ -1,6 +1,6 @@
 <?php
 /**
- * Behavior que contiene utilidades varias con respecto a la DB.
+ * Behavior que contiene utilidades varias para ser usadas en los models.
  *
  * PHP versions 5
  *
@@ -23,6 +23,35 @@
  * @subpackage	app.models.behaviors
  */
 class UtilBehavior extends ModelBehavior {
+
+/**
+ * A los campos string, text o enum, les da sorporte para collation espanol de mysql cuando debo hacer un order by.
+ *
+ * @param object $model Model que usa este behavior.
+ * @param array $query Los datos que tengo para armar la query.
+ * @return array $query Los datos para realizar la query con laa parte del order modificada para soporte de collation.
+ * @access public
+ */
+    function beforeFind (&$model, $query) {
+        if(!empty($query['order'][0])) {
+        	$schema = $model->schema();
+        	foreach($query['order'][0] as $field=>$direccion) {
+        		if(strpos($field, '.') !== false) {
+        			$field = array_pop(explode(".", $field));
+        		}
+        		else {
+        			$field = $direccion;
+        			$direccion = "asc";
+        		}
+        		if($schema[$field]['type'] === "string" || $schema[$field]['type'] === "text" || substr($schema[$field]['type'], 0, 5) === "enum(") {
+        			$direccion = "COLLATE utf8_spanish2_ci " . $direccion;
+        		}
+        		$orden[$model->name . "." . $field] = $direccion;
+			}
+			$query['order'] = $orden;
+        }
+        return $query;
+    }
 
 
 /**
