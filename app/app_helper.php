@@ -1,41 +1,27 @@
 <?php
-/* SVN FILE: $Id: app_helper.php 5118 2007-05-18 17:19:53Z phpnut $ */
 /**
- * Short description for file.
+ * Helper de la aplicacion.
  *
- * This file is application-wide helper file. You can put all
- * application-wide helper-related methods here.
+ * Todos los helpers heredan desde esta clase, por lo que defino metodos que usare en todos los helpers aca.
  *
- * PHP versions 4 and 5
- *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2007, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
- *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
+ * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2005-2007, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.cake
- * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 5118 $
- * @modifiedby		$LastChangedBy: phpnut $
+ * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
+ * @link			http://www.pragmatia.com
+ * @package			pragtico
+ * @subpackage		app
+ * @since			Pragtico v 1.0.0
+ * @version			$Revision$
+ * @modifiedby		$LastChangedBy$
  * @lastmodified	$Date$
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
 /**
- * This is a placeholder class.
- * Create the same file in app/app_helper.php
+ * La clase encapsula los metodos de los helpers que usare en todo la aplicacion.
  *
- * Add your application-wide methods in the class below, your helpers
- * will inherit them.
- *
- * @package		cake
- * @subpackage	cake.cake
+ * @package		pragtico
+ * @subpackage	app
  */
 class AppHelper extends Helper {
     

@@ -99,10 +99,9 @@ class AppModel extends Model {
 		}
 	
 		/**
-		* Quito el orden y las relacines belongsTo, ya que no las necesito y solo volverias mas lenta la query.
+		* Quito el orden, ya que no lo necesito y solo volveria mas lenta la query.
 		*/
 		$this->order = null;
-		$this->belongsTo = null;
 		$ids = Set::extract("/" . $this->alias . "/" . $this->primaryKey,
 			$this->find("all", array(	'fields'	=> $this->alias . "." . $this->primaryKey,
 										'recursive' => -1,

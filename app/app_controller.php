@@ -1,70 +1,40 @@
 <?php
-/* SVN FILE: $Id: app_controller.php 5118 2007-05-18 17:19:53Z phpnut $ */
 /**
- * Short description for file.
+ * Controller de la aplicacion.
  *
- * This file is application-wide controller file. You can put all
- * application-wide controller-related methods here.
+ * Todos los controllers heredan desde esta clase, por lo que defino metodos que usare en todos los controllers aca.
  *
- * PHP versions 4 and 5
- *
- * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
- * Copyright 2005-2007, Cake Software Foundation, Inc.
- *								1785 E. Sahara Avenue, Suite 490-204
- *								Las Vegas, Nevada 89104
- *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
+ * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2005-2007, Cake Software Foundation, Inc.
- * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package			cake
- * @subpackage		cake.app
- * @since			CakePHP(tm) v 0.2.9
- * @version			$Revision: 5118 $
- * @modifiedby		$LastChangedBy: phpnut $
+ * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
+ * @link			http://www.pragmatia.com
+ * @package			pragtico
+ * @subpackage		app
+ * @since			Pragtico v 1.0.0
+ * @version			$Revision$
+ * @modifiedby		$LastChangedBy$
  * @lastmodified	$Date$
- * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
 /**
- * Short description for class.
+ * La clase encapsula lo logica de negocios comun a todo la aplicacion.
  *
- * Add your application-wide methods in the class below, your controllers
- * will inherit them.
- *
- * @package		cake
- * @subpackage	cake.app
+ * @package		pragtico
+ * @subpackage	app
  */
 class AppController extends Controller {
 
-	//var $helpers = array("Html", "Formato", "Javascript", "Ajax", "Formulario", "Paginador", "Pdf", "ExcelWriter");
 	var $helpers = array("Form", "Formato", "Formulario", "Paginador", "Asset");
-	//var $helpers = array("Formato", "Formulario", "Paginador");
-	//var $components = array('Paginador', 'RequestHandler', 'History', 'Util', 'Auth');
 	var $components = array('Paginador', 'RequestHandler', 'History', 'Util');
 	var $paginate = array('limit' => 15);
 	var $uses = array("Menu", "Usuario");
 
 
-	//var $actions
-
-/*
-<?php $band_list_options = array(
-    'conditions' => $band_conditions,
-    'fields' => array('Band.id', 'Band.pretty_field')
-);
-$this->set('bands', $this->Band->find('list', $band_list_options));?>
-
-<?php Set::combine($posts, '{n}.Post.id', array('%s %s', '{n}.Post.title', '{n}.Post.user_id'));?>
-*/
-
-
-
 /**
-* listable(),
-*
-*/
+ * listable(),
+ *
+ */
 	function listable() {
 		if($this->RequestHandler->isAjax()) {
 			$this->RequestHandler->renderAs($this, 'ajax');
