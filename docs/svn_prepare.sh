@@ -31,4 +31,5 @@ svn propset svn:externals "cake https://svn.cakephp.org/repo/branches/1.2.x.x/ca
 svn propset svn:keywords "Revision LastChangedBy Date" ../app/controllers/*.php
 svn propset svn:keywords "Revision LastChangedBy Date" ../app/controllers/components/*.php
 svn propset svn:keywords "Revision LastChangedBy Date" ../app/models/*.php
+svn propset svn:keywords "Revision LastChangedBy Date" ../app/models/behaviors/*.php
 find ../app/views/ -type f -name *.ctp|xargs svn propset svn:keywords "Revision LastChangedBy Date"
