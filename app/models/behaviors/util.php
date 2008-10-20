@@ -38,19 +38,37 @@ class UtilBehavior extends ModelBehavior {
         	if(!is_array($query['order'][0])) {
         		$query['order'][0] = array($query['order'][0]);
         	}
+        	elseif(isset($query['order'][0][0])) {
+        		foreach(explode(",", $query['order'][0][0]) as $v) {
+        			if(stripos($v, "asc")) {
+        				$query['order'][0][trim(str_replace("asc", "", $v))] = "asc";
+        			}
+        			elseif(stripos($v, "desc")) {
+        				$query['order'][0][trim(str_replace("desc", "", $v))] = "desc";
+        			}
+        			else {
+        				$query['order'][0][trim($v)] = "asc";
+        			}
+        		}
+        		unset($query['order'][0][0]);
+        	}
         	
         	foreach($query['order'][0] as $field=>$direccion) {
-        		if(strpos($field, '.') !== false) {
-        			$field = array_pop(explode(".", $field));
+        		if(strpos($field, '.')) {
+        			
+        			$tmp = explode(".", $field);
+        			$field = $tmp[1];
+        			$modelName = $tmp[0];
         		}
         		else {
+        			$modelName = $model->name;
         			$field = $direccion;
         			$direccion = "asc";
         		}
         		if($schema[$field]['type'] === "string" || $schema[$field]['type'] === "text" || substr($schema[$field]['type'], 0, 5) === "enum(") {
         			$direccion = "COLLATE utf8_spanish2_ci " . $direccion;
         		}
-        		$orden[$model->name . "." . $field] = $direccion;
+        		$orden[$modelName . "." . $field] = $direccion;
 			}
 			$query['order'] = $orden;
         }
