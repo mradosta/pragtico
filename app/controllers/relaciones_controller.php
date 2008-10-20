@@ -24,16 +24,6 @@
  */
 class RelacionesController extends AppController {
 
-	var $helpers = array("Documento");
-	
-	function novedades() {
-		if(!empty($this->data)) {
-			$registros = $this->Relacion->findByEmpleadorId($this->data['Condicion']['Relacion-empleador_id']);
-			$this->set("registros", $registros);
-			//d($this->data);
-		}
-	}
-
 
 /**
  * areas_relacionado.

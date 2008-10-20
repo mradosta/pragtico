@@ -32,6 +32,7 @@ $condiciones['Condicion.Relacion-id'] = array(	"label"	=> "Relacion",
 																	"camposRetorno"	=> array(	"Empleador.nombre",
 																								"Trabajador.apellido")));
 $condiciones['Condicion.Novedad-tipo'] = array("type"=>"checkboxMultiple");
+$condiciones['Condicion.Novedad-periodo'] = array("type"=>"periodo");
 
 $fieldsets[] = array("campos"=>$condiciones);
 $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"novedades de la relacion laboral", "imagen"=>"novedades.gif")));
@@ -43,33 +44,28 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("le
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$id = $v['Hora']['id'];
-	$fila[] = array("model"=>"Hora", "field"=>"id", "valor"=>$v['Hora']['id'], "write"=>$v['Hora']['write'], "delete"=>$v['Hora']['delete']);
+	$fila[] = array("tipo"=>"desglose", "id"=>$v['Novedad']['id'], "update"=>"desglose1", "imagen"=>array("nombre"=>"detalles.gif", "alt"=>"Detalles"), "url"=>'detalles');
+	$fila[] = array("model"=>"Novedad", "field"=>"id", "valor"=>$v['Novedad']['id'], "write"=>$v['Novedad']['write'], "delete"=>$v['Novedad']['delete']);
 	$fila[] = array("model"=>"Empleador", "field"=>"nombre", "valor"=>$v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
 	$fila[] = array("model"=>"Trabajador", "field"=>"numero_documento", "valor"=>$v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
 	$fila[] = array("model"=>"Trabajador", "field"=>"apellido", "valor"=>$v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
-	$fila[] = array("model"=>"Hora", "field"=>"periodo", "valor"=>$v['Hora']['periodo']);
-	$fila[] = array("model"=>"Hora", "field"=>"cantidad", "valor"=>$v['Hora']['cantidad']);
-	$fila[] = array("model"=>"Hora", "field"=>"tipo", "valor"=>$v['Hora']['tipo']);
-	$fila[] = array("model"=>"Hora", "field"=>"estado", "valor"=>$v['Hora']['estado']);
-	if($v['Hora']['estado'] == "Liquidada") {
-		$cuerpo[] = array("contenido"=>$fila, "opciones"=>array("seleccionMultiple"=>false, "eliminar"=>false, "modificar"=>false));
-	}
-	else {
-		$cuerpo[] = $fila;
-	}
+	$fila[] = array("model"=>"Novedad", "field"=>"periodo", "valor"=>$v['Novedad']['periodo']);
+	$fila[] = array("model"=>"Novedad", "field"=>"tipo", "valor"=>$v['Novedad']['tipo']);
+	$cuerpo[] = $fila;
 }
-$accionesExtra[] = $formulario->link("Generar Planilla", null, array("title"=>"Genera las planillas para el ingreso masivo de horas", "class"=>"link_boton", "id"=>"botonGenerarPlanilla"));
-$accionesExtra[] = $formulario->link("Importar Planilla", "importar_planilla", array("class"=>"link_boton", "title"=>"Importa las planillas de ingreso masivo de horas"));
-echo $this->renderElement("index/index", array("condiciones"=>$fieldset, "cuerpo"=>$cuerpo, "accionesExtra"=>$accionesExtra));
+$generar = $formulario->link("Generar Planilla", "generar_planilla", array("title"=>"Genera las planillas para el ingreso de novedades", "class"=>"link_boton"));
+$importar = $formulario->link("Importar Planilla", "importar_planilla", array("class"=>"link_boton", "title"=>"Importa las planillas de novedades"));
+$confirmar = $formulario->link("Confirmar", null, array("class"=>"link_boton", "id"=>"confirmar", "title"=>"Confirma las novedades seleccionadas"));
+$accionesExtra['opciones'] = array("acciones"=>array($confirmar, "eliminar", $generar, $importar));
+$opcionesTabla =  array("tabla"=>array("modificar"=>false));
+echo $this->renderElement("index/index", array("opcionesTabla"=>$opcionesTabla, "condiciones"=>$fieldset, "cuerpo"=>$cuerpo, "accionesExtra"=>$accionesExtra));
 
 $js = "
-	jQuery('#botonGenerarPlanilla').bind('click', function() {
-		jQuery('#form').attr('action', '" . router::url("/") . $this->params['controller'] . "/generar_planilla');
-		jQuery('#accion').attr('value', 'generar_planilla');
+	jQuery('#confirmar').bind('click', function() {
+		jQuery('#form').attr('action', '" . router::url("/") . $this->params['controller'] . "/confirmar');
+		jQuery('#accion').attr('value', 'confirmar');
 		jQuery('#form').submit();
 	});
 ";
 $formulario->addScript($js);
-
 ?>

@@ -176,6 +176,7 @@ class UtilBehavior extends ModelBehavior {
  * @param string $valor Un valor a formatear.
  * @param array $options Array que contiene el tipo de formato y/o sus opciones.
  * @return string Un string con el valor formateado de acuerdo a lo especificado.
+ * @access public
  */
 	function format(&$model, $valor, $options = array()) {
 		App::import("Helper", array("Number", "Time", "Formato"));

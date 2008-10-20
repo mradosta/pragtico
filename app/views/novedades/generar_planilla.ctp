@@ -148,22 +148,33 @@ if(!empty($registros)) {
 		$objValidation->setFormula1('"' . implode(",", $motivos) . '"');
 		$documento->doc->getActiveSheet()->getCell("K" . $fila)->setDataValidation($objValidation);
 	}
-	$documento->save($tipo);
+	$documento->save($formatoDocumento);
 }
 else {
 	/**
 	* Especifico los campos para ingresar las condiciones.
 	*/
+	$condiciones['Condicion.Relacion-trabajador_id'] = array(	"lov"=>array("controller"		=>	"trabajadores",
+																			"separadorRetorno"	=>	" ",
+																			"camposRetorno"		=>array("Trabajador.apellido",
+																										"Trabajador.nombre")));
+
 	$condiciones['Condicion.Relacion-empleador_id'] = array(	"lov"=>array("controller"	=> "empleadores",
 																			"camposRetorno"	=> array("Empleador.nombre")));
-	$condiciones['Condicion.Bar-tipo'] = array("options"=>$tipos, "type"=>"radio");
 
+	$condiciones['Condicion.Relacion-id'] = array(	"label"	=> "Relacion",
+													"lov"	=> array(	"controller"	=> "relaciones",
+																		"camposRetorno"	=> array(	"Empleador.nombre",
+																									"Trabajador.apellido")));
+	$condiciones['Condicion.Novedad-tipo'] = array("type"=>"checkboxMultiple");
+	$condiciones['Condicion.Novedad-formato'] = array("type"=>"radio");
 	$fieldsets[] = array("campos"=>$condiciones);
+	
 	$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"Novedades", "imagen"=>"novedades.gif")));
 	$opcionesTabla['tabla']['omitirMensajeVacio'] = true;
 	$accionesExtra['opciones'] = array("acciones"=>array($formulario->link("Generar", null, array("class"=>"link_boton", "id"=>"confirmar", "title"=>"Confirma las liquidaciones seleccionadas"))));
 	$botonesExtra['opciones'] = array("botones"=>array("limpiar", $formulario->submit("Generar", array("title"=>"Genera la planilla base para importar novedades"))));
-	echo $this->renderElement("index/index", array("botonesExtra"=>$botonesExtra, "condiciones"=>$fieldset, "opcionesForm"=>array("action"=>"novedades"), "opcionesTabla"=>$opcionesTabla));
+	echo $this->renderElement("index/index", array("botonesExtra"=>$botonesExtra, "condiciones"=>$fieldset, "opcionesForm"=>array("action"=>"generar_planilla"), "opcionesTabla"=>$opcionesTabla));
 }
 
 ?>

@@ -24,14 +24,12 @@
  * @subpackage	app.controllers
  */
 
- App::import('Vendor', "oleread", true, array(APP . "vendors" . DS . "phpExcelReader" . DS . "Excel"), "oleread.inc");
- App::import('Vendor', "reader", true, array(APP . "vendors" . DS . "phpExcelReader" . DS . "Excel"), "reader.php");
+ //App::import('Vendor', "oleread", true, array(APP . "vendors" . DS . "phpExcelReader" . DS . "Excel"), "oleread.inc");
+ //App::import('Vendor', "reader", true, array(APP . "vendors" . DS . "phpExcelReader" . DS . "Excel"), "reader.php");
  
 class HorasController extends AppController {
 
 
-	var $helpers = array("ExcelWriter");
-	
 /**
  * Add.
  */
@@ -40,28 +38,14 @@ class HorasController extends AppController {
         parent::add();
 	}
 	
+	
+/**
+ * Index.
+ */	
 	function index() {
 		$this->set("estados", array("Liquidada"=>"Liquidada", "Pendiente"=>"Pendiente"));
 		$this->paginate = am($this->paginate, array('conditions' => array("Hora.estado"=>array("Liquidada", "Pendiente"))));
 		parent::index();
-	}
-
-
-
-/**
- * generarPlanillas.
- *
- * Genera la planilla para el ingreso masivo de horas.
- */
-	function generar_planilla() {
-		unset($this->data['Condicion']['Hora-periodo']);
-		unset($this->data['Condicion']['Hora-estado']);
-		unset($this->data['Condicion']['Hora-tipo']);
-		$condiciones = $this->Paginador->generarCondicion($this->data);
-		$this->Hora->Relacion->contain(array("Trabajador", "Empleador", "ConveniosCategoria"));
-		$datos = $this->Hora->Relacion->find("all", array("order"=>"Empleador.nombre, Trabajador.apellido, Trabajador.nombre", "conditions"=>$condiciones));
-		$this->set("datos", $datos);
-		$this->render("planilla", "excel");
 	}
 
 
@@ -95,6 +79,27 @@ class HorasController extends AppController {
 		if(!empty($this->data['Formulario']['accion'])) {
 			if($this->data['Formulario']['accion'] == "importar") {
 				if(!empty($this->data['Hora']['planilla']['tmp_name'])) {
+					set_include_path(get_include_path() . PATH_SEPARATOR . APP . "vendors" . DS . "PHPExcel" . DS . "Classes");
+					App::import('Vendor', "IOFactory", true, array(APP . "vendors" . DS . "PHPExcel" . DS . "Classes" . DS . "PHPExcel"), "IOFactory.php");
+					$objReader = PHPExcel_IOFactory::createReader('Excel5');
+					$objPHPExcel = $objReader->load($this->data['Hora']['planilla']['tmp_name']);
+					$mapeo[] = array("Horas"	=> array("Normal"			=> "E"));
+					$mapeo[] = array("Horas"	=> array("Extra 50%"		=> "F"));
+					$mapeo[] = array("Horas"	=> array("Extra 100%"		=> "G"));
+					$mapeo[] = array("Horas"	=> array("Ajuste Normal"	=> "H"));
+					$mapeo[] = array("Horas"	=> array("Ajuste Extra 50%"	=> "I"));
+					$mapeo[] = array("Horas"	=> array("Ajuste Extra 100%"=> "J"));
+					$mapeo[] = array("Ausencias"=> array("Motivo"			=> "K"));
+					$mapeo[] = array("Ausencias"=> array("Dias"				=> "L"));
+					$mapeo[] = array("Vales"	=> array("Importe"			=> "M"));
+					for($i=10; $i<=$objPHPExcel->getActiveSheet()->getHighestRow(); $i++) {
+						foreach($mapeo as $v) {
+							foreach($v as $k=>$v1) {
+								$data[$k][$objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue()][key($v1)] = $objPHPExcel->getActiveSheet()->getCell($v1[key($v1)] . $i)->getValue();
+							}
+						}
+					}
+				
 					$data = new Spreadsheet_Excel_Reader();
 					$data->setOutputEncoding("CP1251");
 					$data->read($this->data['Hora']['planilla']['tmp_name']);
@@ -198,13 +203,6 @@ class HorasController extends AppController {
 		$this->set('totales', $resultados['totales']);
 	}
 
-
-/**
- * Realiza los seteos especificos (valores por defecto) al agregar y/o editar.
-	function __seteos() {
-		$this->set("estados", array("Liquidada"=>"Liquidada", "Pendiente"=>"Pendiente"));
-	}
- */
 }
 
 ?>
