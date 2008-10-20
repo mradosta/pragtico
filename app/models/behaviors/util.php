@@ -64,11 +64,6 @@ class UtilBehavior extends ModelBehavior {
         			$field = $tmp[1];
         			$modelName = $tmp[0];
         		}
-        		//else {
-        		//	$modelName = $model->name;
-        		//	$field = $direccion;
-        		//	$direccion = "asc";
-        		//}
         		if($schema[$field]['type'] === "string" || $schema[$field]['type'] === "text" || substr($schema[$field]['type'], 0, 5) === "enum(") {
         			$direccion = "COLLATE utf8_spanish2_ci " . $direccion;
         		}
@@ -124,7 +119,9 @@ class UtilBehavior extends ModelBehavior {
  *			$return['mes'] = "12";
  *			$return['periodo'] = "M";
  *			$return['primerDia'] = "1";
- *			$return['ultimoDia'] = "15";
+ *			$return['ultimoDia'] = "31";
+ *			$return['fechaInicio'] = "2007-12-01";
+ *			$return['fechaFin'] = "2007-12-31";
  * false, en cualquier otro caso.		
  * @access public
  */
@@ -152,19 +149,22 @@ class UtilBehavior extends ModelBehavior {
 			$return['periodo'] = $matches[3];
 			if($matches[3] === "M" || $matches[3] === "1Q") {
 				$return['primerDia'] = "1";
+				$return['fechaInicio'] = $return['ano'] . "-" . $return['mes'] . "-01";
  			}
  			else {
 				$return['primerDia'] = "16";
+				$return['fechaInicio'] = $return['ano'] . "-" . $return['mes'] . "-16";
  			}
 			if($matches[3] === "M" || $matches[3] === "2Q") {
 				App::import("Helper", array("Time", "Formato"));
 				$formato = new FormatoHelper();
 				$formato->Time = new TimeHelper();
-				$valor = $return['ano'] . "-" . $return['mes'] . "-01";
-				$return['ultimoDia'] = $formato->format($valor, array("type"=>"ultimoDiaDelMes"));
+				$return['ultimoDia'] = $formato->format($return['fechaInicio'], array("type"=>"ultimoDiaDelMes"));
+				$return['fechaFin'] = $return['ano'] . "-" . $return['mes'] . "-" . $return['ultimoDia'];
  			}
  			else {
 				$return['ultimoDia'] = "15";
+				$return['fechaFin'] = $return['ano'] . "-" . $return['mes'] . "-15";
  			}
 			return $return;
 		}
