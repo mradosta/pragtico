@@ -35,6 +35,10 @@ class UtilBehavior extends ModelBehavior {
     function beforeFind (&$model, $query) {
         if(!empty($query['order'][0])) {
         	$schema = $model->schema();
+        	if(!is_array($query['order'][0])) {
+        		$query['order'][0] = array($query['order'][0]);
+        	}
+        	
         	foreach($query['order'][0] as $field=>$direccion) {
         		if(strpos($field, '.') !== false) {
         			$field = array_pop(explode(".", $field));
