@@ -122,12 +122,23 @@ class UtilBehavior extends ModelBehavior {
  * @return mixed Array con los datos ya separados de la forma:
  *			$return['ano'] = "2007";
  *			$return['mes'] = "12";
- *			$return['periodo'] = "M;
+ *			$return['periodo'] = "M";
+ *			$return['primerDia'] = "1";
+ *			$return['ultimoDia'] = "15";
  * false, en cualquier otro caso.		
  * @access public
  */
+	function getPeriodo(&$model, $periodo) {
+		return $this->traerPeriodo(&$model, $periodo);
+	}
+
+/**
+ * TODO:
+ * deprecar este metodo.
+ */	 
 	function traerPeriodo(&$model, $periodo) {
-		if(!empty($periodo) && preg_match(VALID_PERIODO, strtoupper($periodo), $matches)) {
+		$periodo = strtoupper($periodo);
+		if(!empty($periodo) && preg_match(VALID_PERIODO, $periodo, $matches)) {
 
 			$return['periodoCompleto'] = $matches[0];
 			if($matches[3] == "M") {
@@ -139,6 +150,22 @@ class UtilBehavior extends ModelBehavior {
 			$return['ano'] = $matches[1];
 			$return['mes'] = $matches[2];
 			$return['periodo'] = $matches[3];
+			if($matches[3] === "M" || $matches[3] === "1Q") {
+				$return['primerDia'] = "1";
+ 			}
+ 			else {
+				$return['primerDia'] = "16";
+ 			}
+			if($matches[3] === "M" || $matches[3] === "2Q") {
+				App::import("Helper", array("Time", "Formato"));
+				$formato = new FormatoHelper();
+				$formato->Time = new TimeHelper();
+				$valor = $return['ano'] . "-" . $return['mes'] . "-01";
+				$return['ultimoDia'] = $formato->format($valor, array("type"=>"ultimoDiaDelMes"));
+ 			}
+ 			else {
+				$return['ultimoDia'] = "15";
+ 			}
 			return $return;
 		}
 		return false;
