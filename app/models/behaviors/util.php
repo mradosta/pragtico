@@ -38,7 +38,7 @@ class UtilBehavior extends ModelBehavior {
         	if(!is_array($query['order'][0])) {
         		$query['order'][0] = array($query['order'][0]);
         	}
-        	elseif(isset($query['order'][0][0])) {
+        	elseif(isset($query['order'][0][0]) && strpos(",", $query['order'][0][0])) {
         		foreach(explode(",", $query['order'][0][0]) as $v) {
         			if(stripos($v, "asc")) {
         				$query['order'][0][trim(str_replace("asc", "", $v))] = "asc";
@@ -55,7 +55,6 @@ class UtilBehavior extends ModelBehavior {
         	
         	foreach($query['order'][0] as $field=>$direccion) {
         		if(strpos($field, '.')) {
-        			
         			$tmp = explode(".", $field);
         			$field = $tmp[1];
         			$modelName = $tmp[0];
