@@ -156,10 +156,7 @@ class UtilBehavior extends ModelBehavior {
 				$return['fechaInicio'] = $return['ano'] . "-" . $return['mes'] . "-16";
  			}
 			if($matches[3] === "M" || $matches[3] === "2Q") {
-				App::import("Helper", array("Time", "Formato"));
-				$formato = new FormatoHelper();
-				$formato->Time = new TimeHelper();
-				$return['ultimoDia'] = $formato->format($return['fechaInicio'], array("type"=>"ultimoDiaDelMes"));
+				$return['ultimoDia'] = $this->format($return['fechaInicio'], array("type"=>"ultimoDiaDelMes"));
 				$return['fechaFin'] = $return['ano'] . "-" . $return['mes'] . "-" . $return['ultimoDia'];
  			}
  			else {
@@ -171,6 +168,22 @@ class UtilBehavior extends ModelBehavior {
 		return false;
 	}
 
+
+/**
+ * Formatea un valor de acuerdo a un formato.
+ *
+ * @param object $model Model que usa este behavior.
+ * @param string $valor Un valor a formatear.
+ * @param array $options Array que contiene el tipo de formato y/o sus opciones.
+ * @return string Un string con el valor formateado de acuerdo a lo especificado.
+ */
+	function format(&$model, $valor, $options = array()) {
+		App::import("Helper", array("Number", "Time", "Formato"));
+		$formato = new FormatoHelper();
+		$formato->Time = new TimeHelper();
+		$formato->Number = new NumberHelper();
+		return $formato->format($valor, $options);
+	}
 
 /**
  * A partir de un array de Condiciones propio (con campos lov de selecciona multiple, por ejemplo), genero un array
