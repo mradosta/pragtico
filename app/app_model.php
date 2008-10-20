@@ -85,31 +85,35 @@ class AppModel extends Model {
 
 	
 /**
- * Permite eliminar registros de un Model en base a condiciones.
+ * Permite eliminar multiples registros de un Model en base a condiciones.
  *
- * @param mixed $conditions Condiciones que se deben cumplir.
- * @param boolean $cascade Si es tru, borra los registros que dependen de estos.
+ * @param mixed $conditions Condiciones que se deben cumplir para eliminar los registros.
+ * @param boolean $cascade Si es true, elimina los registros que dependen de estos.
  * @param boolean $callbacks Ejecuta callbacks (No se usa de momento).
+ * @param boolean $manejarTransaccion Indica si deben manejarse transacciones o no.
  * @return boolean True si todo salio bien, False en otro caso.
  * @access public
  */
-	function deleteAll($conditions, $cascade = true, $callbacks = false) {
-		/*
-		$seguridad = $this->generarCondicionSeguridad("delete");
-		if(!empty($seguridad)) {
-			$conditions = array("AND"=>array($seguridad, $conditions));
-		}
-		return parent::deleteAll($conditions, $cascade, $callbacks);
+	function deleteAll($conditions, $cascade = true, $callbacks = false, $manejarTransaccion = true) {
+
+		/**
+		* Evito que por error borre toda la tabla.
 		*/
-		$ids = Set::extract(
-			$this->find('all', array_merge(array('fields' => "{$this->alias}.{$this->primaryKey}", 'recursive' => -1), compact('conditions'))),
-			"{n}.{$this->alias}.{$this->primaryKey}"
-		);
+		if(empty($conditions)) {
+			return false;
+		}
+	
+		$ids = Set::extract("/" . $this->alias . "/" . $this->primaryKey,
+			$this->find("all", array(	'fields'	=>$this->alias . "." . $this->primaryKey,
+										'recursive' => -1,
+										'conditions'=> $conditions)));
 		
 		if(!empty($ids)) {
 			$commit = true;
 			$c = 0;
-			$this->begin();
+			if($manejarTransaccion === true) {
+				$this->begin();
+			}
 			foreach($ids as $id) {
 				if($this->del($id, $cascade, false)) {
 					$c++;
@@ -120,16 +124,21 @@ class AppModel extends Model {
 				}
 			}
 			if(($c == count($ids)) && $commit === true) {
-				$this->commit();
+				if($manejarTransaccion === true) {
+					$this->commit();
+				}
 				return true;
 			}
 			else {
-				$this->rollback();
+				if($manejarTransaccion === true) {
+					$this->rollback();
+				}
 				return false;
 			}
 		}
 		return false;
 	}
+	
 	
 /**
  * Sobreescribo la function del(),
