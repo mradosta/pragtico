@@ -16,6 +16,38 @@
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
  
+$condiciones['Permisos.usuario_id'] = array("options"=>"listable", "empty"=>true, "model"=>"Usuario", "displayField"=>array("Usuario.nombre"), "order"=>array("Usuario.nombre"), "empty"=>true);
+$condiciones['Permisos.model_id'] = array("label"=>"Modelo", "options"=>$models);
+$condiciones['Permisos.grupo_id'] = array("type"=>"checkboxMultiple", "options"=>"listable", "empty"=>true, "model"=>"Grupo", "displayField"=>array("Grupo.nombre"), "order"=>array("Grupo.nombre"), "empty"=>true);
+$condiciones['Permisos.rol_id'] = array("type"=>"checkboxMultiple", "options"=>"listable", "empty"=>true, "model"=>"Rol", "displayField"=>array("Rol.nombre"), "order"=>array("Rol.nombre"), "empty"=>true);
+
+$fieldsets[] = array("campos"=>$condiciones);
+$condiciones = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"Cambiar permisos", "imagen"=>"permisos.gif")));
+
+if(empty($accion)) {
+	$bloque_confirmacion = "";
+	$accion = "falta_confirmacion";
+	$labelBoton = "Asignar";
+}
+elseif($accion === "falta_confirmacion") {
+	$accion = "confirmado";
+	$bloque_confirmacion[] = "<span class='color_rojo'><h1>Atencion, los cambios se aplicaran sobre TODOS los registros del model " . $model . "</h1></span>";
+	$bloque_confirmacion[] = "<span class='color_rojo'><h1>Esta seguro de querer continuar?</h1></span>";
+	$labelBoton = "Confirmar";
+}
+
+
+/**
+ * Creo un bloque con caja redondeada entre las condiciones, los botones y las opciones lov (si las hubiese).
+ */
+$accionesExtra['opciones'] = array("acciones"=>array("nuevo", $formulario->bloque($formulario->link("Importar Planilla", "importarPlanillas", array("class"=>"link_boton", "title"=>"Importa las planillas de ingreso masivo de horas")))));
+$botonesExtra['opciones']['botones'][] = $formulario->button("Cancelar", array("title"=>"Cancelar la asignacion", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='cancelar';form.action='" . router::url("/") . $this->params['controller'] . "/asignar" . "';form.submit();"));
+$botonesExtra['opciones']['botones'][] = $formulario->submit($labelBoton, array("title"=>"Realizar la asignacion", "onclick"=>"document.getElementById('accion').value='" . $accion . "'"));
+$botones = $this->renderElement("index/buscadores", array("botonesExtra"=>$botonesExtra, "opcionesForm"=>array("action" => "asignar")));
+
+/**
+* Creo la tabla.
+*/
 $fila = null;
 $valor = $formulario->input("yy.xx", array("id"=>"dueno", "type"=>"checkbox", "class"=>"checkbox", "label"=>false, "div"=>false));
 $fila[] = array("valor"=>$valor . " Dueño", "class"=>"imitar_th_centro");
@@ -66,86 +98,31 @@ $opcionesTabla =  array("tabla"=>
 									"omitirMensajeVacio"=>true));
 
 
-$tabla = $formulario->tabla(am(array("cuerpo"=>$cuerpo, "encabezado"=>$encabezado), $opcionesTabla));
+$tabla = $formulario->tag("div", $formulario->tabla(am(array("cuerpo"=>$cuerpo, "encabezado"=>$encabezado), $opcionesTabla)), array("class"=>"tabla", "style"=>"margin-left:13px;"));
 
-/**
-* Pongo todo dentro de un div (index) y muestro el resultado.
-*/
-$permisos[] = $formulario->bloque("&nbsp;", array("div"=>array("class"=>"clear")));
-$permisos[] = $formulario->bloque($tabla);
+$bloques[] = $formulario->tag("div", am($condiciones, $tabla, $bloque_confirmacion, $botones), array("class"=>"unica"));
+
 
 
 /**
-* Especifico los campos para ingresar las condiciones.
-*/
-$condiciones['Permisos.usuario_id'] = array("options"=>$usuarios, "empty"=>true);
-$condiciones['Permisos.grupo_id'] = array("options"=>$grupos, "empty"=>true);
-$condiciones['Permisos.model_id'] = array("label"=>"Modelo", "options"=>$models);
-
-
-$fieldsets[] = array("campos"=>$condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Asignar Permisos / Cambiar Dueño y/o Grupo","imagen"=>"buscar.gif")));
-$fieldset .= $formulario->bloque($permisos);
-
-/**
-* Creo los inputs para ingresar las condiciones.
-*/
-$bloque_condiciones = $formulario->bloque($fieldset, array("div"=>array("id"=>"condiciones")));
-
-
-/**
-* Creo un bloque con caja redondeada entre las condiciones, los botones y las opciones lov (si las hubiese).
-*/
-if(empty($accion)) {
-	$accion = "falta_confirmacion";
-	$advertencia = "";
-	$labelBoton = "Asignar";
-}
-elseif($accion == "falta_confirmacion") {
-	$accion = "confirmado";
-	if(!empty($usuario))
-		$mensaje[] = "El nuevo dueño de los registros sera el usuario " . $usuario;
-	if(!empty($grupo))
-		$mensaje[] = "El nuevo grupo primario de los registros sera " . $grupo;
-	$advertencia = implode("<br />", $mensaje);
-	if($model == "Todos") {
-		$texto = "Todos los modelos";
-	}
-	else {
-		$texto = $model;
-	}
-	$bloque_botones[] = "<span class='color_rojo'><h1>Atencion, los cambios se aplicaran sobre TODOS los registros de " . $texto . "</h1>" . $advertencia . "</span>";
-	$labelBoton = "Confirmar";
-}
-$bloque_botones[] = $formulario->input("Formulario.accion", array("type"=>"hidden", "id"=>"accion"));
-$bloque_botones[] = $formulario->submit($labelBoton, array("title"=>"Realiza la Asignacion", "onclick"=>"document.getElementById('accion').value='" . $accion . "'"));
-$bloque_botones[] = $formulario->bloque("", array("div"=>array("class"=>"clear")));
-$botones = $formulario->bloque($bloque_botones, array("div"=>array("id"=>"botones", "class"=>"botones")));
-
-$bloques[] = $formulario->bloque(am($bloque_condiciones, $botones), array("caja_redondeada"=>true));
-
-
-/**
-* Creo el formulario y pongo todo dentro.
-*/
+ * Creo el formulario y pongo todo dentro.
+ */
 $form = $formulario->form($bloques, array("action"=>"asignar"));
 
 
-/**
-* Pongo todo dentro de un div (index) y muestro el resultado.
-*/
-echo $formulario->bloque($form, array("div"=>array("id"=>"index", "class"=>"index")));
+echo $formulario->tag("div", $form, array("class"=>"index"));
 
-echo $formulario->codeBlock('
+
+$formulario->addScript('
 	var valor;
 	
 	jQuery("#todos").click(
 		function() {
 			if(jQuery(this).attr("checked")) {
-				jQuery("input[@type=\'checkbox\']").checkbox("seleccionar");
+				jQuery(".tabla input[@type=\'checkbox\']").checkbox("seleccionar");
 			}
 			else {
-				jQuery("input[@type=\'checkbox\']").checkbox("deseleccionar");
+				jQuery(".tabla input[@type=\'checkbox\']").checkbox("deseleccionar");
 			}
 		}
 	);
@@ -233,7 +210,6 @@ echo $formulario->codeBlock('
 			jQuery("#PermisosOd").attr("checked", valor);
 		}
 	);
-	');
-
+');
 
 ?>
