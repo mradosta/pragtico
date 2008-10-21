@@ -98,15 +98,31 @@ if(!empty($registros)) {
 	$documento->doc->getActiveSheet()->getColumnDimension('J')->setWidth(6);
 	$documento->setCellValue("J" . ($fila+1), "100%", array("style"=>$estiloTituloColumna));
 	
-	$documento->setCellValue("K" . $fila . ":L" . $fila, "Ausencias", array("style"=>$estiloTituloColumna));
-	$documento->doc->getActiveSheet()->getColumnDimension('K')->setWidth(15);
-	$documento->setCellValue("K" . ($fila+1), "Motivo", array("style"=>$estiloTituloColumna));
+	$documento->setCellValue("K" . $fila . ":M" . $fila, "Horas Nocturna", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('K')->setWidth(6);
+	$documento->setCellValue("K" . ($fila+1), "Normal", array("style"=>$estiloTituloColumna));
 	$documento->doc->getActiveSheet()->getColumnDimension('L')->setWidth(6);
-	$documento->setCellValue("L" . ($fila+1), "Dias", array("style"=>$estiloTituloColumna));
+	$documento->setCellValue("L" . ($fila+1), "50%", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('M')->setWidth(6);
+	$documento->setCellValue("M" . ($fila+1), "100%", array("style"=>$estiloTituloColumna));
+	
+	$documento->setCellValue("N" . $fila . ":P" . $fila, "Horas Ajuste Nocturna", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('N')->setWidth(6);
+	$documento->setCellValue("N" . ($fila+1), "Normal", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('O')->setWidth(6);
+	$documento->setCellValue("O" . ($fila+1), "50%", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('P')->setWidth(6);
+	$documento->setCellValue("P" . ($fila+1), "100%", array("style"=>$estiloTituloColumna));
+	
+	$documento->setCellValue("Q" . $fila . ":R" . $fila, "Ausencias", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('Q')->setWidth(15);
+	$documento->setCellValue("Q" . ($fila+1), "Motivo", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('R')->setWidth(6);
+	$documento->setCellValue("R" . ($fila+1), "Dias", array("style"=>$estiloTituloColumna));
 
-	$documento->setCellValue("M" . $fila . ":M" . $fila, "Vales", array("style"=>$estiloTituloColumna));
-	$documento->setCellValue("M" . ($fila+1) . ":M" . ($fila+1), "$", array("style"=>$estiloTituloColumna));
-	$documento->doc->getActiveSheet()->getColumnDimension('M')->setWidth(9);
+	$documento->setCellValue("S" . $fila . ":S" . $fila, "Vales", array("style"=>$estiloTituloColumna));
+	$documento->setCellValue("S" . ($fila+1) . ":S" . ($fila+1), "$", array("style"=>$estiloTituloColumna));
+	$documento->doc->getActiveSheet()->getColumnDimension('S')->setWidth(9);
 
 	/**
 	* Protejo la hoja para que no me la modifiquen, excepto lo que realmente necesito que modifique que lo desbloqueo luego.
@@ -119,7 +135,7 @@ if(!empty($registros)) {
 		$fila++;
 		$documento->setCellValue("A" . $fila, $registro['Relacion']['id']);
 		$documento->setCellValue("B" . $fila, $registro['Empleador']['nombre']);
-		$documento->setCellValue("C" . $fila, $registro['Trabajador']['nombre']);
+		$documento->setCellValue("C" . $fila, $registro['Relacion']['legajo'] . " - " . $registro['Trabajador']['apellido'] . " " . $registro['Trabajador']['nombre']);
 		$documento->setCellValue("D" . $fila, $registro['ConveniosCategoria']['nombre']);
 
 
@@ -135,9 +151,9 @@ if(!empty($registros)) {
 		/**
 		* El combo con los posibles motivos.
 		*/
-		$documento->setDataValidation("K" . $fila, "lista", array("valores"=>$motivos));
+		$documento->setDataValidation("Q" . $fila, "lista", array("valores"=>$motivos));
 		
-		$objValidation = $documento->doc->getActiveSheet()->getCell("K" . $fila)->getDataValidation();
+		$objValidation = $documento->doc->getActiveSheet()->getCell("Q" . $fila)->getDataValidation();
 		$objValidation->setType( PHPExcel_Cell_DataValidation::TYPE_LIST );
 		$objValidation->setErrorStyle( PHPExcel_Cell_DataValidation::STYLE_INFORMATION );
 		$objValidation->setAllowBlank(false);
@@ -146,7 +162,7 @@ if(!empty($registros)) {
 		$objValidation->setShowDropDown(true);
 		$objValidation->setError("Debe seleccionar un valor de la lista");
 		$objValidation->setFormula1('"' . implode(",", $motivos) . '"');
-		$documento->doc->getActiveSheet()->getCell("K" . $fila)->setDataValidation($objValidation);
+		$documento->doc->getActiveSheet()->getCell("Q" . $fila)->setDataValidation($objValidation);
 	}
 	$documento->save($formatoDocumento);
 }

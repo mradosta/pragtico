@@ -71,15 +71,21 @@ class NovedadesController extends AppController {
 						$objReader = PHPExcel_IOFactory::createReader('Excel2007');
 					}
 					$objPHPExcel = $objReader->load($this->data['Novedad']['planilla']['tmp_name']);
-					$mapeo[] = array("Horas"		=> array("Normal"			=> "E"));
-					$mapeo[] = array("Horas"		=> array("Extra 50%"		=> "F"));
-					$mapeo[] = array("Horas"		=> array("Extra 100%"		=> "G"));
-					$mapeo[] = array("Horas"		=> array("Ajuste Normal"	=> "H"));
-					$mapeo[] = array("Horas"		=> array("Ajuste Extra 50%"	=> "I"));
-					$mapeo[] = array("Horas"		=> array("Ajuste Extra 100%"=> "J"));
-					$mapeo[] = array("Ausencias"	=> array("Motivo"			=> "K"));
-					$mapeo[] = array("Ausencias"	=> array("Dias"				=> "L"));
-					$mapeo[] = array("Vales"		=> array("Importe"			=> "M"));
+					$mapeo[] = array("Horas"		=> array("Normal"						=> "E"));
+					$mapeo[] = array("Horas"		=> array("Extra 50%"					=> "F"));
+					$mapeo[] = array("Horas"		=> array("Extra 100%"					=> "G"));
+					$mapeo[] = array("Horas"		=> array("Ajuste Normal"				=> "H"));
+					$mapeo[] = array("Horas"		=> array("Ajuste Extra 50%"				=> "I"));
+					$mapeo[] = array("Horas"		=> array("Ajuste Extra 100%"			=> "J"));
+					$mapeo[] = array("Horas"		=> array("Normal Nocturna"				=> "K"));
+					$mapeo[] = array("Horas"		=> array("Extra Nocturna 50%"			=> "L"));
+					$mapeo[] = array("Horas"		=> array("Extra Nocturna 100%"			=> "M"));
+					$mapeo[] = array("Horas"		=> array("Ajuste Nocturna Normal"		=> "N"));
+					$mapeo[] = array("Horas"		=> array("Ajuste Extra Nocturna 50%"	=> "O"));
+					$mapeo[] = array("Horas"		=> array("Ajuste Extra Nocturna 100%"	=> "P"));
+					$mapeo[] = array("Ausencias"	=> array("Motivo"						=> "Q"));
+					$mapeo[] = array("Ausencias"	=> array("Dias"							=> "R"));
+					$mapeo[] = array("Vales"		=> array("Importe"						=> "S"));
 					for($i=10; $i<=$objPHPExcel->getActiveSheet()->getHighestRow(); $i++) {
 						foreach($mapeo as $v) {
 							foreach($v as $k=>$v1) {

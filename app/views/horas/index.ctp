@@ -19,6 +19,7 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
+$condiciones['Condicion.Hora-tipo'] = array("type"=>"checkboxMultiple");
 $condiciones['Condicion.Relacion-trabajador_id'] = array(	"lov"=>array("controller"		=>	"trabajadores",
 																		"separadorRetorno"	=>	" ",
 																		"camposRetorno"		=>array("Trabajador.apellido",
@@ -34,7 +35,6 @@ $condiciones['Condicion.Relacion-id'] = array(	"label"	=> "Relacion",
 
 $condiciones['Condicion.Hora-periodo'] = array("type"=>"periodo");
 $condiciones['Condicion.Hora-estado'] = array("options"=>$estados);
-$condiciones['Condicion.Hora-tipo'] = array();
 
 
 $fieldsets[] = array("campos"=>$condiciones);
