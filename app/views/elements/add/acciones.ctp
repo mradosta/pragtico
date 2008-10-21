@@ -35,12 +35,12 @@ else {
 	if($this->params['action'] === "add") {
 		$acciones[] = $formulario->tag("div", $formulario->input("Form.volverAInsertar", array("div"=>false, "label"=>"Insertar un nuevo registro despues de grabar", "type"=>"checkbox", "checked"=>"false")), array("class"=>"volver_a_insertar"));
 	}
+	$acciones[] = $cancelar;
 	if($this->params['action'] === "edit" && count($this->data) == 1) {
 		$acciones[] = $eliminar;
 		$acciones[] = $duplicar;
 	}
 	$acciones[] = $accion;
-	$acciones[] = $cancelar;
 	$acciones[] = $grabar;
 	if(!empty($accionesExtra)) {
 		$acciones = array_merge($acciones, $accionesExtra);
