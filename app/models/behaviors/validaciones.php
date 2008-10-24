@@ -396,7 +396,7 @@ class ValidacionesBehavior extends ModelBehavior {
 	* Si hay un campo que debe ser null y viene vacio, lo hago null.
 	*/
 	function __setDBFieldValue($fieldDescriptor, $value) {
-		if(!$fieldDescriptor['null']) {
+		if(!empty($fieldDescriptor['null']) && !$fieldDescriptor['null']) {
 			if(!empty($fieldDescriptor['default']) && empty($value)) {
 				return $fieldDescriptor['default'];
 			}

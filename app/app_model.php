@@ -312,13 +312,13 @@ class AppModel extends Model {
 								$this->$key->deleteAll(array($key . "." . $this->$key->primaryKey=>$idsDetailEliminados));
 							}
 						}
-						
+						$hasMany = $this->hasMany;
 						foreach($data[$key] as $k=>$v) {
 							if($returnVal === true) {
 								/**
 								* Asigno el valor del id del master, al arreglo de la foranea (detail).
 								*/
-								$v[$this->hasMany[$key]['foreignKey']] = $id;
+								$v[$hasMany[$key]['foreignKey']] = $id;
 
 								/**
 								* Debo decidir si es un update o un insert.
