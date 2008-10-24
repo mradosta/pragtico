@@ -261,15 +261,21 @@ class PermisosBehavior extends ModelBehavior {
 		/**
 		* Si se trata de un usuario perteneciente al rol administradores, que no tiene grupo (root), no verifico permisos.
 		*/
-		if(empty($grupos) && (int)$usuario['Usuario']['roles'] & 1) {
+		if(empty($usuario['Grupo']) && (int)$usuario['Usuario']['roles'] & 1) {
 			return array();
 		}
 		else {
 			$seguridad['OR'][] =
-				array(
-					$modelName . ".user_id" => $usuarioId,
-					"(" . $modelName . ".permissions) & " . $this->__permisos['owner_' . $acceso] => $this->__permisos['owner_' . $acceso]
-				);
+				array("AND" => array(
+					array(
+						$modelName . ".user_id" => $usuarioId,
+						"(" . $modelName . ".permissions) & " . $this->__permisos['owner_' . $acceso] => $this->__permisos['owner_' . $acceso]
+					),
+					array(
+						"(" . $modelName . ".group_id) & " . $grupos . " >" => 0,
+						"(" . $modelName . ".permissions) & " . $this->__permisos['group_' . $acceso] => $this->__permisos['group_' . $acceso]
+					)
+				));
 			
 			$seguridad['OR'][] =
 				array("AND" => array(
