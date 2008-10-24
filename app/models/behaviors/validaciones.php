@@ -202,6 +202,7 @@ class ValidacionesBehavior extends ModelBehavior {
 	
 /**
  * Valida que un numero de cuit o cuil sea valido.
+ * Hago un port desde la funcion js de afip.
  *
  * @param object $model Model que esta siendo validado.
  * @param array $rule La regla que se debe validar.
@@ -220,66 +221,45 @@ class ValidacionesBehavior extends ModelBehavior {
 			return true;
 		}
 
-		$coeficiente[0]=5;
-		$coeficiente[1]=4;
-		$coeficiente[2]=3;
-		$coeficiente[3]=2;
-		$coeficiente[4]=7;
-		$coeficiente[5]=6;
-		$coeficiente[6]=5;
-		$coeficiente[7]=4;
-		$coeficiente[8]=3;
-		$coeficiente[9]=2;
-
-		$resultado=1;
-		$value_rearmado = "";
-
 		/**
 		* Separo cualquier caracter que no tenga que ver con numeros.
 		*/
-		$value_rearmado = preg_replace("/[^0-9]/","", $value);
-		/*
-		for ($i=0; $i < strlen($value); $i= $i +1) {
-			if ((Ord(substr($value, $i, 1)) >= 48) && (Ord(substr($value, $i, 1)) <= 57)) {
-				$value_rearmado .= substr($value, $i, 1);
-			}
-		}
-		*/
+		$value = preg_replace("/[^0-9]/","", $value);
 		
 		/**
-		* Si to estan todos los digitos.
+		* Si no estan todos los digitos o no empieza con algun digito valido.
 		*/
-		If (strlen($value_rearmado) <> 11) {  
+		If (strlen($value) <> 11 || !in_array(substr($value, 0, 2), array("20", "23", "24", "27", "30", "33", "34"))) {
 			return false;
 		}
 		else {
-			$sumador = 0;
-			/**
-			*  Tomo el digito verificador.
-			*/
-			$verificador = substr($value_rearmado, 10, 1);
-
-			for ($i=0; $i <=9; $i=$i+1) {
-				$sumador = $sumador + (substr($value_rearmado, $i, 1)) * $coeficiente[$i];//separo cada digito y lo multiplico por el coeficiente
+			$coeficiente[0]=5;
+			$coeficiente[1]=4;
+			$coeficiente[2]=3;
+			$coeficiente[3]=2;
+			$coeficiente[4]=7;
+			$coeficiente[5]=6;
+			$coeficiente[6]=5;
+			$coeficiente[7]=4;
+			$coeficiente[8]=3;
+			$coeficiente[9]=2;
+			$coeficiente[10]=1;
+			
+			$suma = 0;
+			foreach($coeficiente as $k=>$v) {
+				$suma += $value[$k] * $v;
 			}
 
-			$resultado = $sumador % 11;
-			/**
-			* Saco el digito verificador.
-			*/
-			$resultado = 11 - $resultado;  
-			$veri_nro = intval($verificador);
-
-			If ($veri_nro <> $resultado) {
-				return false;
-			}
-			else {
+			If (($suma/11) ==  floor($suma/11)) {
 				/**
 				* Lo formateo para que se guarde formateado.
 				*/
 				$field = $this->__getField($rule);
-				$model->data[$model->name][$field] = preg_replace("/(\d{2})(\d{8})(\d{1})/", "$1-$2-$3", $value_rearmado);
+				$model->data[$model->name][$field] = preg_replace("/(\d{2})(\d{8})(\d{1})/", "$1-$2-$3", $value);
 				return true;
+			}
+			else {
+				return false;
 			}
 		}
 	}
