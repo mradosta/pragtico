@@ -63,6 +63,10 @@ class UtilBehavior extends ModelBehavior {
         			$tmp = explode(".", $field);
         			$field = $tmp[1];
         			$modelName = $tmp[0];
+        			if(preg_match("/asc|desc$/", $field, $matches)) {
+        				$direccion = $matches[0];
+        				$field = trim(str_replace($direccion, "", $field));
+        			}
         		}
         		if($schema[$field]['type'] === "string" || $schema[$field]['type'] === "text" || substr($schema[$field]['type'], 0, 5) === "enum(") {
         			$direccion = "COLLATE utf8_spanish2_ci " . $direccion;
