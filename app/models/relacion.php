@@ -31,6 +31,9 @@ class Relacion extends AppModel {
 	var $modificadores = array("index"=>array("contain"=>array("Trabajador", "Empleador")),
 								"edit"=>array("contain"=>array("Trabajador",
 												"Empleador",
+												"Situacion",
+												"Modalidad",
+												"Actividad",
 												"Area",
 												"ConveniosCategoria.Convenio")),
 								"add" =>array(								
@@ -86,6 +89,12 @@ class Relacion extends AppModel {
 							'Situacion' =>
                         array('className'    => 'Situacion',
                               'foreignKey'   => 'situacion_id'),
+							'Actividad' =>
+                        array('className'    => 'Actividad',
+                              'foreignKey'   => 'actividad_id'),
+							'Modalidad' =>
+                        array('className'    => 'Modalidad',
+                              'foreignKey'   => 'modalidad_id'),
 							'ConveniosCategoria' =>
                         array('className'    => 'ConveniosCategoria',
                               'foreignKey'   => 'convenios_categoria_id'));

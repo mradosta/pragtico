@@ -28,6 +28,7 @@ class Trabajador extends AppModel {
 	*/
 	var $modificadores = array("edit"=>array("contain"=>array(	"Sucursal.Banco",
 																"Localidad",
+																"Condicion",
 																"ObrasSocial")),
 								"add" =>array(								
 										"valoresDefault"=>array("pais"=>"Argentina",
