@@ -504,14 +504,17 @@ class AppController extends Controller {
  * @param integer $id El identificador unico del grupo a setear como grupo por defecto.
  * @return void.
  * @access public
- *
- * TODO:
- * Debe verificar que el usuario tenga permisos para este grupo y no setee cualquiera.
  */
 	function setear_grupo_default($id) {
 		$usuario = $this->Session->read("__Usuario");
-		$usuario['Usuario']['preferencias']['grupo_default_id'] = $id;
-		$this->Session->write("__Usuario", $usuario);
+		if($usuario['Usuario']['grupos'] & (int)$id) {
+			$usuario['Usuario']['preferencias']['grupo_default_id'] = $id;
+			$this->Session->write("__Usuario", $usuario);
+			$this->Session->setFlash('El nuevo grupo por defecto se seteo correctamente.', 'ok');
+		}
+		else {
+			$this->Session->setFlash('Usted no tiene autorizacion para cambiar el grupo.', 'error');
+		}
 		$this->History->goBack();
 	}
 
