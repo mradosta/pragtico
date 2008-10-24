@@ -29,7 +29,8 @@ $campos['Usuario.nombre_completo'] = array();
 $campos['Usuario.email'] = array("label"=>"E-Mail");
 $campos['Usuario.estado'] = array();
 if($this->action === "add") {
-	$campos['Usuario.rol_id'] = array("options"=>"listable", "model"=>"Rol", "displayField"=>array("Rol.nombre"), "order"=>array("Rol.nombre"));
+	$campos['RolesUsuario.rol_id'] = array("type"=>"checkboxMultiple", "options"=>"listable", "model"=>"Rol", "displayField"=>array("Rol.nombre"), "order"=>array("Rol.nombre"));
+	$campos['GruposUsuario.grupo_id'] = array("type"=>"checkboxMultiple", "options"=>"listable", "model"=>"Grupo", "displayField"=>array("Grupo.nombre"), "order"=>array("Grupo.nombre"));
 }
 $fieldsets[] = array("campos"=>$campos);
 

@@ -214,7 +214,7 @@ class Usuario extends AppModel {
  * Una vez guardado, en caso de ser un nuevo registro, genero el registro en roles_usuarios, para que por lo menos,
  * el usuario tenga un rol.
  */
-	function afterSave($created) {
+	function xafterSave($created) {
 		if($created) {
 			$save['rol_id'] = $this->data['Usuario']['rol_id'];
 			$save['usuario_id'] = $this->getLastInsertID();

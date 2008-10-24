@@ -23,6 +23,39 @@
  */
 class UsuariosController extends AppController { 
 
+
+	function add() {
+		
+		if(!empty($this->data['GruposUsuario']['grupo_id'])) {
+			foreach($this->data['GruposUsuario']['grupo_id'] as $v) {
+				$grupos[] = array("grupo_id" => $v);
+			}
+			$this->data['GruposUsuario'] = $grupos;
+			$this->Usuario->bindModel(
+				array(
+					'hasMany' => array(
+						'GruposUsuario'=> array('className'    => 'GruposUsuario',
+												'foreignKey'   => 'usuario_id')
+			)));
+			$this->Usuario->GruposUsuario->unique = array("grupo_id", "usuario_id");
+		}
+		
+		if(!empty($this->data['RolesUsuario']['rol_id'])) {
+			foreach($this->data['RolesUsuario']['rol_id'] as $v) {
+				$roles[] = array("rol_id" => $v);
+			}
+			$this->data['RolesUsuario'] = $roles;
+			$this->Usuario->bindModel(
+				array(
+					'hasMany' => array(
+						'RolesUsuario' => array('className'    => 'RolesUsuario',
+												'foreignKey'   => 'usuario_id')
+			)));
+			$this->Usuario->RolesUsuario->unique = array("rol_id", "usuario_id");
+		}
+		
+		parent::add();
+	}
 /**
  * Muestra via desglose los roles asociados a este Usuario.
  *
