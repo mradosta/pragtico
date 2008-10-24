@@ -684,6 +684,7 @@ class AppController extends Controller {
 		/**
 		* Busco el usuario, grupo/s y rol/es a los que pertenece el registro.
 		*/
+		App::import("model", "Usuario");
 		$modelUsuario = new Usuario();
 		$modelUsuario->recursive = -1;
 		$usuario = $modelUsuario->find("first", array("checkSecurity"=>false, "conditions"=>array("Usuario.id"=>$registro[$this->modelClass]['user_id'])));
