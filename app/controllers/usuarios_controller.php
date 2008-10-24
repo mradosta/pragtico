@@ -21,12 +21,14 @@
  * @package	    pragtico
  * @subpackage	app.controllers
  */
-
 class UsuariosController extends AppController { 
 
 /**
- * roles.
  * Muestra via desglose los roles asociados a este Usuario.
+ *
+ * @param integer $id El identificador unico del registro.
+ * @return void
+ * @access public 
  */
 	function roles($id) {
 		$this->Usuario->contain(array("RolesUsuario", "Rol"));
@@ -35,8 +37,11 @@ class UsuariosController extends AppController {
 
 
 /**
- * grupos.
- * Muestra via desglose grupos secundarios a los que pertenece este usuario.
+ * Muestra via desglose grupos a los que pertenece este usuario.
+ *
+ * @param integer $id El identificador unico del registro.
+ * @return void
+ * @access public 
  */
 	function grupos($id) {
 		/**
@@ -56,6 +61,12 @@ class UsuariosController extends AppController {
 	}
 
 	
+/**
+ * Permite el ingreso de un usuario al sistema.
+ *
+ * @return void
+ * @access public 
+ */
     function login() {
         if(!empty($this->data)) {
 			if($usuario = $this->Usuario->verificarLogin(array("nombre"=>$this->data['Usuario']['loginNombre'], "clave"=>$this->data['Usuario']['loginClave']))) {
@@ -81,19 +92,23 @@ class UsuariosController extends AppController {
         }
     }
     
-     
-    function logout() { 
+/**
+ * Permite salir edl sistema a un usuario de forma segura eliminado datos de la session.
+ *
+ * @return void
+ * @access public 
+ */
+    function logout() {
         $this->Session->destroy("Usuario");
         $this->Session->setFlash("Ha salido exitosamente de la aplicacion.", "ok");
         $this->redirect("login", null, true);
     } 
 
 
-	function cambiar_grupo() {
+	function cambiar_grupo_deprecated() {
 		if(!empty($this->data)) {
 			if($this->data['Form']['accion'] == "grabar") {
 				$usuario = $this->Session->read("__Usuario");
-				//d($usuario);
 			}
 		}
 		$usuario = $this->Session->read("__Usuario");
@@ -111,11 +126,20 @@ class UsuariosController extends AppController {
 		}
 	}
 
+
 /**
  * Permite realizar el cambio de clave de un usuario.
+ *
+ * @param integer $id El identificador unico del usuario al que se le desea cambiar la clave.
+ * @return void.
+ * @access public 
  */
-    function cambiar_clave() {
-    	if(!empty($this->data)) {
+    function cambiar_clave($id = null) {
+    	if(!empty($id) && is_numeric($id)) {
+    		$this->set("usuario", $this->Usuario->findById($id));
+    		$this->set("noVerificar", false);
+    	}
+    	else if(!empty($this->data)) {
     		if(!empty($this->data['Form']['accion']) && $this->data['Form']['accion'] === "grabar" && $this->Usuario->validates()) {
     			unset($this->data['Form']);
     			if($this->Usuario->save($this->data)) {
@@ -124,7 +148,9 @@ class UsuariosController extends AppController {
     			}
     		}
     	}
-		$this->set("usuario", $this->Session->read('__Usuario'));
+    	else {
+			$this->set("usuario", $this->Session->read('__Usuario'));
+		}
 	}
 
 } 
