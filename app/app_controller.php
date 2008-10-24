@@ -25,15 +25,30 @@
  */
 class AppController extends Controller {
 
+	/**
+	 * Los helpers que usara toda la aplicacion.
+	 *
+	 * @var array
+	 * @access public
+	 */
 	var $helpers = array("Form", "Formato", "Formulario", "Paginador", "Asset");
+
+	/**
+	 * Los components que usara toda la aplicacion.
+	 *
+	 * @var array
+	 * @access public
+	 */
 	var $components = array('Paginador', 'RequestHandler', 'History', 'Util');
-	var $paginate = array('limit' => 15);
-	var $uses = array("Menu", "Usuario");
 
 
 /**
- * listable(),
+ * Me genera un array listo para cargar options de un control (combo, radio, checnbox).
+ * Cuando en las options de un control uso listable, genera el array que usara para mostrar los datos al usuario.
+ * Soporta todas las opciones del metodo find (conditions, fields, order, etc).
  *
+ * @return array Array con los datos de la forma $key => $value.
+ * @access public
  */
 	function listable() {
 		if($this->RequestHandler->isAjax()) {
@@ -94,9 +109,10 @@ class AppController extends Controller {
 		return $data;
 	}
 
+
 /**
-* Index.
-*/    
+ * Index.
+ */    
 	function index() {
 		$this->__filasPorPagina();
 
@@ -222,25 +238,31 @@ class AppController extends Controller {
 
 
 /**
-* __setearParams
-*
-* Carga datos para poder pintar los valores de la lov.
-*/
-function __setearParams($params) {
-	foreach($params as $k=>$v) {
-		list($model, $field) = explode(".", $k);
-		$this->data[$model][$field] = $v;
-		$modelAsociado = str_replace(" ", "", inflector::humanize(str_replace("_id", "", $field)));
-		$resultado = $this->{$model}->{$modelAsociado}->find(array($modelAsociado . "." . $this->{$model}->{$modelAsociado}->primaryKey => $v));
-		if(!empty($resultado)) {
-			$this->data[$modelAsociado] = $resultado;
+ * Carga los valores pasados por parametros al array data.
+ * (Carga datos para poder pintar los valores de la lov.)
+ *
+ * @param string $params Los parametros recibidos por el controlador.
+ * @return void.
+ * @access private
+ */
+	function __setearParams($params) {
+		foreach($params as $k=>$v) {
+			list($model, $field) = explode(".", $k);
+			$this->data[$model][$field] = $v;
+			$modelAsociado = str_replace(" ", "", inflector::humanize(str_replace("_id", "", $field)));
+			$resultado = $this->{$model}->{$modelAsociado}->find(array($modelAsociado . "." . $this->{$model}->{$modelAsociado}->primaryKey => $v));
+			if(!empty($resultado)) {
+				$this->data[$modelAsociado] = $resultado;
+			}
 		}
 	}
-}
 
 
 /**
-* Me setea la cantidad de filas por pagina que debo pintar.
+ * Me setea la cantidad de filas por pagina que debe pintar el metodo paginate.
+ *
+ * @return void.
+ * @access private
 */
 	function __filasPorPagina() {
 		/**
@@ -264,44 +286,34 @@ function __setearParams($params) {
 
 
 /**
- * edit.
+ * Edit.
  * Si viene el parametro id, se refiere a un unico registro,
  * si viene seteado seleccion multiple, recupera multiple registros.
+ *
+ * @param integer $id El identificador unico de registro.
+ * @return void.
+ * @access public
  */
-function edit($id=null) {
-	if(!empty($id)) {
-		$ids[] = $id;
-	}
-	else {
-		$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
-	}
-	if(!empty($ids)) {
-		
-		/**
-		* Puede haber un modificador al comportamiento estandar setaeado en el model.
-		*/
-		if(isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
-			$this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
-		}
-
-		//$this->{$this->modelClass}->contain("Trabajador", "Empleador", "Area", "ConveniosCategoria.Convenio");
-		
-		$this->data = $this->{$this->modelClass}->find("all", array("acceso"=>"write", "conditions"=>array($this->modelClass . ".id"=>$ids)));
-		//$this->data = $this->{$this->modelClass}->find("all", array("acceso"=>"write", "contain"=>array("Trabajador", "Empleador", "Area", "ConveniosCategoria.Convenio"), "conditions"=>array($this->modelClass . ".id"=>$ids)));
-		
-		//d($this->data);
-		/*
-		if(empty($this->data)) {
-			$this->Session->setFlash(null, "permisos");
-			$this->History->goBack();
+	function edit($id=null) {
+		if(!empty($id)) {
+			$ids[] = $id;
 		}
 		else {
+			$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
+		}
+		if(!empty($ids)) {
+			
+			/**
+			* Puede haber un modificador al comportamiento estandar setaeado en el model.
+			*/
+			if(isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
+				$this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
+			}
+			
+			$this->data = $this->{$this->modelClass}->find("all", array("acceso"=>"write", "conditions"=>array($this->modelClass . ".id"=>$ids)));
 			$this->render("add");
 		}
-		*/
-		$this->render("add");
 	}
-}
 
 
 /**
@@ -309,116 +321,120 @@ function edit($id=null) {
  * Se encarga ed guardar datos editados.
  * Maneja arrays de data, es decir, puede guardar data de edicion multiple como simple.
  * Valida y guarda master/detail.
+ *
+ * @return void.
+ * @access public
  */
-function saveMultiple() {
-	$this->action = "edit";
+	function saveMultiple() {
+		$this->action = "edit";
 
-	if(!empty($this->data['Form']['accion'])) {
-		if ($this->data['Form']['accion'] == "grabar") {
-			$invalidFields = array();
-			$c = 0;
+		if(!empty($this->data['Form']['accion'])) {
+			if ($this->data['Form']['accion'] == "grabar") {
+				$invalidFields = array();
+				$c = 0;
 
-			/**
-			* Saco lo que no tengo que grabar.
-			* En form, tenfo informacion que mande desde la vista.
-			* En Bar es informacion temporal que neesita el control relacionado.
-			*/
-			unset($this->data['Form']);
-			unset($this->data['Bar']);
-			/**
-			* Me aseguro de trabajar siempre con un array de data.
-			*/
-			if(empty($this->data[0])) {
-				$this->data = array($this->data);
-			}
-			foreach($this->data as $k=>$v) {
-				foreach($v as $model=>$datos) {
-					$detailErrors = false;
-					if($model == $this->modelClass && isset($datos['id'])) {
-						$ids[] = $datos['id'];
-					}
-					else {
-						foreach($datos as $kDetail=>$datosDetail) {
-							$this->{$this->modelClass}->{$model}->create($datosDetail);
-							if(!$this->{$this->modelClass}->{$model}->validates()) {
-								$invalidFields[$k][$model][$kDetail] = $this->{$this->modelClass}->{$model}->validationErrors;
-								$detailErrors = true;
+				/**
+				* Saco lo que no tengo que grabar.
+				* En form, tenfo informacion que mande desde la vista.
+				* En Bar es informacion temporal que neesita el control relacionado.
+				*/
+				unset($this->data['Form']);
+				unset($this->data['Bar']);
+				/**
+				* Me aseguro de trabajar siempre con un array de data.
+				*/
+				if(empty($this->data[0])) {
+					$this->data = array($this->data);
+				}
+				foreach($this->data as $k=>$v) {
+					foreach($v as $model=>$datos) {
+						$detailErrors = false;
+						if($model == $this->modelClass && isset($datos['id'])) {
+							$ids[] = $datos['id'];
+						}
+						else {
+							foreach($datos as $kDetail=>$datosDetail) {
+								$this->{$this->modelClass}->{$model}->create($datosDetail);
+								if(!$this->{$this->modelClass}->{$model}->validates()) {
+									$invalidFields[$k][$model][$kDetail] = $this->{$this->modelClass}->{$model}->validationErrors;
+									$detailErrors = true;
+								}
 							}
 						}
 					}
-				}
 
-				/**
-				* En el caso de un master/detail, solo grabo cuando valide todos los detail y el master.
-				*/
-				if($this->{$this->modelClass}->create($v) && $this->{$this->modelClass}->validates($v)) {
-					if($detailErrors === false) {
-						if($this->{$this->modelClass}->save($v)) {
-							$c++;
+					/**
+					* En el caso de un master/detail, solo grabo cuando valide todos los detail y el master.
+					*/
+					if($this->{$this->modelClass}->create($v) && $this->{$this->modelClass}->validates($v)) {
+						if($detailErrors === false) {
+							if($this->{$this->modelClass}->save($v)) {
+								$c++;
+							}
 						}
 					}
-				}
-				else {
-					$invalidFields[$k][$this->modelClass] = $this->{$this->modelClass}->validationErrors;
-				}
-			}
-			
-			$dbError = $this->{$this->modelClass}->getError();
-			
-			/**
-			* En base al/los errores que pueden haber determino que mensaje mostrar.
-			*/
-			if (empty($invalidFields) && empty($dbError)) {
-				if($c == 1) {
-					$mensaje = "El registro se guardo correctamente.";
-				}
-				else {
-					$mensaje = "Se guardaron correctamente ". $c . " de " . count($this->data) . " registros";
-				}
-				$this->Session->setFlash($mensaje, "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
-    			$this->History->goBack(2);
-			}
-			else {
-				/**
-				* Puede haber un modificador al comportamiento estandar setaeado en el model.
-				*/
-				if(isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
-					$this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
-				}
-
-				/**
-				* Debo recuperar nuevamente los datos porque los necesito en los controler relacionados (Lov, relacionado).
-				* Los que ya tengo, los dejo como estaban, porque se debe a que no validaron.
-				*/
-				$data = $this->data;
-				$this->data = $this->{$this->modelClass}->find("all", array("acceso"=>"write", "conditions"=>array($this->modelClass . ".id"=>$ids)));
-				foreach($data as $k=>$v) {
-					foreach($v as $model=>$datos) {
-						$this->data[$k][$model] = $datos;
+					else {
+						$invalidFields[$k][$this->modelClass] = $this->{$this->modelClass}->validationErrors;
 					}
 				}
-			
+				
+				$dbError = $this->{$this->modelClass}->getError();
+				
 				/**
-				* Pongo nuevamente los errores de validacion en el model de manera que
-				* puedan ser pintados en la vista.
+				* En base al/los errores que pueden haber determino que mensaje mostrar.
 				*/
-				$this->{$this->modelClass}->validationErrors = $invalidFields;
-				//$this->set('dbError', $dbError);
-				$this->Session->setFlash("El nuevo registro no pudo guardarse.", "error", array("errores"=>$dbError));				
-				//d($dbError);
+				if (empty($invalidFields) && empty($dbError)) {
+					if($c == 1) {
+						$mensaje = "El registro se guardo correctamente.";
+					}
+					else {
+						$mensaje = "Se guardaron correctamente ". $c . " de " . count($this->data) . " registros";
+					}
+					$this->Session->setFlash($mensaje, "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
+					$this->History->goBack(2);
+				}
+				else {
+					/**
+					* Puede haber un modificador al comportamiento estandar setaeado en el model.
+					*/
+					if(isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
+						$this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
+					}
+
+					/**
+					* Debo recuperar nuevamente los datos porque los necesito en los controler relacionados (Lov, relacionado).
+					* Los que ya tengo, los dejo como estaban, porque se debe a que no validaron.
+					*/
+					$data = $this->data;
+					$this->data = $this->{$this->modelClass}->find("all", array("acceso"=>"write", "conditions"=>array($this->modelClass . ".id"=>$ids)));
+					foreach($data as $k=>$v) {
+						foreach($v as $model=>$datos) {
+							$this->data[$k][$model] = $datos;
+						}
+					}
+				
+					/**
+					* Pongo nuevamente los errores de validacion en el model de manera que
+					* puedan ser pintados en la vista.
+					*/
+					$this->{$this->modelClass}->validationErrors = $invalidFields;
+					$this->Session->setFlash("El nuevo registro no pudo guardarse.", "error", array("errores"=>$dbError));
+				}
+				$this->render("add");
 			}
-			$this->render("add");
-		}
-		elseif($this->data['Form']['accion'] == "cancelar") {
-			//d($this->History->show());
-   			$this->History->goBack(1);
+			elseif($this->data['Form']['accion'] == "cancelar") {
+				$this->History->goBack(1);
+			}
 		}
 	}
-}
 
 
 /**
  * Delete.
+ *
+ * @param integer $id El identificador del registro a ser eliminado.
+ * @return void.
+ * @access public
  */
    	function delete($id = false) {
         if ($id && is_numeric($id)) {
@@ -442,8 +458,13 @@ function saveMultiple() {
 		$this->History->goBack(1);
 	}
 
+
 /**
  * DeleteMultiple.
+ * Debe venir seteado seleccion multiple, recupera multiple registros a ser eliminados.
+ *
+ * @return void.
+ * @access public 
  */
    function deleteMultiple() {
    
@@ -478,7 +499,14 @@ function saveMultiple() {
 
 
 /**
- * Setea el grupo por defecto y lo guarda en la sesion.
+ * Setea el grupo por defecto con el que trabajara un usuario y lo guarda en la sesion.
+ *
+ * @param integer $id El identificador unico del grupo a setear como grupo por defecto.
+ * @return void.
+ * @access public
+ *
+ * TODO:
+ * Debe verificar que el usuario tenga permisos para este grupo y no setee cualquiera.
  */
 	function setear_grupo_default($id) {
 		$usuario = $this->Session->read("__Usuario");
@@ -486,9 +514,14 @@ function saveMultiple() {
 		$this->Session->write("__Usuario", $usuario);
 		$this->History->goBack();
 	}
+
 	
 /**
  * Permite agregar o quitar un grupo a los grupos preseleccionados del usuario.
+ * Utilizara estos grupos para filtras las busquedas o al momento de crear un nuevo registro.
+ *
+ * @return void.
+ * @access public 
  */
 	function cambiar_grupo_activo() {
 		if(!empty($this->params['named']['accion']) && !empty($this->params['named']['grupo_id']) && is_numeric($this->params['named']['grupo_id'])) {
@@ -504,9 +537,13 @@ function saveMultiple() {
 		$this->History->goBack();
 	}
 
+
 /**
- * permisos.
  * Muestra via desglose los permisos de un registro y permite via ajax la modificacion de los mismos.
+ *
+ * @param integer $id El identificador unico del registro del que se mostraran los permisos.
+ * @return void.
+ * @access public 
  */
 	function permisos($id) {
 		$this->{$this->modelClass}->recursive = -1;
@@ -764,67 +801,17 @@ function saveMultiple() {
 	}
 
 
-	
-/**
-* Imprimir.
-*/    
-	function imprimir() {
-	}
-
-	
-/**
- * Seteos.
- * Metodo que debe ser sobreescrito en cada controlador si se desea hacer seteos especificos para la vista.
- * Realiza los seteos especificos (valores por defecto) al agregar y/o editar.
- */
-	function __seteosDeprecated() {
-	}
-	
-
-/**
- * afterAdd.
- * Metodo que debe ser sobreescrito en cada controlador si se desea hacer acciones posteriores al ingreso CORRECTO
- * de un nuevo registro.
-	function afterAdd() {
-	}
- */
-	
-	
-/**
- * Antes de pintar la vista, en caso de que sea un index, add o edit, llamo al metodo seteos
- */
-	function beforeRender() {
-		/**
-		* Ante un request AJAX debo quitar el debug, sino no funcionara (json, por ejemplo,
-		* porque le llegara el tiempo de render que cakephp agrega solo.
-		*/
-		//if($this->params['isAjax']) {
-		//	Configure::write('debug', 0);
-		//}
-		
-		//if($this->action == "index" || $this->action == "add" || $this->action == "edit") {
-		//	$this->__seteos();
-		//}
-	}
-
-   
-      function isAuthorized_deprecated() {
-  
-          return true;
-  
-      }
-
 /**
  * Antes de ejecutar una action controlo seguridad.
- * Si la session caduco, lo mando nuevamente al login.
+ * Si la session caduco, lo redirijo nuevamente al login.
+ *
+ * @return void
+ * @access public
+ * TODO:
+ * Utiliazr el auth component de cakePHP
  */
     function beforeFilter() {
-    	//if(!$this->Session->check("__Usuario")) {
-    	//	$this->redirect("../usuarios/login");
-    	//}
-    	//else 
-		//	return true;
-		//return true;
+		
 		/**
 		* En accionesWhiteList llevo las acciones que no deben chquearse la seguridad.
 		*/
@@ -848,15 +835,7 @@ function saveMultiple() {
     	elseif(!$this->Session->check("__Usuario")) {
     		$this->redirect("../usuarios/login");
     	}
-    	/*
-          $this->Auth->loginAction = array('controller' => 'usuarios', 'action' => 'login');
-   
-          $this->Auth->loginRedirect = array('controller' => 'relaciones', 'action' => 'index');
-   
-          $this->Auth->allow('index');
-   
-          $this->Auth->authorize = 'controller';
-    		*/	
+    	
 		/**
 		 * Agrego soporte para que retorne json.
 		 */
@@ -868,6 +847,9 @@ function saveMultiple() {
 
 /**
  * afterFilter.
+ *
+ * @return void.
+ * @access public 
  */
 	function afterFilter() {
 		/**
@@ -886,9 +868,11 @@ function saveMultiple() {
 
 
 /**
- * limpiar_busquedas.
  * Mediante un request ajax desde javascript borro de la session TODOS los filtros que esten seteados.
  * Luego, con el mismo js recargo la pagina y dara el efecto de limpiar las busquedas.
+ * 
+ * @return void.
+ * @access public
  */
 	function limpiar_busquedas() {
 		$this->Session->del("filtros");
@@ -897,9 +881,11 @@ function saveMultiple() {
 
 
 /**
- * cerrarDesgloses.
  * Mediante un request ajax desde javascript borro de la session TODOS los desgloses que esten abiertos.
  * Luego, con el mismo js recargo la pagina y dara el efecto de cerrar desgloses.
+ * 
+ * @return void
+ * @access public 
  */
 	function cerrar_desgloses() {
 		$this->Session->del("desgloses");
@@ -910,6 +896,10 @@ function saveMultiple() {
 /**
  * quitarDesglose.
  * Saca de la session los desgloses que han sido cerrados.
+ *
+ * @param string $nombreDesglose El nombre que se le dio al desglose cerrado.
+ * @return void.
+ * @access public 
  */
 	function quitarDesglose($nombreDesglose) {
 		/**
