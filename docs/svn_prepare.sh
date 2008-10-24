@@ -5,6 +5,7 @@ svn-commit*" ../app/config
 
 #Ignoro el directorio tmp
 svn propset svn:ignore "*" ../app/tmp -R 
+svn propset svn:ignore "*" ../tmp -R 
 
 #Ignoro el contenido de las versiones packed de css y js 
 svn propset svn:ignore "*" ../app/webroot/css/packed
