@@ -23,7 +23,7 @@
  */
 class Concepto extends AppModel {
 
-	var $order = array('Concepto.nombre'=>'asc');
+	var $order = array('Concepto.orden'=>'asc');
 
 		/*
         'formula' => array(
