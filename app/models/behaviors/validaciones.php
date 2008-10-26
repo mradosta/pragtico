@@ -396,7 +396,7 @@ class ValidacionesBehavior extends ModelBehavior {
 	* Si hay un campo que debe ser null y viene vacio, lo hago null.
 	*/
 	function __setDBFieldValue($fieldDescriptor, $value) {
-		if(!empty($fieldDescriptor['null']) && !$fieldDescriptor['null']) {
+		if(isset($fieldDescriptor['null']) && !$fieldDescriptor['null']) {
 			if(!empty($fieldDescriptor['default']) && empty($value)) {
 				return $fieldDescriptor['default'];
 			}
@@ -435,7 +435,7 @@ class ValidacionesBehavior extends ModelBehavior {
 			foreach($model->data as $k=>$v) {
 				if($model->name == $k) {
 					foreach($model->schema() as $field=>$fieldDescriptor) {
-						if(in_array($field, array("created", "modified", "user_id", "group_id", "group_group_id", "permissions"))) {
+						if(in_array($field, array("created", "modified", "user_id", "group_id", "rol_id", "permissions"))) {
 							continue;
 						}
 
@@ -458,7 +458,7 @@ class ValidacionesBehavior extends ModelBehavior {
 				else {
 					foreach($model->data[$k] as $kDetail=>$vDetail) {
 						foreach($vDetail as $field=>$v) {
-							if(in_array($field, array("created", "modified", "user_id", "group_id", "group_group_id", "permissions"))) {
+							if(in_array($field, array("created", "modified", "user_id", "group_id", "rol_id", "permissions"))) {
 								continue;
 							}
 							
