@@ -42,9 +42,7 @@ class Grupo extends AppModel {
                               'foreignKey'   => 'empleador_id'));
 
 	var $hasAndBelongsToMany = array(	'Usuario' =>
-						array('with' => 'GruposUsuario'),
-										'Accion' =>
-						array('with' => 'GruposAccion'));
+						array('with' => 'GruposUsuario'));
 
 
 	function beforeSave() {

@@ -28,7 +28,6 @@ if(!empty($bloqueAdicional)) {
 */
 $bloques[] = $this->renderElement("add/acciones", array("accionesExtra"=>$accionesExtra));
 
-
 /**
 * Pongo alguna variable especifica del Form que me llega desde el controller.
 */

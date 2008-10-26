@@ -10,9 +10,9 @@
  * @package			pragtico
  * @subpackage		app.models
  * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
+ * @version			$Revision: 11 $
+ * @modifiedby		$LastChangedBy: mradosta $
+ * @lastmodified	$Date: 2008-10-15 16:31:33 -0300 (Wed, 15 Oct 2008) $
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
 /**
@@ -21,11 +21,11 @@
  * @package		pragtico
  * @subpackage	app.models
  */
-class GruposAccion extends AppModel {
+class RolesAccion extends AppModel {
 
-	var $belongsTo = array(	'Grupo' =>
-                        array('className'    => 'Grupo',
-                              'foreignKey'   => 'grupo_id'),
+	var $belongsTo = array(	'Rol' =>
+                        array('className'    => 'Rol',
+                              'foreignKey'   => 'rol_id'),
 							'Accion' =>
                         array('className'    => 'Accion',
                               'foreignKey'   => 'accion_id'));

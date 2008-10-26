@@ -36,16 +36,6 @@ class GruposController extends AppController {
 
 
 /**
- * acciones.
- * Muestra via desglose acciones relacionadas a este grupo.
- */
-	function acciones($id) {
-		$this->Grupo->contain(array("Accion"));
-		$this->data = $this->Grupo->read(null, $id);
-	}
-
-
-/**
  * parametros.
  * Muestra via desglose menus parametros a este grupo.
  */

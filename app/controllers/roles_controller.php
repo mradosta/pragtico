@@ -18,13 +18,23 @@
 /**
  * La clase encapsula la logica de negocio asociada a los roles.
  *
- * Se refiere a las entidades bancarias.
- *
  * @package		pragtico
  * @subpackage	app.controllers
  */
 class RolesController extends AppController {
 
+
+
+/**
+ * acciones.
+ * Muestra via desglose acciones relacionadas a este rol.
+ */
+	function acciones($id) {
+		$this->Rol->contain(array("Accion.Controlador"));
+		$this->data = $this->Rol->read(null, $id);
+	}
+
+	
 /**
  * usuarios.
  * Muestra via desglose usuarios pertenecientes a un rol.
@@ -33,6 +43,7 @@ class RolesController extends AppController {
 		$this->Rol->contain(array("Usuario"));
 		$this->data = $this->Rol->read(null, $id);
 	}
+
 
 /**
  * menus.

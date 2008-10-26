@@ -33,8 +33,11 @@ class Rol extends AppModel {
         )
 	);
 
+
 	var $hasAndBelongsToMany = array(	'Menu' =>
 						array('with' => 'RolesMenu'),
+										'Accion' =>
+						array('with' => 'RolesAccion'),
 										'Usuario' =>
 						array('with' => 'RolesUsuario'));
 						
