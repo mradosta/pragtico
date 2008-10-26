@@ -2103,6 +2103,7 @@ class FormularioHelper extends AppHelper {
 	}
 
 
+
 	function checkboxMultiple($tagName, $options) {
 
 		list($model, $field) = explode(".", $tagName);
@@ -2117,18 +2118,15 @@ class FormularioHelper extends AppHelper {
             $elementosHtmlAttributes['value'] = $id;
 			if(!empty($this->data[$model][$field])) {
 				$seleccionados = $this->data[$model][$field];
-				if((is_numeric($id) && is_numeric($seleccionados) && ($id & $seleccionados))
-					|| (!empty($options['value']) && is_array($options['value']) && in_array($id, $options['value']))
-					|| (is_string($id) && is_string($options['value']) && $id === $options['value'])) {
-					$checked['checked'] = 'checked';
-					$checkbox[] = "<li>" . sprintf($this->tags['checkboxmultiple'], $model, $field, $this->Html->_parseAttributes(am($elementosHtmlAttributes, $checked))) . $this->Form->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
-				}
-				else {
-					$checkbox[] = "<li>" . sprintf($this->tags['checkboxmultiple'], $model, $field, $this->Html->_parseAttributes($elementosHtmlAttributes)) . $this->Form->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
-				}
+			}
+			if((is_numeric($id) && !empty($seleccionados) && is_numeric($seleccionados) && ($id & $seleccionados))
+				|| (!empty($options['value']) && is_array($options['value']) && in_array($id, $options['value']))
+				|| (is_string($id) && is_string($options['value']) && $id === $options['value'])) {
+				$checked['checked'] = 'checked';
+				$checkbox[] = "<li>" . sprintf($this->tags['checkboxmultiple'], $model, $field, $this->_parseAttributes(array_merge($elementosHtmlAttributes, $checked))) . $this->Form->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
 			}
 			else {
-				$checkbox[] = "<li>" . sprintf($this->tags['checkboxmultiple'], $model, $field, $this->Html->_parseAttributes($elementosHtmlAttributes)) . $this->Form->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
+				$checkbox[] = "<li>" . sprintf($this->tags['checkboxmultiple'], $model, $field, $this->_parseAttributes($elementosHtmlAttributes)) . $this->Form->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
 			}
         }
 		
@@ -2138,7 +2136,7 @@ class FormularioHelper extends AppHelper {
 		$seleccion[] = $this->link("I", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("invertir");return false;'));
 		$seleccionString = $this->bloque($seleccion, array("div"=>array("class"=>"seleccion")));
 		
-        $lista = "\n<ul" . $this->Html->_parseAttributes($options['contenedorHtmlAttributes']).">\n" . implode($checkbox) . "</ul>\n";
+        $lista = "\n<ul" . $this->_parseAttributes($options['contenedorHtmlAttributes']).">\n" . implode($checkbox) . "</ul>\n";
         $control = $this->bloque($seleccionString . $lista, array("div"=>array("id"=>$id, "class"=>$options['contenedorHtmlAttributes']['class'])));
         if(!empty($options['label'])) {
         	$label = $this->label($options['label']);
