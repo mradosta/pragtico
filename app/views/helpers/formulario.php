@@ -244,6 +244,7 @@ class FormularioHelper extends AppHelper {
 		}
 	}
 
+
 /**
  * Returns a JavaScript script tag.
  *
@@ -263,6 +264,7 @@ class FormularioHelper extends AppHelper {
 		return $this->Javascript->codeBlock($script, true, false);
 	}
 
+
 /**
  * Returns a formatted DIV tag for HTML FORMs.
  *
@@ -276,6 +278,7 @@ class FormularioHelper extends AppHelper {
 	function div($class = null, $text = null, $attributes = array(), $escape = false) {
 		return $this->Html->div($class, $text, $attributes, $escape);
 	}
+
 
 /**
  * Crea un elemento IMG formateado xhtml.
@@ -310,7 +313,7 @@ class FormularioHelper extends AppHelper {
 			$htmlAttributes['alt'] = $htmlAttributes['title'];
 		}
 
-		return $this->output($this->Html->image($path, $htmlAttributes));
+		return $this->Html->image($path, $htmlAttributes);
     }
     
     
@@ -1261,34 +1264,37 @@ class FormularioHelper extends AppHelper {
 		* En caso de ser un campo de condiciones (los filtros),
 		* si no me cargo el valor de label para el campo, lo saco del nombre del campo.
 		*/
-		if(preg_match("/^Condicion./", $tagName) && !isset($options['label'])) {
+		if(preg_match("/^Condicion\..+/", $tagName)) {
 			/**
 			* A las condiciones no las marco como requeridas. No me interesa esto.
 			*/
 			$verificarRequerido = false;
 			
 			$tmpName = $tagName;
-			$tmpName = preg_replace("/^Condicion./", "", $tmpName);
+			$tmpName = preg_replace("/^Condicion\./", "", $tmpName);
 			list($model, $field) = explode("-", $tmpName);
+			
+			$tmpName = str_replace("-", ".", $tmpName);
+			if (strpos($tmpName, '.') !== false) {
+				list( , $texto) = preg_split('/[\.]+/', $tmpName);
+			}
+			else {
+				$texto = $tmpName;
+			}
+			$texto = str_replace("_id", "", str_replace("__hasta", "", str_replace("__desde", "", $texto)));
+			if(!isset($options['label'])) {
+				$options['label'] = Inflector::humanize($texto);
+			}
+
+			if(empty($options['value']) && !empty($this->data['Condicion'][$model . "-" . $field])) {
+				$options['value'] = $this->data['Condicion'][$model . "-" . $field];
+			}
 			
 			if(substr($field, strlen($field) - 7) === "__desde") {
 				$field = str_replace("__desde", "", $field);
 			}
 			elseif(substr($field, strlen($field) - 7) === "__hasta") {
 				$field = str_replace("__hasta", "", $field);
-			}
-
-			$tmpName = str_replace("-", ".", $tmpName);
-			if (strpos($tmpName, '.') !== false) {
-				list( , $texto) = preg_split('/[\/\.]+/', $tmpName);
-			} else {
-				$texto = $tmpName;
-			}
-			$texto = str_replace("_id", "", str_replace("__hasta", "", str_replace("__desde", "", $texto)));
-			$options['label'] = Inflector::humanize($texto);
-
-			if(empty($options['value']) && !empty($this->data['Condicion'][$model . "-" . $field])) {
-				$options['value'] = $this->data['Condicion'][$model . "-" . $field];
 			}
 		}
 
@@ -1436,7 +1442,7 @@ class FormularioHelper extends AppHelper {
 				}
 				$options['type'] = "text";
 				$options['class'] = "fecha";
-				$options['after'] = $this->inputFecha($tagName, $options) . $options['after'];
+				$options['after'] = $this->__inputFecha($tagName, $options) . $options['after'];
 			}
 
 			/**
@@ -1451,7 +1457,7 @@ class FormularioHelper extends AppHelper {
 				}
 				$options['type'] = "text";
 				$options['class'] = "fecha";
-				$options['after'] = $this->inputFecha($tagName, $options, true) . $options['after'];
+				$options['after'] = $this->__inputFecha($tagName, $options, true) . $options['after'];
 			}
 
 			/**
@@ -2056,7 +2062,7 @@ class FormularioHelper extends AppHelper {
 		return $return;
 	}
 
-	function inputFecha($tagName, $options = array(), $seleccionarHora=false) {
+	function __inputFecha($tagName, $options = array(), $seleccionarHora=false) {
 		$this->setEntity($tagName);
 		$id = $this->domId(implode('.', array_filter(array($this->model(), $this->field()))));
 		$codigo_html = $this->image("calendario.gif", array("class"	=>"fecha", "alt"=>"Seleccione una fecha"));
@@ -2064,9 +2070,9 @@ class FormularioHelper extends AppHelper {
 
 		if($seleccionarHora) {
 			$codigo_html = $this->link($codigo_html, "javascript:NewCal('".$id."','dd/mm/yyyy', true, 24, 'dropdown', true)");
-			$codigo_html .= $this->codeBlock('
-				jQuery("#' . $id . '").mask("99/99/9999 99:99");
-			');
+			//$codigo_html .= $this->codeBlock('
+			//	jQuery("#' . $id . '").mask("99/99/9999 99:99");
+			//');
 		}
 		else {
 			$codigo_html = $this->link($codigo_html, "javascript:NewCal('".$id."','dd/mm/yyyy')", array("id"=>$id . "Fecha"));
