@@ -95,7 +95,7 @@ class FormatoHelper extends AppHelper {
 		}
 
 		$return = $valor;
-		$options = am(array('type'=>"numero"), $options);
+		$options = array_merge(array('type'=>"numero"), $options);
 		
 		switch($options['type']) {
 			// debo deprecar este metodo
@@ -110,7 +110,7 @@ class FormatoHelper extends AppHelper {
 				}
 				break;
 			case "date":
-				$options = am(array("default"=>true), $options);
+				$options = array_merge(array("default"=>true), $options);
 				$fecha = trim(substr($valor, 0, 10));
 				if(empty($fecha) && $options['default'] === true) {
 					if(!isset($options['format'])) {
@@ -135,27 +135,34 @@ class FormatoHelper extends AppHelper {
 					}
 				}
 				break;
+			case "dateTime":
+			case "datetime":
+				$fecha = substr($valor, 0, 10);
+				$optionsTmp = $options;
+				unset($optionsTmp['format']);
+				$return = $this->format($fecha, array_merge($optionsTmp, array("type"=>"date")));
+				if(!isset($options['format'])) {
+					$options['format'] = "H:i:s";
+				}
+				$hora = substr($valor, 10);
+				if(empty($hora) && empty($return) && $options['default'] === false) {
+					$return = "";
+				}
+				else {
+					if(empty($hora)) {
+						$hora = "00:00:00";
+					}
+					$return .= " " . $this->Time->format($options['format'], $hora);
+				}
+			break;
 			case "numero":
 			case "number":
-				$options = am(array("before"=>"", "thousands"=>"", "decimals"=>","), $options);
+				$options = array_merge(array("before"=>"", "thousands"=>"", "decimals"=>","), $options);
 				$return = $this->Number->format($valor, $options);
 				break;
 			case "moneda":
 				$options['type'] = "number";
-				$return = $this->format($valor, am(array("before"=>"$ "), $options));
-				break;
-			case "dateTime":
-			case "datetime":
-				if(!isset($options['format'])) {
-					$options['format'] = "H:i:s";
-				}
-				$fecha = substr($valor, 0, 10);
-				$return = $this->format($fecha, array("type"=>"date"));
-				$hora = substr($valor, 10);
-				if(empty($hora)) {
-					$hora = "00:00:00";
-				}
-				$return .= " " . $this->Time->format($options['format'], $hora);
+				$return = $this->format($valor, array_merge(array("before"=>"$ "), $options));
 				break;
 			case "ano":
 				$valor = $this->format($valor, array("type"=>"date", "format"=>"Y-m-d"));
@@ -230,7 +237,7 @@ class FormatoHelper extends AppHelper {
 					$ano = $matches[1];
 				}
 				elseif(strlen($valor) === 6 || strlen($valor) === 5) {
-					$options = am(array("case"=>"lower"), $options);
+					$options = array_merge(array("case"=>"lower"), $options);
 					$before = "";
 					$ano = substr($valor, 0, 4);
 				}
@@ -239,13 +246,13 @@ class FormatoHelper extends AppHelper {
 				$return = $this->__case($return, $options['case']);
 				break;
 			case "mesEnLetras":
-				$options = am(array("case"=>"lower"), $options);
+				$options = array_merge(array("case"=>"lower"), $options);
 				$meses = $this->getMeses();
 				$mes = (int)$this->format($valor, array("type"=>"mes"));
 				$return = $this->__case($meses[$mes], $options['case']);
 				break;
 			case "numeroEnLetras":
-				$options = am(array("places"=>2, "case"=>"lower", "decimals"=>".", "option"=>"palabras", "ceroCents"=>false), $options);
+				$options = array_merge(array("places"=>2, "case"=>"lower", "decimals"=>".", "option"=>"palabras", "ceroCents"=>false), $options);
 				unset($options['type']);
 				$valor = $this->format($valor, $options);
 

@@ -25,6 +25,7 @@ class FormatoTest extends CakeTestCase {
  * @return void
  */
 	function testformat() {
+		
 		$valor = "1000";
 		$result = $this->Formato->format($valor);
 		$expected = '1000,00';
@@ -135,6 +136,11 @@ class FormatoTest extends CakeTestCase {
 		$expected = "2005-10-15 10:54";
 		$this->assertEqual($expected, $result);
     
+		$valor = "";
+		$result = $this->Formato->format($valor, array("type"=>"dateTime", "default"=>false));
+		$expected = "";
+		$this->assertEqual($expected, $result);
+		
 		$valor = "2005-10-15 10:54:32";
 		$result = $this->Formato->format($valor, array("type"=>"ano"));
 		$expected = "2005";
