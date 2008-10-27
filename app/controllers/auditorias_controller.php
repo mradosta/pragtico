@@ -11,9 +11,9 @@
  * @package			pragtico
  * @subpackage		app.controllers
  * @since			Pragtico v 1.0.0
- * @version			$Revision: 54 $
- * @modifiedby		$LastChangedBy: mradosta $
- * @lastmodified	$Date: 2008-10-23 23:14:28 -0300 (Thu, 23 Oct 2008) $
+ * @version			$Revision$
+ * @modifiedby		$LastChangedBy$
+ * @lastmodified	$Date$
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
 /**
@@ -24,6 +24,14 @@
  */
 class AuditoriasController extends AppController {
 
-
+/**
+ * detalles.
+ * Muestra via desglose los detalles de la auditoria (el registro modificado).
+ */
+	function detalles($id) {
+		$this->data = $this->Auditoria->read(null, $id);
+		$this->data['Auditoria']['data'] = unserialize($this->data['Auditoria']['data']);
+	}
+	
 }
 ?>

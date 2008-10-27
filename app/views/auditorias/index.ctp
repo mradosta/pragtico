@@ -10,9 +10,9 @@
  * @package			pragtico
  * @subpackage		app.views
  * @since			Pragtico v 1.0.0
- * @version			$Revision: 54 $
- * @modifiedby		$LastChangedBy: mradosta $
- * @lastmodified	$Date: 2008-10-23 23:14:28 -0300 (Thu, 23 Oct 2008) $
+ * @version			$Revision$
+ * @modifiedby		$LastChangedBy$
+ * @lastmodified	$Date$
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
 
@@ -36,6 +36,7 @@ $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
 	$fila[] = array("model"=>"Auditoria", "field"=>"id", "valor"=>$v['Auditoria']['id'], "write"=>$v['Auditoria']['write'], "delete"=>$v['Auditoria']['delete']);
+	$fila[] = array("tipo"=>"desglose", "id"=>$v['Auditoria']['id'], "update"=>"desglose1", "imagen"=>array("nombre"=>"detalles.gif", "alt"=>"Detalles"), "url"=>"detalles");
 	$fila[] = array("model"=>"Auditoria", "field"=>"tipo", "valor"=>$v['Auditoria']['tipo']);
 	$fila[] = array("model"=>"Auditoria", "field"=>"usuario", "valor"=>$v['Auditoria']['usuario']);
 	$fila[] = array("model"=>"Auditoria", "field"=>"created", "valor"=>$v['Auditoria']['created'], "nombreEncabezado"=>"Fecha");
