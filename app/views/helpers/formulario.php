@@ -223,7 +223,6 @@ class FormularioHelper extends AppHelper {
 			}
 			$opcionesFs['fieldset']['class'] = "fieldset_multiple";
 			$salida .= $this->bloque($return, $opcionesFs);
-			//$salida .= $this->tag("fieldset", $return, $opcionesFs);
 		}
 		return $salida;
 	}
@@ -1191,7 +1190,7 @@ class FormularioHelper extends AppHelper {
 		/**
 		* Cuando data tiene mas de dos dimensiones, es porque es un update multiple.
 		*/
-		if(!isset($opciones['action']) && isset($this->data) && $this->action == "edit") {
+		if(!isset($opciones['action']) && isset($this->data) && $this->action === "edit") {
 			$opciones['action'] = "saveMultiple";
 		}
 		
@@ -1199,14 +1198,14 @@ class FormularioHelper extends AppHelper {
 			$opciones['id'] = "form";
 		}
 		
-		$form = "\n" . $this->create(null, $opciones);
+		$form = "\n" . $this->Form->create(null, $opciones);
 		if(is_array($contenido)) {
 			$form .= implode("\n", $contenido);
 		}
 		elseif(is_string($contenido)) {
 			$form .= $contenido;
 		}
-		$form .= "\n" . $this->end();
+		$form .= "\n" . $this->Form->end();
 		return $this->output($form);
 	}
 
@@ -1219,7 +1218,7 @@ class FormularioHelper extends AppHelper {
 	 * @param array  $options
 	 * @return string An formatted opening FORM tag.
 	 */
-	function create($model = null, $options = array()) {
+	function create_deprecated($model = null, $options = array()) {
 		return $this->Form->create($model, $options);
 	}
 
@@ -1230,11 +1229,11 @@ class FormularioHelper extends AppHelper {
  * @param string $tagName This should be "Modelname.fieldname", "Modelname/fieldname" is deprecated
  * @param array $options
  * Las opciones para el caso de lov son:
- * array("lov"=>array("controller"		=> "nombreController",
- * 					"separadorRetorno"	=> " - ",
- * 					"seleccionMultiple"	=>	true,
- * 					"camposRetorno"		=> array("Convenio.numero",
- *												"Convenio.nombre")));
+ *		 array("lov"=>array("controller"		=> "nombreController",
+ * 							"separadorRetorno"	=> " - ",
+ *		 					"seleccionMultiple"	=>	true,
+ * 							"camposRetorno"		=> array(	"Convenio.numero",
+ *															"Convenio.nombre")));
  *
  *		$options['verificarRequerido']
  *				- true  	=> Opcion por defecto. Indica que si un campo es requerido, se lo marcara como tal.
@@ -1272,21 +1271,21 @@ class FormularioHelper extends AppHelper {
 			$tmpName = preg_replace("/^Condicion./", "", $tmpName);
 			list($model, $field) = explode("-", $tmpName);
 			
-			if(substr($field, strlen($field) - 7) == "__desde") {
+			if(substr($field, strlen($field) - 7) === "__desde") {
 				$field = str_replace("__desde", "", $field);
 			}
-			elseif(substr($field, strlen($field) - 7) == "__hasta") {
+			elseif(substr($field, strlen($field) - 7) === "__hasta") {
 				$field = str_replace("__hasta", "", $field);
 			}
 
 			$tmpName = str_replace("-", ".", $tmpName);
-			if (strpos($tmpName, '/') !== false || strpos($tmpName, '.') !== false) {
+			if (strpos($tmpName, '.') !== false) {
 				list( , $texto) = preg_split('/[\/\.]+/', $tmpName);
 			} else {
 				$texto = $tmpName;
 			}
 			$texto = str_replace("_id", "", str_replace("__hasta", "", str_replace("__desde", "", $texto)));
-			$options['label'] = inflector::humanize($texto);
+			$options['label'] = Inflector::humanize($texto);
 
 			if(empty($options['value']) && !empty($this->data['Condicion'][$model . "-" . $field])) {
 				$options['value'] = $this->data['Condicion'][$model . "-" . $field];
@@ -1335,7 +1334,7 @@ class FormularioHelper extends AppHelper {
 			/**
 			* Si es un nuevo registro agrego el valor por defecto en caso de que este exista.
 			*/
-			if($this->action =="add" && !isset($this->data[$model][$field]) &&!empty($tableInfo[$field]['default']) && !isset($options['value']) && $tableInfo[$field]['default'] != "0000-00-00") {
+			if($this->action === "add" && !isset($this->data[$model][$field]) && !empty($tableInfo[$field]['default']) && !isset($options['value']) && $tableInfo[$field]['default'] !== "0000-00-00") {
 				$options['value'] = $tableInfo[$field]['default'];
 			}
 
@@ -1787,7 +1786,7 @@ class FormularioHelper extends AppHelper {
 			}
 
 			elseif($tipoCampo === "checkboxMultiple") {
-				return $this->checkboxMultiple($tagName, $options);
+				return $this->__checkboxMultiple($tagName, $options);
 			}
 		
 			elseif($tipoCampo === "lov"
@@ -1995,7 +1994,7 @@ class FormularioHelper extends AppHelper {
  *                         that string is displayed as the empty element.
  * @return string Formatted SELECT element
  */
-	function select($fieldName, $options = array(), $selected = null, $attributes = array(), $showEmpty = '') {
+	function select_deprecated($fieldName, $options = array(), $selected = null, $attributes = array(), $showEmpty = '') {
 		return $this->Form->select($fieldName, $options, $selected, $attributes, $showEmpty);
 	}
 
@@ -2005,7 +2004,7 @@ class FormularioHelper extends AppHelper {
  * @access public
  * @return string A closing FORM tag.
  */
-	function end($model = null) {
+	function end_deprecated($model = null) {
 		return $this->Form->end($model);
 	}
 
@@ -2016,25 +2015,9 @@ class FormularioHelper extends AppHelper {
  * @param  array	$options Array of HTML attributes.
  * @return string
  */
-	function password($fieldName, $options = array()) {
+	function password_deprecated($fieldName, $options = array()) {
 	return $this->Form->password($fieldName, $options);
 	}
-
-/**
- * Creates a button tag.
- *
- * @param  mixed  $params  Array of params [content, type, options] or the
- *                         content of the button.
- * @param  string $type    Type of the button (button, submit or reset).
- * @param  array  $options Array of options.
- * @return string A HTML button tag.
- * @access public
- 	function button($params, $type = 'button', $options = array()) {
-
-		$this->_parseAttributes($options$model
-		//<button type="button" name="segundoboton">Bot&oacute;n Button</button>
-	}
-*/
 
 
 /**
@@ -2046,7 +2029,7 @@ class FormularioHelper extends AppHelper {
  * @param string $selected Option which is selected.
  * @return string The HTML formatted OPTION element
  */
-	function dateTime($tagName, $dateFormat = 'D/M/Y', $timeFormat = '24', $selected = null, $attributes = array(), $showEmpty = true) {
+	function dateTime_deprecated($tagName, $dateFormat = 'D/M/Y', $timeFormat = '24', $selected = null, $attributes = array(), $showEmpty = true) {
 		return $this->Form->dateTime($tagName, $dateFormat, $timeFormat, $selected, $attributes, $showEmpty);
 	}
 
@@ -2094,17 +2077,24 @@ class FormularioHelper extends AppHelper {
 		return $codigo_html;
 	}
 
-	function inputFechaHora($tagName, $options = array()) {
+	function inputFechaHora_deprecated($tagName, $options = array()) {
 		return $this->inputFecha($tagName, $options, true);
 	}
 
-	function inputHora($tagName, $options = array()) {
+	function inputHora_deprecated($tagName, $options = array()) {
 		return $this->dateTime($tagName, 'D/M/Y', '24', null, array("class"=>"select_hora"));
 	}
 
 
-
-	function checkboxMultiple($tagName, $options) {
+/**
+ * Genera una serie de controles checkBox.
+ *
+ * @param string $tagName El nombre del tag de la forma Model.field.
+ * @param array $options Las opciones para generar el control.
+ * @return string El codigo HTML con los controles checkBox.
+ * @access private
+ */
+	function __checkboxMultiple($tagName, $options) {
 
 		list($model, $field) = explode(".", $tagName);
 		$opciones['elementosHtmlAttributes'] = array("class" => "checkboxMultiple");
@@ -2121,7 +2111,7 @@ class FormularioHelper extends AppHelper {
 			}
 			if((is_numeric($id) && !empty($seleccionados) && is_numeric($seleccionados) && ($id & $seleccionados))
 				|| (!empty($options['value']) && is_array($options['value']) && in_array($id, $options['value']))
-				|| (is_string($id) && is_string($options['value']) && $id === $options['value'])) {
+				|| (is_string($id) && isset($options['value']) && is_string($options['value']) && $id === $options['value'])) {
 				$checked['checked'] = 'checked';
 				$checkbox[] = "<li>" . sprintf($this->tags['checkboxmultiple'], $model, $field, $this->_parseAttributes(array_merge($elementosHtmlAttributes, $checked))) . $this->Form->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
 			}
@@ -2134,17 +2124,17 @@ class FormularioHelper extends AppHelper {
 		$seleccion[] = $this->link("T", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("seleccionar");return false;')) . " / ";
 		$seleccion[] = $this->link("N", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("deseleccionar");return false;')) . " / ";
 		$seleccion[] = $this->link("I", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("invertir");return false;'));
-		$seleccionString = $this->bloque($seleccion, array("div"=>array("class"=>"seleccion")));
+		$seleccionString = $this->tag("div", $seleccion, array("class"=>"seleccion"));
 		
         $lista = "\n<ul" . $this->_parseAttributes($options['contenedorHtmlAttributes']).">\n" . implode($checkbox) . "</ul>\n";
-        $control = $this->bloque($seleccionString . $lista, array("div"=>array("id"=>$id, "class"=>$options['contenedorHtmlAttributes']['class'])));
+        $control = $this->tag("div", $seleccionString . $lista, array("id"=>$id, "class"=>$options['contenedorHtmlAttributes']['class']));
         if(!empty($options['label'])) {
         	$label = $this->label($options['label']);
         }
         else {
         	$label = $this->label($tagName);
         }
-        return $this->bloque($label . $control, array("div"=>array("class"=>"input")));
+        return $this->tag("div", $label . $control, array("class"=>"input"));
     }
 
 
