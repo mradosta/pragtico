@@ -33,7 +33,7 @@ class PermisosBehavior extends ModelBehavior {
  * @var array
  * @access private
  */
-	var $__permisos = array(
+	private $__permisos = array(
 		"owner_read"   => 256,
 		"owner_write"  => 128,
 		"owner_delete" => 64,
@@ -45,27 +45,49 @@ class PermisosBehavior extends ModelBehavior {
 	   	"other_delete" => 1
 	);
 
+
+/**
+ * Los datos del usuario logueado.
+ *
+ * @var array
+ * @access private
+ */
+	private $__usuario = array();
 	
+
+/**
+ * Constructor de la clase.
+ *
+ * Busco el usuario logueado en la session.
+ * @return array Los datos del usuario logueado.
+ * @access private.
+ */
+	function __construct() {
+		$session = &new SessionComponent();
+		if($session->check('__Usuario')) {
+			$this->__usuario = $session->read('__Usuario');
+		}
+	}
+
+
 /**
  * Before save callback
+ * Asigno los permisos por defecto, en caso de ser un registro nuevo.
  *
- * @return boolean True if the operation should continue, false if it should abort
+ * @return boolean True si la operacion puede continua, false si debe abortarse.
+ * @access public.
  */    
     function beforeSave(&$model) {
-		/**
-		* Asigno los permisos por defecto, en caso de ser un registro nuevo.
-		*/
+
     	if(empty($model->id)) {
-    		$session = &new SessionComponent();
-			$usuario = $session->read('__Usuario');
 			if(!isset($model->data[$model->name]['user_id'])) {
-    			$model->data[$model->name]['user_id'] = $usuario['Usuario']['id'];
+    			$model->data[$model->name]['user_id'] = $this->__usuario['Usuario']['id'];
     		}
     		if(!isset($model->data[$model->name]['role_id'])) {
-    			$model->data[$model->name]['role_id'] = $usuario['Usuario']['roles'];
+    			$model->data[$model->name]['role_id'] = $this->__usuario['Usuario']['roles'];
     		}
     		if(!isset($model->data[$model->name]['group_id'])) {
-    			$model->data[$model->name]['group_id'] = $usuario['Usuario']['preferencias']['grupo_default_id'];
+    			$model->data[$model->name]['group_id'] = $this->__usuario['Usuario']['preferencias']['grupo_default_id'];
     		}
     		if(!isset($model->data[$model->name]['permissions'])) {
     			$model->data[$model->name]['permissions'] = $model->getPermissions();
@@ -112,11 +134,8 @@ class PermisosBehavior extends ModelBehavior {
  * @access public
  */	
 	function afterFind(&$model, $results, $primary = false) {
-
-		$session = &new SessionComponent();
-		if($session->check('__Usuario')) {
-			$usuario = $session->read('__Usuario');
-			$results = $this->__colocarPermisos($results, $usuario);
+		if(!empty($this->__usuario)) {
+			$results = $this->__colocarPermisos($results, $this->__usuario);
 		}
 		return $results;
 	}
@@ -252,16 +271,15 @@ class PermisosBehavior extends ModelBehavior {
  */
 	function __generarCondicionSeguridad($acceso, $modelName) {
 		
-		$session = &new SessionComponent();
-		$usuario = $session->read('__Usuario');
-		$usuarioId = $usuario['Usuario']['id'];
-		$grupos = $usuario['Usuario']['preferencias']['grupos_seleccionados'];
-		$roles = $usuario['Usuario']['roles'];
+		$usuarioId = $this->__usuario['Usuario']['id'];
+		$grupos = $this->__usuario['Usuario']['preferencias']['grupos_seleccionados'];
+		$roles = $this->__usuario['Usuario']['roles'];
+		
 
 		/**
 		* Si se trata de un usuario perteneciente al rol administradores, que no tiene grupo (root), no verifico permisos.
 		*/
-		if(empty($usuario['Grupo']) && (int)$usuario['Usuario']['roles'] & 1) {
+		if(empty($this->__usuario['Grupo']) && (int)$this->__usuario['Usuario']['roles'] & 1) {
 			return array();
 		}
 		else {
@@ -296,5 +314,50 @@ class PermisosBehavior extends ModelBehavior {
 		}
 		return $seguridad;
 	}
+
+
+/**
+ * After save callback
+ * Dejo un log en la auditoria del registro creado o modificado.
+ *
+ * @param boolen $created Indica si se trata de un nuevo registro (add) o una modificacion (update).
+ * @return void.
+ * @access public.
+ */    
+	function afterSave(&$model, $created) {
+		/**
+		* Evito que entre en loop infinito.
+		*/
+		if($model->name !== "Auditoria") {
+			App::import("model", "Auditoria");
+			$Auditoria = new Auditoria();
+			$save['data'] = $model->data;
+			if($created === true) {
+				$save['tipo'] = "Alta";
+			}
+			else {
+				$save['tipo'] = "Modificacion";
+			}
+			$Auditoria->auditar($save);
+		}
+		return true;
+	}
+
+
+/**
+ * After delete callback
+ * Dejo un log en la auditoria del registro eliminado.
+ *
+ * @return void.
+ * @access public.
+ */
+	function afterDelete(&$model) {
+		App::import("model", "Auditoria");
+		$Auditoria = new Auditoria();
+		$save['data'] = array($model->name => array($model->primaryKey => $model->id));
+		$save['tipo'] = "Baja";
+		$Auditoria->auditar($save);
+	}
+	
 }
 ?>
