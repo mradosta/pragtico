@@ -98,18 +98,7 @@ class FormatoHelper extends AppHelper {
 		$options = array_merge(array('type'=>"numero"), $options);
 		
 		switch($options['type']) {
-			// debo deprecar este metodo
-			case "db2helper":
-				trigger_error("db2helper deprecated");
-				if($valor == "0000-00-00" || $valor == "0000-00-00 00:00:00") {
-					$return = "&nbsp;";
-				}
-				else {
-					$return = $this->Time->format("d/m/Y", substr($valor,0,10));
-					$return .= substr($valor, 10);
-				}
-				break;
-			case "formato":
+			case "periodo":
 				if(!empty($valor) && preg_match(VALID_PERIODO, strtoupper($valor), $matches)) {
 					$tmp = null;
 					$tmp['periodoCompleto'] = $matches[0];
@@ -143,7 +132,7 @@ class FormatoHelper extends AppHelper {
 					$return = $tmp;
 				}
 				else {
-					$return = "";
+					$return = false;
 				}
 				break;		
 			case "date":
