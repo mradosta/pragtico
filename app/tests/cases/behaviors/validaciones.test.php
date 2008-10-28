@@ -18,39 +18,7 @@
 
 App::import('Behavior', 'validaciones');
 App::import('Core', 'ConnectionManager');
-
-/**
- * La clase encapsula el caso de prueba.
- *
- * @package		pragtico
- * @subpackage	app.tests.cases.behaviors
- */
-class BarTestModel extends CakeTestModel {
-
-	/**
-	 * El nombre de este Model.
-	 *
-	 * @var string
-	 * @access public
-	 */
-	var $name = 'BarTestModel';
-	
-	/**
-	 * Indico el nombre de la tabla (fisica) que debe utilizar.
-	 *
-	 * @var array
-	 * @access public
-	 */
-	var $useTable = 'bar_test_fixtures';
-
-	/**
-	 * Los Behaviors asociados al model.
-	 *
-	 * @var array
-	 * @access public
-	 */
-	var $actsAs = array('Validaciones');
-}
+require_once(APP . "tests" . DS . "cases" . DS . "models" . DS . "fake.test.php");
 
 
 /**
@@ -67,7 +35,7 @@ class ValidacionesTestCase extends CakeTestCase {
 	 * @var array
 	 * @access public
 	 */
-	var $fixtures = array('bar_test');
+	var $fixtures = array('fake_test');
 
 	/**
 	 * Metodo que se ejecuta antes de cada test.
@@ -75,8 +43,9 @@ class ValidacionesTestCase extends CakeTestCase {
 	 * @access public
 	 */
 	function startTest() {
-		$this->Model =& new BarTestModel();
+		$this->Model =& new FakeTestModel();
 	}
+
 	
 	function testValidCuitCuil() {
 
@@ -91,7 +60,7 @@ class ValidacionesTestCase extends CakeTestCase {
 		/**
 		 * Pruebo con una cuit valida.
 		 */
-		$data = array('BarTestModel' => array(
+		$data = array('FakeTestModel' => array(
 			'title' => '20-27959940-4'
 		));
 		$this->Model->create($data);
@@ -101,7 +70,7 @@ class ValidacionesTestCase extends CakeTestCase {
 		/**
 		 * Pruebo con una cuit valida.
 		 */
-		$data = array('BarTestModel' => array(
+		$data = array('FakeTestModel' => array(
 			'title' => '20-11363961-0'
 		));
 		$this->Model->create($data);
@@ -112,7 +81,7 @@ class ValidacionesTestCase extends CakeTestCase {
 		 * Pruebo con una cuit no valida.
 		 * Pruebo que el mensaje de error sea el correcto.
 		 */
-		$data = array('BarTestModel' => array(
+		$data = array('FakeTestModel' => array(
 			'title' => '20-27959940-5'
 		));
 		$this->Model->create($data);
@@ -124,6 +93,7 @@ class ValidacionesTestCase extends CakeTestCase {
 		$this->assertEqual($result, $expected);
 		
 	}
+
 	
 	/**
 	 * Method executed after each test

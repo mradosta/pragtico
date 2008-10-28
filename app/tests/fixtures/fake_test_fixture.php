@@ -21,7 +21,7 @@
  * @package app.tests
  * @subpackage app.tests.fixtures
  */
-class BarTestFixture extends CakeTestFixture {
+class FakeTestFixture extends CakeTestFixture {
 
 	/**
 	 * El nombre de este Fixture.
@@ -29,7 +29,7 @@ class BarTestFixture extends CakeTestFixture {
 	 * @var string
 	 * @access public
 	 */
-	var $name = 'BarTestFixture';
+	var $name = 'FakeTestFixture';
 
     var $fields = array(
         'id' => array('type' => 'integer', 'key' => 'primary'),
