@@ -120,8 +120,8 @@ if(!empty($registros)) {
 	$documento->doc->getActiveSheet()->getColumnDimension('R')->setWidth(6);
 	$documento->setCellValue("R" . ($fila+1), "Dias", array("style"=>$estiloTituloColumna));
 
-	$documento->setCellValue("S" . $fila . ":S" . $fila, "Vales", array("style"=>$estiloTituloColumna));
-	$documento->setCellValue("S" . ($fila+1) . ":S" . ($fila+1), "$", array("style"=>$estiloTituloColumna));
+	$documento->setCellValue("S" . $fila, "Vales", array("style"=>$estiloTituloColumna));
+	$documento->setCellValue("S" . ($fila+1), "$", array("style"=>$estiloTituloColumna));
 	$documento->doc->getActiveSheet()->getColumnDimension('S')->setWidth(9);
 
 	/**
