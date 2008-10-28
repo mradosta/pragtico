@@ -77,6 +77,7 @@ class ConveniosConceptosController extends AppController {
 		}
 	}
 
+
 /**
 * Permite realizar un add mediante tablas fromto.
 */
@@ -86,7 +87,7 @@ class ConveniosConceptosController extends AppController {
 			$this->ConveniosConcepto->Convenio->contain(array("Concepto"));
 			$convenio = $this->ConveniosConcepto->Convenio->findById($this->passedArgs['ConveniosConcepto.convenio_id']);
 
-			$conceptosAsignados = Set::extract("/Concepto", $convenio['Concepto']);
+			$conceptosAsignados = Set::extract("/Concepto", $convenio);
 			$conceptosAsignadosCodigos = Set::extract("/Concepto/codigo", $conceptosAsignados);
 			$conceptosNoAsignados = $this->ConveniosConcepto->Concepto->find("all",
 				array(	"recursive"	=>	-1,
