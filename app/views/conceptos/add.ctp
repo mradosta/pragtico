@@ -34,6 +34,7 @@ $campos['Concepto.coeficiente_id'] = array(	"empty"			=> true,
 
 $campos['Concepto.periodo'] = array();
 $campos['Concepto.tipo'] = array();
+$campos['Concepto.retencion_sindical'] = array("aclaracion"=>"Indica si corresponde a una retencion sindical");
 $campos['Concepto.desde'] = array();
 $campos['Concepto.hasta'] = array();
 $campos['Concepto.formula'] = array();
