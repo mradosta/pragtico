@@ -21,22 +21,24 @@
  * @package app.tests
  * @subpackage app.tests.models
  */
-class FakeTestModel extends CakeTestModel {
+class FakeTest extends CakeTestModel {
 
-	/**
-	 * Indico el nombre de la tabla (fisica) que debe utilizar.
-	 *
-	 * @var array
-	 * @access public
-	 */
+/**
+ * Indico que use la conexion de prueba (test).
+ *
+ * @var string
+ * @access public
+ */
+	var $useDbConfig = 'test_suite';
+
+	
+/**
+ * Indico el nombre de la tabla (fisica) que debe utilizar.
+ *
+ * @var array
+ * @access public
+ */
 	var $useTable = 'fake_test_fixtures';
 
-	/**
-	 * Los Behaviors asociados al model.
-	 *
-	 * @var array
-	 * @access public
-	 */
-	var $actsAs = array('Validaciones');
 }
 ?>

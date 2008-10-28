@@ -8,7 +8,7 @@
  * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
  * @link			http://www.pragmatia.com
  * @package			pragtico
- * @subpackage		app.tests
+ * @subpackage		app.tests.cases.behaviors
  * @since			Pragtico v 1.0.0
  * @version			$Revision: 54 $
  * @modifiedby		$LastChangedBy: mradosta $
@@ -29,27 +29,47 @@ require_once(APP . "tests" . DS . "cases" . DS . "models" . DS . "fake.test.php"
  */
 class ValidacionesTestCase extends CakeTestCase {
 
-	/**
-	 * Fixtures asociados a este caso de prueba.
-	 *
-	 * @var array
-	 * @access public
-	 */
+/**
+ * Model que usare en este caso de prueba.
+ *
+ * @var array
+ * @access public
+ */
+    var $model;
+
+
+/**
+ * Fixtures asociados a este caso de prueba.
+ *
+ * @var array
+ * @access public
+ */
 	var $fixtures = array('fake_test');
 
-	/**
-	 * Metodo que se ejecuta antes de cada test.
-	 *
-	 * @access public
-	 */
+
+/**
+ * Metodo que se ejecuta antes de cada test.
+ *
+ * @access public
+ */
 	function startTest() {
-		$this->Model =& new FakeTestModel();
+		$this->model =& new FakeTest();
+
+		/**
+		* Asocio el behavior que debo utilizar.
+		*/
+		$this->model->Behaviors->attach('Validaciones');
 	}
 
-	
+
+/**
+ * Pruebo la validacion del cuit/cuil.
+ *
+ * @access public
+ */
 	function testValidCuitCuil() {
 
-		$this->Model->validate = array(
+		$this->model->validate = array(
 			'title' => array(
 				array(
 					'rule'	=> 'validCuitCuil',
@@ -60,51 +80,50 @@ class ValidacionesTestCase extends CakeTestCase {
 		/**
 		 * Pruebo con una cuit valida.
 		 */
-		$data = array('FakeTestModel' => array(
+		$data = array('FakeTest' => array(
 			'title' => '20-27959940-4'
 		));
-		$this->Model->create($data);
-		$result = $this->Model->validates();
+		$this->model->create($data);
+		$result = $this->model->validates();
 		$this->assertTrue($result);
 
 		/**
 		 * Pruebo con una cuit valida.
 		 */
-		$data = array('FakeTestModel' => array(
+		$data = array('FakeTest' => array(
 			'title' => '20-11363961-0'
 		));
-		$this->Model->create($data);
-		$result = $this->Model->validates();
+		$this->model->create($data);
+		$result = $this->model->validates();
 		$this->assertTrue($result);
 
 		/**
 		 * Pruebo con una cuit no valida.
 		 * Pruebo que el mensaje de error sea el correcto.
 		 */
-		$data = array('FakeTestModel' => array(
+		$data = array('FakeTest' => array(
 			'title' => '20-27959940-5'
 		));
-		$this->Model->create($data);
-		$result = $this->Model->validates();
+		$this->model->create($data);
+		$result = $this->model->validates();
 		$this->assertFalse($result);
 		
-		$result = $this->Model->validationErrors;
+		$result = $this->model->validationErrors;
 		$expected = array('title' => 'La Cuit no es valida.');
 		$this->assertEqual($result, $expected);
 		
 	}
 
 	
-	/**
-	 * Method executed after each test
-	 *
-	 * @access public
-	 */
+/**
+ * Metodo que se ejecuta despues de cada test.
+ *
+ * @access public
+ */
 	function endTest() {
-		unset($this->Model);
+		unset($this->model);
 		ClassRegistry::flush();
 	}
-
 }
 
 ?>

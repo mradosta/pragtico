@@ -23,27 +23,86 @@
  */
 class FakeTestFixture extends CakeTestFixture {
 
-	/**
-	 * El nombre de este Fixture.
-	 *
-	 * @var string
-	 * @access public
-	 */
+/**
+ * El nombre de este Fixture.
+ *
+ * @var string
+ * @access public
+ */
 	var $name = 'FakeTestFixture';
 
+
+/**
+ * La definicion de la tabla.
+ *
+ * @var array
+ * @access public
+ */
     var $fields = array(
         'id' => array('type' => 'integer', 'key' => 'primary'),
-        'title' => array('type' => 'string', 'length' => 255, 'null' => false),
-        'body' => 'text',
-        'published' => array('type' => 'integer', 'default' => '0', 'null' => false),
-        'created' => 'datetime',
-        'updated' => 'datetime'
+        'campo_string' => array('type' => 'string', 'length' => 50, 'null' => false),
+        'campo_text' => array('type' => 'text', 'null' => false),
+        'campo_integer' => array('type' => 'integer', 'null' => false),
+        'campo_decimal' => array('type' => 'float', 'length' => '10,3', 'null' => false),
+        'campo_fecha' => array('type' => 'date', 'null' => false),
+        'campo_fechahora' => array('type' => 'datetime', 'null' => false),
+        'created' => array('type' => 'datetime', 'null' => false),
+        'modified' => array('type' => 'datetime', 'null' => false),
+        'user_id' => array('type' => 'integer', 'null' => false),
+        'role_id' => array('type' => 'integer', 'null' => false),
+        'group_id' => array('type' => 'integer', 'null' => false),
+        'permissions' => array('type' => 'integer', 'null' => false),
     );
-    
+
+
+/**
+ * Los datos propiamente dicho.
+ *
+ * @var array
+ * @access public
+ */
     var $records = array(
-        array ('id' => 1, 'title' => 'First Article', 'body' => 'First Article Body', 'published' => '1', 'created' => '2007-03-18 10:39:23', 'updated' => '2007-03-18 10:41:31'),
-        array ('id' => 2, 'title' => 'Second Article', 'body' => 'Second Article Body', 'published' => '1', 'created' => '2007-03-18 10:41:23', 'updated' => '2007-03-18 10:43:31'),
-        array ('id' => 3, 'title' => 'Third Article', 'body' => 'Third Article Body', 'published' => '1', 'created' => '2007-03-18 10:43:23', 'updated' => '2007-03-18 10:45:31')
+        array ('id' 		=> 1,
+        'campo_string' 		=> 'Primer valor string',
+        'campo_text' 		=> 'Primer valor text',
+        'campo_integer' 	=> '1',
+        'campo_decimal' 	=> '11.150',
+        'campo_fecha' 		=> '2007-03-18',
+        'campo_fechahora'	=> '2007-03-18 10:41:31',
+        'created' 			=> '2007-03-18 10:39:23',
+        'modified' 			=> '2007-03-18 10:41:31',
+        'user_id' 			=> '1',
+        'role_id' 			=> '1',
+        'group_id' 			=> '1',
+        'permissions' 		=> '496'),
+        
+        array ('id' 		=> 2,
+        'campo_string' 		=> 'Segundo valor string',
+        'campo_text' 		=> 'Segundo valor text',
+        'campo_integer' 	=> '2',
+        'campo_decimal' 	=> '12.250',
+        'campo_fecha' 		=> '2007-04-19',
+        'campo_fechahora'	=> '2007-04-19 11:41:31',
+        'created' 			=> '2007-03-18 10:39:23',
+        'modified' 			=> '2007-03-18 10:41:31',
+        'user_id' 			=> '1',
+        'role_id' 			=> '1',
+        'group_id' 			=> '1',
+        'permissions' 		=> '496'),
+        
+        array ('id' 		=> 3,
+        'campo_string' 		=> 'Tercer valor string',
+        'campo_text' 		=> 'Tercer valor text',
+        'campo_integer' 	=> '3',
+        'campo_decimal' 	=> '13.350',
+        'campo_fecha' 		=> '2008-08-19',
+        'campo_fechahora'	=> '2008-08-19 21:41:31',
+        'created' 			=> '2007-03-18 10:39:23',
+        'modified' 			=> '2007-03-18 10:41:31',
+        'user_id' 			=> '1',
+        'role_id' 			=> '1',
+        'group_id' 			=> '1',
+        'permissions' 		=> '496')
     );
 }
 
