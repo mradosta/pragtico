@@ -1,4 +1,27 @@
 <?php
+/**
+ * Util Component.
+ * Tiene metodos genericos que uso en los controladores.
+ *
+ * PHP versions 5
+ *
+ * @filesource
+ * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
+ * @link			http://www.pragmatia.com
+ * @package			pragtico
+ * @subpackage		app.controllers.components
+ * @since			Pragtico v 1.0.0
+ * @version			$Revision$
+ * @modifiedby		$LastChangedBy$
+ * @lastmodified	$Date$
+ * @author      	Martin Radosta <mradosta@pragmatia.com>
+ */
+/**
+ * La clase encapsula la logica generica.
+ *
+ * @package		pragtico
+ * @subpackage	app.controllers.components
+ */
 class UtilComponent extends Object {
 
     var $controller;
@@ -37,8 +60,6 @@ class UtilComponent extends Object {
 	function traerPreferencia($preferencia) {
 		if($this->controller->Session->check("__Usuario")) {
 			$usuario = $this->controller->Session->read("__Usuario");
-			//d($usuario);
-			//d($_SESSION);
 			return $usuario['Usuario']['preferencias'][$preferencia];
 		}
 	}
@@ -58,6 +79,7 @@ class UtilComponent extends Object {
 			return "";
 		}
 	}
+	
 	
 /**
 * Dado un array (key => value), genera un array para una tabla simple. Normalmente se usa para cargar una tabla
@@ -104,28 +126,25 @@ class UtilComponent extends Object {
 			return array();
 		}
 	}
- 
+ 	
+
 /**
- * Genera un array (key=>value) con los meses.
+ * Formatea un valor de acuerdo a un formato.
  *
- * @return array (key=>value) La key ontine el numero del mes y el value el nombre del mes.
+ * @param string $valor Un valor a formatear.
+ * @param array $options Array que contiene el tipo de formato y/o sus opciones.
+ * @return string Un string con el valor formateado de acuerdo a lo especificado.
+ * @see FormatoHelper->format(...
+ * @access public
  */
-	function getMeses() {
-		$meses['1'] = "Enero";
-		$meses['2'] = "Febrero";
-		$meses['3'] = "Marzo";
-		$meses['4'] = "Abril";
-		$meses['5'] = "Mayo";
-		$meses['6'] = "Junio";
-		$meses['7'] = "Julio";
-		$meses['8'] = "Agosto";
-		$meses['9'] = "Setiembre";
-		$meses['10'] = "Octubre";
-		$meses['11'] = "Noviembre";
-		$meses['12'] = "Diciembre";
-		return $meses;
+	function format($valor, $options = array()) {
+		App::import("Helper", array("Number", "Time", "Formato"));
+		$formato = new FormatoHelper();
+		$formato->Time = new TimeHelper();
+		$formato->Number = new NumberHelper();
+		return $formato->format($valor, $options);
 	}
-	
+
 
 /**
  * Formatea un valor de acuerdo a un formato.
@@ -134,13 +153,13 @@ class UtilComponent extends Object {
  * @param array $options Array que contiene el tipo de formato y/o sus opciones.
  * @return string Un string con el formato especificado.
  */
-	function format($valor, $options = array()) {
+	function format_deprecated($valor, $options = array()) {
 		if(is_string($options)) {
 			$tmp = $options;
 			$options = array();
 			$options['type'] = $tmp;
 		}
-		
+
 		$return = $valor;
 		if(!isset($options['type'])) {
 			$return = $this->Number->format($valor, $options);
@@ -199,7 +218,7 @@ class UtilComponent extends Object {
  * Trae el dia.
  * $options['fecha']
  */
-	function traerDia($options = null) {
+	function traerDia_deprecated($options = null) {
 		return date("d", strtotime($options['fecha']));
 	}
 	
@@ -208,7 +227,7 @@ class UtilComponent extends Object {
  * Trae el mes.
  * $options['fecha']
  */
-	function traerMes($options = null) {
+	function traerMes_deprecated($options = null) {
 		return date("m", strtotime($options['fecha']));
 	}
 
@@ -217,7 +236,7 @@ class UtilComponent extends Object {
  * Trae el ano.
  * $options['fecha']
  */
-	function traerAno($options = null) {
+	function traerAno_deprecated($options = null) {
 		return date("Y", strtotime($options['fecha']));
 	}
 	
@@ -227,7 +246,7 @@ class UtilComponent extends Object {
  * $options['mes']
  * $options['ano']
  */
-	function traerUltimoDiaDelMes($options = null) {
+	function traerUltimoDiaDelMes_deprecated($options = null) {
 		return  idate('d', mktime(0, 0, 0, ($options['mes'] + 1), 0, $options['ano']));
 	}
 
@@ -237,7 +256,7 @@ class UtilComponent extends Object {
  * $options['mes']
  * $options['ano']
  */
-	function traerFecha($options = null) {
+	function traerFecha_deprecated($options = null) {
 		return $options['ano'] . "-" . str_pad($options['mes'], 2, "0", STR_PAD_LEFT) . "-" . str_pad($options['dia'], 2, "0", STR_PAD_LEFT);
 	}
 
@@ -249,7 +268,7 @@ class UtilComponent extends Object {
  * 			- 200712M	Ano:2007, Mes:12, Periodo: M
  * false en caso de que venga vacio o no cumpla con el formato.
  */
-	function traerPeriodo($periodo) {
+	function traerPeriodo_deprecated($periodo) {
 		if(!empty($periodo) && preg_match(VALID_PERIODO, strtoupper($periodo), $matches)) {
 
 			$return['periodoCompleto'] = $matches[0];
@@ -293,7 +312,7 @@ class UtilComponent extends Object {
  *
  * El intervalor puede ser y,q,m,w,d,h,n,s
  */
-	function dateAdd ($options = array()) {
+	function dateAdd_deprecated ($options = array()) {
 		$default = array("intervalo"=>"d", "cantidad"=>"1", "fecha"=>date("Y-m-d"));
 		$options = am($default, $options);
 		$fecha = strtotime($options['fecha']);
@@ -345,7 +364,7 @@ class UtilComponent extends Object {
  * @return mixed 	array con dias, horas, minutos y segundos en caso de que las fechas sean validas.
  * 					False en caso de que las fechas sean invalidas.
  */
-function diferenciaEntreFechas($options = null) {
+function diferenciaEntreFechas_deprecated($options = null) {
 
 	$fecha1 = strtotime($options['desde']);
 	if(empty($options['hasta'])) {
