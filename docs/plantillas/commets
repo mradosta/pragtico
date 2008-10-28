@@ -12,7 +12,7 @@
  *
  * @var array
  * @access private
- **/
+ */
 	var $__privateVar = array();
 
 
