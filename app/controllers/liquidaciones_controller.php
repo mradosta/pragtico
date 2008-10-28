@@ -224,7 +224,7 @@ class LiquidacionesController extends AppController {
 		$periodos["1Q"] = "Primera Quincena";
 		$periodos["2Q"] = "Segunda Quincena";
 		$this->set("periodos", $periodos);
-		$this->set("meses", $this->Util->getMeses());
+		$this->set("meses", $this->Util->format("all", array("type"=>"mesEnLetras", "case"=>"ucfirst")));
 	}
 
 
