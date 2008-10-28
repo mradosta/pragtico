@@ -50,7 +50,7 @@ class PHPExcel_Style_Protection implements PHPExcel_IComparable
 	 * @var string
 	 */
 	private $_locked;
-	
+
 	/**
 	 * Hidden
 	 *
@@ -63,16 +63,16 @@ class PHPExcel_Style_Protection implements PHPExcel_IComparable
 	 *
 	 * @var PHPExcel_Style
 	 */
-	 
+
 	private $_parent;
-	
+
 	/**
 	 * Parent Borders
 	 *
 	 * @var _parentPropertyName string
 	 */
 	private $_parentPropertyName;
-		
+
     /**
      * Create a new PHPExcel_Style_Protection
      */
@@ -87,7 +87,7 @@ class PHPExcel_Style_Protection implements PHPExcel_IComparable
 	 * Property Prepare bind
 	 *
 	 * Configures this object for late binding as a property of a parent object
-	 *	 
+	 *
 	 * @param $parent
 	 * @param $parentPropertyName
 	 */
@@ -115,7 +115,7 @@ class PHPExcel_Style_Protection implements PHPExcel_IComparable
 
 		return $this;																	// No one is bound yet
 	}
-	
+
     /**
      * Property Begin Bind
      *
@@ -129,13 +129,13 @@ class PHPExcel_Style_Protection implements PHPExcel_IComparable
 
 		if($this->_parent->propertyIsBound($this->_parentPropertyName))
 			return $this->_parent->getProtection();										// Another one is already bound
-			
+
 		$this->_parent->propertyCompleteBind($this, $this->_parentPropertyName);		// Bind myself
 		$this->_parent = null;
-		
+
 		return $this;
 	}
-    
+
     /**
      * Apply styles from array
      *
@@ -152,7 +152,7 @@ class PHPExcel_Style_Protection implements PHPExcel_IComparable
     			$this->setLocked($pStyles['locked']);
     		}
     	    if (array_key_exists('hidden', $pStyles)) {
-    			$this->setHidden($pStyles['locked']);
+    			$this->setHidden($pStyles['hidden']);
     		}
     	} else {
     		throw new Exception("Invalid style array passed.");
@@ -176,7 +176,7 @@ class PHPExcel_Style_Protection implements PHPExcel_IComparable
     public function setLocked($pValue = self::PROTECTION_INHERIT) {
     	$this->propertyBeginBind()->_locked = $pValue;
     }
-    
+
     /**
      * Get hidden
      *

@@ -8,12 +8,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -22,7 +22,7 @@
  * @package    PHPExcel
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.3, 2008-08-25
+ * @version    1.6.4, 2008-10-27
  */
 
 
@@ -63,7 +63,7 @@ class PHPExcel_ReferenceHelper
 	 * @var PHPExcel_ReferenceHelper
 	 */
 	private static $_instance;
-	
+
 	/**
 	 * Get an instance of this class
 	 *
@@ -73,16 +73,16 @@ class PHPExcel_ReferenceHelper
 		if (!isset(self::$_instance) || is_null(self::$_instance)) {
 			self::$_instance = new PHPExcel_ReferenceHelper();
 		}
-		
+
 		return self::$_instance;
 	}
-	
+
 	/**
 	 * Create a new PHPExcel_Calculation
 	 */
 	protected function __construct() {
 	}
-	
+
     /**
      * Insert a new column, updating all possible related data
      *
@@ -99,47 +99,42 @@ class PHPExcel_ReferenceHelper
 			$aCellCollection[$key] = clone $value;
 		}*/
 		$aCellCollection = $pSheet->getCellCollection();
-			
+
     	// Get coordinates of $pBefore
     	$beforeColumn 	= 'A';
     	$beforeRow		= 1;
     	list($beforeColumn, $beforeRow) = PHPExcel_Cell::coordinateFromString( $pBefore );
-    		
-    		
+
+
 		// Remove cell styles?
 		$highestColumn 	= $pSheet->getHighestColumn();
 		$highestRow 	= $pSheet->getHighestRow();
 
 		if ($pNumCols < 0 && PHPExcel_Cell::columnIndexFromString($beforeColumn) - 2 + $pNumCols > 0) {
-			for ($i = 1; $i <= $highestRow - 1; $i++) {
+			for ($i = 1; $i <= $highestRow - 1; ++$i) {
 
 				$pSheet->duplicateStyle(
 					new PHPExcel_Style(),
 					(PHPExcel_Cell::stringFromColumnIndex( PHPExcel_Cell::columnIndexFromString($beforeColumn) - 1 + $pNumCols ) . $i) . ':' . (PHPExcel_Cell::stringFromColumnIndex( PHPExcel_Cell::columnIndexFromString($beforeColumn) - 2 ) . $i)
-				);	
-					
+				);
+
 			}
 		}
 
 		if ($pNumRows < 0 && $beforeRow - 1 + $pNumRows > 0) {
-			for ($i = PHPExcel_Cell::columnIndexFromString($beforeColumn) - 1; $i <= PHPExcel_Cell::columnIndexFromString($highestColumn) - 1; $i++) {
-					
-				$pSheet->duplicateStyle(
-					new PHPExcel_Style(),
-					(PHPExcel_Cell::stringFromColumnIndex($i) . ($beforeRow + $pNumRows)) . ':' . (PHPExcel_Cell::stringFromColumnIndex($i) . ($beforeRow - 1))
-				);
-					
+			for ($i = PHPExcel_Cell::columnIndexFromString($beforeColumn) - 1; $i <= $highestColumn - 1; ++$i) {
+				$pSheet->duplicateStyle( new PHPExcel_Style(), ($i.($beforeRow + $pNumRows)).':'.($i.($beforeRow - 1)));
 			}
 		}
-			
-			
+
+
    		// Loop trough cells, bottom-up, and change cell coordinates
 		while ( ($cell = ($pNumCols < 0 || $pNumRows < 0) ? array_shift($aCellCollection) : array_pop($aCellCollection)) ) {
 			// New coordinates
 			$newCoordinates = PHPExcel_Cell::stringFromColumnIndex( PHPExcel_Cell::columnIndexFromString($cell->getColumn()) - 1 + $pNumCols ) . ($cell->getRow() + $pNumRows);
-								
+
 			// Should the cell be updated?
-			if ( 
+			if (
 					(PHPExcel_Cell::columnIndexFromString( $cell->getColumn() ) >= PHPExcel_Cell::columnIndexFromString($beforeColumn)) &&
 				 	($cell->getRow() >= $beforeRow)
 				 ) {
@@ -147,7 +142,7 @@ class PHPExcel_ReferenceHelper
 				// Update cell styles
 				$pSheet->duplicateStyle( $pSheet->getStyle($cell->getCoordinate()), $newCoordinates . ':' . $newCoordinates );
 				$pSheet->duplicateStyle( $pSheet->getDefaultStyle(), $cell->getCoordinate() . ':' . $cell->getCoordinate() );
-					
+
 				// Insert this cell at its new location
 				if ($cell->getDataType() == PHPExcel_Cell_DataType::TYPE_FORMULA) {
 					// Formula should be adjusted
@@ -159,20 +154,20 @@ class PHPExcel_ReferenceHelper
 					// Formula should not be adjusted
 					$pSheet->setCellValue($newCoordinates, $cell->getValue());
 				}
-				
+
 				// Clear the original cell
 				$pSheet->setCellValue($cell->getCoordinate(), '');
 			}
 		}
-			
-			
+
+
 		// Duplicate styles for the newly inserted cells
 		$highestColumn 	= $pSheet->getHighestColumn();
 		$highestRow 	= $pSheet->getHighestRow();
-			
+
 		if ($pNumCols > 0 && PHPExcel_Cell::columnIndexFromString($beforeColumn) - 2 > 0) {
-			for ($i = $beforeRow; $i <= $highestRow - 1; $i++) {
-				
+			for ($i = $beforeRow; $i <= $highestRow - 1; ++$i) {
+
 				// Style
 				$pSheet->duplicateStyle(
 					$pSheet->getStyle(
@@ -180,13 +175,13 @@ class PHPExcel_ReferenceHelper
 					),
 					($beforeColumn . $i) . ':' . (PHPExcel_Cell::stringFromColumnIndex( PHPExcel_Cell::columnIndexFromString($beforeColumn) - 2 + $pNumCols ) . $i)
 				);
-				
+
 			}
 		}
-			
+
 		if ($pNumRows > 0 && $beforeRow - 1 > 0) {
-			for ($i = PHPExcel_Cell::columnIndexFromString($beforeColumn) - 1; $i <= PHPExcel_Cell::columnIndexFromString($highestColumn) - 1; $i++) {
-					
+			for ($i = PHPExcel_Cell::columnIndexFromString($beforeColumn) - 1; $i <= PHPExcel_Cell::columnIndexFromString($highestColumn) - 1; ++$i) {
+
 				// Style
 				$pSheet->duplicateStyle(
 					$pSheet->getStyle(
@@ -194,11 +189,11 @@ class PHPExcel_ReferenceHelper
 					),
 					(PHPExcel_Cell::stringFromColumnIndex($i) . $beforeRow) . ':' . (PHPExcel_Cell::stringFromColumnIndex($i) . ($beforeRow - 1 + $pNumRows))
 				);
-				
+
 			}
 		}
-	
-			
+
+
 		// Update worksheet: column dimensions
 		$aColumnDimensions = array_reverse($pSheet->getColumnDimensions(), true);
 		foreach ($aColumnDimensions as $objColumnDimension) {
@@ -209,8 +204,8 @@ class PHPExcel_ReferenceHelper
 			}
 		}
 		$pSheet->refreshColumnDimensions();
-		
-		
+
+
 		// Update worksheet: row dimensions
 		$aRowDimensions = array_reverse($pSheet->getRowDimensions(), true);
 		foreach ($aRowDimensions as $objRowDimension) {
@@ -223,15 +218,15 @@ class PHPExcel_ReferenceHelper
 		$pSheet->refreshRowDimensions();
 
 		$copyDimension = $pSheet->getRowDimension($beforeRow - 1);
-		for ($i = $beforeRow; $i <= $beforeRow - 1 + $pNumRows; $i++) {
+		for ($i = $beforeRow; $i <= $beforeRow - 1 + $pNumRows; ++$i) {
 			$newDimension = $pSheet->getRowDimension($i);
 			$newDimension->setRowHeight($copyDimension->getRowHeight());
 			$newDimension->setVisible($copyDimension->getVisible());
 			$newDimension->setOutlineLevel($copyDimension->getOutlineLevel());
 			$newDimension->setCollapsed($copyDimension->getCollapsed());
 		}
-			
-			
+
+
 		// Update worksheet: breaks
 		$aBreaks = array_reverse($pSheet->getBreaks(), true);
 		foreach ($aBreaks as $key => $value) {
@@ -241,8 +236,8 @@ class PHPExcel_ReferenceHelper
 				$pSheet->setBreak( $key, PHPExcel_Worksheet::BREAK_NONE );
 			}
 		}
-			
-			
+
+
 		// Update worksheet: merge cells
 		$aMergeCells = array_reverse($pSheet->getMergeCells(), true);
 		foreach ($aMergeCells as $key => $value) {
@@ -252,8 +247,8 @@ class PHPExcel_ReferenceHelper
 				$pSheet->unmergeCells( $key );
 			}
 		}
-			
-			
+
+
 		// Update worksheet: protected cells
 		$aProtectedCells = array_reverse($pSheet->getProtectedCells(), true);
 		foreach ($aProtectedCells as $key => $value) {
@@ -263,26 +258,26 @@ class PHPExcel_ReferenceHelper
 				$pSheet->unprotectCells( $key );
 			}
 		}
-			
-			
+
+
 		// Update worksheet: autofilter
 		if ($pSheet->getAutoFilter() != '') {
 			$pSheet->setAutoFilter( $this->updateCellReference($pSheet->getAutoFilter(), $pBefore, $pNumCols, $pNumRows) );
 		}
-			
-		
+
+
 		// Update worksheet: freeze pane
 		if ($pSheet->getFreezePane() != '') {
 			$pSheet->setFreezePane( $this->updateCellReference($pSheet->getFreezePane(), $pBefore, $pNumCols, $pNumRows) );
 		}
-		
+
 
 		// Page setup
 		if ($pSheet->getPageSetup()->isPrintAreaSet()) {
 			$pSheet->getPageSetup()->setPrintArea( $this->updateCellReference($pSheet->getPageSetup()->getPrintArea(), $pBefore, $pNumCols, $pNumRows) );
 		}
-		
-			
+
+
 		// Update worksheet: drawings
 		$aDrawings = $pSheet->getDrawingCollection();
 		foreach ($aDrawings as $objDrawing) {
@@ -291,8 +286,8 @@ class PHPExcel_ReferenceHelper
 				$objDrawing->setCoordinates($newReference);
 			}
 		}
-    			
-			
+
+
 		// Update workbook: named ranges
 		if (count($pSheet->getParent()->getNamedRanges()) > 0) {
 			foreach ($pSheet->getParent()->getNamedRanges() as $namedRange) {
@@ -303,12 +298,12 @@ class PHPExcel_ReferenceHelper
 				}
 			}
 		}
-		
-		
+
+
 		// Garbage collect
 		$pSheet->garbageCollect();
     }
-    	
+
     /**
      * Update references within formulas
      *
@@ -319,17 +314,18 @@ class PHPExcel_ReferenceHelper
      * @return 	string	Updated formula
      * @throws 	Exception
      */
-    public function updateFormulaReferences($pFormula = '', $pBefore = 'A1', $pNumCols = 0, $pNumRows = 0) {	
+    public function updateFormulaReferences($pFormula = '', $pBefore = 'A1', $pNumCols = 0, $pNumRows = 0) {
 		// Formula stack
 		$executableFormulaArray = array();
-		
+
 		// Parse formula into a tree of tokens
 		$objParser = new PHPExcel_Calculation_FormulaParser($pFormula);
-		
+
 		// Loop trough parsed tokens and create an executable formula
 		$inFunction = false;
 		$token 		= null;
-		for ($i = 0; $i < $objParser->getTokenCount(); $i++) {
+		$tokenCount = $objParser->getTokenCount();
+		for ($i = 0; $i < $tokenCount; ++$i) {
 			$token = $objParser->getToken($i);
 
 			// Is it a cell reference? Not a cell range?
@@ -337,13 +333,13 @@ class PHPExcel_ReferenceHelper
 				 ($token->getTokenSubType() == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_RANGE) ) {
 				 	// New cell reference
 				 	$newCellReference = $this->updateCellReference($token->getValue(), $pBefore, $pNumCols, $pNumRows);
-				 	
+
 				 	// Add adjusted cell coordinate to executable formula array
 				 	array_push($executableFormulaArray, $newCellReference);
-					 	
+
 				 	continue;
 			}
-			
+
 			// Is it a subexpression?
 			if ($token->getTokenType() == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_SUBEXPRESSION) {
 				// Temporary variable
@@ -356,18 +352,18 @@ class PHPExcel_ReferenceHelper
 						$tmp = ')';
 						break;
 				}
-					
+
 				// Add to executable formula array
 				array_push($executableFormulaArray, $tmp);
-					 	
+
 				continue;
 			}
-				
+
 			// Is it a function?
 			if ($token->getTokenType() == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_FUNCTION) {
 				// Temporary variable
 				$tmp = '';
-					
+
 				// Check the function type
 				if ($token->getValue() == 'ARRAY' || $token->getValue() == 'ARRAYROW') {
 					// An array or an array row...
@@ -384,30 +380,30 @@ class PHPExcel_ReferenceHelper
 							break;
 					}
 				}
-					
+
 				// Add to executable formula array
 				array_push($executableFormulaArray, $tmp);
-				 	
+
 				continue;
 			}
-				
+
 			// Is it text?
 			if ( ($token->getTokenType() == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERAND) &&
 				 ($token->getTokenSubType() == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_TEXT) ) {
 					 // Add to executable formula array
 					 array_push($executableFormulaArray, '"' . $token->getValue() . '"');
-					 	
+
 					 continue;
 			}
-				
+
 			// Is it something else?
 			array_push($executableFormulaArray, $token->getValue());
 		}
-		
+
 		// Return result
 		return '=' . implode(' ', $executableFormulaArray);
     }
-    
+
     /**
      * Update cell reference
      *
@@ -428,7 +424,7 @@ class PHPExcel_ReferenceHelper
 			return $this->_updateCellRange($pCellRange, $pBefore, $pNumCols, $pNumRows);
 		}
     }
-    
+
     /**
      * Update cell range
      *
@@ -440,18 +436,18 @@ class PHPExcel_ReferenceHelper
      * @throws 	Exception
      */
     private function _updateCellRange($pCellRange = 'A1:A1', $pBefore = 'A1', $pNumCols = 0, $pNumRows = 0) {
-    	if (eregi(':', $pCellRange)) {
+    	if (strpos($pCellRange,':') !== false) {
 			// Range
 			$referenceA = '';
 			$referenceB = '';
 			list($referenceA, $referenceB) = PHPExcel_Cell::splitRange($pCellRange);
-				 		
+
 			return $this->_updateSingleCellReference($referenceA, $pBefore, $pNumCols, $pNumRows) . ':' . $this->_updateSingleCellReference($referenceB, $pBefore, $pNumCols, $pNumRows);
     	} else {
     		throw new Exception("Only cell ranges may be passed to this method.");
     	}
     }
-	
+
     /**
      * Update single cell reference
      *
@@ -468,31 +464,31 @@ class PHPExcel_ReferenceHelper
     		$beforeColumn 	= 'A';
     		$beforeRow		= 1;
     		list($beforeColumn, $beforeRow) = PHPExcel_Cell::coordinateFromString( $pBefore );
-    		
+
 			// Get coordinates
 			$newColumn 	= 'A';
 			$newRow 	= 1;
 			list($newColumn, $newRow) = PHPExcel_Cell::coordinateFromString( $pCellReference );
-			
+
 			// Verify which parts should be updated
 			$updateColumn = (PHPExcel_Cell::columnIndexFromString($newColumn) >= PHPExcel_Cell::columnIndexFromString($beforeColumn))
 							&& (strpos($newColumn, '$') === false)
 							&& (strpos($beforeColumn, '$') === false);
-			
+
 			$updateRow = ($newRow >= $beforeRow)
-							&& (strpos($newRow, '$') === false) 
+							&& (strpos($newRow, '$') === false)
 							&& (strpos($beforeRow, '$') === false);
-				
+
 			// Create new column reference
 			if ($updateColumn) {
 				$newColumn 	= PHPExcel_Cell::stringFromColumnIndex( PHPExcel_Cell::columnIndexFromString($newColumn) - 1 + $pNumCols );
 			}
-			 	
+
 			// Create new row reference
 			if ($updateRow) {
 				$newRow 	= $newRow + $pNumRows;
 			}
-				
+
 			// Return new reference
 			return $newColumn . $newRow;
     	} else {

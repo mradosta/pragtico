@@ -8,12 +8,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -22,7 +22,7 @@
  * @package    PHPExcel
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.3, 2008-08-25
+ * @version    1.6.4, 2008-10-27
  */
 
 
@@ -60,35 +60,35 @@ class PHPExcel
 	 * @var PHPExcel_DocumentProperties
 	 */
 	private $_properties;
-	
+
 	/**
 	 * Document security
 	 *
 	 * @var PHPExcel_DocumentSecurity
 	 */
 	private $_security;
-	
+
 	/**
 	 * Collection of Worksheet objects
 	 *
 	 * @var PHPExcel_Worksheet[]
 	 */
 	private $_workSheetCollection = array();
-	
+
 	/**
 	 * Active sheet index
 	 *
 	 * @var int
 	 */
 	private $_activeSheetIndex = 0;
-	
+
 	/**
 	 * Named ranges
 	 *
 	 * @var PHPExcel_NamedRange[]
 	 */
 	private $_namedRanges = array();
-	
+
 	/**
 	 * Create a new PHPExcel with one Worksheet
 	 */
@@ -98,17 +98,17 @@ class PHPExcel
 		$this->_workSheetCollection = array();
 		$this->_workSheetCollection[] = new PHPExcel_Worksheet($this);
 		$this->_activeSheetIndex = 0;
-		
+
 		// Create document properties
 		$this->_properties = new PHPExcel_DocumentProperties();
-		
+
 		// Create document security
 		$this->_security = new PHPExcel_DocumentSecurity();
-		
+
 		// Set named ranges
 		$this->_namedRanges = array();
 	}
-	
+
 	/**
 	 * Get properties
 	 *
@@ -118,7 +118,7 @@ class PHPExcel
 	{
 		return $this->_properties;
 	}
-	
+
 	/**
 	 * Set properties
 	 *
@@ -128,7 +128,7 @@ class PHPExcel
 	{
 		$this->_properties = $pValue;
 	}
-	
+
 	/**
 	 * Get security
 	 *
@@ -138,7 +138,7 @@ class PHPExcel
 	{
 		return $this->_security;
 	}
-	
+
 	/**
 	 * Set security
 	 *
@@ -148,7 +148,7 @@ class PHPExcel
 	{
 		$this->_security = $pValue;
 	}
-	
+
 	/**
 	 * Get active sheet
 	 *
@@ -158,7 +158,7 @@ class PHPExcel
 	{
 		return $this->_workSheetCollection[$this->_activeSheetIndex];
 	}
-	
+
 	/**
 	 * Create sheet and add it to this workbook
 	 *
@@ -167,12 +167,12 @@ class PHPExcel
 	public function createSheet()
 	{
 		$newSheet = new PHPExcel_Worksheet($this);
-		
+
 		$this->addSheet($newSheet);
-		
+
 		return $newSheet;
 	}
-	
+
 	/**
 	 * Add sheet
 	 *
@@ -183,7 +183,7 @@ class PHPExcel
 	{
 		$this->_workSheetCollection[] = $pSheet;
 	}
-	
+
 	/**
 	 * Remove sheet by index
 	 *
@@ -198,7 +198,7 @@ class PHPExcel
 			array_splice($this->_workSheetCollection, $pIndex, 1);
 		}
 	}
-	
+
 	/**
 	 * Get sheet by index
 	 *
@@ -214,7 +214,7 @@ class PHPExcel
 			return $this->_workSheetCollection[$pIndex];
 		}
 	}
-	
+
 	/**
 	 * Get all sheets
 	 *
@@ -224,7 +224,7 @@ class PHPExcel
 	{
 		return $this->_workSheetCollection;
 	}
-	
+
 	/**
 	 * Get sheet by name
 	 *
@@ -234,15 +234,16 @@ class PHPExcel
 	 */
 	public function getSheetByName($pName = '')
 	{
-		for ($i = 0; $i < count($this->_workSheetCollection); $i++) {
+		$worksheetCount = count($this->_workSheetCollection);
+		for ($i = 0; $i < $worksheetCount; ++$i) {
 			if ($this->_workSheetCollection[$i]->getTitle() == $pName) {
 				return $this->_workSheetCollection[$i];
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Get index for sheet
 	 *
@@ -258,7 +259,7 @@ class PHPExcel
 			}
 		}
 	}
-	
+
 	/**
 	 * Get sheet count
 	 *
@@ -268,7 +269,7 @@ class PHPExcel
 	{
 		return count($this->_workSheetCollection);
 	}
-	
+
 	/**
 	 * Get active sheet index
 	 *
@@ -278,7 +279,7 @@ class PHPExcel
 	{
 		return $this->_activeSheetIndex;
 	}
-	
+
 	/**
 	 * Set active sheet index
 	 *
@@ -293,7 +294,7 @@ class PHPExcel
 			$this->_activeSheetIndex = $pIndex;
 		}
 	}
-	
+
 	/**
 	 * Get sheet names
 	 *
@@ -302,13 +303,14 @@ class PHPExcel
 	public function getSheetNames()
 	{
 		$returnValue = array();
-		for ($i = 0; $i < $this->getSheetCount(); $i++) {
+		$worksheetCount = $this->getSheetCount();
+		for ($i = 0; $i < $worksheetCount; ++$i) {
 			array_push($returnValue, $this->getSheet($i)->getTitle());
 		}
-		
+
 		return $returnValue;
 	}
-	
+
 	/**
 	 * Add external sheet
 	 *
@@ -319,11 +321,11 @@ class PHPExcel
 		if (!is_null($this->getSheetByName($pSheet->getTitle()))) {
 			throw new Exception("Workbook already contains a worksheet named '{$pSheet->getTitle()}'. Rename the external sheet first.");
 		}
-		
+
 		$pSheet->rebindParent($this);
 		$this->addSheet($pSheet);
 	}
-	
+
 	/**
 	 * Get named ranges
 	 *
@@ -332,7 +334,7 @@ class PHPExcel
 	public function getNamedRanges() {
 		return $this->_namedRanges;
 	}
-	
+
 	/**
 	 * Add named range
 	 *
@@ -341,7 +343,7 @@ class PHPExcel
 	public function addNamedRange(PHPExcel_NamedRange $namedRange) {
 		$this->_namedRanges[$namedRange->getName()] = $namedRange;
 	}
-	
+
 	/**
 	 * Get named range
 	 *
@@ -351,10 +353,10 @@ class PHPExcel
 		if ($namedRange != '' && !is_null($namedRange) && @isset($this->_namedRanges[$namedRange])) {
 			return $this->_namedRanges[$namedRange];
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Remove named range
 	 *
@@ -365,23 +367,24 @@ class PHPExcel
 			unset($this->_namedRanges[$namedRange]);
 		}
 	}
-	
+
 	/**
 	 * Copy workbook (!= clone!)
-	 * 
+	 *
 	 * @return PHPExcel
 	 */
 	public function copy() {
 		$copied = clone $this;
-		
-		for ($i = 0; $i < count($this->_workSheetCollection); $i++) {
+
+		$worksheetCount = count($this->_workSheetCollection);
+		for ($i = 0; $i < $worksheetCount; ++$i) {
 			$this->_workSheetCollection[$i] = $this->_workSheetCollection[$i]->copy();
 			$this->_workSheetCollection[$i]->rebindParent($this);
 		}
-		
+
 		return $copied;
 	}
-	    
+
 	/**
 	 * Implement PHP __clone to create a deep clone, not just a shallow copy.
 	 */

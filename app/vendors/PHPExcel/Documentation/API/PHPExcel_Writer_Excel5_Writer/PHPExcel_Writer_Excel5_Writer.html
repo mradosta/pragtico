@@ -363,6 +363,42 @@ Source Location: /PHPExcel/Writer/Excel5/Writer.php<br /><br />
     An accessor for the _worksheets[] array.
   </dd>
     <dt>
+    <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#methodwriteAllDefinedNamesBiff8">PHPExcel_Writer_Excel5_Workbook::writeAllDefinedNamesBiff8()</a>
+  </dt>
+  <dd>
+    Writes all the DEFINEDNAME records (BIFF8).
+  </dd>
+    <dt>
+    <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#methodwriteCountry">PHPExcel_Writer_Excel5_Workbook::writeCountry()</a>
+  </dt>
+  <dd>
+    Stores the COUNTRY record for localization
+  </dd>
+    <dt>
+    <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#methodwriteDefinedNameBiff8">PHPExcel_Writer_Excel5_Workbook::writeDefinedNameBiff8()</a>
+  </dt>
+  <dd>
+    Write a DEFINEDNAME record for BIFF8 using explicit binary formula data
+  </dd>
+    <dt>
+    <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#methodwriteExternsheetBiff8">PHPExcel_Writer_Excel5_Workbook::writeExternsheetBiff8()</a>
+  </dt>
+  <dd>
+    Writes the Excel BIFF EXTERNSHEET record. formulas.
+  </dd>
+    <dt>
+    <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#methodwriteSharedStringsTable">PHPExcel_Writer_Excel5_Workbook::writeSharedStringsTable()</a>
+  </dt>
+  <dd>
+    Write all of the workbooks strings into an indexed array.
+  </dd>
+    <dt>
+    <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#methodwriteSupbookInternal">PHPExcel_Writer_Excel5_Workbook::writeSupbookInternal()</a>
+  </dt>
+  <dd>
+    Write Internal SUPBOOK record
+  </dd>
+    <dt>
     <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_calcSheetOffsets">PHPExcel_Writer_Excel5_Workbook::_calcSheetOffsets()</a>
   </dt>
   <dd>
@@ -417,12 +453,6 @@ Source Location: /PHPExcel/Writer/Excel5/Writer.php<br /><br />
     Stores the CODEPAGE biff record.
   </dd>
     <dt>
-    <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_storeCountry">PHPExcel_Writer_Excel5_Workbook::_storeCountry()</a>
-  </dt>
-  <dd>
-    Stores the COUNTRY record for localization
-  </dd>
-    <dt>
     <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_storeDatemode">PHPExcel_Writer_Excel5_Workbook::_storeDatemode()</a>
   </dt>
   <dd>
@@ -445,12 +475,6 @@ Source Location: /PHPExcel/Writer/Excel5/Writer.php<br /><br />
   </dt>
   <dd>
     Writes the Excel BIFF EXTERNSHEET record. formulas. rows and columns.
-  </dd>
-    <dt>
-    <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_storeExternsheetBiff8">PHPExcel_Writer_Excel5_Workbook::_storeExternsheetBiff8()</a>
-  </dt>
-  <dd>
-    Writes the Excel BIFF EXTERNSHEET record. formulas.
   </dd>
     <dt>
     <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_storeNameLong">PHPExcel_Writer_Excel5_Workbook::_storeNameLong()</a>
@@ -489,22 +513,10 @@ Source Location: /PHPExcel/Writer/Excel5/Writer.php<br /><br />
     Stores the PALETTE biff record.
   </dd>
     <dt>
-    <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_storeSharedStringsTable">PHPExcel_Writer_Excel5_Workbook::_storeSharedStringsTable()</a>
-  </dt>
-  <dd>
-    Write all of the workbooks strings into an indexed array.
-  </dd>
-    <dt>
     <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_storeStyle">PHPExcel_Writer_Excel5_Workbook::_storeStyle()</a>
   </dt>
   <dd>
     Write Excel BIFF STYLE records.
-  </dd>
-    <dt>
-    <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_storeSupbookInternal">PHPExcel_Writer_Excel5_Workbook::_storeSupbookInternal()</a>
-  </dt>
-  <dd>
-    Write Internal SUPBOOK record
   </dd>
     <dt>
     <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_storeWindow1">PHPExcel_Writer_Excel5_Workbook::_storeWindow1()</a>
@@ -526,6 +538,18 @@ Source Location: /PHPExcel/Writer/Excel5/Writer.php<br /><br />
   </dt>
   <dd>
     Constructor
+  </dd>
+    <dt>
+    <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#methodwriteData">PHPExcel_Writer_Excel5_BIFFwriter::writeData()</a>
+  </dt>
+  <dd>
+    General storage function like _append and _prepend, but returns string instead of modifying $this-&gt;_data
+  </dd>
+    <dt>
+    <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#methodwriteEof">PHPExcel_Writer_Excel5_BIFFwriter::writeEof()</a>
+  </dt>
+  <dd>
+    Writes Excel EOF record to indicate the end of a BIFF stream.
   </dd>
     <dt>
     <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#method_addContinue">PHPExcel_Writer_Excel5_BIFFwriter::_addContinue()</a>
@@ -714,7 +738,7 @@ $filename)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Mon, 25 Aug 2008 13:54:09 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
+		    Documentation generated on Mon, 27 Oct 2008 08:42:15 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
 	      </div>
       </td></tr></table>
     </td>

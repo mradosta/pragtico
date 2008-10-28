@@ -22,7 +22,7 @@
  * @package    PHPExcel_Writer
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.3, 2008-08-25
+ * @version    1.6.4, 2008-10-27
  */
 
 
@@ -259,7 +259,7 @@ class PHPExcel_Writer_Excel2007 implements PHPExcel_Writer_IWriter
 
 			// Create string lookup table
 			$this->_stringTable = array();
-			for ($i = 0; $i < $this->_spreadSheet->getSheetCount(); $i++) {
+			for ($i = 0; $i < $this->_spreadSheet->getSheetCount(); ++$i) {
 				$this->_stringTable = $this->getWriterPart('StringTable')->createStringTable($this->_spreadSheet->getSheet($i), $this->_stringTable);
 			}
 
@@ -308,12 +308,12 @@ class PHPExcel_Writer_Excel2007 implements PHPExcel_Writer_IWriter
 			$objZip->addFromString('xl/workbook.xml', 				$this->getWriterPart('Workbook')->writeWorkbook($this->_spreadSheet));
 
 			// Add worksheets
-			for ($i = 0; $i < $this->_spreadSheet->getSheetCount(); $i++) {
+			for ($i = 0; $i < $this->_spreadSheet->getSheetCount(); ++$i) {
 				$objZip->addFromString('xl/worksheets/sheet' . ($i + 1) . '.xml', $this->getWriterPart('Worksheet')->writeWorksheet($this->_spreadSheet->getSheet($i), $this->_stringTable));
 			}
 
 			// Add worksheet relationships (drawings, ...)
-			for ($i = 0; $i < $this->_spreadSheet->getSheetCount(); $i++) {
+			for ($i = 0; $i < $this->_spreadSheet->getSheetCount(); ++$i) {
 
 				// Add relationships
 				$objZip->addFromString('xl/worksheets/_rels/sheet' . ($i + 1) . '.xml.rels', 	$this->getWriterPart('Rels')->writeWorksheetRelationships($this->_spreadSheet->getSheet($i), ($i + 1)));
@@ -346,13 +346,13 @@ class PHPExcel_Writer_Excel2007 implements PHPExcel_Writer_IWriter
 
 					// Media
 					foreach ($this->_spreadSheet->getSheet($i)->getHeaderFooter()->getImages() as $image) {
-						$objZip->addFromString('xl/media/' . $image->getFilename(), file_get_contents($image->getPath()));
+						$objZip->addFromString('xl/media/' . $image->getIndexedFilename(), file_get_contents($image->getPath()));
 					}
 				}
 			}
 
 			// Add media
-			for ($i = 0; $i < $this->getDrawingHashTable()->count(); $i++) {
+			for ($i = 0; $i < $this->getDrawingHashTable()->count(); ++$i) {
 				if ($this->getDrawingHashTable()->getByIndex($i) instanceof PHPExcel_Worksheet_Drawing) {
 					$imageContents = null;
 					$imagePath = $this->getDrawingHashTable()->getByIndex($i)->getPath();
@@ -370,7 +370,7 @@ class PHPExcel_Writer_Excel2007 implements PHPExcel_Writer_IWriter
 						$imageContents = file_get_contents($imagePath);
 					}
 
-					$objZip->addFromString('xl/media/' . str_replace(' ', '_', $this->getDrawingHashTable()->getByIndex($i)->getFilename()), $imageContents);
+					$objZip->addFromString('xl/media/' . str_replace(' ', '_', $this->getDrawingHashTable()->getByIndex($i)->getIndexedFilename()), $imageContents);
 				}
 				//The line underneath does not support adding a file from a ZIP archive, the line above does!
 				//$objZip->addFile($this->getDrawingHashTable()->getByIndex($i)->getPath(), 'xl/media/' . $this->getDrawingHashTable()->getByIndex($i)->getFilename());

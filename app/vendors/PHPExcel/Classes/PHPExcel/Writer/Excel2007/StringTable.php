@@ -22,7 +22,7 @@
  * @package    PHPExcel_Writer_Excel2007
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.3, 2008-08-25
+ * @version    1.6.4, 2008-10-27
  */
 
 
@@ -185,6 +185,17 @@ class PHPExcel_Writer_Excel2007_StringTable extends PHPExcel_Writer_Excel2007_Wr
 						$objWriter->startElement('i');
 						$objWriter->writeAttribute('val', ($element->getFont()->getItalic() ? 'true' : 'false'));
 						$objWriter->endElement();
+						
+						// Superscript / subscript
+						if ($element->getFont()->getSuperScript() || $element->getFont()->getSubScript()) {
+							$objWriter->startElement('vertAlign');
+							if ($element->getFont()->getSuperScript()) {
+								$objWriter->writeAttribute('val', 'superscript');
+							} else if ($element->getFont()->getSubScript()) {
+								$objWriter->writeAttribute('val', 'subscript');
+							}
+							$objWriter->endElement();
+						}
 							
 						// Striketrough
 						$objWriter->startElement('strike');

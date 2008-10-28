@@ -49,11 +49,15 @@
       	  <div class="package">
 			<a href="../PHPExcel_Reader/_PHPExcel---Reader---CSV.php.html">		CSV.php
 		</a><br>
+			<a href="../PHPExcel_Reader/_PHPExcel---Reader---DefaultReadFilter.php.html">		DefaultReadFilter.php
+		</a><br>
 			<a href="../PHPExcel_Reader/_PHPExcel---Reader---Excel5.php.html">		Excel5.php
 		</a><br>
 			<a href="../PHPExcel_Reader/_PHPExcel---Reader---Excel2007.php.html">		Excel2007.php
 		</a><br>
 			<a href="../PHPExcel_Reader/_PHPExcel---Reader---IReader.php.html">		IReader.php
+		</a><br>
+			<a href="../PHPExcel_Reader/_PHPExcel---Reader---IReadFilter.php.html">		IReadFilter.php
 		</a><br>
 			<a href="../PHPExcel_Reader/_PHPExcel---Reader---Serialized.php.html">		Serialized.php
 		</a><br>
@@ -62,11 +66,13 @@
             <b>Interfaces:</b><br />
         <div class="package">
 		    		<a href="../PHPExcel_Reader/PHPExcel_Reader_IReader.html">PHPExcel_Reader_IReader</a><br />
+	    		<a href="../PHPExcel_Reader/PHPExcel_Reader_IReadFilter.html">PHPExcel_Reader_IReadFilter</a><br />
 	  </div>
       
             <b>Classes:</b><br />
         <div class="package">
 		    		<a href="../PHPExcel_Reader/PHPExcel_Reader_CSV.html">PHPExcel_Reader_CSV</a><br />
+	    		<a href="../PHPExcel_Reader/PHPExcel_Reader_DefaultReadFilter.html">PHPExcel_Reader_DefaultReadFilter</a><br />
 	    		<a href="../PHPExcel_Reader/PHPExcel_Reader_Excel5.html">PHPExcel_Reader_Excel5</a><br />
 	    		<a href="../PHPExcel_Reader/PHPExcel_Reader_Excel2007.html">PHPExcel_Reader_Excel2007</a><br />
 	    		<a href="../PHPExcel_Reader/PHPExcel_Reader_Serialized.html">PHPExcel_Reader_Serialized</a><br />
@@ -99,7 +105,7 @@ PHPExcel
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><b>version:</b>&nbsp;&nbsp;</td><td>1.6.3, 2008-08-25</td>
+    <td><b>version:</b>&nbsp;&nbsp;</td><td>1.6.4, 2008-10-27</td>
   </tr>
   <tr>
     <td><b>copyright:</b>&nbsp;&nbsp;</td><td>Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)</td>
@@ -115,30 +121,32 @@ PHPExcel
 <br /><br />
 <h4>Includes:</h4>
 <div class="tags">
-require_once(<a href="../PHPExcel/_PHPExcel---Cell.php.html">'PHPExcel/Cell.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a39">39</a>]<br />
-PHPExcel_Cell<br /><br /><p>PHPExcel_Cell</p><br />require_once(<a href="../PHPExcel_Reader/_PHPExcel---Reader---IReader.php.html">'PHPExcel/Reader/IReader.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a33">33</a>]<br />
+require_once(<a href="../PHPExcel_Reader/_PHPExcel---Reader---IReader.php.html">'PHPExcel/Reader/IReader.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a33">33</a>]<br />
 PHPExcel_Reader_IReader<br /><br /><p>PHPExcel_Reader_IReader</p><br />require_once(<a href="../PHPExcel/_PHPExcel---Worksheet.php.html">'PHPExcel/Worksheet.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a36">36</a>]<br />
-PHPExcel_Worksheet<br /><br /><p>PHPExcel_Worksheet</p><br />require_once(<a href="../PHPExcel/_PHPExcel---Style.php.html">'PHPExcel/Style.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a42">42</a>]<br />
-PHPExcel_Style<br /><br /><p>PHPExcel_Style</p><br />require_once(<a href="../PHPExcel_Style/_PHPExcel---Style---Conditional.php.html">'PHPExcel/Style/Conditional.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a48">48</a>]<br />
-PHPExcel_Style_Conditional<br /><br /><p>PHPExcel_Style_Conditional</p><br />require_once(<a href="../PHPExcel/_PHPExcel.php.html">'PHPExcel.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a30">30</a>]<br />
-PHPExcel<br /><br /><p>PHPExcel</p><br />require_once(<a href="../PHPExcel_Style/_PHPExcel---Style---Borders.php.html">'PHPExcel/Style/Borders.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a45">45</a>]<br />
-PHPExcel_Style_Borders<br /><br /><p>PHPExcel_Style_Borders</p><br />require_once(<a href="../PHPExcel_Style/_PHPExcel---Style---Protection.php.html">'PHPExcel/Style/Protection.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a51">51</a>]<br />
+PHPExcel_Worksheet<br /><br /><p>PHPExcel_Worksheet</p><br />require_once(<a href="../PHPExcel/_PHPExcel---Cell.php.html">'PHPExcel/Cell.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a39">39</a>]<br />
+PHPExcel_Cell<br /><br /><p>PHPExcel_Cell</p><br />require_once(<a href="../PHPExcel/_PHPExcel---Style.php.html">'PHPExcel/Style.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a42">42</a>]<br />
+PHPExcel_Style<br /><br /><p>PHPExcel_Style</p><br />require_once(<a href="../PHPExcel_Style/_PHPExcel---Style---Borders.php.html">'PHPExcel/Style/Borders.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a45">45</a>]<br />
+PHPExcel_Style_Borders<br /><br /><p>PHPExcel_Style_Borders</p><br />require_once(<a href="../PHPExcel/_PHPExcel.php.html">'PHPExcel.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a30">30</a>]<br />
+PHPExcel<br /><br /><p>PHPExcel</p><br />require_once(<a href="../PHPExcel_Style/_PHPExcel---Style---Conditional.php.html">'PHPExcel/Style/Conditional.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a48">48</a>]<br />
+PHPExcel_Style_Conditional<br /><br /><p>PHPExcel_Style_Conditional</p><br />require_once(<a href="../PHPExcel_Style/_PHPExcel---Style---Protection.php.html">'PHPExcel/Style/Protection.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a51">51</a>]<br />
 PHPExcel_Style_Protection<br /><br /><p>PHPExcel_Style_Protection</p><br />require_once(<a href="../PHPExcel_Style/_PHPExcel---Style---NumberFormat.php.html">'PHPExcel/Style/NumberFormat.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a54">54</a>]<br />
 PHPExcel_Style_NumberFormat<br /><br /><p>PHPExcel_Style_NumberFormat</p><br />require_once(<a href="../PHPExcel_Worksheet/_PHPExcel---Worksheet---BaseDrawing.php.html">'PHPExcel/Worksheet/BaseDrawing.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a57">57</a>]<br />
-PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><br />require_once(<a href="../PHPExcel_Worksheet/_PHPExcel---Worksheet---Drawing.php.html">'PHPExcel/Worksheet/Drawing.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a60">60</a>]<br />
-PHPExcel_Worksheet_Drawing<br /><br /><p>PHPExcel_Worksheet_Drawing</p><br />require_once(<a href="../PHPExcel_Shared/_PHPExcel---Shared---Date.php.html">'PHPExcel/Shared/Date.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a66">66</a>]<br />
-PHPExcel_Shared_Date<br /><br /><p>PHPExcel_Shared_Date</p><br />require_once(<a href="../PHPExcel_Shared/_PHPExcel---Shared---File.php.html">'PHPExcel/Shared/File.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a69">69</a>]<br />
-PHPExcel_Shared_File<br /><br /><p>PHPExcel_Shared_File</p><br />require_once(<a href="../PHPExcel_Shared/_PHPExcel---Shared---String.php.html">'PHPExcel/Shared/String.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a72">72</a>]<br />
-PHPExcel_Shared_String<br /><br /><p>PHPExcel_Shared_String</p><br />require_once(<a href="../PHPExcel/_PHPExcel---ReferenceHelper.php.html">'PHPExcel/ReferenceHelper.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a75">75</a>]<br />
-PHPExcel_ReferenceHelper<br /><br /><p>PHPExcel_ReferenceHelper</p><br />require_once(<a href="../PHPExcel_Shared/_PHPExcel---Shared---Drawing.php.html">'PHPExcel/Shared/Drawing.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a63">63</a>]<br />
-PHPExcel_Shared_Drawing<br /><br /><p>PHPExcel_Shared_Drawing</p><br /></div>
+PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><br />require_once(<a href="../PHPExcel_Shared/_PHPExcel---Shared---File.php.html">'PHPExcel/Shared/File.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a69">69</a>]<br />
+PHPExcel_Shared_File<br /><br /><p>PHPExcel_Shared_File</p><br />require_once(<a href="../PHPExcel_Worksheet/_PHPExcel---Worksheet---Drawing.php.html">'PHPExcel/Worksheet/Drawing.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a60">60</a>]<br />
+PHPExcel_Worksheet_Drawing<br /><br /><p>PHPExcel_Worksheet_Drawing</p><br />require_once(<a href="../PHPExcel_Shared/_PHPExcel---Shared---Drawing.php.html">'PHPExcel/Shared/Drawing.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a63">63</a>]<br />
+PHPExcel_Shared_Drawing<br /><br /><p>PHPExcel_Shared_Drawing</p><br />require_once(<a href="../PHPExcel_Shared/_PHPExcel---Shared---String.php.html">'PHPExcel/Shared/String.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a72">72</a>]<br />
+PHPExcel_Shared_String<br /><br /><p>PHPExcel_Shared_String</p><br />require_once(<a href="../PHPExcel_Reader/_PHPExcel---Reader---DefaultReadFilter.php.html">'PHPExcel/Reader/DefaultReadFilter.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a81">81</a>]<br />
+PHPExcel_Reader_DefaultReadFilter<br /><br /><p>PHPExcel_Reader_DefaultReadFilter</p><br />require_once(<a href="../PHPExcel/_PHPExcel---ReferenceHelper.php.html">'PHPExcel/ReferenceHelper.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a75">75</a>]<br />
+PHPExcel_ReferenceHelper<br /><br /><p>PHPExcel_ReferenceHelper</p><br />require_once(<a href="../PHPExcel_Reader/_PHPExcel---Reader---IReadFilter.php.html">'PHPExcel/Reader/IReadFilter.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a78">78</a>]<br />
+PHPExcel_Reader_IReadFilter<br /><br /><p>PHPExcel_Reader_IReadFilter</p><br />require_once(<a href="../PHPExcel_Shared/_PHPExcel---Shared---Date.php.html">'PHPExcel/Shared/Date.php'</a>) [line <a href="../__filesource/fsource_PHPExcel_Reader__PHPExcelReaderExcel2007.php.html#a66">66</a>]<br />
+PHPExcel_Shared_Date<br /><br /><p>PHPExcel_Shared_Date</p><br /></div>
 <br /><br />
 <br /><br />
 <br />
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Mon, 25 Aug 2008 13:37:42 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
+		    Documentation generated on Mon, 27 Oct 2008 08:38:39 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
 	      </div>
       </td></tr></table>
     </td>

@@ -172,7 +172,7 @@ class PHPExcel_Shared_OLE_PPS
 	public function _getPpsWk()
 	{
 		$ret = $this->Name;
-		for ($i = 0; $i < (64 - strlen($this->Name)); $i++) {
+		for ($i = 0; $i < (64 - strlen($this->Name)); ++$i) {
 			$ret .= "\x00";
 		}
 		$ret .= pack("v", strlen($this->Name) + 2)  // 66
@@ -188,7 +188,7 @@ class PHPExcel_Shared_OLE_PPS
 			  . "\x00\x00\x00\x00"                  // 100
 			  . PHPExcel_Shared_OLE::LocalDate2OLE($this->Time1st)       // 108
 			  . PHPExcel_Shared_OLE::LocalDate2OLE($this->Time2nd)       // 116
-			  . pack("V", isset($this->_StartBlock)? 
+			  . pack("V", isset($this->_StartBlock)?
 						$this->_StartBlock:0)        // 120
 			  . pack("V", $this->Size)               // 124
 			  . pack("V", 0);                        // 128
@@ -201,10 +201,10 @@ class PHPExcel_Shared_OLE_PPS
 	*
 	* @access public
 	* @param array &$pps_array Reference to the array of PPS's for the whole OLE
-	*                          container 
+	*                          container
 	* @return integer          The index for this PPS
 	*/
-	public function _savePpsSetPnt(&$pps_array) 
+	public function _savePpsSetPnt(&$pps_array)
 	{
 		$pps_array[count($pps_array)] = &$this;
 		$this->No = count($pps_array) - 1;

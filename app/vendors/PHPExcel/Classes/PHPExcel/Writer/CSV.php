@@ -22,7 +22,7 @@
  * @package    PHPExcel_Writer
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.3, 2008-08-25
+ * @version    1.6.4, 2008-10-27
  */
 
 
@@ -118,54 +118,12 @@ class PHPExcel_Writer_CSV implements PHPExcel_Writer_IWriter {
 			throw new Exception("Could not open file $pFilename for writing.");
 		}
 		
-		// Get cell collection
-		$cellCollection = $sheet->getCellCollection();
+		// Convert sheet to array
+		$cellsArray = $sheet->toArray('', $this->_preCalculateFormulas);
 		
-		// Get column count
-		$colCount = PHPExcel_Cell::columnIndexFromString($sheet->getHighestColumn());
-		
-		// Loop trough cells
-		$currentRow = -1;
-		$rowData = array();
-		foreach ($cellCollection as $cell) {					
-			if ($currentRow != $cell->getRow()) {
-				// End previous row?
-				if ($currentRow != -1) {
-					$this->_writeLine($fileHandle, $rowData);
-				}
-
-				// Set current row
-				$currentRow = $cell->getRow();
-			
-				// Start a new row
-				$rowData = array();
-				for ($i = 0; $i < $colCount; $i++) {
-					$rowData[$i] = '';
-				}
-			}
-					
-			// Copy cell
-			$column = PHPExcel_Cell::columnIndexFromString($cell->getColumn()) - 1;
-			if ($cell->getValue() instanceof PHPExcel_RichText) {
-				$rowData[$column] = $cell->getValue()->getPlainText();
-			} else {
-				if ($this->_preCalculateFormulas) {
-					$rowData[$column] = PHPExcel_Style_NumberFormat::toFormattedString(
-						$cell->getCalculatedValue(),
-						$sheet->getstyle( $cell->getCoordinate() )->getNumberFormat()->getFormatCode()
-					);
-				} else {
-					$rowData[$column] = PHPExcel_Style_NumberFormat::toFormattedString(
-						$cell->getValue(),
-						$sheet->getstyle( $cell->getCoordinate() )->getNumberFormat()->getFormatCode()
-					);
-				}
-			}
-		}
-		
-		// End last row?
-		if ($currentRow != -1) {
-			$this->_writeLine($fileHandle, $rowData);
+		// Write rows to file
+		foreach ($cellsArray as $row) {
+			$this->_writeLine($fileHandle, $row);
 		}
 				
 		// Close file

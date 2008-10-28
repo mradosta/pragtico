@@ -22,7 +22,7 @@
  * @package    PHPExcel
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.3, 2008-08-25
+ * @version    1.6.4, 2008-10-27
  */
 
 
@@ -62,6 +62,13 @@ require_once 'PHPExcel/IComparable.php';
  */
 class PHPExcel_Style implements PHPExcel_IComparable
 {
+	/**
+	 * Default style
+	 *
+	 * @var PHPExcel_Style
+	 */
+	private static $_defaultStyle;
+	
 	/**
 	 * Font
 	 *
@@ -131,6 +138,10 @@ class PHPExcel_Style implements PHPExcel_IComparable
 		 */
 
     	$this->_conditionalStyles 	= array();
+		
+		if (is_null(self::$_defaultStyle)) {
+			self::$_defaultStyle = $this;
+		}
     }
  
     /**
@@ -270,6 +281,15 @@ class PHPExcel_Style implements PHPExcel_IComparable
     		throw new Exception("Invalid style array passed.");
     	}
     }
+	
+	/**
+	 * Get default style
+	 *
+	 * @var PHPExcel_Style
+	 */
+	public static function getDefaultStyle() {
+		return self::$_defaultStyle;
+	}
     
     /**
      * Get Fill

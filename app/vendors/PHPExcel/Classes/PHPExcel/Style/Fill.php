@@ -22,7 +22,7 @@
  * @package    PHPExcel_Style
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.3, 2008-08-25
+ * @version    1.6.4, 2008-10-27
  */
 
 
@@ -307,10 +307,10 @@ class PHPExcel_Style_Fill implements PHPExcel_IComparable
 	public function getHashCode() {
 		$property = $this->propertyGetBound();
     	return md5(
-    		  $property->_fillType
-    		. $property->_rotation
-    		. $property->_startColor->getHashCode()
-    		. $property->_endColor->getHashCode()
+    		  $property->getFillType()
+    		. $property->getRotation()
+    		. $property->getStartColor()->getHashCode()
+    		. $property->getEndColor()->getHashCode()
     		. __CLASS__
     	);
     }

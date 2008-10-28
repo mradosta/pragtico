@@ -122,6 +122,8 @@ Source Location: /PHPExcel/Worksheet/BaseDrawing.php<br /><br />
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#var$_coordinates">$_coordinates</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#var$_description">$_description</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#var$_height">$_height</a></li>
+    <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#var$_imageCounter">$_imageCounter</a></li>
+    <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#var$_imageIndex">$_imageIndex</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#var$_name">$_name</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#var$_offsetX">$_offsetX</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#var$_offsetY">$_offsetY</a></li>
@@ -142,6 +144,7 @@ Source Location: /PHPExcel/Worksheet/BaseDrawing.php<br /><br />
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#methodgetDescription">getDescription</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#methodgetHashCode">getHashCode</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#methodgetHeight">getHeight</a></li>
+    <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#methodgetImageIndex">getImageIndex</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#methodgetName">getName</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#methodgetOffsetX">getOffsetX</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#methodgetOffsetY">getOffsetY</a></li>
@@ -208,10 +211,58 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
 <a name="class_vars"></a>
 <h3>Class Variables</h3>
 <div class="tags">
+	<a name="var$_imageCounter"></a>
+	<p></p>
+	<h4>static $_imageCounter = <span class="value">&nbsp;0</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a52">52</a>]</p>
+  Image counter<br /><br /><p>Image counter</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>int</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_imageIndex"></a>
+	<p></p>
+	<h4>static $_imageIndex = <span class="value">&nbsp;0</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a59">59</a>]</p>
+  Image index<br /><br /><p>Image index</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>int</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
 	<a name="var$_coordinates"></a>
 	<p></p>
 	<h4>$_coordinates = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a73">73</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a87">87</a>]</p>
   Coordinates<br /><br /><p>Coordinates</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -235,7 +286,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
 	<a name="var$_description"></a>
 	<p></p>
 	<h4>$_description = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a59">59</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a73">73</a>]</p>
   Description<br /><br /><p>Description</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -259,7 +310,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
 	<a name="var$_height"></a>
 	<p></p>
 	<h4>$_height = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a101">101</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a115">115</a>]</p>
   Height<br /><br /><p>Height</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -283,7 +334,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
 	<a name="var$_name"></a>
 	<p></p>
 	<h4>$_name = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a52">52</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a66">66</a>]</p>
   Name<br /><br /><p>Name</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -307,7 +358,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
 	<a name="var$_offsetX"></a>
 	<p></p>
 	<h4>$_offsetX = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a80">80</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a94">94</a>]</p>
   Offset X<br /><br /><p>Offset X</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -331,7 +382,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
 	<a name="var$_offsetY"></a>
 	<p></p>
 	<h4>$_offsetY = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a87">87</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a101">101</a>]</p>
   Offset Y<br /><br /><p>Offset Y</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -355,7 +406,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
 	<a name="var$_resizeProportional"></a>
 	<p></p>
 	<h4>$_resizeProportional = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a108">108</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a122">122</a>]</p>
   Proportional resize<br /><br /><p>Proportional resize</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -379,7 +430,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
 	<a name="var$_rotation"></a>
 	<p></p>
 	<h4>$_rotation = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a115">115</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a129">129</a>]</p>
   Rotation<br /><br /><p>Rotation</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -403,7 +454,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
 	<a name="var$_shadow"></a>
 	<p></p>
 	<h4>$_shadow = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a122">122</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a136">136</a>]</p>
   Shadow<br /><br /><p>Shadow</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -427,7 +478,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
 	<a name="var$_width"></a>
 	<p></p>
 	<h4>$_width = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a94">94</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a108">108</a>]</p>
   Width<br /><br /><p>Width</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -451,7 +502,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
 	<a name="var$_worksheet"></a>
 	<p></p>
 	<h4>$_worksheet = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a66">66</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a80">80</a>]</p>
   Worksheet<br /><br /><p>Worksheet</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -481,7 +532,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a127">127</a>]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a141">141</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -516,7 +567,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
   </div>
   <hr />
 	<a name="methodgetCoordinates"></a>
-	<h3>method getCoordinates <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a227">227</a>]</span></h3>
+	<h3>method getCoordinates <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a254">254</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -541,7 +592,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
   </div>
   <hr />
 	<a name="methodgetDescription"></a>
-	<h3>method getDescription <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a166">166</a>]</span></h3>
+	<h3>method getDescription <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a193">193</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -566,7 +617,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
   </div>
   <hr />
 	<a name="methodgetHashCode"></a>
-	<h3>method getHashCode <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a408">408</a>]</span></h3>
+	<h3>method getHashCode <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a435">435</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -604,7 +655,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
   </div>
   <hr />
 	<a name="methodgetHeight"></a>
-	<h3>method getHeight <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a306">306</a>]</span></h3>
+	<h3>method getHeight <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a333">333</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -634,8 +685,33 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodgetImageIndex"></a>
+	<h3>method getImageIndex <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a166">166</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>int getImageIndex(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Get image index<br /><br /><p>Get image index</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodgetName"></a>
-	<h3>method getName <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a148">148</a>]</span></h3>
+	<h3>method getName <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a175">175</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -666,7 +742,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
   </div>
   <hr />
 	<a name="methodgetOffsetX"></a>
-	<h3>method getOffsetX <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a245">245</a>]</span></h3>
+	<h3>method getOffsetX <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a272">272</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -697,7 +773,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
   </div>
   <hr />
 	<a name="methodgetOffsetY"></a>
-	<h3>method getOffsetY <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a263">263</a>]</span></h3>
+	<h3>method getOffsetY <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a290">290</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -728,7 +804,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
   </div>
   <hr />
 	<a name="methodgetResizeProportional"></a>
-	<h3>method getResizeProportional <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a353">353</a>]</span></h3>
+	<h3>method getResizeProportional <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a380">380</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -759,7 +835,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
   </div>
   <hr />
 	<a name="methodgetRotation"></a>
-	<h3>method getRotation <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a371">371</a>]</span></h3>
+	<h3>method getRotation <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a398">398</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -784,7 +860,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
   </div>
   <hr />
 	<a name="methodgetShadow"></a>
-	<h3>method getShadow <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a389">389</a>]</span></h3>
+	<h3>method getShadow <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a416">416</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -809,7 +885,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
   </div>
   <hr />
 	<a name="methodgetWidth"></a>
-	<h3>method getWidth <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a281">281</a>]</span></h3>
+	<h3>method getWidth <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a308">308</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -840,7 +916,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
   </div>
   <hr />
 	<a name="methodgetWorksheet"></a>
-	<h3>method getWorksheet <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a184">184</a>]</span></h3>
+	<h3>method getWorksheet <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a211">211</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -865,7 +941,7 @@ PHPExcel_Worksheet_BaseDrawing<br /><br /><p>PHPExcel_Worksheet_BaseDrawing</p><
   </div>
   <hr />
 	<a name="methodsetCoordinates"></a>
-	<h3>method setCoordinates <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a236">236</a>]</span></h3>
+	<h3>method setCoordinates <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a263">263</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -901,7 +977,7 @@ $pValue = 'A1'])</code>
   </div>
   <hr />
 	<a name="methodsetDescription"></a>
-	<h3>method setDescription <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a175">175</a>]</span></h3>
+	<h3>method setDescription <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a202">202</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -937,7 +1013,7 @@ $pValue = ''])</code>
   </div>
   <hr />
 	<a name="methodsetHeight"></a>
-	<h3>method setHeight <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a315">315</a>]</span></h3>
+	<h3>method setHeight <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a342">342</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -979,7 +1055,7 @@ $pValue = 0])</code>
   </div>
   <hr />
 	<a name="methodsetName"></a>
-	<h3>method setName <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a157">157</a>]</span></h3>
+	<h3>method setName <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a184">184</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1021,7 +1097,7 @@ $pValue = ''])</code>
   </div>
   <hr />
 	<a name="methodsetOffsetX"></a>
-	<h3>method setOffsetX <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a254">254</a>]</span></h3>
+	<h3>method setOffsetX <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a281">281</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1063,7 +1139,7 @@ $pValue = 0])</code>
   </div>
   <hr />
 	<a name="methodsetOffsetY"></a>
-	<h3>method setOffsetY <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a272">272</a>]</span></h3>
+	<h3>method setOffsetY <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a299">299</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1105,7 +1181,7 @@ $pValue = 0])</code>
   </div>
   <hr />
 	<a name="methodsetResizeProportional"></a>
-	<h3>method setResizeProportional <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a362">362</a>]</span></h3>
+	<h3>method setResizeProportional <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a389">389</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1147,7 +1223,7 @@ $pValue = true])</code>
   </div>
   <hr />
 	<a name="methodsetRotation"></a>
-	<h3>method setRotation <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a380">380</a>]</span></h3>
+	<h3>method setRotation <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a407">407</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1183,7 +1259,7 @@ $pValue = 0])</code>
   </div>
   <hr />
 	<a name="methodsetShadow"></a>
-	<h3>method setShadow <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a399">399</a>]</span></h3>
+	<h3>method setShadow <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a426">426</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1222,7 +1298,7 @@ $pValue = null])</code>
   </div>
   <hr />
 	<a name="methodsetWidth"></a>
-	<h3>method setWidth <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a290">290</a>]</span></h3>
+	<h3>method setWidth <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a317">317</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1264,7 +1340,7 @@ $pValue = 0])</code>
   </div>
   <hr />
 	<a name="methodsetWidthAndHeight"></a>
-	<h3>method setWidthAndHeight <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a334">334</a>]</span></h3>
+	<h3>method setWidthAndHeight <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a361">361</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1321,7 +1397,7 @@ $height = 0])</code>
   </div>
   <hr />
 	<a name="methodsetWorksheet"></a>
-	<h3>method setWorksheet <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a195">195</a>]</span></h3>
+	<h3>method setWorksheet <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a222">222</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1366,7 +1442,7 @@ $pOverrideOld = false])</code>
   </div>
   <hr />
 	<a name="method__clone"></a>
-	<h3>method __clone <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a427">427</a>]</span></h3>
+	<h3>method __clone <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetBaseDrawing.php.html#a454">454</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1404,7 +1480,7 @@ $pOverrideOld = false])</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Mon, 25 Aug 2008 13:30:27 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
+		    Documentation generated on Mon, 27 Oct 2008 08:37:17 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
 	      </div>
       </td></tr></table>
     </td>

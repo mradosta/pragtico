@@ -22,7 +22,7 @@
  * @package    PHPExcel
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.3, 2008-08-25
+ * @version    1.6.4, 2008-10-27
  */
 
 
@@ -198,6 +198,20 @@ class PHPExcel_RichText implements PHPExcel_IComparable
     	
     	// Set parent value
     	$this->_parent->setValue($this);
+		
+		// Verify style information
+
+		$sheet = $this->_parent->getParent();
+		$cellFont = $sheet->getStyle($this->_parent->getCoordinate())->getFont();
+		foreach ($this->getRichTextElements() as $element) {
+			if (!($element instanceof PHPExcel_RichText_Run)) continue;
+			
+			if ($element->getFont()->getHashCode() == $sheet->getDefaultStyle()->getFont()->getHashCode()) {
+				if ($element->getFont()->getHashCode() != $cellFont->getHashCode()) {
+					$element->setFont(clone $cellFont);
+				}
+			}
+		}
     }
     
 	/**

@@ -22,7 +22,7 @@
  * @package    PHPExcel_Style
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.3, 2008-08-25
+ * @version    1.6.4, 2008-10-27
  */
 
 
@@ -38,7 +38,7 @@ require_once 'PHPExcel/IComparable.php';
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
 class PHPExcel_Style_NumberFormat implements PHPExcel_IComparable
-{
+{	
 	/* Pre-defined formats */
 	const FORMAT_GENERAL					= 'General';
 	
@@ -50,22 +50,22 @@ class PHPExcel_Style_NumberFormat implements PHPExcel_IComparable
 	const FORMAT_PERCENTAGE					= '0%';
 	const FORMAT_PERCENTAGE_00				= '0.00%';
 	
-	const FORMAT_DATE_YYYYMMDD				= 'yyyy-mm-dd';
-	const FORMAT_DATE_DDMMYYYY				= 'dd/mm/yyyy';
-	const FORMAT_DATE_DMYSLASH				= 'd/m/Y';
-	const FORMAT_DATE_DMYMINUS				= 'd-M-Y';
-	const FORMAT_DATE_DMMINUS				= 'd-M';
-	const FORMAT_DATE_MYMINUS				= 'M-Y';
-	const FORMAT_DATE_DATETIME				= 'd/m/Y H:i';
-	const FORMAT_DATE_TIME1					= 'h:i a';
-	const FORMAT_DATE_TIME2					= 'h:i:s a';
-	const FORMAT_DATE_TIME3					= 'H:i';
-	const FORMAT_DATE_TIME4					= 'H:i:s';
-	const FORMAT_DATE_TIME5					= 'i:s';
-	const FORMAT_DATE_TIME6					= 'H:i:s';
+	const FORMAT_DATE_YYYYMMDD				= 'yy-mm-dd';
+	const FORMAT_DATE_DDMMYYYY				= 'dd/mm/yy';
+	const FORMAT_DATE_DMYSLASH				= 'd/m/y';
+	const FORMAT_DATE_DMYMINUS				= 'd-m-y';
+	const FORMAT_DATE_DMMINUS				= 'd-m';
+	const FORMAT_DATE_MYMINUS				= 'm-y';
+	const FORMAT_DATE_DATETIME				= 'd/m/y h:mm';
+	const FORMAT_DATE_TIME1					= 'h:mm AM/PM';
+	const FORMAT_DATE_TIME2					= 'h:mm:ss AM/PM';
+	const FORMAT_DATE_TIME3					= 'h:mm';
+	const FORMAT_DATE_TIME4					= 'h:mm:ss';
+	const FORMAT_DATE_TIME5					= 'mm:ss';
+	const FORMAT_DATE_TIME6					= 'h:mm:ss';
 	const FORMAT_DATE_TIME7					= 'i:s.S';
 	const FORMAT_DATE_TIME8					= 'h:mm:ss;@';
-	const FORMAT_DATE_YYYYMMDDSLASH			= 'yyyy/mm/dd;@';
+	const FORMAT_DATE_YYYYMMDDSLASH			= 'yy/mm/dd;@';
 	
 	const FORMAT_CURRENCY_USD_SIMPLE		= '"$"#,##0.00_-';
 	const FORMAT_CURRENCY_USD				= '$#,##0_-';
@@ -311,38 +311,111 @@ class PHPExcel_Style_NumberFormat implements PHPExcel_IComparable
 	 * @return string	Formatted string
 	 */
 	public static function toFormattedString($value = '', $format = '') {
-		if (preg_match ("/^([0-9.,-]+)$/", $value)) {
-			switch ($format) {
-				case self::FORMAT_NUMBER:
-					return sprintf('%1.0f', $value);
-				case self::FORMAT_NUMBER_00:
-					return sprintf('%1.2f', $value);
-					
-				case self::FORMAT_NUMBER_COMMA_SEPARATED1:
-				case self::FORMAT_NUMBER_COMMA_SEPARATED2:
-					return number_format($value, 2, ',', '.');
-					
-				case self::FORMAT_PERCENTAGE:
-					return round( (100 * $value), 0) . '%';
-				case self::FORMAT_PERCENTAGE_00:
-					return round( (100 * $value), 2) . '%';
-					
-				case self::FORMAT_DATE_YYYYMMDD:
-					return date('Y-m-d', (1 * $value));
-				case self::FORMAT_DATE_DDMMYYYY:
-					return date('d/m/Y', (1 * $value));
-				case 'yyyy/mm/dd;@':
-					return date('Y/m/d', (1 * $value));
-					
-				case self::FORMAT_CURRENCY_USD_SIMPLE:
-					return '$' . number_format($value, 2);
-				case self::FORMAT_CURRENCY_USD:
-					return '$' . number_format($value);
- 				case self::FORMAT_CURRENCY_EUR_SIMPLE:
- 					return 'EUR ' . sprintf('%1.2f', $value);
+		if (preg_match("/^[hmsdy]/i", $format)) { // custom datetime format
+			// dvc: convert Excel formats to PHP date formats
+			// first remove escapes related to non-format characters
+			$format = str_replace('\\', '', $format);
+
+			// 4-digit year
+			$format = str_replace('yyyy', 'Y', $format);
+
+			// 2-digit year
+			$format = str_replace('yy', 'y', $format);
+
+			// first letter of month - no php equivalent
+			$format = str_replace('mmmmm', 'M', $format);
+
+			// full month name
+			$format = str_replace('mmmm', 'F', $format);
+
+			// short month name
+			$format = str_replace('mmm', 'M', $format);
+
+			// mm is minutes if time or month w/leading zero
+			$format = str_replace(':mm', ':i', $format);
+
+			// tmp place holder
+			$format = str_replace('mm', 'x', $format);
+
+			// month no leading zero
+			$format = str_replace('m', 'n', $format);
+
+			// month leading zero
+			$format = str_replace('x', 'm', $format);
+
+			// 12-hour suffix
+			$format = str_replace('AM/PM', 'A', $format);
+
+			// tmp place holder
+			$format = str_replace('dd', 'x', $format);
+
+			// days no leading zero
+			$format = str_replace('d', 'j', $format);
+
+			// days leading zero
+			$format = str_replace('x', 'd', $format);
+
+			// seconds
+			$format = str_replace('ss', 's', $format);
+
+			// fractional seconds - no php equivalent
+			$format = str_replace('.S', '', $format);
+
+			if (!strpos($format,'A')) { // 24-hour format
+				$format = str_replace('h', 'H', $format);
 			}
-		}
+			
+			// user defined flag symbol????
+			$format = str_replace(';@', '', $format);
+			
+			return date($format, (1 * $value));
+			
+		} else if (preg_match('/%$/', $format)) { // % number format
+			if (preg_match('/\.[#0]+/i',$format,$m)) {
+				$s = substr($m[0],0,1).(strlen($m[0])-1);
+				$format = str_replace($m[0],$s,$format);
+			}
+			if (preg_match('/^[#0]+/',$format,$m)) {
+				$format = str_replace($m[0],strlen($m[0]),$format);
+			}
+			$format = '%' . str_replace('%',"f%%",$format);
+			
+			return sprintf($format, $value);
+			
+		} else {
+			if (preg_match ("/^([0-9.,-]+)$/", $value)) {
+				switch ($format) {
+					case self::FORMAT_NUMBER:
+						return sprintf('%1.0f', $value);
+					case self::FORMAT_NUMBER_00:
+						return sprintf('%1.2f', $value);
+						
+					case self::FORMAT_NUMBER_COMMA_SEPARATED1:
+					case self::FORMAT_NUMBER_COMMA_SEPARATED2:
+						return number_format($value, 2, ',', '.');
+						
+					case self::FORMAT_PERCENTAGE:
+						return round( (100 * $value), 0) . '%';
+					case self::FORMAT_PERCENTAGE_00:
+						return round( (100 * $value), 2) . '%';
+						
+					case self::FORMAT_DATE_YYYYMMDD:
+						return date('Y-m-d', (1 * $value));
+					case self::FORMAT_DATE_DDMMYYYY:
+						return date('d/m/Y', (1 * $value));
+					case 'yyyy/mm/dd;@':
+						return date('Y/m/d', (1 * $value));
+						
+					case self::FORMAT_CURRENCY_USD_SIMPLE:
+						return '$' . number_format($value, 2);
+					case self::FORMAT_CURRENCY_USD:
+						return '$' . number_format($value);
+	 				case self::FORMAT_CURRENCY_EUR_SIMPLE:
+	 					return 'EUR ' . sprintf('%1.2f', $value);
+				}
+			}
 		
-		return $value;
+			return $value;
+		}
 	}
 }

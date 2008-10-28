@@ -22,6 +22,8 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+require_once 'PHPExcel/Shared/String.php';
+
 /**
 * Class for parsing Excel formulas
 *
@@ -358,8 +360,18 @@ class PHPExcel_Writer_Excel5_Parser
               'TRUNC'           => array( 197,   -1,    1,    0 ),
               'ISLOGICAL'       => array( 198,    1,    1,    0 ),
               'DCOUNTA'         => array( 199,    3,    0,    0 ),
+              'USDOLLAR'        => array( 204,   -1,    1,    0 ),
+              'FINDB'           => array( 205,   -1,    1,    0 ),
+              'SEARCHB'         => array( 206,   -1,    1,    0 ),
+              'REPLACEB'        => array( 207,    4,    1,    0 ),
+              'LEFTB'           => array( 208,   -1,    1,    0 ),
+              'RIGHTB'          => array( 209,   -1,    1,    0 ),
+              'MIDB'            => array( 210,    3,    1,    0 ),
+              'LENB'            => array( 211,    1,    1,    0 ),
               'ROUNDUP'         => array( 212,    2,    1,    0 ),
               'ROUNDDOWN'       => array( 213,    2,    1,    0 ),
+              'ASC'             => array( 214,    1,    1,    0 ),
+              'DBCS'            => array( 215,    1,    1,    0 ),
               'RANK'            => array( 216,   -1,    0,    0 ),
               'ADDRESS'         => array( 219,   -1,    1,    0 ),
               'DAYS360'         => array( 220,   -1,    1,    0 ),
@@ -451,7 +463,21 @@ class PHPExcel_Writer_Excel5_Parser
               'SUMIF'           => array( 345,   -1,    0,    0 ),
               'COUNTIF'         => array( 346,    2,    0,    0 ),
               'COUNTBLANK'      => array( 347,    1,    0,    0 ),
-              'ROMAN'           => array( 354,   -1,    1,    0 )
+              'ISPMT'           => array( 350,    4,    1,    0 ),
+              'DATEDIF'         => array( 351,    3,    1,    0 ),
+              'DATESTRING'      => array( 352,    1,    1,    0 ),
+              'NUMBERSTRING'    => array( 353,    2,    1,    0 ),
+              'ROMAN'           => array( 354,   -1,    1,    0 ),
+              'GETPIVOTDATA'    => array( 358,   -1,    0,    0 ),
+              'HYPERLINK'       => array( 359,   -1,    1,    0 ),
+              'PHONETIC'        => array( 360,    1,    0,    0 ),
+              'AVERAGEA'        => array( 361,   -1,    0,    0 ),
+              'MAXA'            => array( 362,   -1,    0,    0 ),
+              'MINA'            => array( 363,   -1,    0,    0 ),
+              'STDEVPA'         => array( 364,   -1,    0,    0 ),
+              'VARPA'           => array( 365,   -1,    0,    0 ),
+              'STDEVA'          => array( 366,   -1,    0,    0 ),
+              'VARA'            => array( 367,   -1,    0,    0 ),
               );
     }
 
@@ -553,8 +579,7 @@ class PHPExcel_Writer_Excel5_Parser
         if ($this->_BIFF_version == 0x0500) {
             return pack("CC", $this->ptg['ptgStr'], strlen($string)).$string;
         } elseif ($this->_BIFF_version == 0x0600) {
-            $encoding = 0;   // TODO: Unicode support
-            return pack("CCC", $this->ptg['ptgStr'], strlen($string), $encoding).$string;
+			return pack('C', $this->ptg['ptgStr']) . PHPExcel_Shared_String::UTF8toBIFF8UnicodeShort($string);
         }
     }
 
@@ -829,7 +854,7 @@ class PHPExcel_Writer_Excel5_Parser
         $ref = pack('vvv', $supbook_index, $sheet1, $sheet2);
         $total_references = count($this->_references);
         $index = -1;
-        for ($i = 0; $i < $total_references; $i++) {
+        for ($i = 0; $i < $total_references; ++$i) {
             if ($ref == $this->_references[$i]) {
                 $index = $i;
                 break;
@@ -927,8 +952,8 @@ class PHPExcel_Writer_Excel5_Parser
         $row2_rel = empty($match[3]) ? 1 : 0;
         $row2     = $match[4];
         // Convert 1-index to zero-index
-        $row1--;
-        $row2--;
+        --$row1;
+        --$row2;
         // Trick poor inocent Excel
         $col1 = 0;
         $col2 = 16383; // FIXME: maximum possible value for Excel 5 (change this!!!)
@@ -978,14 +1003,14 @@ class PHPExcel_Writer_Excel5_Parser
         $expn   = strlen($col_ref) - 1;
         $col    = 0;
         $col_ref_length = strlen($col_ref);
-        for ($i = 0; $i < $col_ref_length; $i++) {
+        for ($i = 0; $i < $col_ref_length; ++$i) {
             $col += (ord($col_ref{$i}) - ord('A') + 1) * pow(26, $expn);
-            $expn--;
+            --$expn;
         }
 
         // Convert 1-index to zero-index
-        $row--;
-        $col--;
+        --$row;
+        --$col;
 
         return array($row, $col, $row_rel, $col_rel);
     }
@@ -1002,7 +1027,7 @@ class PHPExcel_Writer_Excel5_Parser
         // eat up white spaces
         if ($i < $formula_length) {
             while ($this->_formula{$i} == " ") {
-                $i++;
+                ++$i;
             }
 
             if ($i < ($formula_length - 1)) {
@@ -1033,7 +1058,7 @@ class PHPExcel_Writer_Excel5_Parser
             } else { // if we run out of characters _lookahead becomes empty
                 $this->_lookahead = '';
             }
-            $i++;
+            ++$i;
         }
         //die("Lexical error ".$this->_current_char);
     }
@@ -1100,7 +1125,7 @@ class PHPExcel_Writer_Excel5_Parser
             default:
                 // if it's a reference
                 if (preg_match('/^\$?[A-Ia-i]?[A-Za-z]\$?[0-9]+$/',$token) and
-                   !ereg("[0-9]",$this->_lookahead) and 
+                   !ereg("[0-9]",$this->_lookahead) and
                    ($this->_lookahead != ':') and ($this->_lookahead != '.') and
                    ($this->_lookahead != '!'))
                 {
@@ -1121,13 +1146,13 @@ class PHPExcel_Writer_Excel5_Parser
                     return $token;
                 }
                 // if it's a range (A1:A2)
-                elseif (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+:(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$token) and 
+                elseif (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+:(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$token) and
                        !ereg("[0-9]",$this->_lookahead))
                 {
                     return $token;
                 }
                 // if it's a range (A1..A2)
-                elseif (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+\.\.(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$token) and 
+                elseif (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+\.\.(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$token) and
                        !ereg("[0-9]",$this->_lookahead))
                 {
                     return $token;
@@ -1145,7 +1170,7 @@ class PHPExcel_Writer_Excel5_Parser
                     return $token;
                 }
                 // If it's a number (check that it's not a sheet name or range)
-                elseif (is_numeric($token) and 
+                elseif (is_numeric($token) and
                         (!is_numeric($token.$this->_lookahead) or ($this->_lookahead == '')) and
                         ($this->_lookahead != '!') and ($this->_lookahead != ':'))
                 {
@@ -1345,7 +1370,7 @@ class PHPExcel_Writer_Excel5_Parser
             return $result;
         }
         // if it's a range
-        elseif (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+:(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$this->_current_token) or 
+        elseif (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+:(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$this->_current_token) or
                 preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+\.\.(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$this->_current_token))
         {
             $result = $this->_current_token;
@@ -1414,7 +1439,7 @@ class PHPExcel_Writer_Excel5_Parser
                 $result2 = $this->_condition();
                 $result = $this->_createTree('arg', '', $result2);
             }
-            $num_args++;
+            ++$num_args;
         }
         if (!isset($this->_functions[$function])) {
             throw new Exception("Function $function() doesn't exist");

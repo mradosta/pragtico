@@ -133,6 +133,7 @@ Source Location: /PHPExcel/Writer/Excel5.php<br /><br />
     <li><a href="../PHPExcel_Writer/PHPExcel_Writer_Excel5.html#method_addColor">_addColor</a></li>
     <li><a href="../PHPExcel_Writer/PHPExcel_Writer_Excel5.html#method_allStyles">_allStyles</a></li>
     <li><a href="../PHPExcel_Writer/PHPExcel_Writer_Excel5.html#method_mapBorderStyle">_mapBorderStyle</a></li>
+    <li><a href="../PHPExcel_Writer/PHPExcel_Writer_Excel5.html#method_mapErrorCode">_mapErrorCode</a></li>
     <li><a href="../PHPExcel_Writer/PHPExcel_Writer_Excel5.html#method_mapFillType">_mapFillType</a></li>
     <li><a href="../PHPExcel_Writer/PHPExcel_Writer_Excel5.html#method_mapUnderline">_mapUnderline</a></li>
     <li><a href="../PHPExcel_Writer/PHPExcel_Writer_Excel5.html#method_mapVAlign">_mapVAlign</a></li>
@@ -289,7 +290,7 @@ $phpExcel)</code>
   </div>
   <hr />
 	<a name="methodgetTempDir"></a>
-	<h3>method getTempDir <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a471">471</a>]</span></h3>
+	<h3>method getTempDir <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a544">544</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -365,7 +366,7 @@ $pFileName)</code>
   </div>
   <hr />
 	<a name="methodsetTempDir"></a>
-	<h3>method setTempDir <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a481">481</a>]</span></h3>
+	<h3>method setTempDir <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a554">554</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -404,7 +405,7 @@ $pValue = ''])</code>
   </div>
   <hr />
 	<a name="method_addColor"></a>
-	<h3>method _addColor <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a373">373</a>]</span></h3>
+	<h3>method _addColor <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a429">429</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -446,7 +447,7 @@ $rgb)</code>
   </div>
   <hr />
 	<a name="method_allStyles"></a>
-	<h3>method _allStyles <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a452">452</a>]</span></h3>
+	<h3>method _allStyles <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a525">525</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -488,7 +489,7 @@ $pPHPExcel = null])</code>
   </div>
   <hr />
 	<a name="method_mapBorderStyle"></a>
-	<h3>method _mapBorderStyle <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a384">384</a>]</span></h3>
+	<h3>method _mapBorderStyle <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a440">440</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -523,8 +524,44 @@ $borderStyle)</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="method_mapErrorCode"></a>
+	<h3>method _mapErrorCode <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a504">504</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void _mapErrorCode(
+
+$errorCode)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Map Error code<br /><br /><p>Map Error code</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$errorCode</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="method_mapFillType"></a>
-	<h3>method _mapFillType <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a410">410</a>]</span></h3>
+	<h3>method _mapFillType <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a466">466</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -560,7 +597,7 @@ $fillType)</code>
   </div>
   <hr />
 	<a name="method_mapUnderline"></a>
-	<h3>method _mapUnderline <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a395">395</a>]</span></h3>
+	<h3>method _mapUnderline <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a451">451</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -596,7 +633,7 @@ $underline)</code>
   </div>
   <hr />
 	<a name="method_mapVAlign"></a>
-	<h3>method _mapVAlign <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a441">441</a>]</span></h3>
+	<h3>method _mapVAlign <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer__PHPExcelWriterExcel5.php.html#a497">497</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -635,7 +672,7 @@ $vAlign)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Mon, 25 Aug 2008 13:36:45 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
+		    Documentation generated on Mon, 27 Oct 2008 08:38:23 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
 	      </div>
       </td></tr></table>
     </td>

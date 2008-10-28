@@ -95,7 +95,7 @@ class PHPExcel_Writer_Excel5_Writer extends PHPExcel_Writer_Excel5_Workbook
         }
 
         $chr2 = chr(ord('A') + $frac);
-        $row++;
+        ++$row;
 
         return $chr1 . $chr2 . $row;
     }

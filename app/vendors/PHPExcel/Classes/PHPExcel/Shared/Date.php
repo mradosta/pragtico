@@ -23,7 +23,7 @@
  * @package	PHPExcel_Shared
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license	http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version	1.6.3, 2008-08-25
+ * @version	1.6.4, 2008-10-27
  */
 
 
@@ -98,12 +98,12 @@ class PHPExcel_Shared_Date
 		// Perform conversion
 		if ($dateValue >= 1) {
 			$utcDays = $dateValue - $myExcelBaseDate;
-			$returnValue = round($utcDays * 24 * 60 * 60);
+			$returnValue = (integer) round($utcDays * 24 * 60 * 60);
 		} else {
 			$hours = round($dateValue * 24);
 			$mins = round($dateValue * 24 * 60) - round($hours * 60);
 			$secs = round($dateValue * 24 * 60 * 60) - round($hours * 60 * 60) - round($mins * 60);
-			$returnValue = mktime($hours, $mins, $secs);
+			$returnValue = (integer) mktime($hours, $mins, $secs);
 		}
 
 		// Return
@@ -196,7 +196,7 @@ class PHPExcel_Shared_Date
 
 		$excelTime = (($hours * 3600) + ($minutes * 60) + $seconds) / 86400;
 
-		return $excelDate + $excelTime;
+		return (float) $excelDate + $excelTime;
 	}	//	function FormattedPHPToExcel()
 
 
@@ -254,7 +254,7 @@ class PHPExcel_Shared_Date
 
 		// Try checking all possible characters
 		foreach (self::$possibleCharacters as $possibleCharacter) {
-			if (eregi($possibleCharacter, $pFormatCode)) {
+			if ((stripos($pFormatCode,$possibleCharacter) !== false) && (strpos($pFormatCode, '[') === false) && (strpos($pFormatCode, ']') === false)) {
 				return true;
 			}
 		}

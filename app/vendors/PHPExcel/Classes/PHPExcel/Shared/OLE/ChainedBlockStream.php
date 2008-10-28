@@ -22,7 +22,7 @@
  * @package    PHPExcel_Shared_OLE
  * @copyright  Copyright (c) 2006 - 2007 Christian Schmidt
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version 1.6.3, 2008-08-25
+ * @version 1.6.4, 2008-10-27
  */
 
 require_once 'PHPExcel/Shared/OLE.php';

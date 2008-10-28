@@ -122,6 +122,8 @@ Source Location: /PHPExcel/Shared/String.php<br /><br />
     <li><a href="../PHPExcel_Shared/PHPExcel_Shared_String.html#methodControlCharacterPHP2OOXML">ControlCharacterPHP2OOXML</a></li>
     <li><a href="../PHPExcel_Shared/PHPExcel_Shared_String.html#methodFormatNumber">FormatNumber</a></li>
     <li><a href="../PHPExcel_Shared/PHPExcel_Shared_String.html#methodIsUTF8">IsUTF8</a></li>
+    <li><a href="../PHPExcel_Shared/PHPExcel_Shared_String.html#methodUTF8toBIFF8UnicodeLong">UTF8toBIFF8UnicodeLong</a></li>
+    <li><a href="../PHPExcel_Shared/PHPExcel_Shared_String.html#methodUTF8toBIFF8UnicodeShort">UTF8toBIFF8UnicodeShort</a></li>
   </ul>
 </td>
 
@@ -307,13 +309,85 @@ $value = ''])</code>
     </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
+  <hr />
+	<a name="methodUTF8toBIFF8UnicodeLong"></a>
+	<h3>static method UTF8toBIFF8UnicodeLong <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Shared__PHPExcelSharedString.php.html#a152">152</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>static string UTF8toBIFF8UnicodeLong(
+string
+$value)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Converts a UTF-8 string into BIFF8 Unicode string data (16-bit string length)<br /><br /><p>Converts a UTF-8 string into BIFF8 Unicode string data (16-bit string length) Writes the string using uncompressed notation, no rich text, no Asian phonetics If mbstring extension is not available, ASCII is assumed, and compressed notation is used although this will give wrong results for non-ASCII strings see OpenOffice.org's Documentation of the Microsoft Excel File Format, sect. 2.5.3</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$value</b>&nbsp;&nbsp;</td>
+        <td>UTF-8 encoded string</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodUTF8toBIFF8UnicodeShort"></a>
+	<h3>static method UTF8toBIFF8UnicodeShort <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Shared__PHPExcelSharedString.php.html#a116">116</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>static string UTF8toBIFF8UnicodeShort(
+string
+$value)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Converts a UTF-8 string into BIFF8 Unicode string data (8-bit string length)<br /><br /><p>Converts a UTF-8 string into BIFF8 Unicode string data (8-bit string length) Writes the string using uncompressed notation, no rich text, no Asian phonetics If mbstring extension is not available, ASCII is assumed, and compressed notation is used although this will give wrong results for non-ASCII strings see OpenOffice.org's Documentation of the Microsoft Excel File Format, sect. 2.5.3</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$value</b>&nbsp;&nbsp;</td>
+        <td>UTF-8 encoded string</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
 
 </div><br />
 
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Mon, 25 Aug 2008 13:50:06 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
+		    Documentation generated on Mon, 27 Oct 2008 08:41:21 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
 	      </div>
       </td></tr></table>
     </td>

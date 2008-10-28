@@ -22,7 +22,7 @@
  * @package    PHPExcel_Style
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.3, 2008-08-25
+ * @version    1.6.4, 2008-10-27
  */
 
 
@@ -71,6 +71,20 @@ class PHPExcel_Style_Font implements PHPExcel_IComparable
 	private $_italic;
 	
 	/**
+	 * Superscript
+	 *
+	 * @var boolean
+	 */
+	private $_superScript;
+	
+	/**
+	 * Subscript
+	 *
+	 * @var boolean
+	 */
+	private $_subScript;
+	
+	/**
 	 * Underline
 	 *
 	 * @var string
@@ -116,6 +130,8 @@ class PHPExcel_Style_Font implements PHPExcel_IComparable
     	$this->_size				= 10;
 		$this->_bold				= false;
 		$this->_italic				= false;
+		$this->_superScript			= false;
+		$this->_subScript			= false;
 		$this->_underline			= PHPExcel_Style_Font::UNDERLINE_NONE;
 		$this->_striketrough		= false;
 		$this->_color				= new PHPExcel_Style_Color(PHPExcel_Style_Color::COLOR_BLACK);
@@ -205,6 +221,12 @@ class PHPExcel_Style_Font implements PHPExcel_IComparable
     		}
     		if (array_key_exists('italic', $pStyles)) {
     			$this->setItalic($pStyles['italic']);
+    		}
+			if (array_key_exists('superScript', $pStyles)) {
+    			$this->setSuperScript($pStyles['superScript']);
+    		}
+			if (array_key_exists('subScript', $pStyles)) {
+    			$this->setSubScript($pStyles['subScript']);
     		}
             if (array_key_exists('underline', $pStyles)) {
     			$this->setUnderline($pStyles['underline']);
@@ -306,6 +328,50 @@ class PHPExcel_Style_Font implements PHPExcel_IComparable
     	}
     	$this->propertyBeginBind()->_italic = $pValue;
     }
+	
+    /**
+     * Get SuperScript
+     *
+     * @return boolean
+     */
+    public function getSuperScript() {
+    	return $this->propertyGetBound()->_superScript;
+    }
+    
+    /**
+     * Set SuperScript
+     *
+     * @param boolean $pValue
+     */
+    public function setSuperScript($pValue = false) {
+    	if ($pValue == '') {
+    		$pValue = false;
+    	}
+    	$this->propertyBeginBind()->_superScript = $pValue;
+		$this->propertyBeginBind()->_subScript = !$pValue;
+    }
+	
+	    /**
+     * Get SubScript
+     *
+     * @return boolean
+     */
+    public function getSubScript() {
+    	return $this->propertyGetBound()->_subScript;
+    }
+    
+    /**
+     * Set SubScript
+     *
+     * @param boolean $pValue
+     */
+    public function setSubScript($pValue = false) {
+    	if ($pValue == '') {
+    		$pValue = false;
+    	}
+    	$this->propertyBeginBind()->_subScript = $pValue;
+		$this->propertyBeginBind()->_superScript = !$pValue;
+    }
     
     /**
      * Get Underline
@@ -382,6 +448,8 @@ class PHPExcel_Style_Font implements PHPExcel_IComparable
     		. $property->_size
     		. ($property->_bold ? 't' : 'f')
     		. ($property->_italic ? 't' : 'f')
+			. ($property->_superScript ? 't' : 'f')
+			. ($property->_subScript ? 't' : 'f')
     		. $property->_underline
     		. ($property->_striketrough ? 't' : 'f')
     		. $property->_color->getHashCode()

@@ -22,7 +22,7 @@
  * @package    PHPExcel_Worksheet
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.3, 2008-08-25
+ * @version    1.6.4, 2008-10-27
  */
 
 
@@ -44,6 +44,20 @@ require_once 'PHPExcel/Worksheet/Drawing/Shadow.php';
  */
 class PHPExcel_Worksheet_BaseDrawing implements PHPExcel_IComparable
 {		
+	/**
+	 * Image counter
+	 *
+	 * @var int
+	 */
+	private static $_imageCounter = 0;
+	
+	/**
+	 * Image index
+	 *
+	 * @var int
+	 */
+	private static $_imageIndex = 0;
+	
 	/**
 	 * Name
 	 *
@@ -138,6 +152,19 @@ class PHPExcel_Worksheet_BaseDrawing implements PHPExcel_IComparable
     	$this->_resizeProportional	= true;
     	$this->_rotation			= 0;
     	$this->_shadow				= new PHPExcel_Worksheet_Drawing_Shadow();
+		
+		// Set image index
+		self::$_imageCounter++;
+		$this->_imageIndex 			= self::$_imageCounter;
+    }
+	
+    /**
+     * Get image index
+     *
+     * @return int
+     */
+    public function getImageIndex() {
+    	return $this->_imageIndex;
     }
        
     /**

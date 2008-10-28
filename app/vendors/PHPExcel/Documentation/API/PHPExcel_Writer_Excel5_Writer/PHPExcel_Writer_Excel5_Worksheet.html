@@ -116,11 +116,15 @@ Source Location: /PHPExcel/Writer/Excel5/Worksheet.php<br /><br />
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_active_pane">$_active_pane</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_biff8_input_encoding">$_biff8_input_encoding</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_colinfo">$_colinfo</a></li>
+    <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_defaultRowHeight">$_defaultRowHeight</a></li>
+    <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_defColWidth">$_defColWidth</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_dim_colmax">$_dim_colmax</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_dim_colmin">$_dim_colmin</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_dim_rowmax">$_dim_rowmax</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_dim_rowmin">$_dim_rowmin</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_filehandle">$_filehandle</a></li>
+    <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_firstColumnIndex">$_firstColumnIndex</a></li>
+    <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_firstRowIndex">$_firstRowIndex</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_fit_height">$_fit_height</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_fit_page">$_fit_page</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_fit_width">$_fit_width</a></li>
@@ -129,6 +133,8 @@ Source Location: /PHPExcel/Writer/Excel5/Worksheet.php<br /><br />
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_hcenter">$_hcenter</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_header">$_header</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_input_encoding">$_input_encoding</a></li>
+    <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_lastColumnIndex">$_lastColumnIndex</a></li>
+    <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_lastRowIndex">$_lastRowIndex</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_margin_bottom">$_margin_bottom</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_margin_foot">$_margin_foot</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_margin_head">$_margin_head</a></li>
@@ -186,6 +192,9 @@ Source Location: /PHPExcel/Writer/Excel5/Worksheet.php<br /><br />
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodselect">select</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetBIFF8InputEncoding">setBIFF8InputEncoding</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetColumn">setColumn</a></li>
+    <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetDefaultRowHeight">setDefaultRowHeight</a></li>
+    <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetDefColWidth">setDefColWidth</a></li>
+    <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetDimensions">setDimensions</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetFirstSheet">setFirstSheet</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetFooter">setFooter</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetHeader">setHeader</a></li>
@@ -212,6 +221,7 @@ Source Location: /PHPExcel/Writer/Excel5/Worksheet.php<br /><br />
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodthawPanes">thawPanes</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodwrite">write</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodwriteBlank">writeBlank</a></li>
+    <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodwriteBoolErr">writeBoolErr</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodwriteCol">writeCol</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodwriteFormula">writeFormula</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodwriteNote">writeNote</a></li>
@@ -232,6 +242,7 @@ Source Location: /PHPExcel/Writer/Excel5/Worksheet.php<br /><br />
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_sizeRow">_sizeRow</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_storeColinfo">_storeColinfo</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_storeDataValidity">_storeDataValidity</a></li>
+    <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_storeDefaultRowHeight">_storeDefaultRowHeight</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_storeDefcol">_storeDefcol</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_storeDimensions">_storeDimensions</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_storeExterncount">_storeExterncount</a></li>
@@ -326,6 +337,18 @@ Source Location: /PHPExcel/Writer/Excel5/Worksheet.php<br /><br />
   </dt>
   <dd>
     Constructor
+  </dd>
+    <dt>
+    <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#methodwriteData">PHPExcel_Writer_Excel5_BIFFwriter::writeData()</a>
+  </dt>
+  <dd>
+    General storage function like _append and _prepend, but returns string instead of modifying $this-&gt;_data
+  </dd>
+    <dt>
+    <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#methodwriteEof">PHPExcel_Writer_Excel5_BIFFwriter::writeEof()</a>
+  </dt>
+  <dd>
+    Writes Excel EOF record to indicate the end of a BIFF stream.
   </dd>
     <dt>
     <a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#method_addContinue">PHPExcel_Writer_Excel5_BIFFwriter::_addContinue()</a>
@@ -423,7 +446,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$print_colmax"></a>
 	<p></p>
 	<h4>$print_colmax = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a278">278</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a288">288</a>]</p>
   Last column of the area to print<br /><br /><p>Last column of the area to print</p><br />
   <br />
 	<div class="tags">
@@ -438,7 +461,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$print_colmin"></a>
 	<p></p>
 	<h4>$print_colmin = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a272">272</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a282">282</a>]</p>
   First column of the area to print<br /><br /><p>First column of the area to print</p><br />
   <br />
 	<div class="tags">
@@ -453,7 +476,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$print_rowmax"></a>
 	<p></p>
 	<h4>$print_rowmax = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a266">266</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a276">276</a>]</p>
   Last row to of the area to print<br /><br /><p>Last row to of the area to print</p><br />
   <br />
 	<div class="tags">
@@ -468,7 +491,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$print_rowmin"></a>
 	<p></p>
 	<h4>$print_rowmin = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a260">260</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a270">270</a>]</p>
   First row of the area to print<br /><br /><p>First row of the area to print</p><br />
   <br />
 	<div class="tags">
@@ -483,7 +506,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$selected"></a>
 	<p></p>
 	<h4>$selected = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a164">164</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a174">174</a>]</p>
   Bit specifying if the worksheet is selected<br /><br /><p>Bit specifying if the worksheet is selected</p><br />
   <br />
 	<div class="tags">
@@ -498,7 +521,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$title_colmin"></a>
 	<p></p>
 	<h4>$title_colmin = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a254">254</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a264">264</a>]</p>
   First column to reapeat on each printed page<br /><br /><p>First column to reapeat on each printed page</p><br />
   <br />
 	<div class="tags">
@@ -513,7 +536,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$title_rowmax"></a>
 	<p></p>
 	<h4>$title_rowmax = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a248">248</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a258">258</a>]</p>
   Last row to reapeat on each printed page<br /><br /><p>Last row to reapeat on each printed page</p><br />
   <br />
 	<div class="tags">
@@ -528,7 +551,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$title_rowmin"></a>
 	<p></p>
 	<h4>$title_rowmin = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a242">242</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a252">252</a>]</p>
   First row to reapeat on each printed page<br /><br /><p>First row to reapeat on each printed page</p><br />
   <br />
 	<div class="tags">
@@ -543,7 +566,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_active_pane"></a>
 	<p></p>
 	<h4>$_active_pane = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a152">152</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a162">162</a>]</p>
   The active pane for the worksheet<br /><br /><p>The active pane for the worksheet</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -567,7 +590,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_biff8_input_encoding"></a>
 	<p></p>
 	<h4>$_biff8_input_encoding = <span class="value">&nbsp;'UTF-16LE'</span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1562">1562</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1601">1601</a>]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -591,7 +614,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_colinfo"></a>
 	<p></p>
 	<h4>$_colinfo = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a134">134</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a144">144</a>]</p>
   Array containing format information for columns<br /><br /><p>Array containing format information for columns</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -608,6 +631,54 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
     <tr>
       <td><b>Type:</b>&nbsp;&nbsp;</td>
       <td>array</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_defaultRowHeight"></a>
+	<p></p>
+	<h4>$_defaultRowHeight = <span class="value">&nbsp;null</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a138">138</a>]</p>
+  Default row height in twips = 1/20 point<br /><br /><p>Default row height in twips = 1/20 point</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_defColWidth"></a>
+	<p></p>
+	<h4>$_defColWidth = <span class="value">&nbsp;8</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a133">133</a>]</p>
+  Default column character width<br /><br /><p>Default column character width</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
     </tr>
       </table>
 	</div><br /><br />
@@ -744,10 +815,58 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
       </table>
 	</div><br /><br />
 	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_firstColumnIndex"></a>
+	<p></p>
+	<h4>$_firstColumnIndex = <span class="value"></span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a396">396</a>]</p>
+  Index of first used column (at least 0)<br /><br /><p>Index of first used column (at least 0)</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>int</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_firstRowIndex"></a>
+	<p></p>
+	<h4>$_firstRowIndex = <span class="value"></span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a384">384</a>]</p>
+  Index of first used row (at least 0)<br /><br /><p>Index of first used row (at least 0)</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>int</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
 	<a name="var$_fit_height"></a>
 	<p></p>
 	<h4>$_fit_height = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a326">326</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a336">336</a>]</p>
   Number of pages to fit high<br /><br /><p>Number of pages to fit high</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -771,7 +890,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_fit_page"></a>
 	<p></p>
 	<h4>$_fit_page = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a314">314</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a324">324</a>]</p>
   Whether to fit to page when printing or not.<br /><br /><p>Whether to fit to page when printing or not.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -795,7 +914,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_fit_width"></a>
 	<p></p>
 	<h4>$_fit_width = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a320">320</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a330">330</a>]</p>
   Number of pages to fit wide<br /><br /><p>Number of pages to fit wide</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -819,7 +938,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_footer"></a>
 	<p></p>
 	<h4>$_footer = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a188">188</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a198">198</a>]</p>
   The page footer caption<br /><br /><p>The page footer caption</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -843,7 +962,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_frozen"></a>
 	<p></p>
 	<h4>$_frozen = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a158">158</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a168">168</a>]</p>
   Bit specifying if panes are frozen<br /><br /><p>Bit specifying if panes are frozen</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -867,7 +986,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_hcenter"></a>
 	<p></p>
 	<h4>$_hcenter = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a194">194</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a204">204</a>]</p>
   The horizontal centering value for the page<br /><br /><p>The horizontal centering value for the page</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -891,7 +1010,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_header"></a>
 	<p></p>
 	<h4>$_header = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a182">182</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a192">192</a>]</p>
   The page header caption<br /><br /><p>The page header caption</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -915,7 +1034,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_input_encoding"></a>
 	<p></p>
 	<h4>$_input_encoding = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a356">356</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a366">366</a>]</p>
   Charset encoding currently used when calling writeString()<br /><br /><p>Charset encoding currently used when calling writeString()</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -936,10 +1055,58 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
       </table>
 	</div><br /><br />
 	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_lastColumnIndex"></a>
+	<p></p>
+	<h4>$_lastColumnIndex = <span class="value"></span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a402">402</a>]</p>
+  Index of last used column (no used columns means -1)<br /><br /><p>Index of last used column (no used columns means -1)</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>int</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$_lastRowIndex"></a>
+	<p></p>
+	<h4>$_lastRowIndex = <span class="value"></span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a390">390</a>]</p>
+  Index of last used row.<br /><br /><p>Index of last used row. (no used rows means -1)</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>int</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
 	<a name="var$_margin_bottom"></a>
 	<p></p>
 	<h4>$_margin_bottom = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a236">236</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a246">246</a>]</p>
   The bottom margin for the worksheet in inches<br /><br /><p>The bottom margin for the worksheet in inches</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -963,7 +1130,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_margin_foot"></a>
 	<p></p>
 	<h4>$_margin_foot = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a212">212</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a222">222</a>]</p>
   The margin for the footer<br /><br /><p>The margin for the footer</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -987,7 +1154,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_margin_head"></a>
 	<p></p>
 	<h4>$_margin_head = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a206">206</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a216">216</a>]</p>
   The margin for the header<br /><br /><p>The margin for the header</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1011,7 +1178,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_margin_left"></a>
 	<p></p>
 	<h4>$_margin_left = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a218">218</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a228">228</a>]</p>
   The left margin for the worksheet in inches<br /><br /><p>The left margin for the worksheet in inches</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1035,7 +1202,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_margin_right"></a>
 	<p></p>
 	<h4>$_margin_right = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a224">224</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a234">234</a>]</p>
   The right margin for the worksheet in inches<br /><br /><p>The right margin for the worksheet in inches</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1059,7 +1226,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_margin_top"></a>
 	<p></p>
 	<h4>$_margin_top = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a230">230</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a240">240</a>]</p>
   The top margin for the worksheet in inches<br /><br /><p>The top margin for the worksheet in inches</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1083,7 +1250,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_merged_ranges"></a>
 	<p></p>
 	<h4>$_merged_ranges = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a350">350</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a360">360</a>]</p>
   Merged cell ranges<br /><br /><p>Merged cell ranges</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1107,7 +1274,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_orientation"></a>
 	<p></p>
 	<h4>$_orientation = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a176">176</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a186">186</a>]</p>
   Bit specifying paper orientation (for printing).<br /><br /><p>Bit specifying paper orientation (for printing). 0 =&gt; landscape, 1 =&gt; portrait</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1131,7 +1298,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_outline_below"></a>
 	<p></p>
 	<h4>$_outline_below = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a296">296</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a306">306</a>]</p>
   Whether to have outline summary below.<br /><br /><p>Whether to have outline summary below.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1155,7 +1322,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_outline_on"></a>
 	<p></p>
 	<h4>$_outline_on = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a284">284</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a294">294</a>]</p>
   Whether to use outline.<br /><br /><p>Whether to use outline.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1179,7 +1346,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_outline_right"></a>
 	<p></p>
 	<h4>$_outline_right = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a302">302</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a312">312</a>]</p>
   Whether to have outline summary at the right.<br /><br /><p>Whether to have outline summary at the right.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1203,7 +1370,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_outline_row_level"></a>
 	<p></p>
 	<h4>$_outline_row_level = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a308">308</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a318">318</a>]</p>
   Outline row level.<br /><br /><p>Outline row level.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1227,7 +1394,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_outline_style"></a>
 	<p></p>
 	<h4>$_outline_style = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a290">290</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a300">300</a>]</p>
   Auto outline styles.<br /><br /><p>Auto outline styles.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1251,7 +1418,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_panes"></a>
 	<p></p>
 	<h4>$_panes = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a146">146</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a156">156</a>]</p>
   Array containing the panes for the worksheet<br /><br /><p>Array containing the panes for the worksheet</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1275,7 +1442,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_paper_size"></a>
 	<p></p>
 	<h4>$_paper_size = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a170">170</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a180">180</a>]</p>
   The paper size (for printing) (DOCUMENT!!!)<br /><br /><p>The paper size (for printing) (DOCUMENT!!!)</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1323,7 +1490,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_selection"></a>
 	<p></p>
 	<h4>$_selection = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a140">140</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a150">150</a>]</p>
   Array containing the selected area for the worksheet<br /><br /><p>Array containing the selected area for the worksheet</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1347,7 +1514,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_str_table"></a>
 	<p></p>
 	<h4>$_str_table = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a344">344</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a354">354</a>]</p>
   Reference to the array containing all the unique strings in the workbook<br /><br /><p>Reference to the array containing all the unique strings in the workbook</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1371,7 +1538,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_str_total"></a>
 	<p></p>
 	<h4>$_str_total = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a332">332</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a342">342</a>]</p>
   Reference to the total number of strings in the workbook<br /><br /><p>Reference to the total number of strings in the workbook</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1395,7 +1562,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_str_unique"></a>
 	<p></p>
 	<h4>$_str_unique = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a338">338</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a348">348</a>]</p>
   Reference to the number of unique strings in the workbook<br /><br /><p>Reference to the number of unique strings in the workbook</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1419,7 +1586,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_tempFilesCreated"></a>
 	<p></p>
 	<h4>$_tempFilesCreated = <span class="value">array()</span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a368">368</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a378">378</a>]</p>
   List of temporary files created<br /><br /><p>List of temporary files created</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1443,7 +1610,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_tmp_dir"></a>
 	<p></p>
 	<h4>$_tmp_dir = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a362">362</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a372">372</a>]</p>
   The temporary dir for storing files<br /><br /><p>The temporary dir for storing files</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1515,7 +1682,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 	<a name="var$_vcenter"></a>
 	<p></p>
 	<h4>$_vcenter = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a200">200</a>]</p>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a210">210</a>]</p>
   The vertical centering value for the page<br /><br /><p>The vertical centering value for the page</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -1617,7 +1784,7 @@ Class for generating Excel Spreadsheets<br /><br /><p>Class for generating Excel
 
   <hr />
 	<a name="methodPHPExcel_Writer_Excel5_Worksheet"></a>
-	<h3>constructor PHPExcel_Writer_Excel5_Worksheet <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a382">382</a>]</span></h3>
+	<h3>constructor PHPExcel_Writer_Excel5_Worksheet <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a416">416</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1713,7 +1880,7 @@ $tempDir = ''])</code>
   </div>
   <hr />
 	<a name="methodactivate"></a>
-	<h3>method activate <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a732">732</a>]</span></h3>
+	<h3>method activate <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a771">771</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1738,7 +1905,7 @@ $tempDir = ''])</code>
   </div>
   <hr />
 	<a name="methodcenterHorizontally"></a>
-	<h3>method centerHorizontally <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a907">907</a>]</span></h3>
+	<h3>method centerHorizontally <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a946">946</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1774,7 +1941,7 @@ $center = 1])</code>
   </div>
   <hr />
 	<a name="methodcenterVertically"></a>
-	<h3>method centerVertically <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a918">918</a>]</span></h3>
+	<h3>method centerVertically <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a957">957</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1810,7 +1977,7 @@ $center = 1])</code>
   </div>
   <hr />
 	<a name="methodcleanup"></a>
-	<h3>method cleanup <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a485">485</a>]</span></h3>
+	<h3>method cleanup <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a519">519</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1835,7 +2002,7 @@ $center = 1])</code>
   </div>
   <hr />
 	<a name="methodclose"></a>
-	<h3>method close <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a540">540</a>]</span></h3>
+	<h3>method close <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a574">574</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1874,7 +2041,7 @@ $sheetnames)</code>
   </div>
   <hr />
 	<a name="methodfitToPages"></a>
-	<h3>method fitToPages <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1097">1097</a>]</span></h3>
+	<h3>method fitToPages <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1136">1136</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1919,7 +2086,7 @@ $height)</code>
   </div>
   <hr />
 	<a name="methodfreezePanes"></a>
-	<h3>method freezePanes <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a812">812</a>]</span></h3>
+	<h3>method freezePanes <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a851">851</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1955,7 +2122,7 @@ $panes)</code>
   </div>
   <hr />
 	<a name="methodgetData"></a>
-	<h3>method getData <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a670">670</a>]</span></h3>
+	<h3>method getData <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a709">709</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1980,7 +2147,7 @@ $panes)</code>
   </div>
   <hr />
 	<a name="methodgetName"></a>
-	<h3>method getName <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a659">659</a>]</span></h3>
+	<h3>method getName <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a698">698</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2008,7 +2175,7 @@ $panes)</code>
   </div>
   <hr />
 	<a name="methodhideGridlines"></a>
-	<h3>method hideGridlines <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1062">1062</a>]</span></h3>
+	<h3>method hideGridlines <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1101">1101</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2033,7 +2200,7 @@ $panes)</code>
   </div>
   <hr />
 	<a name="methodhideScreenGridlines"></a>
-	<h3>method hideScreenGridlines <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1072">1072</a>]</span></h3>
+	<h3>method hideScreenGridlines <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1111">1111</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2058,7 +2225,7 @@ $panes)</code>
   </div>
   <hr />
 	<a name="methodinsertBitmap"></a>
-	<h3>method insertBitmap <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3152">3152</a>]</span></h3>
+	<h3>method insertBitmap <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3212">3212</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2130,7 +2297,7 @@ $scale_y = 1])</code>
   </div>
   <hr />
 	<a name="methodmergeCells"></a>
-	<h3>method mergeCells <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2840">2840</a>]</span></h3>
+	<h3>method mergeCells <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2903">2903</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2184,7 +2351,7 @@ $last_col)</code>
   </div>
   <hr />
 	<a name="methodprintArea"></a>
-	<h3>method printArea <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1048">1048</a>]</span></h3>
+	<h3>method printArea <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1087">1087</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2238,7 +2405,7 @@ $last_col)</code>
   </div>
   <hr />
 	<a name="methodprintRowColHeaders"></a>
-	<h3>method printRowColHeaders <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1083">1083</a>]</span></h3>
+	<h3>method printRowColHeaders <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1122">1122</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2274,7 +2441,7 @@ $print = 1])</code>
   </div>
   <hr />
 	<a name="methodprotect"></a>
-	<h3>method protect <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a758">758</a>]</span></h3>
+	<h3>method protect <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a797">797</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2316,7 +2483,7 @@ $encoded = false])</code>
   </div>
   <hr />
 	<a name="methodrepeatColumns"></a>
-	<h3>method repeatColumns <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1029">1029</a>]</span></h3>
+	<h3>method repeatColumns <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1068">1068</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2358,7 +2525,7 @@ $last_col = null])</code>
   </div>
   <hr />
 	<a name="methodrepeatRows"></a>
-	<h3>method repeatRows <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1012">1012</a>]</span></h3>
+	<h3>method repeatRows <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1051">1051</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2400,7 +2567,7 @@ $last_row = null])</code>
   </div>
   <hr />
 	<a name="methodselect"></a>
-	<h3>method select <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a720">720</a>]</span></h3>
+	<h3>method select <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a759">759</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2425,7 +2592,7 @@ $last_row = null])</code>
   </div>
   <hr />
 	<a name="methodsetBIFF8InputEncoding"></a>
-	<h3>method setBIFF8InputEncoding <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1563">1563</a>]</span></h3>
+	<h3>method setBIFF8InputEncoding <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1602">1602</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2452,7 +2619,7 @@ $encoding)</code>
   </div>
   <hr />
 	<a name="methodsetColumn"></a>
-	<h3>method setColumn <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a775">775</a>]</span></h3>
+	<h3>method setColumn <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a814">814</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2517,8 +2684,134 @@ $level = 0])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodsetDefaultRowHeight"></a>
+	<h3>method setDefaultRowHeight <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2204">2204</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void setDefaultRowHeight(
+
+$height)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Set the default row height in twips = 1/20 of a point<br /><br /><p>Set the default row height in twips = 1/20 of a point</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$height</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodsetDefColWidth"></a>
+	<h3>method setDefColWidth <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2196">2196</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void setDefColWidth(
+integer
+$width)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Set the default column (character) width<br /><br /><p>Set the default column (character) width</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">integer&nbsp;&nbsp;</td>
+        <td><b>$width</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodsetDimensions"></a>
+	<h3>method setDimensions <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3642">3642</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void setDimensions(
+[int
+$firstRowIndex = 0], [int
+$lastRowIndex = -1], [int
+$firstColumnIndex = 0], [int
+$lastColumnIndex = -1])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Set sheet dimensions<br /><br /><p>Set sheet dimensions</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$firstRowIndex</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$lastRowIndex</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$firstColumnIndex</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$lastColumnIndex</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodsetFirstSheet"></a>
-	<h3>method setFirstSheet <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a745">745</a>]</span></h3>
+	<h3>method setFirstSheet <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a784">784</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2543,7 +2836,7 @@ $level = 0])</code>
   </div>
   <hr />
 	<a name="methodsetFooter"></a>
-	<h3>method setFooter <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a891">891</a>]</span></h3>
+	<h3>method setFooter <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a930">930</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2585,7 +2878,7 @@ $margin = 0.50])</code>
   </div>
   <hr />
 	<a name="methodsetHeader"></a>
-	<h3>method setHeader <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a874">874</a>]</span></h3>
+	<h3>method setHeader <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a913">913</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2627,7 +2920,7 @@ $margin = 0.50])</code>
   </div>
   <hr />
 	<a name="methodsetHPagebreaks"></a>
-	<h3>method setHPagebreaks <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1111">1111</a>]</span></h3>
+	<h3>method setHPagebreaks <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1150">1150</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2663,7 +2956,7 @@ $breaks)</code>
   </div>
   <hr />
 	<a name="methodsetInputEncoding"></a>
-	<h3>method setInputEncoding <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1576">1576</a>]</span></h3>
+	<h3>method setInputEncoding <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1615">1615</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2699,7 +2992,7 @@ $encoding)</code>
   </div>
   <hr />
 	<a name="methodsetLandscape"></a>
-	<h3>method setLandscape <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a850">850</a>]</span></h3>
+	<h3>method setLandscape <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a889">889</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2724,7 +3017,7 @@ $encoding)</code>
   </div>
   <hr />
 	<a name="methodsetMarginBottom"></a>
-	<h3>method setMarginBottom <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1000">1000</a>]</span></h3>
+	<h3>method setMarginBottom <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1039">1039</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2760,7 +3053,7 @@ $margin = 1.00])</code>
   </div>
   <hr />
 	<a name="methodsetMarginLeft"></a>
-	<h3>method setMarginLeft <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a967">967</a>]</span></h3>
+	<h3>method setMarginLeft <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1006">1006</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2796,7 +3089,7 @@ $margin = 0.75])</code>
   </div>
   <hr />
 	<a name="methodsetMarginRight"></a>
-	<h3>method setMarginRight <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a978">978</a>]</span></h3>
+	<h3>method setMarginRight <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1017">1017</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2832,7 +3125,7 @@ $margin = 0.75])</code>
   </div>
   <hr />
 	<a name="methodsetMargins"></a>
-	<h3>method setMargins <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a929">929</a>]</span></h3>
+	<h3>method setMargins <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a968">968</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2868,7 +3161,7 @@ $margin)</code>
   </div>
   <hr />
 	<a name="methodsetMargins_LR"></a>
-	<h3>method setMargins_LR <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a943">943</a>]</span></h3>
+	<h3>method setMargins_LR <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a982">982</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2904,7 +3197,7 @@ $margin)</code>
   </div>
   <hr />
 	<a name="methodsetMargins_TB"></a>
-	<h3>method setMargins_TB <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a955">955</a>]</span></h3>
+	<h3>method setMargins_TB <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a994">994</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2940,7 +3233,7 @@ $margin)</code>
   </div>
   <hr />
 	<a name="methodsetMarginTop"></a>
-	<h3>method setMarginTop <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a989">989</a>]</span></h3>
+	<h3>method setMarginTop <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1028">1028</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -2976,7 +3269,7 @@ $margin = 1.00])</code>
   </div>
   <hr />
 	<a name="methodsetMerge"></a>
-	<h3>method setMerge <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a704">704</a>]</span></h3>
+	<h3>method setMerge <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a743">743</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3030,7 +3323,7 @@ $last_col)</code>
   </div>
   <hr />
 	<a name="methodsetOutline"></a>
-	<h3>method setOutline <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1429">1429</a>]</span></h3>
+	<h3>method setOutline <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1468">1468</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3075,7 +3368,7 @@ $auto_style = false])</code>
   </div>
   <hr />
 	<a name="methodsetPaper"></a>
-	<h3>method setPaper <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a861">861</a>]</span></h3>
+	<h3>method setPaper <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a900">900</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3111,7 +3404,7 @@ $size = 0])</code>
   </div>
   <hr />
 	<a name="methodsetPortrait"></a>
-	<h3>method setPortrait <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a840">840</a>]</span></h3>
+	<h3>method setPortrait <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a879">879</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3136,7 +3429,7 @@ $size = 0])</code>
   </div>
   <hr />
 	<a name="methodsetPrintScale"></a>
-	<h3>method setPrintScale <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1157">1157</a>]</span></h3>
+	<h3>method setPrintScale <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1196">1196</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3172,7 +3465,7 @@ $scale = 100])</code>
   </div>
   <hr />
 	<a name="methodsetRow"></a>
-	<h3>method setRow <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2177">2177</a>]</span></h3>
+	<h3>method setRow <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2220">2220</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3232,7 +3525,7 @@ $level = 0])</code>
   </div>
   <hr />
 	<a name="methodsetSelection"></a>
-	<h3>method setSelection <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a796">796</a>]</span></h3>
+	<h3>method setSelection <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a835">835</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3286,7 +3579,7 @@ $last_column)</code>
   </div>
   <hr />
 	<a name="methodsetTempDir"></a>
-	<h3>method setTempDir <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a522">522</a>]</span></h3>
+	<h3>method setTempDir <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a556">556</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3325,7 +3618,7 @@ $dir)</code>
   </div>
   <hr />
 	<a name="methodsetVPagebreaks"></a>
-	<h3>method setVPagebreaks <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1125">1125</a>]</span></h3>
+	<h3>method setVPagebreaks <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1164">1164</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3361,7 +3654,7 @@ $breaks)</code>
   </div>
   <hr />
 	<a name="methodsetZoom"></a>
-	<h3>method setZoom <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1139">1139</a>]</span></h3>
+	<h3>method setZoom <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1178">1178</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3397,7 +3690,7 @@ $scale = 100])</code>
   </div>
   <hr />
 	<a name="methodthawPanes"></a>
-	<h3>method thawPanes <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a829">829</a>]</span></h3>
+	<h3>method thawPanes <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a868">868</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3433,7 +3726,7 @@ $panes)</code>
   </div>
   <hr />
 	<a name="methodwrite"></a>
-	<h3>method write <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1180">1180</a>]</span></h3>
+	<h3>method write <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1219">1219</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3493,7 +3786,7 @@ $numberFormat = null])</code>
   </div>
   <hr />
 	<a name="methodwriteBlank"></a>
-	<h3>method writeBlank <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1744">1744</a>]</span></h3>
+	<h3>method writeBlank <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1783">1783</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3542,8 +3835,68 @@ $format)</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodwriteBoolErr"></a>
+	<h3>method writeBoolErr <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1823">1823</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void writeBoolErr(
+
+$row, 
+$col, 
+$value, 
+$isError, 
+$format)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Write a boolean or an error type to the specified row and column (zero indexed)<br /><br /><p>Write a boolean or an error type to the specified row and column (zero indexed)</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$row</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$col</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$value</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$isError</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$format</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodwriteCol"></a>
-	<h3>method writeCol <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1263">1263</a>]</span></h3>
+	<h3>method writeCol <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1302">1302</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3603,7 +3956,7 @@ $numberFormat = null])</code>
   </div>
   <hr />
 	<a name="methodwriteFormula"></a>
-	<h3>method writeFormula <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1797">1797</a>]</span></h3>
+	<h3>method writeFormula <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1871">1871</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3658,7 +4011,7 @@ $format = null])</code>
   </div>
   <hr />
 	<a name="methodwriteNote"></a>
-	<h3>method writeNote <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1684">1684</a>]</span></h3>
+	<h3>method writeNote <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1723">1723</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3706,7 +4059,7 @@ $note)</code>
   </div>
   <hr />
 	<a name="methodwriteNumber"></a>
-	<h3>method writeNumber <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1464">1464</a>]</span></h3>
+	<h3>method writeNumber <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1503">1503</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3761,7 +4114,7 @@ $format = null])</code>
   </div>
   <hr />
 	<a name="methodwriteRow"></a>
-	<h3>method writeRow <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1235">1235</a>]</span></h3>
+	<h3>method writeRow <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1274">1274</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3821,7 +4174,7 @@ $numberFormat = null])</code>
   </div>
   <hr />
 	<a name="methodwriteString"></a>
-	<h3>method writeString <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1517">1517</a>]</span></h3>
+	<h3>method writeString <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1556">1556</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3875,7 +4228,7 @@ $format = null])</code>
   </div>
   <hr />
 	<a name="methodwriteStringBIFF8"></a>
-	<h3>method writeStringBIFF8 <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1599">1599</a>]</span></h3>
+	<h3>method writeStringBIFF8 <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1638">1638</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3929,7 +4282,7 @@ $format = null])</code>
   </div>
   <hr />
 	<a name="methodwriteUrl"></a>
-	<h3>method writeUrl <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1867">1867</a>]</span></h3>
+	<h3>method writeUrl <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1939">1939</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -3937,9 +4290,7 @@ $format = null])</code>
 integer
 $row, integer
 $col, string
-$url, [string
-$string = ''], [mixed
-$format = null])</code>
+$url)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
@@ -3975,23 +4326,13 @@ $format = null])</code>
         <td><b>$url</b>&nbsp;&nbsp;</td>
         <td>URL string</td>
       </tr>
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$string</b>&nbsp;&nbsp;</td>
-        <td>Alternative label</td>
-      </tr>
-          <tr>
-        <td class="type">mixed&nbsp;&nbsp;</td>
-        <td><b>$format</b>&nbsp;&nbsp;</td>
-        <td>The cell format</td>
-      </tr>
         </table>
     </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="method_append"></a>
-	<h3>method _append <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1308">1308</a>]</span></h3>
+	<h3>method _append <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1347">1347</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4027,7 +4368,7 @@ $data)</code>
   </div>
   <hr />
 	<a name="method_cellToRowcol"></a>
-	<h3>method _cellToRowcol <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1368">1368</a>]</span></h3>
+	<h3>method _cellToRowcol <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1407">1407</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4066,7 +4407,7 @@ $cell)</code>
   </div>
   <hr />
 	<a name="method_checkRowCol"></a>
-	<h3>method _checkRowCol <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1652">1652</a>]</span></h3>
+	<h3>method _checkRowCol <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1691">1691</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4111,7 +4452,7 @@ $col)</code>
   </div>
   <hr />
 	<a name="method_encodePassword"></a>
-	<h3>method _encodePassword <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1399">1399</a>]</span></h3>
+	<h3>method _encodePassword <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1438">1438</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4150,7 +4491,7 @@ $plaintext)</code>
   </div>
   <hr />
 	<a name="method_initialize"></a>
-	<h3>method _initialize <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a500">500</a>]</span></h3>
+	<h3>method _initialize <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a534">534</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4175,7 +4516,7 @@ $plaintext)</code>
   </div>
   <hr />
 	<a name="method_positionImage"></a>
-	<h3>method _positionImage <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3226">3226</a>]</span></h3>
+	<h3>method _positionImage <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3286">3286</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4246,7 +4587,7 @@ $height)</code>
   </div>
   <hr />
 	<a name="method_processBitmap"></a>
-	<h3>method _processBitmap <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3447">3447</a>]</span></h3>
+	<h3>method _processBitmap <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3507">3507</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4285,7 +4626,7 @@ $bitmap)</code>
   </div>
   <hr />
 	<a name="method_processBitmapGd"></a>
-	<h3>method _processBitmapGd <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3417">3417</a>]</span></h3>
+	<h3>method _processBitmapGd <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3477">3477</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4324,7 +4665,7 @@ $image)</code>
   </div>
   <hr />
 	<a name="method_sizeCol"></a>
-	<h3>method _sizeCol <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3292">3292</a>]</span></h3>
+	<h3>method _sizeCol <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3352">3352</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4363,7 +4704,7 @@ $col)</code>
   </div>
   <hr />
 	<a name="method_sizeRow"></a>
-	<h3>method _sizeRow <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3316">3316</a>]</span></h3>
+	<h3>method _sizeRow <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3376">3376</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4402,7 +4743,7 @@ $row)</code>
   </div>
   <hr />
 	<a name="method_storeColinfo"></a>
-	<h3>method _storeColinfo <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2346">2346</a>]</span></h3>
+	<h3>method _storeColinfo <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2409">2409</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4440,7 +4781,7 @@ $col_array)</code>
   </div>
   <hr />
 	<a name="method_storeDataValidity"></a>
-	<h3>method _storeDataValidity <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3551">3551</a>]</span></h3>
+	<h3>method _storeDataValidity <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3611">3611</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4464,8 +4805,33 @@ $col_array)</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="method_storeDefaultRowHeight"></a>
+	<h3>method _storeDefaultRowHeight <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2365">2365</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void _storeDefaultRowHeight(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Write BIFF record DEFAULTROWHEIGHT.<br /><br /><p>Write BIFF record DEFAULTROWHEIGHT.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>private</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="method_storeDefcol"></a>
-	<h3>method _storeDefcol <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2320">2320</a>]</span></h3>
+	<h3>method _storeDefcol <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2382">2382</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4490,7 +4856,7 @@ $col_array)</code>
   </div>
   <hr />
 	<a name="method_storeDimensions"></a>
-	<h3>method _storeDimensions <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2234">2234</a>]</span></h3>
+	<h3>method _storeDimensions <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2277">2277</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4515,7 +4881,7 @@ $col_array)</code>
   </div>
   <hr />
 	<a name="method_storeExterncount"></a>
-	<h3>method _storeExterncount <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2470">2470</a>]</span></h3>
+	<h3>method _storeExterncount <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2533">2533</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4552,7 +4918,7 @@ $count)</code>
   </div>
   <hr />
 	<a name="method_storeExternsheet"></a>
-	<h3>method _storeExternsheet <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2489">2489</a>]</span></h3>
+	<h3>method _storeExternsheet <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2552">2552</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4588,7 +4954,7 @@ $sheetname)</code>
   </div>
   <hr />
 	<a name="method_storeFooter"></a>
-	<h3>method _storeFooter <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2687">2687</a>]</span></h3>
+	<h3>method _storeFooter <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2750">2750</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4613,7 +4979,7 @@ $sheetname)</code>
   </div>
   <hr />
 	<a name="method_storeGridset"></a>
-	<h3>method _storeGridset <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2903">2903</a>]</span></h3>
+	<h3>method _storeGridset <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2966">2966</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4638,7 +5004,7 @@ $sheetname)</code>
   </div>
   <hr />
 	<a name="method_storeGuts"></a>
-	<h3>method _storeGuts <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2923">2923</a>]</span></h3>
+	<h3>method _storeGuts <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2986">2986</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4666,7 +5032,7 @@ $sheetname)</code>
   </div>
   <hr />
 	<a name="method_storeHbreak"></a>
-	<h3>method _storeHbreak <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3010">3010</a>]</span></h3>
+	<h3>method _storeHbreak <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3070">3070</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4691,7 +5057,7 @@ $sheetname)</code>
   </div>
   <hr />
 	<a name="method_storeHcenter"></a>
-	<h3>method _storeHcenter <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2715">2715</a>]</span></h3>
+	<h3>method _storeHcenter <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2778">2778</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4716,7 +5082,7 @@ $sheetname)</code>
   </div>
   <hr />
 	<a name="method_storeHeader"></a>
-	<h3>method _storeHeader <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2659">2659</a>]</span></h3>
+	<h3>method _storeHeader <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2722">2722</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4741,7 +5107,7 @@ $sheetname)</code>
   </div>
   <hr />
 	<a name="method_storeMarginBottom"></a>
-	<h3>method _storeMarginBottom <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2813">2813</a>]</span></h3>
+	<h3>method _storeMarginBottom <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2876">2876</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4766,7 +5132,7 @@ $sheetname)</code>
   </div>
   <hr />
 	<a name="method_storeMarginLeft"></a>
-	<h3>method _storeMarginLeft <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2750">2750</a>]</span></h3>
+	<h3>method _storeMarginLeft <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2813">2813</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4791,7 +5157,7 @@ $sheetname)</code>
   </div>
   <hr />
 	<a name="method_storeMarginRight"></a>
-	<h3>method _storeMarginRight <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2771">2771</a>]</span></h3>
+	<h3>method _storeMarginRight <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2834">2834</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4816,7 +5182,7 @@ $sheetname)</code>
   </div>
   <hr />
 	<a name="method_storeMarginTop"></a>
-	<h3>method _storeMarginTop <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2792">2792</a>]</span></h3>
+	<h3>method _storeMarginTop <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2855">2855</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4841,7 +5207,7 @@ $sheetname)</code>
   </div>
   <hr />
 	<a name="method_storeMergedCells"></a>
-	<h3>method _storeMergedCells <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2440">2440</a>]</span></h3>
+	<h3>method _storeMergedCells <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2503">2503</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4866,7 +5232,7 @@ $sheetname)</code>
   </div>
   <hr />
 	<a name="method_storeObjPicture"></a>
-	<h3>method _storeObjPicture <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3344">3344</a>]</span></h3>
+	<h3>method _storeObjPicture <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3404">3404</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4944,7 +5310,7 @@ $dyB)</code>
   </div>
   <hr />
 	<a name="method_storePanes"></a>
-	<h3>method _storePanes <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2526">2526</a>]</span></h3>
+	<h3>method _storePanes <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2589">2589</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -4980,7 +5346,7 @@ $panes)</code>
   </div>
   <hr />
 	<a name="method_storePassword"></a>
-	<h3>method _storePassword <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3121">3121</a>]</span></h3>
+	<h3>method _storePassword <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3181">3181</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5005,7 +5371,7 @@ $panes)</code>
   </div>
   <hr />
 	<a name="method_storePrintGridlines"></a>
-	<h3>method _storePrintGridlines <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2885">2885</a>]</span></h3>
+	<h3>method _storePrintGridlines <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2948">2948</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5030,7 +5396,7 @@ $panes)</code>
   </div>
   <hr />
 	<a name="method_storePrintHeaders"></a>
-	<h3>method _storePrintHeaders <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2867">2867</a>]</span></h3>
+	<h3>method _storePrintHeaders <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2930">2930</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5055,7 +5421,7 @@ $panes)</code>
   </div>
   <hr />
 	<a name="method_storeProtect"></a>
-	<h3>method _storeProtect <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3098">3098</a>]</span></h3>
+	<h3>method _storeProtect <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3158">3158</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5080,7 +5446,7 @@ $panes)</code>
   </div>
   <hr />
 	<a name="method_storeSelection"></a>
-	<h3>method _storeSelection <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2399">2399</a>]</span></h3>
+	<h3>method _storeSelection <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2462">2462</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5119,7 +5485,7 @@ $array)</code>
   </div>
   <hr />
 	<a name="method_storeSetup"></a>
-	<h3>method _storeSetup <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2598">2598</a>]</span></h3>
+	<h3>method _storeSetup <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2661">2661</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5144,7 +5510,7 @@ $array)</code>
   </div>
   <hr />
 	<a name="method_storeVbreak"></a>
-	<h3>method _storeVbreak <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3053">3053</a>]</span></h3>
+	<h3>method _storeVbreak <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3113">3113</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5169,7 +5535,7 @@ $array)</code>
   </div>
   <hr />
 	<a name="method_storeVcenter"></a>
-	<h3>method _storeVcenter <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2733">2733</a>]</span></h3>
+	<h3>method _storeVcenter <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2796">2796</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5194,7 +5560,7 @@ $array)</code>
   </div>
   <hr />
 	<a name="method_storeWindow2"></a>
-	<h3>method _storeWindow2 <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2261">2261</a>]</span></h3>
+	<h3>method _storeWindow2 <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2306">2306</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5219,7 +5585,7 @@ $array)</code>
   </div>
   <hr />
 	<a name="method_storeWsbool"></a>
-	<h3>method _storeWsbool <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2968">2968</a>]</span></h3>
+	<h3>method _storeWsbool <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3028">3028</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5244,7 +5610,7 @@ $array)</code>
   </div>
   <hr />
 	<a name="method_storeZoom"></a>
-	<h3>method _storeZoom <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3531">3531</a>]</span></h3>
+	<h3>method _storeZoom <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a3591">3591</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5269,7 +5635,7 @@ $array)</code>
   </div>
   <hr />
 	<a name="method_substituteCellref"></a>
-	<h3>method _substituteCellref <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1332">1332</a>]</span></h3>
+	<h3>method _substituteCellref <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1371">1371</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5306,7 +5672,7 @@ $cell)</code>
   </div>
   <hr />
 	<a name="method_writeUrlExternal"></a>
-	<h3>method _writeUrlExternal <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2047">2047</a>]</span></h3>
+	<h3>method _writeUrlExternal <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2085">2085</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5316,9 +5682,7 @@ $row1, integer
 $col1, integer
 $row2, integer
 $col2, string
-$url, string
-$str, [mixed
-$format = null])</code>
+$url)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
@@ -5366,23 +5730,13 @@ $format = null])</code>
         <td><b>$url</b>&nbsp;&nbsp;</td>
         <td>URL string</td>
       </tr>
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$str</b>&nbsp;&nbsp;</td>
-        <td>Alternative label</td>
-      </tr>
-          <tr>
-        <td class="type">mixed&nbsp;&nbsp;</td>
-        <td><b>$format</b>&nbsp;&nbsp;</td>
-        <td>The cell format</td>
-      </tr>
         </table>
     </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="method_writeUrlInternal"></a>
-	<h3>method _writeUrlInternal <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1981">1981</a>]</span></h3>
+	<h3>method _writeUrlInternal <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a2034">2034</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5392,9 +5746,7 @@ $row1, integer
 $col1, integer
 $row2, integer
 $col2, string
-$url, string
-$str, [mixed
-$format = null])</code>
+$url)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
@@ -5441,23 +5793,13 @@ $format = null])</code>
         <td><b>$url</b>&nbsp;&nbsp;</td>
         <td>URL string</td>
       </tr>
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$str</b>&nbsp;&nbsp;</td>
-        <td>Alternative label</td>
-      </tr>
-          <tr>
-        <td class="type">mixed&nbsp;&nbsp;</td>
-        <td><b>$format</b>&nbsp;&nbsp;</td>
-        <td>The cell format</td>
-      </tr>
         </table>
     </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="method_writeUrlRange"></a>
-	<h3>method _writeUrlRange <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1891">1891</a>]</span></h3>
+	<h3>method _writeUrlRange <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1961">1961</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5467,9 +5809,7 @@ $row1, integer
 $col1, integer
 $row2, integer
 $col2, string
-$url, [string
-$string = ''], [mixed
-$format = null])</code>
+$url)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
@@ -5516,23 +5856,13 @@ $format = null])</code>
         <td><b>$url</b>&nbsp;&nbsp;</td>
         <td>URL string</td>
       </tr>
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$string</b>&nbsp;&nbsp;</td>
-        <td>Alternative label</td>
-      </tr>
-          <tr>
-        <td class="type">mixed&nbsp;&nbsp;</td>
-        <td><b>$format</b>&nbsp;&nbsp;</td>
-        <td>The cell format</td>
-      </tr>
         </table>
     </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="method_writeUrlWeb"></a>
-	<h3>method _writeUrlWeb <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1921">1921</a>]</span></h3>
+	<h3>method _writeUrlWeb <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1989">1989</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5542,9 +5872,7 @@ $row1, integer
 $col1, integer
 $row2, integer
 $col2, string
-$url, string
-$str, [mixed
-$format = null])</code>
+$url)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
@@ -5591,23 +5919,13 @@ $format = null])</code>
         <td><b>$url</b>&nbsp;&nbsp;</td>
         <td>URL string</td>
       </tr>
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$str</b>&nbsp;&nbsp;</td>
-        <td>Alternative label</td>
-      </tr>
-          <tr>
-        <td class="type">mixed&nbsp;&nbsp;</td>
-        <td><b>$format</b>&nbsp;&nbsp;</td>
-        <td>The cell format</td>
-      </tr>
         </table>
     </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="method_XF"></a>
-	<h3>method _XF <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1284">1284</a>]</span></h3>
+	<h3>method _XF <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5Worksheet.php.html#a1323">1323</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -5649,7 +5967,7 @@ mixed
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Mon, 25 Aug 2008 13:53:36 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
+		    Documentation generated on Mon, 27 Oct 2008 08:42:12 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
 	      </div>
       </td></tr></table>
     </td>

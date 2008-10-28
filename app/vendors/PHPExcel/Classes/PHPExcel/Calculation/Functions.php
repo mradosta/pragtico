@@ -23,7 +23,7 @@
  * @package	PHPExcel_Calculation
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license	http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version	1.6.3, 2008-08-25
+ * @version	1.6.4, 2008-10-27
  */
 
 
@@ -199,10 +199,10 @@ class PHPExcel_Calculation_Functions {
 			// Is it a boolean value?
 			if (is_bool($arg)) {
 				$returnValue = $returnValue && $arg;
-				$argCount++;
+				++$argCount;
 			} elseif ((is_numeric($arg)) && (!is_string($arg))) {
 				$returnValue = $returnValue && ($arg != 0);
-				$argCount++;
+				++$argCount;
 			}
 		}
 
@@ -236,10 +236,10 @@ class PHPExcel_Calculation_Functions {
 			// Is it a boolean value?
 			if (is_bool($arg)) {
 				$returnValue = $returnValue || $arg;
-				$argCount++;
+				++$argCount;
 			} elseif ((is_numeric($arg)) && (!is_string($arg))) {
 				$returnValue = $returnValue || ($arg != 0);
-				$argCount++;
+				++$argCount;
 			}
 		}
 
@@ -3998,7 +3998,7 @@ class PHPExcel_Calculation_Functions {
 	 * @return  string	Version information
 	 */
 	public static function VERSION() {
-		return 'PHPExcel 1.6.3, 2008-08-25';
+		return 'PHPExcel 1.6.4, 2008-10-27';
 	}
 
 	/**
@@ -4262,14 +4262,20 @@ class PHPExcel_Calculation_Functions {
 	 *						depending on the value of the ReturnDateType flag
 	 */
 	public static function DATETIMENOW() {
+		$saveTimeZone = date_default_timezone_get();
+		date_default_timezone_set('UTC');
+		$retValue = False;
 		switch (self::getReturnDateType()) {
-			case self::RETURNDATE_EXCEL			: return (float) PHPExcel_Shared_Date::PHPToExcel(time());
+			case self::RETURNDATE_EXCEL			: $retValue = (float) PHPExcel_Shared_Date::PHPToExcel(time());
 												  break;
-			case self::RETURNDATE_PHP_NUMERIC	: return (integer) time();
+			case self::RETURNDATE_PHP_NUMERIC	: $retValue = (integer) time();
 												  break;
-			case self::RETURNDATE_PHP_OBJECT	: return new DateTime();
+			case self::RETURNDATE_PHP_OBJECT	: $retValue = new DateTime();
 												  break;
 		}
+		date_default_timezone_set($saveTimeZone);
+
+		return $retValue;
 	}
 
 	/**
@@ -4279,15 +4285,21 @@ class PHPExcel_Calculation_Functions {
 	 *						depending on the value of the ReturnDateType flag
 	 */
 	public static function DATENOW() {
+		$saveTimeZone = date_default_timezone_get();
+		date_default_timezone_set('UTC');
+		$retValue = False;
 		$excelDateTime = floor(PHPExcel_Shared_Date::PHPToExcel(time()));
 		switch (self::getReturnDateType()) {
-			case self::RETURNDATE_EXCEL			: return (float) $excelDateTime;
+			case self::RETURNDATE_EXCEL			: $retValue = (float) $excelDateTime;
 												  break;
-			case self::RETURNDATE_PHP_NUMERIC	: return (integer) PHPExcel_Shared_Date::ExcelToPHP($excelDateTime) - 3600;
+			case self::RETURNDATE_PHP_NUMERIC	: $retValue = (integer) PHPExcel_Shared_Date::ExcelToPHP($excelDateTime) - 3600;
 												  break;
-			case self::RETURNDATE_PHP_OBJECT	: return PHPExcel_Shared_Date::ExcelToPHPObject($excelDateTime);
+			case self::RETURNDATE_PHP_OBJECT	: $retValue = PHPExcel_Shared_Date::ExcelToPHPObject($excelDateTime);
 												  break;
 		}
+		date_default_timezone_set($saveTimeZone);
+
+		return $retValue;
 	}
 
 	private static function isLeapYear($year) {
@@ -4296,7 +4308,7 @@ class PHPExcel_Calculation_Functions {
 
 	private static function dateDiff360($startDay, $startMonth, $startYear, $endDay, $endMonth, $endYear, $methodUS) {
 		if ($startDay == 31) {
-			$startDay--;
+			--$startDay;
 		} elseif ($methodUS && ($startMonth == 2 && ($startDay == 29 || ($startDay == 28 && !self::isLeapYear($startYear))))) {
 			$startDay = 30;
 		}
@@ -4304,10 +4316,10 @@ class PHPExcel_Calculation_Functions {
 			if ($methodUS && $startDay != 30) {
 				$endDay = 1;
 				if ($endMonth == 12) {
-					$endYear++;
+					++$endYear;
 					$endMonth = 1;
 				} else {
-					$endMonth++;
+					++$endMonth;
 				}
 			} else {
 				$endDay = 30;
@@ -4397,16 +4409,16 @@ class PHPExcel_Calculation_Functions {
 				$retVal = intval($endMonths - $startMonths) + (intval($endYears - $startYears) * 12);
 				//	We're only interested in full months
 				if ($endDays < $startDays) {
-					$retVal--;
+					--$retVal;
 				}
 				break;
 			case 'Y':
 				$retVal = intval($endYears - $startYears);
 				//	We're only interested in full months
 				if ($endMonths < $startMonths) {
-					$retVal--;
+					--$retVal;
 				} elseif (($endMonths == $startMonths) && ($endDays < $startDays)) {
-					$retVal--;
+					--$retVal;
 				}
 				break;
 			case 'MD':
@@ -4425,7 +4437,7 @@ class PHPExcel_Calculation_Functions {
 				$retVal = abs(intval($endMonths - $startMonths));
 				//	We're only interested in full months
 				if ($endDays < $startDays) {
-					$retVal--;
+					--$retVal;
 				}
 				break;
 			case 'YD':
@@ -5347,7 +5359,7 @@ class PHPExcel_Calculation_Functions {
 		$realNumber = strtok($workString, '+-');
 		if (strtoupper(substr($realNumber,-1)) == 'E') {
 			$power = strtok('+-');
-			$leadingSign++;
+			++$leadingSign;
 		}
 		$realNumber = substr($workString,0,strlen($realNumber)+strlen($power)+$leadingSign);
 
@@ -6018,7 +6030,7 @@ class PHPExcel_Calculation_Functions {
 				default :	$fTox	= 2 / $x;
 							$fBkm	= self::Besselk0($x);
 							$fBk	= self::Besselk1($x);
-							for ($n = 1; $n < $ord; $n++) {
+							for ($n = 1; $n < $ord; ++$n) {
 								$fBkp	= $fBkm + $n * $fTox * $fBk;
 								$fBkm	= $fBk;
 								$fBk	= $fBkp;
@@ -6093,7 +6105,7 @@ class PHPExcel_Calculation_Functions {
 				default:	$fTox	= 2 / $x;
 							$fBym	= self::Bessely0($x);
 							$fBy	= self::Bessely1($x);
-							for ($n = 1; $n < $ord; $n++) {
+							for ($n = 1; $n < $ord; ++$n) {
 								$fByp	= $n * $fTox * $fBy - $fBym;
 								$fBym	= $fBy;
 								$fBy	= $fByp;
@@ -6538,13 +6550,88 @@ class PHPExcel_Calculation_Functions {
 		}
 	}
 
+
+	public static function COLUMN($cellAddress=Null) {
+		if ($cellAddress === Null) {
+			return 0;
+		}
+
+		foreach($cellAddress as $columnKey => $value) {
+			return PHPExcel_Cell::columnIndexFromString($columnKey);
+		}
+	}	//	function COLUMN()
+
+
+	public static function ROW($cellAddress=Null) {
+		if ($cellAddress === Null) {
+			return 0;
+		}
+
+		foreach($cellAddress as $columnKey => $rowValue) {
+			foreach($rowValue as $rowKey => $cellValue) {
+				return $rowKey;
+			}
+		}
+	}	//	function ROW()
+
+
+	public static function OFFSET($cellAddress=Null,$rows=0,$columns=0,$height=null,$width=null) {
+		if ($cellAddress === Null) {
+			return 0;
+		}
+
+		foreach($cellAddress as $startColumnKey => $rowValue) {
+			$startColumnIndex = PHPExcel_Cell::columnIndexFromString($startColumnKey);
+			foreach($rowValue as $startRowKey => $cellValue) {
+				break 2;
+			}
+		}
+
+		foreach($cellAddress as $endColumnKey => $rowValue) {
+			foreach($rowValue as $endRowKey => $cellValue) {
+			}
+		}
+		$endColumnIndex = PHPExcel_Cell::columnIndexFromString($endColumnKey);
+
+		$startColumnIndex += --$columns;
+		$startRowKey += $rows;
+
+		if ($width == null) {
+			$endColumnIndex += $columns -1;
+		} else {
+			$endColumnIndex = $startColumnIndex + $width;
+		}
+		if ($height == null) {
+			$endRowKey += $rows;
+		} else {
+			$endRowKey = $startRowKey + $height -1;
+		}
+
+		if (($startColumnIndex < 0) || ($startRowKey <= 0)) {
+			return self::$_errorCodes['reference'];
+		}
+
+		$startColumnKey = PHPExcel_Cell::stringFromColumnIndex($startColumnIndex);
+		$endColumnKey = PHPExcel_Cell::stringFromColumnIndex($endColumnIndex);
+
+		$startCell = $startColumnKey.$startRowKey;
+		$endCell = $endColumnKey.$endRowKey;
+
+		if ($startCell == $endCell) {
+			return $startColumnKey.$startRowKey;
+		} else {
+			return $startColumnKey.$startRowKey.':'.$endColumnKey.$endRowKey;
+		}
+	}	//	function COLUMN()
+
+
 	public static function CHOOSE() {
 		$chooseArgs = func_get_args();
 		$chosenEntry = self::flattenSingleValue(array_shift($chooseArgs));
 		$entryCount = count($chooseArgs) - 1;
 
 		if ((is_numeric($chosenEntry)) && (!is_bool($chosenEntry))) {
-			$chosenEntry--;
+			--$chosenEntry;
 		} else {
 			return self::$_errorCodes['value'];
 		}
@@ -6571,20 +6658,20 @@ class PHPExcel_Calculation_Functions {
 
 		// flatten the lookup_array
 		$lookup_array = self::flattenArray($lookup_array);
-		
+
 		// flatten lookup_value since it may be a cell reference to a value or the value itself
 		$lookup_value = self::flattenSingleValue($lookup_value);
-		
+
 		// MATCH is not case sensitive
 		$lookup_value = strtolower($lookup_value);
-		
+
 		/*
 		echo "--------------------<br>looking for $lookup_value in <br>";
 		print_r($lookup_array);
 		echo "<br>";
 		//return 1;
 		/**/
-		
+
 		// **
 		// check inputs
 		// **
@@ -6594,23 +6681,23 @@ class PHPExcel_Calculation_Functions {
 			//echo "error: lookup_array should contain only number, text, or logical values<br>";
 			return self::$_errorCodes['na'];
 		}
-		
+
 		// match_type is 0, 1 or -1
 		if ($match_type!==0 && $match_type!==-1 && $match_type!==1){
 			// error: wrong value for match_type
 			//echo "error: wrong value for match_type<br>";
 			return self::$_errorCodes['na'];
-		}		
-		
+		}
+
 		// lookup_array should not be empty
 		if (sizeof($lookup_array)<=0){
 			// error: empty range
 			//echo "error: empty range ".sizeof($lookup_array)."<br>";
 			return self::$_errorCodes['na'];
-		}		
+		}
 
 		// lookup_array should contain only number, text, or logical values
-		for ($i=0;$i<sizeof($lookup_array);$i++){
+		for ($i=0;$i<sizeof($lookup_array);++$i){
 			// check the type of the value
 			if (!is_numeric($lookup_array[$i]) && !is_string($lookup_array[$i]) && !is_bool($lookup_array[$i])){
 				// error: lookup_array should contain only number, text, or logical values
@@ -6630,7 +6717,7 @@ class PHPExcel_Calculation_Functions {
 			$iLastValue=$lookup_array[0];
 			// **
 			// loop on the cells
-			for ($i=0;$i<sizeof($lookup_array);$i++){
+			for ($i=0;$i<sizeof($lookup_array);++$i){
 				// check ascending order
 				if(($match_type==1 && $lookup_array[$i]<$iLastValue)
 					// OR check descending order
@@ -6645,7 +6732,7 @@ class PHPExcel_Calculation_Functions {
 		// find the match
 		// **
 		// loop on the cells
-		for ($i=0; $i < sizeof($lookup_array); $i++){
+		for ($i=0; $i < sizeof($lookup_array); ++$i){
 			// if match_type is 0 <=> find the first value that is exactly equal to lookup_value
 			if ($match_type==0 && $lookup_array[$i]==$lookup_value){
 				// this is the exact match
@@ -6683,7 +6770,7 @@ class PHPExcel_Calculation_Functions {
 	 *
 	 * @param	range_array	a range of cells or an array constant
 	 * @param	row_num		selects the row in array from which to return a value. If row_num is omitted, column_num is required.
-	 * @param	column_num	selects the column in array from which to return a value. If column_num is omitted, row_num is required.	
+	 * @param	column_num	selects the column in array from which to return a value. If column_num is omitted, row_num is required.
 	 */
 	public static function INDEX($range_array,$row_num=null,$column_num=null) {
 		// **
@@ -6702,13 +6789,13 @@ class PHPExcel_Calculation_Functions {
 		if ($column_num==null){
 			$column_num = 1;
 		}
-		
-		/* debug 
+
+		/* debug
 		print_r($range_array);
 		echo "<br>$row_num , $column_num<br>";
 		/**/
-		
-		// row_num and column_num may not have negative values 
+
+		// row_num and column_num may not have negative values
 		if (($row_num!=null && $row_num < 0) || ($column_num!=null && $column_num < 0)) {
 			// error: row_num or column_num has negative value
 			//echo "error: row_num or column_num has negative value<br>";
@@ -6718,15 +6805,15 @@ class PHPExcel_Calculation_Functions {
 		// convert column and row numbers into array indeces
 		// **
 		// array is zero based
-		$column_num--;
-		$row_num--;
-		
+		--$column_num;
+		--$row_num;
+
 		// retrieve the columns
 		$columnKeys = array_keys($range_array);
 
 		// retrieve the rows
 		$rowKeys = array_keys($range_array[$columnKeys[0]]);
-		
+
 		// test ranges
 		if ($column_num >= sizeof($columnKeys)){
 			// error: column_num is out of range
@@ -6815,19 +6902,19 @@ class PHPExcel_Calculation_Functions {
 		if ($index_number < 1) {
 			return self::$_errorCodes['value'];
 		}
-		
+
 		// index_number must be less than or equal to the number of columns in lookup_array
 		if ($index_number > count($lookup_array)) {
 			return self::$_errorCodes['reference'];
 		}
-		
+
 		// re-index lookup_array with numeric keys starting at 1
 		array_unshift($lookup_array, array());
 		$lookup_array = array_slice(array_values($lookup_array), 1, count($lookup_array), true);
-		
+
 		// look for an exact match
 		$row_number = array_search($lookup_value, $lookup_array[1]);
-		
+
 		// if an exact match is required, we have what we need to return an appropriate response
 		if ($not_exact_match == false) {
 			if ($row_number === false) {
@@ -6836,13 +6923,72 @@ class PHPExcel_Calculation_Functions {
 				return $lookup_array[$index_number][$row_number];
 			}
 		}
-		
+
 		// TODO: The VLOOKUP spec in Excel states that, at this point, we should search for
 		// the highest value that is less than lookup_value. However, documentation on how string
 		// values should be treated here is sparse.
 		return self::$_errorCodes['na'];
 	}
-	
+
+	/**
+	* LOOKUP
+	* The LOOKUP function searches for value either from a one-row or one-column range or from an array.
+	* @param	lookup_value	The value that you want to match in lookup_array
+	* @param	lookup_vector	The range of cells being searched
+	* @param	result_vector	The column from which the matching value must be returned
+	* @return	mixed			The value of the found cell
+	*/
+	public static function LOOKUP($lookup_value, $lookup_vector, $result_vector=null) {
+
+		// check for LOOKUP Syntax (view Excel documentation)
+		if( is_null($result_vector) )
+		{
+		// TODO: Syntax 2 (array)
+		} else {
+		// Syntax 1 (vector)
+			// get key (column or row) of lookup_vector
+			$kl = key($lookup_vector);
+			// check if lookup_value exists in lookup_vector
+			if( in_array($lookup_value, $lookup_vector[$kl]) )
+			{
+			// FOUND IT! Get key of lookup_vector
+				$k_res = array_search($lookup_value, $lookup_vector[$kl]);
+			} else {
+			// value NOT FOUND
+				// Get the smallest value in lookup_vector
+				// The LOOKUP spec in Excel states --> IMPORTANT - The values in lookup_vector must be placed in ascending order!
+				$ksv = key($lookup_vector[$kl]);
+				$smallest_value = $lookup_vector[$kl][$ksv];
+				// If lookup_value is smaller than the smallest value in lookup_vector, LOOKUP gives the #N/A error value.
+				if( $lookup_value < $smallest_value )
+				{
+					return self::$_errorCodes['na'];
+				} else {
+					// If LOOKUP can't find the lookup_value, it matches the largest value in lookup_vector that is less than or equal to lookup_value.
+					// IMPORTANT : In Excel Documentation is not clear what happen if lookup_value is text!
+					foreach( $lookup_vector[$kl] AS $kk => $value )
+					{
+						if( $lookup_value >= $value )
+						{
+							$k_res = $kk;
+						}
+					}
+				}
+			}
+
+			// Returns a value from the same position in result_vector
+			// get key (column or row) of result_vector
+			$kr = key($result_vector);
+			if( isset($result_vector[$kr][$k_res]) )
+			{
+				return $result_vector[$kr][$k_res];
+			} else {
+				// TODO: In Excel Documentation is not clear what happen here...
+			}
+		}
+ 	}
+
+
 	/**
 	 * Flatten multidemensional array
 	 *

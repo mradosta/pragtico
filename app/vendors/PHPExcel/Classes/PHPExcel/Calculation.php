@@ -22,7 +22,7 @@
  * @package	PHPExcel
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license	http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version	1.6.3, 2008-08-25
+ * @version	1.6.4, 2008-10-27
  */
 
 /** PHPExcel_Worksheet */
@@ -156,7 +156,7 @@ class PHPExcel_Calculation {
 				'CHOOSE'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_LOOKUP_AND_REFERENCE,	'CHOOSE',				'PHPExcel_Calculation_Functions::CHOOSE'),
 				'CLEAN'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_TEXT_AND_DATA,			'CLEAN',				'PHPExcel_Calculation_Functions::TRIMNONPRINTABLE'),
 				'CODE'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_TEXT_AND_DATA,			'CODE',					'PHPExcel_Calculation_Functions::ASCIICODE'),
-				'COLUMN'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_LOOKUP_AND_REFERENCE,	'COLUMN',				'PHPExcel_Calculation_Functions::DUMMY'),
+				'COLUMN'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_LOOKUP_AND_REFERENCE,	'COLUMN',				'PHPExcel_Calculation_Functions::COLUMN'),
 				'COLUMNS'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_LOOKUP_AND_REFERENCE,	'COLUMNS',				'PHPExcel_Calculation_Functions::DUMMY'),
 				'COMBIN'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_MATH_AND_TRIG,			'COMBIN',				'PHPExcel_Calculation_Functions::COMBIN'),
 				'COMPLEX'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_ENGINEERING,			'COMPLEX',				'PHPExcel_Calculation_Functions::COMPLEX'),
@@ -292,7 +292,7 @@ class PHPExcel_Calculation {
 				'ISEVEN'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_INFORMATION,			'ISEVEN',				'PHPExcel_Calculation_Functions::IS_EVEN'),
 				'ISLOGICAL'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_INFORMATION,			'ISLOGICAL',			'PHPExcel_Calculation_Functions::IS_LOGICAL'),
 				'ISNA'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_INFORMATION,			'ISNA',					'PHPExcel_Calculation_Functions::IS_NA'),
-				'ISNONTEXT'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_INFORMATION,			'ISNONTEXT',			'!PHPExcel_Calculation_Functions::IS_NONTEXT'),
+				'ISNONTEXT'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_INFORMATION,			'ISNONTEXT',			'!PHPExcel_Calculation_Functions::IS_TEXT'),
 				'ISNUMBER'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_INFORMATION,			'ISNUMBER',				'PHPExcel_Calculation_Functions::IS_NUMBER'),
 				'ISODD'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_INFORMATION,			'ISODD',				'!PHPExcel_Calculation_Functions::IS_EVEN'),
 				'ISPMT'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_INFORMATION,			'ISPMT',				'PHPExcel_Calculation_Functions::DUMMY'),
@@ -304,7 +304,7 @@ class PHPExcel_Calculation {
 				'LCM'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_MATH_AND_TRIG,			'LCM',					'PHPExcel_Calculation_Functions::LCM'),
 				'LEFT'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_TEXT_AND_DATA,			'LEFT',					'PHPExcel_Calculation_Functions::LEFT'),
 				'LEFTB'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_TEXT_AND_DATA,			'LEFTB',				'PHPExcel_Calculation_Functions::DUMMY'),
-				'LEN'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_TEXT_AND_DATA,			'LEN',					'PHPExcel_Calculation_Functions::strlen'),
+				'LEN'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_TEXT_AND_DATA,			'LEN',					'strlen'),
 				'LENB'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_TEXT_AND_DATA,			'LENB',					'PHPExcel_Calculation_Functions::DUMMY'),
 				'LINEST'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_STATISTICAL,			'LINEST',				'PHPExcel_Calculation_Functions::DUMMY'),
 				'LN'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_MATH_AND_TRIG,			'LN',					'log'),
@@ -313,7 +313,7 @@ class PHPExcel_Calculation {
 				'LOGEST'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_STATISTICAL,			'LOGEST',				'PHPExcel_Calculation_Functions::DUMMY'),
 				'LOGINV'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_STATISTICAL,			'LOGINV',				'PHPExcel_Calculation_Functions::LOGINV'),
 				'LOGNORMDIST'			=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_STATISTICAL,			'LOGNORMDIST',			'PHPExcel_Calculation_Functions::LOGNORMDIST'),
-				'LOOKUP'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_LOOKUP_AND_REFERENCE,	'LOOKUP',				'PHPExcel_Calculation_Functions::DUMMY'),
+				'LOOKUP'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_LOOKUP_AND_REFERENCE,	'LOOKUP',				'PHPExcel_Calculation_Functions::LOOKUP'),
 				'LOWER'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_TEXT_AND_DATA,			'LOWER',				'strtolower'),
 				'MATCH'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_LOOKUP_AND_REFERENCE,	'MATCH',				'PHPExcel_Calculation_Functions::MATCH'),
 				'MAX'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_STATISTICAL,			'MAX',					'PHPExcel_Calculation_Functions::MAX'),
@@ -355,7 +355,7 @@ class PHPExcel_Calculation {
 				'ODDFYIELD'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_FINANCIAL,				'ODDFYIELD',			'PHPExcel_Calculation_Functions::DUMMY'),
 				'ODDLPRICE'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_FINANCIAL,				'ODDLPRICE',			'PHPExcel_Calculation_Functions::DUMMY'),
 				'ODDLYIELD'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_FINANCIAL,				'ODDLYIELD',			'PHPExcel_Calculation_Functions::DUMMY'),
-				'OFFSET'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_LOOKUP_AND_REFERENCE,	'OFFSET',				'PHPExcel_Calculation_Functions::DUMMY'),
+				'OFFSET'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_LOOKUP_AND_REFERENCE,	'OFFSET',				'PHPExcel_Calculation_Functions::OFFSET'),
 				'OR'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_LOGICAL,				'OR',					'PHPExcel_Calculation_Functions::LOGICAL_OR'),
 				'PEARSON'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_STATISTICAL,			'PEARSON',				'PHPExcel_Calculation_Functions::DUMMY'),
 				'PERCENTILE'			=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_STATISTICAL,			'PERCENTILE',			'PHPExcel_Calculation_Functions::PERCENTILE'),
@@ -372,7 +372,7 @@ class PHPExcel_Calculation {
 				'PRICEMAT'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_FINANCIAL,				'PRICEMAT',				'PHPExcel_Calculation_Functions::DUMMY'),
 				'PROB'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_STATISTICAL,			'PROB',					'PHPExcel_Calculation_Functions::DUMMY'),
 				'PRODUCT'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_MATH_AND_TRIG,			'PRODUCT',				'PHPExcel_Calculation_Functions::PRODUCT'),
-				'PROPER'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_TEXT_AND_DATA,			'PROPER',				'PHPExcel_Calculation_Functions::ucwords'),
+				'PROPER'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_TEXT_AND_DATA,			'PROPER',				'ucwords'),
 				'PV'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_FINANCIAL,				'PV',					'PHPExcel_Calculation_Functions::PV'),
 				'QUARTILE'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_STATISTICAL,			'QUARTILE',				'PHPExcel_Calculation_Functions::QUARTILE'),
 				'QUOTIENT'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_MATH_AND_TRIG,			'QUOTIENT',				'PHPExcel_Calculation_Functions::QUOTIENT'),
@@ -384,14 +384,14 @@ class PHPExcel_Calculation {
 				'RECEIVED'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_FINANCIAL,				'RECEIVED',				'PHPExcel_Calculation_Functions::DUMMY'),
 				'REPLACE'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_TEXT_AND_DATA,			'REPLACE',				'PHPExcel_Calculation_Functions::DUMMY'),
 				'REPLACEB'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_TEXT_AND_DATA,			'REPLACEB',				'PHPExcel_Calculation_Functions::DUMMY'),
-				'REPT'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_TEXT_AND_DATA,			'REPT',					'PHPExcel_Calculation_Functions::str_repeat'),
+				'REPT'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_TEXT_AND_DATA,			'REPT',					'str_repeat'),
 				'RIGHT'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_TEXT_AND_DATA,			'RIGHT',				'PHPExcel_Calculation_Functions::RIGHT'),
 				'RIGHTB'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_TEXT_AND_DATA,			'RIGHTB',				'PHPExcel_Calculation_Functions::DUMMY'),
 				'ROMAN'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_MATH_AND_TRIG,			'ROMAN',				'PHPExcel_Calculation_Functions::DUMMY'),
 				'ROUND'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_MATH_AND_TRIG,			'ROUND',				'round'),
 				'ROUNDDOWN'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_MATH_AND_TRIG,			'ROUNDDOWN',			'PHPExcel_Calculation_Functions::ROUNDDOWN'),
 				'ROUNDUP'				=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_MATH_AND_TRIG,			'ROUNDUP',				'PHPExcel_Calculation_Functions::ROUNDUP'),
-				'ROW'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_LOOKUP_AND_REFERENCE,	'ROW',					'PHPExcel_Calculation_Functions::DUMMY'),
+				'ROW'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_LOOKUP_AND_REFERENCE,	'ROW',					'PHPExcel_Calculation_Functions::ROW'),
 				'ROWS'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_LOOKUP_AND_REFERENCE,	'ROWS',					'PHPExcel_Calculation_Functions::DUMMY'),
 				'RSQ'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_STATISTICAL,			'RSQ',					'PHPExcel_Calculation_Functions::DUMMY'),
 				'RTD'					=> new PHPExcel_Calculation_Function(PHPExcel_Calculation_Function::CATEGORY_LOOKUP_AND_REFERENCE,	'RTD',					'PHPExcel_Calculation_Functions::DUMMY'),
@@ -549,13 +549,16 @@ class PHPExcel_Calculation {
 		// Loop trough parsed tokens and create an executable formula
 		$inFunction = false;
 		$token = null;
-		for($i = 0; $i < $objParser->getTokenCount (); $i ++) {
+		$tokenCount = $objParser->getTokenCount();
+		for($i = 0; $i < $tokenCount; ++$i) {
 			$token = $objParser->getToken ( $i );
-
+			$tokenType = $token->getTokenType();
+			$tokenSubType = $token->getTokenSubType();
+			$tokenValue = $token->getValue();
 			// Is it a cell reference? Not in a function?
-			if (($token->getTokenType () == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERAND) && ($token->getTokenSubType () == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_RANGE) && (strpos ( $token->getValue (), ':' ) === false) && (! $inFunction)) {
+			if (($tokenType == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERAND) && ($tokenSubType == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_RANGE) && (strpos ($tokenValue, ':' ) === false) && (! $inFunction)) {
 				// Adjust reference
-				$reference = str_replace ( '$', '', $token->getValue () );
+				$reference = str_replace ( '$', '', $tokenValue);
 
 				// Get value
 				$calculatedValue = null;
@@ -575,9 +578,9 @@ class PHPExcel_Calculation {
 			}
 
 			// Is it a cell reference? In a function?
-			if (($token->getTokenType () == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERAND) && ($token->getTokenSubType () == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_RANGE) && ($inFunction)) {
+			if (($tokenType == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERAND) && ($tokenSubType == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_RANGE) && ($inFunction)) {
 				// Adjust reference
-				$reference = str_replace ( '$', '', $token->getValue () );
+				$reference = str_replace ( '$', '', $tokenValue );
 
 				// Add to executable formula array
 				array_push ( $executableFormulaArray, '$this->extractRange("' . $reference . '", $pCell->getParent())' );
@@ -586,7 +589,7 @@ class PHPExcel_Calculation {
 			}
 
 			// Is it a concatenation operator?
-			if (($token->getTokenType () == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERATORINFIX) && ($token->getTokenSubType () == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_CONCATENATION)) {
+			if (($tokenType == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERATORINFIX) && ($tokenSubType == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_CONCATENATION)) {
 				// Add to executable formula array
 				array_push ( $executableFormulaArray, '.' );
 
@@ -594,10 +597,10 @@ class PHPExcel_Calculation {
 			}
 
 			// Is it a logical operator?
-			if (($token->getTokenType () == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERATORINFIX) && ($token->getTokenSubType () == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_LOGICAL)) {
+			if (($tokenType == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERATORINFIX) && ($tokenSubType == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_LOGICAL)) {
 				// Temporary variable
 				$tmp = '';
-				switch ( $token->getValue ()) {
+				switch ($tokenValue) {
 					case '=' :
 						$tmp = '==';
 					break;
@@ -605,7 +608,7 @@ class PHPExcel_Calculation {
 						$tmp = '!=';
 					break;
 					default :
-						$tmp = $token->getValue ();
+						$tmp = $tokenValue;
 				}
 
 				// Add to executable formula array
@@ -615,10 +618,10 @@ class PHPExcel_Calculation {
 			}
 
 			// Is it a subexpression?
-			if ($token->getTokenType () == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_SUBEXPRESSION) {
+			if ($tokenType == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_SUBEXPRESSION) {
 				// Temporary variable
 				$tmp = '';
-				switch ( $token->getTokenSubType ()) {
+				switch ($tokenSubType) {
 					case PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_START :
 						$tmp = '(';
 					break;
@@ -634,25 +637,25 @@ class PHPExcel_Calculation {
 			}
 
 			// Is it a function?
-			if ($token->getTokenType () == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_FUNCTION) {
+			if ($tokenType == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_FUNCTION) {
 				// Temporary variable
 				$tmp = '';
 
 				// Check the function type
-				if ($token->getValue () == 'ARRAY' || $token->getValue () == 'ARRAYROW') {
+				if ($tokenValue == 'ARRAY' || $tokenValue == 'ARRAYROW') {
 					// An array or an array row...
 					$tmp = 'array(';
 				} else {
 					// A regular function call...
-					switch ( $token->getTokenSubType ()) {
+					switch ($tokenSubType) {
 						case PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_START :
 							// Check if the function call is allowed...
-							if (! isset ( $this->_functionMappings [strtoupper ( $token->getValue () )] )) {
+							if (! isset ( $this->_functionMappings [strtoupper ($tokenValue)] )) {
 								return '#NAME?';
 							}
 
 							// Map the function call
-							$tmp = $this->_functionMappings [strtoupper ( $token->getValue () )]->getPHPExcelName () . '(';
+							$tmp = $this->_functionMappings [strtoupper ($tokenValue)]->getPHPExcelName () . '(';
 							$inFunction = true;
 						break;
 						case PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_STOP :
@@ -668,41 +671,43 @@ class PHPExcel_Calculation {
 			}
 
 			// Is it text?
-			if (($token->getTokenType () == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERAND) && ($token->getTokenSubType () == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_TEXT)) {
+			if (($tokenType == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERAND) && ($tokenSubType == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_TEXT)) {
+				// Temporary variable
+				$tmp = $tokenValue;
+				$tmp = str_replace('"', '\"', $tmp);
+
 				// Add to executable formula array
-				array_push ( $executableFormulaArray, '"' . $token->getValue () . '"' );
+				array_push ( $executableFormulaArray, '"' . $tmp . '"' );
 
 				continue;
 			}
 
 			// Is it a number?
-			if (($token->getTokenType () == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERAND) && ($token->getTokenSubType () == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_NUMBER)) {
+			if (($tokenType == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERAND) && ($tokenSubType == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_NUMBER)) {
 				// Add to executable formula array
-				array_push ( $executableFormulaArray, $token->getValue () );
+				array_push ( $executableFormulaArray, $tokenValue );
 
 				continue;
 			}
 
 			// Is it an error? Add it as text...
-			if (($token->getTokenType () == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERAND) && ($token->getTokenSubType () == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_ERROR)) {
+			if (($tokenType == PHPExcel_Calculation_FormulaToken::TOKEN_TYPE_OPERAND) && ($tokenSubType == PHPExcel_Calculation_FormulaToken::TOKEN_SUBTYPE_ERROR)) {
 				// Add to executable formula array
-				array_push ( $executableFormulaArray, '"' . $token->getValue () . '"' );
+				array_push ( $executableFormulaArray, '"' . $tokenValue . '"' );
 
 				continue;
 			}
 
 			// Is it something else?
-			array_push ( $executableFormulaArray, $token->getValue () );
+			array_push ( $executableFormulaArray, $tokenValue );
 		}
 
+		$fromArray	= array('(,',		',,',		',)',		'$this');
+		$toArray	= array('(null,',	',null,',	',null)',	'$pThat');
 		// Evaluate formula
 		try {
 			$formula = implode ( ' ', $executableFormulaArray );
-			$formula = str_replace ( '(,', '(null,', $formula );
-			$formula = str_replace ( ',,', ',null,', $formula );
-			$formula = str_replace ( ',)', ',null)', $formula );
-
-			$formula = str_replace ( '$this', '$pThat', $formula );
+			$formula = str_replace ( $fromArray, $toArray, $formula );
 
 			/*
 			 * The following code block can cause an error like:
@@ -794,11 +799,11 @@ class PHPExcel_Calculation {
 		}
 
 		// Return
-		if (strpos ( $pRange, ':' ) === false) {
-			while ( is_array ( $returnValue ) ) {
-				$returnValue = array_pop ( $returnValue );
-			}
-		}
+//		if (strpos ( $pRange, ':' ) === false) {
+//			while ( is_array ( $returnValue ) ) {
+//				$returnValue = array_pop ( $returnValue );
+//			}
+//		}
 		return $returnValue;
 	}
 
@@ -858,5 +863,3 @@ class PHPExcel_Calculation {
 		return $returnValue;
 	}
 }
-
-?>

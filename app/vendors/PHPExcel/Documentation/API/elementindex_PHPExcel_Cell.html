@@ -95,8 +95,12 @@
 				<dd>in file Hyperlink.php, variable <a href="PHPExcel_Cell/PHPExcel_Cell_Hyperlink.html#var$_cell">PHPExcel_Cell_Hyperlink::$_cell</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Cell representing the hyperlink</dd>
 							<dt><b>$_conditionalStyles</b></dt>
 				<dd>in file Style.php, variable <a href="PHPExcel_Cell/PHPExcel_Style.html#var$_conditionalStyles">PHPExcel_Style::$_conditionalStyles</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Conditional styles</dd>
+							<dt><b>$_defaultStyle</b></dt>
+				<dd>in file Style.php, variable <a href="PHPExcel_Cell/PHPExcel_Style.html#var$_defaultStyle">PHPExcel_Style::$_defaultStyle</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Default style</dd>
 							<dt><b>$_error</b></dt>
 				<dd>in file DataValidation.php, variable <a href="PHPExcel_Cell/PHPExcel_Cell_DataValidation.html#var$_error">PHPExcel_Cell_DataValidation::$_error</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Error</dd>
+							<dt><b>$_errorCodes</b></dt>
+				<dd>in file DataType.php, variable <a href="PHPExcel_Cell/PHPExcel_Cell_DataType.html#var$_errorCodes">PHPExcel_Cell_DataType::$_errorCodes</a><br>&nbsp;&nbsp;&nbsp;&nbsp;List of error codes</dd>
 							<dt><b>$_errorStyle</b></dt>
 				<dd>in file DataValidation.php, variable <a href="PHPExcel_Cell/PHPExcel_Cell_DataValidation.html#var$_errorStyle">PHPExcel_Cell_DataValidation::$_errorStyle</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Error style</dd>
 							<dt><b>$_errorTitle</b></dt>
@@ -183,6 +187,8 @@
 				<dd>in file Style.php, method <a href="PHPExcel_Cell/PHPExcel_Style.html#methodgetBorders">PHPExcel_Style::getBorders()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Get Borders</dd>
 							<dt><b>getConditionalStyles</b></dt>
 				<dd>in file Style.php, method <a href="PHPExcel_Cell/PHPExcel_Style.html#methodgetConditionalStyles">PHPExcel_Style::getConditionalStyles()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Get Conditional Styles</dd>
+							<dt><b>getDefaultStyle</b></dt>
+				<dd>in file Style.php, method <a href="PHPExcel_Cell/PHPExcel_Style.html#methodgetDefaultStyle">PHPExcel_Style::getDefaultStyle()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Get default style</dd>
 							<dt><b>getError</b></dt>
 				<dd>in file DataValidation.php, method <a href="PHPExcel_Cell/PHPExcel_Cell_DataValidation.html#methodgetError">PHPExcel_Cell_DataValidation::getError()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Get Error</dd>
 							<dt><b>getErrorStyle</b></dt>
@@ -198,11 +204,11 @@
 							<dt><b>getFormula2</b></dt>
 				<dd>in file DataValidation.php, method <a href="PHPExcel_Cell/PHPExcel_Cell_DataValidation.html#methodgetFormula2">PHPExcel_Cell_DataValidation::getFormula2()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Get Formula 2</dd>
 							<dt><b>getHashCode</b></dt>
-				<dd>in file DataValidation.php, method <a href="PHPExcel_Cell/PHPExcel_Cell_DataValidation.html#methodgetHashCode">PHPExcel_Cell_DataValidation::getHashCode()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Get hash code</dd>
-							<dt><b>getHashCode</b></dt>
 				<dd>in file Hyperlink.php, method <a href="PHPExcel_Cell/PHPExcel_Cell_Hyperlink.html#methodgetHashCode">PHPExcel_Cell_Hyperlink::getHashCode()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Get hash code</dd>
 							<dt><b>getHashCode</b></dt>
 				<dd>in file Style.php, method <a href="PHPExcel_Cell/PHPExcel_Style.html#methodgetHashCode">PHPExcel_Style::getHashCode()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Get hash code</dd>
+							<dt><b>getHashCode</b></dt>
+				<dd>in file DataValidation.php, method <a href="PHPExcel_Cell/PHPExcel_Cell_DataValidation.html#methodgetHashCode">PHPExcel_Cell_DataValidation::getHashCode()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Get hash code</dd>
 							<dt><b>getNumberFormat</b></dt>
 				<dd>in file Style.php, method <a href="PHPExcel_Cell/PHPExcel_Style.html#methodgetNumberFormat">PHPExcel_Style::getNumberFormat()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Get Number Format</dd>
 							<dt><b>getOperator</b></dt>
@@ -359,6 +365,8 @@
 				<dd>in file DataValidation.php, class constant <a href="PHPExcel_Cell/PHPExcel_Cell_DataValidation.html#constTYPE_DATE">PHPExcel_Cell_DataValidation::TYPE_DATE</a></dd>
 							<dt><b>TYPE_DECIMAL</b></dt>
 				<dd>in file DataValidation.php, class constant <a href="PHPExcel_Cell/PHPExcel_Cell_DataValidation.html#constTYPE_DECIMAL">PHPExcel_Cell_DataValidation::TYPE_DECIMAL</a></dd>
+							<dt><b>TYPE_ERROR</b></dt>
+				<dd>in file DataType.php, class constant <a href="PHPExcel_Cell/PHPExcel_Cell_DataType.html#constTYPE_ERROR">PHPExcel_Cell_DataType::TYPE_ERROR</a></dd>
 							<dt><b>TYPE_FORMULA</b></dt>
 				<dd>in file DataType.php, class constant <a href="PHPExcel_Cell/PHPExcel_Cell_DataType.html#constTYPE_FORMULA">PHPExcel_Cell_DataType::TYPE_FORMULA</a></dd>
 							<dt><b>TYPE_INLINE</b></dt>
@@ -384,7 +392,7 @@
 	<a href="elementindex_PHPExcel_Cell.html#top">top</a><br>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Mon, 25 Aug 2008 13:28:47 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
+		    Documentation generated on Mon, 27 Oct 2008 08:37:06 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
 	      </div>
       </td></tr></table>
     </td>

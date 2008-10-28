@@ -22,7 +22,7 @@
  * @package    PHPExcel_Shared
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.3, 2008-08-25
+ * @version    1.6.4, 2008-10-27
  */
 
 define('IDENTIFIER_OLE', pack("CCCCCCCC", 0xd0,0xcf,0x11,0xe0,0xa1,0xb1,0x1a,0xe1));
@@ -108,16 +108,16 @@ class PHPExcel_Shared_OLERead {
 			$bbdBlocks = (self::BIG_BLOCK_SIZE - self::BIG_BLOCK_DEPOT_BLOCKS_POS)/4;
 		}
 
-		for ($i = 0; $i < $bbdBlocks; $i++) {
+		for ($i = 0; $i < $bbdBlocks; ++$i) {
 			  $bigBlockDepotBlocks[$i] = $this->_GetInt4d($this->data, $pos);
 			  $pos += 4;
 		}
 
-		for ($j = 0; $j < $this->numExtensionBlocks; $j++) {
+		for ($j = 0; $j < $this->numExtensionBlocks; ++$j) {
 			$pos = ($this->extensionBlock + 1) * self::BIG_BLOCK_SIZE;
 			$blocksToRead = min($this->numBigBlockDepotBlocks - $bbdBlocks, self::BIG_BLOCK_SIZE / 4 - 1);
 
-			for ($i = $bbdBlocks; $i < $bbdBlocks + $blocksToRead; $i++) {
+			for ($i = $bbdBlocks; $i < $bbdBlocks + $blocksToRead; ++$i) {
 				$bigBlockDepotBlocks[$i] = $this->_GetInt4d($this->data, $pos);
 				$pos += 4;
 			}
@@ -132,13 +132,13 @@ class PHPExcel_Shared_OLERead {
 		$index = 0;
 		$this->bigBlockChain = array();
 
-		for ($i = 0; $i < $this->numBigBlockDepotBlocks; $i++) {
+		for ($i = 0; $i < $this->numBigBlockDepotBlocks; ++$i) {
 			$pos = ($bigBlockDepotBlocks[$i] + 1) * self::BIG_BLOCK_SIZE;
 
-			for ($j = 0 ; $j < self::BIG_BLOCK_SIZE / 4; $j++) {
+			for ($j = 0 ; $j < self::BIG_BLOCK_SIZE / 4; ++$j) {
 				$this->bigBlockChain[$index] = $this->_GetInt4d($this->data, $pos);
 				$pos += 4 ;
-				$index++;
+				++$index;
 			}
 		}
 
@@ -150,10 +150,10 @@ class PHPExcel_Shared_OLERead {
 		while ($sbdBlock != -2) {
 			$pos = ($sbdBlock + 1) * self::BIG_BLOCK_SIZE;
 
-			for ($j = 0; $j < self::BIG_BLOCK_SIZE / 4; $j++) {
+			for ($j = 0; $j < self::BIG_BLOCK_SIZE / 4; ++$j) {
 				$this->smallBlockChain[$index] = $this->_GetInt4d($this->data, $pos);
 				$pos += 4;
-				$index++;
+				++$index;
 			}
 
 			$sbdBlock = $this->bigBlockChain[$sbdBlock];
@@ -189,7 +189,7 @@ class PHPExcel_Shared_OLERead {
 		} else {
 			$numBlocks = $this->props[$this->wrkbook]['size'] / self::BIG_BLOCK_SIZE;
 			if ($this->props[$this->wrkbook]['size'] % self::BIG_BLOCK_SIZE != 0) {
-				$numBlocks++;
+				++$numBlocks;
 			}
 
 			if ($numBlocks == 0) return '';
@@ -249,7 +249,7 @@ class PHPExcel_Shared_OLERead {
 			$size = $this->_GetInt4d($d, self::SIZE_POS);
 
 			$name = '';
-			for ($i = 0; $i < $nameSize ; $i++) {
+			for ($i = 0; $i < $nameSize ; ++$i) {
 				$name .= $d[$i];
 			}
 

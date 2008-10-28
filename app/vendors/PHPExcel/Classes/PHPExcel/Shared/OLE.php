@@ -19,7 +19,7 @@
 //
 // $Id: OLE.php,v 1.13 2007/03/07 14:38:25 schmidt Exp $
 
-require_once 'PHPExcel/Shared/OLE.php'; 
+require_once 'PHPExcel/Shared/OLE.php';
 require_once 'PHPExcel/Shared/OLE/OLE_PPS.php';
 require_once 'PHPExcel/Shared/OLE/OLE_File.php';
 require_once 'PHPExcel/Shared/OLE/OLE_Root.php';
@@ -144,15 +144,15 @@ class PHPExcel_Shared_OLE
 		// Remaining 4 * 109 bytes of current block is beginning of Master
 		// Block Allocation Table
 		$mbatBlocks = array();
-		for ($i = 0; $i < 109; $i++) {
+		for ($i = 0; $i < 109; ++$i) {
 			$mbatBlocks[] = $this->_readInt4($fh);
 		}
 
 		// Read rest of Master Block Allocation Table (if any is left)
 		$pos = $this->_getBlockOffset($mbatFirstBlockId);
-		for ($i = 0; $i < $mbbatBlockCount; $i++) {
+		for ($i = 0; $i < $mbbatBlockCount; ++$i) {
 			fseek($fh, $pos);
-			for ($j = 0; $j < $this->bigBlockSize / 4 - 1; $j++) {
+			for ($j = 0; $j < $this->bigBlockSize / 4 - 1; ++$j) {
 				$mbatBlocks[] = $this->_readInt4($fh);
 			}
 			// Last block id in each block points to next block
@@ -161,10 +161,10 @@ class PHPExcel_Shared_OLE
 
 		// Read Big Block Allocation Table according to chain specified by
 		// $mbatBlocks
-		for ($i = 0; $i < $bbatBlockCount; $i++) {
+		for ($i = 0; $i < $bbatBlockCount; ++$i) {
 			$pos = $this->_getBlockOffset($mbatBlocks[$i]);
 			fseek($fh, $pos);
-			for ($j = 0 ; $j < $this->bigBlockSize / 4; $j++) {
+			for ($j = 0 ; $j < $this->bigBlockSize / 4; ++$j) {
 				$this->bbat[] = $this->_readInt4($fh);
 			}
 		}
@@ -173,7 +173,7 @@ class PHPExcel_Shared_OLE
 		$this->sbat = array();
 		$shortBlockCount = $sbbatBlockCount * $this->bigBlockSize / 4;
 		$sbatFh = $this->getStream($sbatFirstBlockId);
-		for ($blockId = 0; $blockId < $shortBlockCount; $blockId++) {
+		for ($blockId = 0; $blockId < $shortBlockCount; ++$blockId) {
 			$this->sbat[$blockId] = $this->_readInt4($sbatFh);
 		}
 		fclose($sbatFh);
@@ -357,7 +357,7 @@ class PHPExcel_Shared_OLE
 				$this->_ppsTreeComplete($pps->DirPps));
 	}
 
-	/** 
+	/**
 	* Checks whether a PPS is a File PPS or not.
 	* If there is no PPS for the index given, it will return false.
 	*
@@ -373,7 +373,7 @@ class PHPExcel_Shared_OLE
 		return false;
 	}
 
-	/** 
+	/**
 	* Checks whether a PPS is a Root PPS or not.
 	* If there is no PPS for the index given, it will return false.
 	*
@@ -389,7 +389,7 @@ class PHPExcel_Shared_OLE
 		return false;
 	}
 
-	/** 
+	/**
 	* Gives the total number of PPS's found in the OLE container.
 	*
 	* @access public
@@ -451,7 +451,7 @@ class PHPExcel_Shared_OLE
 	public static function Asc2Ucs($ascii)
 	{
 		$rawname = '';
-		for ($i = 0; $i < strlen($ascii); $i++) {
+		for ($i = 0; $i < strlen($ascii); ++$i) {
 			$rawname .= $ascii{$i} . "\x00";
 		}
 		return $rawname;
@@ -463,7 +463,7 @@ class PHPExcel_Shared_OLE
 	*
 	* @access public
 	* @static
-	* @param integer $date A timestamp 
+	* @param integer $date A timestamp
 	* @return string The string for the OLE container
 	*/
 	public static function LocalDate2OLE($date = null)
@@ -490,12 +490,12 @@ class PHPExcel_Shared_OLE
 		// Make HEX string
 		$res = '';
 
-		for ($i = 0; $i < 4; $i++) {
+		for ($i = 0; $i < 4; ++$i) {
 			$hex = $low_part % 0x100;
 			$res .= pack('c', $hex);
 			$low_part /= 0x100;
 		}
-		for ($i = 0; $i < 4; $i++) {
+		for ($i = 0; $i < 4; ++$i) {
 			$hex = $high_part % 0x100;
 			$res .= pack('c', $hex);
 			$high_part /= 0x100;
@@ -520,14 +520,14 @@ class PHPExcel_Shared_OLE
 		// factor used for separating numbers into 4 bytes parts
 		$factor = pow(2,32);
 		$high_part = 0;
-		for ($i = 0; $i < 4; $i++) {
+		for ($i = 0; $i < 4; ++$i) {
 			list(, $high_part) = unpack('C', $string{(7 - $i)});
 			if ($i < 3) {
 				$high_part *= 0x100;
 			}
 		}
 		$low_part = 0;
-		for ($i = 4; $i < 8; $i++) {
+		for ($i = 4; $i < 8; ++$i) {
 			list(, $low_part) = unpack('C', $string{(7 - $i)});
 			if ($i < 7) {
 				$low_part *= 0x100;
@@ -536,10 +536,10 @@ class PHPExcel_Shared_OLE
 		$big_date = ($high_part * $factor) + $low_part;
 		// translate to seconds
 		$big_date /= 10000000;
-		
+
 		// days from 1-1-1601 until the beggining of UNIX era
 		$days = 134774;
-		
+
 		// translate to seconds from beggining of UNIX era
 		$big_date -= $days * 24 * 3600;
 		return floor($big_date);

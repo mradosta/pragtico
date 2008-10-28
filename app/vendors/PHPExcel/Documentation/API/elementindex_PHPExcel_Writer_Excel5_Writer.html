@@ -107,9 +107,9 @@
 							<dt><b>$_bg_color</b></dt>
 				<dd>in file Format.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#var$_bg_color">PHPExcel_Writer_Excel5_Format::$_bg_color</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The cell's background color.</dd>
 							<dt><b>$_biff8_input_encoding</b></dt>
-				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_biff8_input_encoding">PHPExcel_Writer_Excel5_Worksheet::$_biff8_input_encoding</a></dd>
-							<dt><b>$_biff8_input_encoding</b></dt>
 				<dd>in file Workbook.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#var$_biff8_input_encoding">PHPExcel_Writer_Excel5_Workbook::$_biff8_input_encoding</a></dd>
+							<dt><b>$_biff8_input_encoding</b></dt>
+				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_biff8_input_encoding">PHPExcel_Writer_Excel5_Worksheet::$_biff8_input_encoding</a></dd>
 							<dt><b>$_biffsize</b></dt>
 				<dd>in file Workbook.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#var$_biffsize">PHPExcel_Writer_Excel5_Workbook::$_biffsize</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The BIFF file size for the workbook.</dd>
 							<dt><b>$_BIFF_version</b></dt>
@@ -142,6 +142,10 @@
 				<dd>in file BIFFwriter.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#var$_data">PHPExcel_Writer_Excel5_BIFFwriter::$_data</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The string containing the data of the BIFF stream</dd>
 							<dt><b>$_datasize</b></dt>
 				<dd>in file BIFFwriter.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#var$_datasize">PHPExcel_Writer_Excel5_BIFFwriter::$_datasize</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The size of the data in bytes.</dd>
+							<dt><b>$_defaultRowHeight</b></dt>
+				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_defaultRowHeight">PHPExcel_Writer_Excel5_Worksheet::$_defaultRowHeight</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Default row height in twips = 1/20 point</dd>
+							<dt><b>$_defColWidth</b></dt>
+				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_defColWidth">PHPExcel_Writer_Excel5_Worksheet::$_defColWidth</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Default column character width</dd>
 							<dt><b>$_dim_colmax</b></dt>
 				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_dim_colmax">PHPExcel_Writer_Excel5_Worksheet::$_dim_colmax</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Last column for the DIMENSIONS record</dd>
 							<dt><b>$_dim_colmin</b></dt>
@@ -160,6 +164,10 @@
 				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_filehandle">PHPExcel_Writer_Excel5_Worksheet::$_filehandle</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Filehandle to the temporary file for storing data</dd>
 							<dt><b>$_filename</b></dt>
 				<dd>in file Workbook.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#var$_filename">PHPExcel_Writer_Excel5_Workbook::$_filename</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Filename for the Workbook</dd>
+							<dt><b>$_firstColumnIndex</b></dt>
+				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_firstColumnIndex">PHPExcel_Writer_Excel5_Worksheet::$_firstColumnIndex</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Index of first used column (at least 0)</dd>
+							<dt><b>$_firstRowIndex</b></dt>
+				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_firstRowIndex">PHPExcel_Writer_Excel5_Worksheet::$_firstRowIndex</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Index of first used row (at least 0)</dd>
 							<dt><b>$_firstsheet</b></dt>
 				<dd>in file Workbook.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#var$_firstsheet">PHPExcel_Writer_Excel5_Workbook::$_firstsheet</a><br>&nbsp;&nbsp;&nbsp;&nbsp;1st displayed worksheet in the workbook (0 indexed)</dd>
 							<dt><b>$_fit_height</b></dt>
@@ -196,10 +204,16 @@
 				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_header">PHPExcel_Writer_Excel5_Worksheet::$_header</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The page header caption</dd>
 							<dt><b>$_hidden</b></dt>
 				<dd>in file Format.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#var$_hidden">PHPExcel_Writer_Excel5_Format::$_hidden</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Bit specifying if formulas are hidden.</dd>
+							<dt><b>$_indent</b></dt>
+				<dd>in file Format.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#var$_indent">PHPExcel_Writer_Excel5_Format::$_indent</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Indent level</dd>
 							<dt><b>$_input_encoding</b></dt>
 				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_input_encoding">PHPExcel_Writer_Excel5_Worksheet::$_input_encoding</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Charset encoding currently used when calling writeString()</dd>
 							<dt><b>$_italic</b></dt>
 				<dd>in file Format.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#var$_italic">PHPExcel_Writer_Excel5_Format::$_italic</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Bit specifiying if the font is italic.</dd>
+							<dt><b>$_lastColumnIndex</b></dt>
+				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_lastColumnIndex">PHPExcel_Writer_Excel5_Worksheet::$_lastColumnIndex</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Index of last used column (no used columns means -1)</dd>
+							<dt><b>$_lastRowIndex</b></dt>
+				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_lastRowIndex">PHPExcel_Writer_Excel5_Worksheet::$_lastRowIndex</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Index of last used row.</dd>
 							<dt><b>$_left</b></dt>
 				<dd>in file Format.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#var$_left">PHPExcel_Writer_Excel5_Format::$_left</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Style of the left border of the cell</dd>
 							<dt><b>$_left_color</b></dt>
@@ -259,7 +273,7 @@
 							<dt><b>$_right_color</b></dt>
 				<dd>in file Format.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#var$_right_color">PHPExcel_Writer_Excel5_Format::$_right_color</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Color of the right border of the cell.</dd>
 							<dt><b>$_rotation</b></dt>
-				<dd>in file Format.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#var$_rotation">PHPExcel_Writer_Excel5_Format::$_rotation</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The two bits specifying the text rotation.</dd>
+				<dd>in file Format.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#var$_rotation">PHPExcel_Writer_Excel5_Format::$_rotation</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Integer specifying the text rotation.</dd>
 							<dt><b>$_selected</b></dt>
 				<dd>in file Workbook.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#var$_selected">PHPExcel_Writer_Excel5_Workbook::$_selected</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Number of workbook tabs selected</dd>
 							<dt><b>$_selection</b></dt>
@@ -291,9 +305,9 @@
 							<dt><b>$_text_wrap</b></dt>
 				<dd>in file Format.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#var$_text_wrap">PHPExcel_Writer_Excel5_Format::$_text_wrap</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Bit specifying if the text is wrapped at the right border.</dd>
 							<dt><b>$_tmp_dir</b></dt>
-				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_tmp_dir">PHPExcel_Writer_Excel5_Worksheet::$_tmp_dir</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The temporary dir for storing files</dd>
-							<dt><b>$_tmp_dir</b></dt>
 				<dd>in file Workbook.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#var$_tmp_dir">PHPExcel_Writer_Excel5_Workbook::$_tmp_dir</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The temporary dir for storing the OLE file</dd>
+							<dt><b>$_tmp_dir</b></dt>
+				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_tmp_dir">PHPExcel_Writer_Excel5_Worksheet::$_tmp_dir</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The temporary dir for storing files</dd>
 							<dt><b>$_tmp_format</b></dt>
 				<dd>in file Workbook.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#var$_tmp_format">PHPExcel_Writer_Excel5_Workbook::$_tmp_format</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The default XF format.</dd>
 							<dt><b>$_top</b></dt>
@@ -303,9 +317,9 @@
 							<dt><b>$_underline</b></dt>
 				<dd>in file Format.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#var$_underline">PHPExcel_Writer_Excel5_Format::$_underline</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The text underline property</dd>
 							<dt><b>$_url_format</b></dt>
-				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_url_format">PHPExcel_Writer_Excel5_Worksheet::$_url_format</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Reference to the (default) Format object for URLs</dd>
-							<dt><b>$_url_format</b></dt>
 				<dd>in file Workbook.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#var$_url_format">PHPExcel_Writer_Excel5_Workbook::$_url_format</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The default format for URLs.</dd>
+							<dt><b>$_url_format</b></dt>
+				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_url_format">PHPExcel_Writer_Excel5_Worksheet::$_url_format</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Reference to the (default) Format object for URLs</dd>
 							<dt><b>$_using_tmpfile</b></dt>
 				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_using_tmpfile">PHPExcel_Writer_Excel5_Worksheet::$_using_tmpfile</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Boolean indicating if we are using a temporary file for storing data</dd>
 							<dt><b>$_vcenter</b></dt>
@@ -313,9 +327,9 @@
 							<dt><b>$_worksheets</b></dt>
 				<dd>in file Workbook.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#var$_worksheets">PHPExcel_Writer_Excel5_Workbook::$_worksheets</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Array containing references to all of this workbook's worksheets</dd>
 							<dt><b>$_xf_index</b></dt>
-				<dd>in file Workbook.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#var$_xf_index">PHPExcel_Writer_Excel5_Workbook::$_xf_index</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Index for creating adding new formats to the workbook</dd>
-							<dt><b>$_xf_index</b></dt>
 				<dd>in file Format.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#var$_xf_index">PHPExcel_Writer_Excel5_Format::$_xf_index</a><br>&nbsp;&nbsp;&nbsp;&nbsp;The index given by the workbook when creating a new format.</dd>
+							<dt><b>$_xf_index</b></dt>
+				<dd>in file Workbook.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#var$_xf_index">PHPExcel_Writer_Excel5_Workbook::$_xf_index</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Index for creating adding new formats to the workbook</dd>
 							<dt><b>$_xls_colmax</b></dt>
 				<dd>in file Worksheet.php, variable <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#var$_xls_colmax">PHPExcel_Writer_Excel5_Worksheet::$_xls_colmax</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Maximum number of columns for an Excel spreadsheet (BIFF5)</dd>
 							<dt><b>$_xls_rowmax</b></dt>
@@ -327,9 +341,9 @@
 							<dt><b>_advance</b></dt>
 				<dd>in file Parser.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Parser.html#method_advance">PHPExcel_Writer_Excel5_Parser::_advance()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Advance to the next valid token.</dd>
 							<dt><b>_append</b></dt>
-				<dd>in file BIFFwriter.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#method_append">PHPExcel_Writer_Excel5_BIFFwriter::_append()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;General storage function</dd>
-							<dt><b>_append</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_append">PHPExcel_Writer_Excel5_Worksheet::_append()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Store Worksheet data in memory using the parent's class append() or to a temporary file, the default.</dd>
+							<dt><b>_append</b></dt>
+				<dd>in file BIFFwriter.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#method_append">PHPExcel_Writer_Excel5_BIFFwriter::_append()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;General storage function</dd>
 							<dt><b>_calcSheetOffsets</b></dt>
 				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_calcSheetOffsets">PHPExcel_Writer_Excel5_Workbook::_calcSheetOffsets()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Calculate offsets for Worksheet BOF records.</dd>
 							<dt><b>_calculateSharedStringsSizes</b></dt>
@@ -337,9 +351,9 @@
 							<dt><b>_cellToPackedRowcol</b></dt>
 				<dd>in file Parser.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Parser.html#method_cellToPackedRowcol">PHPExcel_Writer_Excel5_Parser::_cellToPackedRowcol()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;pack() row and column into the required 3 or 4 byte format.</dd>
 							<dt><b>_cellToRowcol</b></dt>
-				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_cellToRowcol">PHPExcel_Writer_Excel5_Worksheet::_cellToRowcol()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Convert an Excel cell reference in A1 notation to a zero based row and column reference; converts C1 to (0, 2).</dd>
-							<dt><b>_cellToRowcol</b></dt>
 				<dd>in file Parser.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Parser.html#method_cellToRowcol">PHPExcel_Writer_Excel5_Parser::_cellToRowcol()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Convert an Excel cell reference such as A1 or $B2 or C$3 or $D$4 to a zero indexed row and column number. whether the row or column are relative references.</dd>
+							<dt><b>_cellToRowcol</b></dt>
+				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_cellToRowcol">PHPExcel_Writer_Excel5_Worksheet::_cellToRowcol()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Convert an Excel cell reference in A1 notation to a zero based row and column reference; converts C1 to (0, 2).</dd>
 							<dt><b>_checkRowCol</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_checkRowCol">PHPExcel_Writer_Excel5_Worksheet::_checkRowCol()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Check row and col before writing to a cell, and update the sheet's</dd>
 							<dt><b>_condition</b></dt>
@@ -421,12 +435,12 @@
 							<dt><b>_storeColinfo</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_storeColinfo">PHPExcel_Writer_Excel5_Worksheet::_storeColinfo()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write BIFF record COLINFO to define column widths
  Note: The SDK says the record length is 0x0B but Excel writes a 0x0C length record.</dd>
-							<dt><b>_storeCountry</b></dt>
-				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_storeCountry">PHPExcel_Writer_Excel5_Workbook::_storeCountry()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Stores the COUNTRY record for localization</dd>
 							<dt><b>_storeDataValidity</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_storeDataValidity">PHPExcel_Writer_Excel5_Worksheet::_storeDataValidity()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Store the DVAL and DV records.</dd>
 							<dt><b>_storeDatemode</b></dt>
 				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_storeDatemode">PHPExcel_Writer_Excel5_Workbook::_storeDatemode()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write DATEMODE record to indicate the date system in use (1904 or 1900).</dd>
+							<dt><b>_storeDefaultRowHeight</b></dt>
+				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_storeDefaultRowHeight">PHPExcel_Writer_Excel5_Worksheet::_storeDefaultRowHeight()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write BIFF record DEFAULTROWHEIGHT.</dd>
 							<dt><b>_storeDefcol</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_storeDefcol">PHPExcel_Writer_Excel5_Worksheet::_storeDefcol()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write BIFF record DEFCOLWIDTH if COLINFO records are in use.</dd>
 							<dt><b>_storeDimensions</b></dt>
@@ -443,8 +457,6 @@
 				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_storeExternsheet">PHPExcel_Writer_Excel5_Workbook::_storeExternsheet()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Writes the Excel BIFF EXTERNSHEET record. formulas. rows and columns.</dd>
 							<dt><b>_storeExternsheet</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_storeExternsheet">PHPExcel_Writer_Excel5_Worksheet::_storeExternsheet()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Writes the Excel BIFF EXTERNSHEET record. formulas. reference to all of the external worksheets the EXTERNSHEET index is the same as the worksheet index.</dd>
-							<dt><b>_storeExternsheetBiff8</b></dt>
-				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_storeExternsheetBiff8">PHPExcel_Writer_Excel5_Workbook::_storeExternsheetBiff8()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Writes the Excel BIFF EXTERNSHEET record. formulas.</dd>
 							<dt><b>_storeFooter</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_storeFooter">PHPExcel_Writer_Excel5_Worksheet::_storeFooter()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Store the footer caption BIFF record.</dd>
 							<dt><b>_storeGridset</b></dt>
@@ -495,12 +507,8 @@
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_storeSelection">PHPExcel_Writer_Excel5_Worksheet::_storeSelection()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write BIFF record SELECTION.</dd>
 							<dt><b>_storeSetup</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_storeSetup">PHPExcel_Writer_Excel5_Worksheet::_storeSetup()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Store the page setup SETUP BIFF record.</dd>
-							<dt><b>_storeSharedStringsTable</b></dt>
-				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_storeSharedStringsTable">PHPExcel_Writer_Excel5_Workbook::_storeSharedStringsTable()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write all of the workbooks strings into an indexed array.</dd>
 							<dt><b>_storeStyle</b></dt>
 				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_storeStyle">PHPExcel_Writer_Excel5_Workbook::_storeStyle()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write Excel BIFF STYLE records.</dd>
-							<dt><b>_storeSupbookInternal</b></dt>
-				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#method_storeSupbookInternal">PHPExcel_Writer_Excel5_Workbook::_storeSupbookInternal()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write Internal SUPBOOK record</dd>
 							<dt><b>_storeVbreak</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#method_storeVbreak">PHPExcel_Writer_Excel5_Worksheet::_storeVbreak()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write the VERTICALPAGEBREAKS BIFF record.</dd>
 							<dt><b>_storeVcenter</b></dt>
@@ -734,9 +742,9 @@
 							<dt><b>setBgColor</b></dt>
 				<dd>in file Format.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#methodsetBgColor">PHPExcel_Writer_Excel5_Format::setBgColor()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets the cell's background color</dd>
 							<dt><b>setBIFF8InputEncoding</b></dt>
-				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetBIFF8InputEncoding">PHPExcel_Writer_Excel5_Worksheet::setBIFF8InputEncoding()</a></dd>
-							<dt><b>setBIFF8InputEncoding</b></dt>
 				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#methodsetBIFF8InputEncoding">PHPExcel_Writer_Excel5_Workbook::setBIFF8InputEncoding()</a></dd>
+							<dt><b>setBIFF8InputEncoding</b></dt>
+				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetBIFF8InputEncoding">PHPExcel_Writer_Excel5_Worksheet::setBIFF8InputEncoding()</a></dd>
 							<dt><b>setBold</b></dt>
 				<dd>in file Format.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#methodsetBold">PHPExcel_Writer_Excel5_Format::setBold()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets the boldness of the text.</dd>
 							<dt><b>setBorder</b></dt>
@@ -755,6 +763,12 @@
 				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#methodsetCountry">PHPExcel_Writer_Excel5_Workbook::setCountry()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set the country identifier for the workbook</dd>
 							<dt><b>setCustomColor</b></dt>
 				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#methodsetCustomColor">PHPExcel_Writer_Excel5_Workbook::setCustomColor()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Change the RGB components of the elements in the colour palette.</dd>
+							<dt><b>setDefaultRowHeight</b></dt>
+				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetDefaultRowHeight">PHPExcel_Writer_Excel5_Worksheet::setDefaultRowHeight()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set the default row height in twips = 1/20 of a point</dd>
+							<dt><b>setDefColWidth</b></dt>
+				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetDefColWidth">PHPExcel_Writer_Excel5_Worksheet::setDefColWidth()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set the default column (character) width</dd>
+							<dt><b>setDimensions</b></dt>
+				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetDimensions">PHPExcel_Writer_Excel5_Worksheet::setDimensions()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set sheet dimensions</dd>
 							<dt><b>setExtSheet</b></dt>
 				<dd>in file Parser.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Parser.html#methodsetExtSheet">PHPExcel_Writer_Excel5_Parser::setExtSheet()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This method is used to update the array of sheet names. called by the addWorksheet() method of the PHPExcel_Writer_Excel5_Workbook class.</dd>
 							<dt><b>setFgColor</b></dt>
@@ -769,8 +783,12 @@
 				<dd>in file Format.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#methodsetHAlign">PHPExcel_Writer_Excel5_Format::setHAlign()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set cell horizontal alignment.</dd>
 							<dt><b>setHeader</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetHeader">PHPExcel_Writer_Excel5_Worksheet::setHeader()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set the page header caption and optional margin.</dd>
+							<dt><b>setHidden</b></dt>
+				<dd>in file Format.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#methodsetHidden">PHPExcel_Writer_Excel5_Format::setHidden()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Hide a cell.</dd>
 							<dt><b>setHPagebreaks</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetHPagebreaks">PHPExcel_Writer_Excel5_Worksheet::setHPagebreaks()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Store the horizontal page breaks on a worksheet (for printing).</dd>
+							<dt><b>setIndent</b></dt>
+				<dd>in file Format.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#methodsetIndent">PHPExcel_Writer_Excel5_Format::setIndent()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets indent level</dd>
 							<dt><b>setInputEncoding</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetInputEncoding">PHPExcel_Writer_Excel5_Worksheet::setInputEncoding()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets Input Encoding for writing strings</dd>
 							<dt><b>setItalic</b></dt>
@@ -798,15 +816,15 @@
 							<dt><b>setMarginTop</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetMarginTop">PHPExcel_Writer_Excel5_Worksheet::setMarginTop()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set the top margin in inches.</dd>
 							<dt><b>setMerge</b></dt>
-				<dd>in file Format.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#methodsetMerge">PHPExcel_Writer_Excel5_Format::setMerge()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This is an alias for the unintuitive setAlign('merge')</dd>
-							<dt><b>setMerge</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetMerge">PHPExcel_Writer_Excel5_Worksheet::setMerge()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets a merged cell range</dd>
+							<dt><b>setMerge</b></dt>
+				<dd>in file Format.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#methodsetMerge">PHPExcel_Writer_Excel5_Format::setMerge()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This is an alias for the unintuitive setAlign('merge')</dd>
 							<dt><b>setNumFormat</b></dt>
 				<dd>in file Format.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#methodsetNumFormat">PHPExcel_Writer_Excel5_Format::setNumFormat()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets the numeric format.</dd>
-							<dt><b>setOutLine</b></dt>
-				<dd>in file Format.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#methodsetOutLine">PHPExcel_Writer_Excel5_Format::setOutLine()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets outlining for a font.</dd>
 							<dt><b>setOutline</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetOutline">PHPExcel_Writer_Excel5_Worksheet::setOutline()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;This method sets the properties for outlining and grouping. correspond to Excel's defaults.</dd>
+							<dt><b>setOutLine</b></dt>
+				<dd>in file Format.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#methodsetOutLine">PHPExcel_Writer_Excel5_Format::setOutLine()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets outlining for a font.</dd>
 							<dt><b>setPaper</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodsetPaper">PHPExcel_Writer_Excel5_Worksheet::setPaper()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set the paper type.</dd>
 							<dt><b>setPattern</b></dt>
@@ -847,6 +865,8 @@
 				<dd>in file Format.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#methodsetTopColor">PHPExcel_Writer_Excel5_Format::setTopColor()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets the cell's top border color</dd>
 							<dt><b>setUnderline</b></dt>
 				<dd>in file Format.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#methodsetUnderline">PHPExcel_Writer_Excel5_Format::setUnderline()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Sets the underline of the text</dd>
+							<dt><b>setUnhidden</b></dt>
+				<dd>in file Format.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#methodsetUnhidden">PHPExcel_Writer_Excel5_Format::setUnhidden()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Unhide a cell.</dd>
 							<dt><b>setUnLocked</b></dt>
 				<dd>in file Format.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Format.html#methodsetUnLocked">PHPExcel_Writer_Excel5_Format::setUnLocked()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Unlocks a cell.</dd>
 							<dt><b>setVAlign</b></dt>
@@ -895,10 +915,24 @@
 				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#methodworksheets">PHPExcel_Writer_Excel5_Workbook::worksheets()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;An accessor for the _worksheets[] array.</dd>
 							<dt><b>write</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodwrite">PHPExcel_Writer_Excel5_Worksheet::write()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Map to the appropriate write method acording to the token recieved.</dd>
+							<dt><b>writeAllDefinedNamesBiff8</b></dt>
+				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#methodwriteAllDefinedNamesBiff8">PHPExcel_Writer_Excel5_Workbook::writeAllDefinedNamesBiff8()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Writes all the DEFINEDNAME records (BIFF8).</dd>
 							<dt><b>writeBlank</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodwriteBlank">PHPExcel_Writer_Excel5_Worksheet::writeBlank()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write a blank cell to the specified row and column (zero indexed).</dd>
+							<dt><b>writeBoolErr</b></dt>
+				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodwriteBoolErr">PHPExcel_Writer_Excel5_Worksheet::writeBoolErr()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write a boolean or an error type to the specified row and column (zero indexed)</dd>
 							<dt><b>writeCol</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodwriteCol">PHPExcel_Writer_Excel5_Worksheet::writeCol()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write an array of values as a column</dd>
+							<dt><b>writeCountry</b></dt>
+				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#methodwriteCountry">PHPExcel_Writer_Excel5_Workbook::writeCountry()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Stores the COUNTRY record for localization</dd>
+							<dt><b>writeData</b></dt>
+				<dd>in file BIFFwriter.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#methodwriteData">PHPExcel_Writer_Excel5_BIFFwriter::writeData()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;General storage function like _append and _prepend, but returns string instead of modifying $this-&gt;_data</dd>
+							<dt><b>writeDefinedNameBiff8</b></dt>
+				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#methodwriteDefinedNameBiff8">PHPExcel_Writer_Excel5_Workbook::writeDefinedNameBiff8()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write a DEFINEDNAME record for BIFF8 using explicit binary formula data</dd>
+							<dt><b>writeEof</b></dt>
+				<dd>in file BIFFwriter.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#methodwriteEof">PHPExcel_Writer_Excel5_BIFFwriter::writeEof()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Writes Excel EOF record to indicate the end of a BIFF stream.</dd>
+							<dt><b>writeExternsheetBiff8</b></dt>
+				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#methodwriteExternsheetBiff8">PHPExcel_Writer_Excel5_Workbook::writeExternsheetBiff8()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Writes the Excel BIFF EXTERNSHEET record. formulas.</dd>
 							<dt><b>writeFormula</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodwriteFormula">PHPExcel_Writer_Excel5_Worksheet::writeFormula()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write a formula to the specified row and column (zero indexed).</dd>
 							<dt><b>writeNote</b></dt>
@@ -907,10 +941,14 @@
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodwriteNumber">PHPExcel_Writer_Excel5_Worksheet::writeNumber()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write a double to the specified row and column (zero indexed).</dd>
 							<dt><b>writeRow</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodwriteRow">PHPExcel_Writer_Excel5_Worksheet::writeRow()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write an array of values as a row</dd>
+							<dt><b>writeSharedStringsTable</b></dt>
+				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#methodwriteSharedStringsTable">PHPExcel_Writer_Excel5_Workbook::writeSharedStringsTable()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write all of the workbooks strings into an indexed array.</dd>
 							<dt><b>writeString</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodwriteString">PHPExcel_Writer_Excel5_Worksheet::writeString()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write a string to the specified row and column (zero indexed).</dd>
 							<dt><b>writeStringBIFF8</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodwriteStringBIFF8">PHPExcel_Writer_Excel5_Worksheet::writeStringBIFF8()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write a string to the specified row and column (zero indexed).</dd>
+							<dt><b>writeSupbookInternal</b></dt>
+				<dd>in file Workbook.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Workbook.html#methodwriteSupbookInternal">PHPExcel_Writer_Excel5_Workbook::writeSupbookInternal()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write Internal SUPBOOK record</dd>
 							<dt><b>writeUrl</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_Worksheet.html#methodwriteUrl">PHPExcel_Writer_Excel5_Worksheet::writeUrl()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Write a hyperlink.</dd>
 					</dl>
@@ -918,7 +956,7 @@
 	<a href="elementindex_PHPExcel_Writer_Excel5_Writer.html#top">top</a><br>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Mon, 25 Aug 2008 13:28:24 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
+		    Documentation generated on Mon, 27 Oct 2008 08:37:04 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
 	      </div>
       </td></tr></table>
     </td>

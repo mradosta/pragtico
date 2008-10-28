@@ -133,6 +133,7 @@ Source Location: /PHPExcel/Worksheet/Drawing.php<br /><br />
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_Drawing.html#methodgetExtension">getExtension</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_Drawing.html#methodgetFilename">getFilename</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_Drawing.html#methodgetHashCode">getHashCode</a></li>
+    <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_Drawing.html#methodgetIndexedFilename">getIndexedFilename</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_Drawing.html#methodgetPath">getPath</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_Drawing.html#methodsetPath">setPath</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_Drawing.html#method__clone">__clone</a></li>
@@ -175,6 +176,18 @@ Source Location: /PHPExcel/Worksheet/Drawing.php<br /><br />
 </dd>
 <dt>
   <a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#var$_height">PHPExcel_Worksheet_BaseDrawing::$_height</a>
+  </dt>
+<dd>
+   
+</dd>
+<dt>
+  <a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#var$_imageCounter">PHPExcel_Worksheet_BaseDrawing::$_imageCounter</a>
+  </dt>
+<dd>
+   
+</dd>
+<dt>
+  <a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#var$_imageIndex">PHPExcel_Worksheet_BaseDrawing::$_imageIndex</a>
   </dt>
 <dd>
    
@@ -265,6 +278,12 @@ Source Location: /PHPExcel/Worksheet/Drawing.php<br /><br />
   </dt>
   <dd>
     Get Height
+  </dd>
+    <dt>
+    <a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#methodgetImageIndex">PHPExcel_Worksheet_BaseDrawing::getImageIndex()</a>
+  </dt>
+  <dd>
+    Get image index
   </dd>
     <dt>
     <a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#methodgetName">PHPExcel_Worksheet_BaseDrawing::getName()</a>
@@ -483,7 +502,7 @@ PHPExcel_Worksheet_Drawing<br /><br /><p>PHPExcel_Worksheet_Drawing</p><br /><br
   </div>
   <hr />
 	<a name="methodgetExtension"></a>
-	<h3>method getExtension <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetDrawing.php.html#a84">84</a>]</span></h3>
+	<h3>method getExtension <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetDrawing.php.html#a93">93</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -545,7 +564,7 @@ PHPExcel_Worksheet_Drawing<br /><br /><p>PHPExcel_Worksheet_Drawing</p><br /><br
   </div>
   <hr />
 	<a name="methodgetHashCode"></a>
-	<h3>method getHashCode <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetDrawing.php.html#a127">127</a>]</span></h3>
+	<h3>method getHashCode <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetDrawing.php.html#a136">136</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -578,8 +597,33 @@ PHPExcel_Worksheet_Drawing<br /><br /><p>PHPExcel_Worksheet_Drawing</p><br /><br
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodgetIndexedFilename"></a>
+	<h3>method getIndexedFilename <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetDrawing.php.html#a84">84</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>string getIndexedFilename(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Get indexed filename (using image index)<br /><br /><p>Get indexed filename (using image index)</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodgetPath"></a>
-	<h3>method getPath <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetDrawing.php.html#a94">94</a>]</span></h3>
+	<h3>method getPath <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetDrawing.php.html#a103">103</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -610,7 +654,7 @@ PHPExcel_Worksheet_Drawing<br /><br /><p>PHPExcel_Worksheet_Drawing</p><br /><br
   </div>
   <hr />
 	<a name="methodsetPath"></a>
-	<h3>method setPath <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetDrawing.php.html#a105">105</a>]</span></h3>
+	<h3>method setPath <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetDrawing.php.html#a114">114</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -661,7 +705,7 @@ $pVerifyFile = true])</code>
   </div>
   <hr />
 	<a name="method__clone"></a>
-	<h3>method __clone <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetDrawing.php.html#a138">138</a>]</span></h3>
+	<h3>method __clone <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetDrawing.php.html#a147">147</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -695,7 +739,7 @@ $pVerifyFile = true])</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Mon, 25 Aug 2008 13:36:30 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
+		    Documentation generated on Mon, 27 Oct 2008 08:38:17 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
 	      </div>
       </td></tr></table>
     </td>

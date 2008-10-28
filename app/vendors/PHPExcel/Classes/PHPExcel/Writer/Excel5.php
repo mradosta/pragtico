@@ -22,7 +22,7 @@
  * @package	PHPExcel_Writer
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license	http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version	1.6.3, 2008-08-25
+ * @version	1.6.4, 2008-10-27
  */
 
 
@@ -134,7 +134,14 @@ class PHPExcel_Writer_Excel5 implements PHPExcel_Writer_IWriter {
 				$worksheet->hideGridLines();
 			}
 
+			// initialize first, last, row and column index, needed for DIMENSION record
+			$firstRowIndex = 0;
+			$lastRowIndex = -1;
+			$firstColumnIndex = 0;
+			$lastColumnIndex = -1;
+
 			$formats = array();
+
 			foreach ($phpSheet->getCellCollection() as $cell) {
 				$row = $cell->getRow() - 1;
 				$column = PHPExcel_Cell::columnIndexFromString($cell->getColumn()) - 1;
@@ -143,6 +150,11 @@ class PHPExcel_Writer_Excel5 implements PHPExcel_Writer_IWriter {
 				if ($row + 1 >= 65569) {
 					break;
 				}
+
+				$firstRowIndex = min($firstRowIndex, $row);
+				$lastRowIndex = max($lastRowIndex, $row);
+				$firstColumnIndex = min($firstColumnIndex, $column);
+				$lastColumnIndex = max($lastColumnIndex, $column);
 
 				$style = $emptyStyle;
 				if (isset($aStyles[$cell->getCoordinate()])) {
@@ -163,7 +175,7 @@ class PHPExcel_Writer_Excel5 implements PHPExcel_Writer_IWriter {
 						'Size' => $style->getFont()->getSize(),
 						//~ 'Script' => $style->getSuperscript(),
 
-						'NumFormat' => iconv("UTF-8", "Windows-1252", $style->getNumberFormat()->getFormatCode()),
+						'NumFormat' => $style->getNumberFormat()->getFormatCode(),
 
 						'Bottom' => $this->_mapBorderStyle($style->getBorders()->getBottom()->getBorderStyle()),
 						'Top' => $this->_mapBorderStyle($style->getBorders()->getTop()->getBorderStyle()),
@@ -182,6 +194,7 @@ class PHPExcel_Writer_Excel5 implements PHPExcel_Writer_IWriter {
 					if ($style->getAlignment()->getWrapText()) {
 						$formats[$styleHash]->setTextWrap();
 					}
+					$formats[$styleHash]->setIndent($style->getAlignment()->getIndent());
 					if ($style->getAlignment()->getShrinkToFit()) {
 						$formats[$styleHash]->setShrinkToFit();
 					}
@@ -191,43 +204,82 @@ class PHPExcel_Writer_Excel5 implements PHPExcel_Writer_IWriter {
 					if ($style->getFont()->getStriketrough()) {
 						$formats[$styleHash]->setStrikeOut();
 					}
+					if ($style->getProtection()->getLocked() == PHPExcel_Style_Protection::PROTECTION_UNPROTECTED) {
+						$formats[$styleHash]->setUnlocked();
+					}
+					if ($style->getProtection()->getHidden() == PHPExcel_Style_Protection::PROTECTION_PROTECTED) {
+						$formats[$styleHash]->setHidden();
+					}
 				}
 
 				// Write cell value
 				if ($cell->getValue() instanceof PHPExcel_RichText) {
 					$worksheet->write($row, $column, $cell->getValue()->getPlainText(), $formats[$styleHash]);
 				} else {
+					switch ($cell->getDatatype()) {
+
+					case PHPExcel_Cell_DataType::TYPE_STRING:
+						if ($cell->getValue() === '' or $cell->getValue() === null) {
+							$worksheet->writeBlank($row, $column, $formats[$styleHash]);
+						} else {
+							$worksheet->writeString($row, $column, $cell->getValue(), $formats[$styleHash]);
+						}
+						break;
+
+					case PHPExcel_Cell_DataType::TYPE_FORMULA:
+						$worksheet->writeFormula($row, $column, $cell->getValue(), $formats[$styleHash]);
+						break;
+
+					case PHPExcel_Cell_DataType::TYPE_BOOL:
+						$worksheet->writeBoolErr($row, $column, $cell->getValue(), 0, $formats[$styleHash]);
+						break;
+
+					case PHPExcel_Cell_DataType::TYPE_ERROR:
+						$worksheet->writeBoolErr($row, $column, $this->_mapErrorCode($cell->getValue()), 1, $formats[$styleHash]);
+						break;
+
+					default:
+						$worksheet->write($row, $column, $cell->getValue(), $formats[$styleHash], $style->getNumberFormat()->getFormatCode());
+						break;
+					}
+
 					// Hyperlink?
 					if ($cell->hasHyperlink()) {
-						$worksheet->writeUrl($row, $column, str_replace('sheet://', 'internal:', $cell->getHyperlink()->getUrl()), $cell->getValue(), $formats[$styleHash]);
-					} else {
-						$worksheet->write($row, $column, $cell->getValue(), $formats[$styleHash],$style->getNumberFormat()->getFormatCode());
+						$worksheet->writeUrl($row, $column, str_replace('sheet://', 'internal:', $cell->getHyperlink()->getUrl()));
 					}
 				}
 			}
 
-			// Column dimensions
+			// set the worksheet dimension for the DIMENSION record
+			$worksheet->setDimensions($firstRowIndex, $lastRowIndex, $firstColumnIndex, $lastColumnIndex);
+
 			$phpSheet->calculateColumnWidths();
-			$defaultWidth = null;
+
+			// Default column width
 			if ($phpSheet->getDefaultColumnDimension()->getWidth() >= 0) {
-				$defaultWidth = $phpSheet->getDefaultColumnDimension()->getWidth();
-				for ($column = 0; $column < PHPExcel_Cell::columnIndexFromString($phpSheet->getHighestColumn()) - 1; $column++) {
-					$worksheet->setColumn( $column, $column, $defaultWidth );
-				}
+				$worksheet->setDefColWidth((int) $phpSheet->getDefaultColumnDimension()->getWidth());
 			}
+
+			// Column dimensions
 			foreach ($phpSheet->getColumnDimensions() as $columnDimension) {
 				$column = PHPExcel_Cell::columnIndexFromString($columnDimension->getColumnIndex()) - 1;
-				$worksheet->setColumn( $column, $column, $columnDimension->getWidth(), null, ($columnDimension->getVisible() ? '0' : '1'), $columnDimension->getOutlineLevel());
+				if ($columnDimension->getWidth() >= 0) {
+					$width = $columnDimension->getWidth();
+				} else if ($phpSheet->getDefaultColumnDimension()->getWidth() >= 0) {
+					$width = $phpSheet->getDefaultColumnDimension()->getWidth();
+				} else {
+					$width = 8;
+				}
+				$worksheet->setColumn( $column, $column, $width, null, ($columnDimension->getVisible() ? '0' : '1'), $columnDimension->getOutlineLevel());
+			}
+
+			// Default row dimension
+			if ($phpSheet->getDefaultRowDimension()->getRowHeight() >= 0) {
+				// set default row height in twips = 1/20 point
+				$worksheet->setDefaultRowHeight((int) 20 * $phpSheet->getDefaultRowDimension()->getRowHeight());
 			}
 
 			// Row dimensions
-			$defaultHeight = null;
-			if ($phpSheet->getDefaultRowDimension()->getRowHeight() >= 0) {
-				$defaultHeight = $phpSheet->getDefaultRowDimension()->getRowHeight();
-				for ($i = 0; $i < $phpSheet->getHighestRow() - 1; $i++) {
-					$worksheet->setRow( $i, $defaultHeight );
-				}
-			}
 			foreach ($phpSheet->getRowDimensions() as $rowDimension) {
 				$worksheet->setRow( $rowDimension->getRowIndex() - 1, $rowDimension->getRowHeight(), null, ($rowDimension->getVisible() ? '0' : '1'), $rowDimension->getOutlineLevel() );
 			}
@@ -261,49 +313,53 @@ class PHPExcel_Writer_Excel5 implements PHPExcel_Writer_IWriter {
 			$worksheet->setPaper($phpSheet->getPageSetup()->getPaperSize());
 			$worksheet->setHeader($phpSheet->getHeaderFooter()->getOddHeader(), $phpSheet->getPageMargins()->getHeader());
 			$worksheet->setFooter($phpSheet->getHeaderFooter()->getOddFooter(), $phpSheet->getPageMargins()->getFooter());
+			if ($phpSheet->getPageSetup()->getHorizontalCentered()) {
+				$worksheet->centerHorizontally();
+			}
+			if ($phpSheet->getPageSetup()->getVerticalCentered()) {
+				$worksheet->centerVertically();
+			}
 			$worksheet->setMarginLeft($phpSheet->getPageMargins()->getLeft());
 			$worksheet->setMarginRight($phpSheet->getPageMargins()->getRight());
 			$worksheet->setMarginTop($phpSheet->getPageMargins()->getTop());
 			$worksheet->setMarginBottom($phpSheet->getPageMargins()->getBottom());
 
+			// Uncommented again: should now be fixed
 			// -------------------------------------------------------------------
 			// Commented due to bug:
 			// http://pear.php.net/bugs/bug.php?id=2146
 			// -------------------------------------------------------------------
-			// // repeatColumns / repeatRows
-			// if ($phpSheet->getPageSetup()->isColumnsToRepeatAtLeftSet() || $phpSheet->getPageSetup()->isRowsToRepeatAtTopSet()) {
-			// 	// Columns to repeat
-			// 	if ($phpSheet->getPageSetup()->isColumnsToRepeatAtLeftSet()) {
-			// 		$repeat = $phpSheet->getPageSetup()->getColumnsToRepeatAtLeft();
-			//
-			// 		$worksheet->repeatColumns(PHPExcel_Cell::columnIndexFromString($repeat[0] - 1), PHPExcel_Cell::columnIndexFromString($repeat[1] - 1));
-			// 	}
-			//
-			// 	// Rows to repeat
-			// 	if ($phpSheet->getPageSetup()->isRowsToRepeatAtTopSet()) {
-			// 		$repeat = $phpSheet->getPageSetup()->getRowsToRepeatAtTop();
-			//
-			// 		$worksheet->repeatRows($repeat[0], $repeat[1]);
-			// 	}
-			// }
+			// repeatColumns / repeatRows
+			if ($phpSheet->getPageSetup()->isColumnsToRepeatAtLeftSet() || $phpSheet->getPageSetup()->isRowsToRepeatAtTopSet()) {
+				// Columns to repeat
+				if ($phpSheet->getPageSetup()->isColumnsToRepeatAtLeftSet()) {
+					$repeat = $phpSheet->getPageSetup()->getColumnsToRepeatAtLeft();
+					$worksheet->repeatColumns(PHPExcel_Cell::columnIndexFromString($repeat[0]) - 1, PHPExcel_Cell::columnIndexFromString($repeat[1]) - 1);
+				}
+				// Rows to repeat
+				if ($phpSheet->getPageSetup()->isRowsToRepeatAtTopSet()) {
+					$repeat = $phpSheet->getPageSetup()->getRowsToRepeatAtTop();
+					$worksheet->repeatRows($repeat[0] - 1, $repeat[1] - 1);
+				}
+			}
 
+			// Uncommented again: should now be fixed
 			// -------------------------------------------------------------------
 			// Commented due to bug:
 			// http://pear.php.net/bugs/bug.php?id=2146
 			// -------------------------------------------------------------------
-			// if ($phpSheet->getPageSetup()->isPrintAreaSet()) {
-			//	// Print area
-			//	$printArea = PHPExcel_Cell::splitRange($phpSheet->getPageSetup()->getPrintArea());
-			//	$printArea[0] = PHPExcel_Cell::coordinateFromString($printArea[0]);
-			//	$printArea[1] = PHPExcel_Cell::coordinateFromString($printArea[1]);
-			//
-			//	$worksheet->printArea(
-			//		$printArea[0][1],
-			//		PHPExcel_Cell::columnIndexFromString($printArea[0][0]) - 1,
-			//		$printArea[1][1],
-			//		PHPExcel_Cell::columnIndexFromString($printArea[1][0]) - 1
-			//	);
-			// }
+			if ($phpSheet->getPageSetup()->isPrintAreaSet()) {
+				// Print area
+				$printArea = PHPExcel_Cell::splitRange($phpSheet->getPageSetup()->getPrintArea());
+				$printArea[0] = PHPExcel_Cell::coordinateFromString($printArea[0]);
+				$printArea[1] = PHPExcel_Cell::coordinateFromString($printArea[1]);
+				$worksheet->printArea(
+					$printArea[0][1] - 1,
+					PHPExcel_Cell::columnIndexFromString($printArea[0][0]) - 1,
+					$printArea[1][1] - 1,
+					PHPExcel_Cell::columnIndexFromString($printArea[1][0]) - 1
+				);
+			}
 
 			// Support for print scale
 			if ($phpSheet->getPageSetup()->getScale()) {
@@ -443,6 +499,23 @@ class PHPExcel_Writer_Excel5 implements PHPExcel_Writer_IWriter {
 	}
 
 	/**
+	 * Map Error code
+	 */
+	private function _mapErrorCode($errorCode) {
+		switch ($errorCode) {
+			case '#NULL!':	return 0x00;
+			case '#DIV/0!':	return 0x07;
+			case '#VALUE!':	return 0x0F;
+			case '#REF!':	return 0x17;
+			case '#NAME?':	return 0x1D;
+			case '#NUM!':	return 0x24;
+			case '#N/A':	return 0x2A;
+		}
+
+		return 0;
+	}
+
+	/**
 	 * Get an array of all styles
 	 *
 	 * @param	PHPExcel				$pPHPExcel
@@ -454,7 +527,7 @@ class PHPExcel_Writer_Excel5 implements PHPExcel_Writer_IWriter {
 		// Get an array of all styles
 		$aStyles		= array();
 
-		for ($i = 0; $i < $pPHPExcel->getSheetCount(); $i++) {
+		for ($i = 0; $i < $pPHPExcel->getSheetCount(); ++$i) {
 			foreach ($pPHPExcel->getSheet($i)->getStyles() as $style) {
 				$aStyles[] = $style;
 			}

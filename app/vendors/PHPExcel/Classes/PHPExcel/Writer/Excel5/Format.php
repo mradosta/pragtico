@@ -157,6 +157,12 @@ class PHPExcel_Writer_Excel5_Format
     var $_text_wrap;
 	
 	/**
+	 * Indent level
+	 * @var integer
+	 */
+	var $_indent;
+	
+	/**
 	* Shrink to fit
 	* @var
 	*/
@@ -175,7 +181,7 @@ class PHPExcel_Writer_Excel5_Format
     var $_text_justlast;
 
     /**
-    * The two bits specifying the text rotation.
+    * Integer specifying the text rotation. (-90 to +90 or -165 indicating stacked text)
     * @var integer
     */
     var $_rotation;
@@ -274,10 +280,11 @@ class PHPExcel_Writer_Excel5_Format
         $this->_num_format     = 0;
 
         $this->_hidden         = 0;
-        $this->_locked         = 0;
+        $this->_locked         = 1;
 
         $this->_text_h_align   = 0;
         $this->_text_wrap      = 0;
+		$this->_indent         = 0;
 		$this->_shrink_to_fit  = 0;
         $this->_text_v_align   = 2;
         $this->_text_justlast  = 0;
@@ -372,7 +379,7 @@ class PHPExcel_Writer_Excel5_Format
             $align         |= $this->_text_wrap     << 3;
             $align         |= $this->_text_v_align  << 4;
             $align         |= $this->_text_justlast << 7;
-            $align         |= $this->_rotation      << 8;
+            //$align         |= $this->_rotation      << 8;
             $align         |= $atr_num                << 10;
             $align         |= $atr_fnt                << 11;
             $align         |= $atr_alc                << 12;
@@ -434,15 +441,22 @@ class PHPExcel_Writer_Excel5_Format
 
             $header      = pack("vv",       $record, $length);
 
-            $rotation      = 0x00;
+            //$rotation      = 0x00;
+			if ($this->_rotation == -165) {
+				$angle = 255;
+			} else if ($this->_rotation < 0) {
+				$angle = 90 - $this->_rotation;
+			} else {
+				$angle = $this->_rotation;
+			}
 
 			//BIFF8 options: identation, shrinkToFit and  text direction
-			//currently, only shrinkToFit supported
-			//$biff8_options = 0x00;
-			$biff8_options = $this->_shrink_to_fit << 4;
+			$biff8_options  = $this->_indent;
+			$biff8_options |= $this->_shrink_to_fit << 4;
 			
             $data  = pack("vvvC", $ifnt, $ifmt, $style, $align);
-            $data .= pack("CCC", $rotation, $biff8_options, $used_attrib);
+            //$data .= pack("CCC", $rotation, $biff8_options, $used_attrib);
+            $data .= pack("CCC", $angle, $biff8_options, $used_attrib);
             $data .= pack("VVv", $border1, $border2, $icv);
         }
 
@@ -992,6 +1006,17 @@ class PHPExcel_Writer_Excel5_Format
     }
 	
     /**
+    * Sets indent level
+    *
+    * @access public
+	* @param integer $indent
+    */
+	function setIndent($indent) 
+	{
+		$this->_indent = $indent;
+	}
+	
+    /**
     * Sets Shrink To Fit
     *
     * @access public
@@ -1005,32 +1030,32 @@ class PHPExcel_Writer_Excel5_Format
     * Sets the orientation of the text
     *
     * @access public
-    * @param integer $angle The rotation angle for the text (clockwise). Possible
-                            values are: 0, 90, 270 and -1 for stacking top-to-bottom.
+    * @param integer $rotation The rotation angle for the text (-90 to 90, -165 stacked text)
     */
-    function setTextRotation($angle)
+    function setTextRotation($rotation)
     {
-        switch ($angle)
-        {
-            case 0:
-                $this->_rotation = 0;
-                break;
-            case 90:
-                $this->_rotation = 3;
-                break;
-            case -90:
-                $this->_rotation = 2;
-                break;
-            case -1:
-                $this->_rotation = 1;
-                break;
-            default :
-                throw new Exception("Invalid value for angle.".
-                                  " Possible values are: 0, 90, 270 and -1 ".
-                                  "for stacking top-to-bottom.");
-                $this->_rotation = 0;
-                break;
-        }
+        //switch ($angle)
+        //{
+        //    case 0:
+        //        $this->_rotation = 0;
+        //        break;
+        //    case 90:
+        //        $this->_rotation = 3;
+        //        break;
+        //    case -90:
+        //        $this->_rotation = 2;
+        //        break;
+        //    case -1:
+        //        $this->_rotation = 1;
+        //        break;
+        //    default :
+        //        throw new Exception("Invalid value for angle.".
+        //                          " Possible values are: 0, 90, 270 and -1 ".
+        //                          "for stacking top-to-bottom.");
+        //        $this->_rotation = 0;
+        //        break;
+        //}
+		$this->_rotation = $rotation;
     }
 
     /**
@@ -1106,6 +1131,26 @@ class PHPExcel_Writer_Excel5_Format
     {
         $this->_locked = 0;
     }
+
+	/**
+	* Hide a cell.
+	*
+	* @access public
+	*/
+	function setHidden()
+	{
+		$this->_hidden = 1;
+	}
+
+	/**
+	* Unhide a cell.
+	*
+	* @access public
+	*/
+	function setUnhidden()
+	{
+		$this->_hidden = 0;
+	}
 
     /**
     * Sets the font family name.

@@ -114,6 +114,8 @@ Source Location: /PHPExcel/Writer/Excel5/BIFFwriter.php<br /><br />
 <h3><a href="#class_methods">Methods</a></h3>
 <ul>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#methodPHPExcel_Writer_Excel5_BIFFwriter">PHPExcel_Writer_Excel5_BIFFwriter</a></li>
+    <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#methodwriteData">writeData</a></li>
+    <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#methodwriteEof">writeEof</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#method_addContinue">_addContinue</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#method_append">_append</a></li>
     <li><a href="../PHPExcel_Writer_Excel5_Writer/PHPExcel_Writer_Excel5_BIFFwriter.html#method_prepend">_prepend</a></li>
@@ -327,8 +329,69 @@ Class for writing Excel BIFF records.<br /><br /><p>Class for writing Excel BIFF
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodwriteData"></a>
+	<h3>method writeData <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5BIFFwriter.php.html#a159">159</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>string writeData(
+string
+$data)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		General storage function like _append and _prepend, but returns string instead of modifying $this-&gt;_data<br /><br /><p>General storage function like _append and _prepend, but returns string instead of modifying $this-&gt;_data</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$data</b>&nbsp;&nbsp;</td>
+        <td>binary data to write</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodwriteEof"></a>
+	<h3>method writeEof <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5BIFFwriter.php.html#a220">220</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void writeEof(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Writes Excel EOF record to indicate the end of a BIFF stream.<br /><br /><p>Writes Excel EOF record to indicate the end of a BIFF stream.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="method_addContinue"></a>
-	<h3>method _addContinue <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5BIFFwriter.php.html#a210">210</a>]</span></h3>
+	<h3>method _addContinue <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5BIFFwriter.php.html#a240">240</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -471,7 +534,7 @@ $data)</code>
   </div>
   <hr />
 	<a name="method_storeBof"></a>
-	<h3>method _storeBof <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5BIFFwriter.php.html#a161">161</a>]</span></h3>
+	<h3>method _storeBof <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5BIFFwriter.php.html#a178">178</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -507,7 +570,7 @@ $type)</code>
   </div>
   <hr />
 	<a name="method_storeEof"></a>
-	<h3>method _storeEof <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5BIFFwriter.php.html#a190">190</a>]</span></h3>
+	<h3>method _storeEof <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5_Writer__PHPExcelWriterExcel5BIFFwriter.php.html#a207">207</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -535,7 +598,7 @@ $type)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Mon, 25 Aug 2008 13:30:39 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
+		    Documentation generated on Mon, 27 Oct 2008 08:37:20 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
 	      </div>
       </td></tr></table>
     </td>

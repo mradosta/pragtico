@@ -279,7 +279,7 @@ function AliasNbPages($alias='{nb}')
 function Error($msg)
 {
 	// MODIFIED PHPEXCEL
-	
+
 	// Error
 	throw new Exception('FPDF error: ' . $msg);
 }
@@ -430,7 +430,7 @@ function GetStringWidth($s)
 	$cw=&$this->CurrentFont['cw'];
 	$w=0;
 	$l=strlen($s);
-	for($i=0;$i<$l;$i++)
+	for($i=0;$i<$l;++$i)
 		$w+=$cw[$s{$i}];
 	return $w*$this->FontSize/1000;
 }
@@ -485,7 +485,7 @@ function AddFont($family,$style='',$file='')
 		//Search existing encodings
 		$d=0;
 		$nb=count($this->diffs);
-		for($i=1;$i<=$nb;$i++)
+		for($i=1;$i<=$nb;++$i)
 		{
 			if($this->diffs[$i]==$diff)
 			{
@@ -710,7 +710,7 @@ function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
 	$s=str_replace("\r",'',$txt);
 	$nb=strlen($s);
 	if($nb>0 && $s[$nb-1]=="\n")
-		$nb--;
+		--$nb;
 	$b=0;
 	if($border)
 	{
@@ -749,12 +749,12 @@ function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
 				$this->_out('0 Tw');
 			}
 			$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
-			$i++;
+			++$i;
 			$sep=-1;
 			$j=$i;
 			$l=0;
 			$ns=0;
-			$nl++;
+			++$nl;
 			if($border && $nl==2)
 				$b=$b2;
 			continue;
@@ -763,7 +763,7 @@ function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
 		{
 			$sep=$i;
 			$ls=$l;
-			$ns++;
+			++$ns;
 		}
 		$l+=$cw[$c];
 		if($l>$wmax)
@@ -772,7 +772,7 @@ function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
 			if($sep==-1)
 			{
 				if($i==$j)
-					$i++;
+					++$i;
 				if($this->ws>0)
 				{
 					$this->ws=0;
@@ -794,12 +794,12 @@ function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
 			$j=$i;
 			$l=0;
 			$ns=0;
-			$nl++;
+			++$nl;
 			if($border && $nl==2)
 				$b=$b2;
 		}
 		else
-			$i++;
+			++$i;
 	}
 	//Last chunk
 	if($this->ws>0)
@@ -809,7 +809,7 @@ function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
 	}
 	if($border && strpos($border,'B')!==false)
 		$b.='B';
-	
+
 	// MODIFIED PHPEXCEL
 	$this->Cell($w,$h,substr($s,$j,$i-$j),$b,0,$align,$fill);
 	//$this->x=$this->lMargin;
@@ -836,7 +836,7 @@ function Write($h,$txt,$link='')
 		{
 			//Explicit line break
 			$this->Cell($w,$h,substr($s,$j,$i-$j),0,2,'',0,$link);
-			$i++;
+			++$i;
 			$sep=-1;
 			$j=$i;
 			$l=0;
@@ -846,7 +846,7 @@ function Write($h,$txt,$link='')
 				$w=$this->w-$this->rMargin-$this->x;
 				$wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
 			}
-			$nl++;
+			++$nl;
 			continue;
 		}
 		if($c==' ')
@@ -864,12 +864,12 @@ function Write($h,$txt,$link='')
 					$this->y+=$h;
 					$w=$this->w-$this->rMargin-$this->x;
 					$wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
-					$i++;
-					$nl++;
+					++$i;
+					++$nl;
 					continue;
 				}
 				if($i==$j)
-					$i++;
+					++$i;
 				$this->Cell($w,$h,substr($s,$j,$i-$j),0,2,'',0,$link);
 			}
 			else
@@ -886,10 +886,10 @@ function Write($h,$txt,$link='')
 				$w=$this->w-$this->rMargin-$this->x;
 				$wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
 			}
-			$nl++;
+			++$nl;
 		}
 		else
-			$i++;
+			++$i;
 	}
 	//Last chunk
 	if($i!=$j)
@@ -902,7 +902,7 @@ function Image($file,$x,$y,$w=0,$h=0,$type='',$link='',$tempFolder='')
 	if ($tempFolder == '') {
 		$tempFolder = sys_get_temp_dir();
 	}
-	
+
 	//Get image info
 	if($type=='')
 	{
@@ -912,7 +912,7 @@ function Image($file,$x,$y,$w=0,$h=0,$type='',$link='',$tempFolder='')
 		$type=substr($file,$pos+1);
 	}
 	$type=strtolower($type);
-	
+
 	//Determine type
 	$im = null;
 	if($type=='jpg' || $type=='jpeg')
@@ -921,14 +921,14 @@ function Image($file,$x,$y,$w=0,$h=0,$type='',$link='',$tempFolder='')
 		$im = @imagecreatefrompng ($file);
 	elseif($type=='gif')
 		$im = @imagecreatefromgif ($file);
-	
+
 	//Create JPEG version
 	$tmpFile = $tempFolder . '/' . basename($file);
 	if (@imagejpeg($im, $tmpFile, 100) === true) {
 		$type = 'jpg';
 		$file = $tmpFile;
 	}
-	
+
 	//Put an image on the page
 	if(!isset($this->images[$file]))
 	{
@@ -1112,7 +1112,7 @@ function _putpages()
 	if(!empty($this->AliasNbPages))
 	{
 		//Replace number of pages
-		for($n=1;$n<=$nb;$n++)
+		for($n=1;$n<=$nb;++$n)
 			$this->pages[$n]=str_replace($this->AliasNbPages,$nb,$this->pages[$n]);
 	}
 	if($this->DefOrientation=='P')
@@ -1126,7 +1126,7 @@ function _putpages()
 		$hPt=$this->fwPt;
 	}
 	$filter=($this->compress) ? '/Filter /FlateDecode ' : '';
-	for($n=1;$n<=$nb;$n++)
+	for($n=1;$n<=$nb;++$n)
 	{
 		//Page
 		$this->_newobj();
@@ -1168,7 +1168,7 @@ function _putpages()
 	$this->_out('1 0 obj');
 	$this->_out('<</Type /Pages');
 	$kids='/Kids [';
-	for($i=0;$i<$nb;$i++)
+	for($i=0;$i<$nb;++$i)
 		$kids.=(3+2*$i).' 0 R ';
 	$this->_out($kids.']');
 	$this->_out('/Count '.$nb);
@@ -1268,7 +1268,7 @@ function _putfonts()
 			$this->_newobj();
 			$cw=&$font['cw'];
 			$s='[';
-			for($i=32;$i<=255;$i++)
+			for($i=32;$i<=255;++$i)
 				$s.=$cw[chr($i)].' ';
 			$this->_out($s.']');
 			$this->_out('endobj');
@@ -1322,7 +1322,8 @@ function _putimages()
 		if(isset($info['trns']) && is_array($info['trns']))
 		{
 			$trns='';
-			for($i=0;$i<count($info['trns']);$i++)
+			$infoTrnsCount = count($info['trns']);
+			for($i=0;$i<$infoTrnsCount;++$i)
 				$trns.=$info['trns'][$i].' '.$info['trns'][$i].' ';
 			$this->_out('/Mask ['.$trns.']');
 		}
@@ -1443,7 +1444,7 @@ function _enddoc()
 	$this->_out('xref');
 	$this->_out('0 '.($this->n+1));
 	$this->_out('0000000000 65535 f ');
-	for($i=1;$i<=$this->n;$i++)
+	for($i=1;$i<=$this->n;++$i)
 		$this->_out(sprintf('%010d 00000 n ',$this->offsets[$i]));
 	//Trailer
 	$this->_out('trailer');

@@ -22,7 +22,7 @@
  * @package    PHPExcel_Style
  * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.3, 2008-08-25
+ * @version    1.6.4, 2008-10-27
  */
 
 
@@ -88,6 +88,13 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
 	private $_shrinkToFit;
 	
 	/**
+	 * Indent - only possible with horizontal alignment left and right
+	 *
+	 * @var int
+	 */
+	private $_indent;
+	
+	/**
 	 * Parent Style
 	 *
 	 * @var PHPExcel_Style
@@ -113,6 +120,7 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
     	$this->_textRotation		= 0;
     	$this->_wrapText			= false;
 		$this->_shrinkToFit			= false;
+		$this->_indent				= 0;
     }
 
 	/**
@@ -201,6 +209,9 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
     		}
         	if (array_key_exists('shrinkToFit', $pStyles)) {
     			$this->setShrinkToFit($pStyles['shrinkToFit']);
+    		}
+        	if (array_key_exists('indent', $pStyles)) {
+    			$this->setIndent($pStyles['indent']);
     		}
     	} else {
     		throw new Exception("Invalid style array passed.");
@@ -320,6 +331,30 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
     	$this->propertyBeginBind()->_shrinkToFit = $pValue;
     }
 
+    /**
+     * Get indent
+     *
+     * @return int
+     */
+    public function getIndent() {
+    	return $this->propertyGetBound()->_indent;
+    }
+    
+    /**
+     * Set indent
+     *
+     * @param int $pValue
+     */
+    public function setIndent($pValue = 0) {
+		if ($pValue > 0) {
+			if ($this->getHorizontal() != self::HORIZONTAL_GENERAL && $this->getHorizontal() != self::HORIZONTAL_LEFT && $this->getHorizontal() != self::HORIZONTAL_RIGHT) {
+				$pValue = 0; // indent not supported
+			}
+		}
+		
+		$this->propertyBeginBind()->_indent = $pValue;
+    }
+	
 	/**
 	 * Get hash code
 	 *
@@ -333,6 +368,7 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
     		. $property->_textRotation
     		. ($property->_wrapText ? 't' : 'f')
     		. ($property->_shrinkToFit ? 't' : 'f')
+			. $property->_indent
     		. __CLASS__
     	);
     }
