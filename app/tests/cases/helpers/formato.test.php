@@ -276,6 +276,23 @@ class FormatoTest extends CakeTestCase {
 		$expected = "ENERO";
 		$this->assertEqual($expected, $result);
 
+		$valor = "all";
+		$result = $this->Formato->format($valor, array("type"=>"mesEnLetras", "case"=>"upper"));
+		$expected = Array(
+			"1" => "ENERO",
+			"2" => "FEBRERO",
+			"3" => "MARZO",
+			"4" => "ABRIL",
+			"5" => "MAYO",
+			"6" => "JUNIO",
+			"7" => "JULIO",
+			"8" => "AGOSTO",
+			"9" => "SETIEMBRE",
+			"10" => "OCTUBRE",
+			"11" => "NOVIEMBRE",
+			"12" => "DICIEMBRE");
+		$this->assertEqual($expected, $result);
+
 		$valor = "200";
 		$result = $this->Formato->format($valor, array("type"=>"numeroEnLetras", "option"=>"moneda", "case"=>"lower"));
 		$expected = "pesos doscientos";

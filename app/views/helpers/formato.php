@@ -241,15 +241,23 @@ class FormatoHelper extends AppHelper {
 					$before = "";
 					$ano = substr($valor, 0, 4);
 				}
-				$mes = $this->getMeses((int)substr($valor, 4, 2));
+				$mes = $this->__getMeses((int)substr($valor, 4, 2));
 				$return = $before . $mes . " de " . $ano;
 				$return = $this->__case($return, $options['case']);
 				break;
 			case "mesEnLetras":
 				$options = array_merge(array("case"=>"lower"), $options);
-				$meses = $this->getMeses();
-				$mes = (int)$this->format($valor, array("type"=>"mes"));
-				$return = $this->__case($meses[$mes], $options['case']);
+				$meses = $this->__getMeses();
+				if(strtolower($valor) === "all") {
+					foreach($meses as $k=>$mes) {
+						$tmp[$k] = $this->__case($mes, $options['case']);
+					}
+					$return = $tmp;
+				}
+				else {
+					$mes = (int)$this->format($valor, array("type"=>"mes"));
+					$return = $this->__case($meses[$mes], $options['case']);
+				}
 				break;
 			case "numeroEnLetras":
 				$options = array_merge(array("places"=>2, "case"=>"lower", "decimals"=>".", "option"=>"palabras", "ceroCents"=>false), $options);
@@ -365,7 +373,7 @@ function __case($data, $case = "ucfirst") {
  *
  * @return array (key=>value) La key ontine el numero del mes y el value el nombre del mes.
  */
-	function getMeses($mes = null) {
+	function __getMeses($mes = null) {
 		$meses['1'] = "enero";
 		$meses['2'] = "febrero";
 		$meses['3'] = "marzo";
