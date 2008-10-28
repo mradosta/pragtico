@@ -25,18 +25,31 @@
  */
 class PaginadorComponent extends Object {
 
+/**
+ * Los componentes que necesitare.
+ *
+ * @var array
+ * @access public
+ */
 	var $components = array("Util");
 
+/**
+ * El Controller que instancio el component.
+ *
+ * @var array
+ * @access public
+ */
     var $controller;
+
     
 /**
- * Initializes el Component para usar en el controller
+ * Inicializa el Component para usar en el controller.
  *
- * @param object $controller Una referencia a la controller que lo esta instanciando al component.
+ * @param object $controller Una referencia al controller que esta instanciando el component.
  * @return void
  * @access public
  */
-    function initialize(&$controller) {
+    function startup(&$controller) {
         $this->controller = &$controller;
     }
 
@@ -46,7 +59,7 @@ class PaginadorComponent extends Object {
  * $this->data['Condicion']. Si este esta vacio, intenta leerlos desde la sesion si esta existe
  * en caso de que se haya paginado.
  *
- * @return array Un array con las condiciones de la forma que exige el framework para el metodo findAll.
+ * @return array Un array con las condiciones de la forma que exije el framework para el metodo find.
  * @access public
  */
     function generarCondicion() {
@@ -202,10 +215,10 @@ class PaginadorComponent extends Object {
 					//debug($k);
 					$k = str_replace(".", "-", $this->__removerReemplazos($k));
 					if($sufix == ">=") {
-						$this->controller->data['Condicion'][$k . "__desde"] = $this->Util->format($this->__removerReemplazos($v), array("type"=>"db2helper"));
+						$this->controller->data['Condicion'][$k . "__desde"] = $this->Util->format($this->__removerReemplazos($v), array("type"=>"datetime"));
 					}
 					elseif($sufix == "<=") {
-						$this->controller->data['Condicion'][$k . "__hasta"] = $this->Util->format($this->__removerReemplazos($v), array("type"=>"db2helper"));
+						$this->controller->data['Condicion'][$k . "__hasta"] = $this->Util->format($this->__removerReemplazos($v), array("type"=>"datetime"));
 					}
 					else {
 						$this->controller->data['Condicion'][$k] = $this->__removerReemplazos($v);
@@ -309,13 +322,20 @@ class PaginadorComponent extends Object {
 			$key = $model . "." . $campo;
 			if(!empty($tipoDato)) {
 				switch($tipoDato) {
+					case "text":
 					case "string":
  						$valor = "%" . $v . "%";
  						$key .= " like";
 						break;
 					case "date":
 					case "datetime":
-						$v = $this->Util->format($v, array("type"=>"helper2db"));
+						if($tipoDato === "datetime") {
+							$v = $this->Util->format($v, array("type"=>"datetime"));
+						}
+						else {
+							$v = $this->Util->format($v, array("type"=>"date"));
+						}
+						
 						if(isset($extra)) {
 							if($extra == "desde") {
 								$valor = $v;
