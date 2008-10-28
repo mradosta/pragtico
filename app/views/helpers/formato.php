@@ -109,7 +109,50 @@ class FormatoHelper extends AppHelper {
 					$return .= substr($valor, 10);
 				}
 				break;
+			case "formato":
+				if(!empty($valor) && preg_match(VALID_PERIODO, strtoupper($valor), $matches)) {
+					$tmp = null;
+					$tmp['periodoCompleto'] = $matches[0];
+					$tmp['ano'] = $matches[1];
+					$tmp['mes'] = $matches[2];
+					$tmp['periodo'] = $matches[3];
+					$value = array(	"mes"	=> $tmp['mes'],
+									"ano"	=> $tmp['ano']);
+
+					if ($matches[3] == "1Q") {
+						$value = array_merge($value, array("dia"=>"01"));
+						$fechaDesde = $this->format($value, array("type"=>"date", "format"=>"Y-m-d"));
+						$value = array_merge($value, array("dia"=>"15"));
+						$fechaHasta = $this->format($value, array("type"=>"date", "format"=>"Y-m-d"));
+					}
+					elseif ($matches[3] == "2Q") {
+						$value = array_merge($value, array("dia"=>"16"));
+						$fechaDesde = $this->format($value, array("type"=>"date", "format"=>"Y-m-d"));
+						$value = array_merge($value, array("dia"=>$this->format($value, array("type"=>"ultimoDiaDelMes"))));
+						$fechaHasta = $this->format($value, array("type"=>"date", "format"=>"Y-m-d"));
+					}
+					elseif ($matches[3] == "M") {
+						$value = array_merge($value, array("dia"=>"01"));
+						$fechaDesde = $this->format($value, array("type"=>"date", "format"=>"Y-m-d"));
+						$value = array_merge($value, array("dia"=>$this->format($value, array("type"=>"ultimoDiaDelMes"))));
+						$fechaHasta = $this->format($value, array("type"=>"date", "format"=>"Y-m-d"));
+					}
+					$tmp['desde'] = $fechaDesde;
+					$tmp['hasta'] = $fechaHasta;
+					$return = null;
+					$return = $tmp;
+				}
+				else {
+					$return = "";
+				}
+				break;		
 			case "date":
+				if(is_array($valor) && !empty($valor['dia']) && !empty($valor['mes']) && !empty($valor['ano']) && is_numeric($valor['dia']) && is_numeric($valor['mes']) && is_numeric($valor['ano'])) {
+					$tmp = null;
+					$tmp = $valor['ano'] . "-" . str_pad($valor['mes'], 2, "0", STR_PAD_LEFT) . "-" . str_pad($valor['dia'], 2, "0", STR_PAD_LEFT);
+					$valor = null;
+					$valor = $tmp;
+				}
 				$options = array_merge(array("default"=>true), $options);
 				$fecha = trim(substr($valor, 0, 10));
 				if(empty($fecha) && $options['default'] === true) {
@@ -249,6 +292,7 @@ class FormatoHelper extends AppHelper {
 				$options = array_merge(array("case"=>"lower"), $options);
 				$meses = $this->__getMeses();
 				if(strtolower($valor) === "all") {
+					$tmp = null;
 					foreach($meses as $k=>$mes) {
 						$tmp[$k] = $this->__case($mes, $options['case']);
 					}
