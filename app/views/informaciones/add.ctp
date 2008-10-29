@@ -21,11 +21,11 @@
 */
 $campos = null;
 $campos['Informacion.id'] = array();
-$campos['Informacion.nombre'] = array();
+$campos['Informacion.nombre'] = array("aclaracion"=>"Recurde que el nombre especifique aca, sera el que use como una variable en las formulas de conceptos.");
 $campos['Informacion.observacion'] = array();
 $fieldsets[] = array("campos"=>$campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"observaciones.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"informaciones.gif")));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

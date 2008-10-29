@@ -1,6 +1,7 @@
 <?php
 /**
  * Este archivo contiene toda la logica de acceso a datos asociada a la informacion adicional de los convenios.
+ * La informacion adicional puede ser usada en las formulas como variables.
  *
  * PHP versions 5
  *
@@ -23,22 +24,18 @@
  */
 class Informacion extends AppModel {
 
-/*
-	var $order = array('Condicion.nombre'=>'asc');
+
+
+	var $order = array('Informacion.nombre'=>'asc');
 
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre de la condicion.')
-        ),
-        'codigo' => array(
-			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el codigo de la condiciones.')
+				'rule'	=> '/^#[a-z,0-9,_]+$/',
+				'message'	=>'El nombre de la informacion debe comenzar con el signo # y solo puede contener letras minusculas y guion/es bajo/s (_).')
         )
 	);
 
-*/
+
 }
 ?>
