@@ -16,8 +16,6 @@
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
 
-App::import('Behavior', 'validaciones');
-App::import('Core', 'ConnectionManager');
 require_once(APP . "tests" . DS . "cases" . DS . "models" . DS . "fake.test.php");
 
 
@@ -122,7 +120,6 @@ class ValidacionesTestCase extends CakeTestCase {
  */
 	function endTest() {
 		unset($this->model);
-		ClassRegistry::flush();
 	}
 }
 

@@ -23,13 +23,19 @@ class FormuladorComponentTestCase extends CakeTestCase {
 		$this->FormuladorComponentTest->startup(&$controller);
     }
 
+
     function testResolverFechas() {
 
-		$formula = "=date(2007, 12, 21)";
+		$formula = '=date(2007, 12, 21)';
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '1198195200';
 		$this->assertEqual($expected, $result);
 
+		$formula = '=datedif("2007-12-18", "2007-12-22", "D")';
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '4';
+		$this->assertEqual($expected, $result);
+		
 		$formula = '=datedif(date(2007, 12, 18), date(2007, 12, 22), "D")';
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '4';
