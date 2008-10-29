@@ -77,7 +77,7 @@ class Ausencia extends AppModel {
 				foreach($ausencias as $k1=>$ausencia) {
 					foreach($ausencia as $k2=>$v2) {
 						$ausenciasSeguimiento = $this->AusenciasSeguimiento->find("all", array("recursive"=>-1, "conditions"=>array("AusenciasSeguimiento.ausencia_id"=>$v2['id'], "AusenciasSeguimiento.estado"=>"Confirmado")));
-						$results[$k][$k1][$k2] = am($results[$k][$k1][$k2], $this->__getDaysAndDates($ausenciasSeguimiento));
+						$results[$k][$k1][$k2] = array_merge($results[$k][$k1][$k2], $this->__getDaysAndDates($ausenciasSeguimiento));
 					}
 				}
 			}
@@ -85,8 +85,13 @@ class Ausencia extends AppModel {
 		elseif($primary) {
 			foreach($results as $k=>$ausencia) {
 				if(isset($ausencia['Ausencia']['id'])) {
-					$ausenciasSeguimiento = $this->AusenciasSeguimiento->find("all", array("recursive"=>-1, "conditions"=>array("AusenciasSeguimiento.ausencia_id"=>$ausencia['Ausencia']['id'], "AusenciasSeguimiento.estado"=>"Confirmado")));
-					$results[$k]['Ausencia'] = am($results[$k]['Ausencia'], $this->__getDaysAndDates($ausenciasSeguimiento));
+					if(!isset($ausencia['AusenciasSeguimiento'])) {
+						$ausenciasSeguimiento = $this->AusenciasSeguimiento->find("all", array("recursive"=>-1, "conditions"=>array("AusenciasSeguimiento.ausencia_id"=>$ausencia['Ausencia']['id'], "AusenciasSeguimiento.estado"=>"Confirmado")));
+					}
+					else {
+						$ausenciasSeguimiento = $ausencia['AusenciasSeguimiento'];
+					}
+					$results[$k]['Ausencia'] = array_merge($results[$k]['Ausencia'], $this->__getDaysAndDates($ausenciasSeguimiento));
 				}
 			}
 		}
@@ -95,8 +100,12 @@ class Ausencia extends AppModel {
 
 
 /**
- * Dado un array (results, proveniente de un find), agrega los dias confirmados de ausencias
+ * Dado un array (results, proveniente de un find), suma los dias de ausencias
  * y las fechas desde y hasta en las que se produjo la ausencia.
+ *
+ * @param array $results Un array con los resultados provenientes de un metodo find.
+ * @return  array La candidad de dias total de la ausencia con la fechas minima desde y la fecha maxima hasta.
+ * @access private.
  */
 	function __getDaysAndDates($results) {
 		if(!empty($results)) {
@@ -104,6 +113,11 @@ class Ausencia extends AppModel {
 			$fechaMin = "2100-01-01";
 			$fechaMax = null;
 			foreach($results as $k=>$result) {
+				if(is_numeric($k) && !isset($result['AusenciasSeguimiento'])) {
+					$tmp = $result;
+					$result = null;
+					$result['AusenciasSeguimiento'] = $tmp;
+				}
 				if(!empty($result['AusenciasSeguimiento'])) {
 					$total += $result['AusenciasSeguimiento']['dias'];
 					if($result['AusenciasSeguimiento']['desde'] < $fechaMin) {
@@ -126,61 +140,32 @@ class Ausencia extends AppModel {
 
 
 /**
- * Dada un ralacion y un periodo retorna los dias ausencias que esten pendientes de liquidar.
+ * Dada un ralacion y un periodo retorna los dias ausencias que esten confirmadas.
  *
- * @return array vacio si no hay aucencias.
+ * @param array $relacion Una relacion laboral.
+ * @param array $perido Un periodo.
+ * @return array Array con la contidad de ausencias justificadas e injustificadas que hubo en el periodo.
+ * @access public.
  */
-	function buscarAusencia($opciones, $relacion) {
+	function getAusencias($relacion, $periodo) {
 
-		$conditions = array(
-			"conditions"=>	array(	"Ausencia.relacion_id" 	=> $relacion['Relacion']['id'],
-									"Hora.liquidacion_id" 	=> null,
-									"Hora.periodo" 			=> $opciones['periodo'],
-									"Hora.estado"			=> "Pendiente"),
-			"fields"	=>	array(	"Hora.tipo", "sum(Hora.cantidad) as total"),
-			"recursive"	=>	-1,
-			"group"		=> 	array("Hora.tipo")
-		);
-	}
-	
-/**
- * Dado un array (results, proveniente de un find), agrega los dias confirmados de ausencias
- * y las fechas desde y hasta en las que se produjo la ausencia.
- */
-	function getDaysAndDates_deprecated($results, $primary = false) {
-		foreach($results as $k=>$result) {
-			$total = 0;
-			$fechaMin = "2100-01-01";
-			$fechaMax = null;
-			if(!empty($result['AusenciasSeguimiento'])) {
-				foreach($result['AusenciasSeguimiento'] as $k1=>$r) {
-					if($r['estado'] == "Confirmado") {
-						$total += $r['dias'];
-						if($r['desde'] < $fechaMin) {
-							$fechaMin = $r['desde'];
-						}
-						if($r['hasta'] > $fechaMax) {
-							$fechaMax = $r['hasta'];
-						}
-					}
-				}
-			}
-			if($fechaMin == "2100-01-01") {
-				$fechaMin = null;
-			}
-			if($primary === true) {
-				$results[$k]['Ausencia']['dias'] = $total;
-				$results[$k]['Ausencia']['desde'] = $fechaMin;
-				$results[$k]['Ausencia']['hasta'] = $fechaMax;
-			}
-			else {
-				$results[$k]['dias'] = $total;
-				$results[$k]['desde'] = $fechaMin;
-				$results[$k]['hasta'] = $fechaMax;
+		$r = $this->find("all",
+			array("contain"		=> array(	"AusenciasMotivo",
+											"AusenciasSeguimiento"=>array("conditions"=> array(	"AusenciasSeguimiento.estado"	=> "Confirmado",
+																								"AusenciasSeguimiento.desde >="	=> $periodo['desde'],
+																								"AusenciasSeguimiento.hasta <="	=> $periodo['hasta']))),
+			"conditions"		=> array(	"Ausencia.relacion_id" => $relacion['Relacion']['id'])));
+
+		$return['Justificada'] = 0;
+		$return['Injustificada'] = 0;
+		if(!empty($r)) {
+			foreach($r as $k=>$v) {
+				$return[$v['AusenciasMotivo']['tipo']] += $v['Ausencia']['dias'];
 			}
 		}
-		return $results;
+		return $return;
 	}
+	
 
 }
 ?>

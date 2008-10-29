@@ -23,6 +23,13 @@
  */
 class AusenciasSeguimiento extends AppModel {
 
+	/**
+	* Estados:
+	* 		Pendiente: Se cargo pero no se confirmo. No se tendra en cuenta para la liquidacion.
+	*		Confirmado: Se cargo y se confirmo. Se liquidara.
+	* 		Liquidado: Se cargo, se confirmo y se liquido. No se volvera a liquidar.
+	*/
+
 	var $unique = array("ausencia_id", "desde");
 
 	/**
@@ -82,20 +89,21 @@ class AusenciasSeguimiento extends AppModel {
 			unset($this->data['AusenciasSeguimiento']['hasta']);
 		}
 	}
+
+	
 /**
  * Antes de grabar debo asegurarme de que la cantidad de dias este seteada.
  * Puede que el usuario haya cargado la cantidad de dias, pero puede haber cargado una fecha desde y una fecha hasta, \
  * en cuyo caso debere calcularlo.
  */
-	function beforeSave() {
+	function beforeSave($options = array()) {
 		$this->getFile();
 		if(empty($this->data['AusenciasSeguimiento']['dias']) && !empty($this->data['AusenciasSeguimiento']['hasta'])) {
-			$options = array("desde"=>$this->data['AusenciasSeguimiento']['desde'], "hasta"=>$this->data['AusenciasSeguimiento']['hasta']);
-			if($intervalo = $this->dateDiff($options)) {
+			if($intervalo = $this->dateDiff($this->data['AusenciasSeguimiento']['desde'], $this->data['AusenciasSeguimiento']['hasta'])) {
 				$this->data['AusenciasSeguimiento']['dias'] = $intervalo['dias'] + 1;
 			}
 		}
-		return parent::beforeSave();
+		return parent::beforeSave($options);
 	}
 
 }

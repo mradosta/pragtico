@@ -85,5 +85,5 @@ $js = '
 	);
 ';
 
-$formulario->addScript($js, array("ready"=>true));
+$formulario->addScript($js);
 ?>
