@@ -32,7 +32,7 @@ $campos['ConveniosInformacion.informacion_id'] = array(	"options"		=> "listable"
 $campos['ConveniosInformacion.valor'] = array();
 $fieldsets[] = array("campos"=>$campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Categoria", "imagen"=>"convenios_categorias.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Informacion", "imagen"=>"informaciones.gif")));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
