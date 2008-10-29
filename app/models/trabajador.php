@@ -26,8 +26,7 @@ class Trabajador extends AppModel {
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array("edit"=>array("contain"=>array(	"Sucursal.Banco",
-																"Localidad",
+	var $modificadores = array("edit"=>array("contain"=>array(	"Localidad",
 																"Condicion",
 																"ObrasSocial")),
 								"add" =>array(								
@@ -86,10 +85,7 @@ class Trabajador extends AppModel {
         
 	);
 
-	var $belongsTo = array(	'Sucursal' =>
-                        array('className'    => 'Sucursal',
-                              'foreignKey'   => 'sucursal_id'),
-							'Localidad' =>
+	var $belongsTo = array(	'Localidad' =>
                         array('className'    => 'Localidad',
                               'foreignKey'   => 'localidad_id'),
 							'Condicion' =>
@@ -103,7 +99,32 @@ class Trabajador extends AppModel {
 						array('with' => 'Relacion'));
 
 
-
+/**
+ * En caso de que tenga cargado el cbu, lo parseo y agrego el banco, la sucursal y la cuenta.
+ *
+ * @param array $results Los resultados que retorno alguna query.
+ * @param boolean $primary Indica si este resultado viene de una query principal o de una query que
+ *						   es generada por otra (recursive > 1)
+ * @return array array $results Los mismos resultados que ingresaron con los campos que agregue.
+ * @access public
+ */	
+	function afterFind($results, $primary = false) {
+		/**
+		* Si tengo la sucursal y la cuenta, puedo generar el CBU.
+		*/
+		$pattern = "/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d/";
+		if(preg_match($pattern, $results[0]['Trabajador']['cbu'], $matches)) {
+			App::import("Model", "Sucursal");
+			$Sucursal = new Sucursal();
+			$sucursal = $Sucursal->findByCodigo($matches[2]);
+			$results[0]['Trabajador']['banco'] = $sucursal['Banco']['nombre'];
+			$results[0]['Trabajador']['sucursal'] = $sucursal['Sucursal']['direccion'];
+			$results[0]['Trabajador']['cuenta'] = $matches[3];
+		}
+		return parent::afterFind($results, $primary);
+	}
+	
+	
 /**
  * Antes de guardar, saco las propiedades del archivo y lo guardo como campo binary de la base.
  */
@@ -118,31 +139,11 @@ class Trabajador extends AppModel {
 		}
 		
 		/**
-		* Si tengo la sucursal y la cuenta, puedo generar el CBU.
-		*/
-		if((empty($this->data['Trabajador']['cbu']) || strlen($this->data['Trabajador']['cbu']) <> 22)
-			&& !empty($this->data['Trabajador']['sucursal_id'])
-			&& !empty($this->data['Trabajador']['cuenta'])) {
-
-			$sucursal = $this->Sucursal->findById($this->data['Trabajador']['sucursal_id']);
-			$parteA = str_pad($sucursal['Banco']['codigo'], 3, "0", STR_PAD_LEFT) . str_pad($sucursal['Sucursal']['codigo'], 4, "0", STR_PAD_LEFT);
-			$parteB = str_pad($this->data['Trabajador']['cuenta'], 13, "0", STR_PAD_LEFT);
-			$digitoVerificadorParteA = $this->__getDigitoVerificador($parteA);
-			$digitoVerificadorParteB = $this->__getDigitoVerificador($parteB);
-			
-			$cbu = $parteA . $digitoVerificadorParteA . $parteB . $digitoVerificadorParteB;
-			$this->data['Trabajador']['cbu'] = $cbu;
-		}
-
-		/**
 		* Si las foraneas opcionales no las saco del array, en caso de que esten vacias, el framework intentara
 		* guardarlas con el valor vacio, y este fallara.
 		*/
 		if(empty($this->data['Trabajador']['localidad_id'])) {
 			unset($this->data['Trabajador']['localidad_id']);
-		}
-		if(empty($this->data['Trabajador']['sucursal_id'])) {
-			unset($this->data['Trabajador']['sucursal_id']);
 		}
 		if(empty($this->data['Trabajador']['obra_social_id'])) {
 			unset($this->data['Trabajador']['obra_social_id']);

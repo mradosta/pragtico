@@ -54,13 +54,12 @@ $fieldsets[] = array("campos"=>$campos, "opciones"=>array("div"=>array("class"=>
 
 $campos = null;
 $campos['Trabajador.tipo_cuenta'] = array("label"=>"Tipo");
-$campos['Trabajador.sucursal_id'] 	= array("label"=>"Banco",
-											"lov"=>array("controller"		=>	"sucursales",
-														"seleccionMultiple"	=> 	0,
-														"camposRetorno"		=>	array(	"Banco.nombre",
-																						"Sucursal.direccion")));
-$campos['Trabajador.cuenta'] = array();
 $campos['Trabajador.cbu'] = array("aclaracion"=>"Ingrese sin guiones ni barras.");
+if($this->action === "edit") {
+	$campos['Trabajador.banco'] = array("type"=>"soloLectura");
+	$campos['Trabajador.sucursal'] = array("type"=>"soloLectura");
+	$campos['Trabajador.cuenta'] = array("type"=>"soloLectura");
+}
 $fieldsets[] = array("campos"=>$campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Informacion Bancaria", "imagen"=>"pagos.gif")));
 
 $campos = null;
