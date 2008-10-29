@@ -656,6 +656,9 @@ textarea {
 	height: 48px;
 }
 
+span.solo_lectura {
+	font-weight: bold;
+}
 
 /**
  * CHECKBOXS

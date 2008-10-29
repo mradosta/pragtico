@@ -1428,7 +1428,14 @@ class FormularioHelper extends AppHelper {
 			/**
 			* Manejo los tipos de datos date para que me arme el control seleccion de fechas.
 			*/
-			if($tipoCampo === "date") {
+			if($tipoCampo === "soloLectura") {
+				return $this->tag("div", $this->label($tagName, null, array("for"=>false)) . $this->tag("span", $valorCampo, array("class"=>"solo_lectura")), array("class"=>"input text"));
+			}
+			
+			/**
+			* Manejo los tipos de datos date para que me arme el control seleccion de fechas.
+			*/
+			else if($tipoCampo === "date") {
 				/**
 				* Cuando el campo ya tiene un valor y este es una fecha valida, no lo vuelvo a formatear.
 				* si lo mando al helper, me lo formatear para mysql. Esto puede darse durante un add al volver a insertar
@@ -1955,8 +1962,14 @@ class FormularioHelper extends AppHelper {
  * @return string The formatted LABEL element
  */
 	function label($fieldName = null, $text = null, $attributes = array()) {
-		return $this->Form->label($fieldName, $text, $attributes);
+		$return = $this->Form->label($fieldName, $text, $attributes);
+		if(isset($attributes['for']) && $attributes['for'] === false) {
+			return str_replace(' for=""', "", $return);
+		}
+		return $return;
 	}
+
+	
 /**
  * Creates a submit button element.
  *
