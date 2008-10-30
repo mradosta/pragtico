@@ -134,6 +134,7 @@ class NovedadesController extends AppController {
 		*/
 		$this->data['Condicion']['Novedad-formato'] = "Excel2007";
 		$this->data['Condicion']['Novedad-tipo'] = array("Horas", "Ausencias", "Vales");
+		//$this->Novedad->getIngresosPosibles();
 	}
 	
 

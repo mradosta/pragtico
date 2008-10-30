@@ -227,7 +227,6 @@ class Descuento extends AppModel {
  * Como el campo descontar es un bitwise, debo gardar la suma de todos los valores y no un valor puntual.
  */
 	function beforeSave() {
-		//d($this->data);
 		$this->data['Descuento']['descontar'] = array_sum($this->data['Descuento']['descontar']);
 		return parent::beforeSave();
 	}

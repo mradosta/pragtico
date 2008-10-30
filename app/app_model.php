@@ -101,7 +101,7 @@ class AppModel extends Model {
 		/**
 		* Quito el orden, ya que no lo necesito y solo volveria mas lenta la query.
 		*/
-		$this->order = null;
+		$this->order = false;
 		$ids = Set::extract("/" . $this->alias . "/" . $this->primaryKey,
 			$this->find("all", array(	'fields'	=> $this->alias . "." . $this->primaryKey,
 										'recursive' => -1,

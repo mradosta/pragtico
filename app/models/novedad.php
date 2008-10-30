@@ -51,7 +51,7 @@ class Novedad extends AppModel {
  * @var integer
  * @access protected
  */
-	protected $__permissions = 122;
+	//protected $__permissions = 122;
 	
 /**
  * Las opciones validadas de formatos de planillas que se podran generar e importar.
@@ -187,7 +187,16 @@ class Novedad extends AppModel {
 			$this->rollback();
 			return false;
 		}
-		
 	}
+
+	function getIngresosPosibles() {
+		$Concepto = new Concepto();
+		$conceptos = $Concepto->find("all", array("conditions"=>array("Concepto.novedad"=>"Si"), "recursive"=>-1));
+		//$
+		d($conceptos);
+		//$this->data['Condicion']['Novedad-tipo'] = array("Horas", "Ausencias", "Vales");
+		//$this->Novedad->getTiposIngreso();
+	}
+
 }
 ?>

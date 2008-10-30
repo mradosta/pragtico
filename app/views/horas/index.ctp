@@ -33,8 +33,8 @@ $condiciones['Condicion.Relacion-id'] = array(	"label"	=> "Relacion",
 																	"camposRetorno"	=> array(	"Empleador.nombre",
 																								"Trabajador.apellido")));
 
+$condiciones['Condicion.Hora-estado'] = array("type"=>"checkboxMultiple");
 $condiciones['Condicion.Hora-periodo'] = array("type"=>"periodo");
-$condiciones['Condicion.Hora-estado'] = array("options"=>$estados);
 
 
 $fieldsets[] = array("campos"=>$condiciones);

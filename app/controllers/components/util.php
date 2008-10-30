@@ -31,6 +31,12 @@ class UtilComponent extends Object {
     }
 
 
+	function dateDiff() {
+		App::import("Vendor", "dates", "pragmatia");
+		$x = new Dates();
+		d($x->dateDiff());
+	}
+
 /**
  * Dado un array proveniente desde la seleccion multiple desde una tabla index,
  * retorna un array con los ids seleccionados.
@@ -364,7 +370,7 @@ class UtilComponent extends Object {
  * @return mixed 	array con dias, horas, minutos y segundos en caso de que las fechas sean validas.
  * 					False en caso de que las fechas sean invalidas.
  */
-function diferenciaEntreFechas_deprecated($options = null) {
+function diferenciaEntreFechas($options = null) {
 
 	$fecha1 = strtotime($options['desde']);
 	if(empty($options['hasta'])) {

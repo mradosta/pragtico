@@ -38,10 +38,10 @@ $condiciones['Condicion.Relacion-id'] = array(	"label" => "Relacion",
 
 $condiciones['Condicion.Liquidacion-estado'] = array();
 
-$condiciones['Condicion.Liquidacion-mes'] = array("options"=>$meses, "empty"=>true);
+//$condiciones['Condicion.Liquidacion-mes'] = array("options"=>$meses, "empty"=>true);
 $condiciones['Condicion.Liquidacion-ano'] = array("class"=>"derecha");
-$condiciones['Condicion.Liquidacion-periodo'] = array("options"=>$periodos, "empty"=>true);
-$condiciones['Condicion.Liquidacion-periodo_completo'] = array("type"=>"periodo");
+$condiciones['Condicion.Liquidacion-periodo'] = array("type"=>"periodo");
+//$condiciones['Condicion.Liquidacion-periodo_completo'] = array("type"=>"periodo");
 $fieldsets[] = array("campos"=>$condiciones);
 $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"Liquidaciones","imagen"=>"liquidaciones.gif")));
 

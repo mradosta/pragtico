@@ -169,5 +169,94 @@ class Hora extends AppModel {
 	}
 
 
+
+/**
+ * Dada un ralacion y un periodo retorna las horas trabajadas de todos los tipos que esten pendientes de liquidar.
+ *
+ * @return array vacio si no hay horas.
+ */
+	function getHoras($relacion, $periodo) {
+		
+		$conditions = array(
+			"conditions"=>	array(	"Hora.relacion_id" 		=> $relacion['Relacion']['id'],
+									"Hora.liquidacion_id" 	=> null,
+									"Hora.periodo" 			=> $periodo['periodoCompleto'],
+									"Hora.estado"			=> "Confirmada"),
+			"fields"	=>	array(	"Hora.tipo", "sum(Hora.cantidad) as total"),
+			"recursive"	=>	-1,
+			"group"		=> 	array("Hora.tipo")
+		);
+		
+		/**
+		* Cuando se trata de un trabajador mensual, por mas que las horas esten cargadas para una de las quincenas,
+		* las busco indistintamente para ambas.
+		*/
+		if($relacion['ConveniosCategoria']['jornada'] === "Mensual") {
+			$conditions['conditions']['Hora.periodo'] =	array	(	$periodo['ano'] . $periodo['mes'] . "1Q",
+																	$periodo['ano'] . $periodo['mes'] . "2Q",
+																	$periodo['ano'] . $periodo['mes'] . "M");
+		}
+		$r = $this->find("all", $conditions);
+		
+		$map['Normal'] = "#horas";
+		$map['Extra 50%'] = "#horas_extra_50";
+		$map['Extra 100%'] = "#horas_extra_100";
+		$map['Ajuste Normal'] = "#horas_ajuste";
+		$map['Ajuste Extra 50%'] = "#horas_ajuste_extra_50";
+		$map['Ajuste Extra 100%'] = "#horas_ajuste_extra_100";
+		$map['Normal Nocturna'] = "#horas_nocturna";
+		$map['Extra Nocturna 50%'] = "#horas_extra_nocturna_50";
+		$map['Extra Nocturna 100%'] = "#horas_extra_nocturna_100";
+		$map['Ajuste Normal Nocturna'] = "#horas_ajuste_nocturna";
+		$map['Ajuste Extra Nocturna 50%'] = "#horas_ajuste_extra_nocturna_50";
+		$map['Ajuste Extra Nocturna 100%'] = "#horas_ajuste_extra_nocturna_100";
+
+		/**
+		* Inicializo el array.
+		*/
+		foreach($map as $v) {
+			$horas[$v] = 0;
+		}
+		$conceptos = $auxiliares = array();
+		if(!empty($r)) {
+			$modelConcepto = new Concepto();
+			foreach($r as $hora) {
+				if($relacion['ConveniosCategoria']['jornada'] === "Mensual" && ($hora['Hora']['tipo'] === "Normal")) {
+					continue;
+				}
+				$tipo = $map[$hora['Hora']['tipo']];
+				$horas[$tipo] = $hora[0]['total'];
+
+				/**
+				* Busco el concepto.
+				*/
+				$codigoConcepto = str_replace("#", "", $tipo);
+				$conceptos = array_merge($conceptos, $modelConcepto->findConceptos("ConceptoPuntual", array("relacion"=>$relacion, "codigoConcepto"=>$codigoConcepto)));
+			}
+			
+			/**
+			* Busco los Ids de los registros que he seleccionado antes.
+			* No lo hago en una sola query porque romperia el group by.
+			* TODO: Deberia analizar si sera mejor hacerlo via php a la suma de las horas por tipo y no una query.
+			*/
+			$conditions['fields'] = array("Hora.id");
+			unset($conditions['group']);
+			$r = $this->find("all", $conditions);
+			/**
+			* Creo un registro en la tabla auxiliar que debera ejecutarse en caso de que se confirme la pre-liquidacion.
+			* El registro es para cambiarle el estado a Liquidada, basicamente.
+			*/
+			foreach($r as $v) {
+				$auxiliar = null;
+				$auxiliar['id'] = $v['Hora']['id'];
+				$auxiliar['estado'] = "Liquidada";
+				$auxiliar['liquidacion_id'] = "##MACRO:liquidacion_id##";
+				$auxiliares[] = array("save"=>serialize($auxiliar), "model"=>"Hora");
+			}
+		}
+		return array("conceptos"=>$conceptos, "variables"=>$horas, "auxiliar"=>$auxiliares);
+	}
+
+
 }
 ?>

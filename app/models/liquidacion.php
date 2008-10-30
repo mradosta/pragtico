@@ -117,7 +117,7 @@ class Liquidacion extends AppModel {
 					'Pesos' as moneda,
 					'Pendiente',
 					" . $usuario['Usuario']['id'] . ",
-					" . $usuario['Usuario']['grupo_id'] . ",
+					" . $usuario['Usuario']['grupos'] . ",
 					500,
 					concat(curdate(), ' ', curtime())
 			from	liquidaciones Liquidacion
@@ -132,7 +132,7 @@ class Liquidacion extends AppModel {
 					'Beneficios' as moneda,
 					'Pendiente',
 					" . $usuario['Usuario']['id'] . ",
-					" . $usuario['Usuario']['grupo_id'] . ",
+					" . $usuario['Usuario']['grupos'] . ",
 					500,
 					concat(curdate(), ' ', curtime())
 			from	liquidaciones Liquidacion

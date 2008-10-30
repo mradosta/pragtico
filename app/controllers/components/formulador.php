@@ -26,13 +26,15 @@ class FormuladorComponent extends Object {
 		*/
 		preg_match_all("/\((\'\w+\'=\'\w+\')/", $formula, $strings);
 		foreach($strings[1] as $k=>$string) {
+			$cellId++; 
 			$partes = explode("=", str_replace(" ", "", str_replace("'", "", $string)));
-			$parteIzquierda = $parteDerecha = null;
-			foreach($partes as $k=>$parte) {
-				$cellId++;
-				$this->__objPHPExcel->getActiveSheet()->setCellValue("A" . $cellId, strtolower($parte));
-				$formula = preg_replace("/" . $parte . "/", "A" . $cellId, $formula, 1);
+			if($partes[0] == $partes[1]) {
+				$this->__objPHPExcel->getActiveSheet()->setCellValue("A" . $cellId, true);
 			}
+			else {
+				$this->__objPHPExcel->getActiveSheet()->setCellValue("A" . $cellId, false);
+			}
+			$formula = preg_replace("/" . $string . "/", "A" . $cellId, $formula, 1);
 		}
 
 		/**

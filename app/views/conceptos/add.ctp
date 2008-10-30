@@ -34,7 +34,6 @@ $campos['Concepto.coeficiente_id'] = array(	"empty"			=> true,
 
 $campos['Concepto.periodo'] = array();
 $campos['Concepto.tipo'] = array();
-$campos['Concepto.retencion_sindical'] = array("aclaracion"=>"Indica si corresponde a una retencion sindical");
 $campos['Concepto.desde'] = array();
 $campos['Concepto.hasta'] = array();
 $campos['Concepto.formula'] = array();
@@ -53,6 +52,11 @@ $campos['Concepto.imprimir'] = array();
 $campos['Concepto.orden'] = array();
 $campos['Concepto.cantidad'] = array("aclaracion"=>"Indica desde que variable se sacara la cantidad que se mostrara");
 $fieldsets[] = array("campos"=>$campos, "opciones"=>array("fieldset"=>array("legend"=>"Visualizacion", "imagen"=>"visualizacion.gif")));
+
+$campos = null;
+$campos['Concepto.retencion_sindical'] = array("aclaracion"=>"Indica si corresponde a una retencion sindical");
+$campos['Concepto.novedad'] = array("aclaracion"=>"Indica si permite ser ingresado desde Planilla de Novedades");
+$fieldsets[] = array("campos"=>$campos, "opciones"=>array("fieldset"=>array("legend"=>"Datos complementarios", "imagen"=>"observaciones.gif")));
 
 $fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"conceptos.gif")));
 

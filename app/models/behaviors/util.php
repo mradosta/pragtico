@@ -325,76 +325,6 @@ class UtilBehavior extends ModelBehavior {
 
 
 /**
- * Suma una cantidad de "intervalo" a una fecha.
- *
- * @param array $options:
- *		Las opciones por defecto son:
- *				"intervalo"	=>"d"
- *				"cantidad"	=>"1"
- *				"fecha"		=>date("Y-m-d")
- * @return date La fecha en formato yyyy-mm-dd con el intervalo agregado, false si no fue posible agregar el periodo o no se trataba de una fecha valida.
- * @access public
- *
- * El intervalo puede ser:
- *		y Year
- *		q Quarter
- *		m Month
- * 		w Week
- * 		d Day
- * 		h Hour
- * 		n minute
- * 		s second
- */
-	function dateAdd (&$model, $options = array()) {
-		$default = array("intervalo"=>"d", "cantidad"=>"1", "fecha"=>date("Y-m-d"));
-		$options = am($default, $options);
-		if($fecha = $this->__getMySqlDate($options['fecha'])) {
-			$fecha = strtotime($options['fecha']);
-			$ds = getdate($fecha);
-			
-			$h = $ds["hours"];
-			$n = $ds["minutes"];
-			$s = $ds["seconds"];
-			$m = $ds["mon"];
-			$d = $ds["mday"];
-			$y = $ds["year"];
-
-			$n = $options['cantidad'];
-			switch ($options['intervalo']) {
-				case "y":
-					$y += $n;
-					break;
-				case "q":
-					$m +=($n * 3);
-					break;
-				case "m":
-					$m += $n;
-					break;
-				case "w":
-					$d +=($n * 7);
-					break;
-				case "d":
-					$d += $n;
-					break;
-				case "h":
-					$h += $n;
-					break;
-				case "n":
-					$n += $n;
-					break;
-				case "s":
-					$s += $n;
-					break;
-			}
-			return date("Y-m-d", mktime($h ,$n, $s,$m ,$d, $y));
-		}
-		return false;
-	}
-
-
-
-
-/**
  * Coloca elementos del array como keys jeraquicas segun se hayan especificado.
  *
  * $datos el array de datos.
@@ -508,14 +438,33 @@ class UtilBehavior extends ModelBehavior {
 /**
  * Calcula la diferencia entre dos fechas.
  *
- * @param array $options:
- *		Las opciones por defecto son:
- *				"intervalo"	=>"d"
- *				"cantidad"	=>"1"
- *				"fecha"		=>date("Y-m-d")
- * @return date La fecha en formato yyyy-mm-dd con el intervalo agregado, false si no fue posible agregar el periodo o no se trataba de una fecha valida.
- * @access public
+ * Las fechas deben estar en formato mysql
+ * 	Formatos Admitidos de entrada:
+ *			yyyy-mm-dd hh:mm:ss
+ *			yyyy-mm-dd hh:mm
+ *			yyyy-mm-dd
  *
+ * @param object $model Model que usa este behavior.
+ * @param string $fechaDesde La fecha desde la cual se tomara la diferencia.
+ * @param string $fechaHasta La fecha hasta la cual se tomara la diferencia. Si no se pasa la fecha hasta,
+ * se tomara la fecha actual como segunda fecha.
+ *
+ * @return mixed 	array con dias, horas, minutos y segundos en caso de que las fechas sean validas.
+ * 					False en caso de que las fechas sean invalidas.
+ * @access public
+ */
+	function dateDiff(&$model, $fechaDesde, $fechaHasta = null) {
+		App::import("Vendor", "dates", "pragmatia");
+		$Dates = new Dates();
+		return $Dates->dateDiff($fechaDesde, $fechaHasta);
+	}
+
+
+/**
+ * Suma una cantidad de "intervalo" a una fecha.
+ *
+ * @param string $fecha La fecha a la cual se le debe sumar el intervalo.
+ * @param string $intervalo El intervalo de tiempo.
  * El intervalo puede ser:
  *		y Year
  *		q Quarter
@@ -525,52 +474,15 @@ class UtilBehavior extends ModelBehavior {
  * 		h Hour
  * 		n minute
  * 		s second
+ * @param integer $cantidad La cantidad de intervalo a sumar a la fecha.
+ * @return mixed La fecha en formato yyyy-mm-dd hh:mm:ss con el intervalo agregado, false si no fue posible realizar la operacion.
+ * @access public
  */
-/**
- * Calcula la diferencia entre dos fechas.
- *
- * Las fechas deben estar en formato mysql (yyyy-mm-dd)
- * Si no se pasa la fecha hasta, se tomara la fecha actual como segunda fecha.
- * @return mixed 	array con dias, horas, minutos y segundos en caso de que las fechas sean validas.
- * 					False en caso de que las fechas sean invalidas.
- */
-	function dateDiff (&$model, $options = array()) {
-
-		if($fecha1 = $this->__getMySqlDate($options['desde'])) {
-		
-			$fecha1 = strtotime($fecha1);
-			
-			if(empty($options['hasta'])) {
-				$fecha2 = time();
-			}
-			else {
-				if($fecha2 = $this->__getMySqlDate($options['hasta'])) {
-					$fecha2 = strtotime($fecha2);
-				}
-				else {
-					return false;
-				}
-			}
-
-			$diff = abs($fecha1-$fecha2);
-			$daysDiff = floor($diff/60/60/24);
-			$diff -= $daysDiff*60*60*24;
-			$hrsDiff = floor($diff/60/60);
-			$diff -= $hrsDiff*60*60;
-			$minsDiff = floor($diff/60);
-			$diff -= $minsDiff*60;
-			$secsDiff = $diff;
-
-			$diferencia=false;
-			$diferencia['dias']=$daysDiff;
-			$diferencia['horas']=$hrsDiff;
-			$diferencia['minutos']=$minsDiff;
-			$diferencia['segundos']=$secsDiff;
-			return $diferencia;
-		}
-		return false;
+	function dateAdd(&$model, $fecha, $intervalo="d", $cantidad=1) {
+		App::import("Vendor", "dates", "pragmatia");
+		$Dates = new Dates();
+		return $Dates->dateAdd($fecha, $intervalo, $cantidad);
 	}
-
 
 
 }

@@ -30,6 +30,7 @@ class LiquidacionesController extends AppController {
 	var $uses = array("Liquidacion", "Relacion", "Ausencia" ,"Variable", "Siap", "Banco");
 	var $__relacion;
 	var $__variables;
+	var $__periodo;
 	var $__variablesYaResueltas;
 	var $__conceptos;
 
@@ -282,7 +283,7 @@ class LiquidacionesController extends AppController {
 				/**
 				* Obtengo el periodo separado por ano, mes y periodo propiamente dicho.
 				*/
-				$periodo = $this->Util->traerPeriodo($this->data['Extras']['Liquidacion-periodo']);
+				$this->__periodo = $periodo = $this->Util->format($this->data['Extras']['Liquidacion-periodo'], "periodo");
 				if($periodo === false) {
 					$this->Session->setFlash("Debe especificar un periodo valido de la forma AAAAMM[1Q|2Q|M].", "error");
 				}
@@ -294,53 +295,28 @@ class LiquidacionesController extends AppController {
 				else {
 					
 					/**
-					* A partir del periodo creo las condiciones desde y hasta para usar en filtros de fechas.
-					*/
-					$opciones = array(	"mes"	=> $periodo['mes'],
-										"ano"	=> $periodo['ano']);
-										
-					if ($periodo['periodo'] == "1Q") {
-						$opciones = am($opciones, array("dia"=>"01"));
-						$fechaDesde = $this->Util->traerFecha($opciones);
-						$opciones = am($opciones, array("dia"=>"15"));
-						$fechaHasta = $this->Util->traerFecha($opciones);
-					}
-					elseif ($periodo['periodo'] == "2Q") {
-						$opciones = am($opciones, array("dia"=>"16"));
-						$fechaDesde = $this->Util->traerFecha($opciones);
-						$opciones = am($opciones, array("dia"=>$this->Util->traerUltimoDiaDelMes($opciones)));
-						$fechaHasta = $this->Util->traerFecha($opciones);
-					}
-					elseif ($periodo['periodo'] == "M") {
-						$opciones = am($opciones, array("dia"=>"01"));
-						$fechaDesde = $this->Util->traerFecha($opciones);
-						$opciones = am($opciones, array("dia"=>$this->Util->traerUltimoDiaDelMes($opciones)));
-						$fechaHasta = $this->Util->traerFecha($opciones);
-					}
-					
-					/**
 					* Busco las relaciones que debo liquidar de acuerdo a los criterios ingresados.
 					*/
 					$condiciones = $this->Paginador->generarCondicion($this->data);
-					$condiciones['Relacion.ingreso <='] = $fechaHasta;
+					$condiciones['Relacion.ingreso <='] = $periodo['hasta'];
 					$condiciones['Relacion.estado'] = "Activa";
 					
-					//$this->Relacion->contain(array("ConveniosCategoria.ConveniosCategoriasHistorico", "ConveniosCategoria.Convenio", "Trabajador.ObrasSocial", "Empleador"));
-					$this->Relacion->contain(array("ConveniosCategoria.ConveniosCategoriasHistorico", "Trabajador.ObrasSocial", "Empleador"));
-					$relaciones = $this->Relacion->find("all", array("conditions"=>$condiciones));
+					$relaciones = $this->Relacion->find("all", array(	"contain"		=> array(	"ConveniosCategoria.ConveniosCategoriasHistorico",
+																									"Trabajador.ObrasSocial",
+																									"Empleador"),
+																		"conditions"	=> $condiciones));
 
 					/**
 					* Borro TODAS las liquidaciones no confirmadas del usuario.
 					*/
 					$usuario = $this->Session->read("__Usuario");
 					$delete = array("user_id"=>$usuario['Usuario']['id'], "estado"=>'Sin Confirmar');
-					$this->Liquidacion->contain();
 					$this->Liquidacion->deleteAll($delete);
-
+					
 					/**
 					* Obtengo el listado completo de variables y las inicializo sin valor.
 					*/
-					$variablesTmp = $this->Variable->find("all");
+					$variablesTmp = $this->Variable->find("all", array("order"=>false));
 					foreach($variablesTmp as $v) {
 						$variables[$v['Variable']['nombre']] = $v['Variable'];
 						$variables[$v['Variable']['nombre']]['valor'] = "#N/A";
@@ -353,21 +329,25 @@ class LiquidacionesController extends AppController {
 					$variables['#ano_liquidacion']['valor'] = $periodo['ano'];
 					$variables['#periodo_liquidacion']['valor'] = $periodo['periodo'];
 					$variables['#periodo_liquidacion_completo']['valor'] = $periodo['periodoCompleto'];
-					$variables['#fecha_desde_liquidacion']['valor'] = $fechaDesde;
-					$variables['#fecha_hasta_liquidacion']['valor'] = $fechaHasta;
+					$variables['#fecha_desde_liquidacion']['valor'] = $periodo['desde'];
+					$variables['#fecha_hasta_liquidacion']['valor'] = $periodo['hasta'];
 					$variables['#tipo_liquidacion']['valor'] = $this->data['Extras']['Liquidacion-tipo'];
 					
 
 					/**
 					* De las liquidaciones que he seleccionado para pre-liquidar, verifico que no tengan
-					* liquidaciones confirmadas para el mismo periodo.
-					* TODO: Verificar el tipo de liquidacion.
+					* liquidaciones confirmadas para el mismo periodo del mismo tipo.
 					*/
-					$condicionesLiquidacion['Liquidacion.mes'] = $periodo['mes'];
-					$condicionesLiquidacion['Liquidacion.ano'] = $periodo['ano'];
-					$condicionesLiquidacion['Liquidacion.periodo'] = $periodo['periodo'];
-					
-					$liquidaciones = $this->Relacion->Liquidacion->find("all", array("recursive"=>-1, "fields"=>"relacion_id, count(1) as existentes","group"=>"Liquidacion.relacion_id, Liquidacion.ano, Liquidacion.mes, Liquidacion.periodo", "conditions"=>$condicionesLiquidacion));
+					$condicionesLiquidacion['Liquidacion.mes'] = $variables['#mes_liquidacion']['valor'];
+					$condicionesLiquidacion['Liquidacion.ano'] = $variables['#ano_liquidacion']['valor'];
+					$condicionesLiquidacion['Liquidacion.periodo'] = $variables['#periodo_liquidacion']['valor'];
+					$condicionesLiquidacion['Liquidacion.tipo'] = $variables['#tipo_liquidacion']['valor'];
+
+					$condicionesLiquidacion['Liquidacion.estado'] = "Confirmada";
+					$liquidaciones = $this->Relacion->Liquidacion->find("all", array(	"recursive"=> -1,
+																						"fields"	=> "relacion_id, count(1) as existentes",
+																						"group"		=> "Liquidacion.relacion_id, Liquidacion.ano, Liquidacion.mes, Liquidacion.periodo",
+																						"conditions"=> $condicionesLiquidacion));
 					foreach($liquidaciones as $v) {
 						if($v[0]['existentes'] > 0) {
 							$liquidacionesYaConfirmadas[] = $v['Liquidacion']['relacion_id'];
@@ -375,11 +355,13 @@ class LiquidacionesController extends AppController {
 					}
 
 					/**
-					* Recorro cada relacion de las seleccionadas y trato de liquidarle si aun no se le ha liquidado.
+					* Recorro cada relacion de las seleccionadas y trato de liquidarle si aun no le he liquidado.
+					* TODO: Verificar que no haga ed vuelta  las ya confirmadas
 					*/
 					$ids = array();
 					$opciones['variables'] = $variables;
 					foreach($relaciones as $k=>$relacion) {
+						//d($relacion['Relacion']['id']);
 						$ids[] = $this->__getLiquidacion($relacion, $opciones);
 					}
 					if(!empty($ids)) {
@@ -407,7 +389,19 @@ class LiquidacionesController extends AppController {
 	}
 
 
+
+/**
+ * Genera una liquidacion para una relacion.
+ * La guarda con estado "Sin Confirmar"
+ *
+ * @param array $relacion Una relacion laboral.
+ * @param array $opciones Las opciones que puedo necesitar.
+ *		$opciones['variables'] Son las variables que vienen dadas para todas las liquidaciones.
+ * @return integer El id de la liquidacion generada.
+ * @access private.
+ */
 	function __getLiquidacion($relacion, $opciones) {
+		$this->__saveAuxiliar = $this->__conceptosSinCalcular = array();
 		$this->__variablesYaResueltas = $conceptosExrasSinCalcular = $conceptosExrasCalculados = $auxiliar = $errores = array();
 		$this->__conceptos = null;
 		$this->__relacion = $relacion;
@@ -419,7 +413,6 @@ class LiquidacionesController extends AppController {
 
 		/**
 		* Verifico si debo hacerle algun descuento.
-		*/
 		$condicionesDescuentos = null;
 		$condicionesDescuentos['desde'] = $this->__getVariableValor("#fecha_desde_liquidacion");
 		$condicionesDescuentos['hasta'] = $this->__getVariableValor("#fecha_hasta_liquidacion");
@@ -431,6 +424,7 @@ class LiquidacionesController extends AppController {
 			$conceptosExrasSinCalcular = am($conceptosExrasSinCalcular, $v);
 		}
 		$auxiliar = am($auxiliar, $descuentos['auxiliar']);
+		*/
 		
 
 		/**
@@ -556,14 +550,15 @@ class LiquidacionesController extends AppController {
 
 		/**
 		* Preparo el array para guardar la pre-liquidacion.
-		* Lo guardo como una liquidacion con esta "Sin Confirmar". Si se confirma, cambio este estado,
-		* sino, a la siguiente pasada del preliquidador, la elimino.
+		* Lo guardo como una liquidacion con estado "Sin Confirmar".
+		* Cuando se confirma, solo cambio el estado, sino, a la siguiente pasada del preliquidador, la elimino.
 		*/
 		$liquidacion = null;
 		$liquidacion['fecha'] = date("Y-m-d");
 		$liquidacion['ano'] = $this->__variables['#ano_liquidacion']['valor'];
 		$liquidacion['mes'] = $this->__variables['#mes_liquidacion']['valor'];
 		$liquidacion['periodo'] = $this->__variables['#periodo_liquidacion']['valor'];
+		$liquidacion['tipo'] = $this->__variables['#tipo_liquidacion']['valor'];
 		$liquidacion['estado'] = "Sin Confirmar";
 		$liquidacion['relacion_id'] = $this->__relacion['Relacion']['id'];
 		$liquidacion['relacion_ingreso'] = $this->__relacion['Relacion']['ingreso'];
@@ -589,7 +584,6 @@ class LiquidacionesController extends AppController {
 		$totales['total_beneficios'] = 0;
 		$totales['total_pesos'] = 0;
 		$detalle = null;
-
 		foreach($this->__conceptos as $detalleLiquidacion) {
 			$v = $this->__agregarDetalle($detalleLiquidacion);
 			if(!empty($v)) {
@@ -662,12 +656,22 @@ class LiquidacionesController extends AppController {
 			return false;
 		}
 	}
-	
+
+
 /**
-* Permite confirmar una liquidacion.
-* Las liquidaciones estan en la tabla liquidaciones pero con estado "Sin Confirmar". Mientras esten en
-* este estado se las puede modificar, borrar, etc. Una vez confirmado, se congela.
-*/
+ * Permite confirmar liquidaciones.
+ * Las liquidaciones estan en la tabla liquidaciones pero con estado "Sin Confirmar".
+ *
+ * Esto implica que:
+ *		- Las horas liquidadas cambian a estado "Liquidada".
+ *		- Las ausencias_seguimientos liquidadas cambian a estado "Liquidado".
+ *		- Las liquidaciones cambian a estado "Liquidada".
+ *		- Se generan los pagos pendientes.
+ *		- Se agregan detalles de descuentos.
+ *
+ * @return void.
+ * @access public.
+ */
 	function confirmar() {
 		$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
 		
@@ -1051,32 +1055,6 @@ class LiquidacionesController extends AppController {
 		}
 		
 		/**
-		* Busco valores que espero vengan como datos dentro de la relacion.
-		if(preg_match_all("/\[([a-z,A-Z]*)\]\[([a-z,A-Z]*)\]/", $formula, $matches)) {
-			foreach($matches[0] as $k=>$match) {
-				$tmpValor = $this->__relacion[$matches[1][$k]][$matches[2][$k]];
-				$formula = str_replace($match, $tmpValor, $formula);
-			}
-		}
-		*/
-
-		
-		/**
-		* Veo si es un consulta SQL.
-		if(preg_match("/^select/i", $formula)) {
-			$sql = $formula . " and r.id = '" . $rId . "'";
-			$valor = $this->Liquidacion->ejecutarConsulta($sql);
-		}
-		*/
-
-		/**
-		* Veo si es un valor directo.
-		if(preg_match(VALID_NUMBER, $concepto['formula'])) {
-			$valor = $concepto['formula'];
-		}
-		*/
-		
-		/**
 		* Veo si es una formula, que me indica la suma del remunerativo, de las deducciones o del no remunerativo.
 		*/
 		if(preg_match("/^=sum[\s]*\([\s]*(Remunerativo|Deduccion|No\sRemunerativo)[\s]*\)$/", $formula, $matches)) {
@@ -1199,15 +1177,20 @@ class LiquidacionesController extends AppController {
 
 
 /**
- * Obtiene el valor las variables.
+ * Obtiene el valor de las variables.
  * Actualiza el array $this->__variables con el valor de la variable.
+ *
+ * @param mixed Array con las variables que necesito calcular o
+ *				String con el nombre de la variable que necesito calcular.
  */
 function __getVariables($variables) {
 
 	if(!is_array($variables) && is_string($variables)) {
 		$variables = array($variables);
 	}
-	$variables = array_unique($variables);
+	else {
+		$variables = array_unique($variables);
+	}
 
 	$valor = null;
 	foreach($variables as $variable) {
@@ -1278,35 +1261,35 @@ function __getVariables($variables) {
 				break;
 			case "#dia_ingreso":
 				$this->__getVariables(array("#fecha_ingreso"));
-				$this->__variables[$variable]['valor'] = $this->Util->traerDia(array("fecha" => $this->__variables['#fecha_ingreso']['valor']));
+				$this->__variables[$variable]['valor'] = $this->Util->format($this->__variables['#fecha_ingreso']['valor'], "dia");
 				break;
 			case "#dia_egreso":
 				$this->__getVariables(array("#fecha_egreso"));
-				$this->__variables[$variable]['valor'] = $this->Util->traerDia(array("fecha" => $this->__variables['#fecha_egreso']['valor']));
+				$this->__variables[$variable]['valor'] = $this->Util->format($this->__variables['#fecha_egreso']['valor'], "dia");
 				break;
 			case "#mes_ingreso":
 				$this->__getVariables(array("#fecha_ingreso"));
-				$this->__variables[$variable]['valor'] = $this->Util->traerMes(array("fecha" => $this->__variables['#fecha_ingreso']['valor']));
+				$this->__variables[$variable]['valor'] = $this->Util->format($this->__variables['#fecha_ingreso']['valor'], "mes");
 				break;
 			case "#mes_egreso":
 				$this->__getVariables(array("#fecha_egreso"));
-				$this->__variables[$variable]['valor'] = $this->Util->traerMes(array("fecha" => $this->__variables['#fecha_egreso']['valor']));
+				$this->__variables[$variable]['valor'] = $this->Util->format($this->__variables['#fecha_egreso']['valor'], "mes");
 				break;
 			case "#ano_ingreso":
 				$this->__getVariables(array("#fecha_ingreso"));
-				$this->__variables[$variable]['valor'] = $this->Util->traerAno(array("fecha" => $this->__variables['#fecha_ingreso']['valor']));
+				$this->__variables[$variable]['valor'] = $this->Util->format($this->__variables['#fecha_ingreso']['valor'], "ano");
 				break;
 			case "#ano_egreso":
 				$this->__getVariables(array("#fecha_egreso"));
-				$this->__variables[$variable]['valor'] = $this->Util->traerAno(array("fecha" => $this->__variables['#fecha_egreso']['valor']));
+				$this->__variables[$variable]['valor'] = $this->Util->format($this->__variables['#fecha_egreso']['valor'], "ano");
 				break;
 			case "#dia_desde_liquidacion":
 				$this->__getVariables(array("#fecha_desde_liquidacion"));
-				$this->__variables[$variable]['valor'] = $this->Util->traerDia(array("fecha" => $this->__variables['#fecha_desde_liquidacion']['valor']));
+				//$this->__variables[$variable]['valor'] = $this->Util->traerDia(array("fecha" => $this->__variables['#fecha_desde_liquidacion']['valor']));
 				break;
 			case "#dia_hasta_liquidacion":
 				$this->__getVariables(array("#fecha_hasta_liquidacion"));
-				$this->__variables[$variable]['valor'] = $this->Util->traerDia(array("fecha" => $this->__variables['#fecha_hasta_liquidacion']['valor']));
+				//$this->__variables[$variable]['valor'] = $this->Util->traerDia(array("fecha" => $this->__variables['#fecha_hasta_liquidacion']['valor']));
 				break;
 			case "#dias_antiguedad":
 			case "#meses_antiguedad":
@@ -1385,17 +1368,33 @@ function __getVariables($variables) {
 				$this->__variables[$variable]['valor'] = 0;
 				break;
 			*/
+			case "#horas":
+			case "#horas_ajuste":
+			case "#horas_ajuste_extra_100":
+			case "#horas_ajuste_extra_50":
+			case "#horas_ajuste_extra_nocturna_100":
+			case "#horas_ajuste_extra_nocturna_50":
+			case "#horas_ajuste_nocturna":
+			case "#horas_extra_100":
+			case "#horas_extra_50":
+			case "#horas_extra_nocturna_100":
+			case "#horas_extra_nocturna_50":
+			case "#horas_nocturna":
+				/**
+				* Busco las horas trabajadas en el periodo y las cargo al array variables.
+				*/
+				$condicionesHoras = null;
+				$condicionesHoras['periodo'] = $this->__getVariableValor("#periodo_liquidacion_completo");
+				$horas = $this->Relacion->Hora->getHoras($this->__relacion, $this->__periodo);
+				foreach($horas['variables'] as $horaTipo=>$horaValor) {
+					$this->__variables[$horaTipo]['valor'] = $horaValor;
+				}
+				$this->__setAuxiliar($horas['auxiliar']);
+				$this->__setConceptos($horas['conceptos'], "SinCalcular");
+				break;
 			case "#ausencias_justificadas":
 			case "#ausencias_injustificadas":
-				/**
-				* Debo buscar las ausencias cuya fecha hasta se encuentre en el periodo que voy a liquidar
-				* o sea posterior.
-				*/
-				$condicionesAusencias = null;
-				$condicionesAusencias['Ausencia.hasta'] = ">=" . $this->__variables['#fecha_desde_liquidacion'];
-				$condicionesAusencias['Ausencia.relacion_id'] = $this->__relacion['Relacion']['id'];
-				$this->Relacion->Ausencia->contain(array('AusenciasMotivo'));
-				$ausencias = $this->__obtenerAusencias($this->Relacion->Ausencia->findAll($condicionesAusencias));
+				$ausencias = $this->Relacion->Ausencia->getAusencias($this->__relacion, $this->__periodo);
 				$this->__variables["#ausencias_justificadas"]['valor'] = $ausencias['Justificada'];
 				$this->__variables["#ausencias_injustificadas"]['valor'] = $ausencias['Injustificada'];
 				break;
@@ -1404,107 +1403,6 @@ function __getVariables($variables) {
 	}
 }
 
-
-
-/**
-* Calcula los dias de ausencias segun el tipo (justificadas o injustificadas) que hubo durante el periodo.
-*
-* return array 
-*/
-function __obtenerAusencias_deprecated($ausencias = null) {
-	$totalDiasAusencia['Justificada'] = 0;
-	$totalDiasAusencia['Injustificada'] = 0;
-	if(!empty($ausencias)) {
-		foreach($ausencias as $ausencia) {
-
-			$diaDesde = $this->Util->traerDia(array("fecha" => $ausencia['Ausencia']['desde']));
-			$mesDesde = $this->Util->traerMes(array("fecha" => $ausencia['Ausencia']['desde']));
-			$anoDesde = $this->Util->traerAno(array("fecha" => $ausencia['Ausencia']['desde']));
-			$diaHasta = $this->Util->traerDia(array("fecha" => $ausencia['Ausencia']['hasta']));
-			$mesHasta = $this->Util->traerMes(array("fecha" => $ausencia['Ausencia']['hasta']));
-			$anoHasta = $this->Util->traerAno(array("fecha" => $ausencia['Ausencia']['hasta']));
-
-			switch($this->__variables['#periodo_liquidacion']) {
-				case "primeraQuincena":
-					$diaInicioPeriodo = 1;
-					$diaFinPeriodo = 15;
-					break;
-				case "segundaQuincena":
-					$diaInicioPeriodo = 16;
-					$diaFinPeriodo = 31;
-					break;
-				case "mensual":
-					$diaInicioPeriodo = 1;
-					$diaFinPeriodo = 31;
-					break;
-			}
-
-			if($anoDesde == $anoHasta && $mesDesde == $mesHasta) {
-				if($diaDesde > $diaInicioPeriodo) {
-					$diaInicio = $diaDesde;
-				}
-				else {
-					$diaInicio = $diaInicioPeriodo;
-				}
-				if($diaHasta < $diaFinPeriodo) {
-					$diaFin = $diaHasta;
-				}
-				else {
-					$diaFin = $diaFinPeriodo;
-				}
-
-				$fechaDesde = $this->Util->traerFecha(array("ano"=>$anoDesde, "mes"=>$mesDesde, "dia"=>$diaInicio));
-				$fechaHasta = $this->Util->traerFecha(array("ano"=>$anoDesde, "mes"=>$mesDesde, "dia"=>$diaFin));
-				$diferencia = $this->Util->diferenciaEntreFechas(array("hasta"=>$fechaHasta, "desde"=>$fechaDesde));
-				$dias = $diferencia['dias']+1;
-			}
-			elseif($anoDesde == $anoHasta) {
-
-				if($mesDesde < $this->__variables['#mes_liquidacion']) {
-					$diaInicio = $diaInicioPeriodo;
-				}
-				
-				if($mesHasta > $this->__variables['#mes_liquidacion'] || $diaHasta > $diaFinPeriodo) {
-					$diaFin = $diaFinPeriodo;
-				}
-				else {
-					$diaFin = $diaHasta;
-				}
-				
-				$fechaDesde = $this->Util->traerFecha(array("ano"=>$anoDesde, "mes"=>$this->__variables['#mes_liquidacion'], "dia"=>$diaInicio));
-				$fechaHasta = $this->Util->traerFecha(array("ano"=>$anoDesde, "mes"=>$this->__variables['#mes_liquidacion'], "dia"=>$diaFin));
-				$diferencia = $this->Util->diferenciaEntreFechas(array("hasta"=>$fechaHasta, "desde"=>$fechaDesde));
-				$dias = $diferencia['dias']+1;
-			}
-			else {
-
-				if($anoDesde < $this->__variables['#ano_liquidacion']) {
-					$diaInicio = $diaInicioPeriodo;
-				}
-				else {
-					$diaInicio = $diaDesde;
-				}
-
-				if($anoHasta > $this->__variables['#ano_liquidacion'] || $mesHasta > $this->__variables['#mes_liquidacion'] || $diaHasta > $diaFinPeriodo) {
-					$diaFin = $diaFinPeriodo;
-				}
-				else {
-					$diaFin = $diaHasta;
-				}
-				
-				$fechaDesde = $this->Util->traerFecha(array("ano"=>$this->__variables['#ano_liquidacion'], "mes"=>$this->__variables['#mes_liquidacion'], "dia"=>$diaInicio));
-				$fechaHasta = $this->Util->traerFecha(array("ano"=>$this->__variables['#ano_liquidacion'], "mes"=>$this->__variables['#mes_liquidacion'], "dia"=>$diaFin));
-				$diferencia = $this->Util->diferenciaEntreFechas(array("hasta"=>$fechaHasta, "desde"=>$fechaDesde));
-				$dias = $diferencia['dias']+1;
-			}
-			if($ausencia['Ausencia']['parcial'] == "Medio Dia") {
-				$dias = $dias / 2;
-			}
-			$totalDiasAusencia[$ausencia['AusenciasMotivo']['tipo']]+=$dias;
-		}
-	}
-	return $totalDiasAusencia;
-}
 
 
 /**
@@ -1538,10 +1436,11 @@ function __obtenerAusencias_deprecated($ausencias = null) {
 		return $detalle;
 	}
 
+
 /**
-* Esta funcion realiza el mapeo entre lo que tengo en el array de errores,
-* y los datos que necesito para guardarlo en los errores de la liquidacion.
-*/
+ * Esta funcion realiza el mapeo entre lo que tengo en el array de errores,
+ * y los datos que necesito para guardarlo en la tabla liquidaciones_errores.
+ */
 	function __agregarError($errorLiquidacion) {
 		$error = null;
 		$error['tipo'] = $errorLiquidacion['tipo'];
@@ -1553,6 +1452,33 @@ function __obtenerAusencias_deprecated($ausencias = null) {
 		$error['descripcion'] = $errorLiquidacion['descripcion'];
 		$error['descripcion_adicional'] = $errorLiquidacion['descripcion_adicional'];
 		return $error;
+	}
+
+
+/**
+ * Agrega conceptos al array de conceptos de su tipo.
+ *
+ * @param array $concepto Conceptos.
+ * @param string $concepto El tipo de conceptos que se desea agregar.
+ * @return void.
+ * @access private.
+ */
+	function __setConceptos($conceptos, $tipo) {
+		if($tipo === "SinCalcular") {
+			$this->__conceptosSinCalcular = array_merge($this->__conceptosSinCalcular, $conceptos);
+		}
+	}
+
+
+/**
+ * Agrega datos que seran guardados en la tabla liquidaciones_auxiliares.
+ *
+ * @param array $auxiliar Los datos a guardar.
+ * @return void.
+ * @access private.
+ */
+	function __setAuxiliar($auxiliar) {
+		$this->__saveAuxiliar = array_merge($this->__saveAuxiliar, $auxiliar);
 	}
 
 }
