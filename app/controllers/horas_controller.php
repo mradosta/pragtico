@@ -34,7 +34,7 @@ class HorasController extends AppController {
  * Add.
  */
 	function add() {
-        $this->set("estados", array("Pendiente"=>"Pendiente"));
+        $this->set("estados", array("Pendiente"=>"Pendiente", "Confirmada"=>"Confirmada"));
         parent::add();
 	}
 	
@@ -42,7 +42,7 @@ class HorasController extends AppController {
 /**
  * Index.
  */	
-	function index() {
+	function xindex() {
 		$this->set("estados", array("Liquidada"=>"Liquidada", "Pendiente"=>"Pendiente"));
 		$this->paginate = am($this->paginate, array('conditions' => array("Hora.estado"=>array("Liquidada", "Pendiente"))));
 		parent::index();

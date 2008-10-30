@@ -32,7 +32,7 @@ if(!empty($registros)) {
 		array("style"=>array("font"		=> array("bold" => true, "size" => 14),
 							"alignment" => array("horizontal" => PHPExcel_Style_Alignment::HORIZONTAL_CENTER))
 			));
-	
+
 	/**
 	* Agrego el logo de Pragtico.
 	*/
@@ -45,14 +45,14 @@ if(!empty($registros)) {
 	$objDrawing->setWidth(260);
 	$objDrawing->getShadow()->setVisible(true);
 	$objDrawing->setWorksheet($documento->doc->getActiveSheet());
-	
+
 	/**
 	* Pongo las columnas en auto ajuste del ancho.
 	*/
 	$documento->doc->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
 	$documento->doc->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
 	$documento->doc->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
-	
+
 	/**
 	* Pongo los titulos de las columnas.
 	*/
@@ -139,7 +139,7 @@ if(!empty($registros)) {
 		$documento->setCellValue("D" . $fila, $registro['ConveniosCategoria']['nombre']);
 
 
-		foreach(str_split("EFGHIJKLM") as $col) {
+		foreach(str_split("EFGHIJKLMNOPRS") as $col) {
 			$documento->setDataValidation($col . $fila, "decimal");
 			
 			/**
@@ -152,6 +152,7 @@ if(!empty($registros)) {
 		* El combo con los posibles motivos.
 		*/
 		$documento->setDataValidation("Q" . $fila, "lista", array("valores"=>$motivos));
+		$documento->doc->getActiveSheet()->getStyle("Q" . $fila)->getProtection()->setLocked(PHPExcel_Style_Protection::PROTECTION_UNPROTECTED);
 		
 		$objValidation = $documento->doc->getActiveSheet()->getCell("Q" . $fila)->getDataValidation();
 		$objValidation->setType( PHPExcel_Cell_DataValidation::TYPE_LIST );

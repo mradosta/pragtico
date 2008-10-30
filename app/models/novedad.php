@@ -82,7 +82,6 @@ class Novedad extends AppModel {
 		
 		$this->begin();
 		$cOk = $cTotal = 0;
-
 		foreach($datos as $tipo => $data) {
 			foreach($data as $relacion_id => $registro) {
 				$save = null;
@@ -119,16 +118,16 @@ class Novedad extends AppModel {
 	function distribuir($ids) {
 		$novedades = $this->find("all", array("conditions"=>array("Novedad.id"=>$ids), "recursive"=>-1));
 		$c = $i = $ii = 0;
+		
 		foreach($novedades as $novedad) {
 			$data = unserialize($novedad['Novedad']['data']);
 			switch($novedad['Novedad']['tipo']) {
 				case "Horas":
-					$model = new Hora();
 					foreach($data as $tipo=>$cantidad) {
 						$saves[$i]['Hora']['id'] = null;
 						$saves[$i]['Hora']['tipo'] = $tipo;
 						$saves[$i]['Hora']['cantidad'] = $cantidad;
-						$saves[$i]['Hora']['estado'] = "Pendiente";
+						$saves[$i]['Hora']['estado'] = "Confirmada";
 						$saves[$i]['Hora']['relacion_id'] = $novedad['Novedad']['relacion_id'];
 						$saves[$i]['Hora']['periodo'] = $novedad['Novedad']['periodo'];
 						$saves[$i]['Hora']['observacion'] = "Ingresado desde planilla";
@@ -136,8 +135,7 @@ class Novedad extends AppModel {
 					}
 				break;
 				case "Ausencias":
-					$model = new Ausencia();
-					$motivo = $model->AusenciasMotivo->findByMotivo($data['Motivo']);
+					$motivo = $this->Relacion->Ausencia->AusenciasMotivo->findByMotivo($data['Motivo']);
 					$periodo = $this->getPeriodo($novedad['Novedad']['periodo']);
 					/**
 					* Si no cargo el motivo, o este no exuste, lo pongo como justificado.
@@ -151,12 +149,11 @@ class Novedad extends AppModel {
 					$saves[$i]['AusenciasSeguimiento'][$ii]['dias'] = $data['Dias'];
 					$saves[$i]['AusenciasSeguimiento'][$ii]['desde'] = $this->format($periodo['fechaInicio'], "date");
 					$saves[$i]['AusenciasSeguimiento'][$ii]['observacion'] = "Ingresado desde planilla";
-					$saves[$i]['AusenciasSeguimiento'][$ii]['estado'] = "Pendiente";
+					$saves[$i]['AusenciasSeguimiento'][$ii]['estado'] = "Confirmado";
 					$ii++;
 					$i++;
 				break;
 				case "Vales":
-					$model = new Descuento();
 					$periodo = $this->getPeriodo($novedad['Novedad']['periodo']);
 					$saves[$i]['Descuento']['id'] = null;
 					$saves[$i]['Descuento']['alta'] = $this->format($periodo['fechaInicio'], "date");
@@ -175,10 +172,12 @@ class Novedad extends AppModel {
 		
 		$this->begin();
 		foreach($saves as $save) {
-			if($model->save($save, true, array(), false)) {
+			$keys = array_keys($save);
+			if($this->Relacion->{$keys[0]}->save($save, true, array(), false)) {
 				$c++;
 			}
 		}
+		
 		if($i === $c) {
 			$this->deleteAll(array("Novedad.id"=>$ids), false, false, false);
 			$this->commit();

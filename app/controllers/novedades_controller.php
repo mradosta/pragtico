@@ -80,7 +80,7 @@ class NovedadesController extends AppController {
 					$mapeo[] = array("Horas"		=> array("Normal Nocturna"				=> "K"));
 					$mapeo[] = array("Horas"		=> array("Extra Nocturna 50%"			=> "L"));
 					$mapeo[] = array("Horas"		=> array("Extra Nocturna 100%"			=> "M"));
-					$mapeo[] = array("Horas"		=> array("Ajuste Nocturna Normal"		=> "N"));
+					$mapeo[] = array("Horas"		=> array("Ajuste Normal Nocturna"		=> "N"));
 					$mapeo[] = array("Horas"		=> array("Ajuste Extra Nocturna 50%"	=> "O"));
 					$mapeo[] = array("Horas"		=> array("Ajuste Extra Nocturna 100%"	=> "P"));
 					$mapeo[] = array("Ausencias"	=> array("Motivo"						=> "Q"));
@@ -89,11 +89,13 @@ class NovedadesController extends AppController {
 					for($i=10; $i<=$objPHPExcel->getActiveSheet()->getHighestRow(); $i++) {
 						foreach($mapeo as $v) {
 							foreach($v as $k=>$v1) {
-								$datos[$k][$objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue()][key($v1)] = $objPHPExcel->getActiveSheet()->getCell($v1[key($v1)] . $i)->getValue();
+								$valor = $objPHPExcel->getActiveSheet()->getCell($v1[key($v1)] . $i)->getValue();
+								if(!empty($valor)) {
+									$datos[$k][$objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue()][key($v1)] = $objPHPExcel->getActiveSheet()->getCell($v1[key($v1)] . $i)->getValue();
+								}
 							}
 						}
 					}
-
 					if($this->Novedad->grabar($datos, $this->data['Novedad']['periodo'])) {
 						$this->redirect("index");
 					}
