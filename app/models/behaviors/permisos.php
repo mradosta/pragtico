@@ -312,6 +312,13 @@ class PermisosBehavior extends ModelBehavior {
 					"(" . $modelName . ".permissions) & " . $this->__permisos['other_' . $acceso] => $this->__permisos['other_' . $acceso]
 				);
 		}
+
+		/**
+		* Cuando hago un delete, con los permisos solo del dueno es suficiente, por lo que los del grupo los quito.
+		*/
+		if($acceso == "delete") {
+			unset($seguridad['OR'][0]['AND'][1]);
+		}
 		return $seguridad;
 	}
 

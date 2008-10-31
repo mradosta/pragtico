@@ -865,11 +865,17 @@ class Concepto extends AppModel {
 
 
 /**
+ * TODO: VERIFICAR de dar un mensaje mas especifico de los errores. Revisar logica, anda, pero se puede mejorar.
  * Agrega o Quita un concepto o varios conceptos a una o varias relaciones.
+ *
+ * @param array $relaciones Los id de las relaciones a las cuales se les agregaran o quitaran los conceptos.
+ * @param array $conceptos Los id de los conceptos que se agregaran o quitaran.
+ * @param array $opciones Los id de los conceptos que se agregaran o quitaran.
+ * @return boolean
+ * @param array $opciones Los id de los conceptos que se agregaran o quitaran.
  */
 	function agregarQuitarConcepto($relaciones = array(), $conceptos = array(), $opciones) {
 		$c = 0;
-		$relacionOk = array();
 		if(isset($opciones['accion']) && ($opciones['accion'] == "quitar" || $opciones['accion'] == "agregar")) {
 			$accion = $opciones['accion'];
 			$error = false;
@@ -883,29 +889,29 @@ class Concepto extends AppModel {
 					if(empty($existe) && $accion == "agregar") {
 						$this->RelacionesConcepto->create();
 						if($this->RelacionesConcepto->save($save)) {
-							$relacionOk[$relacion_id] = 1;
+							$c++;
 						}
 						else {
 							$error = true;
+							break 2;
 						}
 					}
 					elseif(!empty($existe) && $accion == "quitar") {
 						if($this->RelacionesConcepto->del($existe['RelacionesConcepto']['id'])) {
-							$relacionOk[$relacion_id] = 1;
+							$c++;
 						}
 						else {
 							$error = true;
+							break 2;
 						}
 					}
 				}
 			}
 			if($error) {
 				$this->rollback();
-				$c = 0;
 			}
 			else {
 				$this->commit();
-				$c = array_sum($relacionOk);
 			}
 		}
 		return $c;
