@@ -307,6 +307,13 @@ class LiquidacionesController extends AppController {
 																		"conditions"	=> $condiciones));
 
 					/**
+					* Busco las informaciones de los conveniso que pueden necesitarse en las formulas.
+					* Lo hago de esta forma, ya que busco todo junto y no uno por uno en cada relacion por una cuestion de performance,
+					* ya que seguramente las relaciones liquidadas tengas los mismos convenios.
+					*/
+					$informaciones = $this->Relacion->ConveniosCategoria->Convenio->getInformacion(Set::extract("/ConveniosCategoria/convenio_id", $relaciones));
+					
+					/**
 					* Borro TODAS las liquidaciones no confirmadas del usuario.
 					*/
 					$usuario = $this->Session->read("__Usuario");
@@ -360,6 +367,7 @@ class LiquidacionesController extends AppController {
 					*/
 					$ids = array();
 					$opciones['variables'] = $variables;
+					$opciones['informaciones'] = $informaciones;
 					foreach($relaciones as $k=>$relacion) {
 						//d($relacion['Relacion']['id']);
 						$ids[] = $this->__getLiquidacion($relacion, $opciones);
@@ -410,7 +418,18 @@ class LiquidacionesController extends AppController {
 		* Con cada relacion, recalculo las variables.
 		*/
 		$this->__variables = $opciones['variables'];
-
+		
+		/**
+		* Las informaciones que vienen dadas por convenio, son variables ya resuletas.
+		*/
+		if(!empty($opciones['informaciones'][$relacion['ConveniosCategoria']['convenio_id']])) {
+			foreach($opciones['informaciones'][$relacion['ConveniosCategoria']['convenio_id']] as $k=>$v) {
+				$this->__variablesYaResueltas[] = $k;
+				$this->__variables[$k]['nombre'] = $k;
+				$this->__variables[$k]['valor'] = $v;
+			}
+		}
+		
 		/**
 		* Verifico si debo hacerle algun descuento.
 		$condicionesDescuentos = null;
@@ -1208,6 +1227,7 @@ function __getVariables($variables) {
 			continue;
 		}
 
+		//d($this->__relacion['ConveniosCategoria']['Convenio']['ConveniosInformacion']);
 
 		/**
 		* Busco si es una variable que viene dada por la relacion.

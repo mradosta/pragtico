@@ -77,5 +77,24 @@ class Convenio extends AppModel {
 			return false;
 		}
 	}
+	
+	
+/**
+ * Obtiene los valores de las informaciones de los convenios.
+ *
+ * @param array $conveniosId Los ids de los convenios de los cuales se desea obtener la/s informacion/es.
+ * @return array Las informaciones y sus valores por convenio.
+ * @access public
+ */	
+	function getInformacion($conveniosId) {
+		$return = array();
+		$r = $this->ConveniosInformacion->find("all", 
+			array(	"contain"		=> array("Informacion"),
+					"conditions"	=> array("ConveniosInformacion.convenio_id"	=>	$conveniosId)));
+		foreach($r as $v) {
+			$return[$v['ConveniosInformacion']['convenio_id']][$v['Informacion']['nombre']] = $v['ConveniosInformacion']['valor'];
+		}
+		return $return;
+	}
 }
 ?>
