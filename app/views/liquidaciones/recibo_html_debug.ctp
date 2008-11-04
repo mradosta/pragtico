@@ -89,7 +89,7 @@ foreach($this->data['LiquidacionesDetalle'] as $concepto) {
 			$fila[] = array("valor"=>"");
 		}
 
-		$valor = $formato->format($concepto['valor'], array("before"=>"$ ", "places"=>2));
+		$valor = $formato->format($concepto['valor'], "moneda");
 		if($concepto['concepto_tipo'] == "Remunerativo") {
 			$fila[] = array("valor"=>$valor, "class"=>"derecha");
 			$fila[] = array("valor"=>"");
@@ -113,18 +113,18 @@ foreach($this->data['LiquidacionesDetalle'] as $concepto) {
 */
 $fila = null;
 $fila[] = array("valor"=>"Totales", "class"=>"imitar_th_izquierda", "colspan"=>7);
-$fila[] = array("valor"=>$formato->format($this->data['Liquidacion']['remunerativo'], array("before"=>"$ ", "places"=>2)), "class"=>"derecha");
-$fila[] = array("valor"=>$formato->format($this->data['Liquidacion']['deduccion'], array("before"=>"$ ", "places"=>2)), "class"=>"derecha");
-$fila[] = array("valor"=>$formato->format($this->data['Liquidacion']['no_remunerativo'], array("before"=>"$ ", "places"=>2)), "class"=>"derecha");
+$fila[] = array("valor"=>$formato->format($this->data['Liquidacion']['remunerativo'], "moneda"), "class"=>"derecha");
+$fila[] = array("valor"=>$formato->format($this->data['Liquidacion']['deduccion'], "moneda"), "class"=>"derecha");
+$fila[] = array("valor"=>$formato->format($this->data['Liquidacion']['no_remunerativo'], "moneda"), "class"=>"derecha");
 $cuerpo[] = $fila;
 
 $fila = null;
-$fila[] = array("valor"=>"Son " . $formato->numeroALetras($this->data['Liquidacion']['total_pesos']) . " en Pesos", "class"=>"imitar_th_izquierda", "colspan"=>9);
-$fila[] = array("valor"=>"Pesos " . $formato->format($this->data['Liquidacion']['total_pesos'], array("before"=>"$ ", "places"=>2)), "class"=>"imitar_th_derecha");
+$fila[] = array("valor"=>"Son " . $formato->format($this->data['Liquidacion']['total_pesos'], "numeroEnLetras") . " en Pesos", "class"=>"imitar_th_izquierda", "colspan"=>9);
+$fila[] = array("valor"=>"Pesos " . $formato->format($this->data['Liquidacion']['total_pesos'], "moneda"), "class"=>"imitar_th_derecha");
 $cuerpo[] = $fila;
 $fila = null;
-$fila[] = array("valor"=>"Son " . $formato->numeroALetras($this->data['Liquidacion']['total_beneficios']) . " pesos en Beneficios", "class"=>"imitar_th_izquierda", "colspan"=>9);
-$fila[] = array("valor"=>"Beneficios " . $formato->format($this->data['Liquidacion']['total_beneficios'], array("before"=>"$ ", "places"=>2)), "class"=>"imitar_th_derecha");
+$fila[] = array("valor"=>"Son " . $formato->format($this->data['Liquidacion']['total_beneficios'], "numeroEnLetras") . " pesos en Beneficios", "class"=>"imitar_th_izquierda", "colspan"=>9);
+$fila[] = array("valor"=>"Beneficios " . $formato->format($this->data['Liquidacion']['total_beneficios'], "moneda"), "class"=>"imitar_th_derecha");
 $cuerpo[] = $fila;
 $fila = null;
 $fila[] = array("valor"=>"&nbsp;", "class"=>"imitar_th_izquierda", "colspan"=>9);

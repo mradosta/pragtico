@@ -69,7 +69,6 @@ $fila[] = array("valor"=>"No Remunarativo", "class"=>"imitar_th_izquierda");
 $cuerpo[] = $fila;
 
 
-//d($this->data['LiquidacionesDetalle']);
 foreach($this->data['LiquidacionesDetalle'] as $concepto) {
 	if($concepto['concepto_imprimir'] == "Si" || ($concepto['concepto_imprimir'] == "Solo con valor" && $concepto['valor'] > 0)) {
 		$fila = null;
@@ -139,7 +138,6 @@ $opcionesTabla =  array("tabla"=>
 
 $tabla = $formulario->tabla(am(array("cuerpo"=>$cuerpo), $opcionesTabla));
 
-//echo "<div id='XX'>XXXXXXXXXXXXXXXXXXX</div>";
 /**
 * Pongo todo dentro de un div (index) y muestro el resultado.
 */
