@@ -20,14 +20,9 @@
 * Especifico los campos para ingresar las condiciones.
 */
 $condiciones['Condicion.Siap-periodo'] = array("type"=>"periodo", "periodo"=>array("soloAAAAMM"), "aclaracion"=>"De la forma AAAAMM");
-$condiciones['Condicion.Siap-version'] = array("options"=>$siaps);
-$condiciones['Condicion.Siap-modo'] = array("options"=>$modos, "type"=>"radio");
-$condiciones['Condicion.Siap-grupo_id'] = array("options"=>$grupos, "empty"=>true);
-$condiciones['Condicion.Siap-empleador_id'] = array(	"aclaracion"=> "Solo se tendra en cuenta este campo si el tipo es 'Por Empleador'.",
-														"lov"		=> array(	"controller"		=> "empleadores",
-																				"seleccionMultiple"	=> 	0,
-																				"camposRetorno"		=> 	array(	"Empleador.cuit",
-																												"Empleador.nombre")));
+$condiciones['Condicion.Siap-version'] = array("options"=>"listable", "model"=>"Siap", "displayField"=>array("Siap.version"));
+$condiciones['Condicion.Siap-empleador_id'] = array("options"=>$empleadores);
+
 $fieldsets[] = array("campos"=>$condiciones);
 $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"Generar archivo para SIAP","imagen"=>"archivo.gif")));
 

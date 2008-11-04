@@ -51,22 +51,23 @@ class LiquidacionesController extends AppController {
 
 
 /**
-* Genera el archivo para importar en SIAP y generar el 931.
+ * Genera el archivo para importar en SIAP y generar el 931.
+ * TODO: Deberia mover esto al controller siap.
+ *
+ * @return void.
+ * @access public.
 */
 	function generar_archivo_siap() {
 		
-		if(!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] == "generar" && !empty($this->data['Condicion']['Siap-version'])) {
+		if(!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === "generar" && !empty($this->data['Condicion']['Siap-version'])) {
 			if(empty($this->data['Condicion']['Siap-periodo'])) {
 				$this->Session->setFlash("Debe especificar un periodo.", "error");
 			}
-			elseif($this->data['Condicion']['Siap-modo'] == "Por Grupo" && empty($this->data['Condicion']['Siap-grupo_id'])) {
-				$this->Session->setFlash("Debe seleccionar un Grupo.", "error");
-			}
-			elseif($this->data['Condicion']['Siap-modo'] == "Por Empleador" && empty($this->data['Condicion']['Siap-empleador_id'])) {
+			elseif(empty($this->data['Condicion']['Siap-empleador_id'])) {
 				$this->Session->setFlash("Debe seleccionar un Empleador.", "error");
 			}
 			elseif(!preg_match("/^(20\d\d)(0[1-9]|1[012])$/", $this->data['Condicion']['Siap-periodo'], $periodo)) {
-				$this->Session->setFlash("Debe especificar un periodo valido (AAAAMM).", "error");
+				$this->Session->setFlash("Debe especificar un periodo valido de la forma AAAAMM.", "error");
 			}
 			else {
 			
@@ -75,16 +76,34 @@ class LiquidacionesController extends AppController {
 					$detalles[$v['elemento']] = $v;
 				}
 
-				$conditions = array("Liquidacion.ano"=>$periodo[1], "Liquidacion.mes"=>$periodo[2]);
-				if($this->data['Condicion']['Siap-modo'] == "Por Grupo") {
-					$conditions = am($conditions, array("Liquidacion.group_id & " . $this->data['Condicion']['Siap-grupo_id'] => ">0"));
+				App::import("Model", "Grupo");
+				$Grupo = new Grupo();
+				$grupo = $Grupo->find("all", array(	
+										  	"recursive"		=> -1,
+							 				"conditions"	=> array("Grupo.empleador_id"	=> $this->data['Condicion']['Siap-empleador_id'])));
+				
+				if(empty($grupo)) {
+					$this->Session->setFlash("Debe asociar por lo menos uno de sus grupos a un empleador.", "error");
+					$this->History->goBack();
 				}
-				elseif($this->data['Condicion']['Siap-modo'] == "Por Empleador") {
-					$conditions = am($conditions, array("Liquidacion.empleador_id" => $this->data['Condicion']['Siap-empleador_id']));
-				}
-				$this->Liquidacion->recursive = 2;
-				$liquidaciones = $this->Liquidacion->find("all", array("conditions"=>$conditions));
-				//d($conditions);
+				
+				$empleadores = $Grupo->Empleador->find("list", array(	
+											"recursive"		=> -1,
+							 				"conditions"	=> array("Empleador.group_id"	=> $grupo[0]['Grupo']['id'])));
+						
+				$conditions = array("Liquidacion.empleador_id" 	=> $empleadores, 
+									"Liquidacion.ano"			=> $periodo[1], 
+		 							"Liquidacion.mes"			=> $periodo[2]);
+				
+				$liquidaciones = $this->Liquidacion->find("all", 
+														array(	"contain"	=> array(	"Empleador",
+																						"Relacion.Situacion",
+					  																	"Relacion.ConveniosCategoria",
+																						"Trabajador.ObrasSocial",
+					  																	"Trabajador.Condicion",
+																						"Trabajador.Siniestrado",
+																						"Trabajador.Localidad"),
+															 	"conditions"=> $conditions));
 				
 				$lineas = null;
 				foreach($liquidaciones as $liquidacion) {
@@ -113,21 +132,22 @@ class LiquidacionesController extends AppController {
 					$campos['c20']['valor'] = $liquidacion['Trabajador']['Localidad']['nombre'];
 					$campos['c21']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
 					$campos['c22']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
+					
 					/**
-					* TODO: Rem4 esta mal
+					* Viene expresado como una formula.
 					*/
-					$campos['c23']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
-					/**
-					* TODO: Siniestrado
-					$campos['c24']['valor'] = "";
-					*/
-					if($liquidacion['Empleador']['corresponde_reduccion'] == "Si") {
+					$campos['c23']['valor'] = $this->Formulador->resolver(str_replace("c23", $liquidacion['Liquidacion']['remunerativo'], $campos['c23']['valor']));
+					
+					if(!empty($liquidacion['Trabajador']['obra_social_id'])) {
+						$campos['c24']['valor'] = $liquidacion['Trabajador']['Siniestrado']['codigo'];
+					}
+					if($liquidacion['Empleador']['corresponde_reduccion'] === "Si") {
 						$campos['c25']['valor'] = "S";
 					}
 					else {
 						$campos['c25']['valor'] = " ";
 					}
-					if($liquidacion['Trabajador']['jubilacion'] == "Reparto") {
+					if($liquidacion['Trabajador']['jubilacion'] === "Reparto") {
 						$campos['c29']['valor'] = "1";
 					}
 					else {
@@ -135,7 +155,7 @@ class LiquidacionesController extends AppController {
 					}
 					$campos['c36']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
 					$campos['c42']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
-					if($liquidacion['Relacion']['ConveniosCategoria']['nombre'] == "Fuera de convenio") {
+					if($liquidacion['Relacion']['ConveniosCategoria']['nombre'] === "Fuera de convenio") {
 						$campos['c43']['valor'] = "0";
 					}
 					else {
@@ -143,29 +163,35 @@ class LiquidacionesController extends AppController {
 					}
 					$lineas[] = $this->__generarRegistro($campos);
 				}
-				$this->set("archivo", array("contenido"=>implode("\n\r", $lineas), "nombre"=>$periodo[1] . "-" . $periodo[2] . ".txt"));
-				$this->render("archivo_siap", "txt");
+				
+				$this->set("archivo", array("contenido"=>implode("\n\r", $lineas), "nombre"=>"SIAP-" . $periodo[1] . "-" . $periodo[2] . ".txt"));
+				$this->render(".." . DS . "elements" . DS . "txt", "txt");
 			}
 		}
 		
 		$usuario = $this->Session->read('__Usuario');
-		$grupos = array();
-		foreach($usuario['Grupo'] as $grupo) {
-			$grupos[$grupo['id']] = $grupo['nombre'];
-		}
-		$this->set("modos", array("Por Empleador"=>"Por Empleador", "Por Grupo"=>"Por Grupo"));
-		$this->set("grupos", $grupos);
-		$this->set("siaps", $this->Siap->find("list", array("fields"=>array("Siap.version"))));
+		$empleadores = $this->Liquidacion->Empleador->find("list", array(	"recursive"		=> -1,
+																"fields"		=> array("Empleador.id", "Empleador.nombre"),
+																"conditions" 	=> array("Empleador.id" => Set::extract("/empleador_id", $usuario['Grupo']))));
+		$this->set("empleadores", $empleadores);
 	}
         
+	
+/**
+ * Genera el una linea del archivo para importar en SIAP.
+ *
+ * @param array La descripcion del campo, donde me indica como debe comportarse.
+ * @return string Una linea formateada para ser importada.
+ * @access private.
+*/
 	function __generarRegistro($campos) {
-		$v = null;
+		$v = array();
 		if(!empty($campos)) {
 			foreach($campos as $campo) {
-				if($campo['direccion_relleno'] == "Derecha") {
+				if($campo['direccion_relleno'] === "Derecha") {
 					$v[] = str_pad($campo['valor'], $campo['longitud'], $campo['caracter_relleno'], STR_PAD_RIGHT);
 				}
-				elseif($campo['direccion_relleno'] == "Izquierda") {
+				elseif($campo['direccion_relleno'] === "Izquierda") {
 					$v[] = str_pad($campo['valor'], $campo['longitud'], $campo['caracter_relleno'], STR_PAD_LEFT);
 				}
 				else {
