@@ -10,9 +10,9 @@
  * @package			pragtico
  * @subpackage		app.views
  * @since			Pragtico v 1.0.0
- * @version			$Revision: 105 $
- * @modifiedby		$LastChangedBy: mradosta $
- * @lastmodified	$Date: 2008-10-30 00:34:25 -0200 (jue, 30 oct 2008) $
+ * @version			$Revision$
+ * @modifiedby		$LastChangedBy$
+ * @lastmodified	$Date$
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
  

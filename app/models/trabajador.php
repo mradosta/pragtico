@@ -154,6 +154,9 @@ class Trabajador extends AppModel {
 		if(empty($this->data['Trabajador']['condicion_id'])) {
 			unset($this->data['Trabajador']['condicion_id']);
 		}
+		if(empty($this->data['Trabajador']['siniestrado_id'])) {
+			unset($this->data['Trabajador']['siniestrado_id']);
+		}
 		
 		return parent::beforeSave();
 	}

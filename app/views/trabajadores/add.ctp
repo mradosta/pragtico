@@ -76,6 +76,11 @@ $campos['Trabajador.adicional_os'] = array("aclaracion"=>"Importe adicional en l
 $campos['Trabajador.excedentes_os'] = array("aclaracion"=>"Importe de los excedentes en la Obra Social (SIAP).");
 $campos['Trabajador.adherentes_os'] = array();
 $campos['Trabajador.aporte_adicional_os'] = array("aclaracion"=>"Aporte adicional a la Obra Social (SIAP).");
+$campos['Trabajador.siniestrado_id'] = array(	"aclaracion"=>"Indica algun tipo de imposibilidad (SIAP).",
+											 	"lov"=>array("controller"	=>	"siniestrados",
+														"seleccionMultiple"	=> 	0,
+														"camposRetorno"		=>	array(	"Siniestrado.codigo",
+																						"Siniestrado.nombre")));
 $fieldsets[] = array("campos"=>$campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Afip", "imagen"=>"afip.gif")));
 
 $campos = null;
