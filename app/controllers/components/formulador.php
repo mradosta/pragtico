@@ -73,9 +73,11 @@ class FormuladorComponent extends Object {
 		$cellId = 0;
 		
 		/**
-		* reemplazo los espacios entre las comas, para unificar criterios.
+		* reemplazo los espacios entre las comas o los iguales, para unificar criterios.
 		*/
 		$formula = str_replace(", ", ",", $formula);
+		$formula = str_replace(" ,", ",", $formula);
+		$formula = str_replace(" = ", "=", $formula);
 		
 		
 		/**

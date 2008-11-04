@@ -1,30 +1,71 @@
 <?php
+/**
+ * Este archivo contiene un caso de prueba.
+ *
+ * PHP versions 5
+ *
+ * @filesource
+ * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
+ * @link			http://www.pragmatia.com
+ * @package			pragtico
+ * @subpackage		app.tests.cases.components
+ * @since			Pragtico v 1.0.0
+ * @version			$Revision: 54 $
+ * @modifiedby		$LastChangedBy: mradosta $
+ * @lastmodified	$Date: 2008-10-23 23:14:28 -0300 (Thu, 23 Oct 2008) $
+ * @author      	Martin Radosta <mradosta@pragmatia.com>
+ */
+
 
 App::import('Component', 'Formulador');
 
+require_once(APP . "tests" . DS . "cases" . DS . "controllers" . DS . "fake_test_controller.test.php");
+
+
 /**
- * Creo un controller "ficticio". Solo para probar.
+ * Caso de prueba para el Component Formulador.
+ *
+ * @package app.tests
+ * @subpackage app.tests.cases.components
  */
-class BarFooController {
-
-} 
-
-class FormuladorComponentTest extends FormuladorComponent {
-
-}
-
-
 class FormuladorComponentTestCase extends CakeTestCase {
+	
+/**
+ * El component que probare.
+ *
+ * @var array
+ * @access public
+ */
     var $FormuladorComponentTest;
 
-    function FormuladorComponentTestCase() {
-    	$this->FormuladorComponentTest =& new FormuladorComponentTest();
-    	$controller = new BarFooController();
-		$this->FormuladorComponentTest->startup(&$controller);
+    
+/**
+ * Controller que usare en este caso de prueba.
+ *
+ * @var array
+ * @access public
+ */
+    var $controller;
+	
+	
+/**
+ * El constructor de la clase.
+ *
+ * @access public
+ */
+	function __construct() {
+    	$this->FormuladorComponentTest =& new FormuladorComponent();
+    	$this->controller = new FakeTestController();
+		$this->FormuladorComponentTest->startup(&$this->controller);
     }
 
 
 	function testResolverNombreFormulas() {
+		
+		$formula = "=if('mensual' = 'mensual', 'Basico', 'Horas')";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = 'Basico';
+		$this->assertEqual($expected, $result);
 		
 		$formula = "=if('Fondo Social'='N/A', 'Aporte Solidario', 'Fondo Social')";
 		$result = $this->FormuladorComponentTest->resolver($formula);
