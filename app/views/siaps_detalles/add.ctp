@@ -21,7 +21,6 @@
 */
 $campos = null;
 $campos['SiapsDetalle.id'] = array();
-$campos['SiapsDetalle.siap_id'] = array("options"=>$siaps);
 $campos['SiapsDetalle.siap_id'] = array("options"=>"listable", "model"=>"Siap", "displayField"=>array("Siap.version"));
 $campos['SiapsDetalle.elemento'] = array();
 $campos['SiapsDetalle.valor'] = array();
@@ -33,7 +32,7 @@ $campos['SiapsDetalle.longitud'] = array();
 $campos['SiapsDetalle.observacion'] = array();
 $fieldsets[] = array("campos"=>$campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Detalles de la Version de SIAP", "imagen"=>"siaps_detalles.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Detalles de la Version de SIAP", "imagen"=>"detalles.gif")));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
