@@ -24,8 +24,32 @@ class FormuladorComponentTestCase extends CakeTestCase {
     }
 
 
+	function testResolverNombreFormulas() {
+		
+		$formula = "=if('Fondo Social'='N/A', 'Aporte Solidario', 'Fondo Social')";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = 'Fondo Social';
+		$this->assertEqual($expected, $result);
+		
+		$formula = "=if('Fondo Social'='Fondo Social', 'Aporte Solidario', 'Fondo Social')";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = 'Aporte Solidario';
+		$this->assertEqual($expected, $result);
+	
+		$formula = "=if('N/A'='N/A', 'Aporte Solidario', 'Fondo Social')";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = 'Aporte Solidario';
+		$this->assertEqual($expected, $result);
+	}
+	
+	
     function testResolverFechas() {
 
+		$formula = '=if(month(date(2008, 11, 01)) = 11, 1, 0)';
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '1';
+		$this->assertEqual($expected, $result);
+		
 		$formula = '=date(2007, 12, 21)';
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '1198195200';
