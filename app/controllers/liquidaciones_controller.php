@@ -138,7 +138,7 @@ class LiquidacionesController extends AppController {
 					*/
 					$campos['c23']['valor'] = $this->Formulador->resolver(str_replace("c23", $liquidacion['Liquidacion']['remunerativo'], $campos['c23']['valor']));
 					
-					if(!empty($liquidacion['Trabajador']['obra_social_id'])) {
+					if(!empty($liquidacion['Trabajador']['siniestrado_id'])) {
 						$campos['c24']['valor'] = $liquidacion['Trabajador']['Siniestrado']['codigo'];
 					}
 					if($liquidacion['Empleador']['corresponde_reduccion'] === "Si") {
