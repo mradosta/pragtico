@@ -74,7 +74,7 @@ foreach ($registros as $k=>$v) {
 	}
 	else {
 		if(!empty($v['LiquidacionesError'])) {
-			$fila[] = array("tipo"=>"desglose", "id"=>$id, "update"=>"desglose4", "imagen"=>array("nombre"=>"liquidaciones_errores.gif", "alt"=>"Errores"), "url"=>'errores');
+			$fila[] = array("tipo"=>"desglose", "id"=>$id, "update"=>"desglose4", "imagen"=>array("nombre"=>"error_icono.gif", "alt"=>"Errores"), "url"=>'errores');
 			$cuerpo[] = array("contenido"=>$fila, "opciones"=>array("title"=>"Se han encontrado errores en esta liquidacion.", "class"=>"fila_resaltada", "seleccionMultiple"=>false));			
 		}
 		else {

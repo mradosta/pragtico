@@ -47,7 +47,6 @@ $opcionesTabla =  array("tabla"=>
 									"zebra"				=>false,
 									"mostrarIds"		=>false));
 
-echo $this->renderElement("desgloses/agregar", array("texto"=>"Errores de la Liquidacion"));
-echo $formulario->bloque($formulario->tabla(am(array("cuerpo"=>$cuerpo), $opcionesTabla)), array("div"=>array("class"=>"unica")));
+echo $this->renderElement("desgloses/agregar", array("opcionesTabla"=>$opcionesTabla, "titulo"=>"Errores de la Liquidacion", "cuerpo"=>$cuerpo));
 
 ?>

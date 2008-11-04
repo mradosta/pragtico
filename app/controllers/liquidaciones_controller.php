@@ -84,7 +84,7 @@ class LiquidacionesController extends AppController {
 				}
 				$this->Liquidacion->recursive = 2;
 				$liquidaciones = $this->Liquidacion->find("all", array("conditions"=>$conditions));
-				d($conditions);
+				//d($conditions);
 				
 				$lineas = null;
 				foreach($liquidaciones as $liquidacion) {
@@ -151,9 +151,7 @@ class LiquidacionesController extends AppController {
 		$usuario = $this->Session->read('__Usuario');
 		$grupos = array();
 		foreach($usuario['Grupo'] as $grupo) {
-			if($grupo['tipo'] == "De Grupos") {
-				$grupos[$grupo['id']] = $grupo['nombre'];
-			}
+			$grupos[$grupo['id']] = $grupo['nombre'];
 		}
 		$this->set("modos", array("Por Empleador"=>"Por Empleador", "Por Grupo"=>"Por Grupo"));
 		$this->set("grupos", $grupos);
@@ -373,7 +371,7 @@ class LiquidacionesController extends AppController {
 						$ids[] = $this->__getLiquidacion($relacion, $opciones);
 					}
 					if(!empty($ids)) {
-						$this->Liquidacion->contain(array("Relacion.Trabajador", "Relacion.Empleador"));
+						$this->Liquidacion->contain(array("Relacion.Trabajador", "Relacion.Empleador", "LiquidacionesError"));
 						$resultados = $this->Paginador->paginar(array("Liquidacion.id"=>$ids));
 					}
 				}
@@ -521,7 +519,7 @@ class LiquidacionesController extends AppController {
 		$opcionesFindConcepto = array();
 		$opcionesFindConcepto['desde'] = $this->__getVariableValor("#fecha_desde_liquidacion");
 		$opcionesFindConcepto['hasta'] = $this->__getVariableValor("#fecha_hasta_liquidacion");
-		$this->__conceptos = $this->Relacion->RelacionesConcepto->Concepto->findConceptos("Relacion", am(array("relacion"=>$relacion), $opcionesFindConcepto));
+		$this->__conceptos = $this->Relacion->RelacionesConcepto->Concepto->findConceptos("Relacion", am(array("relacion"=>$this->__relacion), $opcionesFindConcepto));
 
 		/**
 		* Verifico que este el concepto sueldo_basico.
@@ -635,10 +633,11 @@ class LiquidacionesController extends AppController {
 		* Si a este empleador hay que aplicarle redondeo, lo hago y lo dejo expresado
 		* con el concepto redondeo en el detalle de la liquidacion.
 		*/
-		if($this->__relacion['Empleador']['redondear'] == "Si") {
+		if($this->__relacion['Empleador']['redondear'] === "Si") {
 			$redondeo = round($totales['total']) - $totales['total'];
-			if($redondeo != 0) {
-				$conceptoRedondeo = $this->Relacion->RelacionesConcepto->Concepto->findConceptos("ConceptoPuntual", $this->__relacion, "redondeo", $opcionesFindConcepto);
+			if($redondeo !== 0) {
+				$opcionesFindConcepto['codigoConcepto'] = "redondeo";
+				$conceptoRedondeo = $this->Relacion->RelacionesConcepto->Concepto->findConceptos("ConceptoPuntual", am(array("relacion"=>$this->__relacion), $opcionesFindConcepto));
 				$conceptoRedondeo['redondeo']['debug'] = "=" . round($totales['total']) . " - " . $totales['total'];
 				$conceptoRedondeo['redondeo']['valor_cantidad'] = "0";
 
@@ -958,127 +957,89 @@ class LiquidacionesController extends AppController {
 
 
 		/**
-		* Verifico si el nombre que se muestra del concepto es una formula.
-		* Esta formula esta limitada solo al manejo BASICO de strings, que para el caso, es suficiente.
+		* Verifico si el nombre que se muestra del concepto es una formula, la resuelvo.
 		*/
 		if(!empty($concepto['nombre_formula'])) {
 			$nombreConcepto = $concepto['nombre_formula'];
-			
-			if(substr($nombreConcepto, 0, 4) == "=if(") {
-				preg_match_all("/(\'#[a-z,A-Z,0-9,\s]+\'[\s]*=[\s]*\'[a-z,A-Z,0-9,\s]+\')/", $nombreConcepto, $strings);
-				if(!empty($strings[1][0])) {
-					$tmp = explode(",", str_replace(" ", "", str_replace("=if(", "", str_replace("'", "", str_replace(")", "", $nombreConcepto)))));
-					if(count($tmp) >= 2 && substr($tmp[0], 0, 1) == "#" && strpos($tmp[0], "=") > 1) {
-						$condicion = explode("=", $tmp[0]);
-						$this->__getVariables(array($condicion[0]));
-						if(isset($this->__variables[$condicion[0]])) {
-							if($this->__variables[$condicion[0]]['valor'] !== "#N/A") {
-								if($this->__variables[$condicion[0]]['valor'] == $condicion[1]) {
-									$nombreConcepto = $tmp[1];
-								}
-								else {
-									$nombreConcepto = $tmp[2];
-								}
-							}
-							else {
-								$errores[] = array(	"tipo"					=>"Variable No Resuelta",
-													"gravedad"				=>"Media",
-													"concepto"				=>$concepto['codigo'],
-													"variable"				=>$condicion[0],
-													"formula"				=>$concepto['formula'],
-													"descripcion"			=>"La formula del nombre intenta usar una variable que no ha podido ser resuelta.",
-													"recomendacion"			=>"Verifique que los datos hayan sido correctamente ingresados.",
-													"descripcion_adicional"	=>$this->__variables[$condicion[0]]['formula']);
-							}
+		
+			/**
+			* Si en el nombre hay variables, busco primero estos valores.
+			*/
+			if(preg_match_all("/(#[a-z0-9_]+)/", $nombreConcepto, $variables_tmp)) {
+				
+				$this->__getVariables($variables_tmp[0]);
+				foreach($variables_tmp[0] as $k=>$v) {
+					/**
+					* Debe buscar la variable para reemplazarla dentro de la formula.
+					* Usa la RegEx y no str_replace, porque por ejemplo, si debo reemplazar #horas, y en cuentra
+					* #horas lo hara ok, pero si encuentra #horas_enfermedad, dejara REEMPLAZO_enfermedad.
+					*/
+					if(isset($this->__variables[$v])) {
+						if($this->__variables[$v]['valor'] !== "#N/A") {
+							$nombreConcepto = preg_replace("/".$v."(\W)|".$v."$/", $this->__variables[$v]['valor'] . "$1", $nombreConcepto);
 						}
 						else {
-							$errores[] = array(	"tipo"					=>"Variable Inexistente",
+							$errores[] = array(	"tipo"					=>"Variable No Resuelta",
 												"gravedad"				=>"Media",
 												"concepto"				=>$concepto['codigo'],
-												"variable"				=>$condicion[0],
-												"formula"				=>$concepto['formula'],
-												"descripcion"			=>"El nombre del concepto intenta usar una variable inexistente.",
-												"recomendacion"			=>"Verifique que la formula del nombre este correctamente definida y que las variables utilizadas existan en el sistema.",
-												"descripcion_adicional"	=>$concepto['nombre']);
+												"variable"				=>$v,
+												"formula"				=>"",
+												"descripcion"			=>"El nombre del concepto intenta usar una variable que no ha podido ser resuelta.",
+												"recomendacion"			=>"Verifique que los datos hayan sido correctamente ingresados.",
+												"descripcion_adicional"	=>$nombreConcepto);
 						}
 					}
+					else {
+						$errores[] = array(	"tipo"					=>"Variable Inexistente",
+											"gravedad"				=>"Media",
+											"concepto"				=>$concepto['codigo'],
+											"variable"				=>$v,
+											"formula"				=>"",
+											"descripcion"			=>"El nombre del concepto intenta usar una variable inexistente.",
+											"recomendacion"			=>"Verifique que el nombre este correctamente definido y que las variables que este utiliza existan en el sistema.",
+											"descripcion_adicional"	=>$nombreConcepto);
+					}
 				}
+			}
+			if(substr($nombreConcepto, 0, 4) === "=if(") {
+				$nombreConcepto = $this->Formulador->resolver($nombreConcepto);
+			}
+			else {
+				$nombreConcepto = str_replace("=", "", $nombreConcepto);
 			}
 		}
 		else {
 			$nombreConcepto = $concepto['nombre'];
 		}
 		
-		/**
-		* Si en el nombre hay variables, busco primero estos valores.
-		*/
-		preg_match_all("/(#[a-z0-9_]+)/", $nombreConcepto, $variables_tmp);
-		if(!empty($variables_tmp[0])) {
-			$this->__getVariables($variables_tmp[0]);
-			foreach($variables_tmp[0] as $k=>$v) {
-				/**
-				* Debe buscar la variable para reemplazarla dentro de la formula.
-				* Usa la RegEx y no str_replace, porque por ejemplo, si debo reemplazar #horas, y en cuentra
-				* #horas lo hara ok, pero si encuentra #horas_enfermedad, dejara REEMPLAZO_enfermedad.
-				*/
-				if(isset($this->__variables[$v])) {
-					if($this->__variables[$v]['valor'] !== "#N/A") {
-						$nombreConcepto = preg_replace("/".$v."(\W)|".$v."$/", $this->__variables[$v]['valor'] . "$1", $nombreConcepto);
-					}
-					else {
-						$errores[] = array(	"tipo"					=>"Variable No Resuelta",
-           									"gravedad"				=>"Media",
-											"concepto"				=>$concepto['codigo'],
-											"variable"				=>$v,
-											"formula"				=>"",
-											"descripcion"			=>"El nombre del concepto intenta usar una variable que no ha podido ser resuelta.",
-											"recomendacion"			=>"Verifique que los datos hayan sido correctamente ingresados.",
-											"descripcion_adicional"	=>$nombreConcepto);
-					}
-				}
-				else {
-					$errores[] = array(	"tipo"					=>"Variable Inexistente",
-										"gravedad"				=>"Media",
-										"concepto"				=>$concepto['codigo'],
-										"variable"				=>$v,
-										"formula"				=>"",
-										"descripcion"			=>"El nombre del concepto intenta usar una variable inexistente.",
-										"recomendacion"			=>"Verifique que el nombre este correctamente definido y que las variables que este utiliza existan en el sistema.",
-										"descripcion_adicional"	=>$nombreConcepto);
-				}
-			}
-		}
-		
 
 		/**
-		* El formulador si hay una comparacion de strings se equivoca, entonces, lo reemplazo por su
-		* equivalente en ascci y comparo numeros que se que anda bien.
+		* Veo si es una formula, hay un not, obtengo los conceptos y rearmo los formula eliminando la perte del not.
 		*/
-		preg_match_all("/(\'[a-z,A-Z,0-9,[:space:]]+\'[[:space:]]*=[[:space:]]*\'[a-z,A-Z,0-9,[:space:]]+\')/", $formula, $strings);
-		foreach($strings[1] as $string) {
-			$partes = explode("=", str_replace(" ", "", str_replace("'", "", $string)));
-			$parteIzquierda = $parteDerecha = "";
-			foreach($partes as $k=>$parte){
-				$parte = strtolower($parte);
-				$tmp = str_split($parte);
-				foreach($tmp as $letra) {
-					if($k == 0) {
-						$parteIzquierda .= ord($letra);
-					}
-					else {
-						$parteDerecha .= ord($letra);
-					}
-				}
+		if(preg_match("/not\((.*)\)/", $formula, $matches)) {
+			$pos = strpos($matches[1], ")");
+			if($pos) {
+				$formula = str_replace(", ", ",", $formula);
+				$formula = str_replace(" ,", ",", $formula);
+				$reemplazoNot = str_replace(", ", ",", $matches[1]);
+				$reemplazoNot = str_replace(" ,", ",", $reemplazoNot);
+				$reemplazoNot = substr($reemplazoNot, 0, $pos);
+				$conceptosNot = explode(",", str_replace("@", "", $reemplazoNot));
+				$reemplazoNot = "not(" . $reemplazoNot . ",";
 			}
-			$formula = str_replace($string, $parteIzquierda . " = " . $parteDerecha, $formula);
+			$formula = str_replace($reemplazoNot, "", $formula);
 		}
+		
 		
 		/**
 		* Veo si es una formula, que me indica la suma del remunerativo, de las deducciones o del no remunerativo.
 		*/
-		if(preg_match("/^=sum[\s]*\([\s]*(Remunerativo|Deduccion|No\sRemunerativo)[\s]*\)$/", $formula, $matches)) {
+		if(preg_match("/^=sum[\s]*\([\s]*(Remunerativo|Deduccion|No\sRemunerativo)[\s]*\)$/i", $formula, $matches)) {
+			if(!isset($conceptosNot)) {
+				$conceptosNot = array();
+			}
 			foreach($this->__conceptos as $conceptoTmp) {
-				if($conceptoTmp['tipo'] == $matches[1] && ($conceptoTmp['imprimir'] == "Si" || $conceptoTmp['imprimir'] == "Solo con valor")) {
+				if(!in_array($conceptoTmp['codigo'], $conceptosNot) && $conceptoTmp['tipo'] == $matches[1] && ($conceptoTmp['imprimir'] === "Si" || $conceptoTmp['imprimir'] === "Solo con valor")) {
 					if(empty($conceptoTmp['valor'])) {
 						$resolucionCalculo = $this->__getConceptoValor($conceptoTmp, $opciones);
 						$this->__conceptos[$conceptoTmp['codigo']] = am($resolucionCalculo, $this->__conceptos[$conceptoTmp['codigo']]);
@@ -1089,18 +1050,18 @@ class LiquidacionesController extends AppController {
 			}
 		}
 
+		
 		/**
 		* Veo si es una formula, que tiene otros conceptos dentro.
 		* Lo se porque los codigos de los conceptos empiezan siempre con @.
 		*/
-		elseif(substr($formula, 0, 1) == "=") {
-			preg_match_all("/(@[\w]+)/", $formula, $matches);
-
+		elseif(substr($formula, 0, 1) === "=") {
+			
 			/**
 			* Verifico que tenga calculado todos los conceptos que esta formula me pide.
 			* Si aun no lo tengo, lo calculo.
 			*/
-			if(!empty($matches[1])) {
+			if(preg_match_all("/(@[\w]+)/", $formula, $matches)) {
 				foreach($matches[1] as $match) {
 					$match = substr($match, 1);
 					
@@ -1176,7 +1137,7 @@ class LiquidacionesController extends AppController {
 			*/
 			$valor = $this->Formulador->resolver($formula);
 		}
-		elseif($formula == "") {
+		elseif(empty($formula)) {
 			$errores[] = array(	"tipo"					=>"Formula de Concepto Inexistente",
 								"gravedad"				=>"Media",
 								"concepto"				=>$concepto['codigo'],

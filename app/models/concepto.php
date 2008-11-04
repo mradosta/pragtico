@@ -158,6 +158,7 @@ class Concepto extends AppModel {
 		$fieldsConceptos = 				array(	"Concepto.id",
 												"Concepto.codigo",
 												"Concepto.nombre",
+												"Concepto.nombre_formula",
 												"Concepto.tipo",
 												"Concepto.periodo",
 												"Concepto.sac",
