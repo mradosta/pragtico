@@ -89,6 +89,9 @@ class Trabajador extends AppModel {
 	var $belongsTo = array(	'Localidad' =>
                         array('className'    => 'Localidad',
                               'foreignKey'   => 'localidad_id'),
+							'Siniestrado' =>
+                        array('className'    => 'Siniestrado',
+                              'foreignKey'   => 'siniestrado_id'),							  
 							'Condicion' =>
                         array('className'    => 'Condicion',
                               'foreignKey'   => 'condicion_id'),
