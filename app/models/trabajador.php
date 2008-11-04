@@ -28,6 +28,7 @@ class Trabajador extends AppModel {
 	*/
 	var $modificadores = array("edit"=>array("contain"=>array(	"Localidad",
 																"Condicion",
+																"Siniestrado",
 																"ObrasSocial")),
 								"add" =>array(								
 										"valoresDefault"=>array("pais"=>"Argentina",
