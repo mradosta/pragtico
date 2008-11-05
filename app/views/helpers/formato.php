@@ -1,20 +1,55 @@
 <?php
 /**
- * Este es un helper CakePHP que sirve para dar distintos tipos personalizados de formato
+ * Helper que me facilita el formateo de string, numeros, etc.
  *
- * @author MRadosta <mradosta AT pragmatia.com>
- * @from 11/07/2006
+ * Dado un nombre predefinido, formateo cualquier cosa.
+ *
+ * PHP versions 5
+ *
+ * @filesource
+ * @copyright		Copyright 2005-2008, Pragmatia de RPB S.A.
+ * @link			http://www.pragmatia.com
+ * @package			pragtico
+ * @subpackage		app.views.helpers
+ * @since			Pragtico v 1.0.0
+ * @version			$Revision$
+ * @modifiedby		$LastChangedBy$
+ * @lastmodified	$Date$
+ * @author      	Martin Radosta <mradosta@pragmatia.com>
+ */
+/**
+ * Clase que contiene el helper para el formateo.
+ * Esta clase es muy importante, ya que si bien es un helper, el behavior Util y el component Util, utilizan metodos de esta clase.
+ *
+ * @package		pragtico
+ * @subpackage	app.views.helpers
  */
 class FormatoHelper extends AppHelper {
 
+/**
+ * Los helpers que utilizare.
+ *
+ * @var arraya
+ * @access public.
+ */
 	var $helpers = array("Number", "Time");
 
-	/**
-	* Los partones, siempre deberan ser de la forma Model.[SubModel.]campo[.1,2,n]
-	* Pueden venir indicados por numeros, pero debe existir el reemplazo al numero de la forma:
-	*		1:Model.[SubModel.]campo[.1,2,n]
-	*		2:Model.[SubModel.]campo[.1,2,n]
-	*/
+	
+/**
+ * Busca patrones dentro de un texto y los reemplaza por su reemplazo.
+ *
+ * @param array $patrones Los patrones que busco.
+ * @param array $reemplazos Con los que tengo que reemplazar.
+ * @param string $texto El texto donde realizar los remplazos.
+ * Los partones, siempre deberan ser de la forma Model.[SubModel.]campo[.1,2,n]
+ * Pueden venir indicados por numeros, pero debe existir el reemplazo al numero de la forma:
+ *		1:Model.[SubModel.]campo[.1,2,n]
+ *		2:Model.[SubModel.]campo[.1,2,n]
+ * La seri 1,2,n significa que debe iterar por el patron (ej: el detalle de un recibo).
+ *
+ * @return string El texto con los remplazos realizados.
+ * @access public.
+ */
 	function reemplazarEnTexto($patrones, $reemplazos, $texto) {
 
 		/**
@@ -84,8 +119,10 @@ class FormatoHelper extends AppHelper {
  * Formatea un valor de acuerdo a un formato.
  *
  * @param string $valor Un valor a formatear.
- * @param array $options Array que contiene el tipo de formato y/o sus opciones.
- * @return string Un string con el valor formateado de acuerdo a lo especificado.
+ * @param mixed 	array $options Opciones que contiene el tipo de formato y/o sus opciones.
+ *					string El tipo de formato (sin opciones) que se desea.
+ * @return mixed 	Un string o un array con el/los valor/es formateado/s de acuerdo a lo especificado.
+ * @access public.
  */
 	function format($valor, $options = array()) {
 		if(is_string($options)) {
@@ -320,6 +357,7 @@ class FormatoHelper extends AppHelper {
 		return $return;
 	}
 
+	
 /**
  * Convierte en texto en mayusculas, minusculas o titulo (ucfirst).
  *
@@ -328,83 +366,45 @@ class FormatoHelper extends AppHelper {
  *				- ucfirst (default)
  *				- upper
  *				- lower
- * @access private
  * @return mixed Array convertido cuando el input haya sido un array, sino, un string.
+ * @access private.
  */
-function __case($data, $case = "ucfirst") {
-	$esString = false;
-	if(!is_array($data) && is_string($data)) {
-		$data = array($data);
-		$esString = true;
-	}
-	if($case == "upper") {
-		foreach($data as $k=>$v) {
-			$data[$k] = strtoupper($v);
+	function __case($data, $case = "ucfirst") {
+		$esString = false;
+		if(!is_array($data) && is_string($data)) {
+			$data = array($data);
+			$esString = true;
 		}
-	}
-	elseif($case == "lower") {
-		foreach($data as $k=>$v) {
-			$data[$k] = strtolower($v);
-		}
-	}
-	elseif($case == "ucfirst") {
-		foreach($data as $k=>$v) {
-			$data[$k] = ucfirst($v);
-		}
-	}
-
-	if($esString) {
-		return $data[0];
-	}
-	return $data;
-}
-
-/**
- * La funcion calcula la diferencia entre dos fechas en fomato unix timestamp
- * Retorna un array con los dias, horas, minutos y segundos
- */
-	function diferenciaEntreFechas($time1, $time2) {
-		if (!is_numeric($time1)) {
-			if (strstr($time1,"-")) {
-				$time1 = $this->Time->fromString($time1);
-				//$temp=explode("-",$time1);
-				//$time1=mktime(0,0,0,$temp[1],$temp[2],$temp[0]);
+		if($case == "upper") {
+			foreach($data as $k=>$v) {
+				$data[$k] = strtoupper($v);
 			}
 		}
-		if (!is_numeric($time2)) {
-			if (strstr($time2,"-")) {
-				$time2 = $this->Time->fromString($time2);
-				//$temp=explode("-",$time2);
-				//$time2=mktime(0,0,0,$temp[1],$temp[2],$temp[0]);
+		elseif($case == "lower") {
+			foreach($data as $k=>$v) {
+				$data[$k] = strtolower($v);
 			}
 		}
-
-		//calculo en segundos
-		$diff = abs($time1-$time2);
-		$daysDiff = floor($diff/60/60/24);
-		$diff -= $daysDiff*60*60*24;
-		$hrsDiff = floor($diff/60/60);
-		$diff -= $hrsDiff*60*60;
-		$minsDiff = floor($diff/60);
-		$diff -= $minsDiff*60;
-		$secsDiff = $diff;
-
-		$diferencia=false;
-		$diferencia['dias']=$daysDiff;
-		$diferencia['horas']=$hrsDiff;
-		$diferencia['minutos']=$minsDiff;
-		$diferencia['segundos']=$secsDiff;
-
-		return $diferencia;
-	}	
-
-
-
+		elseif($case == "ucfirst") {
+			foreach($data as $k=>$v) {
+				$data[$k] = ucfirst($v);
+			}
+		}
+	
+		if($esString) {
+			return $data[0];
+		}
+		return $data;
+	}
+	
 
 /**
  * Genera un array (key=>value) con los meses.
  *
- * @return array (key=>value) La key ontine el numero del mes y el value el nombre del mes.
+ * @param $mes Integer Opcional que indica el numero mes que se pretende retorne.
+ * @return mixed 	array (key=>value) La key contine el numero del mes y el value el nombre del mes.
+ *					string El nombre del mes solicitado.
+ * @access private.
  */
 	function __getMeses($mes = null) {
 		$meses['1'] = "enero";
@@ -420,14 +420,14 @@ function __case($data, $case = "ucfirst") {
 		$meses['11'] = "noviembre";
 		$meses['12'] = "diciembre";
 		if(is_numeric($mes)) {
-			return $meses[$mes];
+			if(isset($meses[$mes])) {
+				return $meses[$mes];
+			}
+			else {
+				return "";
+			}
 		}
 		return $meses;
 	}
-	
 }
-
-
-
-
 ?>

@@ -11,7 +11,7 @@
  * @copyright		Copyright 2005-2008, Pragmatia de RPB S.A.
  * @link			http://www.pragmatia.com
  * @package			pragtico
- * @subpackage		app.controllers
+ * @subpackage		app.views.helpers
  * @since			Pragtico v 1.0.0
  * @version			$Revision$
  * @modifiedby		$LastChangedBy$
@@ -22,7 +22,7 @@
  * Helper para la creacion de documentos.
  *
  * @package		pragtico
- * @subpackage	views.helpers
+ * @subpackage	app.views.helpers
  */
 class DocumentoHelper extends AppHelper {
 
@@ -31,6 +31,7 @@ class DocumentoHelper extends AppHelper {
  * El objeto de tipo PHPExcel.
  *
  * @var object
+ * @access public.
  */
 	var $doc;
 
@@ -39,6 +40,7 @@ class DocumentoHelper extends AppHelper {
  * Constructor de la clase.
  * Instancia un objeto de la clase PHPExcel.
  * @return void.
+ * @access private.
  */   
     function __construct() {
 		/**
@@ -56,6 +58,7 @@ class DocumentoHelper extends AppHelper {
  * @param array $options opciones de la orientacion del papel.
  * 				Ej: $documento->create(array("orientation" => "landscape"));
  * @return void.
+ * @access public.	
  */
     function create($options = array()) {
 		$this->doc->getProperties()->setCreator("Pragtico");
@@ -83,6 +86,7 @@ class DocumentoHelper extends AppHelper {
  * @param array $options Opciones adicionales.
  *			- style: array con estilos validos a aplicar a la celda o rango de celdas.
  * @return void.
+ * @access public.	
  */
 	function setCellValue($cellName, $value, $options = array()) {
 		if(preg_match("/^([A-Z]+[0-9]+)\:[A-Z]+[0-9]+$/", $cellName, $matches)) {
@@ -106,6 +110,7 @@ class DocumentoHelper extends AppHelper {
  * @param array $options Opciones adicionales.
  *			- valores: array con los valores a mostrar en la lista.
  * @return void.
+ * @access public.	
  */
 	function setDataValidation($cellName, $type, $options = array()) {
 		$objValidation = $this->doc->getActiveSheet()->getCell($cellName)->getDataValidation();
@@ -144,6 +149,7 @@ class DocumentoHelper extends AppHelper {
  * @param string $archivo La ruta y el nombre del archivo donde crearlo.
  * En caso de ser null, se envia al browser para la descarga
  * @return void.
+ * @access public.	
  */
 	function save($formato = "Excel2007", $archivo = null) {
 		$objPHPExcelWriter = PHPExcel_IOFactory::createWriter($this->doc, $formato);

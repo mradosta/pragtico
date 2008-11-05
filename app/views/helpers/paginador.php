@@ -1,20 +1,47 @@
 <?php
 /**
- * Este es un helper CakePHP que sirve para dar distintos tipos personalizados de formato
+ * Helper que me facilita la paginacion.
+ *
+ * Permite simplificar la creacion de los links para la nevagacion.
+ *
+ * PHP versions 5
+ *
+ * @filesource
+ * @copyright		Copyright 2005-2008, Pragmatia de RPB S.A.
+ * @link			http://www.pragmatia.com
+ * @package			pragtico
+ * @subpackage		app.views.helpers
+ * @since			Pragtico v 1.0.0
+ * @version			$Revision$
+ * @modifiedby		$LastChangedBy$
+ * @lastmodified	$Date$
+ * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
-
+/**
+ * Clase que contiene el helper para la paginacion.
+ *
+ * @package		pragtico
+ * @subpackage	app.views.helpers
+ */
 class PaginadorHelper extends AppHelper {
 
-	var $helpers=array("Paginator", "Formulario", "Ajax");
-
 /**
- * Generates a sorting link
+ * Los helpers que utilizare.
  *
- * @param  string $title Title for the link.
- * @param  string $key The name of the key that the recordset should be sorted.
- * @param  array $options Options for sorting link. See #options for list of keys.
- * @return string A link sorting default by 'asc'. If the resultset is sorted 'asc' by the specified
- *                key the returned link will sort by 'desc'.
+ * @var arraya
+ * @access public.
+ */
+	var $helpers = array("Paginator", "Formulario");
+
+	
+/**
+ * Generea el link que permite ordenar una columna.
+ *
+ * @param  string $title Titulo del link (lo que se mostrara).
+ * @param  string $key El nombre de la clave del recordset que debe ordenarse.
+ * @param  array $options Las opciones posibles para el orden.
+ * @return string Un link que permitira ordenar una columna en forma ascendente en forma predeterminada.
+ * @access public.
  */
 	function sort($title, $key = null, $options = array()) {
 		$options['class'] = "sin_orden";
@@ -75,31 +102,43 @@ class PaginadorHelper extends AppHelper {
 				unset($this->params[$nombre]['direction']);
 				unset($this->params[$nombre]['sort']);
 				unset($this->params[$nombre]['page']);
-				$options['url'] = am($options['url'], $this->params[$nombre]);
+				$options['url'] = array_merge($options['url'], $this->params[$nombre]);
 			}
 		}
 		$model = $options['model'];
 		unset($options['model']);
 		return $this->Paginator->sort($title, $model . "." . $key, $options);
 	}
-		
-	function paginador($accion, $opciones = array()) {
-		$retorno = "";
+	
+	
+/**
+ * Generea un bloque con los objetos propios del paginador (posicion dentro del recordset y flechas de navegacion).
+ *
+ * @param  string $accion Indica el bloque que se generara:
+ *						- posicion		(el numero de registro, de pagina, ...)
+ *						- navegacion 	(las flechas)
+ * @param  array $options Las opciones posibles para la creacion del bloque.
+ * @return string Un bloque HTML.
+ * @access public.
+ */
+	function paginador($accion = "posicion", $opciones = array()) {
 		/**
 		* Si no estan seteadas la variables de la paginacion, no hago nada con el paginador.
 		*/
 		$model = Inflector::classify($this->Paginator->params['controller']);
-		if(empty($this->Paginator->params['paging'][$model]['count']) || $this->Paginator->params['paging'][$model]['count'] == 0) {
-			return $retorno;
+		if(empty($this->Paginator->params['paging'][$model]['count'])) {
+			return "";
 		}
 		
 		switch ($accion) {
-			case "posicion": {
-				$retorno.="\n".$this->Paginator->counter(array('format'=>'Pagina %page% de %pages%, %current% de %count%'));
-				break;
-			}
+			case "posicion": 
+				return $this->Paginator->counter(array('format'=>'Pagina %page% de %pages%, %current% de %count%'));
+			break;
+			
 			case "navegacion":
 
+				$out = array();
+				
 				if($this->traerPreferencia("paginacion") == "ajax") {
 					$targetId = "index";
 					//$targetId = "contenido";
@@ -108,46 +147,53 @@ class PaginadorHelper extends AppHelper {
 					}
 					$this->Paginator->options(am(array('update'=>$targetId), $this->Paginator->options, $opciones));
 				}
-				
 				$params=$this->Paginator->params();
-				$retorno.="\n<span>";
+				
+				
+				$retorno = null;
 				if (isset($params['page']) && $params['page']>1) {
-					$retorno.="\n".$this->Paginator->link($this->Formulario->image("primera.gif", array("alt"=>"Ir al primer registro")), array('page'=>1), am(array('escape'=>false), $opciones));
+					$retorno.= $this->Paginator->link($this->Formulario->image("primera.gif", array("alt"=>"Ir al primer registro")), array('page'=>1), array_merge(array('escape'=>false), $opciones));
 				}
 				else {
 					$retorno.= $this->Formulario->image("primeraoff.gif");
 				}
-				$retorno.="\n</span>";
+				$out[] = $this->Formulario->tag("span", $retorno);
 
-				$retorno.="\n<span>";
-				$prev = $this->Paginator->prev($this->Formulario->image("anterior.gif", array("alt"=>"Ir al registro anterior")), am(array('escape'=>false), $opciones));
-				if (is_null($prev))
-					$retorno.= $this->Formulario->image("anterioroff.gif");
-				else
-					$retorno.="\n" . $prev;
-				$retorno.="\n</span>";
-
-				$retorno.="\n<span>";
-				$next = $this->Paginator->next($this->Formulario->image("siguiente.gif", array("alt"=>"Ir al siguiente registro")), am($opciones, array('escape'=>false)));
-
-				if (is_null($next))
-					$retorno.= $this->Formulario->image("siguienteoff.gif");
-				else
-					$retorno.="\n" . $next;
-				$retorno.="\n</span>";
 				
-				$retorno.="\n<span>";
-				if (isset($params['page']) && $params['page']<$params['pageCount']) {
-					$retorno.="\n".$this->Paginator->link($this->Formulario->image("ultima.gif", array("alt"=>"Ir al ultimo registro")), array('page'=>$params['pageCount']), am(array('escape'=>false), $opciones));
+				$retorno = null;
+				$prev = $this->Paginator->prev($this->Formulario->image("anterior.gif", array("alt"=>"Ir al registro anterior")), array_merge(array('escape'=>false), $opciones));
+				if (is_null($prev)) {
+					$retorno.= $this->Formulario->image("anterioroff.gif");
 				}
-				else
-				{
+				else {
+					$retorno.= $prev;
+				}
+				$out[] = $this->Formulario->tag("span", $retorno);
+
+				
+				$retorno = null;
+				$next = $this->Paginator->next($this->Formulario->image("siguiente.gif", array("alt"=>"Ir al siguiente registro")), array_merge($opciones, array('escape'=>false)));
+				if (is_null($next)) {
+					$retorno.= $this->Formulario->image("siguienteoff.gif");
+				}
+				else {
+					$retorno.= $next;
+				}
+				$out[] = $this->Formulario->tag("span", $retorno);
+
+				
+				$retorno = null;
+				if (isset($params['page']) && $params['page']<$params['pageCount']) {
+					$retorno.= $this->Paginator->link($this->Formulario->image("ultima.gif", array("alt"=>"Ir al ultimo registro")), array('page'=>$params['pageCount']), array_merge(array('escape'=>false), $opciones));
+				}
+				else {
 					$retorno.= $this->Formulario->image("ultimaoff.gif");
 				}
-				$retorno.="\n</span>";
-				break;
-			}
-		return $retorno;
+				$out[] = $this->Formulario->tag("span", $retorno);
+				
+				return implode("", $out);
+			break;
+		}
 	}
 }
 ?>

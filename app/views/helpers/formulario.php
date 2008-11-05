@@ -1,9 +1,36 @@
 <?php
 /**
- * El objeto de este helper es sobrecargar los metodos del FormHelper de cakePHP, adaptandolos a mis necesidades
+ * Helper para la creacion de la capa de presentacion.
+ *
+ * Permite la creacion de todos los componentes html necesarios para la presentacion.
+ *
+ * PHP versions 5
+ *
+ * @filesource
+ * @copyright		Copyright 2005-2008, Pragmatia de RPB S.A.
+ * @link			http://www.pragmatia.com
+ * @package			pragtico
+ * @subpackage		app.views.helpers
+ * @since			Pragtico v 1.0.0
+ * @version			$Revision$
+ * @modifiedby		$LastChangedBy$
+ * @lastmodified	$Date$
+ * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
-
+/**
+ * Helper para la creacion de la capa de presentacion.
+ *
+ * @package		pragtico
+ * @subpackage	app.views.helpers
+ */
 class FormularioHelper extends AppHelper {
+	
+/**
+ * Los helpers que utilizare.
+ *
+ * @var arraya
+ * @access public.
+ */
 	var $helpers = array('Html', 'Form', 'Ajax', 'Session', 'Javascript', 'Paginador', 'Formato');
 
 
