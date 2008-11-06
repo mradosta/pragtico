@@ -1,24 +1,44 @@
-<?
-/*
-
-JAXHelper - CakePHP Helper for Ajax with jQuery
-Author: Tulio Faria (www.tuliofaria.net)
-
-Requiriments:
-  - jquery: http://docs.jquery.com/Downloading_jQuery
-  - jform (for some features like observeForm): http://jquery.com/plugins/project/form
-
-Using:
-  - include jquery.js and jquery.form.js in your view (yes, using plain html or html helper :) )
-  - call any of methods available: link, observeField and observeForm
-
-*/
-
+<?php
+/**
+ * Helper que me facilita el uso de ajax vis jQuery.
+ *
+ * Me permite colocar metodos js genericos que uso en las vistas.
+ *
+ * PHP versions 5
+ *
+ * @filesource
+ * @copyright		Copyright 2005-2008, Pragmatia de RPB S.A.
+ * @link			http://www.pragmatia.com
+ * @package			pragtico
+ * @subpackage		app.views.helpers
+ * @since			Pragtico v 1.0.0
+ * @version			$Revision$
+ * @modifiedby		$LastChangedBy$
+ * @lastmodified	$Date$
+ * @author      	Martin Radosta <mradosta@pragmatia.com>
+ */
+/**
+ * Clase que contiene el helper para el uso de ajax mediante jQuery.
+ *
+ * @package		pragtico
+ * @subpackage	app.views.helpers
+ */
 class AjaxHelper extends AppHelper {
 
+/**
+ * Los helpers que utilizare.
+ *
+ * @var arraya
+ * @access public.
+ */
     var $helpers = array("Html", "Javascript","Formulario");
     
-    function link($title, $href, $options = array(), $confirm = null, $escapeTitle = true){
+    
+/**
+ * Crea un link Ajax.
+ *
+ */
+	function link($title, $href, $options = array(), $confirm = null, $escapeTitle = true) {
         $href = $this->Html->url($href);
 		//$update = $options['update'];
 
