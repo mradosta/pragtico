@@ -161,10 +161,10 @@ class AppController extends Controller {
 				* En caso de que se trate de un duplicar, debo sacar el valor de la calve primaria de la tabla,
 				* sino me hara un update en lugar de un isert.
 				*/
-				$goBack = 1;
-				if($this->data['Form']['accion'] == "duplicar") {
+				//$goBack = 1;
+				if($this->data['Form']['accion'] === "duplicar") {
 					unset($data[$this->modelClass][$this->{$this->modelClass}->primaryKey]);
-					$goBack = 2;
+					//$goBack = 2;
 				}
 				unset($data['Form']);
 				unset($data['Bar']);
@@ -178,7 +178,7 @@ class AppController extends Controller {
 							if(isset($this->data['Form']['params'])) {
 								$this->__setearParams(unserialize($this->data['Form']['params']));
 							}
-							$this->History->goBack($goBack);
+							$this->History->goBack(2);
 						}
 					}
 					else {
@@ -195,8 +195,8 @@ class AppController extends Controller {
 					$this->set('dbError', $this->{$this->modelClass}->getError());
 				}
 			}
-			elseif($this->data['Form']['accion'] == "cancelar") {
-    			$this->History->goBack(1);
+			elseif($this->data['Form']['accion'] === "cancelar") {
+    			$this->History->goBack();
 			}
 		}
 		else {
@@ -422,8 +422,8 @@ class AppController extends Controller {
 				}
 				$this->render("add");
 			}
-			elseif($this->data['Form']['accion'] == "cancelar") {
-				$this->History->goBack(1);
+			elseif($this->data['Form']['accion'] === "cancelar") {
+				$this->History->goBack();
 			}
 		}
 	}

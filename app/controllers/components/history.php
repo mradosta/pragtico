@@ -26,7 +26,7 @@ class HistoryComponent extends Object
             $this->started = true;
             $this->controller = $controller;
             
-			$this->_addUrl($this->controller->params);
+			$this->_addUrl();
         }
     }
 
@@ -39,11 +39,12 @@ class HistoryComponent extends Object
 	        	}
 	        }
 	        $this->__historia = $history;
-	        $pos = count($this->__historia) - ($pos+1);
+	        $pos = count($this->__historia) - $pos;
+			//d($pos);
 	        
         	if(isset($this->__historia[$pos])){
-				file_put_contents("/tmp/historia.txt", "\n\n=========================", FILE_APPEND);
-				file_put_contents("/tmp/historia.txt", "\nBACK A: " . $this->__historia[$pos] . "(" . $pos . ")\n\n", FILE_APPEND);
+				//file_put_contents("/tmp/historia.txt", "\n\n=========================", FILE_APPEND);
+				//file_put_contents("/tmp/historia.txt", "\nBACK A: " . $this->__historia[$pos] . "(" . $pos . ")\n\n", FILE_APPEND);
         		$this->controller->redirect($this->__historia[$pos], true);
         	}
         }
@@ -64,7 +65,53 @@ class HistoryComponent extends Object
 		$this->controller->Session->write('historia', $this->__historia);
     }
 
-    function _addUrl($params) {
+    function _addUrl() {
+		$url = $this->controller->referer();
+		Debugger::output($url); 
+    	if(empty($url)) {
+    		return;
+    	}
+		$this->__historia = $this->controller->Session->read('historia');
+		$cantidad = count($this->__historia);
+		/**
+		* Prevengo que se inserte en la history dos veces el mismo.
+		* Por ejemplo, cuando un validate no valida, etc.
+		*/
+		
+		/**
+		* Cuando abro una lov o un desglose ajax, o cancelo no guardo esto en el history.
+		*/
+		if(    (!empty($this->controller->data['Form']['accion']) && $this->controller->data['Form']['accion'] === "cancelar")
+			|| (!empty($this->controller->params['named']['layout']) && $this->controller->params['named']['layout'] === "lov")
+			|| (!empty($this->controller->data['Formulario']['layout']) && $this->controller->data['Formulario']['layout'] === "lov")
+			|| (!empty($this->controller->data['Formulario']['layout']) && $this->controller->data['Formulario']['layout'] === "lov")
+			|| (!empty($this->controller->params['action']) && ($this->controller->params['action'] === "listable" || $this->controller->params['action'] === "descargar"))
+			|| (!empty($this->controller->params['isAjax']))) {
+			return;
+		}
+		
+		if($url != $this->__historia[$cantidad - 1]) {
+			if($cantidad == MAX_HISTORY) {
+				array_shift($this->__historia);
+			}
+			$this->__historia[] = $url;
+		}
+		else {
+			return;
+		}
+		
+		/*
+		file_put_contents("/tmp/historia.txt", "=========================", FILE_APPEND);
+		foreach($this->__historia as $k=>$v) {
+			file_put_contents("/tmp/historia.txt", "\n(" . $k . ")" . $v, FILE_APPEND);
+		}
+		file_put_contents("/tmp/historia.txt", "\n\n=========================", FILE_APPEND);
+		*/
+		$this->controller->Session->write('historia', $this->__historia);
+    }
+	
+	
+    function _addUrl_old($params) {
     	if(empty($params['url']['url'])) {
     		return;
     	}
@@ -113,5 +160,6 @@ class HistoryComponent extends Object
 		file_put_contents("/tmp/historia.txt", "\n\n=========================", FILE_APPEND);
 		$this->controller->Session->write('historia', $this->__historia);
     }
+	
 }
 ?>
