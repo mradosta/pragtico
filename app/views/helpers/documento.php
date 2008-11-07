@@ -57,6 +57,8 @@ class DocumentoHelper extends AppHelper {
  *
  * @param array $options opciones de la orientacion del papel.
  * 				Ej: $documento->create(array("orientation" => "landscape"));
+ * 				Ej: $documento->create(array("password" => "MyPass"));
+ * 				Ej: $documento->create(array("password" => ""));		-> generara un password
  * @return void.
  * @access public.	
  */
@@ -74,25 +76,91 @@ class DocumentoHelper extends AppHelper {
     	if(isset($options['orientation']) && $options['orientation'] === "landscape") {
 			$this->doc->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
 		}
+		
+		/**
+		* Protejo la hoja para que no me la modifiquen, excepto lo que realmente necesito que modifique que lo desbloqueo luego.
+		*/
+		if(isset($options['password'])) {
+			if(empty($options['password'])) {
+				$options['password'] = substr(Configure::read('Security.salt'), 0, 10);
+			}
+			else {
+				$options['password'] = substr($options['password'], 0, 10);
+			}
+			$this->doc->getActiveSheet()->getProtection()->setPassword($options['password']);
+			$this->doc->getActiveSheet()->getProtection()->setSheet(true);
+		}
     }
 	
-	
+
+/**
+ * Forma un nombre de celda standar.
+ *
+ * @param string $cellName La celda
+ * 			- A5 		Retornara A5.
+ *			- null		Retornara el valor el la proxima columna no ocupada y el la proxima fila no ocupada.
+ *			- 4,3		Retornara el valor en la columna 4 y fila 3 (La A es la columna 1, La primer fila es la 1).
+ * @return string Una celda de la forma "B3". String vacio en caso de error.
+ * @access private.	
+ */
+	function __getCellName($cellName = null) {
+		/**
+		* Busco si me setearon una celda solo con numeros.
+		*/
+		if(preg_match("/^([0-9]+)\,([0-9]+)$/", $cellName, $matches)) {
+			return PHPExcel_Cell::stringFromColumnIndex($matches[1]) . $matches[2];
+		}
+		elseif(preg_match("/^[A-Z]+[0-9]+$/", $cellName)) {
+			return $cellName;
+		}
+		elseif(is_null($cellName)) {
+			/**
+			* Busco la proxima columna y fila libre.
+			*/
+			return $this->doc->getActiveSheet()->getHighestColumn() . $this->doc->getActiveSheet()->getHighestRow();
+		}
+		else {
+			return "";
+		}
+	}
+
+
 /**
  * Setea un valor y opcionalmente el formato en una celda o rango.
  * En caso de especificarse un rango, hace un merge de las celdas del rango.
  *
  * @param string $cellName La celda de o el rango de celdas.
+ * 			- A5 		Seteara el valor en la celda A5.
+ *			- A5:C6		Hara un merge entre las celdas y seteara el valor.
+ *			- null		Seteara el valor el la proxima columna no ocupada y el la proxima fila no ocupada.
+ *			- 4,3		Seteara el valor en la columna 4 y fila 3 (La A es la columna 1, La primer fila es la 1).
+ *			- 4,3:5,8	Hara un merge entre las celdas y seteara el valor.
  * @param string $value El valor a especificar en la celda o celdas.
  * @param array $options Opciones adicionales.
  *			- style: array con estilos validos a aplicar a la celda o rango de celdas.
+ * 			- merge: una celda especificado de la forma 4,3.
  * @return void.
  * @access public.	
  */
 	function setCellValue($cellName, $value, $options = array()) {
-		if(preg_match("/^([A-Z]+[0-9]+)\:[A-Z]+[0-9]+$/", $cellName, $matches)) {
-			$this->doc->getActiveSheet()->mergeCells($cellName);
-			$cellName = $matches[1];
+		
+		/**
+		* Verifico si tengo un rango.
+		*/
+		$tmp = explode(":", $cellName);
+		if(count($tmp) === 2) {
+			$cellName = $this->__getCellName($tmp[0]);
+			$this->doc->getActiveSheet()->mergeCells($cellName . ":" . $this->__getCellName($tmp[1]));
+			unset($options['merge']);
 		}
+		else {
+			$cellName = $this->__getCellName($cellName);
+		}
+		
+		if(!empty($options['merge'])) {
+			$this->doc->getActiveSheet()->mergeCells($cellName . ":"  .  $this->__getCellName($options['merge']));
+		}
+		
 		$this->doc->getActiveSheet()->setCellValue($cellName, $value);
 		if(!empty($options['style'])) {
 			$this->doc->getActiveSheet()->getStyle($cellName)->applyFromArray($options['style']);
@@ -113,6 +181,16 @@ class DocumentoHelper extends AppHelper {
  * @access public.	
  */
 	function setDataValidation($cellName, $type, $options = array()) {
+		$cellName = $this->__getCellName($cellName);
+		
+		/**
+		* Si estoy validando un dato, es porque el usuario debe introducirlo, entonces, 
+		* si el documento esta bloqueado, le desbloqueo la celda.
+		*/
+		if($this->doc->getActiveSheet()->getProtection()->isProtectionEnabled()) {
+			$this->doc->getActiveSheet()->getStyle($cellName)->getProtection()->setLocked(PHPExcel_Style_Protection::PROTECTION_UNPROTECTED);
+		}
+		
 		$objValidation = $this->doc->getActiveSheet()->getCell($cellName)->getDataValidation();
 		
 		if($type === "decimal") {

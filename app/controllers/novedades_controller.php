@@ -71,31 +71,54 @@ class NovedadesController extends AppController {
 						$objReader = PHPExcel_IOFactory::createReader('Excel2007');
 					}
 					$objPHPExcel = $objReader->load($this->data['Novedad']['planilla']['tmp_name']);
-					$mapeo[] = array("Horas"		=> array("Normal"						=> "E"));
-					$mapeo[] = array("Horas"		=> array("Extra 50%"					=> "F"));
-					$mapeo[] = array("Horas"		=> array("Extra 100%"					=> "G"));
-					$mapeo[] = array("Horas"		=> array("Ajuste Normal"				=> "H"));
-					$mapeo[] = array("Horas"		=> array("Ajuste Extra 50%"				=> "I"));
-					$mapeo[] = array("Horas"		=> array("Ajuste Extra 100%"			=> "J"));
-					$mapeo[] = array("Horas"		=> array("Normal Nocturna"				=> "K"));
-					$mapeo[] = array("Horas"		=> array("Extra Nocturna 50%"			=> "L"));
-					$mapeo[] = array("Horas"		=> array("Extra Nocturna 100%"			=> "M"));
-					$mapeo[] = array("Horas"		=> array("Ajuste Normal Nocturna"		=> "N"));
-					$mapeo[] = array("Horas"		=> array("Ajuste Extra Nocturna 50%"	=> "O"));
-					$mapeo[] = array("Horas"		=> array("Ajuste Extra Nocturna 100%"	=> "P"));
-					$mapeo[] = array("Ausencias"	=> array("Motivo"						=> "Q"));
-					$mapeo[] = array("Ausencias"	=> array("Dias"							=> "R"));
-					$mapeo[] = array("Vales"		=> array("Importe"						=> "S"));
+					//d($objPHPExcel);
+					
+					//d($objPHPExcel->getActiveSheet()->getCell("A1")->extractAllCellReferencesInRange("A1:A10"));
+					for($i = 4; $i<PHPExcel_Cell::columnIndexFromString($objPHPExcel->getActiveSheet()->getHighestColumn()); $i++) {
+						$value = $objPHPExcel->getActiveSheet()->getCellByColumnAndRow($i, 8)->getValue();
+						if($value === "Horas") {
+							$mapeo[] = array("Horas"		=> array("Normal"						=> $i));
+							$mapeo[] = array("Horas"		=> array("Extra 50%"					=> $i++));
+							$mapeo[] = array("Horas"		=> array("Extra 100%"					=> $i++));
+						}
+						elseif($value === "Horas Ajuste") {
+							$mapeo[] = array("Horas"		=> array("Ajuste Normal"				=> $i));
+							$mapeo[] = array("Horas"		=> array("Ajuste Extra 50%"				=> $i++));
+							$mapeo[] = array("Horas"		=> array("Ajuste Extra 100%"			=> $i++));
+						}
+						elseif($value === "Horas Nocturna") {
+							$mapeo[] = array("Horas"		=> array("Normal Nocturna"				=> $i));
+							$mapeo[] = array("Horas"		=> array("Extra Nocturna 50%"			=> $i++));
+							$mapeo[] = array("Horas"		=> array("Extra Nocturna 100%"			=> $i++));
+						}
+						elseif($value === "Horas Ajuste Nocturna") {
+							$mapeo[] = array("Horas"		=> array("Ajuste Normal Nocturna"		=> $i));
+							$mapeo[] = array("Horas"		=> array("Ajuste Extra Nocturna 50%"	=> $i++));
+							$mapeo[] = array("Horas"		=> array("Ajuste Extra Nocturna 100%"	=> $i++));
+						}
+						elseif($value === "Ausencias") {
+							$mapeo[] = array("Ausencias"	=> array("Motivo"						=> $i));
+							$mapeo[] = array("Ausencias"	=> array("Dias"							=> $i++));
+						}
+						elseif($value === "Vales") {
+							$mapeo[] = array("Vales"		=> array("Importe"						=> $i));
+						}
+						else {
+							$mapeo[] = array($value			=> array("Valor"						=> $i));
+						}
+					}
+					
 					for($i=10; $i<=$objPHPExcel->getActiveSheet()->getHighestRow(); $i++) {
 						foreach($mapeo as $v) {
 							foreach($v as $k=>$v1) {
-								$valor = $objPHPExcel->getActiveSheet()->getCell($v1[key($v1)] . $i)->getValue();
+								$valor = $objPHPExcel->getActiveSheet()->getCellByColumnAndRow($v1[key($v1)], $i)->getValue();
 								if(!empty($valor)) {
-									$datos[$k][$objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue()][key($v1)] = $objPHPExcel->getActiveSheet()->getCell($v1[key($v1)] . $i)->getValue();
+									$datos[$k][$objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue()][key($v1)] = $valor;
 								}
 							}
 						}
 					}
+					
 					if($this->Novedad->grabar($datos, $this->data['Novedad']['periodo'])) {
 						$this->redirect("index");
 					}
@@ -111,34 +134,49 @@ class NovedadesController extends AppController {
 	
 /**
  * Genera una planilla en formato Excel2007 o Excel5 para el ingreso de novedades.
+ * El contenido de la planilla son las relaciones especificadas por los criterios, mas los conceptos seleccionados.
+ *
+ * @access public.
+ * @return void.
  */
 	function generar_planilla() {
-		if(!empty($this->data)) {
-			$formatoDocumento = $this->data['Condicion']['Novedad-formato'];
-			$tipos = $this->data['Condicion']['Novedad-tipo'];
-			unset($this->data['Condicion']['Novedad-formato']);
-			unset($this->data['Condicion']['Novedad-tipo']);
-			$conditions = $this->Paginador->generarCondicion();
-			$registros = $this->Novedad->Relacion->find("all",
-				array("contain"	=> array("ConveniosCategoria", "Trabajador", "Empleador"),
-					"conditions"=> $conditions));
-			$this->set("motivos", $this->Novedad->Relacion->Ausencia->AusenciasMotivo->find("list",
-				array("fields"	=> array("AusenciasMotivo.id", "AusenciasMotivo.motivo"))));
-			$this->set("registros", $registros);
-			$this->set("formatoDocumento", $formatoDocumento);
-			$this->set("tipos", $tipos);
-			$this->layout = "ajax";
+		if(!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === "buscar") {
+			if(empty($this->data['Condicion']['Relacion-trabajador_id'])
+			  	&& empty($this->data['Condicion']['Relacion-empleador_id'])
+			  	&& empty($this->data['Condicion']['Relacion-relacion_id'])) {
+				$this->Session->setFlash("Debe seleccionar al menos un criterio para la generacion de la planilla.", "error");
+			}
+			else {
+				$formatoDocumento = $this->data['Condicion']['Novedad-formato'];
+				$tipos = $this->data['Condicion']['Novedad-tipo'];
+				unset($this->data['Condicion']['Novedad-formato']);
+				unset($this->data['Condicion']['Novedad-tipo']);
+				$conditions = $this->Paginador->generarCondicion();
+				$registros = $this->Novedad->Relacion->find("all",
+					array("contain"	=> array("ConveniosCategoria", "Trabajador", "Empleador"),
+						"conditions"=> $conditions));
+				$this->set("registros", $registros);
+				$this->set("motivos", $this->Novedad->Relacion->Ausencia->AusenciasMotivo->find("list", array("fields"	=> array("AusenciasMotivo.id", "AusenciasMotivo.motivo"))));
+				$this->set("formatoDocumento", $formatoDocumento);
+				$this->set("tipos", $tipos);
+				$this->set("tiposPredefinidos", $this->Novedad->getIngresosPosibles("predefinidos"));
+				$this->layout = "ajax";
+			}
 		}
 		/**
 		* Fijo lo que viene preseleccionado.
 		*/
 		$this->data['Condicion']['Novedad-formato'] = "Excel2007";
-		$this->data['Condicion']['Novedad-tipo'] = array("Horas", "Ausencias", "Vales");
-		//$this->Novedad->getIngresosPosibles();
+		$tiposIngreso = $this->Novedad->getIngresosPosibles();
+		$this->data['Condicion']['Novedad-tipo'] = $tiposIngreso;
+		foreach($tiposIngreso as $v) {
+			$tiposIngresoKey[$v] = $v;
+		}
+		$this->set("tiposIngreso", $tiposIngresoKey);
 	}
 	
 
-	
+/*	
 	function novedades() {
 		$tipos = array("Excel5"=>"Excel", "Excel2007"=>"Excel 2007");
 		if(!empty($this->data)) {
@@ -154,6 +192,7 @@ class NovedadesController extends AppController {
 		$this->set("tipos", $tipos);
 		$this->data['Condicion']['Bar-tipo'] = "Excel2007";
 	}
+*/
 }
 
 

@@ -82,8 +82,16 @@ class Novedad extends AppModel {
 		
 		$this->begin();
 		$cOk = $cTotal = 0;
+		$predefinidos = $this->getIngresosPosibles("predefinidos");
+		
 		foreach($datos as $tipo => $data) {
 			foreach($data as $relacion_id => $registro) {
+				
+				if(!in_array($tipo, $predefinidos)) {
+					$registro['Concepto'] = $tipo;
+					$tipo = "Concepto";
+				}
+				
 				$save = null;
 				$save['Novedad']['id'] = null;
 				$save['Novedad']['periodo'] = $periodo;
@@ -109,7 +117,7 @@ class Novedad extends AppModel {
 
 
 /**
- * Distribuye las novedades en las diferecntes tablas (horas, ausencias, descuentos).
+ * Distribuye las novedades en las diferecntes tablas (horas, ausencias, descuentos) o crea los conceptos necesarios.
  *
  * @param array $ids Los ids de las novedades a distribuir en cada tabla.
  * @return mixed Cantidad de novedades distribuidas. False en caso de error o que no hayn podido confirmarse todos los ids.
@@ -121,6 +129,7 @@ class Novedad extends AppModel {
 		
 		foreach($novedades as $novedad) {
 			$data = unserialize($novedad['Novedad']['data']);
+			$periodo = $this->format($novedad['Novedad']['periodo'], "periodo");
 			switch($novedad['Novedad']['tipo']) {
 				case "Horas":
 					foreach($data as $tipo=>$cantidad) {
@@ -129,16 +138,14 @@ class Novedad extends AppModel {
 						$saves[$i]['Hora']['cantidad'] = $cantidad;
 						$saves[$i]['Hora']['estado'] = "Confirmada";
 						$saves[$i]['Hora']['relacion_id'] = $novedad['Novedad']['relacion_id'];
-						$saves[$i]['Hora']['periodo'] = $novedad['Novedad']['periodo'];
+						$saves[$i]['Hora']['periodo'] = $periodo['periodoCompleto'];
 						$saves[$i]['Hora']['observacion'] = "Ingresado desde planilla";
-						$i++;
 					}
 				break;
 				case "Ausencias":
 					$motivo = $this->Relacion->Ausencia->AusenciasMotivo->findByMotivo($data['Motivo']);
-					$periodo = $this->getPeriodo($novedad['Novedad']['periodo']);
 					/**
-					* Si no cargo el motivo, o este no exuste, lo pongo como justificado.
+					* Si no cargo el motivo, o este no existe, lo pongo como justificado.
 					*/
 					if(empty($motivo['Motivo']['id'])) {
 						$motivo['Motivo']['id'] = "1";
@@ -147,17 +154,15 @@ class Novedad extends AppModel {
 					$saves[$i]['Ausencia']['relacion_id'] = $novedad['Novedad']['relacion_id'];
 					$saves[$i]['Ausencia']['ausencia_motivo_id'] = $motivo['Motivo']['id'];
 					$saves[$i]['AusenciasSeguimiento'][$ii]['dias'] = $data['Dias'];
-					$saves[$i]['AusenciasSeguimiento'][$ii]['desde'] = $this->format($periodo['fechaInicio'], "date");
+					$saves[$i]['AusenciasSeguimiento'][$ii]['desde'] = $periodo['desde'];
 					$saves[$i]['AusenciasSeguimiento'][$ii]['observacion'] = "Ingresado desde planilla";
 					$saves[$i]['AusenciasSeguimiento'][$ii]['estado'] = "Confirmado";
 					$ii++;
-					$i++;
 				break;
 				case "Vales":
-					$periodo = $this->getPeriodo($novedad['Novedad']['periodo']);
 					$saves[$i]['Descuento']['id'] = null;
-					$saves[$i]['Descuento']['alta'] = $this->format($periodo['fechaInicio'], "date");
-					$saves[$i]['Descuento']['desde'] = $this->format($periodo['fechaInicio'], "date");
+					$saves[$i]['Descuento']['alta'] = $periodo['desde'];
+					$saves[$i]['Descuento']['desde'] = $periodo['desde'];
 					$saves[$i]['Descuento']['relacion_id'] = $novedad['Novedad']['relacion_id'];
 					$saves[$i]['Descuento']['monto'] = $data['Importe'];
 					$saves[$i]['Descuento']['tipo'] = "Vale";
@@ -165,9 +170,23 @@ class Novedad extends AppModel {
 					$saves[$i]['Descuento']['concurrencia'] = "Permite superponer";
 					$saves[$i]['Descuento']['estado'] = "Activo";
 					$saves[$i]['Descuento']['observacion'] = "Ingresado desde planilla";
-					$i++;
+				break;
+				case "Concepto":
+					$this->Relacion->RelacionesConcepto->Concepto->recursive = -1;
+					$concepto = $this->Relacion->RelacionesConcepto->Concepto->findByNombre($data['Concepto']);
+					if(empty($concepto['Concepto']['id'])) {
+						continue;
+					}
+					$saves[$i]['RelacionesConcepto']['id'] = null;
+					$saves[$i]['RelacionesConcepto']['desde'] = $periodo['desde'];
+					$saves[$i]['RelacionesConcepto']['hasta'] = $periodo['hasta'];
+					$saves[$i]['RelacionesConcepto']['relacion_id'] = $novedad['Novedad']['relacion_id'];
+					$saves[$i]['RelacionesConcepto']['concepto_id'] = $concepto['Concepto']['id'];
+					$saves[$i]['RelacionesConcepto']['formula'] = "=" . $data['Valor'];
+					$saves[$i]['RelacionesConcepto']['observacion'] = "Ingresado desde planilla";
 				break;
 			}
+			$i++;
 		}
 		
 		$this->begin();
@@ -189,13 +208,25 @@ class Novedad extends AppModel {
 		}
 	}
 
-	function getIngresosPosibles() {
-		$Concepto = new Concepto();
-		$conceptos = $Concepto->find("all", array("conditions"=>array("Concepto.novedad"=>"Si"), "recursive"=>-1));
-		//$
-		d($conceptos);
-		//$this->data['Condicion']['Novedad-tipo'] = array("Horas", "Ausencias", "Vales");
-		//$this->Novedad->getTiposIngreso();
+
+/**
+ * Obtiene un listado de los posibles campos que puedo ingresar por novedades.
+ *
+ * @return Array con los posibles campos que debo ingresar.
+ * @access public.
+ */
+	function getIngresosPosibles($tipo = "todos") {
+		$predefinidos[] = "Horas";
+		$predefinidos[] = "Ausencias";
+		$predefinidos[] = "Vales";
+		if($tipo === "todos") {
+			$Concepto = new Concepto();
+			$conceptos = $Concepto->find("all", array("conditions"=>array("Concepto.novedad"=>"Si"), "recursive"=>-1));
+			return array_merge($predefinidos, Set::extract("/Concepto/nombre", $conceptos));
+		}
+		elseif($tipo === "predefinidos") {
+			return $predefinidos;	
+		}
 	}
 
 }
