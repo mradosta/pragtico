@@ -7,8 +7,8 @@
  * @filesource
  * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
  * @link			http://www.pragmatia.com
- * @package			practico
- * @subpackage		app.models
+ * @package			pragtico
+ * @subpackage		app.models.behaviors
  * @since			Practico v 1.0.0
  * @version			$Revision$
  * @modifiedby		$LastChangedBy$
