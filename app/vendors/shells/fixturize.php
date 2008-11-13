@@ -38,6 +38,8 @@ class FixturizeShell extends Shell{
 			$db = ConnectionManager::getDataSource('default');
 			$this->args = $db->listSources();
 		}
+		
+		$binaries = array();
 	
 		if (empty($this->args)) {
 			return $this->err('Usage: ./cake fixturize <table> [-force] [-reindex] [-fields] [-limit 10]');
@@ -109,7 +111,6 @@ class FixturizeShell extends Shell{
 * @var array
 * @access public
 */';
-			$binaries = array();
 			$out[] = '    var $fields = array(';
 			foreach($Model->schema() as $fieldName=>$description) {
 				if(empty($description['length'])) {
