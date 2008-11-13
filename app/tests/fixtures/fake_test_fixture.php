@@ -56,7 +56,7 @@ class FakeTestFixture extends CakeTestFixture {
 
 
 /**
- * Los datos propiamente dicho.
+ * Los registros.
  *
  * @var array
  * @access public

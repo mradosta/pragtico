@@ -2,7 +2,7 @@
 App::import('Model', 'Concepto');
 App::import('Component', 'Session');
 
-class ConceptoTest extends Concepto {
+class ConceptoTestx extends Concepto {
     var $name = 'Concepto';
     var $useDbConfig = 'test_suite';
 }
