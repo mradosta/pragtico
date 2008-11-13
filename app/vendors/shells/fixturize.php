@@ -128,7 +128,7 @@ class FixturizeShell extends Shell{
 			$outTmp = array();
 			foreach($description as $k=>$v) {
 				if($k === 'type' && preg_match('/enum\(\'.*\'\)/', $v)) {
-				$v = 'string';
+					$v = 'string';
 				}
 				
 				if ($k === 'null' && empty($v)) {
