@@ -35,9 +35,10 @@ $flash = ob_get_clean();
 /**
 * Hago el render del menu primero que nada, asi me carga los js y css que pudiese tener.
 */
-$menu = $this->renderElement("layout" . DS . "menu");
-$encabezado = $this->renderElement("layout" . DS . "encabezado");
-$barra = $this->renderElement("layout" . DS . "barra");
+//$menu = $this->element("layout" . DS . "menu", array('cache'=>'+1 day'));
+$menu = $this->element("layout" . DS . "menu");
+$encabezado = $this->element("layout" . DS . "encabezado", array('cache'=>'+1 day'));
+$barra = $this->element("layout" . DS . "barra");
 
 $codigo_html[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 $codigo_html[] = "<html xmlns=\"http://www.w3.org/1999/xhtml\">";
