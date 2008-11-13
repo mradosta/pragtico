@@ -1,7 +1,7 @@
 <?php
 /**
  * Este archivo contiene toda la logica de acceso a datos asociadaa las horas de una relacion laboral.
- * Las horas puedenser horas extras, horas de enfermedad, etc.
+ * Las horas pueden ser horas extras, horas de ajuste, horas nocturnas, etc.
  *
  * PHP versions 5
  *
@@ -18,7 +18,7 @@
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a las horas de una relacion laboral.
- * Las horas puedenser horas extras, horas de enfermedad, etc.
+ * Las horas pueden ser horas extras, horas de ajuste, horas nocturnas, etc.
  *
  * @package		pragtico
  * @subpackage	app.models
@@ -66,8 +66,6 @@ class Hora extends AppModel {
                               'foreignKey'   => 'relacion_id'));
 
 
-
-
 /**
  * Before save callback
  *
@@ -80,100 +78,23 @@ class Hora extends AppModel {
     	return parent::beforeSave();
 	}
 
-	
-/**
- * Dada un ralacion y un periodo retorna las horas trabajadas de todos los tipos que esten pendientes de liquidar.
- *
- * @return array vacio si no hay horas.
- */
-	function buscarHora($opciones, $relacion) {
-
-		$conditions = array(
-			"conditions"=>	array(	"Hora.relacion_id" 		=> $relacion['Relacion']['id'],
-									"Hora.liquidacion_id" 	=> null,
-									"Hora.periodo" 			=> $opciones['periodo'],
-									"Hora.estado"			=> "Pendiente"),
-			"fields"	=>	array(	"Hora.tipo", "sum(Hora.cantidad) as total"),
-			"recursive"	=>	-1,
-			"group"		=> 	array("Hora.tipo")
-		);
-
-		/**
-		* Cuando se trata de un trabajador mensual, por mas que las horas esten cargadas para una de las quincenas,
-		* las busco indistintamente para ambas.
-		*/
-		$periodo = $this->traerPeriodo($opciones['periodo']);
-		if($relacion['ConveniosCategoria']['jornada'] == "Mensual") {
-			$conditions['conditions']['Hora.periodo'] =	array	(	$periodo['ano'] . $periodo['mes'] . "1Q",
-																	$periodo['ano'] . $periodo['mes'] . "2Q",
-																	$periodo['ano'] . $periodo['mes'] . "M");
-		}
-		$r = $this->find("all", $conditions);
-		$horas['#horas'] = $horas['#horas_extra_50'] = $horas['#horas_extra_100'] = $horas['#horas_ajuste'] = $horas['#horas_ajuste_extra_50'] = $horas['#horas_ajuste_extra_100'] = 0;
-		$conceptos = $auxiliares = array();
-		if(!empty($r)) {
-			$modelConcepto = new Concepto();
-			foreach($r as $hora) {
-				if($relacion['ConveniosCategoria']['jornada'] == "Mensual" && ($hora['Hora']['tipo'] == "Normal")) {
-					continue;
-				}
-				switch($hora['Hora']['tipo']) {
-					case "Normal":
-						$tipo = "#horas";
-						break;
-					case "Extra 50%":
-						$tipo = "#horas_extra_50";
-						break;
-					case "Extra 100%":
-						$tipo = "#horas_extra_100";
-						break;
-					case "Ajuste Normal":
-						$tipo = "#horas_ajuste";
-						break;
-					case "Ajuste Extra 50%":
-						$tipo = "#horas_ajuste_extra_50";
-						break;
-					case "Ajuste Extra 100%":
-						$tipo = "#horas_ajuste_extra_100";
-						break;
-				}
-				$horas[$tipo] = $hora[0]['total'];
-
-				/**
-				* Busco el concepto.
-				*/
-				$codigoConcepto = str_replace("#", "", $tipo);
-				$conceptos = am($conceptos, $modelConcepto->findConceptos("ConceptoPuntual", array("relacion"=>$relacion, "codigoConcepto"=>$codigoConcepto)));
-			}
-			
-			/**
-			* Busco los Ids de los registros que he seleccionado antes.
-			* No lo hago en una sola query porque romperia el group by.
-			* Deberia analizar si sera mejor hacerlo via php a la suma de las horas por tipo y no una query.
-			*/
-			$conditions['fields'] = array("Hora.id");
-			unset($conditions['group']);
-			$r = $this->find("all", $conditions);
-			/**
-			* Creo un registro el la tabla auxiliar que debera ejecutarse en caso de que se confirme la pre-liquidacion.
-			*/
-			foreach($r as $v) {
-				$auxiliar = null;
-				$auxiliar['id'] = $v['Hora']['id'];
-				$auxiliar['estado'] = "Liquidada";
-				$auxiliar['liquidacion_id'] = "##MACRO:liquidacion_id##";
-				$auxiliares[] = array("save"=>serialize($auxiliar), "model"=>"Hora");
-			}
-		}
-		return array("conceptos"=>$conceptos, "variables"=>$horas, "auxiliar"=>$auxiliares);
-	}
-
-
 
 /**
- * Dada un ralacion y un periodo retorna las horas trabajadas de todos los tipos que esten pendientes de liquidar.
+ * Dada un ralacion y un periodo retorna las horas trabajadas de todos los tipos que esten pendientes de liquidar pero confirmadas.
  *
- * @return array vacio si no hay horas.
+ * Los posibles estados son:
+ *		- Pendiente: Cuando solamente fuen ingresada al sistema la hora.
+ *		- Confirmada: Una vez ingresada y chequeada, se confirma y se deja disponible para ser liquidada.
+ *		- Liquidada: Ya ha sido liquidada en alguna liquidacion.
+ *
+ * @param array $relacion La relacion.
+ * @param array $periodo El periodo en el que buscare las horas.
+ * @return 	array de tres componentes:
+ *				conceptos => Los conceptos que dieron lugar el tipo horas encontrado.
+ *				variables => Las variables que podran ser usadas desde las formulas del liquidador.
+ *				auxiliar  => Los arrays serializados de los saves a ajecutarse para guardar en la tabla liquidaciones_auxiliares.
+ *			array con las tres componentes vacias si no hay horas para el periodo y la relacion especificada.
+ * @access public.			
  */
 	function getHoras($relacion, $periodo) {
 		
