@@ -52,6 +52,20 @@ class FormularioHelper extends AppHelper {
 		return $out;
 	}
 	
+	
+/**
+ * Genera el codigo HTML correspondiente a un fieldset.
+ *
+ * @param array $fieldsets Los campos que debe inlcuir el fieldset.
+ * @param array $opcionesFs Las opciones con las que se dibujara el fieldset.
+ *		- $opcionesFs['fieldset']['legend']	=> 	String con la leyenda que tendra el fieldset. Si se especifica 
+ *												como !Leyenda, se tomara el string literalmente. En caso de que 
+ *												no se especifique precedida por !, se le concatenara precedida por 
+ *												la accion realizada en el momento.
+ *												Si se deja en blanco se generara a partir de la accion y el model.
+ *													
+ * @return string El codigo HTML del fieldset.
+ */
 	function pintarFieldsets($fieldsets, $opcionesFs = array()) {
 
 		/**
@@ -67,31 +81,25 @@ class FormularioHelper extends AppHelper {
 		$model = Inflector::classify($this->params["controller"]);
 
 		/**
-		* A la legend del fieldset le agrego la accion (Nuevo, Modificar).
-		* Siempre y cuando no me venga especificado que no lo haga (concatenarAccionLegend = false).
-		if(isset($opcionesFs['fieldset']['legend'])
-			&& $opcionesFs['fieldset']['legend'] !== false
-				&& !isset($opcionesFs['fieldset']['concatenarAccionLegend'])
-				|| (isset($opcionesFs['fieldset']['concatenarAccionLegend'])
-				&& $opcionesFs['fieldset']['concatenarAccionLegend'] === true)) {
+		* Genero la leyenda.
 		*/
-		if(!isset($opcionesFs['fieldset']['concatenarAccionLegend']) || (isset($opcionesFs['fieldset']['concatenarAccionLegend']) && $opcionesFs['fieldset']['concatenarAccionLegend'] === false)) {
-			$legend = "";
-			if(in_array($this->action, array('update', 'edit', 'saveMultiple'))) {
-				$legend = "Modificar ";
-			}
-			elseif(in_array($this->action, array('add'))) {
-				$legend = "Nuevo ingreso de ";
-			}
-			elseif(in_array($this->action, array('index'))) {
-				$legend = "Buscar ";
-			}
-			if(!empty($opcionesFs['fieldset']['legend'])) {
+		$legend = "";
+		if(in_array($this->action, array("update", "edit", "saveMultiple"))) {
+			$legend = "Modificar ";
+		}
+		elseif($this->action === "add") {
+			$legend = "Nuevo ingreso de ";
+		}
+		elseif($this->action === "index") {
+			$legend = "Buscar ";
+		}
+		if(!empty($opcionesFs['fieldset']['legend'])) {
+			if($opcionesFs['fieldset']['legend'][0] !== "!") {
 				$opcionesFs['fieldset']['legend'] = $legend . " " . $opcionesFs['fieldset']['legend'];
 			}
-			else {
-				$opcionesFs['fieldset']['legend'] = $legend . " " . $model;
-			}
+		}
+		else {
+			$opcionesFs['fieldset']['legend'] = $legend . " " . $model;
 		}
 
 
