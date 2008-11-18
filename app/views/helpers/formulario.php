@@ -97,6 +97,9 @@ class FormularioHelper extends AppHelper {
 			if($opcionesFs['fieldset']['legend'][0] !== "!") {
 				$opcionesFs['fieldset']['legend'] = $legend . " " . $opcionesFs['fieldset']['legend'];
 			}
+			else {
+				$opcionesFs['fieldset']['legend'] = substr($opcionesFs['fieldset']['legend'], 1);
+			}
 		}
 		else {
 			$opcionesFs['fieldset']['legend'] = $legend . " " . $model;
