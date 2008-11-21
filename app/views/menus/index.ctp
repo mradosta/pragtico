@@ -44,12 +44,7 @@ foreach ($registros as $k=>$v) {
 	$fila[] = array("model"=>"Menu", "field"=>"controller", "valor"=>$v['Menu']['controller']);
 	$fila[] = array("model"=>"Menu", "field"=>"action", "valor"=>$v['Menu']['action']);
 	$fila[] = array("model"=>"Menu", "field"=>"estado", "valor"=>$v['Menu']['estado']);
-	if(isset($padres[$v['Menu']['parent_id']])) {
-		$fila[] = array("model"=>"Menu", "field"=>"parent_id", "valor"=>$padres[$v['Menu']['parent_id']], "nombreEncabezado"=>"Padre", "class"=>"izquierda");
-	}
-	else {
-		$fila[] = array("model"=>"Menu", "field"=>"parent_id", "valor"=>"", "nombreEncabezado"=>"Padre", "class"=>"izquierda");
-	}
+	$fila[] = array("model"=>"Parentmenu", "field"=>"etiqueta", "valor"=>$v['Parentmenu']['etiqueta'], "nombreEncabezado"=>"Padre", "class"=>"izquierda");
 	$cuerpo[] = $fila;
 }
 

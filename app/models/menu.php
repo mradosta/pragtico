@@ -31,36 +31,54 @@ class Menu extends AppModel {
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe especificar el nombre del menu.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el nombre del menu.')
         ),
         'orden' => array(
 			array(
-				'rule'	=> '/^[0-9]+$|^$/',
-				'message'	=>'Debe especificar un numero entero para el orden o dejar en blanco.')
+				'rule'		=> '/^[0-9]+$|^$/',
+				'message'	=> 'Debe especificar un numero entero para el orden o dejarlo en blanco.')
         )
 	);
 
 
-	var $hasAndBelongsToMany = array(	'Rol' =>
-						array('with' => 'RolesMenu'));
-						
-	function beforeSave() {
+	var $hasAndBelongsToMany = array(	'Rol' =>	array('with' => 'RolesMenu'));
+	
+	var $belongsTo = array( 'Parentmenu' 	=>
+					array(	'className'  	=> 'Menu',
+							'foreignKey' 	=> 'parent_id'));
+
+
+	var $hasMany = array(   'Childmenu' 	=>
+					array(	'className'    	=> 'Menu',
+							'foreignKey'   	=> 'parent_id'));
+	
+/**
+ * xxxxxxxx
+ */
+	function beforeSave($options) {
 		/**
-		* Si el menu padre no esta seleccionada, la saco del array asi no intenta guardarlo.
-		* Si intenta guardarlo sin valor, fallara la FK.
-		*/
-		if(empty($this->data['Menu']['parent_id'])) {
-			unset($this->data['Menu']['parent_id']);
-		}
-			
-		/**
-		* Si no cargo nada en la etiqueta, Pongo el nombre como etiqueta.
+		* Si no cargo nada en la etiqueta, pongo el nombre como etiqueta.
 		*/
 		if(empty($this->data['Menu']['etiqueta'])) {
 			$this->data['Menu']['etiqueta'] = ucfirst($this->data['Menu']['nombre']);
 		}
-		return parent::beforeSave();
+		
+		/**
+		* Si no cargo nada en el controller, pongo el nombre como controller.
+		*/
+		if(empty($this->data['Menu']['controller'])) {
+			$this->data['Menu']['controller'] = $this->data['Menu']['nombre'];
+		}
+		
+		/**
+		* Si no cargo nada en la action, pongo index como action.
+		*/
+		if(empty($this->data['Menu']['action'])) {
+			$this->data['Menu']['action'] = "index";
+		}
+		
+		return parent::beforeSave($options);
 	}
 
 }
