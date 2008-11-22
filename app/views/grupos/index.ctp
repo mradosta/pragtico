@@ -35,7 +35,6 @@ foreach ($registros as $k=>$v) {
 	$fila[] = array("tipo"=>"desglose", "id"=>$v['Grupo']['id'], "update"=>"desglose2", "imagen"=>array("nombre"=>"parametros.gif", "alt"=>"Parametros"), "url"=>'parametros');
 	$fila[] = array("model"=>"Grupo", "field"=>"id", "valor"=>$v['Grupo']['id'], "write"=>$v['Grupo']['write'], "delete"=>$v['Grupo']['delete']);
 	$fila[] = array("model"=>"Grupo", "field"=>"nombre", "valor"=>$v['Grupo']['nombre']);
-	$fila[] = array("model"=>"Empleador", "field"=>"nombre", "valor"=>$v['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
 	$fila[] = array("model"=>"Grupo", "field"=>"estado", "valor"=>$v['Grupo']['estado']);
 	$cuerpo[] = $fila;
 }

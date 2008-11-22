@@ -37,10 +37,6 @@ class Grupo extends AppModel {
                         array('className'    => 'GruposParametro',
                               'foreignKey'   => 'grupo_id'));
 	
-	var $belongsTo = array(	'Empleador' =>
-                        array('className'    => 'Empleador',
-                              'foreignKey'   => 'empleador_id'));
-
 	var $hasAndBelongsToMany = array(	'Usuario' =>
 						array('with' => 'GruposUsuario'));
 
