@@ -485,5 +485,26 @@ class UtilBehavior extends ModelBehavior {
 	}
 
 
+/**
+ * De un array del tipo key => value, genera un array cuyas keys son potencias de dos, 
+ * para usar en operacion de matematica binaria.
+ *
+ * @param object $model Model que usa este behavior.
+ * @param array $valores El array con los valores.
+ * @return array con los valores ingresados cuyas keys ahora son ponenecia de dos.
+ * @access public
+ */
+	function getValoresEnPotenciaDeDos(&$model, $valores) {
+		$return = array();
+		if(!empty($valores) && is_array($valores)) {
+			$key = 1;
+			foreach($valores as $k=>$v) {
+				$return[$key] = $v;
+				$key = $key * 2;
+			}
+		}
+		return $return;
+	}
+	
 }
 ?>
