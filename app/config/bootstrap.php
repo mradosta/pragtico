@@ -53,8 +53,16 @@ define('VALID_NUMBER_MAYOR_A_CERO', '/^[1-9]+/');
 define('VALID_NUMBER_NULO', '/[0-9]*/');
 define('VALID_PERIODO', '/^(20\d\d)(0[1-9]|1[012])([12][qQ]|[mM])$|^$/'); //200804M, 2007111Q, 2007092Q
 
-function d($var = false, $showHtml = false) {
-	debug($var, $showHtml);
-	die;
+function d($var = false) {
+	if (Configure::read() > 0) {
+		$calledFrom = debug_backtrace();
+		echo '<strong>' . substr(str_replace(ROOT, '', $calledFrom[0]['file']), 1) . '</strong>';
+		echo ' (line <strong>' . $calledFrom[0]['line'] . '</strong>)';
+		echo "\n<pre class=\"cake-debug\">\n";
+	
+		$var = print_r($var, true);
+		echo $var . "\n</pre>\n";
+		die;
+	}
 }
 ?>
