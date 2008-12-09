@@ -99,7 +99,7 @@ class Relacion extends AppModel {
                         array('className'    => 'ConveniosCategoria',
                               'foreignKey'   => 'convenios_categoria_id'));
 
-	
+/*	
 	var $hasMany = array(	'Ausencia' =>
                         array('className'    => 'Ausencia',
                               'foreignKey'   => 'relacion_id'),
@@ -124,7 +124,28 @@ class Relacion extends AppModel {
 							'Descuento' =>
                         array('className'    => 'Descuento',
                               'foreignKey'   => 'relacion_id'));
-
+*/
+	var $hasMany = array(	'Ausencia' =>
+                        array('className'    => 'Ausencia',
+                              'foreignKey'   => 'relacion_id'),
+							'Ropa' =>
+                        array('className'    => 'Ropa',
+                              'foreignKey'   => 'relacion_id'),
+                            'Hora' =>
+                        array('className'    => 'Hora',
+                              'foreignKey'   => 'relacion_id'),
+                            'RelacionesConcepto' =>
+                        array('className'    => 'RelacionesConcepto',
+                              'foreignKey'   => 'relacion_id'),
+							'Liquidacion' =>
+                        array('className'    => 'Liquidacion',
+                              'foreignKey'   => 'relacion_id'),
+							'Pago' =>
+                        array('className'    => 'Pago',
+                              'foreignKey'   => 'relacion_id'),
+							'Descuento' =>
+                        array('className'    => 'Descuento',
+                              'foreignKey'   => 'relacion_id'));
 	
 	var $hasAndBelongsToMany = array('Concepto' =>
 								array('with' => 'RelacionesConcepto'));
