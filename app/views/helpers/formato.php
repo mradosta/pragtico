@@ -133,8 +133,10 @@ class FormatoHelper extends AppHelper {
 
 		$return = $valor;
 		$options = array_merge(array('type'=>"numero"), $options);
+		$type = $options['type'];
+		unset($options['type']);
 		
-		switch($options['type']) {
+		switch($type) {
 			case "periodo":
 				if(!empty($valor) && preg_match(VALID_PERIODO, strtoupper($valor), $matches)) {
 					$tmp = null;
@@ -234,16 +236,23 @@ class FormatoHelper extends AppHelper {
 				$return = $this->format($valor, array_merge(array("before"=>"$ "), $options));
 				break;
 			case "ano":
-				$valor = $this->format($valor, array("type"=>"date", "format"=>"Y-m-d"));
-				$return = $this->Time->format("Y", $valor);
-				break;
 			case "mes":
-				$valor = $this->format($valor, array("type"=>"date", "format"=>"Y-m-d"));
-				$return = $this->Time->format("m", $valor);
-				break;
 			case "dia":
-				$valor = $this->format($valor, array("type"=>"date", "format"=>"Y-m-d"));
-				$return = $this->Time->format("d", $valor);
+				$valor = $this->format($valor, array_merge(array("type"=>"date", "format"=>"Y-m-d"), $options));
+				if(empty($valor)) {
+					$return = $valor;
+				}
+				else {
+					if($type === "dia") {
+						$return = $this->Time->format("d", $valor);
+					}
+					elseif($type === "mes") {
+						$return = $this->Time->format("m", $valor);
+					}
+					elseif($type === "ano") {
+						$return = $this->Time->format("Y", $valor);
+					}
+				}
 				break;
 			case "ultimoDiaDelMes":
 				$return = $this->Time->format("d", mktime(0, 0, 0, ($this->format($valor, array("type"=>"mes")) + 1), 0, $this->format($valor, array("type"=>"ano"))));
