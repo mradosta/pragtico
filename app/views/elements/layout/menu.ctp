@@ -12,6 +12,7 @@ else {
 }
 
 $MenuItems = $session->read('__MenuItems');
+$navegacion = $formulario->traerPreferencia("navegacion");
 
 $actual = 0;
 $c = 0;
@@ -42,18 +43,17 @@ foreach($MenuItems as $k=>$padre) {
 						"action"		=> $hijo['Menu']['action'],
 						$hijo['Menu']['action']);
 
-		$urlMenu = strstr(Router::url($url), Router::url("/"));
-		if($formulario->traerPreferencia("navegacion") == "ajax") {
+		if($navegacion === "ajax") {
 			$hijos .= $ajax->link($formulario->image($hijo['Menu']['imagen']) . $formulario->tag("span", $hijo['Menu']['etiqueta']), $url, array("update"=>"index", "title"=>$hijo['Menu']['ayuda']));
 		}
 		else {
 			$hijos .= $formulario->link($formulario->image($hijo['Menu']['imagen']) . $formulario->tag("span", $hijo['Menu']['etiqueta']), $url, array("title"=>$hijo['Menu']['ayuda']));
 		}
 		
-		if($menuActual['controller'] == $hijo['Menu']['controller'] && $menuActual['action'] == $hijo['Menu']['action']) {
+		if($menuActual['controller'] === $hijo['Menu']['controller'] && $menuActual['action'] == $hijo['Menu']['action']) {
 			$actual = $c;
 		}
-		else if($menuActual['controller'] == $hijo['Menu']['controller'] && $actual == 0) {
+		else if($menuActual['controller'] === $hijo['Menu']['controller'] && $actual == 0) {
 			$actual = $c;
 		}
 	}
