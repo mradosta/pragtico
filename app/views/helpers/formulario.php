@@ -563,7 +563,7 @@ class FormularioHelper extends AppHelper {
 				$cellsOut = array();
 				$outDesgloses = array();
 
-				$acciones = null;
+				$acciones = array();
 				foreach($v as $campo) {
 					$valor = "&nbsp;";
 					$atributosCelda = null;
@@ -759,12 +759,14 @@ class FormularioHelper extends AppHelper {
 								else {
 									$retono = $id;
 								}
+								/*
 								if($this->traerPreferencia("lov_apertura") == "popup") {
 									$padre = "opener";
 								}
 								else {
 									$padre = "";
 								}
+								*/
 								array_unshift($acciones, $this->link($this->image("seleccionar.gif", array("alt"=>"Selecciona este registro")), null, array("class"=>"seleccionar jqmClose", "id"=>"xsxs", "title"=>$retono, "onclick"=>"retornoLov('" . $opciones['seleccionLov']['retornarA'] . "','" . $id . "', '" . str_replace("'", "\'", $retono) . "', '" . $padre . "');")));
 								/**
 								* Cuando se trata de una lov que viene de una busqueda y solo retorna un registro, se lo autoselecciono y cierro la lov.
@@ -860,7 +862,7 @@ class FormularioHelper extends AppHelper {
 				else {
 					$atributosFila = array("class"=>"fila_datos");
 				}
-				$atributosFila = am($atributosFila, $opcionesFila);
+				$atributosFila = array_merge($atributosFila, $opcionesFila);
 				$rowsOut[] = $this->_fila($cellsOut, $atributosFila);
 
 				/**
@@ -870,7 +872,6 @@ class FormularioHelper extends AppHelper {
 					foreach($outDesgloses as $outDesglose) {
 						if(!empty($outDesglose['2'])) {
 							$atributosFila = $outDesglose['2'];
-							$atributosFila['tipo'] = "desglose";
 							unset($outDesglose['2']);
 						}
 						$rowsOut[] = $this->_fila(array($outDesglose), $atributosFila);
@@ -1090,6 +1091,7 @@ class FormularioHelper extends AppHelper {
 	}
 
 	function _fila($celdas, $trOptions = null) {
+		
 		static $count = 0;
 		$out = null;
 		foreach ($celdas as $celda) {
@@ -1106,21 +1108,28 @@ class FormularioHelper extends AppHelper {
 				$out[] = $this->tag("td", $celda);
 			}
 		}
-		if($count % 2) {
-			if(!empty($trOptions['class'])) {
-				$trOptions['class'] .= " alternativo";
+		
+		/**
+		* Las filas de desglose y las resaltadas, no las cuento para la zebra.
+		*/
+		if(!in_array($trOptions['class'], array("desglose", "fila_resaltada"))) {
+			if($count % 2) {
+				if(!empty($trOptions['class'])) {
+					$trOptions['class'] .= " alternativo";
+				}
+				else {
+					$trOptions['class'] = "alternativo";
+				}
 			}
-			else {
-				$trOptions['class'] = "alternativo";
-			}
+			$count++;
 		}
-
+		
 		/**
 		* Las filas de desglose, no las cuento para la zebra.
-		*/
 		if(!(!empty($trOptions['tipo']) && $trOptions['tipo'] == "desglose")) {
 			$count++;
 		}
+		*/
 		unset($trOptions['tipo']);
 		return $this->tag("tr", $out, $trOptions);
 	}
@@ -1359,6 +1368,7 @@ class FormularioHelper extends AppHelper {
 			$tableInfo = $modelClass->schema();
 			if(empty($options['options']) && !empty($modelClass->opciones[$field])) {
 				$options['options'] = $modelClass->opciones[$field];
+				$tipoCampo = "checkboxMultiple";
 			}
 			
 			/**
