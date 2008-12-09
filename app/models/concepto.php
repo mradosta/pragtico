@@ -116,16 +116,11 @@ class Concepto extends AppModel {
 
 	//function findConceptos($tipo = "Relacion", $relacion = null, $codigoConcepto = null, $opciones = array()) {
 	function findConceptos($tipo = "Relacion", $opciones = array()) {
-
-		//$opciones['relacion'];
-
-		/**
-		* TODO: Implementar forma de generar queryes de cakephp
-		*/
+		
 		$default['hasta'] = "2000-01-01";
 		$default['desde'] = "2050-12-31";
 		$default['condicionAdicional'] = ""; // de la forma string....
-		$opciones = am($default, $opciones);
+		$opciones = array_merge($default, $opciones);
 
 
 		
@@ -181,7 +176,7 @@ class Concepto extends AppModel {
 									WHEN 'Deduccion' THEN 2
 								END";
 
-		if($tipo == "Relacion") {
+		if($tipo === "Relacion") {
 			$fields = am($fieldsRelaciones, $fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente);
 			$table 	= 	"relaciones_conceptos";
 			$joins	=	array(
@@ -232,7 +227,7 @@ class Concepto extends AppModel {
 												"RelacionesConcepto.hasta >=" => $opciones['hasta']))
 						);
 		}
-		elseif($tipo == "Empleador") {
+		elseif($tipo === "Empleador") {
 			$fields = am($fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente);
 			$table 	= 	"empleadores_conceptos";
 			$joins 	=	array(
@@ -280,7 +275,7 @@ class Concepto extends AppModel {
 													"EmpleadoresConcepto.hasta >=" => $opciones['hasta']))
 						);
 		}
-		elseif($tipo == "ConvenioColectivo") {
+		elseif($tipo === "ConvenioColectivo") {
 			$fields = am($fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente);
 			$table 	= 	"convenios_conceptos";
 			$joins 	=	array(
@@ -315,7 +310,7 @@ class Concepto extends AppModel {
 													"ConveniosConcepto.hasta >=" => $opciones['hasta']))
 						);
 		}
-		elseif($tipo == "ConceptoPuntual") {
+		elseif($tipo === "ConceptoPuntual") {
 			$fields = am($fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente);
 			$table 	= 	"conceptos";
 			$joins 	=	array(
@@ -359,7 +354,7 @@ class Concepto extends AppModel {
 													"Concepto.hasta >=" => $opciones['hasta']))
 						);
 		}
-		elseif($tipo == "Todos") {
+		elseif($tipo === "Todos") {
 
 			$fields = $fieldsConceptos;
 			$table	= "conceptos";
@@ -374,6 +369,7 @@ class Concepto extends AppModel {
 		
 		$sql = $this->generarSql(array("fields"=>$fields, "table"=>$table, "conditions"=>$conditions, "joins"=>$joins, "order"=>$order));
 		$r = $this->query($sql);
+		
 		$conceptos = array();
 		foreach($r as $v) {
 			/**
