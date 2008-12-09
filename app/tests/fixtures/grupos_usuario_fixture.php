@@ -61,9 +61,9 @@ class GruposUsuarioFixture extends CakeTestFixture {
  */
     var $records = array(
         array(
-            'id' => '7',
-            'grupo_id' => '4',
-            'usuario_id' => '15',
+            'id' => '1',
+            'grupo_id' => '1',
+            'usuario_id' => '2',
             'estado' => 'Activo',
             'created' => '0000-00-00 00:00:00',
             'modified' => '0000-00-00 00:00:00',
@@ -73,9 +73,9 @@ class GruposUsuarioFixture extends CakeTestFixture {
             'permissions' => '500',
         ),
         array(
-            'id' => '17',
-            'grupo_id' => '8',
-            'usuario_id' => '15',
+            'id' => '2',
+            'grupo_id' => '2',
+            'usuario_id' => '2',
             'estado' => 'Activo',
             'created' => '0000-00-00 00:00:00',
             'modified' => '0000-00-00 00:00:00',

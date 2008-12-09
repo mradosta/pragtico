@@ -61,26 +61,48 @@ class InformacionFixture extends CakeTestFixture {
     var $records = array(
         array(
             'id' => '1',
-            'nombre' => 'horas_por_mes',
+            'nombre' => '#horas_por_mes',
             'observacion' => '',
             'created' => '2008-10-09 12:53:00',
             'modified' => '2008-10-09 12:53:00',
             'user_id' => '1',
             'role_id' => '1',
-            'group_id' => '3',
+            'group_id' => '0',
             'permissions' => '500',
         ),
         array(
             'id' => '2',
-            'nombre' => '#test',
-            'observacion' => 'ssss',
+            'nombre' => '#dia_del_gremio',
+            'observacion' => '',
             'created' => '2008-11-03 12:17:27',
             'modified' => '2008-11-03 12:17:27',
             'user_id' => '1',
             'role_id' => '1',
             'group_id' => '0',
-            'permissions' => '496',
+            'permissions' => '500',
         ),
+        array(
+            'id' => '3',
+            'nombre' => '#presentismo_dias_tolerancia',
+            'observacion' => '',
+            'created' => '2008-11-03 12:17:27',
+            'modified' => '2008-11-03 12:17:27',
+            'user_id' => '1',
+            'role_id' => '1',
+            'group_id' => '0',
+            'permissions' => '500',
+        ),
+        array(
+            'id' => '4',
+            'nombre' => '#presentismo_porcentaje',
+            'observacion' => '',
+            'created' => '2008-11-03 12:17:27',
+            'modified' => '2008-11-03 12:17:27',
+            'user_id' => '1',
+            'role_id' => '1',
+            'group_id' => '0',
+            'permissions' => '500',
+        )
     );
 }
 

@@ -75,7 +75,7 @@ class RolesUsuarioFixture extends CakeTestFixture {
         array(
             'id' => '2',
             'rol_id' => '2',
-            'usuario_id' => '15',
+            'usuario_id' => '2',
             'estado' => 'Activo',
             'created' => '2008-10-07 13:34:30',
             'modified' => '2008-10-07 13:34:30',
@@ -85,8 +85,8 @@ class RolesUsuarioFixture extends CakeTestFixture {
             'permissions' => '496',
         ),
         array(
-            'id' => '5',
-            'rol_id' => '2',
+            'id' => '3',
+            'rol_id' => '4',
             'usuario_id' => '2',
             'estado' => 'Activo',
             'created' => '2008-10-12 20:51:02',

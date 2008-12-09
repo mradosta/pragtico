@@ -63,10 +63,10 @@ class SucursalFixture extends CakeTestFixture {
  */
     var $records = array(
         array(
-            'id' => '3',
-            'banco_id' => '3',
-            'codigo' => '321',
-            'direccion' => 'xxxxxxxx',
+            'id' => '1',
+            'banco_id' => '1',
+            'codigo' => '0205',
+            'direccion' => 'Dir de Sucursal1 de Banco Prueba 1',
             'telefono' => '',
             'observacion' => '',
             'created' => '2008-10-12 22:34:06',
@@ -75,34 +75,6 @@ class SucursalFixture extends CakeTestFixture {
             'role_id' => '1',
             'group_id' => '0',
             'permissions' => '500',
-        ),
-        array(
-            'id' => '9',
-            'banco_id' => '3',
-            'codigo' => '1321',
-            'direccion' => '',
-            'telefono' => '',
-            'observacion' => '',
-            'created' => '2008-10-27 12:10:16',
-            'modified' => '2008-10-27 12:10:16',
-            'user_id' => '1',
-            'role_id' => '1',
-            'group_id' => '0',
-            'permissions' => '496',
-        ),
-        array(
-            'id' => '10',
-            'banco_id' => '3',
-            'codigo' => '4432',
-            'direccion' => '',
-            'telefono' => '',
-            'observacion' => '',
-            'created' => '2008-10-27 12:12:17',
-            'modified' => '2008-10-27 12:12:17',
-            'user_id' => '1',
-            'role_id' => '1',
-            'group_id' => '0',
-            'permissions' => '496',
         )
     );
 }

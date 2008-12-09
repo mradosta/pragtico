@@ -16,15 +16,15 @@
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
  
-App::import("Model", array("Liquidacion"));
- 
+App::import("Model", "Usuario");
+
 /**
  * La clase para un para un caso de prueba generico (fake).
  *
  * @package app.tests
  * @subpackage app.tests.models
  */
-class LiquidacionTest-borrar extends Liquidacion {
+class UsuarioTest extends Usuario {
 
 	
 /**
@@ -33,7 +33,7 @@ class LiquidacionTest-borrar extends Liquidacion {
  * @var string
  * @access public
  */
-	var $name = 'Liquidacion';
+	var $name = 'Usuario';
 	
 	
 /**
@@ -43,7 +43,6 @@ class LiquidacionTest-borrar extends Liquidacion {
  * @access public
  */
 	var $useDbConfig = 'test_suite';
-
 
 }
 ?>

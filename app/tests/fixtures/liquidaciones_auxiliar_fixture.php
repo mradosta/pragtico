@@ -59,32 +59,8 @@ class LiquidacionesAuxiliarFixture extends CakeTestFixture {
  * @var array
  * @access public
  */
-    var $records = array(
-        array(
-            'id' => '1',
-            'liquidacion_id' => '1',
-            'save' => 'a:3:{s:2:"id";s:1:"1";s:6:"estado";s:9:"Liquidada";s:14:"liquidacion_id";s:24:"##MACRO:liquidacion_id##";}',
-            'model' => 'Hora',
-            'created' => '2008-10-30 10:55:14',
-            'modified' => '2008-10-30 10:55:14',
-            'user_id' => '2',
-            'role_id' => '3',
-            'group_id' => '1',
-            'permissions' => '496',
-        ),
-        array(
-            'id' => '2',
-            'liquidacion_id' => '2',
-            'save' => 'a:3:{s:2:"id";s:1:"2";s:6:"estado";s:9:"Liquidada";s:14:"liquidacion_id";s:24:"##MACRO:liquidacion_id##";}',
-            'model' => 'Hora',
-            'created' => '2008-10-30 10:55:14',
-            'modified' => '2008-10-30 10:55:14',
-            'user_id' => '2',
-            'role_id' => '3',
-            'group_id' => '1',
-            'permissions' => '496',
-        ),
-    );
+    var $records = array();
+	
 }
 
 ?>

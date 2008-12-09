@@ -64,7 +64,7 @@ class GrupoFixture extends CakeTestFixture {
         array(
             'id' => '1',
             'empleador_id' => '',
-            'nombre' => 'Estudio Contable Benitez',
+            'nombre' => 'Grupo A',
             'estado' => 'Activo',
             'observacion' => '',
             'created' => '2008-10-14 16:17:32',
@@ -75,9 +75,9 @@ class GrupoFixture extends CakeTestFixture {
             'permissions' => '500',
         ),
         array(
-            'id' => '4',
+            'id' => '2',
             'empleador_id' => '97',
-            'nombre' => 'Consultores de Empresas',
+            'nombre' => 'Grupo B',
             'estado' => 'Activo',
             'observacion' => '',
             'created' => '2008-10-14 16:17:32',
@@ -88,9 +88,9 @@ class GrupoFixture extends CakeTestFixture {
             'permissions' => '500',
         ),
         array(
-            'id' => '8',
+            'id' => '4',
             'empleador_id' => '1',
-            'nombre' => 'Optima',
+            'nombre' => 'Grupo C',
             'estado' => 'Activo',
             'observacion' => '',
             'created' => '2008-10-14 16:31:03',

@@ -65,26 +65,8 @@ class LiquidacionesErrorFixture extends CakeTestFixture {
  * @var array
  * @access public
  */
-    var $records = array(
-        array(
-            'id' => '2',
-            'liquidacion_id' => '4',
-            'tipo' => 'Formula de Concepto Inexistente',
-            'gravedad' => 'Media',
-            'concepto' => 'ticket_restorant_proporcionado',
-            'formula' => '',
-            'variable' => '',
-            'descripcion' => 'El concepto no tiene definida una formula.',
-            'recomendacion' => 'Ingrese la formula correspondiente al concepto en caso de que sea necesario. Para evitar este error ingrese como formula: =0',
-            'descripcion_adicional' => 'Se asume como 0 (cero) el valor del concepto.',
-            'created' => '2008-11-03 13:24:40',
-            'modified' => '2008-11-03 13:24:40',
-            'user_id' => '1',
-            'role_id' => '1',
-            'group_id' => '0',
-            'permissions' => '496',
-        ),
-    );
+    var $records = array();
+	
 }
 
 ?>

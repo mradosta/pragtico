@@ -64,7 +64,7 @@ class BancoFixture extends CakeTestFixture {
     var $records = array(
         array(
             'id' => '1',
-            'codigo' => '123',
+            'codigo' => '072',
             'nombre' => 'Banco Prueba 1',
             'direccion' => '',
             'telefono' => '',
@@ -73,21 +73,7 @@ class BancoFixture extends CakeTestFixture {
             'modified' => '2008-10-12 19:36:30',
             'user_id' => '1',
             'role_id' => '1',
-            'group_id' => '1',
-            'permissions' => '500',
-        ),
-        array(
-            'id' => '2',
-            'codigo' => '432',
-            'nombre' => 'Banco Prueba 2',
-            'direccion' => '',
-            'telefono' => '',
-            'observacion' => '',
-            'created' => '2008-10-12 21:34:38',
-            'modified' => '2008-10-12 22:37:19',
-            'user_id' => '1',
-            'role_id' => '1',
-            'group_id' => '1',
+            'group_id' => '0',
             'permissions' => '500',
         )
     );

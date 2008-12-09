@@ -16,8 +16,13 @@
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
  
-App::import('Component', 'Session');
-App::import("Model", array("Liquidacion", "Usuario", "Variable"));
+App::import('Component', array('Session', 'Util'));
+App::import("Model", array("Liquidacion", "Variable"));
+
+require_once(APP . "tests" . DS . "cases" . DS . "models" . DS . "usuario.test.php");
+//require_once(APP . "tests" . DS . "cases" . DS . "models" . DS . "liquidacion.test.php");
+//require_once(APP . "tests" . DS . "cases" . DS . "models" . DS . "usuario.test.php");
+
 App::import("Controller", "Liquidaciones");
  
 /**
@@ -53,6 +58,7 @@ class LiquidacionesTestController extends CakeTestCase {
  * @access public
  */	
 	function endController(&$controller, $params = array()) {
+		$controller->Liquidacion->LiquidacionesDetalle->recursive = -1;
 		$this->__LiquidacionesDetalle = $controller->Liquidacion->LiquidacionesDetalle->find("all");
 		
 		/**
@@ -79,7 +85,7 @@ class LiquidacionesTestController extends CakeTestCase {
  * 		- agec
  * 		- obra_social
 */	
-	function testPreliquidacionNormal() { 
+	function xtestPreliquidacionNormal() { 
 		
 		$this->__login();
 		
@@ -89,22 +95,227 @@ class LiquidacionesTestController extends CakeTestCase {
 		$data['Formulario']['accion'] = "buscar";
 		$data['Extras']['Liquidacion-periodo'] = "200808M";
 		$data['Extras']['Liquidacion-tipo'] = "normal";
-		$data['Condicion']['Relacion-id'] = "1";
+		$data['Condicion']['Relacion-id'] = "2";
 		
+		$this->__LiquidacionesDetalle = null;
 		$result = $this->testAction('/liquidaciones/preliquidar', 
 								array('connection'	=> 'test', 
 										'method' 	=> 'post',
 		  								'fixturize' => true, 
 		  								'return'	=> 'vars',
 		  								'data' 		=> $data));
+		
 		d($this->__LiquidacionesDetalle);
-		d($result);
-		$this->assertEqual(0, count($result['registros'][0]['LiquidacionesError']));
-		$this->assertEqual(22, $this->cantidadDetalles);
+		foreach($this->__LiquidacionesDetalle as $v) {
+			$detalles[$v['LiquidacionesDetalle']['concepto_codigo']] = $v['LiquidacionesDetalle']['valor'];
+		}
+		d($detalles);
+		$this->assertEqual(30, count($this->__LiquidacionesDetalle));
 	}
 	
 	
 	
+	function testVariables() {
+		/**
+		* Instancio el controller.
+		*/
+		$LiquidacionesController = new LiquidacionesController();
+		
+		/**
+		* Obtengo el listado completo de variables.
+		*/
+		$Variable = ClassRegistry::init("Variable");
+		$variablesTmp = $Variable->find("all", array("order"=>false));
+		foreach($variablesTmp as $v) {
+			$variables[$v['Variable']['nombre']] = $v['Variable'];
+		}
+		$variables['#tipo_liquidacion']['valor'] = "normal";
+		$LiquidacionesController->__setVariable($variables);
+		
+		/**
+		* Instancio el component.
+		*/
+		$LiquidacionesController->Util = ClassRegistry::init("UtilComponent");
+		$LiquidacionesController->__periodo = $LiquidacionesController->Util->format("2008091Q", "periodo");
+
+		/**
+		* Instancio el model.
+		*/
+		$LiquidacionesController->Liquidacion = ClassRegistry::init("Liquidacion");
+		
+		/**
+		* Busco una relacion.
+		*/
+		$contain = array(	"ConveniosCategoria.ConveniosCategoriasHistorico",
+							"Trabajador.ObrasSocial",
+							"Empleador");
+		$LiquidacionesController->Liquidacion->Relacion->contain($contain);
+		$LiquidacionesController->__relacion = $LiquidacionesController->Liquidacion->Relacion->findById(2);
+		
+		/**
+		* Seteo las variables que vienen dadas por informacion del convenio.
+		*/
+		$informaciones = $LiquidacionesController->Liquidacion->Relacion->ConveniosCategoria->Convenio->getInformacion(Set::extract("/ConveniosCategoria/convenio_id", $LiquidacionesController->__relacion));
+		$LiquidacionesController->__setVariable($informaciones[2]);
+		
+		
+		/**
+		* Hago los tests propiamente dicho.
+		*/
+		$result = $LiquidacionesController->__getVariableValor("#tipo_liquidacion");
+		$expected = "normal";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#dias_corridos_periodo");
+		$expected = "15";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#horas_por_mes");
+		$expected = "176";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#dia_del_gremio");
+		$expected = "13";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#ausencias_injustificadas");
+		$expected = "2";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#ausencias_justificadas");
+		$expected = "4";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#horas");
+		$expected = "10";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#horas_extra_50");
+		$expected = "65";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#horas_extra_100");
+		$expected = "31";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#horas_ajuste");
+		$expected = "32";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#horas_ajuste_extra_50");
+		$expected = "21.30";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#horas_ajuste_extra_100");
+		$expected = "24.30";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#horas_nocturna");
+		$expected = "3.70";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#horas_extra_nocturna_50");
+		$expected = "1.70";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#horas_extra_nocturna_100");
+		$expected = "0.70";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#horas_ajuste_nocturna");
+		$expected = "0.70";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#horas_ajuste_extra_nocturna_50");
+		$expected = "3.20";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#horas_ajuste_extra_nocturna_100");
+		$expected = "5.30";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#anos_antiguedad");
+		$expected = "0";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#meses_antiguedad");
+		$expected = "11";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#dias_antiguedad");
+		$expected = "330";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#mes_liquidacion");
+		$expected = "09";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#ano_liquidacion");
+		$expected = "2008";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#periodo_liquidacion");
+		$expected = "1Q";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#periodo_liquidacion_completo");
+		$expected = "2008091Q";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#fecha_desde_liquidacion");
+		$expected = "2008-09-01";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#fecha_desde_liquidacion");
+		$expected = "2008-09-01";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#fecha_hasta_liquidacion");
+		$expected = "2008-09-15";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#dia_hasta_liquidacion");
+		$expected = "2008-09-15";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#dia_desde_liquidacion");
+		$expected = "2008-09-01";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#ano_egreso");
+		$expected = "";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#ano_ingreso");
+		$expected = "2007";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#mes_egreso");
+		$expected = "";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#mes_ingreso");
+		$expected = "10";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#mes_ingreso");
+		$expected = "10";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#dia_egreso");
+		$expected = "";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#dia_ingreso");
+		$expected = "22";
+		$this->assertEqual($expected, $result);
+		
+		$result = $LiquidacionesController->__getVariableValor("#fecha_actual");
+		$expected = date("Y-m-d");
+		$this->assertEqual($expected, $result);
+	}
+	
+
 /**
  * El caso de prueba para la preliquidacion Normal por Hora.
  */	
@@ -127,7 +338,9 @@ class LiquidacionesTestController extends CakeTestCase {
 		  								'return'	=> 'vars',
 		  								'data' 		=> $data));
 		
-		$this->assertEqual(0, count($result['registros'][0]['LiquidacionesError']));
+		d($result);
+		$this->assertEqual(1244, $result['registros'][0]['Liquidacion']['total_pesos']);
+		$this->assertEqual(1, count($result['registros'][0]['LiquidacionesError']));
 		$this->assertEqual(23, $this->cantidadDetalles);
 	}
 	
@@ -137,7 +350,7 @@ class LiquidacionesTestController extends CakeTestCase {
 * Simula un login como administrador.
 */
 	function __login() { 
-		$Usuario = new Usuario();
+		$Usuario = new UsuarioTest();
 		$condiciones['nombre'] = "root";
 		$condiciones['clave'] = "x";	
 		$usuario = $Usuario->verificarLogin($condiciones);

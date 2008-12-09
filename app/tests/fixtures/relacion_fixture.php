@@ -106,7 +106,7 @@ class RelacionFixture extends CakeTestFixture {
             'actividad_id' => '77',
             'modalidad_id' => '6',
             'legajo' => '04986076',
-            'ingreso' => '2007-10-01',
+            'ingreso' => '2007-10-22',
             'egreso' => '0000-00-00',
             'antiguedad_reconocida' => '0000-00-00',
             'horas' => '8',
