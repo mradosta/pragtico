@@ -37,7 +37,8 @@ $flash = ob_get_clean();
 */
 //$menu = $this->element("layout" . DS . "menu", array('cache'=>'+1 day'));
 $menu = $this->element("layout" . DS . "menu");
-$encabezado = $this->element("layout" . DS . "encabezado", array('cache'=>'+1 day'));
+//$encabezado = $this->element("layout" . DS . "encabezado", array('cache'=>'+1 day'));
+$encabezado = $this->element("layout" . DS . "encabezado");
 $barra = $this->element("layout" . DS . "barra");
 
 $codigo_html[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
