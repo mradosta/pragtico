@@ -45,7 +45,7 @@ $acciones = $this->element("index/acciones", array("accionesExtra"=>$accionesExt
 
 
 if(!isset($opcionesTabla)) {
-	$opcionesTabla = array();
+	$opcionesTabla = array("tabla"=>array("permisos"=>false));
 }
 
 /**
@@ -64,7 +64,9 @@ if(!empty($this->params['named']['retornarA']) && !empty($this->params['named'][
 										"zebra"				=> true,
 										"mostrarIds"		=> false));
 }
-
+//else {
+//	$opcionesTabla =  array("tabla"=> array("permisos" => true));
+//}
 
 /**
  * Creo un bloque con el paginador superior e inferior.
@@ -85,7 +87,10 @@ if(!isset($cuerpo)) {
 /**
  * Agrego el cuerpo de la tabla, siempre y cuendo este no este vacio y no tenga seteado el valor de omitir mensaje vacio.
  */
-if(!((isset($opcionesTabla['tabla']['omitirMensajeVacio']) && $opcionesTabla['tabla']['omitirMensajeVacio'] === true) && empty($cuerpo))) {
+if(!empty($opcionesTabla['tabla']['contenido'])) {
+	$bloques[] = $opcionesTabla['tabla']['contenido'];
+}
+else if(!((isset($opcionesTabla['tabla']['omitirMensajeVacio']) && $opcionesTabla['tabla']['omitirMensajeVacio'] === true) && empty($cuerpo))) {
 	$tabla = $formulario->tag("div", $formulario->tabla(am(array("cuerpo"=>$cuerpo, "pie"=>$pie), $opcionesTabla)), array("class"=>"tabla"));
 	$bloque_superior = $formulario->bloque($acciones . $bloque_paginador_superior, array("div"=>array("class"=>"bloque_superior_index")));
 	$bloque_inferior = $formulario->bloque($bloque_paginador_inferior, array("div"=>array("class"=>"bloque_inferior_index")));
@@ -109,5 +114,6 @@ if(!empty($this->params['isAjax']) && $this->params['isAjax'] == "1") {
 else {
 	echo $formulario->bloque($form, array("div"=>array("id"=>"index", "class"=>"index")));
 }	
+
 
 ?>
