@@ -193,6 +193,11 @@ class FormatoTest extends CakeTestCase {
 		$expected = "15";
 		$this->assertEqual($expected, $result);
 
+		$valor = "0000-00-00";
+		$result = $this->formato->format($valor, array("type"=>"dia"));
+		$expected = "";
+		$this->assertEqual($expected, $result);
+		
 		$valor = "2004-02-15";
 		$result = $this->formato->format($valor, array("type"=>"ultimoDiaDelMes"));
 		$expected = "29";
