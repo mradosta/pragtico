@@ -89,7 +89,7 @@ class AppModel extends Model {
  * @return boolean True si se pudieron eliminar todos los registros, False en otro caso.
  * @access public
  */
-	function deleteAll($conditions, $cascade = true, $callbacks = false, $manejarTransaccion = true) {
+	function deleteAll_deprecated($conditions, $cascade = true, $callbacks = false, $manejarTransaccion = true) {
 
 		/**
 		* Evito que por error borre toda la tabla.
@@ -251,7 +251,7 @@ class AppModel extends Model {
  * @return boolean True si se pudo guardar el registro, False en otro caso.
  * @access public
  */    
-    function save($data = null, $validate = true, $fieldList = array(), $manejarTransaccion = true) {
+    function save_deprecated($data = null, $validate = true, $fieldList = array(), $manejarTransaccion = true) {
 		/**
 		* Solo guardo master/detail cuando es una relacion hasMany y en el vector vienen componentes
 		* de esta relacion y no otra
