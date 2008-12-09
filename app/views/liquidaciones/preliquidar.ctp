@@ -54,14 +54,15 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("le
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$id = $v['Liquidacion']['id'];
-	$fila[] = array("tipo"=>"desglose", "id"=>$id, "update"=>"desglose1", "imagen"=>array("nombre"=>"liquidaciones.gif", "alt"=>"liquidaciones"), "url"=>"recibo_html");
-	$fila[] = array("tipo"=>"desglose", "id"=>$id, "update"=>"desglose2", "imagen"=>array("nombre"=>"liquidaciones.gif", "alt"=>"liquidaciones (debug)"), "url"=>"recibo_html_debug");
-	$fila[] = array("tipo"=>"desglose", "id"=>$id, "update"=>"desglose3", "imagen"=>array("nombre"=>"observaciones.gif", "alt"=>"Agregar Observacion"), "url"=>'agregar_observacion');
+	//d($v['Liquidacion']);
+	$fila[] = array("tipo"=>"desglose", "id"=>$v['Liquidacion']['id'], "update"=>"desglose1", "imagen"=>array("nombre"=>"liquidaciones.gif", "alt"=>"liquidaciones"), "url"=>"recibo_html");
+	$fila[] = array("tipo"=>"desglose", "id"=>$v['Liquidacion']['id'], "update"=>"desglose2", "imagen"=>array("nombre"=>"liquidaciones.gif", "alt"=>"liquidaciones (debug)"), "url"=>"recibo_html_debug");
+	$fila[] = array("tipo"=>"desglose", "id"=>$v['Liquidacion']['id'], "update"=>"desglose3", "imagen"=>array("nombre"=>"observaciones.gif", "alt"=>"Agregar Observacion"), "url"=>'agregar_observacion');
 	//$fila[] = array("tipo"=>"desglose", "id"=>$id, "update"=>"desglose3", "imagen"=>array("nombre"=>"observaciones.gif", "alt"=>"Agregar Observacion"), "url"=>"add");
-	$fila[] = array("tipo"=>"accion", "valor"=>$formulario->link($formulario->image("excel.gif", array("alt"=>"Generar recibo excel", "title"=>"Generar recibo excel")), "recibo_excel/" . $id));
+	$fila[] = array("tipo"=>"accion", "valor"=>$formulario->link($formulario->image("excel.gif", array("alt"=>"Generar recibo excel", "title"=>"Generar recibo excel")), "recibo_excel/" . $v['Liquidacion']['id']));
 
-	$fila[] = array("model"=>"Liquidacion", "field"=>"id", "valor"=>$id);
+	$fila[] = array("model"=>"Liquidacion", "field"=>"id", "valor"=>$v['Liquidacion']['id'], "write"=>$v['Liquidacion']['write'], "delete"=>$v['Liquidacion']['delete']);
+	$fila[] = array("model"=>"Liquidacion", "field"=>"ano", "valor"=>$v['Liquidacion']['ano'] . str_pad($v['Liquidacion']['mes'], 2, "0" ,STR_PAD_LEFT) . $v['Liquidacion']['periodo'], "nombreEncabezado"=>"Periodo");
 	$fila[] = array("model"=>"Trabajador", "field"=>"apellido", "valor"=>$v['Relacion']['Trabajador']['cuil'] . " - " . $v['Relacion']['Trabajador']['nombre'] . " " . $v['Relacion']['Trabajador']['apellido'], "nombreEncabezado"=>"Trabajador");
 	$fila[] = array("model"=>"Empleador", "field"=>"nombre", "valor"=>$v['Relacion']['Empleador']['cuit'] . " - " . $v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
 	$fila[] = array("model"=>"Liquidacion", "field"=>"remunerativo", "valor"=>$formato->format($v['Liquidacion']['remunerativo'], array("before"=>"$ ")));
@@ -69,12 +70,12 @@ foreach ($registros as $k=>$v) {
 	$fila[] = array("model"=>"Liquidacion", "field"=>"no_remunerativo", "valor"=>$formato->format($v['Liquidacion']['no_remunerativo'], array("before"=>"$ ")));
 	$fila[] = array("model"=>"Liquidacion", "field"=>"total", "valor"=>$formato->format($v['Liquidacion']['total'], array("before"=>"$ ")));
 	
-	if(in_array($v['Liquidacion']['relacion_id'], $liquidacionesYaConfirmadas)) {
+	if($v['Liquidacion']['estado'] === "Confirmada") {
 		$cuerpo[] = array("contenido"=>$fila, "opciones"=>array("title"=>"Ya se ha liquidado a esta Relacion para el periodo especificado.", "class"=>"fila_resaltada", "seleccionMultiple"=>false));
 	}
 	else {
 		if(!empty($v['LiquidacionesError'])) {
-			$fila[] = array("tipo"=>"desglose", "id"=>$id, "update"=>"desglose4", "imagen"=>array("nombre"=>"error_icono.gif", "alt"=>"Errores"), "url"=>'errores');
+			$fila[] = array("tipo"=>"desglose", "id"=>$v['Liquidacion']['id'], "update"=>"desglose4", "imagen"=>array("nombre"=>"error_icono.gif", "alt"=>"Errores"), "url"=>'errores');
 			$cuerpo[] = array("contenido"=>$fila, "opciones"=>array("title"=>"Se han encontrado errores en esta liquidacion.", "class"=>"fila_resaltada", "seleccionMultiple"=>false));			
 		}
 		else {
@@ -90,7 +91,9 @@ $opcionesTabla =  array("tabla"=> array("ordenEnEncabezados"=> false,
 										"permisos"			=> false));
 
 $accionesExtra['opciones'] = array("acciones"=>array($formulario->link("Confirmar", null, array("class"=>"link_boton", "id"=>"confirmar", "title"=>"Confirma las liquidaciones seleccionadas"))));
-echo $this->renderElement("index/index", array("accionesExtra"=>$accionesExtra, "condiciones"=>$fieldset, "cuerpo"=>$cuerpo, "opcionesTabla"=>$opcionesTabla, "opcionesForm"=>array("action"=>"preliquidar")));
+//$botonesExtra[] = $formulario->button("Limpiar", array("title"=>"Cancelar", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='limpiar';form.submit();"));
+$botonesExtra[] = $formulario->submit("Generar", array("title"=>"Realiza una Pre-liquidacion", "onclick"=>"document.getElementById('accion').value='generar'"));
+echo $this->renderElement("index/index", array("botonesExtra"=>array("opciones"=>array("botones"=>$botonesExtra)), "accionesExtra"=>$accionesExtra, "condiciones"=>$fieldset, "cuerpo"=>$cuerpo, "opcionesTabla"=>$opcionesTabla, "opcionesForm"=>array("action"=>"preliquidar")));
 /**
 * Agrego el evento click asociado al boton confirmar.
 */

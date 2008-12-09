@@ -97,14 +97,14 @@ class Descuento extends AppModel {
  * Dada un ralacion y un periodo verifica si hay un descuento pendiente y su monto.
  * @return array vacio si no hay nada que descontar.
  */
-	function buscarDescuento($opciones, $relacion) {
+	function getDescuentos($relacion, $condiciones) {
 
 		switch($opciones['tipo']) {
 			case "normal":
-				if($opciones['periodo'] == "1Q") {
+				if($opciones['periodo'] === "1Q") {
 					$descontar = 3;
 				}
-				elseif($opciones['periodo'] == "2Q" || $opciones['periodo'] == "M") {
+				elseif($opciones['periodo'] === "2Q" || $opciones['periodo'] === "M") {
 					$descontar = 5;
 				}
 				break;
