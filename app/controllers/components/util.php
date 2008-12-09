@@ -31,12 +31,6 @@ class UtilComponent extends Object {
     }
 
 
-	function dateDiff() {
-		App::import("Vendor", "dates", "pragmatia");
-		$x = new Dates();
-		d($x->dateDiff());
-	}
-
 /**
  * Dado un array proveniente desde la seleccion multiple desde una tabla index,
  * retorna un array con los ids seleccionados.
@@ -312,6 +306,30 @@ class UtilComponent extends Object {
 	}
 
 	
+	
+/**
+ * Calcula la diferencia entre dos fechas.
+ *
+ * Las fechas deben estar en formato mysql
+ * 	Formatos Admitidos de entrada:
+ *			yyyy-mm-dd hh:mm:ss
+ *			yyyy-mm-dd hh:mm
+ *			yyyy-mm-dd
+ *
+ * @param string $fechaDesde La fecha desde la cual se tomara la diferencia.
+ * @param string $fechaHasta La fecha hasta la cual se tomara la diferencia. Si no se pasa la fecha hasta,
+ * se tomara la fecha actual como segunda fecha.
+ *
+ * @return mixed 	array con dias, horas, minutos y segundos en caso de que las fechas sean validas.
+ * 					False en caso de que las fechas sean invalidas.
+ * @access public
+ */
+	function dateDiff($fechaDesde, $fechaHasta = null) {
+		App::import("Vendor", "dates", "pragmatia");
+		$Dates = new Dates();
+		return $Dates->dateDiff($fechaDesde, $fechaHasta);
+	}
+	
 
 /**
  * Suma una cantidad de intervalo a una fecha.
@@ -370,7 +388,7 @@ class UtilComponent extends Object {
  * @return mixed 	array con dias, horas, minutos y segundos en caso de que las fechas sean validas.
  * 					False en caso de que las fechas sean invalidas.
  */
-function diferenciaEntreFechas($options = null) {
+function diferenciaEntreFechas_deprecated($options = null) {
 
 	$fecha1 = strtotime($options['desde']);
 	if(empty($options['hasta'])) {
