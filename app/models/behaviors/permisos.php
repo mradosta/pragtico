@@ -27,6 +27,7 @@
  */
 class PermisosBehavior extends ModelBehavior {
 
+
 /**
  * Los equivalentes numericos de los permisos para el dueno, el grupo o rol y los otros.
  *
@@ -47,25 +48,24 @@ class PermisosBehavior extends ModelBehavior {
 
 
 /**
- * Los datos del usuario logueado.
+ * Mantendre el component session de cakePHP.
  *
  * @var array
- * @access private
+ * @access public
  */
-	private $__usuario = array();
+	public $Session = null;
 	
 
 /**
- * Constructor de la clase.
+ * Inicia el behavior para el model
+ * Si no tengo instanciado el objeto session, lo instancio y lo dejo disponible.
  *
- * Busco el usuario logueado en la session.
- * @return array Los datos del usuario logueado.
- * @access private.
+ * @return void..
+ * @access public.
  */
-	function __construct() {
-		$session = &new SessionComponent();
-		if($session->check('__Usuario')) {
-			$this->__usuario = $session->read('__Usuario');
+	function setup(&$model, $settings = array()) {		
+		if($this->Session === null) {
+			$this->Session = &new SessionComponent();
 		}
 	}
 
@@ -78,16 +78,18 @@ class PermisosBehavior extends ModelBehavior {
  * @access public.
  */    
     function beforeSave(&$model) {
-
+		
+		$usuario = $this->Session->read('__Usuario');
+		
     	if(empty($model->id)) {
 			if(!isset($model->data[$model->name]['user_id'])) {
-    			$model->data[$model->name]['user_id'] = $this->__usuario['Usuario']['id'];
+    			$model->data[$model->name]['user_id'] = $usuario['Usuario']['id'];
     		}
     		if(!isset($model->data[$model->name]['role_id'])) {
-    			$model->data[$model->name]['role_id'] = $this->__usuario['Usuario']['roles'];
+    			$model->data[$model->name]['role_id'] = $usuario['Usuario']['roles'];
     		}
     		if(!isset($model->data[$model->name]['group_id'])) {
-    			$model->data[$model->name]['group_id'] = $this->__usuario['Usuario']['preferencias']['grupo_default_id'];
+    			$model->data[$model->name]['group_id'] = $usuario['Usuario']['preferencias']['grupo_default_id'];
     		}
     		if(!isset($model->data[$model->name]['permissions'])) {
     			$model->data[$model->name]['permissions'] = $model->getPermissions();
@@ -98,33 +100,8 @@ class PermisosBehavior extends ModelBehavior {
 
 
 /**
- * Una vez que recupero los datos, recorro el array y agrego los permisos (delete o write).
- *
- * @param array $results El array con datos recuperados desde una query (find).
- * @param array $usuario Array que ocntiene la informacion del usuario y grupo/s del usuario logueado.
- * @return array El array con los resultados de la query con los campos de permisos ya agregados a cada registro.
- * @access private
- */	 
-	function __colocarPermisos($results, $usuario) {
-		foreach($results as $k=>$v) {
-			if(is_array($v)) {
-				$results[$k] = $this->__colocarPermisos($v, $usuario);
-			}
-		}
-
-		if(isset($results['user_id']) && isset($results['group_id']) && isset($results['permissions'])) {
-			return am($results, array(	'write'=>$this->__puede($usuario, $results, "write"),
-										'delete'=>$this->__puede($usuario, $results, "delete")));
-		}
-		else {
-			return $results;
-		}
-	}
-
-
-/**
  * Una vez que haya realizado una busqueda, a cada registro le agrego dos nuevos campos que
- * con una bandera booleana me indican si puedo escribis y/o borrar.
+ * con una bandera booleana me indican si puedo escribir y/o borrar.
  *
  * @param object $model Model que usa este behavior.
  * @param array $results Los resultados que retorno alguna query.
@@ -134,13 +111,60 @@ class PermisosBehavior extends ModelBehavior {
  * @access public
  */	
 	function afterFind(&$model, $results, $primary = false) {
-		if(!empty($this->__usuario)) {
-			$results = $this->__colocarPermisos($results, $this->__usuario);
+		
+		$usuario = $this->Session->read('__Usuario');
+		
+		/**
+		* Pueden existir casos, por ejemplo, cuando aun no tengo un usuario logueado y hago queries a la 
+		* base para buscar un par de usuario/clave valido, odnde no tenga el usuario en la sesion.
+		*/
+		if(!empty($usuario)) {
+			$results = $this->__colocarPermisos($results, $usuario);
 		}
 		return $results;
 	}
 
 
+/**
+ * Una vez que recupero los datos, recorro el array y agrego los permisos (delete o write).
+ *
+ * @param object $model Model que usa este behavior.
+ * @param array $results El array con datos recuperados desde una query (find).
+ * @param array $usuario Array que ocntiene la informacion del usuario y grupo/s del usuario logueado.
+ * @return array El array con los resultados de la query con los campos de permisos ya agregados a cada registro.
+ * @access public
+ */	 
+	function colocarPermisos(&$model, $results, $usuario) {
+		return $this->__colocarPermisos($results, $usuario);
+	}
+	
+	
+/**
+ * Una vez que recupero los datos, recorro el array y agrego los permisos (delete o write).
+ *
+ * @param array $results El array con datos recuperados desde una query (find).
+ * @param array $usuario Array que ocntiene la informacion del usuario y grupo/s del usuario logueado.
+ * @return array El array con los resultados de la query con los campos de permisos ya agregados a cada registro.
+ * @access private
+ */	 
+	function __colocarPermisos($results, $usuario) {
+		
+		foreach($results as $k=>$v) {
+			if(is_array($v)) {
+				$results[$k] = $this->__colocarPermisos($v, $usuario);
+			}
+		}
+		
+		if(isset($results['user_id']) && isset($results['group_id']) && isset($results['permissions'])) {
+			return array_merge($results, array(	'write'	=> $this->__puede($usuario, $results, "write"),
+												'delete'=> $this->__puede($usuario, $results, "delete")));
+		}
+		else {
+			return $results;
+		}
+	}
+	
+	
 /**
  * Esta funcion indica si un usuario puede o no realizar un acceso sobre un registro dependiendo del
  * dueno, el grupo y rol y los demas (otros).
@@ -154,6 +178,7 @@ class PermisosBehavior extends ModelBehavior {
  * del registro, retorno los permisos correspondiente a los otros.
  */ 
 	function __puede($usuario, $registro, $acceso) {
+		
 		/**
 		* Verifico si es el root.
 		*/
@@ -182,7 +207,9 @@ class PermisosBehavior extends ModelBehavior {
 		/**
 		* Verifico lo que pueden hacer los otros.
 		*/
-		if((int)$registro['permissions'] & (int)$this->__permisos['other_' . $acceso]) {
+		if($usuario['Usuario']['id'] !== $registro['user_id'] &&
+			((int)$usuario['Usuario']['grupos'] & (int)$registro['group_id'] === 0) &&
+			((int)$registro['permissions'] & (int)$this->__permisos['other_' . $acceso])) {
 			return true;
 		}
 		return false;
@@ -190,9 +217,9 @@ class PermisosBehavior extends ModelBehavior {
 
 
 /**
- * Antes de realizar cualquier busqueda, agrega las condiciones correspondientes a los permisos de cada usuario/grupo.
+ * Antes de realizar cualquier busqueda, agrega las condiciones correspondientes a los permisos de cada usuario.
  *
- * La unica posibilidad de que este metodo no agregue las condiciones de seguridad, es que explitamente vengan
+ * La unica posibilidad de que este metodo no agregue las condiciones de seguridad, es que explicitamente vengan
  * seteadas del codigo del programa alguna de estas condiciones:
  * 					- $queryData['conditions']['checkSecurity'] = false;
  * 					- $queryData['checkSecurity'] = false;
@@ -224,7 +251,7 @@ class PermisosBehavior extends ModelBehavior {
 		}
 
 		/**
-		*Verifico que se trate de alguno de los unicos 3 metodos soportados.
+		* Verifico que se trate de alguno de los unicos 3 metodos soportados.
 		*/
 		if(in_array($checkSecurity, array("read", "write", "delete"))) {
 			$seguridad = $this->__generarCondicionSeguridad($checkSecurity, $model->name);
@@ -271,38 +298,63 @@ class PermisosBehavior extends ModelBehavior {
  */
 	function __generarCondicionSeguridad($acceso, $modelName) {
 		
-		$usuarioId = $this->__usuario['Usuario']['id'];
-		$grupos = $this->__usuario['Usuario']['preferencias']['grupos_seleccionados'];
-		$roles = $this->__usuario['Usuario']['roles'];
+		$usuario = $this->Session->read('__Usuario');
+		
+		$usuarioId = $usuario['Usuario']['id'];
+		
+		/**
+		* si tiene seteadas las preferencias de los grupos_seleccionados, es porque el usuario quiere trabajar
+		* con alguno/s de su/s grupo/s, y no con todos.
+		*/
+		if(isset($usuario['Usuario']['preferencias']['grupos_seleccionados'])) {
+			$grupos = $usuario['Usuario']['preferencias']['grupos_seleccionados'];
+		}
+		else {
+			$grupos = $usuario['Usuario']['grupos'];
+		}
+		$roles = $usuario['Usuario']['roles'];
 		
 
 		/**
 		* Si se trata de un usuario perteneciente al rol administradores, que no tiene grupo (root), no verifico permisos.
 		*/
-		if(empty($this->__usuario['Grupo']) && (int)$this->__usuario['Usuario']['roles'] & 1) {
+		if(empty($usuario['Grupo']) && (int)$usuario['Usuario']['roles'] & 1) {
 			return array();
 		}
 		else {
-			$seguridad['OR'][] =
-				array("AND" => array(
+			/**
+			* Si explicitamente no ha seleccionado ningun grupo, supongo que desea ver solo sus registros...
+			* Los registros de los cuales el es dueno.
+			*/
+			if(empty($grupos)) {
+				$seguridad['OR'][] =
 					array(
 						$modelName . ".user_id" => $usuarioId,
 						"(" . $modelName . ".permissions) & " . $this->__permisos['owner_' . $acceso] => $this->__permisos['owner_' . $acceso]
-					),
-					array(
-						"(" . $modelName . ".group_id) & " . $grupos . " >" => 0,
-						"(" . $modelName . ".permissions) & " . $this->__permisos['group_' . $acceso] => $this->__permisos['group_' . $acceso]
-					)
-				));
+					);
+			}
+			else {
+				$seguridad['OR'][] =
+					array("AND" => array(
+						array(
+							$modelName . ".user_id" => $usuarioId,
+							"(" . $modelName . ".permissions) & " . $this->__permisos['owner_' . $acceso] => $this->__permisos['owner_' . $acceso]
+						),
+						array(
+							"(" . $modelName . ".group_id) & " . $grupos => $grupos,
+							"(" . $modelName . ".permissions) & " . $this->__permisos['group_' . $acceso] => $this->__permisos['group_' . $acceso]
+						)
+					));
+			}
 			
 			$seguridad['OR'][] =
 				array("AND" => array(
 					array(
-						"(" . $modelName . ".role_id) & " . $roles . " >" => 0,
+						"(" . $modelName . ".role_id) & " . $roles . " >" => $modelName . ".role_id",
 						"(" . $modelName . ".permissions) & " . $this->__permisos['group_' . $acceso] => $this->__permisos['group_' . $acceso]
 					),
 					array(
-						"(" . $modelName . ".group_id) & " . $grupos . " >" => 0,
+						"(" . $modelName . ".group_id) & " . $grupos . " >" => $modelName . ".group_id",
 						"(" . $modelName . ".permissions) & " . $this->__permisos['group_' . $acceso] => $this->__permisos['group_' . $acceso]
 					)
 				));
@@ -319,6 +371,7 @@ class PermisosBehavior extends ModelBehavior {
 		if($acceso == "delete") {
 			unset($seguridad['OR'][0]['AND'][1]);
 		}
+		//d($seguridad);
 		return $seguridad;
 	}
 
@@ -331,7 +384,7 @@ class PermisosBehavior extends ModelBehavior {
  * @return void.
  * @access public.
  */    
-	function afterSave(&$model, $created) {
+	function xafterSave(&$model, $created) {
 		/**
 		* Evito que entre en loop infinito.
 		*/
