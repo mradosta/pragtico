@@ -35,6 +35,30 @@ class FormularioHelper extends AppHelper {
 
 
 /**
+ * Adds a link to the breadcrumbs array.
+ *
+ * @param string $name Text for link
+ * @param string $link URL for link (if empty it won't be a link)
+ * @param mixed $options Link attributes e.g. array('id'=>'selected')
+ */
+	function addCrumb($name, $link = null, $options = null) {
+		$this->Html->addCrumb($name, $link, $options);
+	}
+	
+	
+/**
+ * Returns the breadcrumb trail as a sequence of &raquo;-separated links.
+ *
+ * @param  string  $separator Text to separate crumbs.
+ * @param  string  $startText This will be the first crumb, if false it defaults to first crumb in array
+ * @return string
+ */
+	function getCrumbs($separator = '&nbsp;&raquo;&nbsp;', $startText = false) {
+		return $this->Html->getCrumbs($separator, $startText);
+	}
+	
+	
+/**
  * Returns a formatted block tag, i.e DIV, SPAN, P.
  *
  * @param string $name Tag name.
@@ -766,8 +790,9 @@ class FormularioHelper extends AppHelper {
 								else {
 									$padre = "";
 								}
-								*/
 								array_unshift($acciones, $this->link($this->image("seleccionar.gif", array("alt"=>"Selecciona este registro")), null, array("class"=>"seleccionar jqmClose", "id"=>"xsxs", "title"=>$retono, "onclick"=>"retornoLov('" . $opciones['seleccionLov']['retornarA'] . "','" . $id . "', '" . str_replace("'", "\'", $retono) . "', '" . $padre . "');")));
+								*/
+								array_unshift($acciones, $this->link($this->image("seleccionar.gif", array("alt"=>"Selecciona este registro")), null, array("class"=>"seleccionar jqmClose", "id"=>"xsxs", "title"=>$retono, "onclick"=>"retornoLov('" . $opciones['seleccionLov']['retornarA'] . "','" . $id . "', '" . str_replace("'", "\'", $retono) . "', 'opener');")));
 								/**
 								* Cuando se trata de una lov que viene de una busqueda y solo retorna un registro, se lo autoselecciono y cierro la lov.
 								*/
@@ -2167,7 +2192,7 @@ class FormularioHelper extends AppHelper {
 		$opciones['elementosHtmlAttributes'] = array("class" => "checkboxMultiple");
 		$opciones['contenedorHtmlAttributes'] = array("class" => "checkboxMultiple");
 		unset($options['type']);
-		$options = am($opciones, $options);
+		$options = array_merge($opciones, $options);
         
         foreach($options['options'] as $id=>$valor) {
 	        $elementosHtmlAttributes = $options['elementosHtmlAttributes'];
@@ -2175,6 +2200,9 @@ class FormularioHelper extends AppHelper {
             $elementosHtmlAttributes['value'] = $id;
 			if(!empty($this->data[$model][$field])) {
 				$seleccionados = $this->data[$model][$field];
+			}
+			elseif(!empty($this->data[$model])) {
+				$options['value'] = Set::extract("/" . $model . "/" . $field, $this->data);
 			}
 			if((is_numeric($id) && !empty($seleccionados) && is_numeric($seleccionados) && ($id & $seleccionados))
 				|| (!empty($options['value']) && is_array($options['value']) && in_array($id, $options['value']))
@@ -2201,7 +2229,12 @@ class FormularioHelper extends AppHelper {
         else {
         	$label = $this->label($tagName);
         }
-        return $this->tag("div", $label . $control, array("class"=>"input"));
+		
+		$aclaracion = "";
+		if(!empty($options['aclaracion'])) {
+			$aclaracion = $this->tag("span", $options['aclaracion'], array("class"=>"aclaracion"));
+		}
+        return $this->tag("div", $label . $control . $aclaracion, array("class"=>"input"));
     }
 
 
