@@ -76,7 +76,7 @@ foreach ($registros as $k=>$v) {
 	else {
 		if(!empty($v['LiquidacionesError'])) {
 			$fila[] = array("tipo"=>"desglose", "id"=>$v['Liquidacion']['id'], "update"=>"desglose4", "imagen"=>array("nombre"=>"error_icono.gif", "alt"=>"Errores"), "url"=>'errores');
-			$cuerpo[] = array("contenido"=>$fila, "opciones"=>array("title"=>"Se han encontrado errores en esta liquidacion.", "class"=>"fila_resaltada", "seleccionMultiple"=>false));			
+			$cuerpo[] = array("contenido"=>$fila, "opciones"=>array("title"=>"Se han encontrado errores en esta liquidacion.", "class"=>"fila_resaltada", "seleccionMultiple"=>true));
 		}
 		else {
 			$cuerpo[] = $fila;
@@ -91,8 +91,8 @@ $opcionesTabla =  array("tabla"=> array("ordenEnEncabezados"=> false,
 										"permisos"			=> false));
 
 $accionesExtra['opciones'] = array("acciones"=>array($formulario->link("Confirmar", null, array("class"=>"link_boton", "id"=>"confirmar", "title"=>"Confirma las liquidaciones seleccionadas"))));
-//$botonesExtra[] = $formulario->button("Limpiar", array("title"=>"Cancelar", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='limpiar';form.submit();"));
-$botonesExtra[] = $formulario->submit("Generar", array("title"=>"Realiza una Pre-liquidacion", "onclick"=>"document.getElementById('accion').value='generar'"));
+$botonesExtra[] = $formulario->button("Limpiar", array("title"=>"Limpia las busquedas", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='limpiar';form.submit();"));
+$botonesExtra[] = $formulario->submit("Generar", array("title"=>"Genera una Pre-liquidacion", "onclick"=>"document.getElementById('accion').value='generar'"));
 echo $this->renderElement("index/index", array("botonesExtra"=>array("opciones"=>array("botones"=>$botonesExtra)), "accionesExtra"=>$accionesExtra, "condiciones"=>$fieldset, "cuerpo"=>$cuerpo, "opcionesTabla"=>$opcionesTabla, "opcionesForm"=>array("action"=>"preliquidar")));
 /**
 * Agrego el evento click asociado al boton confirmar.

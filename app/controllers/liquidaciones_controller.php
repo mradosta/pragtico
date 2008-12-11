@@ -37,7 +37,6 @@ class LiquidacionesController extends AppController {
 
 
 
-
 /**
  * PreLiquidar.
  * Me permite hacer una preliquidacion.
@@ -83,8 +82,7 @@ class LiquidacionesController extends AppController {
 					$relaciones = $this->Liquidacion->Relacion->find("all", array(	"contain"		=> array(	"ConveniosCategoria.ConveniosCategoriasHistorico",
 																									"Trabajador.ObrasSocial",
 																									"Empleador"),
-																		"conditions"	=> $condiciones,
-																				"limit"=>5));
+																		"conditions"	=> $condiciones));
 					/**
 					* Busco las informaciones de los conveniso que pueden necesitarse en las formulas.
 					* Lo hago de esta forma, ya que busco todo junto y no uno por uno en cada relacion por una cuestion de performance,
@@ -1283,7 +1281,6 @@ class LiquidacionesController extends AppController {
 																							"Relacion" => array("Situacion", "ConveniosCategoria"),
 																							"Trabajador" => array("ObrasSocial", "Condicion", "Siniestrado", "Localidad")),
 															 	"conditions"=> $conditions));
-				
 				$lineas = null;
 				foreach($liquidaciones as $liquidacion) {
 					$campos = $detalles;
@@ -1306,7 +1303,7 @@ class LiquidacionesController extends AppController {
 						$campos['c11']['valor'] = $liquidacion['Trabajador']['ObrasSocial']['codigo'];
 					}
 					$campos['c12']['valor'] = $liquidacion['Trabajador']['adherentes_os'];
-					$campos['c13']['valor'] = $liquidacion['Liquidacion']['total'];
+					$campos['c13']['valor'] = $liquidacion['Liquidacion']['remunerativo'] + $liquidacion['Liquidacion']['no_remunerativo'];
 					$campos['c14']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
 					$campos['c20']['valor'] = $liquidacion['Trabajador']['Localidad']['nombre'];
 					$campos['c21']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
@@ -1348,12 +1345,12 @@ class LiquidacionesController extends AppController {
 		}
 		
 		$usuario = $this->Session->read('__Usuario');
-		if(isset($usuario['Grupo'])) {
+		if(!empty($usuario['Grupo'])) {
 			foreach($usuario['Grupo'] as $grupo) {
 				$grupos[$grupo['id']] = $grupo['nombre'];
 			}
+			$this->set("grupos", $grupos);
 		}
-		$this->set("grupos", $grupos);
 	}
 	
 	
@@ -1405,8 +1402,19 @@ class LiquidacionesController extends AppController {
 		$this->set("bancos", $this->Banco->find("list", array("fields"=>array("Banco.nombre"))));
 	}
 	
+	
+	
 	function index() {
-		$this->paginate = am($this->paginate, array('conditions' => array("Liquidacion.estado"=>"Confirmada")));
+		if(!empty($this->data['Condicion']['Liquidacion-periodo'])) {
+			if($tmp = $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], "periodo")) {
+				$condiciones['Liquidacion.ano'] = $tmp['ano'];
+				$condiciones['Liquidacion.mes'] = $tmp['mes'];
+				$condiciones['Liquidacion.periodo'] = $tmp['periodo'];
+			}
+			unset($this->data['Condicion']['Liquidacion-periodo']);
+		}
+		$condiciones['Liquidacion.estado'] = "Confirmada";
+		$this->paginate = array_merge($this->paginate, array('conditions' => $condiciones));
 		parent::index();
 	}
 
