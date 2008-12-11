@@ -25,6 +25,7 @@ $campos['Area.empleador_id'] = array(	"lov"=>array(	"controller"		=>	"empleadore
 														"seleccionMultiple"	=> 	0,
 														"camposRetorno"		=>	array(	"Empleador.cuit",
 																						"Empleador.nombre")));
+$campos['Area.identificador'] = array("aclaracion" => "Se refiere a un identificador externo. No se utilizara dentro del Sistema.");
 $campos['Area.nombre'] = array();
 $campos['Area.contacto'] = array();
 $campos['Area.direccion'] = array();
