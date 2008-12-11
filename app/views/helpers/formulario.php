@@ -1393,7 +1393,9 @@ class FormularioHelper extends AppHelper {
 			$tableInfo = $modelClass->schema();
 			if(empty($options['options']) && !empty($modelClass->opciones[$field])) {
 				$options['options'] = $modelClass->opciones[$field];
-				$tipoCampo = "checkboxMultiple";
+				if(empty($tipoCampo)) {
+					$tipoCampo = "checkboxMultiple";
+				}
 			}
 			
 			/**
