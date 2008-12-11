@@ -56,7 +56,6 @@ foreach ($registros as $k=>$v) {
 	$fila[] = array("model"=>"Trabajador", "field"=>"apellido", "valor"=>$v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
 	$fila[] = array("model"=>"AusenciasMotivo", "field"=>"motivo", "valor"=>$v['AusenciasMotivo']['motivo']);
 	$fila[] = array("model"=>"Ausencia", "field"=>"desde", "valor"=>$v['Ausencia']['desde'], "tipoDato"=>"date");
-	$fila[] = array("model"=>"Ausencia", "field"=>"hasta", "valor"=>$v['Ausencia']['hasta'], "tipoDato"=>"date");
 	$fila[] = array("model"=>"Ausencia", "field"=>"dias", "valor"=>$v['Ausencia']['dias'], "tipoDato"=>"decimal");
 	$cuerpo[] = $fila;
 }

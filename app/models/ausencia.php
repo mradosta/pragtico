@@ -60,9 +60,10 @@ class Ausencia extends AppModel {
                         array('className'    => 'AusenciasSeguimiento',
                               'foreignKey'   => 'ausencia_id'));
 
-
+	
 /**
- * Agrego un nuevo campo el calculo del total de dias que duro la ausencia (salen de la suma de los dias de seguimiento).
+ * Agrego un nuevo campo el calculo del total de dias que duro la ausencia 
+ * (salen de la suma de los dias de seguimiento confirmados).
  * El seguimiento son los dias adicionales que agrega un medico, por ejemplo.
  *
  * @param array $results Los resultados que retorno alguna query.
@@ -72,71 +73,37 @@ class Ausencia extends AppModel {
  * @access public
  */	
 	function afterFind($results, $primary = false) {
-		if(!empty($results[0]['Ausencia'][0])) {
-			foreach($results as $k=>$ausencias) {
-				foreach($ausencias as $k1=>$ausencia) {
-					foreach($ausencia as $k2=>$v2) {
-						$ausenciasSeguimiento = $this->AusenciasSeguimiento->find("all", array("recursive"=>-1, "conditions"=>array("AusenciasSeguimiento.ausencia_id"=>$v2['id'], "AusenciasSeguimiento.estado"=>"Confirmado")));
-						$results[$k][$k1][$k2] = array_merge($results[$k][$k1][$k2], $this->__getDaysAndDates($ausenciasSeguimiento));
+		if($primary) {
+			foreach($results as $k=>$ausencia) {
+				if(isset($ausencia['Ausencia']['id'])) {
+					if(isset($ausencia['AusenciasSeguimiento'])) {
+						
+						$results[$k]['Ausencia']['dias'] = array_sum(Set::extract("/AusenciasSeguimiento[estado=Confirmado]/dias", $ausencia));
 					}
 				}
 			}
 		}
-		elseif($primary) {
-			foreach($results as $k=>$ausencia) {
-				if(isset($ausencia['Ausencia']['id'])) {
-					if(!isset($ausencia['AusenciasSeguimiento'])) {
-						$ausenciasSeguimiento = $this->AusenciasSeguimiento->find("all", array("recursive"=>-1, "conditions"=>array("AusenciasSeguimiento.ausencia_id"=>$ausencia['Ausencia']['id'], "AusenciasSeguimiento.estado"=>"Confirmado")));
+		else {
+			if(!empty($results[0]['Ausencia'][0])) {
+				foreach($results as $k => $v) {
+					foreach($v as $k1 => $v1) {
+						foreach($v1 as $k2 => $ausencia) {
+							if(!isset($ausencia['AusenciasSeguimiento'])) {
+								$ausenciasSeguimiento = $this->AusenciasSeguimiento->find("all", 
+																array(	"recursive"	=> -1, 
+																		"conditions"=> 
+																				array(	"AusenciasSeguimiento.ausencia_id"	=> $ausencia['id'],
+																						"AusenciasSeguimiento.estado"		=> "Confirmado")));
+							}
+							$results[$k]['Ausencia'][$k2]['dias'] = array_sum(Set::extract("/AusenciasSeguimiento/dias", $ausenciasSeguimiento));
+						}
 					}
-					else {
-						$ausenciasSeguimiento = $ausencia['AusenciasSeguimiento'];
-					}
-					$results[$k]['Ausencia'] = array_merge($results[$k]['Ausencia'], $this->__getDaysAndDates($ausenciasSeguimiento));
 				}
 			}
 		}
 		return parent::afterFind($results, $primary);
 	}
-
-
-/**
- * Dado un array (results, proveniente de un find), suma los dias de ausencias
- * y las fechas desde y hasta en las que se produjo la ausencia.
- *
- * @param array $results Un array con los resultados provenientes de un metodo find.
- * @return  array La candidad de dias total de la ausencia con la fechas minima desde y la fecha maxima hasta.
- * @access private.
- */
-	function __getDaysAndDates($results) {
-		if(!empty($results)) {
-			$total = 0;
-			$fechaMin = "2100-01-01";
-			$fechaMax = null;
-			foreach($results as $k=>$result) {
-				if(is_numeric($k) && !isset($result['AusenciasSeguimiento'])) {
-					$tmp = $result;
-					$result = null;
-					$result['AusenciasSeguimiento'] = $tmp;
-				}
-				if(!empty($result['AusenciasSeguimiento'])) {
-					$total += $result['AusenciasSeguimiento']['dias'];
-					if($result['AusenciasSeguimiento']['desde'] < $fechaMin) {
-						$fechaMin = $result['AusenciasSeguimiento']['desde'];
-					}
-					if($result['AusenciasSeguimiento']['hasta'] > $fechaMax) {
-						$fechaMax = $result['AusenciasSeguimiento']['hasta'];
-					}
-				}
-			}
-			if($fechaMin == "2100-01-01") {
-				$fechaMin = null;
-			}
-			return array("dias" => $total, "desde" => $fechaMin, "hasta" => $fechaMax);
-		}
-		else {
-			return array("dias" => 0, "desde" => "0000-00-00", "hasta" => "0000-00-00");
-		}
-	}
+	
 
 
 /**
@@ -151,10 +118,10 @@ class Ausencia extends AppModel {
 
 		$r = $this->find("all",
 			array("contain"		=> array(	"AusenciasMotivo",
-											"AusenciasSeguimiento"=>array("conditions"=> array(	"AusenciasSeguimiento.estado"	=> "Confirmado",
-																								"AusenciasSeguimiento.desde >="	=> $periodo['desde'],
-																								"AusenciasSeguimiento.hasta <="	=> $periodo['hasta']))),
-			"conditions"		=> array(	"Ausencia.relacion_id" => $relacion['Relacion']['id'])));
+											"AusenciasSeguimiento"	=> array("conditions" => 
+															array(	"AusenciasSeguimiento.estado"	=> "Confirmado")),
+			"conditions"		=> array(	"Ausencia.relacion_id" 	=> $relacion['Relacion']['id'],
+											"Ausencia.desde >="		=> $periodo['desde'])));
 
 		$return['Justificada'] = 0;
 		$return['Injustificada'] = 0;

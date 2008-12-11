@@ -33,13 +33,12 @@ $campos['Ausencia.ausencia_motivo_id'] = array(	"empty"			=> true,
 												"groupField"	=> "AusenciasMotivo.tipo",
 												"model"			=> "AusenciasMotivo",
 												"label"			=> "Motivo");
+$campos['Ausencia.desde'] = array();
 $fieldsets[] = 	array("campos"=>$campos);
 
 
 $campos = null;
 $campos['AusenciasSeguimiento.id'] = array();
-$campos['AusenciasSeguimiento.desde'] = array();
-$campos['AusenciasSeguimiento.hasta'] = array();
 $campos['AusenciasSeguimiento.dias'] = array();
 $campos['AusenciasSeguimiento.comprobante'] = array("label"=>"Presento Comprobante");
 $campos['AusenciasSeguimiento.archivo'] = array("label"=>"Comprobante", "type"=>"file", "descargar"=>true, "mostrar"=>true);
