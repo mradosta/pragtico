@@ -138,7 +138,7 @@ if(!empty($registros)) {
 	if(in_array("Ausencias", $tipos)) {
 		$columna++;
 		$documento->setCellValue($columna . "," . $fila . ":" . ($columna+1) . "," . $fila, "Ausencias", array("style"=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(15);
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(27);
 		$documento->setCellValue($columna . "," . ($fila+1), "Motivo", array("style"=>$estiloTituloColumna));
 		$columnaMotivo = $columna;
 		$columna++;
@@ -191,6 +191,7 @@ if(!empty($registros)) {
 			$documento->setDataValidation($columnaMotivo . "," . $fila, "lista", array("valores"=>$motivos));
 		}
 	}
+	$documento->doc->getActiveSheet()->freezePane("B10");
 	$documento->save($formatoDocumento);
 }
 else {

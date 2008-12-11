@@ -198,9 +198,24 @@ class DocumentoHelper extends AppHelper {
 			$mensaje = "Solo puede ingresar numeros";
 		}
 		elseif($type === "lista") {
+			/**
+			* Creo una lista qu eluego la oculto, con esto valido.
+			*/
+			preg_match("/^([A-Z]+)([0-9]+)$/", $cellName, $matches);
+			$colPosition = PHPExcel_Cell::columnIndexFromString($matches[1]) + 100;
+			$ff = 0;
+			foreach($options['valores'] as $valores) {
+				$ff++;
+				$this->doc->getActiveSheet()->setCellValueByColumnAndRow($colPosition, $ff, $valores);
+			}
+			$namedColPosition = PHPExcel_Cell::stringFromColumnIndex($colPosition);
+			$range = $namedColPosition . "1:" . $namedColPosition . $ff;
+			$name = "ValueList" . intval(rand());
+			$this->doc->addNamedRange(new PHPExcel_NamedRange($name, $this->doc->getActiveSheet(), $range));
+			//$this->doc->getActiveSheet()->getColumnDimension($namedColPosition)->setVisible(false);
 			$tipo = PHPExcel_Cell_DataValidation::TYPE_LIST;
 			$mensaje = "Debe seleccionar un valor de la lista";
-			$objValidation->setFormula1('"' . implode(",", $options['valores']) . '"');
+			$objValidation->setFormula1($name);
 			$objValidation->setShowDropDown(true);
 		}
 		$objValidation->setType( $tipo );
@@ -264,6 +279,7 @@ class DocumentoHelper extends AppHelper {
 			header("Content-Disposition: attachment;filename=planilla." . $extension);
 			header("Content-Transfer-Encoding: binary");
 		}
+		Configure::write("debug", 0);
 		$objPHPExcelWriter->save($archivo);
 		exit();
 	}
