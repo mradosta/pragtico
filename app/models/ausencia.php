@@ -121,7 +121,7 @@ class Ausencia extends AppModel {
 											"AusenciasSeguimiento"	=> array("conditions" => 
 															array(	"AusenciasSeguimiento.estado"	=> "Confirmado")),
 			"conditions"		=> array(	"Ausencia.relacion_id" 	=> $relacion['Relacion']['id'],
-											"Ausencia.desde >="		=> $periodo['desde'])));
+											"Ausencia.desde >="		=> $periodo['desde']))));
 
 		$return['Justificada'] = 0;
 		$return['Injustificada'] = 0;

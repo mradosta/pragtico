@@ -25,7 +25,7 @@ $campos['AusenciasSeguimiento.ausencia_id'] = array(	"lov"=>array("controller"	=
 													"seleccionMultiple"	=> 	0,
 													"camposRetorno"		=> 	array(	"Ausencia.desde",
 																					"AusenciasMotivo.motivo")));
-\$campos['AusenciasSeguimiento.dias'] = array();
+$campos['AusenciasSeguimiento.dias'] = array();
 $campos['AusenciasSeguimiento.comprobante'] = array("label"=>"Presento Comprobante");
 $campos['AusenciasSeguimiento.archivo'] = array("label"=>"Comprobante", "type"=>"file", "descargar"=>true, "mostrar"=>true);
 $campos['AusenciasSeguimiento.estado'] = array();
