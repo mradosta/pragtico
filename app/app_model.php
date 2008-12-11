@@ -42,7 +42,7 @@ class AppModel extends Model {
 
 
 /**
- * Los permisos con los que se guardaran los datos.
+ * Los permisos con los que se guardaran los datos por defecto.
  *
  * @var integer
  * @access protected
@@ -149,7 +149,7 @@ class AppModel extends Model {
  * @return boolean True si se pudo eliminar el registro, False en otro caso.
  * @access public
  */
-	function del($id = null, $cascade = true, $manejarTransaccion = true) {
+	function del_deprecated($id = null, $cascade = true, $manejarTransaccion = true) {
 		$returnVal = false;
 		/**
 		* Solo borro master/detail cuando es una relacion hasMany.

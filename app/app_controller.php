@@ -149,10 +149,13 @@ class AppController extends Controller {
 	}
 
 
+	function add() {
+	}
+	
 /**
  * Add.
  */
-	function add() {
+	function add_deprecated() {
 		if(!empty($this->data['Form']['accion'])) {
 			if (in_array($this->data['Form']['accion'], array("grabar", "duplicar"))) {
 				$data = $this->data;
@@ -168,6 +171,9 @@ class AppController extends Controller {
 				}
 				unset($data['Form']);
 				unset($data['Bar']);
+				debug($this->{$this->modelClass}->saveAll($data ,array('validate'=>'first')));
+				d($this->{$this->modelClass}->validationErrors);
+				d($data);
 				if($this->{$this->modelClass}->create($data) && $this->{$this->modelClass}->validates()) {
 					if($this->{$this->modelClass}->save($data)) {
 						$this->Session->setFlash("El nuevo registro se guardo correctamente.", "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
@@ -245,7 +251,7 @@ class AppController extends Controller {
  * @return void.
  * @access private
  */
-	function __setearParams($params) {
+	function __setearParams_deprecated($params) {
 		foreach($params as $k=>$v) {
 			list($model, $field) = explode(".", $k);
 			$this->data[$model][$field] = $v;
@@ -280,7 +286,7 @@ class AppController extends Controller {
 		else {
 			$opciones = array('limit' => $this->Util->traerPreferencia("filas_por_pagina"));
 		}
-		$this->paginate = am($this->paginate, $opciones);
+		$this->paginate = array_merge($this->paginate, $opciones);
 	}
 
 
@@ -304,8 +310,8 @@ class AppController extends Controller {
 		if(!empty($ids)) {
 			
 			/**
-			* Puede haber un modificador al comportamiento estandar setaeado en el model.
-			*/
+			 * Puede haber un modificador al comportamiento estandar setaeado en el model.
+			 */
 			if(isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
 				$this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
 			}
@@ -325,66 +331,91 @@ class AppController extends Controller {
  * @return void.
  * @access public
  */
-	function saveMultiple() {
-		$this->action = "edit";
-
+	function save_multiple() {
+		//$this->action = "edit";
 		if(!empty($this->data['Form']['accion'])) {
-			if ($this->data['Form']['accion'] == "grabar") {
-				$invalidFields = array();
+			if($this->data['Form']['accion'] === "grabar") {
 				$c = 0;
 
 				/**
-				* Saco lo que no tengo que grabar.
-				* En form, tenfo informacion que mande desde la vista.
-				* En Bar es informacion temporal que neesita el control relacionado.
-				*/
+				 * Saco lo que no tengo que grabar.
+				 * En form, tenfo informacion que mande desde la vista.
+				 * En Bar es informacion temporal que neesita el control relacionado.
+				 */
 				unset($this->data['Form']);
 				unset($this->data['Bar']);
+				
 				/**
-				* Me aseguro de trabajar siempre con un array de data.
-				*/
-				if(empty($this->data[0])) {
+				 * Me aseguro de trabajar siempre con un array de data.
+				 */
+				if(!isset($this->data[0])) {
 					$this->data = array($this->data);
 				}
+				
+				/**
+				 * Debo verificar si dentro del array todos los elementos son del mismo model,
+				 * o tengo elementos de algun model relacionado (detail);
+				 */
+				$ant = array_shift(array_keys($this->data[0]));
+				$mismoModel = true;
 				foreach($this->data as $k=>$v) {
-					foreach($v as $model=>$datos) {
-						$detailErrors = false;
-						if($model == $this->modelClass && isset($datos['id'])) {
-							$ids[] = $datos['id'];
-						}
-						else {
-							foreach($datos as $kDetail=>$datosDetail) {
-								$this->{$this->modelClass}->{$model}->create($datosDetail);
-								if(!$this->{$this->modelClass}->{$model}->validates()) {
-									$invalidFields[$k][$model][$kDetail] = $this->{$this->modelClass}->{$model}->validationErrors;
-									$detailErrors = true;
-								}
-							}
-						}
-					}
-
-					/**
-					* En el caso de un master/detail, solo grabo cuando valide todos los detail y el master.
-					*/
-					if($this->{$this->modelClass}->create($v) && $this->{$this->modelClass}->validates($v)) {
-						if($detailErrors === false) {
-							if($this->{$this->modelClass}->save($v)) {
-								$c++;
-							}
-						}
-					}
-					else {
-						$invalidFields[$k][$this->modelClass] = $this->{$this->modelClass}->validationErrors;
+					if($ant !== array_pop(array_keys($v))) {
+						$mismoModel = false;
 					}
 				}
 				
+				$estado = true;
+				if($mismoModel) {
+					$estado = $this->{$this->modelClass}->saveAll($this->data, array('validate'=>'first'));
+					$c = count($this->data);
+				}
+				else {
+					foreach($this->data as $k => $v) {
+						
+						/**
+						* Debo buscar los datos que tenia originalmente, para luego verificar si
+						* se han eliminado alguno de los detalles.
+						*/
+						$tmp = $v;
+						unset($tmp[$this->modelClass]);
+						$findBy = "findBy" . $this->{$this->modelClass}->primaryKey;
+						$this->{$this->modelClass}->contain(array_keys($tmp));
+						$find = $this->{$this->modelClass}->{$findBy}($v[$this->modelClass][$this->{$this->modelClass}->primaryKey]);
+							
+						$this->{$this->modelClass}->create();
+						if($this->{$this->modelClass}->saveAll($v, array('validate'=>'first'))) {
+							
+							
+							/**
+							* Debo verificar que no haya eliminado algun detalle.
+							* Si lo hizo, lo borro.
+							*/
+							foreach($tmp as $detailKey => $detailValue) {
+								$originalDetailsId = Set::extract("/" . $this->{$this->modelClass}->{$detailKey}->primaryKey, $find[$detailKey]);
+								foreach($v[$detailKey] as $tv) {
+									$postedDetailsId[] = $tv['id'];
+								}
+							}
+							$this->{$this->modelClass}->{$detailKey}->recursive = -1;
+							foreach(array_diff($originalDetailsId, $postedDetailsId) as $id) {
+								$this->{$this->modelClass}->{$detailKey}->del($id);
+							}
+							
+							$c++;
+						}
+						else {
+							$estado = false;
+							$invalidFields[$k][$this->modelClass] = $this->{$this->modelClass}->validationErrors;
+						}
+					}
+				}
 				$dbError = $this->{$this->modelClass}->getError();
 				
 				/**
-				* En base al/los errores que pueden haber determino que mensaje mostrar.
-				*/
-				if (empty($invalidFields) && empty($dbError)) {
-					if($c == 1) {
+				 * En base al/los errores que pueden haber determino que mensaje mostrar.
+				 */
+				if($estado && empty($dbError)) {
+					if($c === 1) {
 						$mensaje = "El registro se guardo correctamente.";
 					}
 					else {
@@ -394,38 +425,42 @@ class AppController extends Controller {
 					$this->History->goBack(2);
 				}
 				else {
-					/**
-					* Puede haber un modificador al comportamiento estandar setaeado en el model.
-					*/
-					if(isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
-						$this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
-					}
 
 					/**
-					* Debo recuperar nuevamente los datos porque los necesito en los controler relacionados (Lov, relacionado).
-					* Los que ya tengo, los dejo como estaban, porque se debe a que no validaron.
-					*/
-					$data = $this->data;
-					$this->data = $this->{$this->modelClass}->find("all", array("acceso"=>"write", "conditions"=>array($this->modelClass . ".id"=>$ids)));
-					foreach($data as $k=>$v) {
-						foreach($v as $model=>$datos) {
-							$this->data[$k][$model] = $datos;
+					 * Debo recuperar nuevamente los datos porque los necesito en los controler relacionados (Lov, relacionado).
+					 * Los que ya tengo, los dejo como estaban, porque se debe a que no validaron.
+					 */
+					$ids = Set::extract("/" . $this->modelClass . "/" . $this->{$this->modelClass}->primaryKey, $this->data);
+					if(!empty($ids)) {
+						$data = $this->data;
+						
+						/**
+						* Puede haber un modificador al comportamiento estandar setaeado en el model.
+						*/
+						if(isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
+							$this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
 						}
+						
+						$this->data = $this->{$this->modelClass}->find("all", 
+								array(	"acceso"	=> "write", 
+										"conditions"=> array($this->modelClass . "." . $this->{$this->modelClass}->primaryKey => $ids)));
+						foreach($data as $k=>$v) {
+							foreach($v as $model=>$datos) {
+								$this->data[$k][$model] = $datos;
+							}
+						}
+						$this->Session->setFlash("No fue posible guardar los cambios.", "error", array("errores"=>$dbError));
 					}
-				
-					/**
-					* Pongo nuevamente los errores de validacion en el model de manera que
-					* puedan ser pintados en la vista.
-					*/
-					$this->{$this->modelClass}->validationErrors = $invalidFields;
-					$this->Session->setFlash("El nuevo registro no pudo guardarse.", "error", array("errores"=>$dbError));
+					else {
+						$this->Session->setFlash("El nuevo registro no pudo guardarse.", "error", array("errores"=>$dbError));						
+					}
 				}
-				$this->render("add");
 			}
 			elseif($this->data['Form']['accion'] === "cancelar") {
 				$this->History->goBack();
 			}
 		}
+		$this->render("add");
 	}
 
 
@@ -443,9 +478,9 @@ class AppController extends Controller {
 			}
 			else {
 				/**
-				* Si no se pudo borrar y no hay errores (no fue a causa de un error), significa que no se pudo borrar
-				* por una cuestion de permisos.
-				*/
+				 * Si no se pudo borrar y no hay errores (no fue a causa de un error), significa que no se pudo borrar
+				 * por una cuestion de permisos.
+				 */
 				$errores = $this->{$this->modelClass}->getError();
 				if(empty($errores)) {
 					$this->Session->setFlash(null, 'permisos');
@@ -482,9 +517,9 @@ class AppController extends Controller {
 			}
 			else {
 				/**
-				* Si no se pudo borrar y no hay errores (no fue a causa de un error), significa que no se pudo borrar
-				* por una cuestion de permisos.
-				*/
+				 * Si no se pudo borrar y no hay errores (no fue a causa de un error), significa que no se pudo borrar
+				 * por una cuestion de permisos.
+				 */
 				$errores = $this->{$this->modelClass}->getError();
 				if(empty($errores)) {
 					$this->Session->setFlash(null, 'permisos');
