@@ -80,12 +80,10 @@ class Novedad extends AppModel {
 			return false;
 		}
 		
-		$this->begin();
-		$cOk = $cTotal = 0;
 		$predefinidos = $this->getIngresosPosibles("predefinidos");
 		
-		foreach($datos as $tipo => $data) {
-			foreach($data as $relacion_id => $registro) {
+		foreach($datos as $relacion_id => $data) {
+			foreach($data as $tipo => $registro) {
 				
 				if(!in_array($tipo, $predefinidos)) {
 					$registro['Concepto'] = $tipo;
@@ -98,21 +96,11 @@ class Novedad extends AppModel {
 				$save['Novedad']['tipo'] = $tipo;
 				$save['Novedad']['relacion_id'] = $relacion_id;
 				$save['Novedad']['data'] = serialize($registro);
-				$cTotal++;
-				if($this->save($save)) {
-					$cOk++;
-				}
+				$saveAll[] = $save;
 			}
 		}
 		
-		if($cTotal === $cOk) {
-			$this->commit();
-			return true;
-		}
-		else {
-			$this->rollBack();
-			return false;
-		}
+		return $this->saveAll($saveAll);
 	}
 
 

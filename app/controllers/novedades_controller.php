@@ -71,49 +71,61 @@ class NovedadesController extends AppController {
 						$objReader = PHPExcel_IOFactory::createReader('Excel2007');
 					}
 					$objPHPExcel = $objReader->load($this->data['Novedad']['planilla']['tmp_name']);
-					//d($objPHPExcel);
 					
-					//d($objPHPExcel->getActiveSheet()->getCell("A1")->extractAllCellReferencesInRange("A1:A10"));
+					/**
+					* Vuelvo 10 columnas antes del final, ya que puede haber validaciones, siempre estan la final.
+					*/
 					for($i = 4; $i<PHPExcel_Cell::columnIndexFromString($objPHPExcel->getActiveSheet()->getHighestColumn()); $i++) {
 						$value = $objPHPExcel->getActiveSheet()->getCellByColumnAndRow($i, 8)->getValue();
+						if(empty($value)) {
+							//d("XXX" . $i);
+							break;
+						}
+						
 						if($value === "Horas") {
-							$mapeo[] = array("Horas"		=> array("Normal"						=> $i));
-							$mapeo[] = array("Horas"		=> array("Extra 50%"					=> $i++));
-							$mapeo[] = array("Horas"		=> array("Extra 100%"					=> $i++));
+							$mapeo['Horas']['Normal']						= $i;
+							$mapeo['Horas']['Extra 50%']					= $i+1;
+							$mapeo['Horas']['Extra 100%' ] 					= $i+2;
+							$i = $i+2;
 						}
 						elseif($value === "Horas Ajuste") {
-							$mapeo[] = array("Horas"		=> array("Ajuste Normal"				=> $i));
-							$mapeo[] = array("Horas"		=> array("Ajuste Extra 50%"				=> $i++));
-							$mapeo[] = array("Horas"		=> array("Ajuste Extra 100%"			=> $i++));
+							$mapeo['Horas']['Ajuste Normal'] 				= $i;
+							$mapeo['Horas']['Ajuste Extra 50%']				= $i+1;
+							$mapeo['Horas']['Ajuste Extra 100%']			= $i+2;
+							$i = $i+2;
 						}
 						elseif($value === "Horas Nocturna") {
-							$mapeo[] = array("Horas"		=> array("Normal Nocturna"				=> $i));
-							$mapeo[] = array("Horas"		=> array("Extra Nocturna 50%"			=> $i++));
-							$mapeo[] = array("Horas"		=> array("Extra Nocturna 100%"			=> $i++));
+							$mapeo['Horas']['Normal Nocturna']				= $i;
+							$mapeo['Horas']['Extra Nocturna 50%']			= $i+1;
+							$mapeo['Horas']['Extra Nocturna 100%"']			= $i+2;
+							$i = $i+2;
 						}
 						elseif($value === "Horas Ajuste Nocturna") {
-							$mapeo[] = array("Horas"		=> array("Ajuste Normal Nocturna"		=> $i));
-							$mapeo[] = array("Horas"		=> array("Ajuste Extra Nocturna 50%"	=> $i++));
-							$mapeo[] = array("Horas"		=> array("Ajuste Extra Nocturna 100%"	=> $i++));
+							$mapeo['Horas']['Ajuste Normal Nocturna']		= $i;
+							$mapeo['Horas']['Ajuste Extra Nocturna 50%']	= $i+1;
+							$mapeo['Horas']['Ajuste Extra Nocturna 100%']	= $i+2;
+							$i = $i+2;
 						}
 						elseif($value === "Ausencias") {
-							$mapeo[] = array("Ausencias"	=> array("Motivo"						=> $i));
-							$mapeo[] = array("Ausencias"	=> array("Dias"							=> $i++));
+							$mapeo['Ausencias']['Motivo']					= $i;
+							$mapeo['Ausencias']['Dias']						= $i+1;
+							$i = $i+1;
 						}
 						elseif($value === "Vales") {
-							$mapeo[] = array("Vales"		=> array("Importe"						=> $i));
+							$mapeo['Vales']['Importe']						= $i;
 						}
 						else {
-							$mapeo[] = array($value			=> array("Valor"						=> $i));
+							$mapeo[$value]['Valor']							= $i;
 						}
 					}
 					
 					for($i=10; $i<=$objPHPExcel->getActiveSheet()->getHighestRow(); $i++) {
-						foreach($mapeo as $v) {
-							foreach($v as $k=>$v1) {
-								$valor = $objPHPExcel->getActiveSheet()->getCellByColumnAndRow($v1[key($v1)], $i)->getValue();
+						$relacionId = $objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue();
+						foreach($mapeo as $k => $v) {
+							foreach($v as $k1 => $v1) {
+								$valor = $objPHPExcel->getActiveSheet()->getCellByColumnAndRow($v1, $i)->getValue();
 								if(!empty($valor)) {
-									$datos[$k][$objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue()][key($v1)] = $valor;
+									$datos[$relacionId][$k][$k1] = $valor;
 								}
 							}
 						}
