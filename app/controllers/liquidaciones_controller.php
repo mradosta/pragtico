@@ -28,7 +28,6 @@ class LiquidacionesController extends AppController {
 	//var $components = array('Formulador', 'DebugKit.Toolbar');
 	var $components = array('Formulador');
 	//var $helpers = array("ExcelWriter", "Pdf", "Excel");
-	//var $uses = array("Liquidacion", "Relacion", "Ausencia" ,"Variable", "Siap", "Banco");
 	private $__relacion;
 	private $__variables;
 	private $__periodo;
@@ -145,9 +144,9 @@ class LiquidacionesController extends AppController {
 					$opciones['variables'] = $variables;
 					$opciones['informaciones'] = $informaciones;
 					foreach($relaciones as $k=>$relacion) {
-						if(!in_array($relacion['Relacion']['id'], $confirmadas)) {
+						//if(!in_array($relacion['Relacion']['id'], $confirmadas)) {
 							$ids[] = $this->__getLiquidacion($relacion, $opciones);
-						}
+						//}
 					}
 					
 					$condicionesLiquidacion['Liquidacion.estado'] = array("Sin Confirmar", "Confirmada");
@@ -200,18 +199,19 @@ class LiquidacionesController extends AppController {
 		
 		/**
 		* Verifico si debo hacerle algun descuento.
-		$condicionesDescuentos = null;
-		$condicionesDescuentos['desde'] = $this->__getVariableValor("#fecha_desde_liquidacion");
-		$condicionesDescuentos['hasta'] = $this->__getVariableValor("#fecha_hasta_liquidacion");
-		$condicionesDescuentos['periodo'] = $this->__getVariableValor("#periodo_liquidacion");
-		$condicionesDescuentos['tipo'] = $this->__getVariableValor("#tipo_liquidacion");
-		$condicionesDescuentos['smvm'] = $this->__getVariableValor("#smvm");
-		$descuentos = $this->Liquidacion->Relacion->Descuento->getDescuentos($relacion, $condicionesDescuentos);
-		foreach($descuentos['concepto'] as $v) {
-			$conceptosExrasSinCalcular = am($conceptosExrasSinCalcular, $v);
-		}
-		$auxiliar = am($auxiliar, $descuentos['auxiliar']);
 		*/
+		$opcionesDescuentos = null;
+		$opcionesDescuentos['desde'] = $this->__getVariableValor("#fecha_desde_liquidacion");
+		$opcionesDescuentos['hasta'] = $this->__getVariableValor("#fecha_hasta_liquidacion");
+		$opcionesDescuentos['tipo'] = $this->__getVariableValor("#tipo_liquidacion");
+		$opcionesDescuentos['periodo'] = $this->__getVariableValor("#periodo_liquidacion");
+		//$condicionesDescuentos['smvm'] = $this->__getVariableValor("#smvm");
+		$descuentos = $this->Liquidacion->Relacion->Descuento->getDescuentos($relacion, $opcionesDescuentos);
+		
+		foreach($descuentos['concepto'] as $v) {
+			$this->__setConcepto($v, "SinCalcular");
+		}
+		$this->__setAuxiliar($descuentos['auxiliar']);
 		
 
 		/**
@@ -941,8 +941,6 @@ class LiquidacionesController extends AppController {
 					/**
 					* Busco las horas trabajadas en el periodo y las cargo al array variables.
 					*/
-					$condicionesHoras = null;
-					$condicionesHoras['periodo'] = $this->__getVariableValor("#periodo_liquidacion_completo");
 					$horas = $this->Liquidacion->Relacion->Hora->getHoras($this->__relacion, $this->__periodo);
 					foreach($horas['variables'] as $horaTipo=>$horaValor) {
 						$this->__variables[$horaTipo]['valor'] = $horaValor;

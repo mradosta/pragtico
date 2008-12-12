@@ -45,39 +45,39 @@ class Descuento extends AppModel {
 	var $validate = array(
         'alta' => array(
 			array(
-				'rule'	=> VALID_DATE, 
-				'message'	=>'Debe ingresar una fecha valida.'),
+				'rule'		=> VALID_DATE, 
+				'message'	=> 'Debe ingresar una fecha valida.'),
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe ingresar una fecha.'),
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe ingresar una fecha.'),
         ),
         'desde' => array(
 			array(
-				'rule'	=> VALID_DATE, 
-				'message'	=>'Debe ingresar una fecha valida.'),
+				'rule'		=> VALID_DATE, 
+				'message'	=> 'Debe ingresar una fecha valida.'),
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe ingresar una fecha.'),
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe ingresar una fecha.'),
         ),
         'monto' => array(
 			array(
-				'rule'	=> VALID_NUMBER,
-				'message'	=>'Debe ingresar el monto a descontar.')
+				'rule'		=> VALID_NUMBER,
+				'message'	=> 'Debe ingresar el monto a descontar.')
         ),
         'tipo' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe seleccionar el tipo de descuento.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar el tipo de descuento.')
         ),
         'descripcion' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe ingresar la descripcion del descuento.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe ingresar la descripcion del descuento.')
         ),
         'relacion_id__' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe especificar la relacion laboral a la cual realizar el descuento.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar la relacion laboral a la cual realizar el descuento.')
         )
 	);
 
@@ -93,11 +93,11 @@ class Descuento extends AppModel {
 
 
 /**
- * buscarDescuento
- * Dada un ralacion y un periodo verifica si hay un descuento pendiente y su monto.
+ * getDescuentos
+ * Dada un ralacion XXXXXXXXXX.
  * @return array vacio si no hay nada que descontar.
  */
-	function getDescuentos($relacion, $condiciones) {
+	function getDescuentos($relacion, $opciones) {
 
 		switch($opciones['tipo']) {
 			case "normal":
@@ -121,6 +121,33 @@ class Descuento extends AppModel {
 				$descontar = 1;
 			break;
 		}
+		
+		$r = $this->find('all', 
+			array(
+				  	'contain'		=> 'DescuentosDetalle',
+				  	'checkSecurity'	=> false,
+					'conditions' 	=> array(
+				'Descuento.relacion_id' 						=> $relacion['Relacion']['id'],
+				'Descuento.desde >=' 							=> $opciones['desde'],
+ 				'(Descuento.descontar & ' . $descontar . ') >' 	=> 0,
+ 				'Descuento.estado' 								=> 'Activo')
+		));
+		
+/*		
+		$fields = array(
+			'Descuento.id',
+			'Descuento.tipo',
+			'Descuento.relacion_id',
+			'Descuento.descripcion',
+			'Descuento.monto',
+			'Descuento.maximo',
+			'Descuento.concurrencia',
+			'Descuento.cuotas',
+   			'COUNT(DescuentosDetalle.id) AS cuotas_descontadas',
+			'SUM(DescuentosDetalle.monto) as total_pagado'
+		);
+		
+		$sql = $this->generarSql(array("fields"=>$fields, "table"=>$table, "conditions"=>$conditions, "joins"=>$joins, "order"=>$order));
 		
 		$sql = "
 			select 		d.id,
@@ -152,61 +179,68 @@ class Descuento extends AppModel {
 		";
 
 		$r = $this->query($sql);
+		d($r);
+*/
 		$conceptos = $auxiliares = array();
 		if(!empty($r)) {
 			foreach ($r as $k=>$v) {
-				$cuotaDescontadas = $v['0']['cuotas_descontadas'];
+				$cuotaDescontadas = count($v['DescuentosDetalle']);
+				$totalDescontado = array_sum(Set::extract("/monto", $v['DescuentosDetalle']));
 				$cuotaActual = $cuotaDescontadas + 1;
-				switch($v['d']['tipo']) {
+				switch($v['Descuento']['tipo']) {
 					case "Prestamo":
 					case "Vale":
-						$valorCuota = $v['d']['monto'] / $v['d']['cuotas'];
+						$valorCuota = $v['Descuento']['monto'] / $v['Descuento']['cuotas'];
 						$formula = "=" . $valorCuota;
 						break;
 					case "Embargo":
-						$valorCuota = $v['d']['monto'] / $v['d']['cuotas'];
+						$valorCuota = $v['Descuento']['monto'] / $v['Descuento']['cuotas'];
 						break;
 					case "Cuota Alimentaria":
 						break;
 				}
 
-				//if($v['d']['maximo'] > 0) {
-				//	$valorCuota = $v['d']['maximo'];
-				//}
+				
+				/**
+				* Establezco el maximo a descontar.
+				*/
+				if($v['Descuento']['maximo'] > 0 && $valorCuota > $v['Descuento']['maximo']) {
+					$valorCuota = $v['Descuento']['maximo'];
+				}
 
 				
 				/**
 				* Busco el codigo del concepto.
 				*/
-				$modelConcepto = new Concepto();
-				$codigoConcepto = strtolower($v['d']['tipo']);
-				$concepto = $modelConcepto->findConceptos("ConceptoPuntual", $relacion, $codigoConcepto, $opciones);
+				$modelConcepto = ClassRegistry::init('Concepto');
+				$codigoConcepto = strtolower($v['Descuento']['tipo']);
+				$concepto = $modelConcepto->findConceptos("ConceptoPuntual", array_merge(array('relacion' => $relacion, 'codigoConcepto' => $codigoConcepto), $opciones));
 				if(!empty($formula)) {
 					$concepto[$codigoConcepto]['formula'] = $formula;
 				}
-				$concepto[$codigoConcepto]['debug'] = "Tipo:" . $codigoConcepto . ", Monto Total:$" . $v['d']['monto'] . ", Cuotas:" . $v['d']['cuotas'] . ", Cuotas Descontadas:" . $cuotaDescontadas . ", Saldo:$" . ($v['d']['monto'] - $v['0']['total_pagado']) . ", Cuota a Descontar en esta Liquidacion:" . $cuotaActual . ", Valor esta Cuota:$" . $valorCuota;
+				$concepto[$codigoConcepto]['debug'] = "Tipo:" . $codigoConcepto . ", Monto Total:$" . $v['Descuento']['monto'] . ", Total de Cuotas:" . $v['Descuento']['cuotas'] . ", Cuotas Descontadas:" . $cuotaDescontadas . ", Saldo:$" . ($v['Descuento']['monto'] - $totalDescontado) . ", Cuota a Descontar en esta Liquidacion:" . $cuotaActual . ", Valor esta Cuota:$" . $valorCuota;
 				$concepto[$codigoConcepto]['valor_cantidad'] = "0";
-				$concepto[$codigoConcepto]['nombre'] = $v['d']['tipo'] . " " . $v['d']['descripcion'] . " (Cuota: " . $cuotaActual . "/" . $v['d']['cuotas'] . ")";
+				$concepto[$codigoConcepto]['nombre'] = $v['Descuento']['tipo'] . " " . $v['Descuento']['descripcion'] . " (Cuota: " . $cuotaActual . "/" . $v['Descuento']['cuotas'] . ")";
 				$conceptos[] = $concepto;
 
 				/**
 				* Creo un registro el la tabla auxiliar que debera ejecutarse en caso de que se confirme la pre-liquidacion.
 				*/
 				$auxiliar = null;
-				$auxiliar['descuento_id'] = $v['d']['id'];
+				$auxiliar['descuento_id'] = $v['Descuento']['id'];
 				$auxiliar['fecha'] = "##MACRO:fecha_liquidacion##";
 				$auxiliar['liquidacion_id'] = "##MACRO:liquidacion_id##";
 				$auxiliar['monto'] = $valorCuota;
-				$auxiliar['observacion'] = "(Cuota: " . $cuotaActual . "/" . $v['d']['cuotas'] . ")";
+				$auxiliar['observacion'] = "(Cuota: " . $cuotaActual . "/" . $v['Descuento']['cuotas'] . ")";
 				$auxiliares[] = array("save"=>serialize($auxiliar), "model"=>"DescuentosDetalle");
 
 				/**
 				* Si se termino de pagar el credito, debo actualizar el estado a Finalizado.
 				*/
-				if(($v['0']['total_pagado'] + $valorCuota) >=  $v['d']['monto']) {
+				if(($totalDescontado + $valorCuota) >=  $v['Descuento']['monto']) {
 					$auxiliar = null;
 					$auxiliar['estado'] = "Finalizado";
-					$auxiliar['id'] = $v['d']['id'];
+					$auxiliar['id'] = $v['Descuento']['id'];
 					$auxiliares[] = array("save"=>serialize($auxiliar), "model"=>"Descuento");
 				}
 
@@ -214,7 +248,7 @@ class Descuento extends AppModel {
 				* Si solo uno a la vez, no puedo ponerle otro descuento, por lo tanto, salgo del foreach.
 				* De la query vienen ordenados por fecha de alta.
 				*/
-				if($v['d']['concurrencia'] == "Solo uno a la vez") {
+				if($v['Descuento']['concurrencia'] === "Solo uno a la vez") {
 					break;
 				}
 			}
