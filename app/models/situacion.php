@@ -38,5 +38,7 @@ class Situacion extends AppModel {
         )
 	);
 
+	var $hasMany = array('AusenciasMotivo');
+	
 }
 ?>

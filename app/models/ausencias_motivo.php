@@ -36,6 +36,6 @@ class AusenciasMotivo extends AppModel {
         )        
 	);
 
-
+	var $belongsTo = array('Situacion');
 }
 ?>

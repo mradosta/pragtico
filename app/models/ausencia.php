@@ -36,14 +36,22 @@ class Ausencia extends AppModel {
 	var $validate = array( 
         'relacion_id__' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe especificar la relacion laboral en la que se produjo la ausencia.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar la relacion laboral en la que se produjo la ausencia.')
         ),
         'ausencia_motivo_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe seleccionar el motivo de la ausencia.')
-        )        
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar el motivo de la ausencia.')
+        ),
+        'desde' => array(
+			array(
+				'rule'		=> VALID_DATE, 
+				'message'	=> 'Debe especificar una fecha valida.'),
+			array(
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe especificar la fecha desde la que se inicio la ausencia.'),
+        ),
 	);
 
 	var $belongsTo = array(	'Relacion' =>
@@ -58,6 +66,7 @@ class Ausencia extends AppModel {
 
 	var $hasMany = array(	'AusenciasSeguimiento' =>
                         array('className'    => 'AusenciasSeguimiento',
+							  'dependent'	 => true,
                               'foreignKey'   => 'ausencia_id'));
 
 	

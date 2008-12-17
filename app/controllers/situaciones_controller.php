@@ -25,5 +25,14 @@
  */
 class SituacionesController extends AppController {
 
-}	
+/**
+ * ausencias_motivos.
+ * Muestra via desglose los motivos de ausencias relacionados a esta situacion.
+ */
+	function ausencias_motivos($id) {
+		$this->Situacion->contain('AusenciasMotivo');
+		$this->data = $this->Situacion->read(null, $id);
+	}
+	
+}
 ?>
