@@ -45,20 +45,18 @@ class LiquidacionesController extends AppController {
 		$this->__filasPorPagina();
 		$this->paginate = array_merge($this->paginate, array('conditions' => array("Liquidacion.estado"=>"Sin Confirmar")));
 
-		$this->set("tipos", array("normal"=>"Normal", "sac"=>"Sac", "vacaciones"=>"Vacaciones", "liquidacion_final"=>"Liquidacion Final", "especial"=>"Especial"));
-
 		if($this->data['Formulario']['accion'] === "generar") {
 			/**
 			* Realizo las validaciones basicas para poder preliquidar.
 			*/
-			if(empty($this->data['Extras']['Liquidacion-periodo'])) {
+			if(empty($this->data['Condicion']['Liquidacion-periodo'])) {
 				$this->Session->setFlash("Debe especificar un periodo.", "error");
 			}
 			else {
 				/**
 				* Obtengo el periodo separado por ano, mes y periodo propiamente dicho.
 				*/
-				$this->__periodo = $this->Util->format($this->data['Extras']['Liquidacion-periodo'], "periodo");
+				$this->__periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], "periodo");
 				if($this->__periodo === false) {
 					$this->Session->setFlash("Debe especificar un periodo valido de la forma AAAAMM[1Q|2Q|M].", "error");
 					//redirect
@@ -73,10 +71,11 @@ class LiquidacionesController extends AppController {
 					/**
 					* Busco las relaciones que debo liquidar de acuerdo a los criterios ingresados.
 					*/
+					unset($this->data['Condicion']['Liquidacion-tipo']);
+					unset($this->data['Condicion']['Liquidacion-periodo']);
 					$condiciones = $this->Paginador->generarCondicion($this->data);
 					$condiciones['Relacion.ingreso <='] = $this->__periodo['hasta'];
 					$condiciones['Relacion.estado'] = "Activa";
-					
 					$this->Liquidacion->Relacion->recursive = -1;
 					$relaciones = $this->Liquidacion->Relacion->find("all", array(	"contain"		=> array(	"ConveniosCategoria.ConveniosCategoriasHistorico",
 																									"Trabajador.ObrasSocial",
@@ -106,7 +105,8 @@ class LiquidacionesController extends AppController {
 					foreach($variablesTmp as $v) {
 						$variables[$v['Variable']['nombre']] = $v['Variable'];
 					}
-					$variables['#tipo_liquidacion']['valor'] = $this->data['Extras']['Liquidacion-tipo'];
+					//$variables['#tipo_liquidacion']['valor'] = $this->data['Condicion']['Liquidacion-tipo'];
+					$variables['#tipo_liquidacion']['valor'] = "normal";
 					//d($this->__getVariableValor("#tipo_liquidacion"));
 					/**
 					* Resuelvo las variables que vienen por parametros.
@@ -144,9 +144,9 @@ class LiquidacionesController extends AppController {
 					$opciones['variables'] = $variables;
 					$opciones['informaciones'] = $informaciones;
 					foreach($relaciones as $k=>$relacion) {
-						//if(!in_array($relacion['Relacion']['id'], $confirmadas)) {
+						if(!in_array($relacion['Relacion']['id'], $confirmadas)) {
 							$ids[] = $this->__getLiquidacion($relacion, $opciones);
-						//}
+						}
 					}
 					
 					$condicionesLiquidacion['Liquidacion.estado'] = array("Sin Confirmar", "Confirmada");
@@ -435,13 +435,43 @@ class LiquidacionesController extends AppController {
 			}
 		}
 
-
-		$errors = $this->__getError();
-		if(!empty($errors)) {
-			$save = array("Liquidacion"=>array_merge($liquidacion, $totales), "LiquidacionesDetalle"=>$detalle, "LiquidacionesError"=>$errors);
+		
+		/**
+		* Genero los pagos pendientes.
+		* Diferencio en los diferentes tipos (beneficios o pesos).
+		$auxiliar = null;
+		$auxiliar['estado'] = "Pendiente";
+		$auxiliar['fecha'] = "##MACRO:fecha_liquidacion##";
+		$auxiliar['liquidacion_id'] = "##MACRO:liquidacion_id##";
+		$auxiliar['relacion_id'] = $liquidacion['relacion_id'];
+		
+		$auxiliar['monto'] = $totales['total_pesos'];
+		$auxiliar['moneda'] = "Pesos";
+		$this->__setAuxiliar(array("save"=>serialize($auxiliar), "model"=>"Pago"));
+		
+		$auxiliar['monto'] = $totales['total_beneficios'];
+		$auxiliar['moneda'] = "Beneficios";
+		$this->__setAuxiliar(array("save"=>serialize($auxiliar), "model"=>"Pago"));
+		
+		$save['Liquidacion']			= array_merge($liquidacion, $totales);
+		$save['LiquidacionesDetalle']	= $detalle;
+		
+		$auxiliar = null;
+		$auxiliar = $this->__getAuxiliar();
+		if(!empty($auxiliar)) {
+			$save['LiquidacionesAuxiliar'] = $auxiliar;
 		}
-		//"LiquidacionesAuxiliar"=>$auxiliar, 
-		//$save = array("Liquidacion"=>am($liquidacion, $totales), "LiquidacionesDetalle"=>$detalle);
+		
+		$error = null;
+		$error = $this->__getError();
+		if(!empty($error)) {
+			$save['LiquidacionesError'] = $error;
+		}
+		*/
+		
+		
+		$save['Liquidacion']			= array_merge($liquidacion, $totales);
+		$save['LiquidacionesDetalle']	= $detalle;
 		$this->Liquidacion->create();
 		if($this->Liquidacion->saveAll($save)) {
 			return $this->Liquidacion->id;
@@ -1019,11 +1049,16 @@ class LiquidacionesController extends AppController {
  * @access private.
  */
 	function __setAuxiliar($auxiliar) {
-		if(empty($this->__saveAuxiliar)) {
-			$this->__saveAuxiliar = $auxiliar;
-		}
-		else {
-			$this->__saveAuxiliar = array_merge($this->__saveAuxiliar, $auxiliar);
+		if(!empty($auxiliar)) {
+			if(!isset($auxiliar[0])) {
+				$auxiliar = array($auxiliar);
+			}
+			if(empty($this->__saveAuxiliar)) {
+				$this->__saveAuxiliar = $auxiliar;
+			}
+			else {
+				$this->__saveAuxiliar = array_merge($this->__saveAuxiliar, $auxiliar);
+			}
 		}
 	}
 
@@ -1478,7 +1513,7 @@ class LiquidacionesController extends AppController {
 					if(!empty($matches[1])) {
 						switch($matches[1]) {
 							case "fecha_liquidacion": //Indica la fecha de la liquidacion.
-								$save[$campo] = date("Y-m-d");
+								$save[$campo] = date("d/m/Y");
 								break;
 							case "liquidacion_id": //Indica el id de la liquidacion que se grabara.
 								$save[$campo] = $v['LiquidacionesAuxiliar']['liquidacion_id'];
@@ -1486,8 +1521,10 @@ class LiquidacionesController extends AppController {
 						}
 					}
 				}
-				$modelSave = new $model();
-				$modelSave->create();
+				
+				$modelSave = ClassRegistry::init($model);
+				$save = array($model => $save);
+				$modelSave->create($save);
 				if($modelSave->save($save)) {
 					$c++;
 				}
@@ -1496,21 +1533,21 @@ class LiquidacionesController extends AppController {
 			/**
 			* Cada liquidacion confirmada, es en teoria un pago pendiente, entonces lo inserto.
 			*/
-			$creacionPagos = false;
-			$creacionPagos = $this->Liquidacion->generarPagosPendientes($ids);
+			//$creacionPagos = false;
+			//$creacionPagos = $this->Liquidacion->generarPagosPendientes($ids);
 			
 
 			/**
 			* Si lo anterior salio todo ok, continuo.
 			*/
-			if($c == count($auxiliares) && $creacionPagos === true) {
-				$this->Liquidacion->contain();
+			if($c === count($auxiliares)) {
+				$this->Liquidacion->recursive = 1;
 				if($this->Liquidacion->updateAll(array("estado"=>"'Confirmada'"), array("Liquidacion.id"=>$ids))) {
 					/**
 					* Borro de la tabla auxiliar.
 					*/
 					if(!empty($idsAuxiliares)) {
-						$this->Liquidacion->LiquidacionesAuxiliar->contain();
+						$this->Liquidacion->LiquidacionesAuxiliar->recursive = 1;;
 						$this->Liquidacion->LiquidacionesAuxiliar->deleteAll(array("LiquidacionesAuxiliar.id"=>$idsAuxiliares));
 					}
 					$this->Liquidacion->commit();

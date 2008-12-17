@@ -54,9 +54,8 @@ class Ropa extends AppModel {
                         array('className'    => 'Relacion',
                               'foreignKey'   => 'relacion_id'));
 
-	var $hasMany = array(	'RopasDetalle' =>
-                        array('className'    => 'RopasDetalle',
-                              'foreignKey'   => 'ropa_id'));
+	var $hasMany = array(	'RopasDetalle' => 
+								array('dependent'	=> true));
 
 }
 ?>

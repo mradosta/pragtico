@@ -42,8 +42,8 @@ $condiciones['Condicion.Relacion-id'] = array(	"label" => "Relacion",
 //$condiciones['Condicion.Liquidacion-mes'] = array("options"=>$meses);
 //$condiciones['Condicion.Liquidacion-ano'] = array("class"=>"derecha");
 //$condiciones['Condicion.Liquidacion-periodo'] = array("options"=>$periodos);
-$condiciones['Extras.Liquidacion-tipo'] = array("options"=>$tipos, "label"=>"Tipo");
-$condiciones['Extras.Liquidacion-periodo'] = array("label"=>"Periodo", "type"=>"periodo");
+$condiciones['Condicion.Liquidacion-tipo'] = array("label"=>"Tipo", "type" => "select");
+$condiciones['Condicion.Liquidacion-periodo'] = array("label"=>"Periodo", "type"=>"periodo");
 $fieldsets[] = array("campos"=>$condiciones);
 $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"Preliquidar","imagen"=>"preliquidar.gif")));
 

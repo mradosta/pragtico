@@ -8,7 +8,8 @@ $formulario->addScript("var bandaLimpiar = function() {ajaxGet('" . $href . "/li
 $formulario->addScript("var bandaCerrarDesgloses = function() {ajaxGet('" . $href . "/cerrar_desgloses');window.location.reload(true);}; jQuery('#bandaCerrarDesgloses').bind('click', bandaCerrarDesgloses)", "ready");
 
 $iconos = $formulario->tag("p", $limpiar . $cerrar . $salir);
-$banda_izquierda = $formulario->tag("div", "", array("class"=>"banda_izquierda"));
+//$banda_izquierda = $formulario->tag("div", $formulario->tag("p", $formulario->getCrumbs(" &raquo; ", "Usted esta en: ")), array("class"=>"banda_izquierda"));
+$banda_izquierda = $formulario->tag("div", $formulario->tag("p", $formulario->getCrumbs()), array("class"=>"banda_izquierda"));
 $usuario = $session->read("__Usuario");
 $usuario = $formulario->tag("span", $usuario['Usuario']['nombre_completo']);
 echo $formulario->tag("div", $banda_izquierda . $usuario . $iconos, array("class"=>"banda"));

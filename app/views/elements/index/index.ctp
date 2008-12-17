@@ -1,4 +1,12 @@
 <?php
+
+/**
+ * Creo la miga de pan.
+ */
+$formulario->addCrumb($this->name);
+$formulario->addCrumb("Grilla");
+
+
 /**
  * Me aseguro que todas las variables queden inicializadas.
  */

@@ -95,6 +95,8 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset));
+$miga = $this->data[0]['Trabajador']['apellido'] . " " . $this->data[0]['Trabajador']['nombre'] . " (" . $this->data[0]['Empleador']['nombre'] . ")";
+echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "migaEdit" => $miga));
+
 
 ?>

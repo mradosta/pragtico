@@ -150,6 +150,20 @@ class AppController extends Controller {
 
 
 	function add() {
+		/**
+		* Si hay parametros, me esta indicando que debo cargar un campo lov desde un desglose.
+		*/
+		if(!empty($this->passedArgs)) {
+			foreach($this->passedArgs as $k=>$v) {
+				list($model, $field) = explode(".", $k);
+				$this->data[$model][$field] = $v;
+				$modelAsociado = str_replace(" ", "", Inflector::humanize(str_replace("_id", "", $field)));
+				$resultado = $this->{$model}->{$modelAsociado}->find(array($modelAsociado . "." . $this->{$model}->{$modelAsociado}->primaryKey => $v));
+				if(!empty($resultado)) {
+					$this->data[$modelAsociado] = $resultado;
+				}
+			}
+		}		
 	}
 	
 /**
@@ -255,7 +269,7 @@ class AppController extends Controller {
 		foreach($params as $k=>$v) {
 			list($model, $field) = explode(".", $k);
 			$this->data[$model][$field] = $v;
-			$modelAsociado = str_replace(" ", "", inflector::humanize(str_replace("_id", "", $field)));
+			$modelAsociado = str_replace(" ", "", Inflector::humanize(str_replace("_id", "", $field)));
 			$resultado = $this->{$model}->{$modelAsociado}->find(array($modelAsociado . "." . $this->{$model}->{$modelAsociado}->primaryKey => $v));
 			if(!empty($resultado)) {
 				$this->data[$modelAsociado] = $resultado;
@@ -364,7 +378,7 @@ class AppController extends Controller {
 					}
 				}
 				
-				$estado = true;
+				$invalidFields = null;
 				if($mismoModel) {
 					$estado = $this->{$this->modelClass}->saveAll($this->data, array('validate'=>'first'));
 					$c = count($this->data);
@@ -404,8 +418,7 @@ class AppController extends Controller {
 							$c++;
 						}
 						else {
-							$estado = false;
-							$invalidFields[$k][$this->modelClass] = $this->{$this->modelClass}->validationErrors;
+							$invalidFields[$k] = $this->{$this->modelClass}->validationErrors;
 						}
 					}
 				}
@@ -452,8 +465,13 @@ class AppController extends Controller {
 						$this->Session->setFlash("No fue posible guardar los cambios.", "error", array("errores"=>$dbError));
 					}
 					else {
-						$this->Session->setFlash("El nuevo registro no pudo guardarse.", "error", array("errores"=>$dbError));						
+						$this->Session->setFlash("El nuevo registro no pudo guardarse.", "error", array("errores"=>$dbError));
 					}
+					
+					/**
+					* Cargo la variable validationErrors con los errores que surgieron de la validacion.
+					*/
+					$this->{$this->modelClass}->validationErrors = $invalidFields;
 				}
 			}
 			elseif($this->data['Form']['accion'] === "cancelar") {

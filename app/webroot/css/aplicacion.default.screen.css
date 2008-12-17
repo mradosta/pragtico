@@ -187,10 +187,19 @@ div.encabezado ul li {
 
 div.banda_izquierda {
 	background: url(img/banda.gif) no-repeat;
-	width: 380px;
+	min-width: 380px;
 	height: 45px;
 	float: left;
 	margin-top: -4px;
+}
+
+div.banda_izquierda p {
+	padding-top: 19px;
+	padding-left: 5px;
+	float: left;
+	1font-weight: bold;
+	font-size: 12px;
+	1color: #F7CD93;
 }
 
 div.banda {
@@ -212,6 +221,14 @@ div.banda img {
 
 div.banda p {
 	margin: 5px 10px 0 0;
+}
+
+div.banda h5 {
+	width: 500px;
+	text-align: left;
+	float: left;
+	padding-top: 12px;
+	font-weight: bold;
 }
 
 div.grupos {

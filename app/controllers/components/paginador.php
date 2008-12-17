@@ -237,9 +237,9 @@ class PaginadorComponent extends Object {
  * @access public
  */
 	function paginar($condicion = array()) {
-		$condiciones = am($this->generarCondicion(), $condicion);
+		$condiciones = array_merge($this->generarCondicion(), $condicion);
 		if(!empty($this->controller->paginate['conditions'])) {
-			$condiciones = am($this->controller->paginate['conditions'], $condiciones);
+			$condiciones = array_merge($this->controller->paginate['conditions'], $condiciones);
 		}
 		
 		$this->controller->paginate['conditions'] = $condiciones;
@@ -253,12 +253,16 @@ class PaginadorComponent extends Object {
 			if(isset($this->controller->{$model}->Behaviors->Containable->runtime[$model])) {
 				$contain = $this->controller->{$model}->Behaviors->Containable->runtime[$model];
 			}
+			
 			foreach($this->controller->{$model}->totalizar as $operacion=>$campos) {
 				foreach($campos as $campo) {
-					$r = $this->controller->{$model}->find("all", array("contain"=>false, "conditions"=>$condiciones, "fields"=>"SUM(" . $model . "." . $campo . ") as total"));
-					$resultado[$campo] = $r[0][0]['total'];
+					$r = $this->controller->{$model}->find("first", array(
+												"conditions"	=> $condiciones, 
+												"fields"		=> "SUM(" . $model . "." . $campo . ") as total"));
+					$resultado[$campo] = $r[0]['total'];
 				}
 			}
+			
 			/**
 			* Restauro contain si lo tenia seteado.
 			*/
@@ -272,10 +276,10 @@ class PaginadorComponent extends Object {
 		*/
 		if(isset($this->controller->{$model}->Behaviors->Containable->runtime[$model])) {
 			if(!empty($this->controller->{$model}->Behaviors->Containable->runtime[$model]['contain'])) {
-				$this->controller->paginate = array($model=>am($this->controller->paginate, array('contain'=>$this->controller->{$model}->Behaviors->Containable->runtime[$model]['contain'])));
+				$this->controller->paginate = array($model=>array_merge($this->controller->paginate, array('contain'=>$this->controller->{$model}->Behaviors->Containable->runtime[$model]['contain'])));
 			}
 			else {
-				$this->controller->paginate = array($model=>am($this->controller->paginate, array('contain'=>false)));
+				$this->controller->paginate = array($model=>array_merge($this->controller->paginate, array('contain'=>false)));
 			}	
 		}
 

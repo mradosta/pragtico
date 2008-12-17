@@ -66,6 +66,30 @@ class Novedad extends AppModel {
                               'foreignKey'   => 'relacion_id'));
 
 
+	//debo pintar el estado
+	function afterFind($results, $primary = false) {
+		if($primary) {
+			foreach($results as $k => $v) {
+				if(isset($v['Novedad']['tipo']) && $v['Novedad']['tipo'] === 'Concepto') {
+					$conditions = array('RelacionesConcepto.concepto_id' =>	$v['Novedad']['concepto_id'],
+										'RelacionesConcepto.relacion_id' =>	$v['Novedad']['relacion_id']);
+							
+					$concepto = $this->Relacion->RelacionesConcepto->find('first', array(
+												'recursive'		=> -1,
+												'conditions' 	=> $conditions));
+					
+					if(empty($concepto['Concepto']['observacion']) && $concepto['Concepto']['observacion'] === 'Ingresado desde planilla') {
+						$results[$k]['Novedad']['existe'] = false;
+					}
+					else {
+						$results[$k]['Novedad']['existe'] = true;
+					}
+					d($r['Novedad']['relacion_id']);
+				}
+			}
+		}
+	}
+	
 /**
  * Graba las novedades provenientes desde la planilla.
  * Maneja transacciones.
@@ -83,23 +107,37 @@ class Novedad extends AppModel {
 		$predefinidos = $this->getIngresosPosibles("predefinidos");
 		
 		foreach($datos as $relacion_id => $data) {
-			foreach($data as $tipo => $registro) {
+			foreach($data as $tipo => $registros) {
+				foreach($registros as $registro) {
 				
-				if(!in_array($tipo, $predefinidos)) {
-					$registro['Concepto'] = $tipo;
-					$tipo = "Concepto";
+					$save = null;
+					$save['Novedad']['id'] = null;
+					$save['Novedad']['periodo'] = $periodo;
+					$save['Novedad']['relacion_id'] = $relacion_id;
+					
+					if(!in_array($tipo, $predefinidos)) {
+						/**
+						* Busco el id del concepto correspondiente al nombre que importe desde la planilla.
+						*/
+						$this->Relacion->RelacionesConcepto->Concepto->recursive = -1;
+						$concepto = $this->Relacion->RelacionesConcepto->Concepto->findByNombre($tipo);
+						if(empty($concepto['Concepto']['id'])) {
+							continue;
+						}
+						$save['Novedad']['concepto_id'] = $concepto['Concepto']['id'];
+						$save['Novedad']['data'] = "#valor_planilla:" . $registro;
+						$save['Novedad']['tipo'] = 'Concepto';
+					}
+					else {
+						$save['Novedad']['concepto_id'] = null;
+						$save['Novedad']['data'] = $registro;
+						$save['Novedad']['tipo'] = $tipo;
+					}
+					
+					$saveAll[] = $save;
 				}
-				
-				$save = null;
-				$save['Novedad']['id'] = null;
-				$save['Novedad']['periodo'] = $periodo;
-				$save['Novedad']['tipo'] = $tipo;
-				$save['Novedad']['relacion_id'] = $relacion_id;
-				$save['Novedad']['data'] = serialize($registro);
-				$saveAll[] = $save;
 			}
 		}
-		
 		return $this->saveAll($saveAll);
 	}
 
@@ -161,17 +199,38 @@ class Novedad extends AppModel {
 				break;
 				case "Concepto":
 					$this->Relacion->RelacionesConcepto->Concepto->recursive = -1;
-					$concepto = $this->Relacion->RelacionesConcepto->Concepto->findByNombre($data['Concepto']);
+					$concepto = $this->Relacion->RelacionesConcepto->Concepto->findByNombre($data['concepto']);
 					if(empty($concepto['Concepto']['id'])) {
 						continue;
 					}
-					$saves[$i]['RelacionesConcepto']['id'] = null;
-					$saves[$i]['RelacionesConcepto']['desde'] = $periodo['desde'];
-					$saves[$i]['RelacionesConcepto']['hasta'] = $periodo['hasta'];
-					$saves[$i]['RelacionesConcepto']['relacion_id'] = $novedad['Novedad']['relacion_id'];
-					$saves[$i]['RelacionesConcepto']['concepto_id'] = $concepto['Concepto']['id'];
-					$saves[$i]['RelacionesConcepto']['formula'] = "=" . $data['Valor'];
-					$saves[$i]['RelacionesConcepto']['observacion'] = "Ingresado desde planilla";
+					
+					/**
+					* Debo verificar que la relacion no tenga asociado el concepto ya.
+					* En caso de tenerlo, solo le modifico la formula.
+					* Si no lo tiene lo agrego con vigencia solo para el periodo.
+					*/
+					$f = $this->Relacion->RelacionesConcepto->find('first', array(
+																	'recursive'		=> -1,
+																	'conditions' 	=> array(
+													'RelacionesConcepto.relacion_id' => $novedad['Novedad']['relacion_id'], 
+													'RelacionesConcepto.concepto_id' => $concepto['Concepto']['id'])));
+					
+					if(!empty($f['RelacionesConcepto']['formula'])) {
+						$formula = str_replace('#valor_planilla', '#valor_planilla:', $f['RelacionesConcepto']['formula']);
+						$formula = str_replace('::', ':', $formula);
+						$saves[$i]['RelacionesConcepto']['id'] = $f['RelacionesConcepto']['id'];
+					}
+					else {
+						$formula = "=" . $data['valor'];
+						$saves[$i]['RelacionesConcepto']['id'] = null;
+						$saves[$i]['RelacionesConcepto']['desde'] = $periodo['desde'];
+						$saves[$i]['RelacionesConcepto']['hasta'] = $periodo['hasta'];
+						$saves[$i]['RelacionesConcepto']['relacion_id'] = $novedad['Novedad']['relacion_id'];
+						$saves[$i]['RelacionesConcepto']['concepto_id'] = $concepto['Concepto']['id'];
+						$saves[$i]['RelacionesConcepto']['observacion'] = "Ingresado desde planilla";
+					}
+					$saves[$i]['RelacionesConcepto']['formula'] = $formula;
+					
 				break;
 			}
 			$i++;

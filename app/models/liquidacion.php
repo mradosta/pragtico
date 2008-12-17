@@ -23,6 +23,17 @@
  */
 class Liquidacion extends AppModel {
 
+	/**
+	* Seteo los tipos posibles de liquidaciones que podre realizar.
+	*/
+	var $opciones = array("tipo" => array(	
+						  		"normal"			=> "Normal",
+			   					"descuentos"		=> "Descuentos",
+			   					"sac"				=> "Sac",
+		   						"vacaciones"		=> "Vacaciones",
+		   						"liquidacion_final"	=> "Liquidacion Final",
+		   						"especial"			=> "Especial"));
+	
 	var $hasMany = array(	'LiquidacionesDetalle' =>
                         array('className'   => 'LiquidacionesDetalle',
                               'foreignKey' 	=> 'liquidacion_id',
@@ -136,7 +147,7 @@ class Liquidacion extends AppModel {
  * $liquidacionesIds	array con los ids de las liquidaciones que seran confirmadas y que deben generar los pagos.
  * return true si la operacion se pudo realizar correctamente.
  */
-	function generarPagosPendientes($liquidacionesIds) {
+	function generarPagosPendientes_deprecated($liquidacionesIds) {
 		/**
 		* Busco el usurio actual guardado en la sesion.
 		*/

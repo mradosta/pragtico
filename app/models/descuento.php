@@ -128,11 +128,10 @@ class Descuento extends AppModel {
 				  	'checkSecurity'	=> false,
 					'conditions' 	=> array(
 				'Descuento.relacion_id' 						=> $relacion['Relacion']['id'],
-				'Descuento.desde >=' 							=> $opciones['desde'],
+				'Descuento.desde <=' 							=> $opciones['desde'],
  				'(Descuento.descontar & ' . $descontar . ') >' 	=> 0,
  				'Descuento.estado' 								=> 'Activo')
 		));
-		
 /*		
 		$fields = array(
 			'Descuento.id',
@@ -208,6 +207,14 @@ class Descuento extends AppModel {
 					$valorCuota = $v['Descuento']['maximo'];
 				}
 
+				/**
+				* Verifico que la cuota no sea mayor al saldo.
+				*/
+				$saldo = $v['Descuento']['monto'] - $totalDescontado;
+				if($saldo < $valorCuota) {
+					$valorCuota = $saldo;
+				}
+				
 				
 				/**
 				* Busco el codigo del concepto.
@@ -218,7 +225,7 @@ class Descuento extends AppModel {
 				if(!empty($formula)) {
 					$concepto[$codigoConcepto]['formula'] = $formula;
 				}
-				$concepto[$codigoConcepto]['debug'] = "Tipo:" . $codigoConcepto . ", Monto Total:$" . $v['Descuento']['monto'] . ", Total de Cuotas:" . $v['Descuento']['cuotas'] . ", Cuotas Descontadas:" . $cuotaDescontadas . ", Saldo:$" . ($v['Descuento']['monto'] - $totalDescontado) . ", Cuota a Descontar en esta Liquidacion:" . $cuotaActual . ", Valor esta Cuota:$" . $valorCuota;
+				$concepto[$codigoConcepto]['debug'] = "Tipo:" . $codigoConcepto . ", Monto Total:$" . $v['Descuento']['monto'] . ", Total de Cuotas:" . $v['Descuento']['cuotas'] . ", Cuotas Descontadas:" . $cuotaDescontadas . ", Saldo:$" . $saldo . ", Cuota a Descontar en esta Liquidacion:" . $cuotaActual . ", Valor esta Cuota:$" . $valorCuota;
 				$concepto[$codigoConcepto]['valor_cantidad'] = "0";
 				$concepto[$codigoConcepto]['nombre'] = $v['Descuento']['tipo'] . " " . $v['Descuento']['descripcion'] . " (Cuota: " . $cuotaActual . "/" . $v['Descuento']['cuotas'] . ")";
 				$conceptos[] = $concepto;

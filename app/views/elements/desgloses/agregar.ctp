@@ -12,14 +12,14 @@ if(!empty($url) && !isset($url[0])) {
 
 if(!empty($url)) {
 	foreach($url as $v) {
-		if(empty($v['texto']) && $v['action'] == "add") {
-			$acciones[] = $formulario->link("Nuevo", $v, array("class"=>"link_boton"));
+		if(!isset($v['texto']) && $v['action'] === "add") {
+			$texto = "Nuevo";
 		}
 		else {
 			$texto = $v['texto'];
 			unset($v['texto']);
-			$acciones[] = $formulario->link($texto, $v, array("class"=>"link_boton"));
 		}
+		$acciones[] = $formulario->link($texto, $v, array("class"=>"link_boton"));
 	}
 }
 
@@ -35,7 +35,7 @@ $opcionesTablaDefault =  array("tabla"=>
 									"zebra"				=>false,
 									"mostrarIds"		=>false));
 if(!empty($opcionesTabla)) {
-	$opcionesTabla = am($opcionesTablaDefault, $opcionesTabla);
+	$opcionesTabla = array_merge($opcionesTablaDefault, $opcionesTabla);
 }
 else {
 	$opcionesTabla = $opcionesTablaDefault;
@@ -50,5 +50,5 @@ if(isset($acciones)) {
 	$codigoHtml .= $formulario->tag("span", $acciones, array("class"=>"acciones"));
 }
 $codigoHtml = $formulario->tag("div", $codigoHtml, array("class"=>"cabecera"));
-echo $formulario->tag("div", $codigoHtml . $formulario->tag("div", $formulario->tabla(am(array("cuerpo"=>$cuerpo), $opcionesTabla)), array("class"=>"tabla")), array("class"=>"unica"));
+echo $formulario->tag("div", $codigoHtml . $formulario->tag("div", $formulario->tabla(array_merge(array("cuerpo"=>$cuerpo), $opcionesTabla)), array("class"=>"tabla")), array("class"=>"unica"));
 ?>

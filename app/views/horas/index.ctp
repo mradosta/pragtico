@@ -47,7 +47,6 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("le
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$id = $v['Hora']['id'];
 	$fila[] = array("model"=>"Hora", "field"=>"id", "valor"=>$v['Hora']['id'], "write"=>$v['Hora']['write'], "delete"=>$v['Hora']['delete']);
 	$fila[] = array("model"=>"Empleador", "field"=>"nombre", "valor"=>$v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
 	$fila[] = array("model"=>"Trabajador", "field"=>"numero_documento", "valor"=>$v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
@@ -56,7 +55,7 @@ foreach ($registros as $k=>$v) {
 	$fila[] = array("model"=>"Hora", "field"=>"cantidad", "valor"=>$v['Hora']['cantidad']);
 	$fila[] = array("model"=>"Hora", "field"=>"tipo", "valor"=>$v['Hora']['tipo']);
 	$fila[] = array("model"=>"Hora", "field"=>"estado", "valor"=>$v['Hora']['estado']);
-	if($v['Hora']['estado'] == "Liquidada") {
+	if($v['Hora']['estado'] === "Liquidada") {
 		$cuerpo[] = array("contenido"=>$fila, "opciones"=>array("seleccionMultiple"=>false, "eliminar"=>false, "modificar"=>false));
 	}
 	else {

@@ -23,7 +23,7 @@
  */
 class Sucursal extends AppModel {
 
-	var $unique = array("banco_id", "codigo");
+	//var $unique = array("banco_id", "codigo");
 	
 	var $validate = array(
         'codigo' => array(
