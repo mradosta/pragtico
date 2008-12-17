@@ -46,5 +46,5 @@ if(!empty($patrones)) {
 
 
 $fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"documentos.gif")));
-echo $this->renderElement("add/add", array("bloqueAdicional"=>$bloqueAdicional, "opcionesForm"=>array("enctype"=>"multipart/form-data"), "fieldset"=>$fieldset));
+echo $this->renderElement("add/add", array("bloqueAdicional"=>$bloqueAdicional, "opcionesForm"=>array("enctype"=>"multipart/form-data"), "fieldset"=>$fieldset, "migaEdit" => $this->data[0]['Documento']['nombre']));
 ?>
