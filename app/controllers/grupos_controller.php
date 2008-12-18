@@ -44,5 +44,48 @@ class GruposController extends AppController {
 		$this->data = $this->Grupo->read(null, $id);
 	}	
 	
+	
+/**
+ * Setea el grupo por defecto con el que trabajara un usuario y lo guarda en la sesion.
+ *
+ * @param integer $id El identificador unico del grupo a setear como grupo por defecto.
+ * @return void.
+ * @access public
+ */
+	function setear_grupo_default($id) {
+		$usuario = $this->Session->read("__Usuario");
+		if($usuario['Usuario']['grupos'] & (int)$id) {
+			$usuario['Usuario']['preferencias']['grupo_default_id'] = $id;
+			$this->Session->write("__Usuario", $usuario);
+			$this->Session->setFlash('El nuevo grupo por defecto se seteo correctamente.', 'ok');
+		}
+		else {
+			$this->Session->setFlash('Usted no tiene autorizacion para cambiar el grupo.', 'error');
+		}
+		$this->History->goBack();
+	}
+
+	
+/**
+ * Permite agregar o quitar un grupo a los grupos preseleccionados del usuario.
+ * Utilizara estos grupos para filtras las busquedas o al momento de crear un nuevo registro.
+ *
+ * @return void.
+ * @access public 
+ */
+	function cambiar_grupo_activo() {
+		if(!empty($this->params['named']['accion']) && !empty($this->params['named']['grupo_id']) && is_numeric($this->params['named']['grupo_id'])) {
+			$usuario = $this->Session->read("__Usuario");
+			if($this->params['named']['accion'] === "agregar") {
+				$usuario['Usuario']['preferencias']['grupos_seleccionados'] = $usuario['Usuario']['preferencias']['grupos_seleccionados'] + $this->params['named']['grupo_id'];
+			}
+			elseif($this->params['named']['accion'] === "quitar") {
+				$usuario['Usuario']['preferencias']['grupos_seleccionados'] = $usuario['Usuario']['preferencias']['grupos_seleccionados'] - $this->params['named']['grupo_id'];
+			}
+			$this->Session->write("__Usuario", $usuario);
+		}
+		$this->History->goBack();
+	}
+		
 }
 ?>

@@ -40,8 +40,7 @@ foreach($MenuItems as $k=>$padre) {
 		}
 		
 		$url = array(	"controller"	=> $hijo['Menu']['controller'],
-						"action"		=> $hijo['Menu']['action'],
-						$hijo['Menu']['action']);
+						"action"		=> $hijo['Menu']['action']);
 
 		if($navegacion === "ajax") {
 			$hijos .= $ajax->link($formulario->image($hijo['Menu']['imagen']) . $formulario->tag("span", $hijo['Menu']['etiqueta']), $url, array("update"=>"index", "title"=>$hijo['Menu']['ayuda']));
