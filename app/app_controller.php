@@ -366,10 +366,10 @@ class AppController extends Controller {
 				$c = 0;
 
 				/**
-				 * Saco lo que no tengo que grabar.
-				 * En form, tenfo informacion que mande desde la vista.
-				 * En Bar es informacion temporal que neesita el control relacionado.
-				 */
+				* Saco lo que no tengo que grabar.
+				* En form, tenfo informacion que mande desde la vista.
+				* En Bar es informacion temporal que neesita el control relacionado.
+				*/
 				unset($this->data['Form']);
 				unset($this->data['Bar']);
 				
@@ -381,9 +381,9 @@ class AppController extends Controller {
 				}
 				
 				/**
-				 * Debo verificar si dentro del array todos los elementos son del mismo model,
-				 * o tengo elementos de algun model relacionado (detail);
-				 */
+				* Debo verificar si dentro del array todos los elementos son del mismo model,
+				* o tengo elementos de algun model relacionado (detail);
+				*/
 				$ant = array_shift(array_keys($this->data[0]));
 				$mismoModel = true;
 				foreach($this->data as $k=>$v) {
@@ -439,9 +439,9 @@ class AppController extends Controller {
 				$dbError = $this->{$this->modelClass}->getError();
 				
 				/**
-				 * En base al/los errores que pueden haber determino que mensaje mostrar.
-				 */
-				if($estado && empty($dbError)) {
+				* En base al/los errores que pueden haber determino que mensaje mostrar.
+				*/
+				if(empty($dbError)) {
 					if($c === 1) {
 						$mensaje = "El registro se guardo correctamente.";
 					}
@@ -454,9 +454,9 @@ class AppController extends Controller {
 				else {
 
 					/**
-					 * Debo recuperar nuevamente los datos porque los necesito en los controler relacionados (Lov, relacionado).
-					 * Los que ya tengo, los dejo como estaban, porque se debe a que no validaron.
-					 */
+					* Debo recuperar nuevamente los datos porque los necesito en los controler relacionados (Lov, relacionado).
+					* Los que ya tengo, los dejo como estaban, porque se debe a que no validaron.
+					*/
 					$ids = Set::extract("/" . $this->modelClass . "/" . $this->{$this->modelClass}->primaryKey, $this->data);
 					if(!empty($ids)) {
 						$data = $this->data;
