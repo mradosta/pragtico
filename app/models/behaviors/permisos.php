@@ -368,10 +368,9 @@ class PermisosBehavior extends ModelBehavior {
 		/**
 		* Cuando hago un delete, con los permisos solo del dueno es suficiente, por lo que los del grupo los quito.
 		*/
-		if($acceso == "delete") {
+		if($acceso === "delete") {
 			unset($seguridad['OR'][0]['AND'][1]);
 		}
-		//d($seguridad);
 		return $seguridad;
 	}
 
@@ -384,15 +383,17 @@ class PermisosBehavior extends ModelBehavior {
  * @return void.
  * @access public.
  */    
-	function xafterSave(&$model, $created) {
+	function afterSave(&$model, $created) {
 		/**
 		* Evito que entre en loop infinito.
 		*/
 		if($model->name !== "Auditoria") {
-			App::import("model", "Auditoria");
-			$Auditoria = new Auditoria();
+			//App::import("model", "Auditoria");
+			//$Auditoria = new Auditoria();
+			$Auditoria = ClassRegistry::init('Auditoria');
+			$save['model'] = $model->name;
 			$save['data'] = $model->data;
-			if($created === true) {
+			if($created) {
 				$save['tipo'] = "Alta";
 			}
 			else {
@@ -412,8 +413,10 @@ class PermisosBehavior extends ModelBehavior {
  * @access public.
  */
 	function afterDelete(&$model) {
-		App::import("model", "Auditoria");
-		$Auditoria = new Auditoria();
+		//App::import("model", "Auditoria");
+		//$Auditoria = new Auditoria();
+		$Auditoria = ClassRegistry::init('Auditoria');
+		$save['model'] = $model->name;
 		$save['data'] = array($model->name => array($model->primaryKey => $model->id));
 		$save['tipo'] = "Baja";
 		$Auditoria->auditar($save);

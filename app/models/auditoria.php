@@ -57,6 +57,7 @@ class Auditoria extends AppModel {
 			$save['usuario'] = "publico";
 		}
     	$save['ip'] = $this->__getIp();
+		$save['model'] = $data['model'];
 		$save['data'] = serialize($data['data']);
 		$save['tipo'] = $data['tipo'];
 		$save['user_id'] = "1";
