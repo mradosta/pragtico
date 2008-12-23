@@ -155,7 +155,7 @@ class NovedadesController extends AppController {
 			if($this->data['Formulario']['accion'] === "buscar") {
 				if(empty($this->data['Condicion']['Relacion-trabajador_id'])
 					&& empty($this->data['Condicion']['Relacion-empleador_id'])
-					&& empty($this->data['Condicion']['Relacion-relacion_id'])) {
+					&& empty($this->data['Condicion']['Relacion-id'])) {
 					$this->Session->setFlash("Debe seleccionar al menos un criterio para la generacion de la planilla.", "error");
 				}
 				else {
