@@ -87,6 +87,14 @@ class Novedad extends AppModel {
 						$existe = $this->Relacion->RelacionesConcepto->find('first', array(
 													'recursive'		=> -1,
 													'conditions' 	=> $conditions));
+						
+						/**
+						* En caso de que exista, si dentro de la formula tiene la variable, 
+						* lo marco como que no existe porque luego la reemplazare.
+						*/
+						if(!empty($existe['RelacionesConcepto']['formula']) && strpos($existe['RelacionesConcepto']['formula'], '#valor_novedad') !== false) {
+							$existe = false;
+						}
 					}
 					elseif($v['Novedad']['tipo'] === 'Horas') {
 						$Hora = ClassRegistry::init('Hora');
@@ -259,14 +267,33 @@ class Novedad extends AppModel {
 					$saves[$i]['Descuento']['observacion'] = "Ingresado desde planilla";
 				break;
 				case "Concepto":
-					$saves[$i]['RelacionesConcepto']['id'] = null;
 					$saves[$i]['RelacionesConcepto']['desde'] = $this->format($periodo['desde'], 'date');
 					$saves[$i]['RelacionesConcepto']['hasta'] = $this->format($periodo['hasta'], 'date');
 					$saves[$i]['RelacionesConcepto']['relacion_id'] = $novedad['Novedad']['relacion_id'];
 					$saves[$i]['RelacionesConcepto']['concepto_id'] = array_shift(explode(':', $novedad['Novedad']['subtipo']));
 					$saves[$i]['RelacionesConcepto']['observacion'] = "Ingresado desde planilla";
-					$saves[$i]['RelacionesConcepto']['formula'] = '=' . $novedad['Novedad']['data'];
 					
+					$find = $this->Relacion->RelacionesConcepto->find('first', 
+							array(	'recursive' 			=> -1,
+									'conditions' => array(
+										'RelacionesConcepto.relacion_id' 	=> $saves[$i]['RelacionesConcepto']['relacion_id'],
+		   								'RelacionesConcepto.concepto_id'	=> $saves[$i]['RelacionesConcepto']['concepto_id'])
+									));
+					
+					if(empty($find)) {
+						$saves[$i]['RelacionesConcepto']['id'] = null;
+						$formula = "=" . $novedad['Novedad']['data'];
+					}
+					if(empty($find['RelacionesConcepto']['formula'])) {
+						$saves[$i]['RelacionesConcepto']['id'] = $find['RelacionesConcepto']['id'];
+						$formula = "=" . $novedad['Novedad']['data'];
+					}
+					else {
+						$saves[$i]['RelacionesConcepto']['id'] = $find['RelacionesConcepto']['id'];
+						$formula = preg_replace('/(.*)(#valor_novedad):?([0-9]+|)(.*)/', '${1}${2}:' . $novedad['Novedad']['data'] .'$4', $find['RelacionesConcepto']['formula']);
+					}
+					
+					$saves[$i]['RelacionesConcepto']['formula'] = $formula;
 				break;
 			}
 			$i++;
