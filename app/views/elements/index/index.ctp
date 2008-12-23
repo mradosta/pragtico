@@ -53,7 +53,8 @@ $acciones = $this->element("index/acciones", array("accionesExtra"=>$accionesExt
 
 
 if(!isset($opcionesTabla)) {
-	$opcionesTabla = array("tabla"=>array("permisos"=>false));
+	//$opcionesTabla = array("tabla"=>array("permisos"=>false));
+	$opcionesTabla = array();
 }
 
 /**

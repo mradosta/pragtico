@@ -75,10 +75,9 @@ class NovedadesController extends AppController {
 					/**
 					* Vuelvo 10 columnas antes del final, ya que puede haber validaciones, siempre estan la final.
 					*/
-					for($i = 4; $i<PHPExcel_Cell::columnIndexFromString($objPHPExcel->getActiveSheet()->getHighestColumn()); $i++) {
+					for($i = 4; $i < PHPExcel_Cell::columnIndexFromString($objPHPExcel->getActiveSheet()->getHighestColumn()); $i++) {
 						$value = $objPHPExcel->getActiveSheet()->getCellByColumnAndRow($i, 8)->getValue();
 						if(empty($value)) {
-							//d("XXX" . $i);
 							break;
 						}
 						
@@ -97,7 +96,7 @@ class NovedadesController extends AppController {
 						elseif($value === "Horas Nocturna") {
 							$mapeo['Horas']['Normal Nocturna']				= $i;
 							$mapeo['Horas']['Extra Nocturna 50%']			= $i+1;
-							$mapeo['Horas']['Extra Nocturna 100%"']			= $i+2;
+							$mapeo['Horas']['Extra Nocturna 100%']			= $i+2;
 							$i = $i+2;
 						}
 						elseif($value === "Horas Ajuste Nocturna") {

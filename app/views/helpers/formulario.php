@@ -456,7 +456,7 @@ class FormularioHelper extends AppHelper {
 							'simple'			=> false);
 
 		if(!empty($datos['tabla'])) {
-			$opciones = am($opciones, $datos['tabla']);
+			$opciones = array_merge($opciones, $datos['tabla']);
 		}
 
 		if(isset($this->params['named']['seleccionMultiple']) && $this->params['named']['seleccionMultiple'] == 0) {
@@ -519,9 +519,9 @@ class FormularioHelper extends AppHelper {
 			$encabezados = $datos['encabezado'];
 		}
 		
-		if(isset($datos['cuerpo']) && !empty($datos['cuerpo'])) {
+		if(!empty($datos['cuerpo'])) {
 			$cuerpo = array();
-
+			
 			if($opciones['permisos']) {
 				/**
 				* Lo agrego al array del cuerpo de la tabla.
@@ -547,12 +547,13 @@ class FormularioHelper extends AppHelper {
 						foreach($vv as $kk1=>$vv1) {
 							if(isset($vv1['field']) && $vv1['field'] == "id" && !empty($vv1['valor'])) {
 								$registroPermisos = array(
-									"tipo"=>"desglose",
-									"id"=>$vv1['valor'],
-									"update"=>"desglose_permisos_" . $vv1['model'],
-									"imagen"=>array("nombre"=>"permisos.gif",
-													"alt"=>"Permisos"),
-									"url"=>"../" . strtolower(inflector::pluralize(inflector::underscore($vv1['model']))) . "/permisos");
+									"tipo"		=> "desglose",
+									"id"		=> $vv1['valor'],
+									"update"	=> "desglose_permisos_" . $vv1['model'],
+									"imagen"	=> array('nombre'	=> 'permisos.gif',
+									"alt"		=> "Permisos"),
+									"url"		=> array(	'controller' 	=> strtolower(Inflector::pluralize(Inflector::underscore($vv1['model']))), 
+															'action' 		=> 'permisos'));
 								if($contenido === true) {
 									array_unshift($datos['cuerpo'][$kk]['contenido'], $registroPermisos);
 								}
@@ -609,15 +610,15 @@ class FormularioHelper extends AppHelper {
 						$tipoCelda = $campo['tipo'];
 					}
 
-					if($tipoCelda == "accion") {
+					if($tipoCelda === "accion") {
 						$acciones[] = $valor;
 						continue;
 					}
-					elseif($tipoCelda == "idDetail"){
+					elseif($tipoCelda === "idDetail"){
 						$detailUrls = $campo['urls'];
 						continue;
 					}
-					elseif($tipoCelda == "desglose") {
+					elseif($tipoCelda === "desglose") {
 						$sId = $campo['id'];
 						$image = $campo['url'];
 						if(isset($campo['imagen']['nombre'])) {
@@ -626,30 +627,40 @@ class FormularioHelper extends AppHelper {
 							$image = $this->image($nombre, $campo['imagen']);
 						}
 						
-						$classController = inflector::pluralize(inflector::classify($this->params['controller']));
+						//$classController = Inflector::pluralize(Inflector::classify($this->params['controller']));
+						//d($classController);
+						//d($this->params['controller']);
 
 						/**
 						* Puede que la url venga de la forma ../controller/action
 						* En este caso, solo me interesa la action.
-						*/
 						$action = $campo['url'];
 						if(strstr($campo['url'], "/")) {
 							$action = array_pop(explode("/", $campo['url']));
 						}
-
-						$acciones[] = $this->link($image, $campo['url'] . "/" . $sId,
-							array(	"tipo"=>"ajax",
-									"class"=>$classController . "-" . $action . "-" . $sId,
-									"update"=>$campo['update'] . "_" . $sId,
-									"onclick"=>"mostrarOcultarDivYTr(this, '" . $campo['update'] . "_" . $sId . "', 'tr_" . $campo['update'] . "_" . $sId . "', '" . router::url("/") . $this->params['controller'] . "');"));
+						*/
+						$url = null;
+						if(is_string($campo['url'])) {
+							$url['controller'] = $this->params['controller'];
+							$url['action'] = $campo['url'];
+						}
+						else {
+							$url = $campo['url'];
+						}
+						$url[] = $sId;
+						
+						$acciones[] = $this->link($image, $url,
+							array(	"tipo"		=> "ajax",
+									"update"	=> $campo['update'] . "_" . $sId,
+									"onclick"	=> "mostrarOcultarDivYTr(this, '" . $campo['update'] . "_" . $sId . "', 'tr_" . $campo['update'] . "_" . $sId . "', '" . Router::url("/") . $this->params['controller'] . "');"));
 									
 						/**
 						* Si esta seteada la session de este desglose, pinto este desglose.
 						*/
 						if($this->Session->check("desgloses")) {
 							$desgloses = $this->Session->read("desgloses");
-						 	if(isset($desgloses[$classController . "-" . $action . "-" . $sId])) {
-								$jsDesglose[] = "jQuery('." . $classController . "-" . $action . "-" . $sId . "').trigger('click');";
+						 	if(isset($desgloses[$this->params['controller'] . "-" . $url['action'] . "-" . $sId])) {
+								$jsDesglose[] = "jQuery('." . $this->params['controller'] . "-" . $url['action'] . "-" . $sId . "').trigger('click');";
 							}
 						}
 						
@@ -2223,7 +2234,11 @@ class FormularioHelper extends AppHelper {
 		$seleccion[] = $this->link("I", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("invertir");return false;'));
 		$seleccionString = $this->tag("div", $seleccion, array("class"=>"seleccion"));
 		
-        $lista = "\n<ul" . $this->_parseAttributes($options['contenedorHtmlAttributes']).">\n" . implode($checkbox) . "</ul>\n";
+		$lista = "";
+		if(!empty($checkbox)) {
+			$lista = "\n<ul" . $this->_parseAttributes($options['contenedorHtmlAttributes']).">\n" . implode($checkbox) . "</ul>\n";
+		}
+		
         $control = $this->tag("div", $seleccionString . $lista, array("id"=>$id, "class"=>$options['contenedorHtmlAttributes']['class']));
         if(!empty($options['label'])) {
         	$label = $this->label($options['label']);

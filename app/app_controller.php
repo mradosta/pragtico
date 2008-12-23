@@ -166,12 +166,11 @@ class AppController extends Controller {
 				* Doy tratamiento al tipo especial de relacion con sigo mismo.
 				*/
 				if($modelAsociado === 'Parent') {
-					$resultado = $this->{$model}->find('all', array('conditions' => array($model . "." . $this->{$model}->primaryKey => $v)));
+					$resultado = $this->{$model}->find('first', array('conditions' => array($model . "." . $this->{$model}->primaryKey => $v)));
 				}
 				else {
-					$resultado = $this->{$model}->{$modelAsociado}->find('all', array('conditions' => array($modelAsociado . "." . $this->{$model}->{$modelAsociado}->primaryKey => $v)));
+					$resultado = $this->{$model}->{$modelAsociado}->find('first', array('conditions' => array($modelAsociado . "." . $this->{$model}->{$modelAsociado}->primaryKey => $v)));
 				}
-				
 				if(!empty($resultado)) {
 					$this->data[$modelAsociado] = $resultado;
 				}
@@ -393,9 +392,12 @@ class AppController extends Controller {
 				}
 				
 				$invalidFields = null;
+				$cantidad = count($this->data);
 				if($mismoModel) {
-					$estado = $this->{$this->modelClass}->saveAll($this->data, array('validate'=>'first'));
-					$c = count($this->data);
+					if(!$this->{$this->modelClass}->saveAll($this->data, array('validate'=>'first'))) {
+						$invalidFields = $this->{$this->modelClass}->validationErrors;
+					}
+					$c = $cantidad;
 				}
 				else {
 					foreach($this->data as $k => $v) {
@@ -441,12 +443,12 @@ class AppController extends Controller {
 				/**
 				* En base al/los errores que pueden haber determino que mensaje mostrar.
 				*/
-				if(empty($dbError)) {
+				if(empty($dbError) && empty($invalidFields)) {
 					if($c === 1) {
 						$mensaje = "El registro se guardo correctamente.";
 					}
 					else {
-						$mensaje = "Se guardaron correctamente ". $c . " de " . count($this->data) . " registros";
+						$mensaje = "Se guardaron correctamente ". $c . " de " . $cantidad . " registros";
 					}
 					$this->Session->setFlash($mensaje, "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
 					$this->History->goBack(2);
@@ -885,11 +887,9 @@ class AppController extends Controller {
 		* Guardo en la session los desgloses que estan abiertos.
 		*/
 		if(isset($this->params['isAjax']) && isset($this->params['pass'][0]) && is_numeric($this->params['pass'][0])) {
-			if($this->Session->check("desgloses")) {
-				$desgloses = $this->Session->read("desgloses");
-			}
-			$id = $this->name . "-" . $this->action . "-" . $this->params['pass'][0];
-			$desgloses[$id] = 1;
+			$desgloses = $this->Session->read("desgloses");
+			$id = strtolower($this->name) . "-" . $this->action . "-" . $this->params['pass'][0];
+			$desgloses[$id] = true;
 			$this->Session->write("desgloses", $desgloses);
 		}
 	}
