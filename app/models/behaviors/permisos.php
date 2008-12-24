@@ -29,7 +29,7 @@ class PermisosBehavior extends ModelBehavior {
 
 
 /**
- * Los equivalentes numericos de los permisos para el dueno, el grupo o rol y los otros.
+ * Numeric equivalents to owner, group or role and others permissions.
  *
  * @var array
  * @access private
@@ -47,6 +47,26 @@ class PermisosBehavior extends ModelBehavior {
 	);
 
 
+/**
+ * Numeric equivalents to owner, group or role and others permissions 
+ * assuming that who can write, also can read and who can delete, also can read.
+ *
+ * @var array
+ * @access private
+ */
+	private $__simplifiedPermissions = array(
+		"owner_read"   => 256,
+		"owner_write"  => 384,
+		"owner_delete" => 320,
+		"group_read"   => 32,
+		"group_write"  => 48,
+		"group_delete" => 40,
+	   	"other_read"   => 4,
+	   	"other_write"  => 6,
+	   	"other_delete" => 5
+	);
+	
+	
 /**
  * Mantendre el component session de cakePHP.
  *
@@ -121,6 +141,7 @@ class PermisosBehavior extends ModelBehavior {
 		if(!empty($usuario)) {
 			$results = $this->__colocarPermisos($results, $usuario);
 		}
+		
 		return $results;
 	}
 
@@ -215,7 +236,32 @@ class PermisosBehavior extends ModelBehavior {
 		return false;
 	}
 
+	
+	function setSecurityAccess(&$model, $access) {
+		if(in_array($access, array("read", "write", "delete"))) {
+			
+			/**
+			* Assign same security access to related models.
+			*/
+			foreach (array_merge($model->hasMany, $model->hasOne) as $assoc => $data) {
+				$model->{$assoc}->access = $access;
+			}
+			$model->access = $access;
+			
+		} else {
+			trigger_error(__("Security access method not supported. Please use one of this: 'read', 'write' or 'delete'", true), E_USER_ERROR);
+		}
+	}
+	
 
+	function getSecurityAccess(&$model) {
+		if(!empty($model->access)) {
+			return $model->access;
+		}
+		return false;
+	}
+	
+	
 /**
  * Antes de realizar cualquier busqueda, agrega las condiciones correspondientes a los permisos de cada usuario.
  *
@@ -231,21 +277,23 @@ class PermisosBehavior extends ModelBehavior {
  */
 	function beforeFind(&$model, $queryData) {
 
-		if(isset($queryData['checkSecurity'])) {
-			$queryData['conditions']['checkSecurity'] = $queryData['checkSecurity'];
+		if (!empty($model->access)) {
+			$securityAccess = $model->access;
+		} elseif (isset($queryData['checkSecurity'])) {
+			$securityAccess = $queryData['checkSecurity'];
 			unset($queryData['checkSecurity']);
+		} elseif (isset($queryData['conditions']['checkSecurity'])) {
+			$securityAccess = $queryData['conditions']['checkSecurity'];
+			unset($queryData['conditions']['checkSecurity']);
 		}
-		else if(!isset($queryData['conditions']['checkSecurity'])) {
-			$queryData['conditions']['checkSecurity'] = "read";
+		else {
+			$securityAccess = "read";
 		}
-
-		$checkSecurity = $queryData['conditions']['checkSecurity'];
-		unset($queryData['conditions']['checkSecurity']);
 
 		/**
 		* La unica posibilidad de no chequear la seguridad, es que me venga explicitamente especificado no hacerlo.
 		*/
-		if($checkSecurity === false) {
+		if($securityAccess === false) {
 			unset($queryData['conditions']['checkSecurity']);
 			return $queryData;
 		}
@@ -253,15 +301,19 @@ class PermisosBehavior extends ModelBehavior {
 		/**
 		* Verifico que se trate de alguno de los unicos 3 metodos soportados.
 		*/
-		if(in_array($checkSecurity, array("read", "write", "delete"))) {
-			$seguridad = $this->__generarCondicionSeguridad($checkSecurity, $model->name);
+		if(in_array($securityAccess, array("read", "write", "delete"))) {
+			$seguridad = $this->__generarCondicionSeguridad($securityAccess, $model->name);
 		}
 		else {
 			trigger_error("Metodo de seguridad no soportado.", E_USER_ERROR);
 		}
 
-		if(!empty($seguridad)) {
-			$queryData['conditions'] = array_merge($queryData['conditions'], $seguridad);
+		if (!empty($seguridad)) {
+			if (!empty($queryData['conditions'])) {
+				$queryData['conditions'] = array_merge($queryData['conditions'], $seguridad);
+			} else {
+				$queryData['conditions'] = $seguridad;
+			}
 		}
 		return $queryData;
 	}
@@ -315,6 +367,11 @@ class PermisosBehavior extends ModelBehavior {
 		$roles = $usuario['Usuario']['roles'];
 		
 
+		if($acceso === "delete") {
+			$resultPermissions = $this->__simplifiedPermissions;
+		} else {
+			$resultPermissions = $this->__permisos;
+		}
 		/**
 		* Si se trata de un usuario perteneciente al rol administradores, que no tiene grupo (root), no verifico permisos.
 		*/
@@ -330,7 +387,7 @@ class PermisosBehavior extends ModelBehavior {
 				$seguridad['OR'][] =
 					array(
 						$modelName . ".user_id" => $usuarioId,
-						"(" . $modelName . ".permissions) & " . $this->__permisos['owner_' . $acceso] => $this->__permisos['owner_' . $acceso]
+						"(" . $modelName . ".permissions) & " . $this->__simplifiedPermissions['owner_' . $acceso] => $resultPermissions['owner_' . $acceso]
 					);
 			}
 			else {
@@ -338,11 +395,11 @@ class PermisosBehavior extends ModelBehavior {
 					array("AND" => array(
 						array(
 							$modelName . ".user_id" => $usuarioId,
-							"(" . $modelName . ".permissions) & " . $this->__permisos['owner_' . $acceso] => $this->__permisos['owner_' . $acceso]
+							"(" . $modelName . ".permissions) & " . $this->__simplifiedPermissions['owner_' . $acceso] => $resultPermissions['owner_' . $acceso]
 						),
 						array(
 							"(" . $modelName . ".group_id) & " . $grupos => $grupos,
-							"(" . $modelName . ".permissions) & " . $this->__permisos['group_' . $acceso] => $this->__permisos['group_' . $acceso]
+							"(" . $modelName . ".permissions) & " . $this->__simplifiedPermissions['group_' . $acceso] => $resultPermissions['group_' . $acceso]
 						)
 					));
 			}
@@ -351,17 +408,17 @@ class PermisosBehavior extends ModelBehavior {
 				array("AND" => array(
 					array(
 						"(" . $modelName . ".role_id) & " . $roles . " >" => $modelName . ".role_id",
-						"(" . $modelName . ".permissions) & " . $this->__permisos['group_' . $acceso] => $this->__permisos['group_' . $acceso]
+						"(" . $modelName . ".permissions) & " . $this->__simplifiedPermissions['group_' . $acceso] => $resultPermissions['group_' . $acceso]
 					),
 					array(
 						"(" . $modelName . ".group_id) & " . $grupos . " >" => $modelName . ".group_id",
-						"(" . $modelName . ".permissions) & " . $this->__permisos['group_' . $acceso] => $this->__permisos['group_' . $acceso]
+						"(" . $modelName . ".permissions) & " . $this->__simplifiedPermissions['group_' . $acceso] => $resultPermissions['group_' . $acceso]
 					)
 				));
 			
 			$seguridad['OR'][] =
 				array(
-					"(" . $modelName . ".permissions) & " . $this->__permisos['other_' . $acceso] => $this->__permisos['other_' . $acceso]
+					"(" . $modelName . ".permissions) & " . $this->__simplifiedPermissions['other_' . $acceso] => $resultPermissions['other_' . $acceso]
 				);
 		}
 
@@ -371,6 +428,7 @@ class PermisosBehavior extends ModelBehavior {
 		if($acceso === "delete") {
 			unset($seguridad['OR'][0]['AND'][1]);
 		}
+		//return array();
 		return $seguridad;
 	}
 

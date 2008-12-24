@@ -505,26 +505,31 @@ class AppController extends Controller {
  * @return void.
  * @access public
  */
-   	function delete($id = false) {
-        if ($id && is_numeric($id)) {
-			if ($this->{$this->modelClass}->delete($id)) {
-				$this->Session->setFlash("El registro se elimino correctamente.", "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
+   	function delete($id = null) {
+        if (!empty($id) && is_numeric($id)) {
+			$ids[] = $id;
+		} else {
+			$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
+		}
+			
+		if ($this->{$this->modelClass}->deleteAll(array($this->modelClass . '.' . $this->{$this->modelClass}->primaryKey => $ids))) {
+			$cantidad = count($ids);
+			if($cantidad === 1) {
+				$mensaje = 'El registro se elimino correctamente.';
+			} else {
+				$mensaje = 'Se eliminaron ' . $cantidad . ' registros correctamente.';
+			}
+			$this->Session->setFlash($mensaje, 'ok', array('warnings' => $this->{$this->modelClass}->getWarning()));
+		} else {
+			$errores = $this->{$this->modelClass}->getError();
+			if (empty($errores)) {
+				$this->Session->setFlash(null, 'permisos');
 			}
 			else {
-				/**
-				 * Si no se pudo borrar y no hay errores (no fue a causa de un error), significa que no se pudo borrar
-				 * por una cuestion de permisos.
-				 */
-				$errores = $this->{$this->modelClass}->getError();
-				if(empty($errores)) {
-					$this->Session->setFlash(null, 'permisos');
-				}
-				else {
-					$this->Session->setFlash("No fue posible eliminar el registro.", "error", array("errores"=>$errores));
-				}			
-			}
-        }
-		$this->History->goBack(1);
+				$this->Session->setFlash('No fue posible eliminar el/los registro/s.', 'error', array('errores' => $errores));
+			}			
+		}
+		$this->History->goBack();
 	}
 
 
@@ -538,8 +543,10 @@ class AppController extends Controller {
    function deleteMultiple() {
    
 		$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
+		$this->{$this->modelClass}->begin();
 		if(!empty($ids)) {
 			if ($this->{$this->modelClass}->deleteAll(array($this->modelClass . "." . $this->{$this->modelClass}->primaryKey => $ids))) {
+				d("X");
 				$cantidad = count($ids);
 				if($cantidad == 1) {
 					$mensaje = "Se elimino " . $cantidad . " registro correctamente.";
@@ -550,6 +557,7 @@ class AppController extends Controller {
 				$this->Session->setFlash($mensaje, "ok");
 			}
 			else {
+				d("Y");
 				/**
 				 * Si no se pudo borrar y no hay errores (no fue a causa de un error), significa que no se pudo borrar
 				 * por una cuestion de permisos.
@@ -818,7 +826,7 @@ class AppController extends Controller {
 			}
 		}
 		
-		$registro['Usuario'] = $usuario['Usuario'];
+		$registro['Usuario'] = $usuarioSession['Usuario'];
 		$registro['Grupo'] = $grupos;
 		$registro['Rol'] = $roles;
 		$registro['Usuario']['permisos'] = $pd;
@@ -846,8 +854,7 @@ class AppController extends Controller {
 		* En accionesWhiteList llevo las acciones que no deben chquearse la seguridad.
 		*/
 		if(!$this->Session->check("__Seguridad.accionesWhiteList")) {
-			App::import("model", "Accion");
-			$Accion = new Accion();
+			$Accion = ClassRegistry::init('Accion');
 			$data = $Accion->find("all", array("checkSecurity"=>false, "contain"=>"Controlador", "conditions"=>array("Accion.seguridad"=>"No")));
 			$accionesWhiteList = array();
 			foreach($data as $v) {

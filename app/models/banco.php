@@ -40,7 +40,8 @@ class Banco extends AppModel {
 
 	var $hasMany = array(	'Sucursal' =>
                         array('className'    => 'Sucursal',
-                              'foreignKey'   => 'banco_id'));	
+							  'dependent'	 => true,
+                              'foreignKey'   => 'banco_id'));
 
 }
 ?>

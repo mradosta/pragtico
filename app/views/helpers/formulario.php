@@ -1036,7 +1036,7 @@ class FormularioHelper extends AppHelper {
 							mensaje = mensaje + " registros?";
 						}
 						if(confirm(mensaje)) {
-							var action = "' . $this->Html->url("/") . $this->params['controller'] . '/deleteMultiple";
+							var action = "' . $this->Html->url("/") . $this->params['controller'] . '/delete";
 							jQuery("#form")[0].action = action;
 							jQuery("#form")[0].submit();
 						}

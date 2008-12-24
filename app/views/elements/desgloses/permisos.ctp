@@ -1,7 +1,7 @@
 <?php
 
 $atributosCelda = $atributosFila = null;
-$id = $registro[inflector::classify($this->name)]['id'];
+$id = $registro[Inflector::classify($this->name)]['id'];
 $options = 	array(	"tipo"	=>"ajax",
 					"update"=>"div_permisos_" . $id);
 

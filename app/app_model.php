@@ -80,6 +80,19 @@ class AppModel extends Model {
 
 	
 /**
+ * There's no necessary the order by statement when deleting, so force not to use it.
+ * TODO: Revisar si no hay una forma de no hacer. Es algo mio, ya que cake no lo agrega.
+ *
+ * @return void.
+ * @access public
+*/
+	function xbeforeDelete($cascade = true) {
+		$this->order = null;	
+		return parent::beforeDelete($cascade);
+	}
+	
+	
+/**
  * Permite eliminar multiples registros de un Model en base a condiciones.
  *
  * @param mixed $conditions Condiciones que se deben cumplir para eliminar los registros.
@@ -238,6 +251,44 @@ class AppModel extends Model {
 	}    
     
     
+	function del($id = null, $cascade = true, $transactional = false) {
+		
+		$this->order = null;
+		
+		$this->setSecurityAccess('delete');
+		/**
+		 * Asuming dependent related models, need to be deleted as a transaction.
+		 */
+		if ($transactional === true) {
+			$this->begin();
+		}
+		if (parent::del($id, $cascade)) {
+			if ($transactional === true) {
+				$this->commit();
+			}
+			return true;
+		} else {
+			if ($transactional === true) {
+				$this->rollback();
+			}
+			return false;
+		}
+	}
+	
+	
+	function deleteAll($conditions, $cascade = true, $callbacks = false) {
+		
+		$this->begin();
+		if(parent::deleteAll($conditions, $cascade, $callbacks)) {
+			$this->commit();
+			return true;
+		} else {
+			$this->rollback();
+			return false;
+		}
+	}
+	
+	
 /**
  * Sobreescribo la function save().
  * Maneja transacciones por defecto cuando de hay una relacion de tipo hasMany (master/detail).
