@@ -138,28 +138,28 @@ class FormatoHelper extends AppHelper {
 		
 		switch($type) {
 			case "periodo":
-				if(!empty($valor) && preg_match(VALID_PERIODO, strtoupper($valor), $matches)) {
+				if(!empty($valor) && (preg_match(VALID_PERIODO, strtoupper($valor), $matches) || preg_match('/^(20\d\d)(0[1-9]|1[012])$/', $valor, $matches))) {
 					$tmp = null;
 					$tmp['periodoCompleto'] = $matches[0];
 					$tmp['ano'] = $matches[1];
 					$tmp['mes'] = $matches[2];
-					$tmp['periodo'] = $matches[3];
+					$tmp['periodo'] = (!empty($matches[3]))?$matches[3]:'M';
 					$value = array(	"mes"	=> $tmp['mes'],
 									"ano"	=> $tmp['ano']);
 
-					if ($matches[3] == "1Q") {
+					if ($tmp['periodo'] === "1Q") {
 						$value = array_merge($value, array("dia"=>"01"));
 						$fechaDesde = $this->format($value, array("type"=>"date", "format"=>"Y-m-d"));
 						$value = array_merge($value, array("dia"=>"15"));
 						$fechaHasta = $this->format($value, array("type"=>"date", "format"=>"Y-m-d"));
 					}
-					elseif ($matches[3] == "2Q") {
+					elseif ($tmp['periodo'] === "2Q") {
 						$value = array_merge($value, array("dia"=>"16"));
 						$fechaDesde = $this->format($value, array("type"=>"date", "format"=>"Y-m-d"));
 						$value = array_merge($value, array("dia"=>$this->format($value, array("type"=>"ultimoDiaDelMes"))));
 						$fechaHasta = $this->format($value, array("type"=>"date", "format"=>"Y-m-d"));
 					}
-					elseif ($matches[3] == "M") {
+					elseif ($tmp['periodo'] === "M") {
 						$value = array_merge($value, array("dia"=>"01"));
 						$fechaDesde = $this->format($value, array("type"=>"date", "format"=>"Y-m-d"));
 						$value = array_merge($value, array("dia"=>$this->format($value, array("type"=>"ultimoDiaDelMes"))));
@@ -167,7 +167,6 @@ class FormatoHelper extends AppHelper {
 					}
 					$tmp['desde'] = $fechaDesde;
 					$tmp['hasta'] = $fechaHasta;
-					$return = null;
 					$return = $tmp;
 				}
 				else {
