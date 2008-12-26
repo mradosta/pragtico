@@ -108,14 +108,14 @@ class FormularioHelper extends AppHelper {
 		* Genero la leyenda.
 		*/
 		$legend = "";
-		if(in_array($this->action, array("update", "edit", "saveMultiple"))) {
-			$legend = "Modificar ";
+		if($this->action === "edit") {
+			$legend = __('Edit', true) . ' ';
 		}
 		elseif($this->action === "add") {
-			$legend = "Nuevo ingreso de ";
+			$legend = __('New', true) . ' ';
 		}
 		elseif($this->action === "index") {
-			$legend = "Buscar ";
+			$legend = __('Search', true) . ' ';
 		}
 		if(!empty($opcionesFs['fieldset']['legend'])) {
 			if($opcionesFs['fieldset']['legend'][0] !== "!") {
@@ -208,6 +208,7 @@ class FormularioHelper extends AppHelper {
 					$salidaMaster .= $this->input($campo, $opcionesCampo);
 				}
 				$fsMaster[$k][] = $this->bloque($salidaMaster, $fieldset['opciones']);
+				//$fsMaster[$k][] = $this->tag('div', $salidaMaster, $fieldset['opciones']);
 				$salidaMaster = null;
 
 				if(!empty($fieldsetsDetail)) {
@@ -1600,7 +1601,7 @@ class FormularioHelper extends AppHelper {
 														"funcionBusqueda"		=>"autocompleteBuscar",
 														"onItemSelect"			=>false);
 
-				$options = am($opcionesDefaultAutocomplete, $options);
+				$options = array_merge($opcionesDefaultAutocomplete, $options);
 
 				/**
 				* Si no ha especificado una url ni un div para hacer update, asumo un input autocomplete comun.
@@ -1925,9 +1926,9 @@ class FormularioHelper extends AppHelper {
 										"retornarA"			=> $id,
 										"targetId" 			=> "target_" . $rnd);
 										
-				$options['lov'] = am($opcionesLov, $options['lov']);
+				$options['lov'] = array_merge($opcionesLov, $options['lov']);
 				$options['lov']['camposRetorno'] = implode("|", $options['lov']['camposRetorno']);
-				$url = strstr(router::url($options['lov']), router::url("/"));
+				$url = strstr(Router::url($options['lov']), Router::url("/"));
 
 
 				/**
@@ -1947,7 +1948,9 @@ class FormularioHelper extends AppHelper {
 				/**
 				* El control lov se abre en un popup o en un div, de acuerdo a las preferencias.
 				*/
-				if($this->traerPreferencia("lov_apertura") == "popup") {
+				$options['after'] = $this->link($lupa, null, array('onclick' => "abrirVentana('" . $rnd . "', '" . $url . "')")) . $options['after'];
+				/*
+				if($this->traerPreferencia("lov_apertura") === "popup") {
 					$options['after'] = $this->link($lupa, null, array('onclick' => "abrirVentana('" . $rnd . "', '" . $url . "')")) . $options['after'];
 				}
 				else {
@@ -1955,7 +1958,7 @@ class FormularioHelper extends AppHelper {
 					$cerrar = $this->link("", null, array("title"=>"Cerrar", "class"=>"jqmCloseEstilo jqmClose"));
 					$target = "target_" . $rnd;
 					$targetDiv = $this->bloque($this->image("cargando.gif", array("alt"=>"Cargando...")) . "<h1>Aguarde por favor...</h1>", array("div"=>array("id"=>$target)));
-					$divLov = $this->bloque($cerrar . $targetDiv, array("div"=>array("class"=>"jqmWindow", "id"=>$idDiv)));
+					$divLov = $this->tag('div', $cerrar . $targetDiv, array("class"=>"jqmWindow", "id"=>$idDiv));
 
 					
 					$divLov .= $this->codeBlock('
@@ -1973,7 +1976,7 @@ class FormularioHelper extends AppHelper {
 					');
 					$options['after'] = $this->link($lupa, null) . $divLov . $options['after'];
 				}
-
+				*/
 
 				unset($options['type']);
 				unset($options['lov']);
@@ -2015,10 +2018,10 @@ class FormularioHelper extends AppHelper {
 					}
 				}
 				
-				$options = am($options, array(	'id'		=> $id . "__",
-												'readonly'	=> true,
-												'type'		=> $type,
-												'class'		=> 'izquierda'));
+				$options = array_merge($options, array(	'id'		=> $id . "__",
+														'readonly'	=> true,
+														'type'		=> $type,
+														'class'		=> 'izquierda'));
 
 				list($model, $field) = explode(".", $tagName);
 				if(!empty($this->data[$model][$field . "__"])) {
@@ -2078,12 +2081,11 @@ class FormularioHelper extends AppHelper {
  * @access public
  */
 	function button($caption = '', $options = array()) {
-		$return = '<div class="submit">';
-		$return .= '<input type="button" value="' . $caption . '" ' . $this->_parseAttributes($options, null, '', '') . ' />';
-		$return .= '</div>';
-		return $return;
+		$return = '<input type="button" value="' . $caption . '" ' . $this->_parseAttributes($options, null, '', '') . ' />';
+		return $this->tag('div', $return, array('class'=>'submit'));
 	}
 
+	
  /**
  * Returns a formatted SELECT element.
  *
@@ -2103,63 +2105,6 @@ class FormularioHelper extends AppHelper {
 		return $this->Form->select($fieldName, $options, $selected, $attributes, $showEmpty);
 	}
 
-/**
- * Closes an HTML form.
- *
- * @access public
- * @return string A closing FORM tag.
- */
-	function end_deprecated($model = null) {
-		return $this->Form->end($model);
-	}
-
-/**
- * Creates a password input widget.
- *
- * @param  string  $fieldName Name of a field, like this "Modelname.fieldname", "Modelname/fieldname" is deprecated
- * @param  array	$options Array of HTML attributes.
- * @return string
- */
-	function password_deprecated($fieldName, $options = array()) {
-	return $this->Form->password($fieldName, $options);
-	}
-
-
-/**
- * Returns a set of SELECT elements for a full datetime setup: day, month and year, and then time.
- *
- * @param string $tagName Prefix name for the SELECT element
- * @param string $dateFormat DMY, MDY, YMD or NONE.
- * @param string $timeFormat 12, 24, NONE
- * @param string $selected Option which is selected.
- * @return string The HTML formatted OPTION element
- */
-	function dateTime_deprecated($tagName, $dateFormat = 'D/M/Y', $timeFormat = '24', $selected = null, $attributes = array(), $showEmpty = true) {
-		return $this->Form->dateTime($tagName, $dateFormat, $timeFormat, $selected, $attributes, $showEmpty);
-	}
-
-/**
- */
-	function rangoFechas($tagName, $options = array(), $separador="</td><td>", $seleccionarHora=false) {
-		$options_desde = $options;
-		$options_hasta = $options;
-		if(isset($options['label']['text']) && !empty($options['label']['text']))
-		{
-			$options_desde['label']['text'] = $options['label']['text'] . " desde";
-			$options_hasta['label']['text'] = $options['label']['text'] . " hasta";
-			$options_desde['div'] = false;
-			$options_hasta['div'] = false;
-		}
-
-		$tagNameDesde = str_replace(".", "", Inflector::camelize($tagName . "__Desde"));
-		$tagNameHasta = str_replace(".", "", Inflector::camelize($tagName . "__Hasta"));
-
-		$return = "";
-		$return .= $this->inputFecha($tagName . "__desde", $options_desde, $seleccionarHora);
-		$return .= $separador;
-		$return .= $this->inputFecha($tagName . "__hasta", $options_hasta, $seleccionarHora);
-		return $return;
-	}
 
 	function __inputFecha($tagName, $options = array(), $seleccionarHora=false) {
 		$this->setEntity($tagName);
@@ -2180,14 +2125,6 @@ class FormularioHelper extends AppHelper {
 			//');
 		}
 		return $codigo_html;
-	}
-
-	function inputFechaHora_deprecated($tagName, $options = array()) {
-		return $this->inputFecha($tagName, $options, true);
-	}
-
-	function inputHora_deprecated($tagName, $options = array()) {
-		return $this->dateTime($tagName, 'D/M/Y', '24', null, array("class"=>"select_hora"));
 	}
 
 

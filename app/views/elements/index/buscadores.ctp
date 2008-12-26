@@ -26,8 +26,8 @@ if(false) {
 	* Creo los botones de los buscadores.
 	* El boton de Buscar y el de Limpiar.
 	*/
-	$out[] = $formulario->button("Limpiar", array("class"=>"buscador_ajax", "title"=>"Limpiar los criterios de busqueda"));
-	$out[] = $formulario->button("Buscar", array("class"=>"buscador_ajax", "title"=>"Realizar la busqueda"));
+	$out[] = $formulario->button(__("Clear", true), array("class"=>"buscador_ajax", "title"=>"Limpiar los criterios de busqueda"));
+	$out[] = $formulario->button(__("Search", true), array("class"=>"buscador_ajax", "title"=>"Realizar la busqueda"));
 	
 	/**
 	* Si esta seteado el valor retornarA y es un request AJAX, significa que es una lov (div).
@@ -84,8 +84,8 @@ else {
 	*/
 	$out[] = $formulario->input("Formulario.layout", array("type"=>"hidden", "value"=>$this->layout));
 	
-	$limpiar = $formulario->button("Limpiar", array("title"=>"Limpiar los criterios de busqueda", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='limpiar';form.action='" . Router::url(array("controller" => $this->params['controller'], "action" => $opcionesForm['action'])) . "';form.submit();"));
-	$buscar = $formulario->submit("Buscar", array("title"=>"Realizar la busqueda", "onclick"=>"document.getElementById('accion').value='buscar'"));
+	$limpiar = $formulario->button(__("Clear", true), array("class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='limpiar';form.action='" . Router::url(array("controller" => $this->params['controller'], "action" => $opcionesForm['action'])) . "';form.submit();"));
+	$buscar = $formulario->submit(__("Search", true), array("onclick"=>"document.getElementById('accion').value='buscar'"));
 	
 	if(isset($botonesExtra['opciones']['botones'])) {
 		foreach($botonesExtra['opciones']['botones'] as $v) {

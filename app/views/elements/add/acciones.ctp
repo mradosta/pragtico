@@ -5,10 +5,11 @@
 * El boton de Grabar y cancelar.
 */
 $accion = $formulario->input("Form.accion", array("type"=>"hidden", "id"=>"accion", "value"=>"grabar"));
-$cancelar = $formulario->button("Cancelar", array("class"=>"cancelar", "onclick"=>"document.getElementById('accion').value='cancelar';form.submit();"));
-$duplicar = $formulario->button("Duplicar", array("onclick"=>"document.getElementById('accion').value='duplicar';document.getElementById('form').action='" . Router::url("/") . $this->params['controller'] . "/add';form.submit();"));
-$eliminar = $formulario->button("Eliminar", array("class"=>"boton_rojo", "onclick"=>"document.getElementById('accion').value='duplicar';document.getElementById('form').action='" . Router::url("/") . $this->params['controller'] . "/add';form.submit();"));
-$grabar = $formulario->submit("Grabar", array("id"=>"boton_grabar", "onclick"=>"document.getElementById('accion').value='grabar';form.submit();"));
+$cancelar = $formulario->button(__('Cancel', true), array("class"=>"cancelar", "onclick"=>"document.getElementById('accion').value='cancelar';form.submit();"));
+$action = Router::url('/') . $this->params['controller'] . '/add';
+$duplicar = $formulario->button(__('Duplicate', true), array("onclick"=>"document.getElementById('accion').value='duplicar';document.getElementById('form').action='" . $action . "';form.submit();"));
+$eliminar = $formulario->button(__('Delete', true), array("class"=>"boton_rojo", "onclick"=>"document.getElementById('accion').value='delete';document.getElementById('form').action='" . $action . "';form.submit();"));
+$grabar = $formulario->submit(__('Save', true), array("id"=>"boton_grabar", "onclick"=>"document.getElementById('accion').value='grabar';form.submit();"));
 
 if(isset($accionesExtra['opciones']['acciones'])) {
 	foreach($accionesExtra['opciones']['acciones'] as $v) {

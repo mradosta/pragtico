@@ -98,7 +98,7 @@ div.links_externos a img {
  */
 div.index .botones_acciones {
 	float: left;
-	width: 445px;
+	width: 410px;
 }
 
 div.index div.bloque_superior_index {
@@ -113,7 +113,6 @@ div.index div.bloque_superior_index {
  * PAGINADOR
  */
 div.index div.paginador_superior {
-	width: 326px;
 	padding-top: 9px;
 	margin-right: 13px;
 	float: right;
@@ -197,9 +196,7 @@ div.banda_izquierda p {
 	padding-top: 19px;
 	padding-left: 5px;
 	float: left;
-	1font-weight: bold;
 	font-size: 12px;
-	1color: #F7CD93;
 }
 
 div.banda {

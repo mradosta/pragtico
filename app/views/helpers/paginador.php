@@ -45,21 +45,21 @@ class PaginadorHelper extends AppHelper {
  */
 	function sort($title, $key = null, $options = array()) {
 		$options['class'] = "sin_orden";
-		$options['title'] = "Ordenar en forma ascendente";
+		$options['title'] = __("Ascending order", true);
 		$options['url'] = array();
 		
 		$modelClass = Inflector::classify($this->params['controller']);
 		if(isset($this->params['paging'][$modelClass]['options']['order'])) {
-			if($options['model'] . "." . $this->Paginator->sortKey() == key($this->params['paging'][$modelClass]['options']['order'])) {
+			if($options['model'] . "." . $this->Paginator->sortKey() === key($this->params['paging'][$modelClass]['options']['order'])) {
 				if($key == $this->Paginator->sortKey()) {
-					if($this->Paginator->sortDir() == "asc") {
+					if($this->Paginator->sortDir() === "asc") {
 						$options['class'] = "asc_orden";
-						$options['title'] = "Ordenar en forma descendente";
+						$options['title'] = __("Descending order", true);
 						$options['url'] = array("direction"=>"desc");
 					}
 					else {
 						$options['class'] = "desc_orden";
-						$options['title'] = "Ordenar en forma ascendente";
+						$options['title'] = __("Ascending order", true);
 						$options['url'] = array("direction"=>"asc");
 					}
 				}
@@ -73,20 +73,20 @@ class PaginadorHelper extends AppHelper {
 			$instanciaModel =& ClassRegistry::getObject($modelClass);
 			if(!empty($instanciaModel->order)) {
 				if(!empty($instanciaModel->order[$modelClass . "." . $key])) {
-					if($instanciaModel->order[$modelClass . "." . $key] == "desc") {
+					if($instanciaModel->order[$modelClass . "." . $key] === "desc") {
 						$options['class'] = "desc_orden";
-						$options['title'] = "Ordenar en forma ascendente";
+						$options['title'] = __("Ascending order", true);
 						$options['url'] = array("direction"=>"asc");
 					}
-					elseif($instanciaModel->order[$modelClass . "." . $key] == "asc") {
+					elseif($instanciaModel->order[$modelClass . "." . $key] === "asc") {
 						$options['class'] = "asc_orden";
-						$options['title'] = "Ordenar en forma descendente";
+						$options['title'] = __("Descending order", true);
 						$options['url'] = array("direction"=>"desc");
 					}
 				}
 				else {
 					$options['class'] = "sin_orden";
-					$options['title'] = "Ordenar en forma ascendente";
+					$options['title'] = __("Ascending order", true);
 					$options['url'] = array("direction"=>"asc");
 				}
 			}
@@ -132,62 +132,56 @@ class PaginadorHelper extends AppHelper {
 		
 		switch ($accion) {
 			case "posicion": 
-				return $this->Paginator->counter(array('format'=>'Pagina %page% de %pages%, %current% de %count%'));
+				return $this->Paginator->counter(array('format'=>__('page %page% of %pages%. %count% records.', true)));
 			break;
 			
 			case "navegacion":
 
-				$out = array();
+				$out = null;
 				
-				if($this->traerPreferencia("paginacion") == "ajax") {
+				/*
+				if($this->traerPreferencia("paginacion") === "ajax") {
 					$targetId = "index";
 					//$targetId = "contenido";
-					if($this->traerPreferencia("lov_apertura") != "popup" && !empty($opciones['url']['targetId'])) {
+					if($this->traerPreferencia("lov_apertura") !== "popup" && !empty($opciones['url']['targetId'])) {
 						$targetId = $opciones['url']['targetId'];
 					}
 					$this->Paginator->options(am(array('update'=>$targetId), $this->Paginator->options, $opciones));
 				}
+				*/
 				$params=$this->Paginator->params();
 				
-				
-				$retorno = null;
 				if (isset($params['page']) && $params['page']>1) {
-					$retorno.= $this->Paginator->link($this->Formulario->image("primera.gif", array("alt"=>"Ir al primer registro")), array('page'=>1), array_merge(array('escape'=>false), $opciones));
-				}
-				else {
-					$retorno.= $this->Formulario->image("primeraoff.gif");
+					$retorno = $this->Paginator->link($this->Formulario->image("primera.gif", array("alt"=>__("Go to first page", true))), array('page'=>1), array_merge(array('escape'=>false), $opciones));
+				} else {
+					$retorno = $this->Formulario->image("primeraoff.gif");
 				}
 				$out[] = $this->Formulario->tag("span", $retorno);
 
-				
-				$retorno = null;
-				$prev = $this->Paginator->prev($this->Formulario->image("anterior.gif", array("alt"=>"Ir al registro anterior")), array_merge(array('escape'=>false), $opciones));
+				$prev = $this->Paginator->prev($this->Formulario->image("anterior.gif", array("alt"=>__("Go to previews page", true))), array_merge(array('escape'=>false), $opciones));
 				if (is_null($prev)) {
-					$retorno.= $this->Formulario->image("anterioroff.gif");
-				}
-				else {
-					$retorno.= $prev;
+					$retorno = $this->Formulario->image("anterioroff.gif");
+				} else {
+					$retorno = $prev;
 				}
 				$out[] = $this->Formulario->tag("span", $retorno);
 
 				
-				$retorno = null;
-				$next = $this->Paginator->next($this->Formulario->image("siguiente.gif", array("alt"=>"Ir al siguiente registro")), array_merge($opciones, array('escape'=>false)));
+				$next = $this->Paginator->next($this->Formulario->image("siguiente.gif", array("alt"=>__("Go to next page", true))), array_merge($opciones, array('escape'=>false)));
 				if (is_null($next)) {
-					$retorno.= $this->Formulario->image("siguienteoff.gif");
+					$retorno = $this->Formulario->image("siguienteoff.gif");
 				}
 				else {
-					$retorno.= $next;
+					$retorno = $next;
 				}
 				$out[] = $this->Formulario->tag("span", $retorno);
 
 				
-				$retorno = null;
 				if (isset($params['page']) && $params['page']<$params['pageCount']) {
-					$retorno.= $this->Paginator->link($this->Formulario->image("ultima.gif", array("alt"=>"Ir al ultimo registro")), array('page'=>$params['pageCount']), array_merge(array('escape'=>false), $opciones));
+					$retorno = $this->Paginator->link($this->Formulario->image("ultima.gif", array("alt"=>__("Go to last page", true))), array('page'=>$params['pageCount']), array_merge(array('escape'=>false), $opciones));
 				}
 				else {
-					$retorno.= $this->Formulario->image("ultimaoff.gif");
+					$retorno = $this->Formulario->image("ultimaoff.gif");
 				}
 				$out[] = $this->Formulario->tag("span", $retorno);
 				

@@ -4,7 +4,7 @@
  * Creo la miga de pan.
  */
 $formulario->addCrumb($this->name);
-$formulario->addCrumb("Grilla");
+$formulario->addCrumb(__('Grid', true));
 
 
 /**
@@ -29,7 +29,7 @@ if(!isset($pie)) {
 /**
  * Creo un bloque con caja redondeada entre las condiciones, los botones y las opciones lov (si las hubiese).
  */
-$lov = $this->renderElement("index/lov");
+$lov = $this->element("index/lov");
 
 /**
  * Pongo el nombre del controller como un parametro, aunque no lo use, de modo de que el cache cree un archivo 
@@ -38,7 +38,7 @@ $lov = $this->renderElement("index/lov");
 //$botones = $this->element("index/buscadores", array("cache"=>"+30 day", $this->name=>"name", "botonesExtra"=>$botonesExtra, "opcionesForm"=>$opcionesForm));
 $botones = $this->element("index/buscadores", array("botonesExtra"=>$botonesExtra, "opcionesForm"=>$opcionesForm));
 
-$bloques[] = $formulario->bloque(am($condiciones, $botones, $lov), array("div"=>array("class"=>"unica")));
+$bloques[] = $formulario->tag('div', am($condiciones, $botones, $lov), array("class"=>"unica"));
 
 
 /**
@@ -82,8 +82,8 @@ if(!empty($this->params['named']['retornarA']) && !empty($this->params['named'][
  */
 //$paginador = $this->element("index/paginador", array("cache"=>"+30 day", $this->name=>"name"));
 $paginador = $this->element("index/paginador");
-$bloque_paginador_superior = $formulario->bloque($paginador, array("div"=>array("class"=>"paginador_superior")));
-$bloque_paginador_inferior = $formulario->bloque($paginador, array("div"=>array("class"=>"paginador_inferior")));
+$bloque_paginador_superior = $formulario->tag('div', $paginador, array("class"=>"paginador_superior"));
+$bloque_paginador_inferior = $formulario->tag('div', $paginador, array("class"=>"paginador_inferior"));
 
 /**
  * Creo la tabla.
@@ -100,10 +100,10 @@ if(!empty($opcionesTabla['tabla']['contenido'])) {
 	$bloques[] = $opcionesTabla['tabla']['contenido'];
 }
 else if(!((isset($opcionesTabla['tabla']['omitirMensajeVacio']) && $opcionesTabla['tabla']['omitirMensajeVacio'] === true) && empty($cuerpo))) {
-	$tabla = $formulario->tag("div", $formulario->tabla(am(array("cuerpo"=>$cuerpo, "pie"=>$pie), $opcionesTabla)), array("class"=>"tabla"));
-	$bloque_superior = $formulario->bloque($acciones . $bloque_paginador_superior, array("div"=>array("class"=>"bloque_superior_index")));
-	$bloque_inferior = $formulario->bloque($bloque_paginador_inferior, array("div"=>array("class"=>"bloque_inferior_index")));
-	$bloques[] = $formulario->bloque($bloque_superior . $tabla . $bloque_inferior, array("div"=>array("class"=>"unica")));
+	$tabla = $formulario->tag("div", $formulario->tabla(array_merge(array("cuerpo"=>$cuerpo, "pie"=>$pie), $opcionesTabla)), array("class"=>"tabla"));
+	$bloque_superior = $formulario->tag('div', $acciones . $bloque_paginador_superior, array("class"=>"bloque_superior_index"));
+	$bloque_inferior = $formulario->tag('div', $bloque_paginador_inferior, array("class"=>"bloque_inferior_index"));
+	$bloques[] = $formulario->tag('div', $bloque_superior . $tabla . $bloque_inferior, array("class"=>"unica"));
 }
 
 
@@ -117,11 +117,11 @@ $form = $formulario->form($bloques, $opcionesForm);
 * Pongo todo dentro de un div (index) y muestro el resultado, siempre y cuando no sea un request ajax.
 * Si es ajax y creo el div, voy a meter un div, dentro de otro, dentro de otro, dentro de otro....
 */
-if(!empty($this->params['isAjax']) && $this->params['isAjax'] == "1") {
+if ($this->params['isAjax']) {
 	echo $formulario->bloque($form);
 }
 else {
-	echo $formulario->bloque($form, array("div"=>array("id"=>"index", "class"=>"index")));
+	echo $formulario->tag('div', $form, array('class' => 'index'));
 }	
 
 

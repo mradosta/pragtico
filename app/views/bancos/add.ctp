@@ -41,6 +41,9 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "migaEdit" => $this->data[0]['Banco']['nombre']));
+$miga = array('format' 	=> '(%s) %s', 
+			  'content' => array('Banco.codigo', 'Banco.nombre'));
+
+echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "miga" => $miga));
 $this->addScript($ajax->jsPredefinido(array("tipo"=>"detalle", "agregar"=>true, "quitar"=>true)));
 ?>
