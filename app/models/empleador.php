@@ -26,7 +26,8 @@ class Empleador extends AppModel {
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array("edit" =>array("contain"=>array("Localidad", "Actividad")),
+	var $modificadores = array("index"=>array("contain"=>array()),
+							   "edit" =>array("contain"=>array("Localidad", "Actividad")),
 								"add" =>array(								
 										"valoresDefault"=>array("alta"=>"date('d/m/Y')",
 																"pais"=>"Argentina")));
