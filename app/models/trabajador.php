@@ -117,11 +117,10 @@ class Trabajador extends AppModel {
 		* Si tengo la sucursal y la cuenta, puedo generar el CBU.
 		* Solo lo necesito mostrar con un edit.
 		*/
-		if(isset($results[0]['Trabajador']['cbu'])) {
+		if($primary === true && isset($results[0]['Trabajador']['cbu'])) {
 			$pattern = "/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d/";
 			if(preg_match($pattern, $results[0]['Trabajador']['cbu'], $matches)) {
-				App::import("Model", "Sucursal");
-				$Sucursal = new Sucursal();
+				$Sucursal = ClassRegistry::init('Sucursal');
 				$sucursal = $Sucursal->findByCodigo($matches[2]);
 				$results[0]['Trabajador']['banco'] = $sucursal['Banco']['nombre'];
 				$results[0]['Trabajador']['sucursal'] = $sucursal['Sucursal']['direccion'];
