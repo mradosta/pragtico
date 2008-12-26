@@ -17,13 +17,14 @@
  * @lastmodified	$Date$
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
+App::import('Helper', 'Form');
 /**
  * Helper para la creacion de la capa de presentacion.
  *
  * @package		pragtico
  * @subpackage	app.views.helpers
  */
-class FormularioHelper extends AppHelper {
+class FormularioHelper extends FormHelper {
 	
 /**
  * Los helpers que utilizare.
@@ -1285,31 +1286,18 @@ class FormularioHelper extends AppHelper {
 			$opciones['id'] = "form";
 		}
 		
-		$form = "\n" . $this->Form->create(null, $opciones);
+		$form = "\n" . parent::create(null, $opciones);
 		if(is_array($contenido)) {
 			$form .= implode("\n", $contenido);
 		}
 		elseif(is_string($contenido)) {
 			$form .= $contenido;
 		}
-		$form .= "\n" . $this->Form->end();
+		$form .= "\n" . parent::end();
 		return $this->output($form);
 	}
 
 	
-	/**
-	 * Returns an HTML FORM element.
-	 *
-	 * @access public
-	 * @param string $model The model object which the form is being defined for
-	 * @param array  $options
-	 * @return string An formatted opening FORM tag.
-	 */
-	function create_deprecated($model = null, $options = array()) {
-		return $this->Form->create($model, $options);
-	}
-
-
 /**
  * Generates a form input element complete with label and wrapper div
  *
@@ -1768,10 +1756,10 @@ class FormularioHelper extends AppHelper {
 				if(empty($options['value'])) {
 					$options['value'] = "/**VACIO**/";
 					if(!empty($options['name'])) {
-						$options['before'] .= $this->Form->hidden($tagName, array("name"=>$options['name'], "value"=>""));
+						$options['before'] .= parent::hidden($tagName, array("name"=>$options['name'], "value"=>""));
 					}
 					else {
-						$options['before'] .= $this->Form->hidden($tagName, array("value"=>""));
+						$options['before'] .= parent::hidden($tagName, array("value"=>""));
 					}
 				}
 			}
@@ -2040,7 +2028,7 @@ class FormularioHelper extends AppHelper {
 		if(isset($options['maxlength']) && $options['maxlength'] === false) {
 			unset($options['maxlength']);
 		}
-		return $this->Form->input($tagName, $options);
+		return parent::input($tagName, $options);
 	}
 
 /**
@@ -2051,7 +2039,7 @@ class FormularioHelper extends AppHelper {
  * @return string The formatted LABEL element
  */
 	function label($fieldName = null, $text = null, $attributes = array()) {
-		$return = $this->Form->label($fieldName, $text, $attributes);
+		$return = parent::label($fieldName, $text, $attributes);
 		if(isset($attributes['for']) && $attributes['for'] === false) {
 			return str_replace(' for=""', "", $return);
 		}
@@ -2059,17 +2047,6 @@ class FormularioHelper extends AppHelper {
 	}
 
 	
-/**
- * Creates a submit button element.
- *
- * @param  string  $caption  The label appearing on the button
- * @param  array   $options
- * @return string A HTML submit button
- */
-	function submit($caption = 'Submit', $options = array()) {
-		return $this->Form->submit($caption, $options);
-	}
-
 /**
  * Creates a button tag.
  *
@@ -2086,26 +2063,6 @@ class FormularioHelper extends AppHelper {
 	}
 
 	
- /**
- * Returns a formatted SELECT element.
- *
- * @param string $fieldName Name attribute of the SELECT
- * @param array $options Array of the OPTION elements (as 'value'=>'Text' pairs) to be used in the SELECT element
- * @param mixed $selected The option selected by default.  If null, the default value
- *                        from POST data will be used when available.
- * @param array $attributes  The HTML attributes of the select element.  If
- *                           'showParents' is included in the array and set to true,
- *                           an additional option element will be added for the parent
- *                           of each option group.
- * @param mixed $showEmpty If true, the empty select option is shown.  If a string,
- *                         that string is displayed as the empty element.
- * @return string Formatted SELECT element
- */
-	function select_deprecated($fieldName, $options = array(), $selected = null, $attributes = array(), $showEmpty = '') {
-		return $this->Form->select($fieldName, $options, $selected, $attributes, $showEmpty);
-	}
-
-
 	function __inputFecha($tagName, $options = array(), $seleccionarHora=false) {
 		$this->setEntity($tagName);
 		$id = $this->domId(implode('.', array_filter(array($this->model(), $this->field()))));
@@ -2158,10 +2115,10 @@ class FormularioHelper extends AppHelper {
 				|| (!empty($options['value']) && is_array($options['value']) && in_array($id, $options['value']))
 				|| (is_string($id) && isset($options['value']) && is_string($options['value']) && $id === $options['value'])) {
 				$checked['checked'] = 'checked';
-				$checkbox[] = "<li>" . sprintf($this->tags['checkboxmultiple'], $model, $field, $this->_parseAttributes(array_merge($elementosHtmlAttributes, $checked))) . $this->Form->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
+				$checkbox[] = "<li>" . sprintf($this->tags['checkboxmultiple'], $model, $field, $this->_parseAttributes(array_merge($elementosHtmlAttributes, $checked))) . $this->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
 			}
 			else {
-				$checkbox[] = "<li>" . sprintf($this->tags['checkboxmultiple'], $model, $field, $this->_parseAttributes($elementosHtmlAttributes)) . $this->Form->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
+				$checkbox[] = "<li>" . sprintf($this->tags['checkboxmultiple'], $model, $field, $this->_parseAttributes($elementosHtmlAttributes)) . $this->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
 			}
         }
 		
@@ -2201,17 +2158,7 @@ class FormularioHelper extends AppHelper {
  * @return string If there are errors this method returns an error message, otherwise null.
  */
 	function error($field, $text = null, $options = array()) {
-		return $this->Form->error($field, $text, $options);
-	}
-
-/**
-* Dada una preferencia trae su valor
-*/
-	function traerPreferencia_deprecated($preferencia) {
-		if($this->Session->check("__Usuario")) {
-			$usuario = $this->Session->read("__Usuario");
-			return $usuario['Usuario']['preferencias'][$preferencia];
-		}
+		return parent::error($field, $text, $options);
 	}
 
 }
