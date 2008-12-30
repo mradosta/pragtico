@@ -7,21 +7,21 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos de todo la aplicacion.
  *
- * @package		pragtico
- * @subpackage	app
+ * @package     pragtico
+ * @subpackage  app
  */
 class AppModel extends Model {
 
@@ -108,7 +108,7 @@ class AppModel extends Model {
 		/**
 		* Evito que por error borre toda la tabla.
 		*/
-		if(empty($conditions)) {
+		if (empty($conditions)) {
 			return false;
 		}
 	
@@ -121,14 +121,14 @@ class AppModel extends Model {
 										'recursive' => -1,
 										'conditions'=> $conditions)));
 		
-		if(!empty($ids)) {
+		if (!empty($ids)) {
 			$commit = true;
 			$c = 0;
-			if($manejarTransaccion === true) {
+			if ($manejarTransaccion === true) {
 				$this->begin();
 			}
-			foreach($ids as $id) {
-				if($this->del($id, $cascade, false)) {
+			foreach ($ids as $id) {
+				if ($this->del($id, $cascade, false)) {
 					$c++;
 				}
 				else {
@@ -136,14 +136,14 @@ class AppModel extends Model {
 					break;
 				}
 			}
-			if(($c == count($ids)) && $commit === true) {
-				if($manejarTransaccion === true) {
+			if (($c == count($ids)) && $commit === true) {
+				if ($manejarTransaccion === true) {
 					$this->commit();
 				}
 				return true;
 			}
 			else {
-				if($manejarTransaccion === true) {
+				if ($manejarTransaccion === true) {
 					$this->rollback();
 				}
 				return false;
@@ -170,24 +170,24 @@ class AppModel extends Model {
 		* La politica para el manejo de la seguridad es que para poder borrar el master,
 		* debo necesariamente tener permiso para borrar TODOS los details.
 		*/
-        if(!empty($this->hasMany)) {
+        if (!empty($this->hasMany)) {
 			$this->{$this->primaryKey} = $id;
 			/**
 			* Inicio la transaccion.
 			*/
-			if($manejarTransaccion === true) {
+			if ($manejarTransaccion === true) {
   				$this->begin();
   			}
 			$returnVal = true;
-			foreach($this->hasMany as $k=>$v) {
-				if($returnVal === true) {
+			foreach ($this->hasMany as $k=>$v) {
+				if ($returnVal === true) {
 					$condiciones = null;
 					$condiciones[$v['className'] . "." . $v['foreignKey']] = $id;
 					$condiciones['checkSecurity'] = "delete";
 					$detalles = $this->{$v['className']}->find("all", array("conditions"=>$condiciones, "fields"=>$this->{$v['className']}->primaryKey, "recursive"=>-1));
 
 					if (!empty($detalles)) {
-						foreach($detalles as $k1=>$v1) {
+						foreach ($detalles as $k1=>$v1) {
 							/**
 							* Obtengo el id de cada detalle relacionado al master.
 							*/
@@ -209,13 +209,13 @@ class AppModel extends Model {
 			/**
 			* Si ya pude borra sin error todos los details, ahora borro el master.
 			*/
-			if($returnVal === true) {
+			if ($returnVal === true) {
 				$condiciones = null;
 				$condiciones[$this->name . "." . $this->primaryKey] = $id;
 				$condiciones['checkSecurity'] = "delete";
 				$puedeBorrar = $this->find("count", array("conditions"=>$condiciones, "recursive"=>-1));
 				if ($puedeBorrar == 1) {
-					if(!parent::del($id)) {
+					if (!parent::del($id)) {
 						$returnVal = false;
 					}
 				}
@@ -227,25 +227,25 @@ class AppModel extends Model {
 			/**
 			* Confirmo la transaccion si no ocurrieron errores.
 			*/
-			if($returnVal === true) {
-				if($manejarTransaccion === true) {
+			if ($returnVal === true) {
+				if ($manejarTransaccion === true) {
 					$this->commit();
 				}
 			}
 			else {
-				if($manejarTransaccion === true) {
+				if ($manejarTransaccion === true) {
 					$this->rollback();
 				}
 			}
 		}
 		else {
-			$puedeBorrar = $this->find("count", array("conditions"=>array("checkSecurity"=>"delete", $this->name . "." . $this->primaryKey=>$id), "recursive"=>-1));
+			$puedeBorrar = $this->find("count", array("conditions"=>array("checkSecurity" => "delete", $this->name . "." . $this->primaryKey=>$id), "recursive"=>-1));
 			if ($puedeBorrar == 1) {
 				$returnVal = parent::del($id, $cascade);
 			}
 		}
 		
-        if($returnVal === false) {
+        if ($returnVal === false) {
         	$this->__buscarError();
         }
         return $returnVal;
@@ -280,7 +280,7 @@ class AppModel extends Model {
 	function deleteAll($conditions, $cascade = true, $callbacks = false) {
 		
 		$this->begin();
-		if(parent::deleteAll($conditions, $cascade, $callbacks)) {
+		if (parent::deleteAll($conditions, $cascade, $callbacks)) {
 			$this->commit();
 			return true;
 		} else {
@@ -308,9 +308,9 @@ class AppModel extends Model {
 		* Solo guardo master/detail cuando es una relacion hasMany y en el vector vienen componentes
 		* de esta relacion y no otra
 		*/
-		if(!empty($data)) {
+		if (!empty($data)) {
 			$r =  array_intersect_key($data, $this->hasMany);
-			if(!empty($this->hasMany) && !empty($r)) {
+			if (!empty($this->hasMany) && !empty($r)) {
 			
 				$keys = array_keys($data);
 				/**
@@ -331,11 +331,11 @@ class AppModel extends Model {
 				/**
 				* Inicio la transaccion.
 				*/
-				if($manejarTransaccion === true) {
+				if ($manejarTransaccion === true) {
 					$this->begin();
 				}
-				if($returnValParent = parent::save($data[$this->name], $validate, $fieldList)) {
-					if(!empty($data[$this->name][$this->primaryKey])) {
+				if ($returnValParent = parent::save($data[$this->name], $validate, $fieldList)) {
+					if (!empty($data[$this->name][$this->primaryKey])) {
 						/**
 						* Es un update, tengo el id del anterior.
 						*/
@@ -351,22 +351,22 @@ class AppModel extends Model {
 						$accion = "insert";
 					}
 					
-					foreach($keys as $key) {
+					foreach ($keys as $key) {
 						/**
 						* Debo identificar si se ha quitado alguno/s, el/los cual/es debo eliminar.
 						* Solo en caso de ser un update. Cuando es un insert, estoy seguro que no existira.
 						*/
-						if($accion === "update") {
+						if ($accion === "update") {
 							$idsDetailAntesModificar = Set::extract("/" . $key . "/" . $this->$key->primaryKey, $datoExistente);
 							$idsDetailDespuesModificar = Set::extract("/" . $this->$key->primaryKey, array_values($data[$key]));
 							$idsDetailEliminados = array_diff($idsDetailAntesModificar, $idsDetailDespuesModificar);
-							if(!empty($idsDetailEliminados)) {
+							if (!empty($idsDetailEliminados)) {
 								$this->$key->deleteAll(array($key . "." . $this->$key->primaryKey=>$idsDetailEliminados));
 							}
 						}
 						$hasMany = $this->hasMany;
-						foreach($data[$key] as $k=>$v) {
-							if($returnVal === true) {
+						foreach ($data[$key] as $k=>$v) {
+							if ($returnVal === true) {
 								/**
 								* Asigno el valor del id del master, al arreglo de la foranea (detail).
 								*/
@@ -377,14 +377,14 @@ class AppModel extends Model {
 								* Para ello necesito que este seteada la variable $unique en el model.
 								*/
 								$find = array();
-								foreach($this->$key->unique as $unique) {
-									if(isset($v[$unique])) {
+								foreach ($this->$key->unique as $unique) {
+									if (isset($v[$unique])) {
 										$find[$key . "." . $unique] = $this->setDBFieldValue($this->$key, $unique, $v[$unique], true);
 									}
 								}
 
 								$lineaDetalle = $this->$key->find($find, array($this->$key->primaryKey));
-								if(!empty($lineaDetalle)) {
+								if (!empty($lineaDetalle)) {
 									/**
 									* El registro ya existe, debo actualizarlo.
 									*/
@@ -397,12 +397,12 @@ class AppModel extends Model {
 									$this->$key->create($v);
 								}
 
-								if($this->$key->validates()) {
-									if(!$this->$key->save($v, $validate, $fieldList, $manejarTransaccion)) {
+								if ($this->$key->validates()) {
+									if (!$this->$key->save($v, $validate, $fieldList, $manejarTransaccion)) {
 										/**
 										* Vuelvo atras si algo salio mal.
 										*/
-										if($manejarTransaccion === true) {
+										if ($manejarTransaccion === true) {
 											$this->rollback();
 										}
 										$returnVal = false;
@@ -419,19 +419,19 @@ class AppModel extends Model {
 					/**
 					* Confirmo la transaccion si no ocurrieron errores.
 					*/
-					if($returnVal === true && $manejarTransaccion === true) {
+					if ($returnVal === true && $manejarTransaccion === true) {
 						$this->commit();
 					}
 				}
 				else {
-					if($manejarTransaccion === true) {
+					if ($manejarTransaccion === true) {
 						$this->rollback();
 					}
 					$returnVal = false;
 				}
 			}
 			else {
-				if($returnValParent = parent::save($data, $validate, $fieldList)) {
+				if ($returnValParent = parent::save($data, $validate, $fieldList)) {
 					$returnVal = true;
 				}
 				else {
@@ -443,7 +443,7 @@ class AppModel extends Model {
 			return false;
 		}
 
-        if($returnVal === false) {
+        if ($returnVal === false) {
 			$this->__buscarError();
             return false;
         }
@@ -482,10 +482,10 @@ class AppModel extends Model {
 */
     function __buscarWarning() {
 		$warnings = $this->query("SHOW WARNINGS");
-		if(!empty($warnings)) {
+		if (!empty($warnings)) {
 			$c = 0;
 			$quitar = array();
-			foreach($warnings as $v) {
+			foreach ($warnings as $v) {
 				$w[$c]['warningRdbms'] = $v[0];
 				$w[$c]['warningRdbmsNumero'] = $v[0]['Code'];
 				$w[$c]['warningRdbmsDescripcion'] = $v[0]['Message'];
@@ -497,7 +497,7 @@ class AppModel extends Model {
 						/**
 						* Evita que me diga que trunco una fecha cuando esto no tiene importancia.
 						*/
-						if(!empty($tableInfo[$tmp]['type']) && $tableInfo[$tmp]['type'] == "date") {
+						if (!empty($tableInfo[$tmp]['type']) && $tableInfo[$tmp]['type'] == "date") {
 							$quitar[] = $c;
 						}
 						else {
@@ -511,10 +511,10 @@ class AppModel extends Model {
 				$c++;
 			}
 			
-			foreach($quitar as $v) {
+			foreach ($quitar as $v) {
 				unset($w[$v]);
 			}
-			if(!empty($w)) {
+			if (!empty($w)) {
 				$this->dbWarning[] = $w;
 			}
 		}
@@ -529,7 +529,7 @@ class AppModel extends Model {
  * @access public
  */
     function setPermissions($permissions) {
-    	if(is_numeric($permissions) && $permissions >= 0 && $permissions <= 511) {
+    	if (is_numeric($permissions) && $permissions >= 0 && $permissions <= 511) {
     		$this->__permissions = $permissions;
     		return true;
     	}
@@ -557,11 +557,11 @@ class AppModel extends Model {
 */
     function __buscarError() {
     	$error = $this->query("SHOW ERRORS");
-    	if(!empty($error)) {
+    	if (!empty($error)) {
 			$this->dbError['errorRdbms'] = array_pop(array_pop($error));
     	}
     
-		if(!empty($this->dbError['errorRdbms'])) {
+		if (!empty($this->dbError['errorRdbms'])) {
 			/**
 			 * Mensajes faciles de entender para el usuario.
 			 * La clave es el numero de error de MySQL.
@@ -578,7 +578,7 @@ class AppModel extends Model {
 			$this->dbError['errorRdbmsNumero'] = $this->dbError['errorRdbms']['Code'];
 			$this->dbError['errorRdbmsDescripcion'] = $this->dbError['errorRdbms']['Message'];
 			
-			if(isset($dbError[$this->dbError['errorRdbmsNumero']])) {
+			if (isset($dbError[$this->dbError['errorRdbmsNumero']])) {
 				$this->dbError['errorDescripcion'] = $dbError[$this->dbError['errorRdbmsNumero']];
 			}
 			else {
@@ -606,7 +606,7 @@ class AppModel extends Model {
 					break;
 				case 1062:
 					$key = array_pop(explode(" for key ", $this->dbError['errorRdbmsDescripcion'])) - 1;
-					if(is_numeric($key)) {
+					if (is_numeric($key)) {
 						/**
 						* Para el caso de mySql, las keys (constrains), el numero que indica cuando hay un error un una key,
 						* corresponde al numero de key devuelta por la query, asi, si indica, por ejemplo, el error
@@ -614,14 +614,14 @@ class AppModel extends Model {
 						* por la query "SHOW KEYS FROM ..."
 						*/
 						$keysTmp = $this->query("SHOW KEYS FROM " . $this->useTable);
-						foreach($keysTmp as $v) {
+						foreach ($keysTmp as $v) {
 							$keys[$v['STATISTICS']['Key_name']][] = up($v['STATISTICS']['Column_name']);
 						}
 						$i=0;
-						foreach($keys as $v) {
-							if($i == $key) {
+						foreach ($keys as $v) {
+							if ($i == $key) {
 								$campos = implode(", ", $v);
-								if(count($v) > 1) {
+								if (count($v) > 1) {
 									$this->dbError['errorDescripcion'] = "Ha intentado grabar un valor que ya existe para la combinacion de campos " . $campos . " de la tabla " . up($this->useTable) . ".";
 								}
 								else {

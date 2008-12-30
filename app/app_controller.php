@@ -7,21 +7,21 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula lo logica de negocios comun a todo la aplicacion.
  *
- * @package		pragtico
- * @subpackage	app
+ * @package     pragtico
+ * @subpackage  app
  */
 class AppController extends Controller {
 
@@ -51,7 +51,7 @@ class AppController extends Controller {
  * @access public
  */
 	function listable() {
-		if($this->RequestHandler->isAjax()) {
+		if ($this->RequestHandler->isAjax()) {
 			$this->RequestHandler->renderAs($this, 'ajax');
 		}
 			
@@ -60,9 +60,9 @@ class AppController extends Controller {
 		*/
 		$opcionesValidas = array("displayField", "groupField", "conditions", "fields", "order", "limit", "recursive", "group", "contain", "model");
 		$opcionesValidasArray = array("displayField", "groupField", "conditions", "fields", "order", "contain");
-		foreach($opcionesValidas as $opcionValida) {
-			if(!empty($this->params['named'][$opcionValida])) {
-				if(in_array($opcionValida, $opcionesValidasArray)) {
+		foreach ($opcionesValidas as $opcionValida) {
+			if (!empty($this->params['named'][$opcionValida])) {
+				if (in_array($opcionValida, $opcionesValidasArray)) {
 					$condiciones[$opcionValida] = unserialize($this->params['named'][$opcionValida]);
 				}
 				else {
@@ -70,7 +70,7 @@ class AppController extends Controller {
 				}
 			}
 		}
-		if(!empty($condiciones['model'])) {
+		if (!empty($condiciones['model'])) {
 			if (!ClassRegistry::isKeySet($condiciones['model'])) {
 				App::import("model", $condiciones['model']);
 			}
@@ -81,7 +81,7 @@ class AppController extends Controller {
 			$model = $this->{$this->modelClass};
 		}
 		
-		if(empty($condiciones['displayField'])) {
+		if (empty($condiciones['displayField'])) {
 			$displayFields = array($model->displayField);
 		}
 		else {
@@ -89,18 +89,18 @@ class AppController extends Controller {
 			unset($condiciones['displayField']);
 		}
 
-		if(!empty($condiciones['groupField'][0])) {
+		if (!empty($condiciones['groupField'][0])) {
 			$group = $condiciones['groupField'][0];
 			unset($condiciones['groupField']);
 		}
 
-		foreach($displayFields as $displayField) {
+		foreach ($displayFields as $displayField) {
 			$display[] = "{n}." . $displayField;
 			$exp[] = "%s";
 		}
 		array_unshift($display, implode(" - ", $exp));
 		$data = $model->find("all", $condiciones);
-		if(isset($group)) {
+		if (isset($group)) {
 			$data = $this->Util->combine($data, "{n}." . $model->name . "." . $model->primaryKey, $display, "{n}." . $group);
 		}
 		else {
@@ -120,13 +120,13 @@ class AppController extends Controller {
 		 * Me aseguro de no perder ningun parametro que venga como un post dentro edl Formulario.
 		 * Lo en vio nuevamente como un parametro.
 		 */
-		if(!empty($this->data['Formulario'])) {
-			foreach($this->data['Formulario'] as $k=>$v) {
+		if (!empty($this->data['Formulario'])) {
+			foreach ($this->data['Formulario'] as $k=>$v) {
 				$this->params['named'][$k] = $v;
 			}
 		}
 		$this->layout = "default";
-		if(!empty($this->params['isAjax'])
+		if (!empty($this->params['isAjax'])
 			|| (isset($this->params['named']['layout'])
 				&& $this->params['named']['layout'] == "lov")) {
 			$this->layout = "lov";
@@ -139,7 +139,7 @@ class AppController extends Controller {
 		/**
 		* Puede haber un modificador al comportamiento estandar setaeado en el model.
 		*/
-		if(isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
+		if (isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
 			$this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
 		}
 		
@@ -185,7 +185,7 @@ class AppController extends Controller {
 				/**
 				* Doy tratamiento al tipo especial de relacion con sigo mismo.
 				*/
-				if($modelAsociado === 'Parent') {
+				if ($modelAsociado === 'Parent') {
 					$resultado = $this->{$model}->find('first', array('conditions' => array($model . "." . $this->{$model}->primaryKey => $v)));
 				} else {
 					$resultado = $this->{$model}->{$modelAsociado}->find('first', array('conditions' => array($modelAsociado . "." . $this->{$model}->{$modelAsociado}->primaryKey => $v)));
@@ -203,7 +203,7 @@ class AppController extends Controller {
  * Add.
  */
 	function add_deprecated() {
-		if(!empty($this->data['Form']['accion'])) {
+		if (!empty($this->data['Form']['accion'])) {
 			if (in_array($this->data['Form']['accion'], array("grabar", "duplicar"))) {
 				$data = $this->data;
 
@@ -212,23 +212,23 @@ class AppController extends Controller {
 				* sino me hara un update en lugar de un isert.
 				*/
 				//$goBack = 1;
-				if($this->data['Form']['accion'] === "duplicar") {
+				if ($this->data['Form']['accion'] === "duplicar") {
 					unset($data[$this->modelClass][$this->{$this->modelClass}->primaryKey]);
 					//$goBack = 2;
 				}
 				unset($data['Form']);
 				unset($data['Bar']);
-				debug($this->{$this->modelClass}->saveAll($data ,array('validate'=>'first')));
+				debug($this->{$this->modelClass}->saveAll($data ,array('validate' => 'first')));
 				d($this->{$this->modelClass}->validationErrors);
 				d($data);
-				if($this->{$this->modelClass}->create($data) && $this->{$this->modelClass}->validates()) {
-					if($this->{$this->modelClass}->save($data)) {
+				if ($this->{$this->modelClass}->create($data) && $this->{$this->modelClass}->validates()) {
+					if ($this->{$this->modelClass}->save($data)) {
 						$this->Session->setFlash("El nuevo registro se guardo correctamente.", "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
-						if((isset($this->data['Form']['volverAInsertar']) && $this->data['Form']['volverAInsertar'] == "1")) {
+						if ((isset($this->data['Form']['volverAInsertar']) && $this->data['Form']['volverAInsertar'] == "1")) {
 							$this->render("add");
 						}
 						else{
-							if(isset($this->data['Form']['params'])) {
+							if (isset($this->data['Form']['params'])) {
 								$this->__setearParams(unserialize($this->data['Form']['params']));
 							}
 							$this->History->goBack(2);
@@ -237,7 +237,7 @@ class AppController extends Controller {
 					else {
 						$tmp = $this->{$this->modelClass}->validationErrors;
 						unset($this->{$this->modelClass}->validationErrors[$this->modelClass]);
-						if(!empty($tmp[$this->modelClass])) {
+						if (!empty($tmp[$this->modelClass])) {
 							$this->{$this->modelClass}->validationErrors[0] = $tmp[$this->modelClass];
 						}
 						$dbError = $this->{$this->modelClass}->getError();
@@ -248,7 +248,7 @@ class AppController extends Controller {
 					$this->set('dbError', $this->{$this->modelClass}->getError());
 				}
 			}
-			elseif($this->data['Form']['accion'] === "cancelar") {
+			elseif ($this->data['Form']['accion'] === "cancelar") {
     			$this->History->goBack();
 			}
 		}
@@ -259,9 +259,9 @@ class AppController extends Controller {
 			* En caso de ser funciones, por seguridad, deben validarse con la expresion regular ya que se ejecutan
 			* mediante eval.
 			*/
-			if(isset($this->{$this->modelClass}->modificadores[$this->action]['valoresDefault'])) {
-				foreach($this->{$this->modelClass}->modificadores[$this->action]['valoresDefault'] as $campo=>$valoresDefault) {
-					if(is_string($valoresDefault) && eregi("date(.*)", $valoresDefault)) {
+			if (isset($this->{$this->modelClass}->modificadores[$this->action]['valoresDefault'])) {
+				foreach ($this->{$this->modelClass}->modificadores[$this->action]['valoresDefault'] as $campo=>$valoresDefault) {
+					if (is_string($valoresDefault) && eregi("date(.*)", $valoresDefault)) {
 						$this->data[$this->modelClass][$campo] = eval("return " . $valoresDefault . ";");
 					}
 					else {
@@ -273,15 +273,15 @@ class AppController extends Controller {
 		/**
 		* Si hay parametros, me esta indicando que debo cargar un campo lov desde un desglose.
 		*/
-		if(!empty($this->passedArgs)) {
+		if (!empty($this->passedArgs)) {
 			$this->__setearParams($this->passedArgs);
 		}
 
 		/**
 		* Identifico que viene de un reques ajax (un detalle de una tabla fromTo, por ejemplo)
-		if(!empty($this->params['isAjax']) && $this->params['isAjax'] == "1") {
-			$this->set('variablesForm', array("isAjax"=>"1"));
-			if($this->Session->check($this->name . "." . $this->action)) {
+		if (!empty($this->params['isAjax']) && $this->params['isAjax'] == "1") {
+			$this->set('variablesForm', array("isAjax" => "1"));
+			if ($this->Session->check($this->name . "." . $this->action)) {
 				$sesion = $this->Session->read($this->name . "." . $this->action);
 			}
 		}
@@ -299,12 +299,12 @@ class AppController extends Controller {
  * @access private
  */
 	function __setearParams_deprecated($params) {
-		foreach($params as $k=>$v) {
+		foreach ($params as $k=>$v) {
 			list($model, $field) = explode(".", $k);
 			$this->data[$model][$field] = $v;
 			$modelAsociado = str_replace(" ", "", Inflector::humanize(str_replace("_id", "", $field)));
 			$resultado = $this->{$model}->{$modelAsociado}->find(array($modelAsociado . "." . $this->{$model}->{$modelAsociado}->primaryKey => $v));
-			if(!empty($resultado)) {
+			if (!empty($resultado)) {
 				$this->data[$modelAsociado] = $resultado;
 			}
 		}
@@ -321,7 +321,7 @@ class AppController extends Controller {
 		/**
 		* Verifico cuantas filas por pagina debo pintar.
 		*/
-		if(!empty($this->params['named']['filas_por_pagina']) && is_numeric($this->params['named']['filas_por_pagina'])) {
+		if (!empty($this->params['named']['filas_por_pagina']) && is_numeric($this->params['named']['filas_por_pagina'])) {
 			/**
 			* Dejo predeterminado para esta sesion el cambio.
 			*/
@@ -348,22 +348,22 @@ class AppController extends Controller {
  * @access public
  */
 	function edit($id=null) {
-		if(!empty($id)) {
+		if (!empty($id)) {
 			$ids[] = $id;
 		}
 		else {
 			$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
 		}
-		if(!empty($ids)) {
+		if (!empty($ids)) {
 			
 			/**
 			 * Puede haber un modificador al comportamiento estandar setaeado en el model.
 			 */
-			if(isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
+			if (isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
 				$this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
 			}
 			
-			$this->data = $this->{$this->modelClass}->find("all", array("acceso"=>"write", "conditions"=>array($this->modelClass . ".id"=>$ids)));
+			$this->data = $this->{$this->modelClass}->find("all", array("acceso" => "write", "conditions"=>array($this->modelClass . ".id"=>$ids)));
 			$this->render("add");
 		}
 	}
@@ -387,7 +387,7 @@ class AppController extends Controller {
 		}
 		
 		if (!empty($this->data['Form']['accion'])) {
-			if($this->data['Form']['accion'] === "grabar") {
+			if ($this->data['Form']['accion'] === "grabar") {
 				$c = 0;
 
 				/**
@@ -420,7 +420,7 @@ class AppController extends Controller {
 				$invalidFields = null;
 				$cantidad = count($this->data);
 				if ($mismoModel) {
-					if (!$this->{$this->modelClass}->saveAll($this->data, array('validate'=>'first'))) {
+					if (!$this->{$this->modelClass}->saveAll($this->data, array('validate' => 'first'))) {
 						$invalidFields = $this->{$this->modelClass}->validationErrors;
 					}
 					$c = $cantidad;
@@ -438,7 +438,7 @@ class AppController extends Controller {
 						$find = $this->{$this->modelClass}->{$findBy}($v[$this->modelClass][$this->{$this->modelClass}->primaryKey]);
 							
 						$this->{$this->modelClass}->create();
-						if ($this->{$this->modelClass}->saveAll($v, array('validate'=>'first'))) {
+						if ($this->{$this->modelClass}->saveAll($v, array('validate' => 'first'))) {
 							
 							
 							/**
@@ -448,7 +448,9 @@ class AppController extends Controller {
 							foreach ($tmp as $detailKey => $detailValue) {
 								$originalDetailsId = Set::extract("/" . $this->{$this->modelClass}->{$detailKey}->primaryKey, $find[$detailKey]);
 								foreach ($v[$detailKey] as $tv) {
-									$postedDetailsId[] = $tv['id'];
+									if (!empty($tv['id'])) {
+										$postedDetailsId[] = $tv['id'];
+									}
 								}
 							}
 							$this->{$this->modelClass}->{$detailKey}->recursive = -1;
@@ -468,7 +470,7 @@ class AppController extends Controller {
 				* En base al/los errores que pueden haber determino que mensaje mostrar.
 				*/
 				if (empty($dbError) && empty($invalidFields)) {
-					if($c === 1) {
+					if ($c === 1) {
 						$mensaje = "El registro se guardo correctamente.";
 						//$mensaje = __('The record has been saved', true);
 					} else {
@@ -485,21 +487,21 @@ class AppController extends Controller {
 					* Los que ya tengo, los dejo como estaban, porque se debe a que no validaron.
 					*/
 					$ids = Set::extract("/" . $this->modelClass . "/" . $this->{$this->modelClass}->primaryKey, $this->data);
-					if(!empty($ids)) {
+					if (!empty($ids)) {
 						$data = $this->data;
 						
 						/**
 						* Puede haber un modificador al comportamiento estandar setaeado en el model.
 						*/
-						if(isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
+						if (isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
 							$this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
 						}
 						
 						$this->data = $this->{$this->modelClass}->find("all", 
 								array(	"acceso"	=> "write", 
 										"conditions"=> array($this->modelClass . "." . $this->{$this->modelClass}->primaryKey => $ids)));
-						foreach($data as $k=>$v) {
-							foreach($v as $model=>$datos) {
+						foreach ($data as $k=>$v) {
+							foreach ($v as $model=>$datos) {
 								$this->data[$k][$model] = $datos;
 							}
 						}
@@ -516,7 +518,7 @@ class AppController extends Controller {
 					$this->{$this->modelClass}->validationErrors = $invalidFields;
 				}
 			}
-			elseif($this->data['Form']['accion'] === "cancelar") {
+			elseif ($this->data['Form']['accion'] === "cancelar") {
 				$this->History->goBack();
 			}
 		}
@@ -540,7 +542,7 @@ class AppController extends Controller {
 			
 		if ($this->{$this->modelClass}->deleteAll(array($this->modelClass . '.' . $this->{$this->modelClass}->primaryKey => $ids))) {
 			$cantidad = count($ids);
-			if($cantidad === 1) {
+			if ($cantidad === 1) {
 				$mensaje = 'El registro se elimino correctamente.';
 			} else {
 				$mensaje = 'Se eliminaron ' . $cantidad . ' registros correctamente.';
@@ -570,11 +572,11 @@ class AppController extends Controller {
    
 		$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
 		$this->{$this->modelClass}->begin();
-		if(!empty($ids)) {
+		if (!empty($ids)) {
 			if ($this->{$this->modelClass}->deleteAll(array($this->modelClass . "." . $this->{$this->modelClass}->primaryKey => $ids))) {
 				d("X");
 				$cantidad = count($ids);
-				if($cantidad == 1) {
+				if ($cantidad == 1) {
 					$mensaje = "Se elimino " . $cantidad . " registro correctamente.";
 				}
 				else {
@@ -589,7 +591,7 @@ class AppController extends Controller {
 				 * por una cuestion de permisos.
 				 */
 				$errores = $this->{$this->modelClass}->getError();
-				if(empty($errores)) {
+				if (empty($errores)) {
 					$this->Session->setFlash(null, 'permisos');
 				}
 				else {
@@ -612,19 +614,19 @@ class AppController extends Controller {
 		$this->{$this->modelClass}->recursive = -1;
 		$registro = $this->{$this->modelClass}->findById($id);
 		
-		if(!empty($this->params['named']['quitarGrupo'])) {
+		if (!empty($this->params['named']['quitarGrupo'])) {
 			$save[$this->modelClass]['group_id'] = (int)$registro[$this->modelClass]['group_id'] - (int)$this->params['named']['quitarGrupo'];
 		}
-		elseif(!empty($this->params['named']['agregarGrupo'])) {
+		elseif (!empty($this->params['named']['agregarGrupo'])) {
 			$save[$this->modelClass]['group_id'] = (int)$registro[$this->modelClass]['group_id'] + (int)$this->params['named']['agregarGrupo'];
 		}
-		elseif(!empty($this->params['named']['quitarRol'])) {
+		elseif (!empty($this->params['named']['quitarRol'])) {
 			$save[$this->modelClass]['role_id'] = (int)$registro[$this->modelClass]['role_id'] - (int)$this->params['named']['quitarRol'];
 		}
-		elseif(!empty($this->params['named']['agregarRol'])) {
+		elseif (!empty($this->params['named']['agregarRol'])) {
 			$save[$this->modelClass]['role_id'] = (int)$registro[$this->modelClass]['role_id'] + (int)$this->params['named']['agregarRol'];
 		}
-		elseif(!empty($this->params['named']['accion'])) {
+		elseif (!empty($this->params['named']['accion'])) {
 			switch($this->params['named']['accion']) {
 				case "pt": //permitir todo.
 					$save[$this->modelClass]['permissions'] = 511;
@@ -725,19 +727,19 @@ class AppController extends Controller {
 			}
 		}
 		
-		if(!empty($save)) {
+		if (!empty($save)) {
 			$save[$this->modelClass][$this->{$this->modelClass}->primaryKey] = $id;
 			/**
 			* Si pudo grabar con exito, los permisos de este registro cambiaron, entonces lo cambio.
 			*/
-			if($this->{$this->modelClass}->save($save, false)) {
-				if(isset($save[$this->modelClass]['group_id'])) {
+			if ($this->{$this->modelClass}->save($save, false)) {
+				if (isset($save[$this->modelClass]['group_id'])) {
 					$registro[$this->modelClass]['group_id'] = $save[$this->modelClass]['group_id'];
 				}
-				if(isset($save[$this->modelClass]['role_id'])) {
+				if (isset($save[$this->modelClass]['role_id'])) {
 					$registro[$this->modelClass]['role_id'] = $save[$this->modelClass]['role_id'];
 				}
-				if(isset($save[$this->modelClass]['permissions'])) {
+				if (isset($save[$this->modelClass]['permissions'])) {
 					$registro[$this->modelClass]['permissions'] = $save[$this->modelClass]['permissions'];
 				}
 			}
@@ -770,7 +772,7 @@ class AppController extends Controller {
 		* podra cambiar los permisos.
 		*/
 		$registro['puedeCambiarPermisos'] = false;
-		if((int)$usuarioSession['Usuario']['id'] === 1
+		if ((int)$usuarioSession['Usuario']['id'] === 1
 			|| $registro[$this->modelClass]['user_id'] === $usuarioSession['Usuario']['id']
 			|| ((int)$usuarioSession['Usuario']['roles'] & 1 === 1
 				&& (int)$registro[$this->modelClass]['group_id'] & $usuarioSession['Usuario']['grupos'] > 0)) {
@@ -781,14 +783,14 @@ class AppController extends Controller {
 			* siempre y cuando pueda cambiar los permisos.
 			*/
 			$gruposId = Set::extract("/Grupo/id", $grupos);
-			foreach($usuarioSession['Grupo'] as $v) {
-				if(!in_array($v['id'], $gruposId)) {
+			foreach ($usuarioSession['Grupo'] as $v) {
+				if (!in_array($v['id'], $gruposId)) {
 					$grupos[]['Grupo'] = $v;
 				}
 			}
-			foreach($grupos as $k=>$grupo) {
-				if($registro['puedeCambiarPermisos'] === true) {
-					if(((int)$registro[$this->modelClass]['group_id'] & (int)$grupo['Grupo']['id']) > 0) {
+			foreach ($grupos as $k=>$grupo) {
+				if ($registro['puedeCambiarPermisos'] === true) {
+					if (((int)$registro[$this->modelClass]['group_id'] & (int)$grupo['Grupo']['id']) > 0) {
 						$grupos[$k]['Grupo']['posible_accion'] = "quitar";
 					}
 					else {
@@ -802,14 +804,14 @@ class AppController extends Controller {
 			* siempre y cuando pueda cambiar los permisos.
 			*/
 			$rolesId = Set::extract("/Rol/id", $roles);
-			foreach($usuarioSession['Rol'] as $v) {
-				if(!in_array($v['id'], $rolesId)) {
+			foreach ($usuarioSession['Rol'] as $v) {
+				if (!in_array($v['id'], $rolesId)) {
 					$roles[]['Rol'] = $v;
 				}
 			}
-			foreach($roles as $k=>$rol) {
-				if($registro['puedeCambiarPermisos'] === true) {
-					if(((int)$registro[$this->modelClass]['role_id'] & (int)$rol['Rol']['id']) > 0) {
+			foreach ($roles as $k=>$rol) {
+				if ($registro['puedeCambiarPermisos'] === true) {
+					if (((int)$registro[$this->modelClass]['role_id'] & (int)$rol['Rol']['id']) > 0) {
 						$roles[$k]['Rol']['posible_accion'] = "quitar";
 					}
 					else {
@@ -820,7 +822,7 @@ class AppController extends Controller {
 		}
 		
 		$permisos = str_split(str_pad(base_convert($registro[$this->modelClass]['permissions'], 10, 2), 9, "0", STR_PAD_LEFT));
-		foreach($permisos as $k=>$v) {
+		foreach ($permisos as $k=>$v) {
 			switch($k) {
 				case 0:
 					$pd['leer'] = $v;
@@ -879,11 +881,11 @@ class AppController extends Controller {
 		/**
 		* En accionesWhiteList llevo las acciones que no deben chquearse la seguridad.
 		*/
-		if(!$this->Session->check("__Seguridad.accionesWhiteList")) {
+		if (!$this->Session->check("__Seguridad.accionesWhiteList")) {
 			$Accion = ClassRegistry::init('Accion');
-			$data = $Accion->find("all", array("checkSecurity"=>false, "contain"=>"Controlador", "conditions"=>array("Accion.seguridad"=>"No")));
+			$data = $Accion->find("all", array("checkSecurity"=>false, "contain" => "Controlador", "conditions"=>array("Accion.seguridad" => "No")));
 			$accionesWhiteList = array();
-			foreach($data as $v) {
+			foreach ($data as $v) {
 				$accionesWhiteList[] = $v['Controlador']['nombre'] . "." . $v['Accion']['nombre'];
 			}
 			$this->Session->write("__Seguridad.accionesWhiteList", $accionesWhiteList);
@@ -892,10 +894,10 @@ class AppController extends Controller {
 			$accionesWhiteList = $this->Session->read("__Seguridad.accionesWhiteList");
 		}
 		
-		if(in_array($this->name . "." . $this->action, $accionesWhiteList)) {
+		if (in_array($this->name . "." . $this->action, $accionesWhiteList)) {
 			return true;
 		}
-    	elseif(!$this->Session->check("__Usuario")) {
+    	elseif (!$this->Session->check("__Usuario")) {
     		$this->redirect("../usuarios/login");
     	}
     	
@@ -919,7 +921,7 @@ class AppController extends Controller {
 		* Si es un request ajax, posiblemente sea un desglose.
 		* Guardo en la session los desgloses que estan abiertos.
 		*/
-		if(isset($this->params['isAjax']) && isset($this->params['pass'][0]) && is_numeric($this->params['pass'][0])) {
+		if (isset($this->params['isAjax']) && isset($this->params['pass'][0]) && is_numeric($this->params['pass'][0])) {
 			$desgloses = $this->Session->read("desgloses");
 			$id = strtolower($this->name) . "-" . $this->action . "-" . $this->params['pass'][0];
 			$desgloses[$id] = true;
@@ -966,7 +968,7 @@ class AppController extends Controller {
 		/**
 		* Saco de la session los desgloses que han sido cerrados.
 		*/
-		if($this->Session->check("desgloses")) {
+		if ($this->Session->check("desgloses")) {
 			$desgloses = $this->Session->read("desgloses");
 			unset($desgloses[$nombreDesglose]);
 			$this->Session->write("desgloses", $desgloses);

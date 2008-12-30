@@ -7,21 +7,21 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula los metodos de los helpers que usare en todo la aplicacion.
  *
- * @package		pragtico
- * @subpackage	app
+ * @package     pragtico
+ * @subpackage  app
  */
 class AppHelper extends Helper {
     
@@ -35,7 +35,7 @@ class AppHelper extends Helper {
 */
 	function traerPreferencia($preferencia) {
 		$session = &new SessionComponent();
-		if($session->check("__Usuario")) {
+		if ($session->check("__Usuario")) {
 			$usuario = $session->read("__Usuario");
 			return $usuario['Usuario']['preferencias'][$preferencia];
 		}
