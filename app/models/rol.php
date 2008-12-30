@@ -28,8 +28,8 @@ class Rol extends AppModel {
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre del rol.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el nombre del rol.')
         )
 	);
 
@@ -49,7 +49,7 @@ class Rol extends AppModel {
 		*/
 		if (empty($this->data['Rol']['id'])) {
 			$this->recursive = -1;
-			$rol = $this->find("first", array("checkSecurity"=>false, "fields"=>array("MAX(Rol.id) AS maximo")));
+			$rol = $this->find('first', array('checkSecurity'=>false, 'fields'=>array('MAX(Rol.id) AS maximo')));
 			$ultimoRol = $rol[0]['maximo'];
 			$this->data['Rol']['id'] = $ultimoRol * 2;
 		}

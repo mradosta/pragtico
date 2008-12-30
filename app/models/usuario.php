@@ -26,50 +26,50 @@ class Usuario extends AppModel {
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar un nombre de usuario.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar un nombre de usuario.')
         ),
         'clave' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe ingresar la clave del usuario.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe ingresar la clave del usuario.')
         ),
         'email' => array(
 			array(
-				'rule'	=> VALID_EMAIL, 
-				'message'	=>'El correo electronico ingresado no es valido.'),
+				'rule'		=> VALID_EMAIL, 
+				'message'	=> 'El correo electronico ingresado no es valido.'),
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el correo electronico del usuario.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el correo electronico del usuario.')
         ),
         'clave_anterior' => array(
 			array(
 				'rule'	=> '__clave_actual', 
-				'message'	=>'La clave actual ingresada no es correcta.'),
+				'message'	=> 'La clave actual ingresada no es correcta.'),
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe ingresar su clave actual.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe ingresar su clave actual.')
 		),
         'clave_nueva' => array(
 			array(
 				'rule'	=> '__clave_nueva', 
-				'message'	=>'La nueva clave y el reingreso no coinciden.'),
+				'message'	=> 'La nueva clave y el reingreso no coinciden.'),
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'La nueva clave no puede quedar vacia.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'La nueva clave no puede quedar vacia.')
         ),
         'clave_nueva_reingreso' => array(
 			array(
 				'rule'	=> '__clave_nueva', 
-				'message'	=>'La nueva clave y el reingreso no coinciden.'),
+				'message'	=> 'La nueva clave y el reingreso no coinciden.'),
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe reingresar la clave.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe reingresar la clave.')
         ),
         'grupo_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar el grupo primario.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar el grupo primario.')
         ));
 	
 	var $hasAndBelongsToMany = array('Grupo' =>
@@ -106,27 +106,27 @@ class Usuario extends AppModel {
 		*/
 		$MenuItems = array();
 		if ((int)$usuario['Usuario']['roles'] & 1) {
-			$MenuItems = $this->RolesUsuario->Rol->RolesMenu->Menu->findAllThreaded(array("checkSecurity"=>false), null, "orden");
+			$MenuItems = $this->RolesUsuario->Rol->RolesMenu->Menu->findAllThreaded(array('checkSecurity'=>false), null, 'orden');
 		}
 		else {
 			$queryData = array(
-				"conditions"	=> array(	"Menu.estado"=> "Activo"),
-				"checkSecurity"	=> false,
-				"joins" 		=> array(
+				'conditions'	=> array(	'Menu.estado'=> 'Activo'),
+				'checkSecurity'	=> false,
+				'joins' 		=> array(
 									array(
-										"table" => "roles_menus",
-										"type" 	=> "INNER",
-										"conditions" => array(
-											array(	"RolesMenu.menu_id" => DboSource::identifier("Menu.id")),
-													"RolesMenu.estado" 	=> "Activo")
+										'table' => 'roles_menus',
+										'type' 	=> 'INNER',
+										'conditions' => array(
+											array(	'RolesMenu.menu_id' => DboSource::identifier('Menu.id')),
+													'RolesMenu.estado' 	=> 'Activo')
 									),
 									array(
-										"table" => "roles",
-										"type" 	=> "INNER",
-										"conditions" => array(
-											array(	"RolesMenu.rol_id" 	=> DboSource::identifier("Rol.id"),
-													"Rol.estado" 		=> "Activo",
-													"Rol.id"			=> Set::extract("/Rol/id", $usuario)))
+										'table' => 'roles',
+										'type' 	=> 'INNER',
+										'conditions' => array(
+											array(	'RolesMenu.rol_id' 	=> DboSource::identifier('Rol.id'),
+													'Rol.estado' 		=> 'Activo',
+													'Rol.id'			=> Set::extract('/Rol/id', $usuario)))
 									)));
 								
 			$menus = $this->query($this->generarSql($queryData, $this->RolesUsuario->Rol->RolesMenu->Menu));
@@ -134,11 +134,11 @@ class Usuario extends AppModel {
 			* Para entrar usando findAllThreaded debo conocer los ids porque no hace joins, entonces los busco.
 			*/
 			if (!empty($menus)) {
-				$MenuItems = $this->RolesUsuario->Rol->RolesMenu->Menu->find("threaded", array(
-					"checkSecurity"	=> false,
-					"recursive"		=> -1,
-					"conditions"	=> array("Menu.id"=>Set::extract("/Menu/id", $menus)),
-					"order"			=> "orden"));
+				$MenuItems = $this->RolesUsuario->Rol->RolesMenu->Menu->find('threaded', array(
+					'checkSecurity'	=> false,
+					'recursive'		=> -1,
+					'conditions'	=> array('Menu.id'=>Set::extract('/Menu/id', $menus)),
+					'order'			=> 'orden'));
 			}
 		}
 		return $MenuItems;
@@ -164,25 +164,25 @@ class Usuario extends AppModel {
 		if (!empty($condiciones['nombre']) && !empty($condiciones['clave'])) {
 			App::import('Core', 'Sanitize');
 			$conditions['Usuario.nombre'] = Sanitize::paranoid($condiciones['nombre']);
-			$conditions['Usuario.clave'] = Security::hash(Sanitize::paranoid($condiciones['clave']), "md5", false);
-			$conditions['Usuario.estado'] = "Activo";
+			$conditions['Usuario.clave'] = Security::hash(Sanitize::paranoid($condiciones['clave']), 'md5', false);
+			$conditions['Usuario.estado'] = 'Activo';
 			$conditions['checkSecurity'] = false;
 
-			$usuario = $this->find("first", array(
-				"conditions"	=> $conditions,
-				"contain"		=>
-					array("Grupo"=>
-						array("conditions"=>
-							array(	"GruposUsuario.estado" => "Activo",
-									"Grupo.estado" => "Activo")),
-						"Rol"=>
-						array("conditions"=>
-							array(	"RolesUsuario.estado" => "Activo",
-									"Rol.estado" => "Activo")))));
+			$usuario = $this->find('first', array(
+				'conditions'	=> $conditions,
+				'contain'		=>
+					array('Grupo'=>
+						array('conditions'=>
+							array(	'GruposUsuario.estado' => 'Activo',
+									'Grupo.estado' => 'Activo')),
+						'Rol'=>
+						array('conditions'=>
+							array(	'RolesUsuario.estado' => 'Activo',
+									'Rol.estado' => 'Activo')))));
 
 			if (!empty($usuario) && $this->__actualizarUltimoIngreso($usuario['Usuario']['id'])) {
-				$usuario['Usuario']['roles'] = array_sum(Set::extract($usuario, "/Rol/id"));
-				$usuario['Usuario']['grupos'] = array_sum(Set::extract($usuario, "/Grupo/id"));
+				$usuario['Usuario']['roles'] = array_sum(Set::extract($usuario, '/Rol/id'));
+				$usuario['Usuario']['grupos'] = array_sum(Set::extract($usuario, '/Grupo/id'));
 				$usuario['Usuario']['preferencias'] = $this->Preferencia->findPreferencias($usuario['Usuario']['id']);
 				$usuario['Usuario']['preferencias']['grupos_seleccionados'] = $usuario['Usuario']['grupos'];
 				if (!isset($usuario['Grupo'][0]['id'])) {
@@ -206,7 +206,7 @@ class Usuario extends AppModel {
  * @access private
  */
 	function __actualizarUltimoIngreso($usuarioId) {
-		return $this->save(array("Usuario"=>array("ultimo_ingreso"=>date("Y-m-d H:i:s"), "id"=>$usuarioId)));
+		return $this->save(array('Usuario'=>array('ultimo_ingreso'=>date('Y-m-d H:i:s'), 'id'=>$usuarioId)));
 	}
 
 
@@ -218,8 +218,8 @@ class Usuario extends AppModel {
 		if ($created) {
 			$save['rol_id'] = $this->data['Usuario']['rol_id'];
 			$save['usuario_id'] = $this->getLastInsertID();
-			$save['estado'] = "Activo";
-			$this->RolesUsuario->save(array("RolesUsuario"=>$save));
+			$save['estado'] = 'Activo';
+			$this->RolesUsuario->save(array('RolesUsuario'=>$save));
 		}
 		return parent::afterSave($created);
 	}
@@ -254,10 +254,10 @@ class Usuario extends AppModel {
  * @access private
  */
 	function __clave_nueva($valores, $params=array()) {
-		if (key($valores) === "clave_nueva") {
+		if (key($valores) === 'clave_nueva') {
 			$otra = $this->data['Usuario']['clave_nueva_reingreso'];
 		}
-		elseif (key($valores) === "clave_nueva_reingreso") {
+		elseif (key($valores) === 'clave_nueva_reingreso') {
 			$otra = $this->data['Usuario']['clave_nueva'];
 		}
 		if ($otra == $valores[key($valores)]) {

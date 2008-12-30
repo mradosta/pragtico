@@ -25,7 +25,7 @@
  */
 class LiquidacionesAuxiliar extends AppModel {
 
-	var $unique = array("liquidacion_id", "save");
+	var $unique = array('liquidacion_id', 'save');
 
 }
 ?>

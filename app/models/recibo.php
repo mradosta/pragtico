@@ -26,13 +26,11 @@ class Recibo extends AppModel {
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe ingresar un nombre para el recibo.'))
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe ingresar un nombre para el recibo.'))
 	);
 
-	var $belongsTo = array(	'Empleador' =>
-                        array('className'    => 'Empleador',
-                              'foreignKey'   => 'empleador_id'));
+	var $belongsTo = array('Empleador');
 	
 	var $hasMany = array(	'RecibosConcepto' =>
 					array('className'    => 'RecibosConcepto',

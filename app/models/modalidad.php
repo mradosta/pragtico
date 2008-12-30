@@ -28,13 +28,13 @@ class Modalidad extends AppModel {
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre de la modalidad.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el nombre de la modalidad.')
         ),
         'codigo' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el codigo de la modalidad.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el codigo de la modalidad.')
         )
 	);
 

@@ -28,17 +28,12 @@ class Rubro extends AppModel {
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre del rubro.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el nombre del rubro.')
         )
 	);
 
 	var $hasAndBelongsToMany = array('Empleador' =>
 						array('with' => 'EmpleadoresRubro'));
-	/*
-	var $hasMany = array(	'Empleador' =>
-                        array('className'    => 'Empleador',
-                              'foreignKey'   => 'rubro_id'));
-	*/
 }
 ?>

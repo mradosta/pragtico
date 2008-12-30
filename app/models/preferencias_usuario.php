@@ -27,13 +27,13 @@ class PreferenciasUsuario extends AppModel {
 	var $validate = array( 
         'usuario_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'xxxxxxxx.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'xxxxxxxx.')
 			),
         'preferencia_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe especificar la relacion laboral en la que se produjo la ausencia.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar la relacion laboral en la que se produjo la ausencia.')
         )        
 	);
 
@@ -53,7 +53,7 @@ class PreferenciasUsuario extends AppModel {
  */
 	function beforeSave() {
 		$session = &new SessionComponent();
-		$usuario = $session->read("__Usuario");
+		$usuario = $session->read('__Usuario');
 		$this->data[$this->name]['usuario_id'] = $usuario['Usuario']['id'];
 		return parent::beforeSave();
 	}
@@ -82,9 +82,9 @@ class PreferenciasUsuario extends AppModel {
  */
 	function __actualizarPreferenciasEnSesion() {
 		$session = &new SessionComponent();
-		$usuario = $session->read("__Usuario");
+		$usuario = $session->read('__Usuario');
 		$usuario['Usuario']['preferencias'] = $this->Preferencia->findPreferencias($usuario['Usuario']['id']);
-		$session->write("__Usuario", $usuario);
+		$session->write('__Usuario', $usuario);
 	}
 	
 }

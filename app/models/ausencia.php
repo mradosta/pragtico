@@ -26,11 +26,11 @@
  */
 class Ausencia extends AppModel {
 
-	var $modificadores = array(	"index"=>array("contain"=>array("Relacion" => array('Empleador', 'Trabajador'),
-																"AusenciasMotivo",
-																"AusenciasSeguimiento")),
-								"edit"=>array("contain"=>array(	"Relacion"=>array("Empleador","Trabajador"),
-																"AusenciasSeguimiento")));
+	var $modificadores = array(	'index'=>array('contain'=>array('Relacion' => array('Empleador', 'Trabajador'),
+																'AusenciasMotivo',
+																'AusenciasSeguimiento')),
+								'edit'=>array('contain'=>array(	'Relacion'=>array('Empleador','Trabajador'),
+																'AusenciasSeguimiento')));
 	var $validate = array( 
         'relacion_id__' => array(
 			array(
@@ -85,7 +85,7 @@ class Ausencia extends AppModel {
 				if (isset($ausencia['Ausencia']['id'])) {
 					if (isset($ausencia['AusenciasSeguimiento'])) {
 						
-						$results[$k]['Ausencia']['dias'] = array_sum(Set::extract("/AusenciasSeguimiento[estado=Confirmado]/dias", $ausencia));
+						$results[$k]['Ausencia']['dias'] = array_sum(Set::extract('/AusenciasSeguimiento[estado=Confirmado]/dias', $ausencia));
 					}
 				}
 			}
@@ -96,13 +96,13 @@ class Ausencia extends AppModel {
 					foreach ($v as $k1 => $v1) {
 						foreach ($v1 as $k2 => $ausencia) {
 							if (!isset($ausencia['AusenciasSeguimiento'])) {
-								$ausenciasSeguimiento = $this->AusenciasSeguimiento->find("all", 
-																array(	"recursive"	=> -1, 
-																		"conditions"=> 
-																				array(	"AusenciasSeguimiento.ausencia_id"	=> $ausencia['id'],
-																						"AusenciasSeguimiento.estado"		=> "Confirmado")));
+								$ausenciasSeguimiento = $this->AusenciasSeguimiento->find('all', 
+																array(	'recursive'	=> -1, 
+																		'conditions'=> 
+																				array(	'AusenciasSeguimiento.ausencia_id'	=> $ausencia['id'],
+																						'AusenciasSeguimiento.estado'		=> 'Confirmado')));
 							}
-							$results[$k]['Ausencia'][$k2]['dias'] = array_sum(Set::extract("/AusenciasSeguimiento/dias", $ausenciasSeguimiento));
+							$results[$k]['Ausencia'][$k2]['dias'] = array_sum(Set::extract('/AusenciasSeguimiento/dias', $ausenciasSeguimiento));
 						}
 					}
 				}
@@ -123,12 +123,12 @@ class Ausencia extends AppModel {
  */
 	function getAusencias($relacion, $periodo) {
 
-		$r = $this->find("all",
-			array("contain"		=> array(	"AusenciasMotivo",
-											"AusenciasSeguimiento"	=> array("conditions" => 
-															array(	"AusenciasSeguimiento.estado"	=> "Confirmado")),
-			"conditions"		=> array(	"Ausencia.relacion_id" 	=> $relacion['Relacion']['id'],
-											"Ausencia.desde >="		=> $periodo['desde']))));
+		$r = $this->find('all',
+			array('contain'		=> array(	'AusenciasMotivo',
+											'AusenciasSeguimiento'	=> array('conditions' => 
+															array(	'AusenciasSeguimiento.estado'	=> 'Confirmado')),
+			'conditions'		=> array(	'Ausencia.relacion_id' 	=> $relacion['Relacion']['id'],
+											'Ausencia.desde >='		=> $periodo['desde']))));
 
 		$return['Justificada'] = 0;
 		$return['Injustificada'] = 0;

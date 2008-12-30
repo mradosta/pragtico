@@ -23,12 +23,12 @@
  */
 class ConveniosCategoriasHistorico extends AppModel {
 
-	var $unique = array("convenios_categoria_id", "desde");
+	var $unique = array('convenios_categoria_id', 'desde');
 	
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array("index"=>array("contain"=>array("ConveniosCategoria.Convenio")));
+	var $modificadores = array('index'=>array('contain'=>array('ConveniosCategoria.Convenio')));
 	
 
 	var $belongsTo = array(	'ConveniosCategoria' =>

@@ -17,7 +17,7 @@
  */
 /**
  * Especifico todos los metodos de validacion que requiera.
- * Es importante que cada metodo que agregue tenga el prefijo "valid", ej:
+ * Es importante que cada metodo que agregue tenga el prefijo 'valid', ej:
  *		validRule(&$model, $rule, $ruleParams)
  * Esto para no ser confundido con algun otro metodo de algun otro behavior.
  *
@@ -42,7 +42,7 @@ class ValidacionesBehavior extends ModelBehavior {
  *			array(
  *				'rule'	=> 'validExcluyente',
  *				'otrosCampos'=> array('campo1', 'campo2'),
- *				'message'	=>'Debe especificar el numero de dias y dejar vacios los campos: campo1 y campo2.')
+ *				'message'	=> 'Debe especificar el numero de dias y dejar vacios los campos: campo1 y campo2.')
  *       ),
  */
 	function validExcluyente(&$model, $rule, $ruleParams) {
@@ -52,7 +52,7 @@ class ValidacionesBehavior extends ModelBehavior {
 		* Si es un campo float (decimal) o integer y su valor es 0, lo considero vacio.
 		*/
 		$tipoDato = $model->schema($this->__getField($rule));
-		$campoNumericos = array("integer", "float");
+		$campoNumericos = array('integer', 'float');
 		if (in_array($tipoDato['type'], $campoNumericos) && $value == 0) {
 			return true;
 		}
@@ -93,14 +93,14 @@ class ValidacionesBehavior extends ModelBehavior {
     	}
     	
 		if (empty($ruleParams['opciones']['condicion'])) {
-			trigger_error("Debe especificar la condicion en el model " . $model->name . " para la validacion (validRango).", E_USER_WARNING);
+			trigger_error('Debe especificar la condicion en el model ' . $model->name . ' para la validacion (validRango).', E_USER_WARNING);
 			return false;
 		}
 		else {
-			$posiblesCondiciones = array(">", ">=", "<", "<=");
+			$posiblesCondiciones = array('>', '>=', '<', '<=');
 			$condicion = $ruleParams['opciones']['condicion'];
 			if (!in_array($condicion, $posiblesCondiciones)) {
-				trigger_error("La condicion en el model " . $model->name . " para la validacion (validRango) solo puede ser " . implode(", ", $posiblesCondiciones) . ".", E_USER_WARNING);
+				trigger_error('La condicion en el model ' . $model->name . ' para la validacion (validRango) solo puede ser ' . implode(', ', $posiblesCondiciones) . '.', E_USER_WARNING);
 				return false;
 			}
 		}
@@ -120,38 +120,38 @@ class ValidacionesBehavior extends ModelBehavior {
 		$tipoCampoAComparar = $schema[$campoAComparar]['type'];
 
 		if ($tipoCampo != $tipoCampoAComparar) {
-			trigger_error("Debe especificar campos del mismo tipo en el model " . $model->name . " para la validacion (validRango).", E_USER_WARNING);
+			trigger_error('Debe especificar campos del mismo tipo en el model ' . $model->name . ' para la validacion (validRango).', E_USER_WARNING);
 			return false;
 		}
 
-		if ($tipoCampo == "date" || $tipoCampo == "datetime") {
+		if ($tipoCampo == 'date' || $tipoCampo == 'datetime') {
 			$tmp = substr($value, 0, 10);
 			if (preg_match(VALID_DATE, $tmp, $matches)) {
-				$value = $matches[3] . "-" . $matches[2] . "-" . $matches[1] . " " . substr($value, 10);
+				$value = $matches[3] . '-' . $matches[2] . '-' . $matches[1] . ' ' . substr($value, 10);
 			}
 			$tmp = substr($valorAComparar, 0, 10);
 			if (preg_match(VALID_DATE, $tmp, $matches)) {
-				$valorAComparar = $matches[3] . "-" . $matches[2] . "-" . $matches[1] . " " . substr($valorAComparar, 10);
+				$valorAComparar = $matches[3] . '-' . $matches[2] . '-' . $matches[1] . ' ' . substr($valorAComparar, 10);
 			}
 		}
 			
 		switch($condicion) {
-			case ">":
+			case '>':
 				if ($value > $valorAComparar) {
 					return true;
 				}
 				break;
-			case ">=":
+			case '>=':
 				if ($value >= $valorAComparar) {
 					return true;
 				}
 				break;
-			case "<":
+			case '<':
 				if ($value < $valorAComparar) {
 					return true;
 				}
 				break;
-			case "<=":
+			case '<=':
 				if ($value <= $valorAComparar) {
 					return true;
 				}
@@ -178,7 +178,7 @@ class ValidacionesBehavior extends ModelBehavior {
  *			array(
  *				'rule'	=> 'validUnoPorLoMenos',
  *				'otrosCampos'=> array('campo1', 'campo2'),
- *				'message'	=>'Debe especificar por lo menos algun valor para campo1, campo2 o dias.')
+ *				'message'	=> 'Debe especificar por lo menos algun valor para campo1, campo2 o dias.')
  *       ),
  */
     function validUnoPorLoMenos(&$model, $rule, $ruleParams) {
@@ -224,12 +224,12 @@ class ValidacionesBehavior extends ModelBehavior {
 		/**
 		* Separo cualquier caracter que no tenga que ver con numeros.
 		*/
-		$value = preg_replace("/[^0-9]/","", $value);
+		$value = preg_replace('/[^0-9]/','', $value);
 		
 		/**
 		* Si no estan todos los digitos o no empieza con algun digito valido.
 		*/
-		If (strlen($value) <> 11 || !in_array(substr($value, 0, 2), array("20", "23", "24", "27", "30", "33", "34"))) {
+		If (strlen($value) <> 11 || !in_array(substr($value, 0, 2), array('20', '23', '24', '27', '30', '33', '34'))) {
 			return false;
 		}
 		else {
@@ -255,7 +255,7 @@ class ValidacionesBehavior extends ModelBehavior {
 				* Lo formateo para que se guarde formateado.
 				*/
 				$field = $this->__getField($rule);
-				$model->data[$model->name][$field] = preg_replace("/(\d{2})(\d{8})(\d{1})/", "$1-$2-$3", $value);
+				$model->data[$model->name][$field] = preg_replace('/(\d{2})(\d{8})(\d{1})/', '$1-$2-$3', $value);
 				return true;
 			}
 			else {
@@ -304,7 +304,7 @@ class ValidacionesBehavior extends ModelBehavior {
 		* 2650450202145056396676
 		*/
 
-		$value = str_replace("-", "", $value);
+		$value = str_replace('-', '', $value);
 		if (strlen($value) == 22) {
 			$parteA = substr($value, 0, 7);
 			$digitoParteA = substr($value, 7, 1);
@@ -358,7 +358,7 @@ class ValidacionesBehavior extends ModelBehavior {
 				}
 			}
 		}
-		return "";
+		return '';
 	}
 
 
@@ -375,7 +375,7 @@ class ValidacionesBehavior extends ModelBehavior {
 				return key($rule);
 			}
 		}
-		return "";
+		return '';
 	}
 
 
@@ -400,17 +400,17 @@ class ValidacionesBehavior extends ModelBehavior {
 			if (!empty($fieldDescriptor['default']) && empty($value)) {
 				return $fieldDescriptor['default'];
 			}
-			elseif (in_array($fieldDescriptor['type'], array("datetime", "date"))) {
+			elseif (in_array($fieldDescriptor['type'], array('datetime', 'date'))) {
 				if (empty($value)) {
-					return "0000-00-00";
+					return '0000-00-00';
 				}
 				return $this->__getMySqlDate($value);
 			}
-			elseif (in_array($fieldDescriptor['type'], array("float", "integer", "binary")) && empty($value)) {
+			elseif (in_array($fieldDescriptor['type'], array('float', 'integer', 'binary')) && empty($value)) {
 				return 0;
 			}
-			elseif (in_array($fieldDescriptor['type'], array("string", "text")) && empty($value)) {
-				return "";
+			elseif (in_array($fieldDescriptor['type'], array('string', 'text')) && empty($value)) {
+				return '';
 			}
 		}
 		else {
@@ -435,7 +435,7 @@ class ValidacionesBehavior extends ModelBehavior {
 			foreach ($model->data as $k=>$v) {
 				if ($model->name == $k) {
 					foreach ($model->schema() as $field=>$fieldDescriptor) {
-						if (in_array($field, array("created", "modified", "user_id", "group_id", "rol_id", "permissions"))) {
+						if (in_array($field, array('created', 'modified', 'user_id', 'group_id', 'rol_id', 'permissions'))) {
 							continue;
 						}
 
@@ -458,7 +458,7 @@ class ValidacionesBehavior extends ModelBehavior {
 				else {
 					foreach ($model->data[$k] as $kDetail=>$vDetail) {
 						foreach ($vDetail as $field=>$v) {
-							if (in_array($field, array("created", "modified", "user_id", "group_id", "rol_id", "permissions"))) {
+							if (in_array($field, array('created', 'modified', 'user_id', 'group_id', 'rol_id', 'permissions'))) {
 								continue;
 							}
 							
@@ -489,7 +489,7 @@ class ValidacionesBehavior extends ModelBehavior {
  */
 	function __getMySqlDate($fecha) {
 		if (!empty($fecha) && (preg_match(VALID_DATETIME, $fecha, $matches) || preg_match(VALID_DATE, $fecha, $matches))) {
-			return $matches[3] . "-" . $matches[2] . "-" . $matches[1] . substr($fecha, 10);
+			return $matches[3] . '-' . $matches[2] . '-' . $matches[1] . substr($fecha, 10);
 		}
 		elseif (preg_match(VALID_DATE_MYSQL, $fecha)) {
 			return $fecha;

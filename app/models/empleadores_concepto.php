@@ -28,7 +28,7 @@ class EmpleadoresConcepto extends AppModel {
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array("index"=>array("contain"=>array("Concepto", "Empleador")));
+	var $modificadores = array('index'=>array('contain'=>array('Concepto', 'Empleador')));
 	
 	var $belongsTo = array(	'Empleador' =>
                         array('className'    => 'Empleador',

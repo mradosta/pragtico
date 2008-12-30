@@ -23,8 +23,8 @@
  */
 class RolesAccion extends AppModel {
 
-	var $modificadores = array(	"edit"	=>array("contain"=>array(	"Accion.Controlador")),
-								"add"	=>array("contain"=>array(	"Accion.Controlador")));
+	var $modificadores = array(	'edit'	=>array('contain'=>array(	'Accion.Controlador')),
+								'add'	=>array('contain'=>array(	'Accion.Controlador')));
 
 	var $belongsTo = array(	'Rol' =>
                         array('className'    => 'Rol',

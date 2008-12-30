@@ -11,7 +11,7 @@ class TestService extends AppModel
  * @return string Lo que vuelve.
  */
 	function hola($a) {
-        return "HOLA " . $a;
+        return 'HOLA ' . $a;
     }
 
 

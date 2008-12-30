@@ -31,12 +31,12 @@ class Auditoria extends AppModel {
  * @access private
  */
     function __getIp() {
-    	if (getenv("HTTP_CLIENT_IP"))
-        	return getenv("HTTP_CLIENT_IP"); 
-    	elseif (getenv("HTTP_X_FORWARDED_FOR"))
-			return getenv("HTTP_X_FORWARDED_FOR");
+    	if (getenv('HTTP_CLIENT_IP'))
+        	return getenv('HTTP_CLIENT_IP'); 
+    	elseif (getenv('HTTP_X_FORWARDED_FOR'))
+			return getenv('HTTP_X_FORWARDED_FOR');
 	else
-		return getenv("REMOTE_ADDR");
+		return getenv('REMOTE_ADDR');
     }
 
 
@@ -53,16 +53,16 @@ class Auditoria extends AppModel {
 		if (!empty($usuario)) {
 			$save['usuario'] = $usuario['Usuario']['nombre'];
 		} else {
-			$save['usuario'] = "publico";
+			$save['usuario'] = 'publico';
 		}
     	$save['ip'] = $this->__getIp();
 		$save['model'] = $data['model'];
 		$save['data'] = serialize($data['data']);
 		$save['tipo'] = $data['tipo'];
-		$save['user_id'] = "1";
-		$save['role_id'] = "1";
-		$save['group_id'] = "0";
-		$save['permissions'] = "256";
+		$save['user_id'] = '1';
+		$save['role_id'] = '1';
+		$save['group_id'] = '0';
+		$save['permissions'] = '256';
 		$saveAuditoria['Auditoria'] = $save;
 		$this->create($saveAuditoria);
 		return $this->save($saveAuditoria);

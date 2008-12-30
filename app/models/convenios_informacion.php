@@ -26,13 +26,13 @@ class ConveniosInformacion extends AppModel {
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array("index"=>array("contain"=>array("Convenio", "Informacion")));
+	var $modificadores = array('index'=>array('contain'=>array('Convenio', 'Informacion')));
 	
 	var $validate = array(
         'valor' => array(
 			array(
 				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe especificar un valor para la variable.')
+				'message'	=> 'Debe especificar un valor para la variable.')
         )
 	);
 	

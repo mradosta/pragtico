@@ -23,18 +23,18 @@
  */
 class PreferenciasValor extends AppModel {
 
-	var $unique = array("preferencia_id", "valor");
+	var $unique = array('preferencia_id', 'valor');
 	
 	var $validate = array( 
         'valor' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe ingresar el valor de la preferencia.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe ingresar el valor de la preferencia.')
 			),
         'preferencia_id' => array(
 			array(
 				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe seleccionar la preferencia.')
+				'message'	=> 'Debe seleccionar la preferencia.')
         )        
 	);
 

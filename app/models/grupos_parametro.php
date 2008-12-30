@@ -30,18 +30,18 @@ class GruposParametro extends AppModel {
 	var $validate = array(
         'grupo_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar el grupo.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar el grupo.')
         ),
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre del parametro.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el nombre del parametro.')
         ),
         'valor' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el valor del parametro.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el valor del parametro.')
         )
 	);
 

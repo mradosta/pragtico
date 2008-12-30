@@ -25,23 +25,23 @@
  */
 class EmpleadoresCoeficiente extends AppModel {
 
-	var $modificadores = array("index"=>array("contain"=>array("Empleador", "Coeficiente")));
+	var $modificadores = array('index'=>array('contain'=>array('Empleador', 'Coeficiente')));
 	
 	var $validate = array(
         'emplador_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar el empleador.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar el empleador.')
         ),
         'coeficiente_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar el coeficiente.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar el coeficiente.')
         ),
         'valor' => array(
 			array(
 				'rule'	=> VALID_NUMBER, 
-				'message'	=>'Debe especificar el valor del coeficiente.')
+				'message'	=> 'Debe especificar el valor del coeficiente.')
         )        
 	);
 

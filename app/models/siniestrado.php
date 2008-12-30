@@ -29,13 +29,13 @@ class Siniestrado extends AppModel {
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre del siniestrado.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el nombre del siniestrado.')
         ),
         'codigo' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el codigo del siniestrado.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el codigo del siniestrado.')
         )
 	);
 

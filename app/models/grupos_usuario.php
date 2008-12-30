@@ -27,18 +27,18 @@ class GruposUsuario extends AppModel {
 	var $validate = array(
         'grupo_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar el grupo.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar el grupo.')
         ),
         'usuario_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar el usuario.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar el usuario.')
         ),
         'tipo' => array(
 			array(
 				'rule'	=> '__soloUnGrupoPrimario', 
-				'message'	=>'Solo puede existir un grupo primario y este usuario ya lo tiene.')
+				'message'	=> 'Solo puede existir un grupo primario y este usuario ya lo tiene.')
         )
     );
         
@@ -55,8 +55,8 @@ class GruposUsuario extends AppModel {
  */
 	function __soloUnGrupoPrimario($value, $params = array()) {
 		return true;
-		if ($this->data['GruposUsuario']['tipo'] == "Primario") {
-			$find = array("Usuario.id"=>$this->data['GruposUsuario']['usuario_id'], "GruposUsuario.tipo" => "Primario");
+		if ($this->data['GruposUsuario']['tipo'] == 'Primario') {
+			$find = array('Usuario.id'=>$this->data['GruposUsuario']['usuario_id'], 'GruposUsuario.tipo' => 'Primario');
 			if ($this->findCount($find) > 0) {
 				return false;
 			}

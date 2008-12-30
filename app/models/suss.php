@@ -27,37 +27,32 @@ class Suss extends AppModel {
 
 	var $validate = array(
         'empleador_id__' => array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe seleccionar un empleador.'),
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar un empleador.'),
         'periodo' => array(
 			array(
 				'rule'	=> '/^(20\d\d)(0[1-9]|1[012])$/', 
-				'message'	=>'Debe especificar un periodo valido.'),
+				'message'	=> 'Debe especificar un periodo valido.'),
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar una periodo.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar una periodo.')
         ),
         'fecha' => array(
 			array(
-				'rule'	=> VALID_DATE, 
-				'message'	=>'Debe especificar una fecha valida.'),
+				'rule'		=> VALID_DATE, 
+				'message'	=> 'Debe especificar una fecha valida.'),
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar una fecha.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar una fecha.')
         ),
         'banco_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar el banco.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar el banco.')
         )        
 	);
 
-	var $belongsTo = array(	'Banco' =>
-                        array('className'    => 'Banco',
-                              'foreignKey'   => 'banco_id'),
-                            'Empleador' =>
-                        array('className'    => 'Empleador',
-                              'foreignKey'   => 'empleador_id'));
+	var $belongsTo = array('Banco', 'Empleador');
 
 }
 ?>

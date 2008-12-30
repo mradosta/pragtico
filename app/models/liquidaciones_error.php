@@ -24,7 +24,7 @@
  */
 class LiquidacionesError extends AppModel {
 
-	var $unique = array("liquidacion_id");
+	var $unique = array('liquidacion_id');
 
 }
 ?>

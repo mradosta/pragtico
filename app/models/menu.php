@@ -75,7 +75,7 @@ class Menu extends AppModel {
 		* Si no cargo nada en la action, pongo index como action.
 		*/
 		if (empty($this->data['Menu']['action'])) {
-			$this->data['Menu']['action'] = "index";
+			$this->data['Menu']['action'] = 'index';
 		}
 		
 		return parent::beforeSave($options);

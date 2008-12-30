@@ -28,8 +28,8 @@ class Siap extends AppModel {
 	var $validate = array(
         'version' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar la version de SIAP.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar la version de SIAP.')
         )
 	);
 

@@ -28,7 +28,7 @@ class Convenio extends AppModel {
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	//var $modificadores = array("index"=>array("contain"=>array("Convenio")));
+	//var $modificadores = array('index'=>array('contain'=>array('Convenio')));
 	
 	var $order = array('Convenio.nombre' => 'asc');
 
@@ -87,9 +87,9 @@ class Convenio extends AppModel {
  */	
 	function getInformacion($conveniosId) {
 		$return = array();
-		$r = $this->ConveniosInformacion->find("all", 
-			array(	"contain"		=> array("Informacion"),
-					"conditions"	=> array("ConveniosInformacion.convenio_id"	=>	$conveniosId)));
+		$r = $this->ConveniosInformacion->find('all', 
+			array(	'contain'		=> array('Informacion'),
+					'conditions'	=> array('ConveniosInformacion.convenio_id'	=>	$conveniosId)));
 		foreach ($r as $v) {
 			$return[$v['ConveniosInformacion']['convenio_id']][$v['Informacion']['nombre']] = $v['ConveniosInformacion']['valor'];
 		}

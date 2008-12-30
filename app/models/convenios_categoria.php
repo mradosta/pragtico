@@ -28,7 +28,7 @@ class ConveniosCategoria extends AppModel {
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array("index"=>array("contain"=>array("Convenio", "ConveniosCategoriasHistorico")));
+	var $modificadores = array('index'=>array('contain'=>array('Convenio', 'ConveniosCategoriasHistorico')));
 	
 	var $validate = array(
         'nombre' => array(
@@ -91,9 +91,9 @@ class ConveniosCategoria extends AppModel {
 
 	function __getCosto($data) {
 		$costo = 0;
-		$hoy = date("Y-m-d");
+		$hoy = date('Y-m-d');
 		foreach ($data as $v) {
-			if ($v['desde'] <= $hoy && ($v['hasta'] >= $hoy || $v['hasta'] == "0000-00-00")) {
+			if ($v['desde'] <= $hoy && ($v['hasta'] >= $hoy || $v['hasta'] == '0000-00-00')) {
 				$costo = $v['costo'];
 				break;
 			}

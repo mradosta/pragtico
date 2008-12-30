@@ -26,62 +26,62 @@ class Trabajador extends AppModel {
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array("edit"=>array("contain"=>array(	"Localidad",
-																"Condicion",
-																"Siniestrado",
-																"ObrasSocial")),
-								"add" =>array(								
-										"valoresDefault"=>array("pais" => "Argentina",
-																"nacionalidad" => "Argentina")));
+	var $modificadores = array('edit'=>array('contain'=>array(	'Localidad',
+																'Condicion',
+																'Siniestrado',
+																'ObrasSocial')),
+								'add' =>array(								
+										'valoresDefault'=>array('pais' => 'Argentina',
+																'nacionalidad' => 'Argentina')));
 
 	var $validate = array(
         'apellido' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el apellido del trabajador.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el apellido del trabajador.')
         ),
         'nombre' => array(
 			array(
 				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe especificar el nombre del trabajador.')
+				'message'	=> 'Debe especificar el nombre del trabajador.')
         ),
         'cuil' => array(
 			array(
 				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe especificar el cuil del trabajador.'),
+				'message'	=> 'Debe especificar el cuil del trabajador.'),
 			array(
 				'rule'	=> 'validCuitCuil',
-				'message'	=>'El numero de Cuil ingresado no es valido.')
+				'message'	=> 'El numero de Cuil ingresado no es valido.')
 				
         ),
         'jubilacion' => array(
 			array(
 				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe seleccionar un tipo de regimen jubilatorio.')
+				'message'	=> 'Debe seleccionar un tipo de regimen jubilatorio.')
         ),
         'cbu' => array(
 			array(
 				'rule'	=> 'validCbu',
-				'message'	=>'El Cbu ingresado no es valido.')
+				'message'	=> 'El Cbu ingresado no es valido.')
         ),
         'ingreso' => array(
 			array(
 				'rule'	=> VALID_DATE,
-				'message'	=>'La fecha no es valida.'),
+				'message'	=> 'La fecha no es valida.'),
 			array(
 				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe ingresar una fecha o seleccionarla desde el calendario.')
+				'message'	=> 'Debe ingresar una fecha o seleccionarla desde el calendario.')
 				
         ),
         'email' => array(
 			array(
 				'rule'	=> VALID_MAIL,
-				'message'	=>'El email no es valido.')
+				'message'	=> 'El email no es valido.')
         ),
         'provincia_id' => array(
 			array(
 				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe seleccionar la provincia.')
+				'message'	=> 'Debe seleccionar la provincia.')
         )
         
 	);
@@ -118,7 +118,7 @@ class Trabajador extends AppModel {
 		* Solo lo necesito mostrar con un edit.
 		*/
 		if ($primary === true && isset($results[0]['Trabajador']['cbu'])) {
-			$pattern = "/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d/";
+			$pattern = '/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d/';
 			if (preg_match($pattern, $results[0]['Trabajador']['cbu'], $matches)) {
 				$Sucursal = ClassRegistry::init('Sucursal');
 				$sucursal = $Sucursal->findByCodigo($matches[2]);
@@ -141,7 +141,7 @@ class Trabajador extends AppModel {
 		* Si no cargo el documento, lo obtengo desde el cuit.
 		*/
 		if (empty($this->data['Trabajador']['numero_documento']) && !empty($this->data['Trabajador']['cuil'])) {
-			$this->data['Trabajador']['numero_documento'] = substr(str_replace("-", "", $this->data['Trabajador']['cuil']), 2, 8);
+			$this->data['Trabajador']['numero_documento'] = substr(str_replace('-', '', $this->data['Trabajador']['cuil']), 2, 8);
 		}
 		
 		/**

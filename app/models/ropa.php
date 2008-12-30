@@ -31,23 +31,23 @@ class Ropa extends AppModel {
 	var $modificadores = array(	'index'	=>
 			array('contain'	=> array('Relacion'	=> array('Trabajador', 'Empleador'))),
 								'add' 	=>
-			array('valoresDefault'	=> array('fecha' => 'date("d/m/Y")')),
+			array('valoresDefault'	=> array('fecha' => array('date' => 'd/m/Y'))),
 								'edit'	=>
 			array('contain'	=> array('Relacion'	=> array('Trabajador', 'Empleador'), 'RopasDetalle')));
 	
 	var $validate = array(
         'relacion_id__' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar la relacion laboral.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar la relacion laboral.')
         ),
         'fecha' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe ingresar una fecha.'),
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe ingresar una fecha.'),
 			array(
 				'rule'	=> VALID_DATE,
-				'message'	=>'Debe ingresar un fecha valida o seleccionarla del calendario.'),
+				'message'	=> 'Debe ingresar un fecha valida o seleccionarla del calendario.'),
         ));
 	
 	var $belongsTo = 'Relacion';

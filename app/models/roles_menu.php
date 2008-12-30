@@ -23,12 +23,6 @@
  */
 class RolesMenu extends AppModel {
 
-	var $belongsTo = array(	'Rol' =>
-                        array('className'    => 'Rol',
-                              'foreignKey'   => 'rol_id'),
-							'Menu' =>
-                        array('className'    => 'Menu',
-                              'foreignKey'   => 'menu_id'));
-
+	var $belongsTo = array('Rol', 'Menu');
 }
 ?>

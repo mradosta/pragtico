@@ -27,26 +27,26 @@ class Vacacion extends AppModel {
 	var $validate = array( 
         'desde' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar la fecha de inicio de las vacaciones.'),
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar la fecha de inicio de las vacaciones.'),
 			array(
 				'rule'	=> VALID_DATE, 
-				'message'	=>'Debe especificar una fecha valida.')
+				'message'	=> 'Debe especificar una fecha valida.')
 				
         ),
         'hasta' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar la fecha de fin de las vacaciones.'),
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar la fecha de fin de las vacaciones.'),
 			array(
 				'rule'	=> VALID_DATE, 
-				'message'	=>'Debe especificar una fecha valida.')
+				'message'	=> 'Debe especificar una fecha valida.')
 				
         ),
         'relacion_id__' => array(
 			array(
 				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe especificar la relacion laboral que toma las vacaciones.')
+				'message'	=> 'Debe especificar la relacion laboral que toma las vacaciones.')
         )        
 	);
 	
@@ -63,15 +63,15 @@ class Vacacion extends AppModel {
  */
 	function buscarDiasVacaciones($opciones, $relacion) {
 	
-		$sql = "
+		$sql = '
 			select		v.desde,
 						v.hasta
 			from		vacaciones v
 			where		1=1
-			and			v.relacion_id = '" . $relacion['Relacion']['id'] . "'
-			and			v.desde >= '" . $opciones['desde'] . "'
-			and			v.hasta <= '" . $opciones['hasta'] . "'
-		";
+			and			v.relacion_id = '' . $relacion['Relacion']['id'] . ''
+			and			v.desde >= '' . $opciones['desde'] . ''
+			and			v.hasta <= '' . $opciones['hasta'] . ''
+		';
 
 		$r = $this->query($sql);
 		d($r);
@@ -80,22 +80,22 @@ class Vacacion extends AppModel {
 		if (!empty($r)) {
 			$modelConcepto = new Concepto();
 			foreach ($r as $hora) {
-				if ($relacion['ConveniosCategoria']['jornada'] == "Mensual" && ($hora['h']['tipo'] == "Normal" || $hora['h']['tipo'] == "Enfermedad")) {
+				if ($relacion['ConveniosCategoria']['jornada'] == 'Mensual' && ($hora['h']['tipo'] == 'Normal' || $hora['h']['tipo'] == 'Enfermedad')) {
 					continue;
 				}
 				
 				switch($hora['h']['tipo']) {
-					case "Normal":
-						$tipo = "#horas";
+					case 'Normal':
+						$tipo = '#horas';
 						break;
-					case "Extra 50%":
-						$tipo = "#horas_extra_50";
+					case 'Extra 50%':
+						$tipo = '#horas_extra_50';
 						break;
-					case "Extra 100%":
-						$tipo = "#horas_extra_100";
+					case 'Extra 100%':
+						$tipo = '#horas_extra_100';
 						break;
-					case "Enfermedad":
-						$tipo = "#horas_enfermedad";
+					case 'Enfermedad':
+						$tipo = '#horas_enfermedad';
 						break;
 				}
 				$horas[$tipo] = $hora[0]['total'];
@@ -103,12 +103,12 @@ class Vacacion extends AppModel {
 				/**
 				* Busco el concepto.
 				*/
-				$tipo = str_replace("#", "", $tipo);
-				$conceptos = am($conceptos, $modelConcepto->findConceptos("ConceptoPuntual", $relacion, $tipo));
+				$tipo = str_replace('#', '', $tipo);
+				$conceptos = am($conceptos, $modelConcepto->findConceptos('ConceptoPuntual', $relacion, $tipo));
 			}
 		}
 		
-		return array("conceptos"=>$conceptos, "variables"=>$horas);
+		return array('conceptos'=>$conceptos, 'variables'=>$horas);
 	}
 }
 ?>

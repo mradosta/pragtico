@@ -26,17 +26,17 @@ class Cuenta extends AppModel {
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array(	"index"=>array("contain"=>array(	"Empleador",
-																"Sucursal.Banco")),
-								"edit"=>array("contain"=>array(	"Empleador",
-																"Sucursal.Banco")));
+	var $modificadores = array(	'index'=>array('contain'=>array(	'Empleador',
+																'Sucursal.Banco')),
+								'edit'=>array('contain'=>array(	'Empleador',
+																'Sucursal.Banco')));
 	
 	
 	var $validate = array(
         'emplador_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar el empleador.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar el empleador.')
         )        
 	);
 

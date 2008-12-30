@@ -23,13 +23,13 @@
  */
 class Grupo extends AppModel {
 
-	var $order = array("Grupo.nombre asc");
+	var $order = array('Grupo.nombre asc');
 
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre del grupo.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el nombre del grupo.')
         )
 	);
 
@@ -48,7 +48,7 @@ class Grupo extends AppModel {
 		*/
 		if (empty($this->data['Grupo']['id'])) {
 			$this->recursive = -1;
-			$grupo = $this->find("first", array("checkSecurity"=>false, "fields"=>array("MAX(Grupo.id) AS maximo")));
+			$grupo = $this->find('first', array('checkSecurity'=>false, 'fields'=>array('MAX(Grupo.id) AS maximo')));
 			$ultimoGrupo = $grupo[0]['maximo'];
 			$this->data['Grupo']['id'] = $ultimoGrupo * 2;
 		}

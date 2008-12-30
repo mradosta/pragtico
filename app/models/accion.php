@@ -26,20 +26,20 @@
 class Accion extends AppModel {
 
 	
-	var $unique = array("controlador_id", "nombre");
+	var $unique = array('controlador_id', 'nombre');
 
 	var $order = array('Accion.nombre' => 'asc');
 
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre de la accion.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el nombre de la accion.')
         ),
         'controlador_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar un controlador.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar un controlador.')
         )
 	);
 

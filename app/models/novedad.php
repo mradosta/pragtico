@@ -31,7 +31,7 @@ class Novedad extends AppModel {
  * @var array
  * @access public
 */
-	var $order = array("periodo", "tipo");
+	var $order = array('periodo', 'tipo');
 
 
 /**
@@ -59,7 +59,7 @@ class Novedad extends AppModel {
  * @var array
  * @access public
  */
-	var $opciones = array("formato"=>array("Excel5" => "Excel", "Excel2007" => "Excel 2007"));
+	var $opciones = array('formato'=>array('Excel5' => 'Excel', 'Excel2007' => 'Excel 2007'));
 	
 	var $belongsTo = array(	'Relacion' =>
                         array('className'    => 'Relacion',
@@ -78,10 +78,10 @@ class Novedad extends AppModel {
 						$periodo = $this->format($v['Novedad']['periodo'], 'periodo');
 						$conditions = array('RelacionesConcepto.concepto_id' =>	array_shift(explode(':', $v['Novedad']['subtipo'])),
 											'RelacionesConcepto.relacion_id' =>	$v['Novedad']['relacion_id'],
-											array("OR"	=> array(	"RelacionesConcepto.desde" => "0000-00-00",
-																	"RelacionesConcepto.desde <=" => $periodo['desde'])),
-											array("OR"	=> array(	"RelacionesConcepto.hasta" => "0000-00-00",
-																	"RelacionesConcepto.hasta >=" => $periodo['hasta']))
+											array('OR'	=> array(	'RelacionesConcepto.desde' => '0000-00-00',
+																	'RelacionesConcepto.desde <=' => $periodo['desde'])),
+											array('OR'	=> array(	'RelacionesConcepto.hasta' => '0000-00-00',
+																	'RelacionesConcepto.hasta >=' => $periodo['hasta']))
 										   );
 								
 						$existe = $this->Relacion->RelacionesConcepto->find('first', array(
@@ -151,7 +151,7 @@ class Novedad extends AppModel {
 			return false;
 		}
 		
-		$predefinidos = $this->getIngresosPosibles("predefinidos");
+		$predefinidos = $this->getIngresosPosibles('predefinidos');
 		
 		foreach ($datos as $relacion_id => $data) {
 			foreach ($data as $tipo => $registros) {
@@ -171,7 +171,7 @@ class Novedad extends AppModel {
 						if (empty($concepto['Concepto']['id'])) {
 							continue;
 						}
-						//$save['Novedad']['data'] = "#valor_planilla:" . $registro;
+						//$save['Novedad']['data'] = '#valor_planilla:' . $registro;
 						$save['Novedad']['data'] = $registro;
 						$save['Novedad']['tipo'] = 'Concepto';
 						$save['Novedad']['subtipo'] = $concepto['Concepto']['id'] . ':' . $tipo;
@@ -230,43 +230,43 @@ class Novedad extends AppModel {
 		foreach ($novedades as $novedad) {
 			$periodo = $this->format($novedad['Novedad']['periodo'], 'periodo');
 			switch ($novedad['Novedad']['tipo']) {
-				case "Horas":
+				case 'Horas':
 					$saves[$i]['Hora']['id'] = null;
 					$saves[$i]['Hora']['tipo'] = $novedad['Novedad']['subtipo'];
 					$saves[$i]['Hora']['cantidad'] = $novedad['Novedad']['data'];
-					$saves[$i]['Hora']['estado'] = "Confirmada";
+					$saves[$i]['Hora']['estado'] = 'Confirmada';
 					$saves[$i]['Hora']['relacion_id'] = $novedad['Novedad']['relacion_id'];
 					$saves[$i]['Hora']['periodo'] = $periodo['periodoCompleto'];
-					$saves[$i]['Hora']['observacion'] = "Ingresado desde planilla";
+					$saves[$i]['Hora']['observacion'] = 'Ingresado desde planilla';
 				break;
-				case "Ausencias":
+				case 'Ausencias':
 					$saves[$i]['Ausencia']['id'] = null;
 					$saves[$i]['Ausencia']['desde'] = $this->format($periodo['desde'], 'date');
 					$saves[$i]['Ausencia']['ausencia_motivo_id'] = array_shift(explode(':', $novedad['Novedad']['subtipo']));
 					$saves[$i]['Ausencia']['relacion_id'] = $novedad['Novedad']['relacion_id'];
 					$saves[$i]['AusenciasSeguimiento'][$ii]['dias'] = $novedad['Novedad']['data'];
-					$saves[$i]['AusenciasSeguimiento'][$ii]['observacion'] = "Ingresado desde planilla";
-					$saves[$i]['AusenciasSeguimiento'][$ii]['estado'] = "Confirmado";
+					$saves[$i]['AusenciasSeguimiento'][$ii]['observacion'] = 'Ingresado desde planilla';
+					$saves[$i]['AusenciasSeguimiento'][$ii]['estado'] = 'Confirmado';
 					$ii++;
 				break;
-				case "Vales":
+				case 'Vales':
 					$saves[$i]['Descuento']['id'] = null;
 					$saves[$i]['Descuento']['alta'] = $this->format($periodo['desde'], 'date');
 					$saves[$i]['Descuento']['desde'] = $saves[$i]['Descuento']['alta'];
 					$saves[$i]['Descuento']['relacion_id'] = $novedad['Novedad']['relacion_id'];
 					$saves[$i]['Descuento']['monto'] = $novedad['Novedad']['data'];
-					$saves[$i]['Descuento']['tipo'] = "Vale";
-					$saves[$i]['Descuento']['descontar'] = array("1");
-					$saves[$i]['Descuento']['concurrencia'] = "Permite superponer";
-					$saves[$i]['Descuento']['estado'] = "Activo";
-					$saves[$i]['Descuento']['observacion'] = "Ingresado desde planilla";
+					$saves[$i]['Descuento']['tipo'] = 'Vale';
+					$saves[$i]['Descuento']['descontar'] = array('1');
+					$saves[$i]['Descuento']['concurrencia'] = 'Permite superponer';
+					$saves[$i]['Descuento']['estado'] = 'Activo';
+					$saves[$i]['Descuento']['observacion'] = 'Ingresado desde planilla';
 				break;
-				case "Concepto":
+				case 'Concepto':
 					$saves[$i]['RelacionesConcepto']['desde'] = $this->format($periodo['desde'], 'date');
 					$saves[$i]['RelacionesConcepto']['hasta'] = $this->format($periodo['hasta'], 'date');
 					$saves[$i]['RelacionesConcepto']['relacion_id'] = $novedad['Novedad']['relacion_id'];
 					$saves[$i]['RelacionesConcepto']['concepto_id'] = array_shift(explode(':', $novedad['Novedad']['subtipo']));
-					$saves[$i]['RelacionesConcepto']['observacion'] = "Ingresado desde planilla";
+					$saves[$i]['RelacionesConcepto']['observacion'] = 'Ingresado desde planilla';
 					
 					$find = $this->Relacion->RelacionesConcepto->find('first', 
 							array(	'recursive' 			=> -1,
@@ -277,11 +277,11 @@ class Novedad extends AppModel {
 					
 					if (empty($find)) {
 						$saves[$i]['RelacionesConcepto']['id'] = null;
-						$formula = "=" . $novedad['Novedad']['data'];
+						$formula = '=' . $novedad['Novedad']['data'];
 					}
 					if (empty($find['RelacionesConcepto']['formula'])) {
 						$saves[$i]['RelacionesConcepto']['id'] = $find['RelacionesConcepto']['id'];
-						$formula = "=" . $novedad['Novedad']['data'];
+						$formula = '=' . $novedad['Novedad']['data'];
 					}
 					else {
 						$saves[$i]['RelacionesConcepto']['id'] = $find['RelacionesConcepto']['id'];
@@ -303,7 +303,7 @@ class Novedad extends AppModel {
 		}
 		
 		if ($i === $c) {
-			$this->deleteAll(array("Novedad.id"=>$ids), false, false, false);
+			$this->deleteAll(array('Novedad.id'=>$ids), false, false, false);
 			$this->commit();
 			return $i;
 		}
@@ -320,16 +320,16 @@ class Novedad extends AppModel {
  * @return Array con los posibles campos que debo ingresar.
  * @access public.
  */
-	function getIngresosPosibles($tipo = "todos") {
-		$predefinidos[] = "Horas";
-		$predefinidos[] = "Ausencias";
-		$predefinidos[] = "Vales";
-		if ($tipo === "todos") {
+	function getIngresosPosibles($tipo = 'todos') {
+		$predefinidos[] = 'Horas';
+		$predefinidos[] = 'Ausencias';
+		$predefinidos[] = 'Vales';
+		if ($tipo === 'todos') {
 			$Concepto = new Concepto();
-			$conceptos = $Concepto->find("all", array("conditions"=>array("Concepto.novedad" => "Si"), "recursive"=>-1));
-			return array_merge($predefinidos, Set::extract("/Concepto/nombre", $conceptos));
+			$conceptos = $Concepto->find('all', array('conditions'=>array('Concepto.novedad' => 'Si'), 'recursive'=>-1));
+			return array_merge($predefinidos, Set::extract('/Concepto/nombre', $conceptos));
 		}
-		elseif ($tipo === "predefinidos") {
+		elseif ($tipo === 'predefinidos') {
 			return $predefinidos;	
 		}
 	}

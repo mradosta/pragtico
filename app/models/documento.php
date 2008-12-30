@@ -29,13 +29,11 @@ class Documento extends AppModel {
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe especificar el nombre del documento modelo.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el nombre del documento modelo.')
         )
 	);
 
-
-	//function getModels
 
 }
 ?>

@@ -28,8 +28,8 @@ class Concepto extends AppModel {
 		/*
         'formula' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe ingresar la formula de calculo del concepto.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe ingresar la formula de calculo del concepto.')
         ),
         */
 	var $validate = array(

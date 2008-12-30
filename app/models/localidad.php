@@ -24,28 +24,26 @@
 class Localidad extends AppModel {
 
 	var $order = array('Localidad.nombre' => 'asc');
-	//var $recursive = 2;
+	
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre de la localidad.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el nombre de la localidad.')
         ),
         'codigo_zona' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el codigo de la zona para AFIP.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el codigo de la zona para AFIP.')
         ),
         'provincia_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar la provincia.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar la provincia.')
         )
 	);
 
-	var $belongsTo = array(	'Provincia' =>
-                        array('className'    => 'Provincia',
-                              'foreignKey'   => 'provincia_id'));
+	var $belongsTo = array('Provincia');
 
 }
 ?>

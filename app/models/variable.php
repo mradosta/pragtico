@@ -28,11 +28,11 @@ class Variable extends AppModel {
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe especificar el nombre de la variable.'),
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el nombre de la variable.'),
 			array(
-				'rule'	=> '/^#[a-z,0-9,_]+$/',
-				'message'	=>'El nombre de la variable debe comenzar con el signo # y solo puede contener letras minusculas y guion/es bajo/s (_).')
+				'rule'		=> '/^#[a-z,0-9,_]+$/',
+				'message'	=> 'El nombre de la variable debe comenzar con el signo # y solo puede contener letras minusculas y guion/es bajo/s (_).')
         )        
 	);
 

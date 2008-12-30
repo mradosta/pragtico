@@ -28,53 +28,53 @@ class Relacion extends AppModel {
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array("index"=>array("contain"=>array("Trabajador", "Empleador")),
-								"edit"=>array("contain"=>array(
-											  	"Trabajador",
-												"Empleador",
-												"Situacion",
-												"Modalidad",
-												"Actividad",
-												"Area",
-												"ConveniosCategoria.Convenio")),
-								"add" =>array(								
-										"valoresDefault"=>array("ingreso" => "date('d/m/Y')")));
+	var $modificadores = array('index'=>array('contain'=>array('Trabajador', 'Empleador')),
+								'edit'=>array('contain'=>array(
+											  	'Trabajador',
+												'Empleador',
+												'Situacion',
+												'Modalidad',
+												'Actividad',
+												'Area',
+												'ConveniosCategoria.Convenio')),
+								'add' =>array(								
+										'valoresDefault'=>array('ingreso' => array('date' => 'd/m/Y'))));
 
 	
 	var $validate = array(
         'trabajador_id__' => array(
 			array(
 				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe seleccionar un trabajador.')
+				'message'	=> 'Debe seleccionar un trabajador.')
         ),
         'empleador_id__' => array(
 			array(
 				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe seleccionar un empleador.')
+				'message'	=> 'Debe seleccionar un empleador.')
         ),
         'area_id' => array(
 			array(
 				'rule'	=> '/^[1-9]{1}[0-9]{0,10}$/',
-				'message'	=>'Debe seleccionar un area.')
+				'message'	=> 'Debe seleccionar un area.')
         ),
         'horas' => array(
 			array(
 				'rule'	=> VALID_NUMBER,
-				'message'	=>'Debe ingresar un numero para las horas.')
+				'message'	=> 'Debe ingresar un numero para las horas.')
         ),
         'ingreso' => array(
 			array(
 				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe especificar la fecha inicio de la relacion laboral.'),
+				'message'	=> 'Debe especificar la fecha inicio de la relacion laboral.'),
 			array(
 				'rule'	=> VALID_DATE,
-				'message'	=>'Debe especificar una fecha valida.')
+				'message'	=> 'Debe especificar una fecha valida.')
 
         ),
         'convenios_categoria_id__' => array(
 			array(
 				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe seleccionar una categoria.')
+				'message'	=> 'Debe seleccionar una categoria.')
         )
 	);
 

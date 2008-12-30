@@ -30,8 +30,8 @@ class Provincia extends AppModel {
 	var $validate = array( 
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre de la provincia.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el nombre de la provincia.')
         )
 	);
 

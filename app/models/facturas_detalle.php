@@ -23,14 +23,7 @@
  */
 class FacturasDetalle extends AppModel {
 
-	var $unique = array("factura_id", "coeficiente_id");
-	
-	var $belongsTo = array(	'Factura' =>
-                        array('className'   => 'Factura',
-                              'foreignKey' 	=> 'factura_id'),
-							'Coeficiente' =>
-                        array('className'   => 'Coeficiente',
-                              'foreignKey' 	=> 'coeficiente_id'));
+	var $belongsTo = array('Factura', 'Coeficiente');
 
 }
 ?>

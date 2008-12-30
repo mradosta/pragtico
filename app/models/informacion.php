@@ -32,7 +32,7 @@ class Informacion extends AppModel {
         'nombre' => array(
 			array(
 				'rule'	=> '/^#[a-z,0-9,_]+$/',
-				'message'	=>'El nombre de la informacion debe comenzar con el signo # y solo puede contener letras minusculas y guion/es bajo/s (_).')
+				'message'	=> 'El nombre de la informacion debe comenzar con el signo # y solo puede contener letras minusculas y guion/es bajo/s (_).')
         )
 	);
 

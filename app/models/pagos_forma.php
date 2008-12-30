@@ -32,12 +32,12 @@ class PagosForma extends AppModel {
         'fecha' => array(
 			array(
 				'rule'	=> VALID_DATE, 
-				'message'	=>'Debe especificar una fecha valida.')
+				'message'	=> 'Debe especificar una fecha valida.')
         ),
         'forma' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar una forma de pago.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar una forma de pago.')
         ),
         'cbu_numero' => array(
 			array(
@@ -46,7 +46,7 @@ class PagosForma extends AppModel {
 				'message' => 'Debe ingresar los 22 numeros del CBU.'),
 			array(
 				'rule'	=> 'validarCbu',
-				'message'	=>'El Cbu ingresado no es valido.')
+				'message'	=> 'El Cbu ingresado no es valido.')
         ),
         'cheque_numero' => array(
 			array(
@@ -57,7 +57,7 @@ class PagosForma extends AppModel {
         'monto' => array(
 			array(
 				'rule'	=> VALID_NUMBER_MAYOR_A_CERO, 
-				'message'	=>'Debe especificar un monto mayor a cero.')
+				'message'	=> 'Debe especificar un monto mayor a cero.')
         )
 	);
 
@@ -89,8 +89,8 @@ class PagosForma extends AppModel {
 	function beforeDelete($cascade = true) {
 		$pago = $this->findById($this->id);
 		if (!empty($pago)) {
-			if ($this->Pago->save(array("Pago"	=>array("id"		=> $pago['Pago']['id'],
-														"estado"	=> "Pendiente")), false)) {
+			if ($this->Pago->save(array('Pago'	=>array('id'		=> $pago['Pago']['id'],
+														'estado'	=> 'Pendiente')), false)) {
 				return parent::beforeDelete($cascade);							
 			}
 			die;
@@ -111,51 +111,51 @@ class PagosForma extends AppModel {
 		* Cada forma de pago tiene valores que no corresponden, me aseguro de quitarlos.
 		*/
 		switch($this->data['PagosForma']['forma']) {
-			case "Efectivo":
-			case "Beneficios":
-			case "Otro":
-				$this->data['PagosForma']['cheque_numero'] = "0";
+			case 'Efectivo':
+			case 'Beneficios':
+			case 'Otro':
+				$this->data['PagosForma']['cheque_numero'] = '0';
 				$this->data['PagosForma']['cuenta_id'] = null;
-				$this->data['PagosForma']['cbu_numero'] = "0";
+				$this->data['PagosForma']['cbu_numero'] = '0';
 				break;
-			case "Deposito en Cuenta":
+			case 'Deposito en Cuenta':
 				if (empty($this->data['PagosForma']['cbu_numero'])) {
-					$this->invalidate('cbu_numero', "Debe ingresar el Numero de Cbu.");
+					$this->invalidate('cbu_numero', 'Debe ingresar el Numero de Cbu.');
 					return false;
 				}
-				$this->data['PagosForma']['cheque_numero'] = "0";
+				$this->data['PagosForma']['cheque_numero'] = '0';
 				$this->data['PagosForma']['cuenta_id'] = null;
 				break;
-			case "Cheque":
+			case 'Cheque':
 				if (empty($this->data['PagosForma']['fecha_pago'])) {
-					$this->invalidate('fecha_pago', "Debe ingresar La fecha de pago del Cheque.");
+					$this->invalidate('fecha_pago', 'Debe ingresar La fecha de pago del Cheque.');
 					return false;
 				}
 				if (empty($this->data['PagosForma']['cheque_numero'])) {
-					$this->invalidate('cheque_numero', "Debe ingresar el Numero de Cheque.");
+					$this->invalidate('cheque_numero', 'Debe ingresar el Numero de Cheque.');
 					return false;
 				}
 				if (empty($this->data['PagosForma']['cuenta_id'])) {
-					$this->invalidate('cuenta_id', "Debe seleccionar la Cuenta Emisora del Cheque.");
+					$this->invalidate('cuenta_id', 'Debe seleccionar la Cuenta Emisora del Cheque.');
 				}
-				$this->data['PagosForma']['cbu_numero'] = "0";
+				$this->data['PagosForma']['cbu_numero'] = '0';
 				break;
 		}
 		if (($this->data['PagosForma']['pago_acumulado'] + $this->data['PagosForma']['monto']) > $this->data['PagosForma']['pago_monto']) {
-			$this->dbError['errorDescripcion'] = "El monto ingresado ($ " . $this->data['PagosForma']['monto'] . ") mas el acumulado ($ " . $this->data['PagosForma']['pago_acumulado'] . ") supera el Total del Pago ($ " . $this->data['PagosForma']['pago_monto'] . "). Verifique.";
+			$this->dbError['errorDescripcion'] = 'El monto ingresado ($ ' . $this->data['PagosForma']['monto'] . ') mas el acumulado ($ ' . $this->data['PagosForma']['pago_acumulado'] . ') supera el Total del Pago ($ ' . $this->data['PagosForma']['pago_monto'] . '). Verifique.';
 			return false;
 		}
 		else if (($this->data['PagosForma']['pago_acumulado'] + $this->data['PagosForma']['monto']) == $this->data['PagosForma']['pago_monto']) {
-			$save = array("id"=>$this->data['PagosForma']['pago_id'], "estado" => "Imputado", "permissions" => "292");
-			if (!$this->Pago->save(array("Pago"=>$save))) {
-				$this->dbError['errorDescripcion'] = "No fue posible actualizar el estado del Pago.";
+			$save = array('id'=>$this->data['PagosForma']['pago_id'], 'estado' => 'Imputado', 'permissions' => '292');
+			if (!$this->Pago->save(array('Pago'=>$save))) {
+				$this->dbError['errorDescripcion'] = 'No fue posible actualizar el estado del Pago.';
 				return false;
 			}
 		}
 		/**
 		* Permiso de solo lectura.
 		*/
-		$this->data['PagosForma']['permissions'] = "292";
+		$this->data['PagosForma']['permissions'] = '292';
 		return parent::beforeSave();
 	}
 
@@ -165,8 +165,8 @@ class PagosForma extends AppModel {
  */
 	function getUltimoNumeroCheque($cuentaId) {
 		if (!empty($cuentaId) && is_numeric($cuentaId)) {
-			$chequeNumero = $this->find("first", array("conditions" => array("PagosForma.cuenta_id"=>$cuentaId, "PagosForma.forma" => "Cheque"),
-											"fields" => "MAX(cheque_numero) AS cheque_numero", "recursive" => -1, "seguridad"=>false));
+			$chequeNumero = $this->find('first', array('conditions' => array('PagosForma.cuenta_id'=>$cuentaId, 'PagosForma.forma' => 'Cheque'),
+											'fields' => 'MAX(cheque_numero) AS cheque_numero', 'recursive' => -1, 'seguridad'=>false));
 			if (!empty($chequeNumero[0]['cheque_numero'])) {
 				return $chequeNumero[0]['cheque_numero'];
 			}

@@ -30,8 +30,6 @@ class RelacionesConcepto extends AppModel {
 								'edit'	=>
 			array('contain'	=> array('Relacion'	=> array('Empleador', 'Trabajador'), 'Concepto')));
 	
-	var $unique = array('relacion_id', 'concepto_id');
-	
 	var $validate = array(
         'relacion_id__' => array(
 			array(
@@ -44,7 +42,7 @@ class RelacionesConcepto extends AppModel {
 				'message'	=> 'Debe seleccionar un concepto.'
 		)));
 	
-	var $belongsTo = array(	'Relacion', 'Concepto');
+	var $belongsTo = array('Relacion', 'Concepto');
 
 }
 ?>

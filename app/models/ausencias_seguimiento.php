@@ -34,7 +34,7 @@ class AusenciasSeguimiento extends AppModel {
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array("edit"=>array("contain"=>array("Ausencia.AusenciasMotivo")));
+	var $modificadores = array('edit'=>array('contain'=>array('Ausencia.AusenciasMotivo')));
 
 	var $validate = array(
         'dias' => array(

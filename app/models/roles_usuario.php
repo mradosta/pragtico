@@ -26,22 +26,17 @@ class RolesUsuario extends AppModel {
 	var $validate = array(
         'usuario_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar el usuario.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar el usuario.')
         ),
         'rol_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar el rol.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar el rol.')
         )
 	);
 
-	var $belongsTo = array(	'Rol' =>
-                        array('className'    => 'Rol',
-                              'foreignKey'   => 'rol_id'),
-							'Usuario' =>
-                        array('className'    => 'Usuario',
-                              'foreignKey'   => 'usuario_id'));
+	var $belongsTo = array('Rol', 'Usuario');
 
 }
 ?>

@@ -23,12 +23,7 @@
  */
 class RecibosConcepto extends AppModel {
 	
-	var $belongsTo = array(	'Recibo' =>
-                        array('className'    => 'Recibo',
-                              'foreignKey'   => 'recibo_id'),
-							'Concepto' =>
-                        array('className'    => 'Concepto',
-                              'foreignKey'   => 'concepto_id'));
+	var $belongsTo = array('Recibo', 'Concepto');
 	
 }
 ?>

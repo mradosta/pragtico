@@ -28,13 +28,13 @@ class Situacion extends AppModel {
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre de la situacion.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el nombre de la situacion.')
         ),
         'codigo' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el codigo de la situacion.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el codigo de la situacion.')
         )
 	);
 

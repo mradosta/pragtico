@@ -25,18 +25,14 @@
  */
 class RopasDetalle extends AppModel {
 
-	var $unique = array("ropa_id", "prenda");
-	
 	var $validate = array(
         'modelo' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe ingresar una fecha.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe ingresar una fecha.')
         ));
 		
-	var $belongsTo = array(	'Ropa' =>
-                        array('className'    => 'Ropa',
-                              'foreignKey'   => 'ropa_id'));
+	var $belongsTo = array('Ropa');
 
 }
 ?>

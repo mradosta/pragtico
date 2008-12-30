@@ -23,22 +23,18 @@
  */
 class Sucursal extends AppModel {
 
-	//var $unique = array("banco_id", "codigo");
-	
 	var $validate = array(
         'codigo' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el codigo de la sucursal del banco.'),
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el codigo de la sucursal del banco.'),
 			array(
-				'rule'	=> VALID_NUMBER, 
-				'message'	=>'El codigo de la sucursal del banco debe ser numerico.')
+				'rule'		=> VALID_NUMBER, 
+				'message'	=> 'El codigo de la sucursal del banco debe ser numerico.')
 	    )
 	);
 
-	var $belongsTo = array(	'Banco' =>
-                        array('className'    => 'Banco',
-                              'foreignKey'   => 'banco_id'));
+	var $belongsTo = array('Banco');
 
 }
 ?>

@@ -28,52 +28,43 @@ class Hora extends AppModel {
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array(	"index"=>array(	"contain"=>array('Relacion' => array('Empleador', 'Trabajador'))),
-								"edit"=>array(	"contain"=>array('Relacion' => array('Empleador', 'Trabajador'))));
+	var $modificadores = array(	'index'=>array(	'contain'=>array('Relacion' => array('Empleador', 'Trabajador'))),
+								'edit'=>array(	'contain'=>array('Relacion' => array('Empleador', 'Trabajador'))));
 
 
-	var $totalizar = array("sum"=>array("cantidad"));
+	var $totalizar = array('sum'=>array('cantidad'));
 	
-	var $opciones = array("estado"=> array(		"Confirmada"=>	"Confirmada",
-												"Pendiente"=>	"Pendiente"));
+	var $opciones = array('estado'=> array(		'Confirmada'=>	'Confirmada',
+												'Pendiente'=>	'Pendiente'));
 	
 	var $validate = array(
         'relacion_id__' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe seleccionar la relacion laboral.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar la relacion laboral.')
         ),
         'cantidad' => array(
 			array(
-				'rule'	=> VALID_NUMBER,
-				'message'	=>'Debe ingresar la cantidad de horas.')
+				'rule'		=> VALID_NUMBER,
+				'message'	=> 'Debe ingresar la cantidad de horas.')
         ),
         'periodo' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe ingresar el periodo.'),
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe ingresar el periodo.'),
 			array(
-				'rule'	=> VALID_PERIODO,
-				'message'	=>'El periodo no es valido, debe tener el formato AAAAMM(1Q|2Q|M).'),
+				'rule'		=> VALID_PERIODO,
+				'message'	=> 'El periodo no es valido, debe tener el formato AAAAMM(1Q|2Q|M).'),
         ),
         'tipo' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar el tipo.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar el tipo.')
         ));
 
-	var $belongsTo = 'Relacion';
+	var $belongsTo = array('Relacion');
 
 	
-	function testLinkable() {
-		$x = $this->find('all', array(
-						 'limit'=>2,
-    'link' => array('Relacion'=>array('Trabajador')),
-		));
-		
-		d($x);
-	}
-
 /**
  * Before save callback
  *
@@ -107,38 +98,38 @@ class Hora extends AppModel {
 	function getHoras($relacion, $periodo) {
 		
 		$conditions = array(
-			"conditions"=>	array(	"Hora.relacion_id" 		=> $relacion['Relacion']['id'],
-									"Hora.liquidacion_id" 	=> null,
-									"Hora.periodo" 			=> $periodo['periodoCompleto'],
-									"Hora.estado"			=> "Confirmada"),
-			"fields"	=>	array(	"Hora.tipo", "sum(Hora.cantidad) as total"),
-			"recursive"	=>	-1,
-			"group"		=> 	array("Hora.tipo")
+			'conditions'=>	array(	'Hora.relacion_id' 		=> $relacion['Relacion']['id'],
+									'Hora.liquidacion_id' 	=> null,
+									'Hora.periodo' 			=> $periodo['periodoCompleto'],
+									'Hora.estado'			=> 'Confirmada'),
+			'fields'	=>	array(	'Hora.tipo', 'sum(Hora.cantidad) as total'),
+			'recursive'	=>	-1,
+			'group'		=> 	array('Hora.tipo')
 		);
 		
 		/**
 		* Cuando se trata de un trabajador mensual, por mas que las horas esten cargadas para una de las quincenas,
 		* las busco indistintamente para ambas.
 		*/
-		if ($relacion['ConveniosCategoria']['jornada'] === "Mensual") {
-			$conditions['conditions']['Hora.periodo'] =	array	(	$periodo['ano'] . $periodo['mes'] . "1Q",
-																	$periodo['ano'] . $periodo['mes'] . "2Q",
-																	$periodo['ano'] . $periodo['mes'] . "M");
+		if ($relacion['ConveniosCategoria']['jornada'] === 'Mensual') {
+			$conditions['conditions']['Hora.periodo'] =	array	(	$periodo['ano'] . $periodo['mes'] . '1Q',
+																	$periodo['ano'] . $periodo['mes'] . '2Q',
+																	$periodo['ano'] . $periodo['mes'] . 'M');
 		}
-		$r = $this->find("all", $conditions);
+		$r = $this->find('all', $conditions);
 		
-		$map['Normal'] = "#horas";
-		$map['Extra 50%'] = "#horas_extra_50";
-		$map['Extra 100%'] = "#horas_extra_100";
-		$map['Ajuste Normal'] = "#horas_ajuste";
-		$map['Ajuste Extra 50%'] = "#horas_ajuste_extra_50";
-		$map['Ajuste Extra 100%'] = "#horas_ajuste_extra_100";
-		$map['Normal Nocturna'] = "#horas_nocturna";
-		$map['Extra Nocturna 50%'] = "#horas_extra_nocturna_50";
-		$map['Extra Nocturna 100%'] = "#horas_extra_nocturna_100";
-		$map['Ajuste Normal Nocturna'] = "#horas_ajuste_nocturna";
-		$map['Ajuste Extra Nocturna 50%'] = "#horas_ajuste_extra_nocturna_50";
-		$map['Ajuste Extra Nocturna 100%'] = "#horas_ajuste_extra_nocturna_100";
+		$map['Normal'] = '#horas';
+		$map['Extra 50%'] = '#horas_extra_50';
+		$map['Extra 100%'] = '#horas_extra_100';
+		$map['Ajuste Normal'] = '#horas_ajuste';
+		$map['Ajuste Extra 50%'] = '#horas_ajuste_extra_50';
+		$map['Ajuste Extra 100%'] = '#horas_ajuste_extra_100';
+		$map['Normal Nocturna'] = '#horas_nocturna';
+		$map['Extra Nocturna 50%'] = '#horas_extra_nocturna_50';
+		$map['Extra Nocturna 100%'] = '#horas_extra_nocturna_100';
+		$map['Ajuste Normal Nocturna'] = '#horas_ajuste_nocturna';
+		$map['Ajuste Extra Nocturna 50%'] = '#horas_ajuste_extra_nocturna_50';
+		$map['Ajuste Extra Nocturna 100%'] = '#horas_ajuste_extra_nocturna_100';
 
 		/**
 		* Inicializo el array.
@@ -150,7 +141,7 @@ class Hora extends AppModel {
 		if (!empty($r)) {
 			$modelConcepto = new Concepto();
 			foreach ($r as $hora) {
-				if ($relacion['ConveniosCategoria']['jornada'] === "Mensual" && ($hora['Hora']['tipo'] === "Normal")) {
+				if ($relacion['ConveniosCategoria']['jornada'] === 'Mensual' && ($hora['Hora']['tipo'] === 'Normal')) {
 					continue;
 				}
 				$tipo = $map[$hora['Hora']['tipo']];
@@ -159,8 +150,8 @@ class Hora extends AppModel {
 				/**
 				* Busco el concepto.
 				*/
-				$codigoConcepto = str_replace("#", "", $tipo);
-				$conceptos = array_merge($conceptos, $modelConcepto->findConceptos("ConceptoPuntual", array("relacion"=>$relacion, "codigoConcepto"=>$codigoConcepto)));
+				$codigoConcepto = str_replace('#', '', $tipo);
+				$conceptos = array_merge($conceptos, $modelConcepto->findConceptos('ConceptoPuntual', array('relacion'=>$relacion, 'codigoConcepto'=>$codigoConcepto)));
 			}
 			
 			/**
@@ -168,9 +159,9 @@ class Hora extends AppModel {
 			* No lo hago en una sola query porque romperia el group by.
 			* TODO: Deberia analizar si sera mejor hacerlo via php a la suma de las horas por tipo y no una query.
 			*/
-			$conditions['fields'] = array("Hora.id");
+			$conditions['fields'] = array('Hora.id');
 			unset($conditions['group']);
-			$r = $this->find("all", $conditions);
+			$r = $this->find('all', $conditions);
 			/**
 			* Creo un registro en la tabla auxiliar que debera ejecutarse en caso de que se confirme la pre-liquidacion.
 			* El registro es para cambiarle el estado a Liquidada, basicamente.
@@ -178,12 +169,12 @@ class Hora extends AppModel {
 			foreach ($r as $v) {
 				$auxiliar = null;
 				$auxiliar['id'] = $v['Hora']['id'];
-				$auxiliar['estado'] = "Liquidada";
-				$auxiliar['liquidacion_id'] = "##MACRO:liquidacion_id##";
-				$auxiliares[] = array("save"=>serialize($auxiliar), "model" => "Hora");
+				$auxiliar['estado'] = 'Liquidada';
+				$auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
+				$auxiliares[] = array('save'=>serialize($auxiliar), 'model' => 'Hora');
 			}
 		}
-		return array("conceptos"=>$conceptos, "variables"=>$horas, "auxiliar"=>$auxiliares);
+		return array('conceptos'=>$conceptos, 'variables'=>$horas, 'auxiliar'=>$auxiliares);
 	}
 
 

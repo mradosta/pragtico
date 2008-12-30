@@ -25,13 +25,13 @@ class ObrasSocial extends AppModel {
 
 /*
 	var $order = array('Area.nombre' => 'asc');
-	var $unique = array("empleador_id", "nombre");
+	var $unique = array('empleador_id', 'nombre');
 	
 	var $validate = array(
         'nombre' => array(
 			array(
 				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe especificar el nombre del area del empleador.')
+				'message'	=> 'Debe especificar el nombre del area del empleador.')
         )
 	);
 

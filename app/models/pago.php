@@ -36,8 +36,7 @@ class Pago extends AppModel {
         )
 	);
 
-	var $belongsTo = array(	'Relacion', 
-							'Liquidacion');
+	var $belongsTo = array('Relacion', 'Liquidacion');
                               
 	var $hasMany = array(	'PagosForma' =>
                         array('className'    => 'PagosForma',
