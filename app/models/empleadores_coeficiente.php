@@ -25,7 +25,7 @@
  */
 class EmpleadoresCoeficiente extends AppModel {
 
-	var $modificadores = array("index"=>array("contain"=>array("Concepto", "Coeficiente")));
+	var $modificadores = array("index"=>array("contain"=>array("Empleador", "Coeficiente")));
 	
 	var $validate = array(
         'emplador_id' => array(
