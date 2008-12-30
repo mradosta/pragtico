@@ -8,14 +8,14 @@
  *
  * @filesource
  * @copyright		Copyright 2005-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.config
- * @since			Pragtico v 1.0.0
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.config
+ * @since           Pragtico v 1.0.0
  * @version			$Revision$
  * @modifiedby		$LastChangedBy$
  * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 
 $tags = array(
