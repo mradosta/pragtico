@@ -163,8 +163,8 @@ class Usuario extends AppModel {
 	function verificarLogin($condiciones) {
 		if(!empty($condiciones['nombre']) && !empty($condiciones['clave'])) {
 			App::import('Core', 'Sanitize');
-			$conditions['nombre'] = Sanitize::paranoid($condiciones['nombre']);
-			$conditions['clave'] = Security::hash(Sanitize::paranoid($condiciones['clave']), "md5", false);
+			$conditions['Usuario.nombre'] = Sanitize::paranoid($condiciones['nombre']);
+			$conditions['Usuario.clave'] = Security::hash(Sanitize::paranoid($condiciones['clave']), "md5", false);
 			$conditions['Usuario.estado'] = "Activo";
 			$conditions['checkSecurity'] = false;
 

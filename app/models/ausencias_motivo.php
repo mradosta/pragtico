@@ -26,13 +26,13 @@ class AusenciasMotivo extends AppModel {
 	var $validate = array(
         'motivo' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el motivo de la ausencia.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe especificar el motivo de la ausencia.')
         ),
         'tipo' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar el tipo correspondiente al motivo.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe seleccionar el tipo correspondiente al motivo.')
         )        
 	);
 

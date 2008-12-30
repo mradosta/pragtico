@@ -26,12 +26,10 @@
  */
 class Ausencia extends AppModel {
 
-	var $modificadores = array(	"index"=>array("contain"=>array("Relacion.Empleador",
-																"Relacion.Trabajador",
+	var $modificadores = array(	"index"=>array("contain"=>array("Relacion" => array('Empleador', 'Trabajador'),
 																"AusenciasMotivo",
 																"AusenciasSeguimiento")),
-								"edit"=>array("contain"=>array(	"Relacion.Empleador",
-																"Relacion.Trabajador",
+								"edit"=>array("contain"=>array(	"Relacion"=>array("Empleador","Trabajador"),
 																"AusenciasSeguimiento")));
 	var $validate = array( 
         'relacion_id__' => array(

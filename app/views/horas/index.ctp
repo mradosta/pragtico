@@ -73,16 +73,5 @@ $fila[] = array("model"=>"Hora", "field"=>"tipo", "valor"=>"");
 $fila[] = array("model"=>"Hora", "field"=>"estado", "valor"=>"");
 
 $pie[] = $fila;
-$accionesExtra[] = $formulario->link("Generar Planilla", null, array("title"=>"Genera las planillas para el ingreso masivo de horas", "class"=>"link_boton", "id"=>"botonGenerarPlanilla"));
-$accionesExtra[] = $formulario->link("Importar Planilla", "importar_planilla", array("class"=>"link_boton", "title"=>"Importa las planillas de ingreso masivo de horas"));
-echo $this->renderElement("index/index", array("condiciones"=>$fieldset, "cuerpo"=>$cuerpo, "pie"=>$pie, "accionesExtra"=>$accionesExtra));
-
-$js = "
-	jQuery('#botonGenerarPlanilla').bind('click', function() {
-		jQuery('#form').attr('action', '" . router::url("/") . $this->params['controller'] . "/generar_planilla');
-		jQuery('#accion').attr('value', 'generar_planilla');
-		jQuery('#form').submit();
-	});
-";
-$formulario->addScript($js);
+echo $this->renderElement("index/index", array("condiciones"=>$fieldset, "cuerpo"=>$cuerpo, "pie"=>$pie));
 ?>

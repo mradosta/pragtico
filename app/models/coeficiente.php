@@ -28,18 +28,18 @@ class Coeficiente extends AppModel {
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre del coeficiente.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe especificar el nombre del coeficiente.')
         ),
         'tipo' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el tipo del coeficiente.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe especificar el tipo del coeficiente.')
         ),
         'valor' => array(
 			array(
-				'rule'	=> VALID_NUMBER, 
-				'message'	=>'Debe especificar el valor del coeficiente.')
+				'rule'		=> VALID_NUMBER, 
+				'message'	=> 'Debe especificar el valor del coeficiente.')
         )        
 	);
 

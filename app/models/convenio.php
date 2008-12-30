@@ -25,7 +25,6 @@
  */
 class Convenio extends AppModel {
 
-	//var $recursive = -1;
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
@@ -36,21 +35,21 @@ class Convenio extends AppModel {
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre del convenio colectivo.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe especificar el nombre del convenio colectivo.')
         ),
         'actualizacion' => array(
 			array(
-				'rule'	=> VALID_DATE,
-				'message'	=>'La fecha no es valida.'),
+				'rule'		=> VALID_DATE,
+				'message'	=> 'La fecha no es valida.'),
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'=>'Debe especificar la fecha de la ultima actualizacion del convenio.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar la fecha de la ultima actualizacion del convenio.')
         ),
         'numero' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el numero del convenio colectivo.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe especificar el numero del convenio colectivo.')
         )
 	);
 

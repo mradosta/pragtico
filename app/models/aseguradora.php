@@ -23,18 +23,18 @@
  */
 class Aseguradora extends AppModel {
 
-	var $order = array('Aseguradora.nombre'=>'asc');
+	var $order = array('Aseguradora.nombre' => 'asc');
 	
 	var $validate = array( 
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre de la aseguradora.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe especificar el nombre de la aseguradora.')
         ),
         'codigo' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el codigo de la aseguradora.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe especificar el codigo de la aseguradora.')
         )
 	);
 

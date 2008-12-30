@@ -29,25 +29,37 @@
  
 class HorasController extends AppController {
 
-
-/**
- * Add.
- */
-	function add() {
-        $this->set("estados", array("Pendiente"=>"Pendiente", "Confirmada"=>"Confirmada"));
-        parent::add();
-	}
 	
-	
-/**
- * Index.
- */	
 	function xindex() {
-		$this->set("estados", array("Liquidada"=>"Liquidada", "Pendiente"=>"Pendiente"));
-		$this->paginate = am($this->paginate, array('conditions' => array("Hora.estado"=>array("Liquidada", "Pendiente"))));
-		parent::index();
+		
+		//$this->Hora->testLinkable();
+		
+		$this->Hora->unbindModel(array(
+			'belongsTo' => array('Relacion')
+		));
+		
+		$this->Hora->bindModel(array(
+			'hasOne' => array(
+				'Relacion' => array(
+					'foreignKey' => false,
+					'conditions' => array('Relacion.id = Hora.relacion_id')
+				),
+				'Trabajador' => array(
+					'foreignKey' => false,
+					'conditions' => array('Trabajador.id = Relacion.trabajador_id')
+				),
+				'Empleador' => array(
+					'foreignKey' => false,
+					'conditions' => array('Empleador.id = Relacion.empleador_id')
+				)
+			)
+		));
+		
+		$result = $this->Hora->find('all', array('limit' => 1,
+			'contain' => array('Relacion', 'Trabajador','Empleador')
+		));		
+		d($result);
 	}
-
 
 /**
 * Permite confirmar las horas importadas desde la planilla.

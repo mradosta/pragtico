@@ -30,7 +30,6 @@ class AusenciasSeguimiento extends AppModel {
 	* 		Liquidado: Se cargo, se confirmo y se liquido. No se volvera a liquidar.
 	*/
 
-	var $unique = array("ausencia_id", "desde");
 
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
@@ -53,9 +52,7 @@ class AusenciasSeguimiento extends AppModel {
         )        
 	);
 
-	var $belongsTo = array(	'Ausencia' =>
-                        array('className'    => 'Ausencia',
-                              'foreignKey'   => 'ausencia_id'));
+	var $belongsTo = array('Ausencia');
 
 }
 ?>

@@ -3,14 +3,15 @@
 /**
  * Creo la miga de pan.
  */
-$formulario->addCrumb($this->name, array("controller" => $this->params['controller'], "action" => "index"));
+$formulario->addCrumb($this->name, 
+		array('controller' 	=> $this->params['controller'], 
+			  'action' 		=> 'index'));
 
-if ($this->action === "add") {
+if ($this->action === 'add') {
 	$formulario->addCrumb(__('New', true));
 }
 else {
 	$formulario->addCrumb(__('Edit', true));
-	
 	if (!empty($miga)) {
 		
 		if (is_string($miga)) {

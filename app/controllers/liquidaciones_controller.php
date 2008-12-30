@@ -1425,6 +1425,8 @@ class LiquidacionesController extends AppController {
 			}
 		}
 		
+		$this->set("grupos", $this->Util->getUserGroups());
+		/*
 		$usuario = $this->Session->read('__Usuario');
 		if(!empty($usuario['Grupo'])) {
 			foreach($usuario['Grupo'] as $grupo) {
@@ -1432,6 +1434,7 @@ class LiquidacionesController extends AppController {
 			}
 			$this->set("grupos", $grupos);
 		}
+		*/
 	}
 	
 	

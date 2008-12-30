@@ -29,7 +29,8 @@ class Relacion extends AppModel {
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
 	var $modificadores = array("index"=>array("contain"=>array("Trabajador", "Empleador")),
-								"edit"=>array("contain"=>array("Trabajador",
+								"edit"=>array("contain"=>array(
+											  	"Trabajador",
 												"Empleador",
 												"Situacion",
 												"Modalidad",

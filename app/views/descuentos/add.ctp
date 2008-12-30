@@ -45,5 +45,7 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "migaEdit" => $this->data[0]['Descuento']['descripcion']));
+$miga = array('format' 	=> '%s %s (%s)', 
+			  'content' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));
+echo $this->element("add/add", array("fieldset"=>$fieldset, "miga" => $miga));
 ?>

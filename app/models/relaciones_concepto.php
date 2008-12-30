@@ -25,33 +25,26 @@
  */
 class RelacionesConcepto extends AppModel {
 
-	var $modificadores = array(	"index"=>array("contain"=>array("Relacion.Empleador",
-																"Relacion.Trabajador",
-																"Concepto")),
-								"edit"=>array("contain"=>array(	"Relacion.Empleador",
-																"Relacion.Trabajador",
-																"Concepto")));
-																
-	var $unique = array("relacion_id", "concepto_id");
+	var $modificadores = array(	'index'	=>
+			array('contain'	=> array('Relacion'	=> array('Empleador', 'Trabajador'), 'Concepto')),
+								'edit'	=>
+			array('contain'	=> array('Relacion'	=> array('Empleador', 'Trabajador'), 'Concepto')));
+	
+	var $unique = array('relacion_id', 'concepto_id');
 	
 	var $validate = array(
         'relacion_id__' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar la relacion laboral.')
-        ),
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe seleccionar la relacion laboral.'
+		)),
         'concepto_id__' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar un concepto.')
-        ));
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe seleccionar un concepto.'
+		)));
 	
-	var $belongsTo = array(	'Relacion' =>
-                        array('className'    => 'Relacion',
-                              'foreignKey'   => 'relacion_id'),
-							'Concepto' =>
-                        array('className'    => 'Concepto',
-                              'foreignKey'   => 'concepto_id'));
+	var $belongsTo = array(	'Relacion', 'Concepto');
 
 }
 ?>

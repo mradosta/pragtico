@@ -28,13 +28,14 @@ class Hora extends AppModel {
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array(	"index"=>array(	"contain"=>array("Relacion.Empleador",
-																"Relacion.Trabajador")),
-								"edit"=>array(	"contain"=>array("Relacion.Empleador",
-																"Relacion.Trabajador")));
+	var $modificadores = array(	"index"=>array(	"contain"=>array('Relacion' => array('Empleador', 'Trabajador'))),
+								"edit"=>array(	"contain"=>array('Relacion' => array('Empleador', 'Trabajador'))));
 
 
 	var $totalizar = array("sum"=>array("cantidad"));
+	
+	var $opciones = array("estado"=> array(		"Confirmada"=>	"Confirmada",
+												"Pendiente"=>	"Pendiente"));
 	
 	var $validate = array(
         'relacion_id__' => array(
@@ -61,10 +62,17 @@ class Hora extends AppModel {
 				'message'	=>'Debe seleccionar el tipo.')
         ));
 
-	var $belongsTo = array(	'Relacion' =>
-                        array('className'    => 'Relacion',
-                              'foreignKey'   => 'relacion_id'));
+	var $belongsTo = 'Relacion';
 
+	
+	function testLinkable() {
+		$x = $this->find('all', array(
+						 'limit'=>2,
+    'link' => array('Relacion'=>array('Trabajador')),
+		));
+		
+		d($x);
+	}
 
 /**
  * Before save callback

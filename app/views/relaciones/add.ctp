@@ -95,8 +95,10 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-$miga = $this->data[0]['Trabajador']['apellido'] . " " . $this->data[0]['Trabajador']['nombre'] . " (" . $this->data[0]['Empleador']['nombre'] . ")";
-echo $this->element("add/add", array("fieldset"=>$fieldset, "migaEdit" => $miga));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"trabajadores.gif")));
+$miga = array('format' 	=> '%s %s (%s)', 
+			  'content' => array('Trabajador.apellido', 'Trabajador.nombre', 'Empleador.nombre'));
+echo $this->element("add/add", array("fieldset"=>$fieldset, "miga" => $miga));
 
 
 ?>

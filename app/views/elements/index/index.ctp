@@ -3,8 +3,15 @@
 /**
  * Creo la miga de pan.
  */
-$formulario->addCrumb($this->name);
-$formulario->addCrumb(__('Grid', true));
+if (empty($miga)) {
+	$formulario->addCrumb($this->name);
+	$formulario->addCrumb(__('Grid', true));
+} else {
+	$formulario->addCrumb($this->name, 
+			array('controller' 	=> $this->params['controller'], 
+				'action' 		=> 'index'));
+	$formulario->addCrumb($miga);
+}
 
 
 /**

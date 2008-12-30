@@ -72,8 +72,9 @@ $fieldsets[] = array("campos"=>$campos, "opciones"=>array("fieldset"=>array("leg
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
+$miga = 'Empleador.nombre';
 $fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"empleadores.gif")));
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "migaEdit" => $this->data[0]['Empleador']['nombre']));
+echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "miga" => $miga));
 
 /*
 echo $formulario->codeBlock('

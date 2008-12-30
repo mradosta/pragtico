@@ -153,11 +153,31 @@ class AppController extends Controller {
  * Add.
  */
 	function add() {
+		
+		
+		/**
+		* Puede haber un modificador al comportamiento estandar setaeado en el model.
+		* En este caso se refiere a establecer los valores por defecto.
+		* En caso de ser funciones, por seguridad, deben validarse con la expresion regular ya que se ejecutan
+		* mediante eval.
+		*/
+		if (isset($this->{$this->modelClass}->modificadores[$this->action]['valoresDefault'])) {
+			foreach ($this->{$this->modelClass}->modificadores[$this->action]['valoresDefault'] as $campo => $valoresDefault) {
+				if (is_array($valoresDefault)) {
+					if (isset($valoresDefault['date'])) {
+						$this->data[$this->modelClass][$campo] = date($valoresDefault['date']);
+					}
+				} else {
+					$this->data[$this->modelClass][$campo] = $valoresDefault;
+				}
+			}
+		}
+		
 		/**
 		* Si hay parametros, me esta indicando que debo cargar un campo pasado como parametro.
 		*/
-		if(!empty($this->passedArgs)) {
-			foreach($this->passedArgs as $k=>$v) {
+		if (!empty($this->passedArgs)) {
+			foreach ($this->passedArgs as $k => $v) {
 				list($model, $field) = explode(".", $k);
 				$this->data[$model][$field] = $v;
 				$modelAsociado = str_replace(" ", "", Inflector::humanize(str_replace("_id", "", $field)));
@@ -167,11 +187,11 @@ class AppController extends Controller {
 				*/
 				if($modelAsociado === 'Parent') {
 					$resultado = $this->{$model}->find('first', array('conditions' => array($model . "." . $this->{$model}->primaryKey => $v)));
-				}
-				else {
+				} else {
 					$resultado = $this->{$model}->{$modelAsociado}->find('first', array('conditions' => array($modelAsociado . "." . $this->{$model}->{$modelAsociado}->primaryKey => $v)));
 				}
-				if(!empty($resultado)) {
+				
+				if (!empty($resultado)) {
 					$this->data[$modelAsociado] = $resultado;
 				}
 			}
@@ -359,8 +379,14 @@ class AppController extends Controller {
  * @access public
  */
 	function save_multiple() {
-		//$this->action = "edit";
-		if(!empty($this->data['Form']['accion'])) {
+		
+		if (isset($this->data['Form']['volverAInsertar'])) {
+			$this->action = 'add';
+		} else {
+			$this->action = 'edit';
+		}
+		
+		if (!empty($this->data['Form']['accion'])) {
 			if($this->data['Form']['accion'] === "grabar") {
 				$c = 0;
 
@@ -375,7 +401,7 @@ class AppController extends Controller {
 				/**
 				 * Me aseguro de trabajar siempre con un array de data.
 				 */
-				if(!isset($this->data[0])) {
+				if (!isset($this->data[0])) {
 					$this->data = array($this->data);
 				}
 				
@@ -385,22 +411,21 @@ class AppController extends Controller {
 				*/
 				$ant = array_shift(array_keys($this->data[0]));
 				$mismoModel = true;
-				foreach($this->data as $k=>$v) {
-					if($ant !== array_pop(array_keys($v))) {
+				foreach ($this->data as $k=>$v) {
+					if ($ant !== array_pop(array_keys($v))) {
 						$mismoModel = false;
 					}
 				}
 				
 				$invalidFields = null;
 				$cantidad = count($this->data);
-				if($mismoModel) {
-					if(!$this->{$this->modelClass}->saveAll($this->data, array('validate'=>'first'))) {
+				if ($mismoModel) {
+					if (!$this->{$this->modelClass}->saveAll($this->data, array('validate'=>'first'))) {
 						$invalidFields = $this->{$this->modelClass}->validationErrors;
 					}
 					$c = $cantidad;
-				}
-				else {
-					foreach($this->data as $k => $v) {
+				} else {
+					foreach ($this->data as $k => $v) {
 						
 						/**
 						* Debo buscar los datos que tenia originalmente, para luego verificar si
@@ -413,27 +438,26 @@ class AppController extends Controller {
 						$find = $this->{$this->modelClass}->{$findBy}($v[$this->modelClass][$this->{$this->modelClass}->primaryKey]);
 							
 						$this->{$this->modelClass}->create();
-						if($this->{$this->modelClass}->saveAll($v, array('validate'=>'first'))) {
+						if ($this->{$this->modelClass}->saveAll($v, array('validate'=>'first'))) {
 							
 							
 							/**
 							* Debo verificar que no haya eliminado algun detalle.
 							* Si lo hizo, lo borro.
 							*/
-							foreach($tmp as $detailKey => $detailValue) {
+							foreach ($tmp as $detailKey => $detailValue) {
 								$originalDetailsId = Set::extract("/" . $this->{$this->modelClass}->{$detailKey}->primaryKey, $find[$detailKey]);
-								foreach($v[$detailKey] as $tv) {
+								foreach ($v[$detailKey] as $tv) {
 									$postedDetailsId[] = $tv['id'];
 								}
 							}
 							$this->{$this->modelClass}->{$detailKey}->recursive = -1;
-							foreach(array_diff($originalDetailsId, $postedDetailsId) as $id) {
+							foreach (array_diff($originalDetailsId, $postedDetailsId) as $id) {
 								$this->{$this->modelClass}->{$detailKey}->del($id);
 							}
 							
 							$c++;
-						}
-						else {
+						} else {
 							$invalidFields[$k] = $this->{$this->modelClass}->validationErrors;
 						}
 					}
@@ -443,11 +467,12 @@ class AppController extends Controller {
 				/**
 				* En base al/los errores que pueden haber determino que mensaje mostrar.
 				*/
-				if(empty($dbError) && empty($invalidFields)) {
+				if (empty($dbError) && empty($invalidFields)) {
 					if($c === 1) {
 						$mensaje = "El registro se guardo correctamente.";
-					}
-					else {
+						//$mensaje = __('The record has been saved', true);
+					} else {
+						//$mensaje = sprintf(__('% of % records have been saved', true), $c, $cantidad);
 						$mensaje = "Se guardaron correctamente ". $c . " de " . $cantidad . " registros";
 					}
 					$this->Session->setFlash($mensaje, "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
@@ -478,6 +503,7 @@ class AppController extends Controller {
 								$this->data[$k][$model] = $datos;
 							}
 						}
+						//__('The Persona could not be saved. Please, try again.', true)
 						$this->Session->setFlash("No fue posible guardar los cambios.", "error", array("errores"=>$dbError));
 					}
 					else {

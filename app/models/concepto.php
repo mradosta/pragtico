@@ -35,51 +35,49 @@ class Concepto extends AppModel {
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre del concepto.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe especificar el nombre del concepto.')
         ),
         'codigo' => array(
 			array(
-				'rule'	=> '/^[a-z,0-9,_]+$/',
-				'message'	=>'El codigo del concepto solo puede contener letras minusculas y numeros.'),
+				'rule'		=> '/^[a-z,0-9,_]+$/',
+				'message'	=> 'El codigo del concepto solo puede contener letras minusculas y numeros.'),
 			array(
-				'rule'	=> array('minLength', 4),
-				'message'	=>'El codigo del concepto debe tener al menos 4 caracteres.'),
+				'rule'		=> array('minLength', 4),
+				'message'	=> 'El codigo del concepto debe tener al menos 4 caracteres.'),
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el codigo del concepto.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe especificar el codigo del concepto.')
         ),
         'tipo' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar el tipo de concepto.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe seleccionar el tipo de concepto.')
         ),
         'coeficiente_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar un coeficiente.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe seleccionar un coeficiente.')
         ),
         'desde' => array(
 			array(
-				'rule'	=> VALID_DATE_NULO,
-				'message'	=>'La fecha no es valida.'),
+				'rule'		=> VALID_DATE_NULO,
+				'message'	=> 'La fecha no es valida.'),
 			array(
-				'rule'	=> '__validarRango',
-				'message'	=>'La vigencia desde debe ser inferior o igual a la vigencia hasta.')
+				'rule'		=> '__validarRango',
+				'message'	=> 'La vigencia desde debe ser inferior o igual a la vigencia hasta.')
         ),
         'hasta' => array(
 			array(
-				'rule'	=> VALID_DATE_NULO,
-				'message'	=>'La fecha no es valida.'),
+				'rule'		=> VALID_DATE_NULO,
+				'message'	=> 'La fecha no es valida.'),
 			array(
-				'rule'	=> '__validarRango',
-				'message'	=>'La vigencia hasta debe ser superior o igual a la vigencia desde.')
+				'rule'		=> '__validarRango',
+				'message'	=> 'La vigencia hasta debe ser superior o igual a la vigencia desde.')
         )        
 	);
 
-	var $belongsTo = array(	'Coeficiente' =>
-                        array('className'    => 'Coeficiente',
-                              'foreignKey'   => 'coeficiente_id'));
+	var $belongsTo = array('Coeficiente');
                               
 	var $hasAndBelongsToMany = array(	'Convenio' =>
 								array('with' => 'ConveniosConcepto'),
@@ -93,8 +91,8 @@ class Concepto extends AppModel {
  * en caso de que ambos esten seteados.
  */
     function __validarRango($value, $params = array()) {
-		if(!empty($this->data[$this->name]['desde']) && !empty($this->data[$this->name]['hasta'])) {
-			if($this->data[$this->name]['desde'] > $this->data[$this->name]['hasta']) {
+		if (!empty($this->data[$this->name]['desde']) && !empty($this->data[$this->name]['hasta'])) {
+			if ($this->data[$this->name]['desde'] > $this->data[$this->name]['hasta']) {
 				return false;
 			}
 		}

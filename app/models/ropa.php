@@ -28,12 +28,12 @@ class Ropa extends AppModel {
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array(	"index"=>array(	"contain"=>array("Relacion.Trabajador",
-																"Relacion.Empleador")),
-								"add" =>array(	"valoresDefault"=>array("fecha"=>"date('d/m/Y')")),
-								"edit"=>array(	"contain"=>array("Relacion.Trabajador",
-																"Relacion.Empleador",
-																"RopasDetalle")));
+	var $modificadores = array(	'index'	=>
+			array('contain'	=> array('Relacion'	=> array('Trabajador', 'Empleador'))),
+								'add' 	=>
+			array('valoresDefault'	=> array('fecha'=>'date("d/m/Y")')),
+								'edit'	=>
+			array('contain'	=> array('Relacion'	=> array('Trabajador', 'Empleador'), 'RopasDetalle')));
 	
 	var $validate = array(
         'relacion_id__' => array(
@@ -50,9 +50,7 @@ class Ropa extends AppModel {
 				'message'	=>'Debe ingresar un fecha valida o seleccionarla del calendario.'),
         ));
 	
-	var $belongsTo = array(	'Relacion' =>
-                        array('className'    => 'Relacion',
-                              'foreignKey'   => 'relacion_id'));
+	var $belongsTo = 'Relacion';
 
 	var $hasMany = array(	'RopasDetalle' => 
 								array('dependent'	=> true));

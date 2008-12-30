@@ -51,7 +51,7 @@ class FacturasController extends AppController {
 	
 	
 	function prefacturar() {
-		if(!empty($this->data['Condicion']['Liquidacion-empleador_id']) && !empty($this->data['Condicion']['Liquidacion-periodo']) && $this->data['Formulario']['accion'] == "buscar") {
+		if(!empty($this->data['Condicion']['Liquidacion-grupo_id']) && !empty($this->data['Condicion']['Liquidacion-periodo']) && $this->data['Formulario']['accion'] === "buscar") {
 			/**
 			* Obtengo el periodo separado por ano, mes y periodo propiamente dicho.
 			//$periodo = $this->Util->traerPeriodo($this->data['Facturacion']['periodo']);
@@ -67,6 +67,8 @@ class FacturasController extends AppController {
 			//$condiciones['Liquidacion.estado'] = $this->data['Facturacion']['estado'];
 			//d($this->data);
 			//$facturacion = $this->Factura->calcularCoeficientes($this->data);
+		//d($this->data);
+			unset($this->data['Formulario']);
 			$ids = $this->Factura->prefacturar($this->data);
 			unset($this->data['Condicion']);
 			//d($facturacion);
@@ -76,10 +78,11 @@ class FacturasController extends AppController {
 		}
 		else {
 			$ids = false;
-			$this->data['Facturacion']['estado'] = "indistinto";
+			$this->data['Liquidacion']['estado'] = "Confirmada";
 		}
 		$this->Factura->contain(array("Empleador", "FacturasDetalle"));
 		$resultados = $this->Paginador->paginar(array("Factura.id"=>$ids));
+		$this->set("grupos", $this->Util->getUserGroups());
         $this->set('registros', $resultados['registros']);
 		$this->set("estados", array("Confirmada"=>"Solo Liquidaciones Confirmadas", "Sin Confirmar"=>"Solo Liquidaciones Sin Confirmar", "indistinto"=>"Indistinto"));
 	}

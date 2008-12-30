@@ -30,18 +30,15 @@ $campos['Hora.relacion_id'] = array(	"label"=>"Relacion",
 																					"Empleador.nombre")));
 $campos['Hora.cantidad'] = array();
 $campos['Hora.tipo'] = array();
-if($this->action == "add") {
-	$campos['Hora.estado'] = array("options"=>$estados);
-}
-else {
-	$campos['Hora.estado'] = array();
-}
+$campos['Hora.estado'] = array("type" => "radio");
 $campos['Hora.observacion'] = array();
 $fieldset = $formulario->pintarFieldsets(array(array("campos"=>$campos)), array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"horas manual", "imagen"=>"horas.gif")));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset));
+$miga = array('format' 	=> '%s %s (%s)', 
+			  'content' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));
+echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "miga" => $miga));
 
 ?>

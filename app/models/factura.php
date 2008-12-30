@@ -159,15 +159,42 @@ class Factura extends AppModel {
 		/**
 		* Adecuo las condiciones.
 		*/
-		if($periodo = $this->traerPeriodo($condiciones['Condicion']['Liquidacion-periodo'])) {
+		if($periodo = $this->format($condiciones['Condicion']['Liquidacion-periodo'], 'periodo')) {
 			$conditions['Liquidacion.mes'] = $periodo['mes'];
 			$conditions['Liquidacion.ano'] = $periodo['ano'];
 			unset($condiciones['Condicion']['Liquidacion-periodo']);
+		} else {
+			return false;
 		}
-		if($condiciones['Condicion']['Liquidacion-estado'] == "indistinto") {
-			$conditions['Liquidacion.estado'] = array("Confirmada", "Sin Confirmar");
-			unset($condiciones['Condicion']['Liquidacion-estado']);
+		
+		$empleadores = Set::extract("/Empleador/id", $this->Liquidacion->Empleador->find("all", 
+				array("recursive" 	=> -1,
+					"conditions" 	=> array(
+							"(Empleador.group_id & " . $condiciones['Condicion']['Liquidacion-grupo_id'] . ") >" => 0)
+					)));
+		if (!empty($empleadores)) {
+			unset($condiciones['Condicion']['Liquidacion-grupo_id']);
+			$conditions['Liquidacion.empleador_id'] = $empleadores;
+		} else {
+			return false;
 		}
+		
+		if (!empty($condiciones['Condicion']['Liquidacion-estado'])) {
+			$conditions['Liquidacion.estado'] = $condiciones['Condicion']['Liquidacion-estado'];
+		} else {
+			return false;
+		}
+		
+		/*
+		d($this->Liquidacion->find('all', 
+		  		array(	'conditions'		=> $conditions,
+					  	'checkSecurity'		=> false,
+					  	'contain'			=> array('LiquidacionesDetalle' => 
+								array('conditions' => array("LiquidacionesDetalle.concepto_imprimir" => 
+										array("Si", "Solo con valor")))))));
+							  
+		*/
+			//array("OR"=>array(	"LiquidacionesDetalle.concepto_imprimir" => array("Si", "Solo con valor"))));		
 		
 		$query['fields']	= array("Liquidacion.id",
 									"Empleador.id",
@@ -196,8 +223,7 @@ class Factura extends AppModel {
 									"conditions"=> array("EmpleadoresCoeficiente.empleador_id"=>DboSource::identifier("Liquidacion.empleador_id"),
 														 "EmpleadoresCoeficiente.coeficiente_id"=>DboSource::identifier("LiquidacionesDetalle.coeficiente_id"))
 								));
-		$query['conditions']= am(	$conditions,
-									$this->getConditions($condiciones),
+		$query['conditions']= array_merge(	$conditions,
 									array("OR"=>array(	"LiquidacionesDetalle.concepto_imprimir" => array("Si", "Solo con valor"))));
 
 		$r = $this->query($this->generarSql($query, $this->Liquidacion));
@@ -206,7 +232,6 @@ class Factura extends AppModel {
 			$niveles[1] = array("model"=>"Coeficiente", "field"=>"id");
 			$r = $this->mapToKey($r, array("keyLevels"=>$niveles, "valor"=>array("model"=>"0")));
 			$ids = array();
-			$this->begin();
 			foreach($r as $empleadorId => $v) {
 				$saveEncabezado = null;
 				$saveDetalle = null;
@@ -223,17 +248,12 @@ class Factura extends AppModel {
 					$c++;
 				}
 				$saveEncabezado['total'] = $total;
-				if($saveEstado = $this->save(array("Factura"=>$saveEncabezado, "FacturasDetalle"=>$saveDetalle), true, array(), false)) {
-					$ids[] = $saveEstado['Factura']['id'];
+				//d($this->save(array("Factura"=>$saveEncabezado, "FacturasDetalle"=>$saveDetalle)));
+				if($saveEstado = $this->saveAll(array("Factura"=>$saveEncabezado, "FacturasDetalle"=>$saveDetalle))) {
+					$ids[] = $this->id;
 				}
 			}
-			if(count($ids) === count($r)) {
-				$this->commit();
-				return $ids;
-			}
-			else {
-				$this->rollback();
-			}
+			return $ids;
 		}
 		return false;
 	}

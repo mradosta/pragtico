@@ -28,20 +28,19 @@ class Banco extends AppModel {
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre del banco.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe especificar el nombre del banco.')
         ),
         'codigo' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el codigo del banco.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe especificar el codigo del banco.')
         )
 	);
 
 	var $hasMany = array(	'Sucursal' =>
                         array('className'    => 'Sucursal',
-							  'dependent'	 => true,
-                              'foreignKey'   => 'banco_id'));
+							  'dependent'	 => true));
 
 }
 ?>

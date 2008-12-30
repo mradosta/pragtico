@@ -19,10 +19,11 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-$condiciones['Condicion.Liquidacion-empleador_id'] = array(	"lov"=>array("controller"	=>	"empleadores",
-																		"camposRetorno"	=>array("Empleador.nombre")));
+if(!empty($grupos)) {																								
+	$condiciones['Condicion.Liquidacion-grupo_id'] = array("options"=>$grupos, "empty"=>true);
+}
 $condiciones['Condicion.Liquidacion-periodo'] = array("type"=>"periodo");
-$condiciones['Condicion.Liquidacion-estado'] = array("options"=>$estados, "type"=>"radio");
+$condiciones['Condicion.Liquidacion-estado'] = array("type"=>"checkboxMultiple", 'aclaracion' => 'Se refiere a que liquidaciones tomar como base para la prefacturacion.');
 
 $fieldsets[] = array("campos"=>$condiciones);
 $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("imagen"=>"liquidaciones.gif")));

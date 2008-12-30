@@ -33,18 +33,18 @@ class ConveniosCategoria extends AppModel {
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre de la categoria.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe especificar el nombre de la categoria.')
         ),
         'convenio_id__' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleciconar un conveio.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe seleciconar un conveio.')
         ),
         'jornada' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe seleccionar el tipo de jornada.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe seleccionar el tipo de jornada.')
         )        
 	);
 
@@ -61,23 +61,21 @@ class ConveniosCategoria extends AppModel {
 
 	
 	function afterFind($results, $primary = false) {
-		if($primary) {
+		if ($primary) {
 			foreach($results as $k=>$v) {
 				if(isset($v['ConveniosCategoriasHistorico'])) {
 					$results[$k]['ConveniosCategoria']['costo'] = $this->__getCosto($v['ConveniosCategoriasHistorico']);
 				}
 			}
-		}
-		else {
+		} else {
 			if(!empty($results['ConveniosCategoriasHistorico'])) {
 				$results['costo'] = $this->__getCosto($results['ConveniosCategoriasHistorico']);
-			}
-			else {
-				foreach($results as $k=>$v) {
-					if(isset($v['ConveniosCategoria'][0])) {
-						foreach($v['ConveniosCategoria'] as $k1=>$v1) {
-							if(is_numeric($k1) && isset($v1['ConveniosCategoriasHistorico'])) {
-								if(is_array($v1)) {
+			} else {
+				foreach ($results as $k=>$v) {
+					if (isset($v['ConveniosCategoria'][0])) {
+						foreach ($v['ConveniosCategoria'] as $k1=>$v1) {
+							if (is_numeric($k1) && isset($v1['ConveniosCategoriasHistorico'])) {
+								if (is_array($v1)) {
 									$results[$k]['ConveniosCategoria'][$k1]['costo'] = $this->__getCosto($v1['ConveniosCategoriasHistorico']);
 								}
 							}
@@ -94,8 +92,8 @@ class ConveniosCategoria extends AppModel {
 	function __getCosto($data) {
 		$costo = 0;
 		$hoy = date("Y-m-d");
-		foreach($data as $v) {
-			if($v['desde'] <= $hoy && ($v['hasta'] >= $hoy || $v['hasta'] == "0000-00-00")) {
+		foreach ($data as $v) {
+			if ($v['desde'] <= $hoy && ($v['hasta'] >= $hoy || $v['hasta'] == "0000-00-00")) {
 				$costo = $v['costo'];
 				break;
 			}

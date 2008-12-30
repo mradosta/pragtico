@@ -26,11 +26,29 @@ class UtilComponent extends Object {
 
     var $controller;
     
+	var $components = array('Session');
+	
     function startup(&$controller) {
         $this->controller = &$controller;
     }
 
 
+/**
+ * Gets currently logged in user's groups.
+ *
+ * @return array GroupId => GroupName, empty array if the user has no groups.
+ * @access public
+ */
+	function getUserGroups() {
+		$usuario = $this->Session->read('__Usuario');
+		if (!empty($usuario['Grupo'])) {
+			return Set::combine($usuario['Grupo'], '{n}.id', '{n}.nombre');
+		} else {
+			return array();
+		}
+	}
+	
+	
 /**
  * Dado un array proveniente desde la seleccion multiple desde una tabla index,
  * retorna un array con los ids seleccionados.

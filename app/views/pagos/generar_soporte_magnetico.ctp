@@ -28,23 +28,23 @@ $condiciones['Soporte.empleador_id'] =  array(	"lov"	=>array("controller"		=> 	"
 $condiciones['Soporte.cuenta_id'] = array("label"=>"Cuenta", "type"=>"relacionado", "relacion"=>"Soporte.empleador_id", "url"=>"pagos/cuentas_relacionado");
 $condiciones['Soporte.fecha_acreditacion'] = array("value"=>date("d/m/Y"), "type"=>"date", "label"=>"Acreditacion", "aclaracion"=>"Fecha opcional de acreditacion.");
 
-if(!empty($ids)) {
+if (!empty($ids)) {
 	$condiciones['Soporte.pago_id'] = array("type"=>"hidden", "value"=>$ids);
 }
 
 
 $fieldsets[] = array("campos"=>$condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Seleccione la cuenta","imagen"=>"bancos.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"Seleccione la cuenta","imagen"=>"bancos.gif")));
 
 $accionesExtra['opciones'] = array("acciones"=>array());
 $botonesExtra[] = $formulario->button("Cancelar", array("title"=>"Cancelar", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='cancelar';form.submit();"));
 $botonesExtra[] = $formulario->submit("Generar", array("title"=>"Importar la PLanilla", "onclick"=>"document.getElementById('accion').value='generar'"));
 
-echo $this->renderElement("index/index", array("opcionesTabla"=>array("tabla"=>array("omitirMensajeVacio"=>true)), "botonesExtra"=>array("opciones"=>array("botones"=>$botonesExtra)), "accionesExtra"=>$accionesExtra, "opcionesForm"=>array("action"=>"generar_soporte_magnetico"), "condiciones"=>$fieldset, "cuerpo"=>null));
+$miga = 'Generar soporte magnetico';
+echo $this->element("index/index", array("opcionesTabla"=>array("tabla"=>array("omitirMensajeVacio"=>true)), "botonesExtra"=>array("opciones"=>array("botones"=>$botonesExtra)), "accionesExtra"=>$accionesExtra, "opcionesForm"=>array("action"=>"generar_soporte_magnetico"), "condiciones"=>$fieldset, "cuerpo"=>null, 'miga'=>$miga));
 
 
 
-$opciones = "";
 
 //$opciones .= $formulario->input("Soporte.modo", array("options"=>$modos, "type"=>"radio"));
 //$opciones .= $formulario->input("Soporte.modo", array("options"=>$modos, "empty"=>true));
@@ -76,6 +76,7 @@ $bancos .= $formulario->bloque(
 
 //$bancos = $formulario->input("Banco.id", array("options"=>$bancos, "type"=>"radio", "label"=>"Banco"));
 //$bancos = $formulario->input("Banco.id", array("options"=>$bancos, "label"=>"Banco", "empty"=>true));
+/*
 $opciones .= $formulario->input("Soporte.empleador_id", array("aclaracion" 	=> 	"Solo se tendra en cuenta este campo si el tipo es 'Por Empleador'.",
 										"lov"	=>array("controller"		=> 	"empleadores",
 														"seleccionMultiple"	=> 	0,
@@ -85,7 +86,7 @@ $opciones .= $formulario->input('Banco.id', array("label"=>"Cuenta", "type"=>"re
 $codigoHtml = $formulario->bloque($opciones, array("fieldset"=>array("legend"=>"Seleccione la cuenta", "imagen"=>"bancos.gif")));
 
 
-
+*/
 /*
 echo $formulario->create(null, array("id"=>"form", "action"=>"generar_soporte_magnetico"));
 if(!empty($ids)) {

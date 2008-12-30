@@ -49,11 +49,10 @@ class Auditoria extends AppModel {
  */
     function auditar($data) {
 		$session = &new SessionComponent();
-		if($session->check('__Usuario')) {
-			$usuario = $session->read('__Usuario');
+		$usuario = $session->read('__Usuario');
+		if(!empty($usuario)) {
 			$save['usuario'] = $usuario['Usuario']['nombre'];
-		}
-		else {
+		} else {
 			$save['usuario'] = "publico";
 		}
     	$save['ip'] = $this->__getIp();
@@ -66,7 +65,7 @@ class Auditoria extends AppModel {
 		$save['permissions'] = "256";
 		$saveAuditoria['Auditoria'] = $save;
 		$this->create($saveAuditoria);
-		$this->save($saveAuditoria);
+		return $this->save($saveAuditoria);
 	}    
     
 }

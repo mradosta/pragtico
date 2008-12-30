@@ -49,8 +49,8 @@ class PagosController extends AppController {
 				$this->data['Condicion']['Liquidacion-mes'] = $periodo['mes'];
 				$this->data['Condicion']['Liquidacion-periodo'] = $periodo['periodo'];
 			}
+			//$this->paginate = array_merge($this->paginate, array("contain"=>array('PagosForma', 'Liquidacion', 'Relacion' => array('Empleador', 'Trabajador'))));
 		}
-		$this->paginate = am($this->paginate, array("contain"=>array("PagosForma", "Liquidacion", "Relacion.Empleador", "Relacion.Trabajador")));
 		parent::index();
 	}
 

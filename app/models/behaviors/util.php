@@ -22,17 +22,31 @@
  * @package		pragtico
  * @subpackage	app.models.behaviors
  */
-class UtilBehavior extends ModelBehavior {
+//class UtilBehavior extends ModelBehavior {
+App::import('Behavior', 'Containable');
+class UtilBehavior extends ContainableBehavior {	
+	
+	function xafterFind(&$model, $results, $primary = false) {
+		
+		if (!isset($results[0][0]) && !empty($this->backUpRelations)) {
+			foreach ($results as $k => $result) {
+				//d($this->backUpRelations);
+				foreach ($this->backUpRelations as $firstLevelKey => $firstLevel) {
+					foreach ($firstLevel as $secondLevel) {
+						$results[$k][$firstLevelKey][$secondLevel] = $result[$secondLevel];
+						unset($results[$k][$secondLevel]);
+					}
+				}
+			}
+			return $results;
+		} else {
+			return parent::afterFind($model, $results, $primary);
+		}
+	}
 
-/**
- * A los campos string, text o enum, les da sorporte para collation espanol de mysql cuando debo hacer un order by.
- *
- * @param object $model Model que usa este behavior.
- * @param array $query Los datos que tengo para armar la query.
- * @return array $query Los datos para realizar la query con laa parte del order modificada para soporte de collation.
- * @access public
- */
-    function beforeFind (&$model, $query) {
+	
+    function beforeFind(&$model, $query) {
+		
         if(!empty($query['order'][0])) {
         	$schema = $model->schema();
         	if(!is_array($query['order'][0])) {
@@ -75,10 +89,150 @@ class UtilBehavior extends ModelBehavior {
 			}
 			$query['order'] = $orden;
         }
-        return $query;
+		return $query;
+	}
+    function xbeforeFind(&$model, $query) {
+		
+        if(!empty($query['order'][0])) {
+        	$schema = $model->schema();
+        	if(!is_array($query['order'][0])) {
+        		$query['order'][0] = array($query['order'][0]);
+        	}
+        	elseif(isset($query['order'][0][0]) && strpos($query['order'][0][0], ",")) {
+        		foreach(explode(",", $query['order'][0][0]) as $v) {
+        			if(stripos($v, "asc")) {
+        				$query['order'][0][trim(str_replace("asc", "", $v))] = "asc";
+        			}
+        			elseif(stripos($v, "desc")) {
+        				$query['order'][0][trim(str_replace("desc", "", $v))] = "desc";
+        			}
+        			else {
+        				$query['order'][0][trim($v)] = "asc";
+        			}
+        		}
+        		unset($query['order'][0][0]);
+        	}
+        	
+        	foreach($query['order'][0] as $field=>$direccion) {
+        		if(is_numeric($field)) {
+        			$field = $direccion;
+        			$modelName = $model->name;
+        			$direccion = "asc";
+        		}
+        		if(strpos($field, '.')) {
+        			$tmp = explode(".", $field);
+        			$field = $tmp[1];
+        			$modelName = $tmp[0];
+        			if(preg_match("/asc|desc$/", $field, $matches)) {
+        				$direccion = $matches[0];
+        				$field = trim(str_replace($direccion, "", $field));
+        			}
+        		}
+        		if($schema[$field]['type'] === "string" || $schema[$field]['type'] === "text" || substr($schema[$field]['type'], 0, 5) === "enum(") {
+        			$direccion = "COLLATE utf8_spanish2_ci " . $direccion;
+        		}
+        		$orden[$modelName . "." . $field] = $direccion;
+			}
+			$query['order'] = $orden;
+        }
+		
+		
+		if (is_string($query['fields']) && stristr($query['fields'], 'count')) {
+			return parent::beforeFind($model, $query);
+		}
+				
+		//http://www.mark-story.com/posts/view/using-bindmodel-to-get-to-deep-relations
+		$contain = array();
+		if (isset($this->myRuntime)) {
+			$contain = $this->myRuntime[$model->alias]['contain'];
+		}
+		
+		if (isset($query['contain'])) {
+			$contain = array_merge($contain, (array)$query['contain']);
+		}
+		
+		$containments = parent::containments($model, $contain);
+		$map = parent::containmentsMap($containments);
+		if (isset($map[$model->name])) {
+			$firstLevelBelongsTos = Set::extract('/belongsTo/.', $map[$model->name]);
+			
+			foreach ($firstLevelBelongsTos as $relation) {
+				if (isset($map[$relation])) { 
+					$this->backUpRelations[$relation] = Set::extract('/belongsTo', $map[$relation]);
+				} else {
+					$this->backUpRelations[$relation] = array();
+				}
+				unset($map[$relation]['belongsTo']);
+				if (empty($map[$relation])) {
+					unset($map[$relation]);
+				}
+			}
+			unset($map[$model->name]['belongsTo']);
+		}
+		if (empty($map[$model->name])) {
+			unset($map[$model->name]);
+		}
+		
+		if (!empty($firstLevelBelongsTos) && empty($map)) {
+			$hasOne = array();
+			foreach ($this->backUpRelations as $firstLevelRelation => $secondLevelBelongsTos) {
+				$firstInstance = ClassRegistry::init($firstLevelRelation);
+				
+				$hasOneTmp = null;
+				$hasOneTmp[$firstLevelRelation]['foreignKey'] = false;
+				$hasOneTmp[$firstLevelRelation]['conditions'] = 
+						array($model->name . '.' . $model->belongsTo[$firstLevelRelation]['foreignKey'] . ' = ' . $firstLevelRelation . '.' . $firstInstance->primaryKey);
+				$hasOne = array_merge($hasOne, $hasOneTmp);
+				
+				if (!empty($secondLevelBelongsTos)) {
+					foreach ($secondLevelBelongsTos as $secondLevelRelation) {
+						$secondInstance = ClassRegistry::init($secondLevelRelation);
+						$hasOneTmp = null;
+						$hasOneTmp[$secondLevelRelation]['foreignKey'] = false;
+						$hasOneTmp[$secondLevelRelation]['conditions'] = 
+								array($firstLevelRelation . '.' . $firstInstance->belongsTo[$secondLevelRelation]['foreignKey'] . ' = ' . $secondLevelRelation . '.' . $secondInstance->primaryKey);
+						$hasOne = array_merge($hasOne, $hasOneTmp);
+					}
+				}
+			}
+			
+			foreach ($this->types as $type) {
+				$unbind = array_keys($model->{$type});
+				if (!empty($unbind)) {
+					$unbinds[$type] = $unbind;
+				}
+			}
+			$model->unbindModel($unbinds);
+			$model->bindModel(array('hasOne' => $hasOne));
+			unset($query['contain']);
+			$query['recursive'] = 1;
+			return $query;
+		} else {
+			$this->backUpRelations = null;
+			$query['contain'] = $contain;
+        	return parent::beforeFind($model, $query);
+		}
     }
 
 
+	
+/**
+ * A los campos string, text o enum, les da sorporte para collation espanol de mysql cuando debo hacer un order by.
+ *
+ * @param object $model Model que usa este behavior.
+ * @param array $query Los datos que tengo para armar la query.
+ * @return array $query Los datos para realizar la query con laa parte del order modificada para soporte de collation.
+ * @access public
+ */
+	
+	function xcontain(&$Model) {
+		$args = func_get_args();
+		$contain = call_user_func_array('am', array_slice($args, 1));
+		$this->myRuntime[$Model->alias]['contain'] = $contain;
+		$this->runtime[$Model->alias]['contain'] = $contain;
+		//parent::contain($Model, $contain);
+	}
+		
 /**
  * De un archivo subido, lo parseo y lo deja disponible para cargarlo en la base de datos.
  *

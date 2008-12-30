@@ -92,10 +92,9 @@ $fieldsets[] = array("campos"=>$campos, "opciones"=>array("div"=>array("class"=>
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
+$miga = array('format' 	=> '%s %s', 
+			  'content' => array('Trabajador.apellido', 'Trabajador.nombre'));
 $fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"trabajadores.gif")));
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "opcionesForm"=>array("enctype"=>"multipart/form-data")));
-if($this->action !== "add") {
-	$formulario->addCrumb($this->data[0]['Trabajador']['apellido'] . " " . $this->data[0]['Trabajador']['nombre']);
-}
+echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "opcionesForm"=>array("enctype"=>"multipart/form-data"), "miga" => $miga));
 
 ?>

@@ -27,13 +27,13 @@ class Descuento extends AppModel {
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array(	"index"=>array(	"contain"=>array("Relacion.Empleador",
-																"Relacion.Trabajador")),
-								"edit"=>array(	"contain"=>array("Relacion.Empleador",
-																"Relacion.Trabajador")),
-								"add" =>array(								
-										"valoresDefault"=>array("alta"=>"date('d/m/Y')",
-																"desde"=>"date('d/m/Y')")));
+	var $modificadores = array(	'index'	=>
+			array('contain'	=> array('Relacion' => array('Empleador', 'Trabajador'))),
+								'edit'	=>
+			array('contain'	=> array('Relacion'	=> array('Empleador', 'Trabajador'))),
+								'add' 	=>
+			array('valoresDefault'	=> array('alta'		=> array('date' => 'd/m/Y'),
+											 'desde'	=> array('date' => 'd/m/Y'))));
 
 	var $opciones = array("descontar"=> array(	"1"=>	"Con Cada Liquidacion",
 												"2"=>	"Primera Quincena",

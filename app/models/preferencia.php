@@ -100,7 +100,12 @@ class Preferencia extends AppModel {
  */
 	function findPreferencias($usuario_id) {
 		$valores = array();
-		$preferencias = $this->find("all", array("contain"=>array("PreferenciasValor"=>array("conditions"=>array("PreferenciasValor.predeterminado"=>"Si")), "PreferenciasUsuario.PreferenciasValor", "PreferenciasUsuario"=>array("conditions"=>array("PreferenciasUsuario.usuario_id"=>1))), "checkSecurity"=>false));
+		$preferencias = $this->find("all", 
+				array("contain"	=> array(	
+					  "PreferenciasUsuario", "PreferenciasValor" => 
+						array("conditions"	=> array("PreferenciasValor.predeterminado"=>"Si"))), 
+							  "checkSecurity"=>false));
+		//d($preferencias);
 		foreach($preferencias as $preferencia) {
 			if(!empty($preferencia['PreferenciasUsuario'][0]['PreferenciasValor']['valor'])) {
 				$valor = $preferencia['PreferenciasUsuario'][0]['PreferenciasValor']['valor'];

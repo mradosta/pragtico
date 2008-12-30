@@ -40,10 +40,10 @@ class Novedad extends AppModel {
  * @var array
  * @access public
 */
-	var $modificadores = array(	"index"=>array(	"contain"=>array("Relacion.Empleador",
-																"Relacion.Trabajador")),
-								"edit"=>array(	"contain"=>array("Relacion.Empleador",
-																"Relacion.Trabajador")));
+	var $modificadores = array(	'index'	=> 
+			array('contain'	=> array('Relacion' => array('Empleador', 'Trabajador'))),
+								'edit'	=>
+			array('contain'	=> array('Relacion'	=> array('Empleador', 'Trabajador'))));
 
 /**
  * Los permisos por defecto con los que se guardaran los datos de este model.
@@ -67,14 +67,14 @@ class Novedad extends AppModel {
 
 
 /**
- * Based on type, mark the existance of a previewsly informed novelty.
+ * Based on novelty type, mark the existance of a previewsly informed novelty.
  */
 	function afterFind($results, $primary = false) {
-		if($primary) {
-			foreach($results as $k => $v) {
+		if ($primary) {
+			foreach ($results as $k => $v) {
 				$existe = false;
-				if(isset($v['Novedad']['tipo'])) {
-					if($v['Novedad']['tipo'] === 'Concepto') {
+				if (isset($v['Novedad']['tipo'])) {
+					if ($v['Novedad']['tipo'] === 'Concepto') {
 						$periodo = $this->format($v['Novedad']['periodo'], 'periodo');
 						$conditions = array('RelacionesConcepto.concepto_id' =>	array_shift(explode(':', $v['Novedad']['subtipo'])),
 											'RelacionesConcepto.relacion_id' =>	$v['Novedad']['relacion_id'],
@@ -92,11 +92,10 @@ class Novedad extends AppModel {
 						* En caso de que exista, si dentro de la formula tiene la variable, 
 						* lo marco como que no existe porque luego la reemplazare.
 						*/
-						if(!empty($existe['RelacionesConcepto']['formula']) && strpos($existe['RelacionesConcepto']['formula'], '#valor_novedad') !== false) {
+						if (!empty($existe['RelacionesConcepto']['formula']) && strpos($existe['RelacionesConcepto']['formula'], '#valor_novedad') !== false) {
 							$existe = false;
 						}
-					}
-					elseif($v['Novedad']['tipo'] === 'Horas') {
+					} elseif ($v['Novedad']['tipo'] === 'Horas') {
 						$Hora = ClassRegistry::init('Hora');
 						$find = null;
 						$find['Hora.tipo'] = $v['Novedad']['subtipo'];
@@ -105,8 +104,7 @@ class Novedad extends AppModel {
 						$existe = $Hora->find('first', array(	'recursive' 	=> -1, 
 											 					'checkSecurity'	=> false,
 											 					'conditions' 	=> $find));
-					}
-					elseif($v['Novedad']['tipo'] === 'Ausencias') {
+					} elseif ($v['Novedad']['tipo'] === 'Ausencias') {
 						$Ausencia = ClassRegistry::init('Ausencia');
 						$find = null;
 						$periodo = $this->format($v['Novedad']['periodo'], 'periodo');
@@ -117,8 +115,7 @@ class Novedad extends AppModel {
 						$existe = $Ausencia->find('first', array(	'recursive' 	=> -1, 
 											 						'checkSecurity'	=> false,
 											 						'conditions' 	=> $find));
-					}
-					elseif($v['Novedad']['tipo'] === 'Vales') {
+					} elseif ($v['Novedad']['tipo'] === 'Vales') {
 						$Descuento = ClassRegistry::init('Descuento');
 						$find = null;
 						$periodo = $this->format($v['Novedad']['periodo'], 'periodo');
@@ -132,7 +129,7 @@ class Novedad extends AppModel {
 					}
 				}
 				$results[$k]['Novedad']['existe'] = false;
-				if(!empty($existe)) {
+				if (!empty($existe)) {
 					$results[$k]['Novedad']['existe'] = true;
 				}
 			}
@@ -150,22 +147,22 @@ class Novedad extends AppModel {
  * @access public 
  */
  	function grabar($datos, $periodo) {
-		if(!preg_match(VALID_PERIODO, $periodo) || empty($datos) || !is_array($datos)) {
+		if (!preg_match(VALID_PERIODO, $periodo) || empty($datos) || !is_array($datos)) {
 			return false;
 		}
 		
 		$predefinidos = $this->getIngresosPosibles("predefinidos");
 		
-		foreach($datos as $relacion_id => $data) {
-			foreach($data as $tipo => $registros) {
-				foreach($registros as $subTipo => $registro) {
+		foreach ($datos as $relacion_id => $data) {
+			foreach ($data as $tipo => $registros) {
+				foreach ($registros as $subTipo => $registro) {
 				
 					$save = null;
 					$save['Novedad']['id'] = null;
 					$save['Novedad']['periodo'] = $periodo;
 					$save['Novedad']['relacion_id'] = $relacion_id;
 					
-					if(!in_array($tipo, $predefinidos)) {
+					if (!in_array($tipo, $predefinidos)) {
 						/**
 						* Busco el id del concepto correspondiente al nombre que importe desde la planilla.
 						*/
@@ -178,8 +175,7 @@ class Novedad extends AppModel {
 						$save['Novedad']['data'] = $registro;
 						$save['Novedad']['tipo'] = 'Concepto';
 						$save['Novedad']['subtipo'] = $concepto['Concepto']['id'] . ':' . $tipo;
-					}
-					else {
+					} else {
 						$save['Novedad']['concepto_id'] = null;
 						$save['Novedad']['tipo'] = $tipo;
 						$save['Novedad']['subtipo'] = $subTipo;
@@ -189,23 +185,20 @@ class Novedad extends AppModel {
 						* Le doy un tratamiento especial a las ausencias, para ya dejar el motivo
 						* especificado.
 						*/
-						if($tipo === 'Ausencias') {
-							if($subTipo === 'Dias') {
+						if ($tipo === 'Ausencias') {
+							if ($subTipo === 'Dias') {
 								continue;
-							}
-							else {
+							} else {
 								$save['Novedad']['data'] = $registros['Dias'];
 								
 								if(empty($registro)) {
 									$save['Novedad']['subtipo'] = 1;
-								}
-								else {
+								} else {
 									$this->Relacion->Ausencia->AusenciasMotivo->recursive = -1;
 									$motivo = $this->Relacion->Ausencia->AusenciasMotivo->findByMotivo($registro);
-									if(!empty($motivo)) {
+									if (!empty($motivo)) {
 										$save['Novedad']['subtipo'] = $motivo['AusenciasMotivo']['id'] . ':' . $registro;
-									}
-									else {
+									} else {
 										$save['Novedad']['subtipo'] = '1:Justificada (sin especificar)';
 									}
 								}
@@ -229,12 +222,14 @@ class Novedad extends AppModel {
  * @access public
  */
 	function distribuir($ids) {
-		$novedades = $this->find("all", array("conditions"=>array("Novedad.id"=>$ids), "recursive"=>-1));
+		$novedades = $this->find('all', 
+				array('conditions' 	=> array('Novedad.id' => $ids), 
+					  'recursive'	=> -1));
 		$c = $i = $ii = 0;
 		
-		foreach($novedades as $novedad) {
-			$periodo = $this->format($novedad['Novedad']['periodo'], "periodo");
-			switch($novedad['Novedad']['tipo']) {
+		foreach ($novedades as $novedad) {
+			$periodo = $this->format($novedad['Novedad']['periodo'], 'periodo');
+			switch ($novedad['Novedad']['tipo']) {
 				case "Horas":
 					$saves[$i]['Hora']['id'] = null;
 					$saves[$i]['Hora']['tipo'] = $novedad['Novedad']['subtipo'];

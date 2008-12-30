@@ -23,22 +23,21 @@
  */
 class Pago extends AppModel {
 
+	var $modificadores = array(	'index' =>
+			array('contain'	=> array('Relacion'	=> array('Empleador', 'Trabajador'))));
+	
 	var $order = array('Pago.fecha'=>'desc');
 
 	var $validate = array(
         'fecha' => array(
 			array(
-				'rule'	=> VALID_DATE, 
-				'message'	=>'Debe especificar una fecha valida.')
+				'rule'		=> VALID_DATE, 
+				'message'	=> 'Debe especificar una fecha valida.')
         )
 	);
 
-	var $belongsTo = array(	'Relacion' =>
-                        array('className'    => 'Relacion',
-                              'foreignKey'   => 'relacion_id'),
-							'Liquidacion' =>
-                        array('className'    => 'Liquidacion',
-                              'foreignKey'   => 'liquidacion_id'));
+	var $belongsTo = array(	'Relacion', 
+							'Liquidacion');
                               
 	var $hasMany = array(	'PagosForma' =>
                         array('className'    => 'PagosForma',
@@ -54,13 +53,13 @@ class Pago extends AppModel {
 		$retorno = true;
 		$tipo = ucfirst($tipo);
 			
-		if($tipo == "Deposito") {
-			$this->contain(array("PagosForma", "Relacion.Trabajador"));
+		if($tipo == 'Deposito') {
+			$this->contain(array('PagosForma', 'Relacion.Trabajador'));
 		}
 		else {
-			$this->contain("PagosForma");
+			$this->contain('PagosForma');
 		}
-		$pagosTmp = $this->find("all", array("conditions"=>array("Pago.id"=>$ids, "Pago.estado"=>"Pendiente")));
+		$pagosTmp = $this->find('all', array('conditions'=>array('Pago.id'=>$ids, 'Pago.estado'=>'Pendiente')));
 		
 		$ids = array();
 		foreach($pagosTmp as $pago) {
@@ -69,7 +68,7 @@ class Pago extends AppModel {
 		}
 		$c=0;
 		foreach($ids as $id) {
-			if(($pagos[$id]['Pago']['moneda'] == "Beneficios" && $tipo == "Beneficios") || $pagos[$id]['Pago']['moneda'] == "Pesos" && $tipo != "Beneficios") {
+			if(($pagos[$id]['Pago']['moneda'] == 'Beneficios' && $tipo == 'Beneficios') || $pagos[$id]['Pago']['moneda'] == 'Pesos' && $tipo != 'Beneficios') {
 
 				/**
 				* Determino si tiene la pagos parciales.
@@ -82,9 +81,9 @@ class Pago extends AppModel {
 				$save['id'] = null;
 				$save['pago_id'] = $id;
 				$save['forma'] = $tipo;
-				$save['fecha'] = date("d/m/Y");
-				$save['fecha_pago'] = date("d/m/Y");
-				$save['permissions'] = "292";
+				$save['fecha'] = date('d/m/Y');
+				$save['fecha_pago'] = date('d/m/Y');
+				$save['permissions'] = '292';
 				$save['monto'] = $pagos[$id]['Pago']['monto'] - $acumulado;
 				/**
 				* El beforeSave hara otra validacion, para lo cual necesitara estos datos.
@@ -92,18 +91,18 @@ class Pago extends AppModel {
 				$save['pago_monto'] = $pagos[$id]['Pago']['monto'];
 				$save['pago_acumulado'] = $acumulado;
 				
-				if($tipo == "Deposito") {
+				if($tipo == 'Deposito') {
 					$save['cbu_numero'] = $pagos[$id]['Relacion']['Trabajador']['cbu'];
 				}
 				
 				/**
 				* Cuando un pago esta imputado, ya no permito que sea borrado o modificado.
 				*/
-				$savePago['permissions'] = "292";
-				$savePago['estado'] = "Imputado";
+				$savePago['permissions'] = '292';
+				$savePago['estado'] = 'Imputado';
 				$savePago['id'] = $id;
 				$this->begin();
-				if($this->save(array("Pago"=>$savePago)) && $this->PagosForma->save(array("PagosForma"=>$save))) {
+				if($this->save(array('Pago'=>$savePago)) && $this->PagosForma->save(array('PagosForma'=>$save))) {
 					$this->commit();
 					$c++;
 				}
@@ -138,12 +137,12 @@ class Pago extends AppModel {
 		
 		if(!empty($opciones['cuenta_id']) && !empty($opciones['pago_id']) && !empty($opciones['empleador_id'])) {
 
-			$this->Relacion->Empleador->Cuenta->recursive = 2;
-			$this->Relacion->Empleador->Cuenta->contain(array("Sucursal", "Banco"));
+			//$this->Relacion->Empleador->Cuenta->recursive = 2;
+			$this->Relacion->Empleador->Cuenta->contain(array('Empleador', 'Sucursal.Banco'));
 			$cuenta = $this->Relacion->Empleador->Cuenta->findById($opciones['cuenta_id']);
 			$banco = $cuenta['Sucursal']['Banco']['nombre'];
-			
-			$sql = "
+			/*
+			$sql = '
 			SELECT 		Pago.id,
 						Pago.liquidacion_id,
 						Pago.relacion_id,
@@ -162,89 +161,96 @@ class Pago extends AppModel {
 						trabajadores Trabajador,
 						sucursales Sucursal,
 						bancos Banco
-			WHERE 		Pago.estado = 'Pendiente'
-			AND 		Pago.id IN (" . implode(", ", $opciones['pago_id']) . ")
-			AND			Relacion.estado = 'Activa'
+			WHERE 		Pago.estado = \'Pendiente\'
+			AND 		Pago.id IN (' . implode(', ', $opciones['pago_id']) . ')
+			AND			Relacion.estado = \'Activa\'
 			AND			Trabajador.id = Relacion.trabajador_id
 			AND			Relacion.id = Pago.relacion_id
 			AND			Sucursal.id = Trabajador.sucursal_id
 			AND			Banco.id = Sucursal.banco_id
-			AND			Banco.nombre = '" . $banco . "'";
-
-			$pagos = $this->query($sql);
-			//$pagos = $this->find("all", array("conditions"=>array("Pago.estado"=>"Pendiente", "Pago.id"=>$opciones['pago_id'])));
+			AND			Banco.nombre = \'' . $banco . '\'';
+			*/
+			$conditions = array(
+					'Pago.estado'		=> 'Pendiente',
+	 				'Pago.id'			=> $opciones['pago_id'],
+					'Relacion.estado'	=> 'Activa');
+	  				
+			$pagos =  $this->find('all', 
+			  		array(	'contain'		=> array('Relacion.Trabajador'),
+						  	'conditions' 	=> $conditions));
+			//$pagos = $this->query($sql);
+			//$pagos = $this->find('all', array('conditions'=>array('Pago.estado'=>'Pendiente', 'Pago.id'=>$opciones['pago_id'])));
 			//d($pagos);
 			
-			if(!empty($pagos)) {
+			if (!empty($pagos)) {
 			
 				//$empleador = $this->Relacion->Empleador->findById($opciones['Empleador.id']);
-
 				$total = 0;
 				foreach($pagos as $pago) {
 
-					preg_match("/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d$/", $pago['Trabajador']['cbu'], $matches);
+					preg_match('/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d$/', $pago['Relacion']['Trabajador']['cbu'], $matches);
 					if(!empty($matches[2]) && !empty($matches[3])) {
 					
-						$total += number_format($pago['Pago']['monto'], 2, ".", "");					
+						$total += number_format($pago['Pago']['monto'], 2, '.', '');					
 						switch ($banco) {
-							case "Santander-Rio":
-								if($pago['Trabajador']['tipo_cuenta'] == "Cta. Cte.") {
-									$tipoCuentaTrabajador = "2";
-								}
-								elseif($pago['Trabajador']['tipo_cuenta'] == "Caja de Ahorro") {
-									$tipoCuentaTrabajador = "3";
+							case 'Santander-Rio':
+								if($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Cta. Cte.') {
+									$tipoCuentaTrabajador = '2';
+								} elseif($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Caja de Ahorro') {
+									$tipoCuentaTrabajador = '3';
 								}
 								$c = null;
-								$c[] = "0"; // moneda
-								$c[] = str_pad(substr($pago['Trabajador']['apellido'] . " " . $pago['Trabajador']['nombre'], 0, 15), 15, " ", STR_PAD_RIGHT); //nombre
-								$c[] = str_replace("-", "", $pago['Trabajador']['cuil']); //cuil
+								$c[] = '0'; // moneda
+								$c[] = str_pad(substr($pago['Relacion']['Trabajador']['apellido'] . ' ' . $pago['Relacion']['Trabajador']['nombre'], 0, 15), 15, ' ', STR_PAD_RIGHT); //nombre
+								$c[] = str_replace('-', '', $pago['Relacion']['Trabajador']['cuil']); //cuil
 								$c[] = $matches[2]; // Sucursal
 								$c[] = $tipoCuentaTrabajador; // Tipo de Cuenta
 								$c[] = substr($matches[3], 2); // Cuenta
-								$c[] = str_pad(number_format($pago['Pago']['monto'], 2, "", ""), 15, "0", STR_PAD_LEFT); // importe
-								$rds[] = implode(";", $c);
+								$c[] = str_pad(number_format($pago['Pago']['monto'], 2, '', ''), 15, '0', STR_PAD_LEFT); // importe
+								$rds[] = implode(';', $c);
 								break;
-							case "Galicia":
-								if($pago['Trabajador']['tipo_cuenta'] == "Cta. Cte.") {
-									$tipoCuentaTrabajador = "0";
+							case 'Galicia':
+								if($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Cta. Cte.') {
+									$tipoCuentaTrabajador = '0';
 								}
-								elseif($pago['Trabajador']['tipo_cuenta'] == "Caja de Ahorro") {
-									$tipoCuentaTrabajador = "4";
+								elseif($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Caja de Ahorro') {
+									$tipoCuentaTrabajador = '4';
 								}
 								$rd = null;												
-								$rd[] = "D";
-								$rd[] = str_pad($cuenta['Cuenta']['identificador'], 5, "0", STR_PAD_LEFT); //Numero de empresa
+								$rd[] = 'D';
+								$rd[] = str_pad($cuenta['Cuenta']['identificador'], 5, '0', STR_PAD_LEFT); //Numero de empresa
 								$rd[] = $tipoCuentaTrabajador; //tipo de cuenta
-								$rd[] = str_pad("X", 6, "0", STR_PAD_LEFT); //folio
-								$rd[] = "X"; //1 digito
-								$rd[] = str_pad("X", 3, "0", STR_PAD_LEFT); //sucursal
-								$rd[] = "X"; //2 digito
-								$rd[] = str_pad(substr($pago['Trabajador']['apellido'] . " " . $pago['Trabajador']['nombre'], 0, 20), 20, " ", STR_PAD_RIGHT); //nombre
-								$rd[] = str_pad(number_format($pago['Pago']['monto'], 2, "", ""), 14, "0", STR_PAD_LEFT); //importe
-								$rd[] = str_pad("1", 2, "0", STR_PAD_LEFT); //concepto
-								$rd[] = str_pad("", 11, " ", STR_PAD_RIGHT); //libre
-								$rds[] = implode("", $rd);
+								$rd[] = str_pad('X', 6, '0', STR_PAD_LEFT); //folio
+								$rd[] = 'X'; //1 digito
+								$rd[] = str_pad('X', 3, '0', STR_PAD_LEFT); //sucursal
+								$rd[] = 'X'; //2 digito
+								$rd[] = str_pad(substr($pago['Relacion']['Trabajador']['apellido'] . ' ' . $pago['Relacion']['Trabajador']['nombre'], 0, 20), 20, ' ', STR_PAD_RIGHT); //nombre
+								$rd[] = str_pad(number_format($pago['Pago']['monto'], 2, '', ''), 14, '0', STR_PAD_LEFT); //importe
+								$rd[] = str_pad('1', 2, '0', STR_PAD_LEFT); //concepto
+								$rd[] = str_pad('', 11, ' ', STR_PAD_RIGHT); //libre
+								$rds[] = implode('', $rd);
+								d($rds);
 								break;
-							case "Nacion":
-								$fechaAcreditacion = date("Ymd");
+							case 'Nacion':
+								$fechaAcreditacion = date('Ymd');
 								if(!empty($opciones['fecha_acreditacion'])) {
-									preg_match("/(\d\d)\/(\d\d)\/\d\d(\d\d)$/", $opciones['fecha_acreditacion'], $matches);
+									preg_match('/(\d\d)\/(\d\d)\/\d\d(\d\d)$/', $opciones['fecha_acreditacion'], $matches);
 									if(!empty($matches[1]) && !empty($matches[2]) && !empty($matches[3])) {
 										$fechaAcreditacion = $matches[1] . $matches[2] . $matches[3];
 									}
 								}
 								$c = null;
-								$c[] = str_pad($matches[2], 4, "0", STR_PAD_LEFT); // Sucursal
-								$c[] = str_pad($matches[3], 10, "0", STR_PAD_LEFT); // Nro cuenta
-								$c[] = "141"; // nadie sabe que es, pero debe ir este valor
+								$c[] = str_pad($matches[2], 4, '0', STR_PAD_LEFT); // Sucursal
+								$c[] = str_pad($matches[3], 10, '0', STR_PAD_LEFT); // Nro cuenta
+								$c[] = '141'; // nadie sabe que es, pero debe ir este valor
 								$c[] = $fechaAcreditacion; // fecha de acreditacion
-								$c[] = "CTRE0"; // nadie sabe que es, pero debe ir este valor
-								$c[] = str_pad($pago['Trabajador']['numero_documento'], 8, "0", STR_PAD_LEFT); //dni
-								$c[] = str_pad(number_format($pago['Pago']['monto'], 2, "", ""), 13, "0", STR_PAD_LEFT); //importe
-								$c[] = str_pad(substr($pago['Trabajador']['apellido'] . " " . $pago['Trabajador']['nombre'], 0, 30), 30, " ", STR_PAD_RIGHT); //nombre
-								$c[] = "96"; // nadie sabe que es, pero debe ir este valor
-								$c[] = str_pad($pago['Trabajador']['numero_documento'], 8, "0", STR_PAD_LEFT); //dni
-								$rds[] = implode("", $c);
+								$c[] = 'CTRE0'; // nadie sabe que es, pero debe ir este valor
+								$c[] = str_pad($pago['Relacion']['Trabajador']['numero_documento'], 8, '0', STR_PAD_LEFT); //dni
+								$c[] = str_pad(number_format($pago['Pago']['monto'], 2, '', ''), 13, '0', STR_PAD_LEFT); //importe
+								$c[] = str_pad(substr($pago['Relacion']['Trabajador']['apellido'] . ' ' . $pago['Relacion']['Trabajador']['nombre'], 0, 30), 30, ' ', STR_PAD_RIGHT); //nombre
+								$c[] = '96'; // nadie sabe que es, pero debe ir este valor
+								$c[] = str_pad($pago['Relacion']['Trabajador']['numero_documento'], 8, '0', STR_PAD_LEFT); //dni
+								$rds[] = implode('', $c);
 								break;
 						}
 					}
@@ -252,43 +258,43 @@ class Pago extends AppModel {
 				
 				if(!empty($rds)) {
 					switch ($banco) {
-						case "Santander-Rio":
-						case "Nacion":
-							$contenido = implode("\n\r", $rds);
+						case 'Santander-Rio':
+						case 'Nacion':
+							$contenido = implode('\n\r', $rds);
 							break;
-						case "Galicia":
-								$fechaAcreditacion = date("Ymd");
+						case 'Galicia':
+								$fechaAcreditacion = date('Ymd');
 								if(!empty($opciones['fecha_acreditacion'])) {
-									preg_match("/(\d\d)\/(\d\d)\/(\d\d\d\d)$/", $opciones['fecha_acreditacion'], $matches);
+									preg_match('/(\d\d)\/(\d\d)\/(\d\d\d\d)$/', $opciones['fecha_acreditacion'], $matches);
 									if(!empty($matches[1]) && !empty($matches[2]) && !empty($matches[3])) {
 										$fechaAcreditacion = $matches[3] . $matches[2] . $matches[1];
 									}
 								}
-								if($cuenta['Cuenta']['tipo'] == "Cta. Cte.") {
-									$tipoCuentaEmpleador = "0";
+								if($cuenta['Cuenta']['tipo'] == 'Cta. Cte.') {
+									$tipoCuentaEmpleador = '0';
 								}
-								elseif($cuenta['Cuenta']['tipo'] == "Caja de Ahorro") {
-									$tipoCuentaEmpleador = "9";
+								elseif($cuenta['Cuenta']['tipo'] == 'Caja de Ahorro') {
+									$tipoCuentaEmpleador = '9';
 								}
-								$rh[] = "H";
-								$rh[] = str_pad($cuenta['Cuenta']['identificador'], 5, "0", STR_PAD_LEFT); //Numero de empresa
+								$rh[] = 'H';
+								$rh[] = str_pad($cuenta['Cuenta']['identificador'], 5, '0', STR_PAD_LEFT); //Numero de empresa
 								$rh[] = $tipoCuentaEmpleador; //tipo de cuenta
-								$rh[] = str_pad("X", 6, "0", STR_PAD_LEFT); //folio
-								$rh[] = "X"; //1 digito
-								$rh[] = str_pad("X", 3, "0", STR_PAD_LEFT); //sucursal
-								$rh[] = "X"; //2 digito
-								$rh[] = str_pad(number_format($total, 2, "", ""), 14, "0", STR_PAD_LEFT); //importe total
-								$rh[] = str_pad($fechaAcreditacion, 8, " ", STR_PAD_RIGHT); //fecha acreditacion
-								$rh[] = str_pad("", 25, " ", STR_PAD_RIGHT); //libre
-								$rhs = implode("", $rh);
+								$rh[] = str_pad('X', 6, '0', STR_PAD_LEFT); //folio
+								$rh[] = 'X'; //1 digito
+								$rh[] = str_pad('X', 3, '0', STR_PAD_LEFT); //sucursal
+								$rh[] = 'X'; //2 digito
+								$rh[] = str_pad(number_format($total, 2, '', ''), 14, '0', STR_PAD_LEFT); //importe total
+								$rh[] = str_pad($fechaAcreditacion, 8, ' ', STR_PAD_RIGHT); //fecha acreditacion
+								$rh[] = str_pad('', 25, ' ', STR_PAD_RIGHT); //libre
+								$rhs = implode('', $rh);
 
-								$rf[] = "F";
-								$rf[] = str_pad($cuenta['Cuenta']['identificador'], 5, "0", STR_PAD_LEFT); //Numero de empresa
-								$rf[] = str_pad(count($rds), 7, "0", STR_PAD_LEFT); //cantidad registros
-								$rf[] = str_pad("", 52, " ", STR_PAD_RIGHT); //libre
-								$rfs = implode("", $rf);
+								$rf[] = 'F';
+								$rf[] = str_pad($cuenta['Cuenta']['identificador'], 5, '0', STR_PAD_LEFT); //Numero de empresa
+								$rf[] = str_pad(count($rds), 7, '0', STR_PAD_LEFT); //cantidad registros
+								$rf[] = str_pad('', 52, ' ', STR_PAD_RIGHT); //libre
+								$rfs = implode('', $rf);
 
-								$contenido = $rhs . "\n\r" . implode("\n\r", $rds) . "\n\r" . $rfs;
+								$contenido = $rhs . '\n\r' . implode('\n\r', $rds) . '\n\r' . $rfs;
 							break;
 					}
 				}
@@ -297,7 +303,7 @@ class Pago extends AppModel {
 				return false;
 			}
 		}
-		return array("contenido"=>$contenido, "banco"=>$banco);
+		return array('contenido'=>$contenido, 'banco'=>$banco);
 	}
 
 /**
@@ -307,7 +313,7 @@ class Pago extends AppModel {
 	function revertir($id) {
 		$this->begin();
 		$return = true;
-		$this->contain("PagosForma");
+		$this->contain('PagosForma');
 		$pago = $this->findById($id);
 		foreach($pago['PagosForma'] as $v) {
 			if(!$this->PagosForma->revertir($v['id'])) {
@@ -319,7 +325,7 @@ class Pago extends AppModel {
 		* Si pude revertir todas las formas de pago, lo dejo nuevamente pendiente al pago.
 		*/
 		if($return === true) {
-			if($this->save(array("Pago"=>array("id"=>$pago['Pago']['id'], "estado"=>"Pendiente")))) {
+			if($this->save(array('Pago'=>array('id'=>$pago['Pago']['id'], 'estado'=>'Pendiente')))) {
 				$this->commit();
 				return true;
 			}
@@ -330,59 +336,59 @@ class Pago extends AppModel {
 
 	function traerDetalleCambio($condiciones) {
 			$fields = am($fieldsRelaciones, $fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente);
-			$table 	= 	"relaciones_conceptos";
+			$table 	= 	'relaciones_conceptos';
 			$joins	=	array(
 							array(
-								"alias" => "EmpleadoresConcepto",
-								"table" => "empleadores_conceptos",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"RelacionesConcepto.concepto_id = EmpleadoresConcepto.concepto_id",
-											"EmpleadoresConcepto.empleador_id"=> $relacion['Relacion']['empleador_id'] ))
+								'alias' => 'EmpleadoresConcepto',
+								'table' => 'empleadores_conceptos',
+								'type' 	=> 'LEFT',
+								'conditions' => array(
+									array(	'RelacionesConcepto.concepto_id = EmpleadoresConcepto.concepto_id',
+											'EmpleadoresConcepto.empleador_id'=> $relacion['Relacion']['empleador_id'] ))
 							),
 							array(
-								"alias" => "ConveniosConcepto",
-								"table" => "convenios_conceptos",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"RelacionesConcepto.concepto_id = ConveniosConcepto.concepto_id",
-											"ConveniosConcepto.convenio_id" => $relacion['ConveniosCategoria']['convenio_id']))
+								'alias' => 'ConveniosConcepto',
+								'table' => 'convenios_conceptos',
+								'type' 	=> 'LEFT',
+								'conditions' => array(
+									array(	'RelacionesConcepto.concepto_id = ConveniosConcepto.concepto_id',
+											'ConveniosConcepto.convenio_id' => $relacion['ConveniosCategoria']['convenio_id']))
 							),
 							array(
-								"alias" => "Concepto",
-								"table" => "conceptos",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"RelacionesConcepto.concepto_id = Concepto.id"))
+								'alias' => 'Concepto',
+								'table' => 'conceptos',
+								'type' 	=> 'LEFT',
+								'conditions' => array(
+									array(	'RelacionesConcepto.concepto_id = Concepto.id'))
 							),
 							array(
-								"alias" => "Coeficiente",
-								"table" => "coeficientes",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"Concepto.coeficiente_id = Coeficiente.id"))
+								'alias' => 'Coeficiente',
+								'table' => 'coeficientes',
+								'type' 	=> 'LEFT',
+								'conditions' => array(
+									array(	'Concepto.coeficiente_id = Coeficiente.id'))
 							),
 							array(
-								"alias" => "EmpleadoresCoeficiente",
-								"table" => "empleadores_coeficientes",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"Coeficiente.id = EmpleadoresCoeficiente.coeficiente_id",
-											"EmpleadoresCoeficiente.empleador_id"	=> $relacion['Relacion']['empleador_id']))
+								'alias' => 'EmpleadoresCoeficiente',
+								'table' => 'empleadores_coeficientes',
+								'type' 	=> 'LEFT',
+								'conditions' => array(
+									array(	'Coeficiente.id = EmpleadoresCoeficiente.coeficiente_id',
+											'EmpleadoresCoeficiente.empleador_id'	=> $relacion['Relacion']['empleador_id']))
 							)							
 						);
 			$conditions = array(
-							"RelacionesConcepto.relacion_id" => $relacion['Relacion']['id'],
-							array("OR"	=> array(	"RelacionesConcepto.desde" => "0000-00-00",
-												"RelacionesConcepto.desde <=" => $opciones['desde'])),
-							array("OR"	=> array(	"RelacionesConcepto.hasta" => "0000-00-00",
-												"RelacionesConcepto.hasta >=" => $opciones['hasta']))
+							'RelacionesConcepto.relacion_id' => $relacion['Relacion']['id'],
+							array('OR'	=> array(	'RelacionesConcepto.desde' => '0000-00-00',
+												'RelacionesConcepto.desde <=' => $opciones['desde'])),
+							array('OR'	=> array(	'RelacionesConcepto.hasta' => '0000-00-00',
+												'RelacionesConcepto.hasta >=' => $opciones['hasta']))
 						);	
 		d($condiciones);
 	}
 
 	function xtraerDetalleCambio($condiciones) {
-		$sql = "
+		$sql = '
 			select		Empleador.cuit,
 						Empleador.nombre,
 						Trabajador.cuil,
@@ -407,13 +413,13 @@ class Pago extends AppModel {
 			and			Trabajador.id = Relacion.trabajador_id
 			and			Empleador.id = Relacion.empleador_id
 			and			Liquidacion.id = Pago.liquidacion_id
-			and			Liquidacion.estado = 'Confirmada'
-			and			Pago.estado = 'Imputado'
-			and			";
+			and			Liquidacion.estado = \'Confirmada\'
+			and			Pago.estado = \'Imputado\'
+			and			';
 
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$sql .= $db->conditions($condiciones, true, false);
-		$sql .= " group by
+		$sql .= ' group by
 						Empleador.cuit,
 						Empleador.nombre,
 						Trabajador.cuil,
@@ -424,10 +430,10 @@ class Pago extends AppModel {
 						Banco.nombre,
 						Sucursal.codigo,
 						substr(Pago.cbu, 9, 13),
-						Liquidacion.periodo";
-		$sql .= " order by
+						Liquidacion.periodo';
+		$sql .= ' order by
 						Trabajador.apellido,
-						Trabajador.nombre";
+						Trabajador.nombre';
 
 		$r = $this->query($sql);
 		d($r);
@@ -444,12 +450,12 @@ class Pago extends AppModel {
 				$pagos[$cuit][$cuil]['sucursal'] = $v['Sucursal']['codigo'];
 				$pagos[$cuit][$cuil]['cuenta'] = $v['0']['cuenta'];
 				$pagos[$cuit][$cuil]['periodo'] = $v['Liquidacion']['periodo'];
-				$pagos[$cuit][$cuil]['pesos'] = "0";
-				$pagos[$cuit][$cuil]['beneficios'] = "0";
+				$pagos[$cuit][$cuil]['pesos'] = '0';
+				$pagos[$cuit][$cuil]['beneficios'] = '0';
 				$pagos[$cuit][$cuil]['total_pesos'] = 0;
 				$pagos[$cuit][$cuil]['total_beneficios'] = 0;
 			}
-			if($v['Pago']['pago'] == "Beneficios") {
+			if($v['Pago']['pago'] == 'Beneficios') {
 				$pagos[$cuit][$cuil]['beneficios'] = $v['0']['monto'];
 				$pagos[$cuit][$cuil]['total_beneficios'] += $v['0']['monto'];
 			}

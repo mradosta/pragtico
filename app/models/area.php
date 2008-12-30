@@ -23,21 +23,17 @@
  */
 class Area extends AppModel {
 
-
 	var $order = array('Area.nombre' => 'asc');
-	var $unique = array("empleador_id", "nombre");
 	
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=>'Debe especificar el nombre del area del empleador.')
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar el nombre del area del empleador.')
         )
 	);
 
-	var $belongsTo = array('Empleador' =>
-                        array('className'    => 'Empleador',
-                              'foreignKey'   => 'empleador_id'));
+	var $belongsTo = array('Empleador');
 
 }
 ?>

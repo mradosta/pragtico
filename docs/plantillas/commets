@@ -8,14 +8,29 @@
  */
  
 /**
- * Definir los que guardara la variable.
+ * Definir lo que guardara la variable.
  *
  * @var array
  * @access private
  */
 	var $__privateVar = array();
 
+/**
+ * Definir lo que guardara la variable.
+ *
+ * @var array
+ * @access protected
+ */
+	var $_protectedVar = array();
 
+/**
+ * Definir lo que guardara la variable.
+ *
+ * @var array
+ * @access public
+ */
+	var $publicVar = array();
+	
 /**
  * Retorna una x.
  *

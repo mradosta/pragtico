@@ -30,13 +30,14 @@ class Controlador extends AppModel {
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY, 
-				'message'	=>'Debe especificar el nombre del controlador.')
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe especificar el nombre del controlador.')
         )
 	);
 
 	var $hasMany = array(	'Accion' =>
                         array('className'    => 'Accion',
+							  'dependent'	 => true,
                               'foreignKey'   => 'controlador_id'));
 
 }
