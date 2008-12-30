@@ -71,20 +71,15 @@ class AppController extends Controller {
 			}
 		}
 		if (!empty($condiciones['model'])) {
-			if (!ClassRegistry::isKeySet($condiciones['model'])) {
-				App::import("model", $condiciones['model']);
-			}
-			$model = new $condiciones['model']();
+			$model = ClassRegistry::init($condiciones['model']);
 			unset($condiciones['model']);
-		}
-		else {
+		} else {
 			$model = $this->{$this->modelClass};
 		}
 		
 		if (empty($condiciones['displayField'])) {
 			$displayFields = array($model->displayField);
-		}
-		else {
+		} else {
 			$displayFields = $condiciones['displayField'];
 			unset($condiciones['displayField']);
 		}
@@ -102,8 +97,7 @@ class AppController extends Controller {
 		$data = $model->find("all", $condiciones);
 		if (isset($group)) {
 			$data = $this->Util->combine($data, "{n}." . $model->name . "." . $model->primaryKey, $display, "{n}." . $group);
-		}
-		else {
+		} else {
 			$data = $this->Util->combine($data, "{n}." . $model->name . "." . $model->primaryKey, $display);
 		}
 		return $data;
@@ -198,118 +192,6 @@ class AppController extends Controller {
 		}		
 	}
 	
-	
-/**
- * Add.
- */
-	function add_deprecated() {
-		if (!empty($this->data['Form']['accion'])) {
-			if (in_array($this->data['Form']['accion'], array("grabar", "duplicar"))) {
-				$data = $this->data;
-
-				/**
-				* En caso de que se trate de un duplicar, debo sacar el valor de la calve primaria de la tabla,
-				* sino me hara un update en lugar de un isert.
-				*/
-				//$goBack = 1;
-				if ($this->data['Form']['accion'] === "duplicar") {
-					unset($data[$this->modelClass][$this->{$this->modelClass}->primaryKey]);
-					//$goBack = 2;
-				}
-				unset($data['Form']);
-				unset($data['Bar']);
-				debug($this->{$this->modelClass}->saveAll($data ,array('validate' => 'first')));
-				d($this->{$this->modelClass}->validationErrors);
-				d($data);
-				if ($this->{$this->modelClass}->create($data) && $this->{$this->modelClass}->validates()) {
-					if ($this->{$this->modelClass}->save($data)) {
-						$this->Session->setFlash("El nuevo registro se guardo correctamente.", "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
-						if ((isset($this->data['Form']['volverAInsertar']) && $this->data['Form']['volverAInsertar'] == "1")) {
-							$this->render("add");
-						}
-						else{
-							if (isset($this->data['Form']['params'])) {
-								$this->__setearParams(unserialize($this->data['Form']['params']));
-							}
-							$this->History->goBack(2);
-						}
-					}
-					else {
-						$tmp = $this->{$this->modelClass}->validationErrors;
-						unset($this->{$this->modelClass}->validationErrors[$this->modelClass]);
-						if (!empty($tmp[$this->modelClass])) {
-							$this->{$this->modelClass}->validationErrors[0] = $tmp[$this->modelClass];
-						}
-						$dbError = $this->{$this->modelClass}->getError();
-						$this->Session->setFlash("El nuevo registro no pudo guardarse.", "error", array("errores"=>$dbError));
-					}
-				}
-				else {
-					$this->set('dbError', $this->{$this->modelClass}->getError());
-				}
-			}
-			elseif ($this->data['Form']['accion'] === "cancelar") {
-    			$this->History->goBack();
-			}
-		}
-		else {
-			/**
-			* Puede haber un modificador al comportamiento estandar setaeado en el model.
-			* En este caso se refiere a establecer los valores por defecto.
-			* En caso de ser funciones, por seguridad, deben validarse con la expresion regular ya que se ejecutan
-			* mediante eval.
-			*/
-			if (isset($this->{$this->modelClass}->modificadores[$this->action]['valoresDefault'])) {
-				foreach ($this->{$this->modelClass}->modificadores[$this->action]['valoresDefault'] as $campo=>$valoresDefault) {
-					if (is_string($valoresDefault) && eregi("date(.*)", $valoresDefault)) {
-						$this->data[$this->modelClass][$campo] = eval("return " . $valoresDefault . ";");
-					}
-					else {
-						$this->data[$this->modelClass][$campo] = $valoresDefault;
-					}
-				}
-			}
-		}
-		/**
-		* Si hay parametros, me esta indicando que debo cargar un campo lov desde un desglose.
-		*/
-		if (!empty($this->passedArgs)) {
-			$this->__setearParams($this->passedArgs);
-		}
-
-		/**
-		* Identifico que viene de un reques ajax (un detalle de una tabla fromTo, por ejemplo)
-		if (!empty($this->params['isAjax']) && $this->params['isAjax'] == "1") {
-			$this->set('variablesForm', array("isAjax" => "1"));
-			if ($this->Session->check($this->name . "." . $this->action)) {
-				$sesion = $this->Session->read($this->name . "." . $this->action);
-			}
-		}
-		*/
-		
-	}
-
-
-/**
- * Carga los valores pasados por parametros al array data.
- * (Carga datos para poder pintar los valores de la lov.)
- *
- * @param string $params Los parametros recibidos por el controlador.
- * @return void.
- * @access private
- */
-	function __setearParams_deprecated($params) {
-		foreach ($params as $k=>$v) {
-			list($model, $field) = explode(".", $k);
-			$this->data[$model][$field] = $v;
-			$modelAsociado = str_replace(" ", "", Inflector::humanize(str_replace("_id", "", $field)));
-			$resultado = $this->{$model}->{$modelAsociado}->find(array($modelAsociado . "." . $this->{$model}->{$modelAsociado}->primaryKey => $v));
-			if (!empty($resultado)) {
-				$this->data[$modelAsociado] = $resultado;
-			}
-		}
-	}
-
 
 /**
  * Me setea la cantidad de filas por pagina que debe pintar el metodo paginate.
@@ -350,8 +232,7 @@ class AppController extends Controller {
 	function edit($id=null) {
 		if (!empty($id)) {
 			$ids[] = $id;
-		}
-		else {
+		} else {
 			$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
 		}
 		if (!empty($ids)) {
@@ -471,11 +352,11 @@ class AppController extends Controller {
 				*/
 				if (empty($dbError) && empty($invalidFields)) {
 					if ($c === 1) {
-						$mensaje = "El registro se guardo correctamente.";
-						//$mensaje = __('The record has been saved', true);
+						//$mensaje = "El registro se guardo correctamente.";
+						$mensaje = __('The record has been saved', true);
 					} else {
-						//$mensaje = sprintf(__('% of % records have been saved', true), $c, $cantidad);
-						$mensaje = "Se guardaron correctamente ". $c . " de " . $cantidad . " registros";
+						$mensaje = sprintf(__('% of % records have been saved', true), $c, $cantidad);
+						//$mensaje = "Se guardaron correctamente ". $c . " de " . $cantidad . " registros";
 					}
 					$this->Session->setFlash($mensaje, "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
 					$this->History->goBack(2);
@@ -483,42 +364,39 @@ class AppController extends Controller {
 				else {
 
 					/**
-					* Debo recuperar nuevamente los datos porque los necesito en los controler relacionados (Lov, relacionado).
-					* Los que ya tengo, los dejo como estaban, porque se debe a que no validaron.
-					*/
-					$ids = Set::extract("/" . $this->modelClass . "/" . $this->{$this->modelClass}->primaryKey, $this->data);
+					 * Debo recuperar nuevamente los datos porque los necesito en los controler relacionados (Lov, relacionado).
+					 * Los que ya tengo, los dejo como estaban, porque se debe a que no validaron.
+					 */
+					$ids = Set::extract('/' . $this->modelClass . '/' . $this->{$this->modelClass}->primaryKey, $this->data);
 					if (!empty($ids)) {
 						$data = $this->data;
 						
 						/**
-						* Puede haber un modificador al comportamiento estandar setaeado en el model.
-						*/
+						 * Puede haber un modificador al comportamiento estandar setaeado en el model.
+						 */
 						if (isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
 							$this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
 						}
 						
-						$this->data = $this->{$this->modelClass}->find("all", 
-								array(	"acceso"	=> "write", 
-										"conditions"=> array($this->modelClass . "." . $this->{$this->modelClass}->primaryKey => $ids)));
-						foreach ($data as $k=>$v) {
+						$this->data = $this->{$this->modelClass}->find('all', 
+								array(	'acceso'	=> 'write', 
+										'conditions'=> array($this->modelClass . '.' . $this->{$this->modelClass}->primaryKey => $ids)));
+						foreach ($data as $k => $v) {
 							foreach ($v as $model=>$datos) {
 								$this->data[$k][$model] = $datos;
 							}
 						}
-						//__('The Persona could not be saved. Please, try again.', true)
-						$this->Session->setFlash("No fue posible guardar los cambios.", "error", array("errores"=>$dbError));
-					}
-					else {
-						$this->Session->setFlash("El nuevo registro no pudo guardarse.", "error", array("errores"=>$dbError));
+						$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error", array("errores"=>$dbError));
+					} else {
+						$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error", array("errores"=>$dbError));
 					}
 					
 					/**
-					* Cargo la variable validationErrors con los errores que surgieron de la validacion.
-					*/
+					 * Cargo la variable validationErrors con los errores que surgieron de la validacion.
+					 */
 					$this->{$this->modelClass}->validationErrors = $invalidFields;
 				}
-			}
-			elseif ($this->data['Form']['accion'] === "cancelar") {
+			} elseif ($this->data['Form']['accion'] === 'cancelar') {
 				$this->History->goBack();
 			}
 		}
@@ -543,18 +421,17 @@ class AppController extends Controller {
 		if ($this->{$this->modelClass}->deleteAll(array($this->modelClass . '.' . $this->{$this->modelClass}->primaryKey => $ids))) {
 			$cantidad = count($ids);
 			if ($cantidad === 1) {
-				$mensaje = 'El registro se elimino correctamente.';
+				$mensaje = __('Record deleted', true);
 			} else {
-				$mensaje = 'Se eliminaron ' . $cantidad . ' registros correctamente.';
+				$mensaje = sprintf(__('%s records deleted', true), $cantidad);
 			}
 			$this->Session->setFlash($mensaje, 'ok', array('warnings' => $this->{$this->modelClass}->getWarning()));
 		} else {
 			$errores = $this->{$this->modelClass}->getError();
 			if (empty($errores)) {
 				$this->Session->setFlash(null, 'permisos');
-			}
-			else {
-				$this->Session->setFlash('No fue posible eliminar el/los registro/s.', 'error', array('errores' => $errores));
+			} else {
+				$this->Session->setFlash(__('The record could not be deleted', true), 'error', array('errores' => $errores));
 			}			
 		}
 		$this->History->goBack();
@@ -568,7 +445,7 @@ class AppController extends Controller {
  * @return void.
  * @access public 
  */
-   function deleteMultiple() {
+   function deleteMultiple_deprecated() {
    
 		$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
 		$this->{$this->modelClass}->begin();
@@ -749,8 +626,9 @@ class AppController extends Controller {
 		/**
 		* Busco el usuario, grupo/s y rol/es a los que pertenece el registro.
 		*/
-		App::import("model", "Usuario");
-		$modelUsuario = new Usuario();
+		//App::import("model", "Usuario");
+		//$modelUsuario = new Usuario();
+		$modelUsuario = ClassRegistry::init('Usuario');
 		$modelUsuario->recursive = -1;
 		$usuario = $modelUsuario->find("first", array("checkSecurity"=>false, "conditions"=>array("Usuario.id"=>$registro[$this->modelClass]['user_id'])));
 		$grupos = $modelUsuario->Grupo->find("all", array(	"checkSecurity"	=> false,
@@ -896,9 +774,9 @@ class AppController extends Controller {
 		
 		if (in_array($this->name . "." . $this->action, $accionesWhiteList)) {
 			return true;
-		}
-    	elseif (!$this->Session->check("__Usuario")) {
-    		$this->redirect("../usuarios/login");
+		} elseif (!$this->Session->check("__Usuario")) {
+    		$this->redirect(array(	'controller' 	=> 'usuarios',
+									'action'		=> 'login'));
     	}
     	
 		/**
@@ -973,7 +851,8 @@ class AppController extends Controller {
 			unset($desgloses[$nombreDesglose]);
 			$this->Session->write("desgloses", $desgloses);
 		}
-		exit();
+		$this->autoRender = false;
+		//exit();
 	}
 }
 ?>
