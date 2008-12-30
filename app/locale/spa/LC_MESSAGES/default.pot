@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2008-12-26 12:54-0200\n"
-"PO-Revision-Date: 2008-12-26 13:01-0300\n"
+"POT-Creation-Date: 2008-12-30 17:31-0200\n"
+"PO-Revision-Date: 2008-12-30 17:33-0300\n"
 "Last-Translator: mradosta <mradosta@pragmatia.com>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -14,96 +14,236 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: /elements/add/acciones.ctp:8
+#: /app_controller.php:355
+msgid "The record has been saved"
+msgstr "Se guardo el registro correctamente"
+
+#: /app_controller.php:357
+#, fuzzy
+msgid "%s of %s records have been saved"
+msgstr "% de % registros se han guardado correctamente"
+
+#: /app_controller.php:387;389
+msgid "The record could not be saved. Please verify errors and try again."
+msgstr "No fue posible guardar el registro. Verifique los errores e intente nuevamente."
+
+#: /app_controller.php:422
+msgid "Record deleted"
+msgstr "El registro se a eliminado"
+
+#: /app_controller.php:424
+msgid "%s records deleted"
+msgstr "%s registros eliminados"
+
+#: /app_controller.php:432
+msgid "The record could not be deleted"
+msgstr "No fue posible eliminar el registro"
+
+#: /models/behaviors/permisos.php:252
+msgid "Security access method not supported. Please use one of this: \"read\", \"write\" or \"delete\""
+msgstr ""
+
+#: /plugins/debug_kit/controllers/components/toolbar.php:85
+msgid "Component initialization and startup"
+msgstr ""
+
+#: /plugins/debug_kit/controllers/components/toolbar.php:123
+msgid "Controller Action"
+msgstr ""
+
+#: /plugins/debug_kit/controllers/components/toolbar.php:150
+msgid "Render Controller Action"
+msgstr ""
+
+#: /plugins/debug_kit/controllers/components/toolbar.php:163
+msgid "Could not load DebugToolbar panel %s"
+msgstr ""
+
+#: /plugins/debug_kit/views/debug.php:58
+msgid "Rendering %s"
+msgstr ""
+
+#: /plugins/debug_kit/views/debug.php:80
+msgid "Rendering View"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/debug_toolbar.ctp:32
+msgid "There are no active panels. You must enable a panel to see its output."
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/log_panel.ctp:29
+msgid "Logs"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/log_panel.ctp:51
+msgid "There were no log entries made this request"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/memory_panel.ctp:30
+msgid "Memory"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/memory_panel.ctp:31
+msgid "Current Memory Use"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/memory_panel.ctp:32
+msgid "Peak Memory Use"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/request_panel.ctp:30
+msgid "Request"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/request_panel.ctp:44
+msgid "Current Route"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/session_panel.ctp:30
+msgid "Session"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/sql_log_panel.ctp:30
+msgid "Sql Logs"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/sql_log_panel.ctp:39
+msgid "No active database connections"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/timer_panel.ctp:31
+msgid "Timers"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/timer_panel.ctp:33
+msgid "Total Request Time:"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/timer_panel.ctp:34
+msgid "%s (seconds)"
+msgstr "%s (segundos)"
+
+#: /plugins/debug_kit/views/elements/variables_panel.ctp:30
+msgid "View Variables"
+msgstr ""
+
+#: /views/elements/add/acciones.ctp:8
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: /elements/add/acciones.ctp:10
+#: /views/elements/add/acciones.ctp:10
 msgid "Duplicate"
 msgstr "Duplicar"
 
-#: /elements/add/acciones.ctp:11
-#: /elements/index/acciones.ctp:18
+#: /views/elements/add/acciones.ctp:11
+#: /views/elements/index/acciones.ctp:18
 msgid "Delete"
 msgstr "Eliminar"
 
-#: /elements/add/acciones.ctp:12
+#: /views/elements/add/acciones.ctp:12
 msgid "Save"
 msgstr "Guardar"
 
-#: /elements/add/add.ctp:9
-#: /elements/index/acciones.ctp:16
+#: /views/elements/add/add.ctp:11
+#: /views/elements/index/acciones.ctp:16
+#: /views/helpers/formulario.php:116
 msgid "New"
 msgstr "Nuevo"
 
-#: /elements/add/add.ctp:12
-#: /elements/index/acciones.ctp:14
+#: /views/elements/add/add.ctp:14
+#: /views/elements/index/acciones.ctp:14
+#: /views/helpers/formulario.php:113
 msgid "Edit"
 msgstr "Modificar"
 
-#: /elements/add/add.ctp:54
+#: /views/elements/add/add.ctp:55
 msgid "%s Records"
 msgstr "%s Registros"
 
-#: /elements/index/acciones.ctp:15
+#: /views/elements/index/acciones.ctp:15
 msgid "Edit selected records"
 msgstr "Modificar los registros seleccionados"
 
-#: /elements/index/acciones.ctp:17
+#: /views/elements/index/acciones.ctp:17
 msgid "Insert a new record"
 msgstr "Agregar un nuevo registro"
 
-#: /elements/index/acciones.ctp:19
+#: /views/elements/index/acciones.ctp:19
 msgid "Delete selected records"
 msgstr "Eliminar los registros seleccionados"
 
-#: /elements/index/buscadores.ctp:29;87
+#: /views/elements/index/buscadores.ctp:29;87
 msgid "Clear"
 msgstr "Limpiar"
 
-#: /elements/index/buscadores.ctp:30;88
+#: /views/elements/index/buscadores.ctp:30;88
+#: /views/helpers/formulario.php:119
 msgid "Search"
 msgstr "Buscar"
 
-#: /elements/index/index.ctp:7
+#: /views/elements/index/index.ctp:8
 msgid "Grid"
 msgstr "Grilla"
 
-#: /elements/index/paginador.ctp:28
+#: /views/elements/index/paginador.ctp:28
 msgid "Show %s records"
 msgstr "Mostrar %s Registros"
 
-#: /elements/index/paginador.ctp:31;36
+#: /views/elements/index/paginador.ctp:31;36
 msgid "A"
 msgstr "T"
 
-#: /elements/index/paginador.ctp:31
+#: /views/elements/index/paginador.ctp:31
 msgid "Show all records"
 msgstr "Motrar todos los registros"
 
-#: /elements/index/paginador.ctp:38
+#: /views/elements/index/paginador.ctp:38
 msgid "Show"
 msgstr "Mostrar"
 
-#: /helpers/paginador.php:135
+#: /views/elements/layout/barra.ctp:5
+msgid "Logout"
+msgstr "Salir"
+
+#: /views/elements/layout/barra.ctp:6
+msgid "Clean all searches"
+msgstr "Limpiar todas las busquedas"
+
+#: /views/elements/layout/barra.ctp:7
+msgid "Close all breakdowns"
+msgstr "Limpiar todos los desgloses"
+
+#: /views/helpers/paginador.php:48;62;78;89
+msgid "Ascending order"
+msgstr "Orden ascendente"
+
+#: /views/helpers/paginador.php:57;83
+msgid "Descending order"
+msgstr "Orden descendente"
+
+#: /views/helpers/paginador.php:135
 msgid "page %page% of %pages%. %count% records."
 msgstr "página %page% de %pages%. %count% registros."
 
-#: /helpers/paginador.php:155
+#: /views/helpers/paginador.php:155
 msgid "Go to first page"
 msgstr "Ir a la primera página"
 
-#: /helpers/paginador.php:161
+#: /views/helpers/paginador.php:161
 msgid "Go to previews page"
 msgstr "Ir a la página anterior"
 
-#: /helpers/paginador.php:170
+#: /views/helpers/paginador.php:170
 msgid "Go to next page"
 msgstr "Ir a la siguiente página"
 
-#: /helpers/paginador.php:181
+#: /views/helpers/paginador.php:181
 msgid "Go to last page"
 msgstr "Ir a la última página"
+
+#: /webroot/test.php:101
+msgid "Debug setting does not allow access to this url."
+msgstr ""
 
 #~ msgid "Clean"
 #~ msgstr "Limpiar"

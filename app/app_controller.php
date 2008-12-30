@@ -352,11 +352,9 @@ class AppController extends Controller {
 				*/
 				if (empty($dbError) && empty($invalidFields)) {
 					if ($c === 1) {
-						//$mensaje = "El registro se guardo correctamente.";
 						$mensaje = __('The record has been saved', true);
 					} else {
-						$mensaje = sprintf(__('% of % records have been saved', true), $c, $cantidad);
-						//$mensaje = "Se guardaron correctamente ". $c . " de " . $cantidad . " registros";
+						$mensaje = sprintf(__('%s of %s records have been saved', true), $c, $cantidad);
 					}
 					$this->Session->setFlash($mensaje, "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
 					$this->History->goBack(2);

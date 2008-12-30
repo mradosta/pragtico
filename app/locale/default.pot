@@ -1,12 +1,12 @@
 # LANGUAGE translation of CakePHP Application
 # Copyright YEAR NAME <EMAIL@ADDRESS>
-# No version information was available in the source files.
+# Generated from file: Revision: 7296 /app/webroot/test.php
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2008-12-26 12:54-0200\n"
+"POT-Creation-Date: 2008-12-30 17:31-0200\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -15,94 +15,233 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: /elements/add/acciones.ctp:8
+#: /app_controller.php:355
+msgid "The record has been saved"
+msgstr ""
+
+#: /app_controller.php:357
+msgid "%s of %s records have been saved"
+msgstr ""
+
+#: /app_controller.php:387;389
+msgid "The record could not be saved. Please verify errors and try again."
+msgstr ""
+
+#: /app_controller.php:422
+msgid "Record deleted"
+msgstr ""
+
+#: /app_controller.php:424
+msgid "%s records deleted"
+msgstr ""
+
+#: /app_controller.php:432
+msgid "The record could not be deleted"
+msgstr ""
+
+#: /models/behaviors/permisos.php:252
+msgid "Security access method not supported. Please use one of this: \"read\", \"write\" or \"delete\""
+msgstr ""
+
+#: /plugins/debug_kit/controllers/components/toolbar.php:85
+msgid "Component initialization and startup"
+msgstr ""
+
+#: /plugins/debug_kit/controllers/components/toolbar.php:123
+msgid "Controller Action"
+msgstr ""
+
+#: /plugins/debug_kit/controllers/components/toolbar.php:150
+msgid "Render Controller Action"
+msgstr ""
+
+#: /plugins/debug_kit/controllers/components/toolbar.php:163
+msgid "Could not load DebugToolbar panel %s"
+msgstr ""
+
+#: /plugins/debug_kit/views/debug.php:58
+msgid "Rendering %s"
+msgstr ""
+
+#: /plugins/debug_kit/views/debug.php:80
+msgid "Rendering View"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/debug_toolbar.ctp:32
+msgid "There are no active panels. You must enable a panel to see its output."
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/log_panel.ctp:29
+msgid "Logs"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/log_panel.ctp:51
+msgid "There were no log entries made this request"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/memory_panel.ctp:30
+msgid "Memory"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/memory_panel.ctp:31
+msgid "Current Memory Use"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/memory_panel.ctp:32
+msgid "Peak Memory Use"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/request_panel.ctp:30
+msgid "Request"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/request_panel.ctp:44
+msgid "Current Route"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/session_panel.ctp:30
+msgid "Session"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/sql_log_panel.ctp:30
+msgid "Sql Logs"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/sql_log_panel.ctp:39
+msgid "No active database connections"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/timer_panel.ctp:31
+msgid "Timers"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/timer_panel.ctp:33
+msgid "Total Request Time:"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/timer_panel.ctp:34
+msgid "%s (seconds)"
+msgstr ""
+
+#: /plugins/debug_kit/views/elements/variables_panel.ctp:30
+msgid "View Variables"
+msgstr ""
+
+#: /views/elements/add/acciones.ctp:8
 msgid "Cancel"
 msgstr ""
 
-#: /elements/add/acciones.ctp:10
+#: /views/elements/add/acciones.ctp:10
 msgid "Duplicate"
 msgstr ""
 
-#: /elements/add/acciones.ctp:11
-#: /elements/index/acciones.ctp:18
+#: /views/elements/add/acciones.ctp:11
+#: /views/elements/index/acciones.ctp:18
 msgid "Delete"
 msgstr ""
 
-#: /elements/add/acciones.ctp:12
+#: /views/elements/add/acciones.ctp:12
 msgid "Save"
 msgstr ""
 
-#: /elements/add/add.ctp:9
-#: /elements/index/acciones.ctp:16
+#: /views/elements/add/add.ctp:11
+#: /views/elements/index/acciones.ctp:16
+#: /views/helpers/formulario.php:116
 msgid "New"
 msgstr ""
 
-#: /elements/add/add.ctp:12
-#: /elements/index/acciones.ctp:14
+#: /views/elements/add/add.ctp:14
+#: /views/elements/index/acciones.ctp:14
+#: /views/helpers/formulario.php:113
 msgid "Edit"
 msgstr ""
 
-#: /elements/add/add.ctp:54
+#: /views/elements/add/add.ctp:55
 msgid "%s Records"
 msgstr ""
 
-#: /elements/index/acciones.ctp:15
+#: /views/elements/index/acciones.ctp:15
 msgid "Edit selected records"
 msgstr ""
 
-#: /elements/index/acciones.ctp:17
+#: /views/elements/index/acciones.ctp:17
 msgid "Insert a new record"
 msgstr ""
 
-#: /elements/index/acciones.ctp:19
+#: /views/elements/index/acciones.ctp:19
 msgid "Delete selected records"
 msgstr ""
 
-#: /elements/index/buscadores.ctp:29;87
+#: /views/elements/index/buscadores.ctp:29;87
 msgid "Clear"
 msgstr ""
 
-#: /elements/index/buscadores.ctp:30;88
+#: /views/elements/index/buscadores.ctp:30;88
+#: /views/helpers/formulario.php:119
 msgid "Search"
 msgstr ""
 
-#: /elements/index/index.ctp:7
+#: /views/elements/index/index.ctp:8
 msgid "Grid"
 msgstr ""
 
-#: /elements/index/paginador.ctp:28
+#: /views/elements/index/paginador.ctp:28
 msgid "Show %s records"
 msgstr ""
 
-#: /elements/index/paginador.ctp:31;36
+#: /views/elements/index/paginador.ctp:31;36
 msgid "A"
 msgstr ""
 
-#: /elements/index/paginador.ctp:31
+#: /views/elements/index/paginador.ctp:31
 msgid "Show all records"
 msgstr ""
 
-#: /elements/index/paginador.ctp:38
+#: /views/elements/index/paginador.ctp:38
 msgid "Show"
 msgstr ""
 
-#: /helpers/paginador.php:135
+#: /views/elements/layout/barra.ctp:5
+msgid "Logout"
+msgstr ""
+
+#: /views/elements/layout/barra.ctp:6
+msgid "Clean all searches"
+msgstr ""
+
+#: /views/elements/layout/barra.ctp:7
+msgid "Close all breakdowns"
+msgstr ""
+
+#: /views/helpers/paginador.php:48;62;78;89
+msgid "Ascending order"
+msgstr ""
+
+#: /views/helpers/paginador.php:57;83
+msgid "Descending order"
+msgstr ""
+
+#: /views/helpers/paginador.php:135
 msgid "page %page% of %pages%. %count% records."
 msgstr ""
 
-#: /helpers/paginador.php:155
+#: /views/helpers/paginador.php:155
 msgid "Go to first page"
 msgstr ""
 
-#: /helpers/paginador.php:161
+#: /views/helpers/paginador.php:161
 msgid "Go to previews page"
 msgstr ""
 
-#: /helpers/paginador.php:170
+#: /views/helpers/paginador.php:170
 msgid "Go to next page"
 msgstr ""
 
-#: /helpers/paginador.php:181
+#: /views/helpers/paginador.php:181
 msgid "Go to last page"
+msgstr ""
+
+#: /webroot/test.php:101
+msgid "Debug setting does not allow access to this url."
 msgstr ""
 

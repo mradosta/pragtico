@@ -224,8 +224,9 @@ div.banda h5 {
 	width: 500px;
 	text-align: left;
 	float: left;
-	padding-top: 12px;
-	font-weight: bold;
+	padding-top: 4px;
+	1font-weight: normal;
+	font-size: 12px;
 }
 
 div.grupos {
@@ -664,9 +665,25 @@ div.autocomplete input.autocomplete {
 
 textarea {
 	background-color: transparent;
-	background-image: url(img/textarea.gif);
 	background-repeat: no-repeat;
 	height: 48px;
+}
+
+div.add textarea {
+	background-image: url(img/wide_textarea.gif);
+	width: 565px;
+}
+
+div.index textarea {
+	background-image: url(img/textarea.gif);
+	width: 196px;
+}
+
+div.add div.textarea {
+ 	padding: 3px 0 3px 0;
+ 	margin-left: 5px;
+ 	float: left;
+ 	width: 720px;
 }
 
 span.solo_lectura {
