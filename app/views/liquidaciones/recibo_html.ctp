@@ -136,7 +136,7 @@ $opcionesTabla =  array("tabla"=>
 									"omitirMensajeVacio"=>true));
 
 
-$tabla = $formulario->tabla(am(array("cuerpo"=>$cuerpo), $opcionesTabla));
+$tabla = $formulario->tabla(am(array('cuerpo' => $cuerpo), $opcionesTabla));
 
 /**
 * Pongo todo dentro de un div (index) y muestro el resultado.

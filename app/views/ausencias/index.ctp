@@ -39,8 +39,8 @@ $condiciones['Condicion.Ausencia-ausencia_motivo_id'] = array(	"empty"			=> true
 																"model"			=> "AusenciasMotivo",
 																"label"			=> "Motivo");
 																								
-$fieldsets[] = array("campos"=>$condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("imagen"=>"ausencias.gif")));
+$fieldsets[] = array('campos' => $condiciones);
+$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'ausencias.gif')));
 
 
 /**
@@ -49,14 +49,14 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("im
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array("tipo"=>"desglose", "id"=>$v['Ausencia']['id'], "update"=>"desglose1", "imagen"=>array("nombre"=>"seguimientos.gif", "alt"=>"Seguimiento"), "url"=>"seguimientos");
-	$fila[] = array("model"=>"Ausencia", "field"=>"id", "valor"=>$v['Ausencia']['id'], "write"=>$v['Ausencia']['write'], "delete"=>$v['Ausencia']['delete']);
-	$fila[] = array("model"=>"Empleador", "field"=>"nombre", "valor"=>$v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
-	$fila[] = array("model"=>"Trabajador", "field"=>"numero_documento", "valor"=>$v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
-	$fila[] = array("model"=>"Trabajador", "field"=>"apellido", "valor"=>$v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
-	$fila[] = array("model"=>"AusenciasMotivo", "field"=>"motivo", "valor"=>$v['AusenciasMotivo']['motivo']);
-	$fila[] = array("model"=>"Ausencia", "field"=>"desde", "valor"=>$v['Ausencia']['desde'], "tipoDato"=>"date");
-	$fila[] = array("model"=>"Ausencia", "field"=>"dias", "valor"=>$v['Ausencia']['dias'], "tipoDato"=>"decimal");
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Ausencia']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'seguimientos.gif', 'alt' => "Seguimiento"), "url"=>"seguimientos");
+	$fila[] = array('model' => "Ausencia", 'field' => "id", 'valor' => $v['Ausencia']['id'], "write"=>$v['Ausencia']['write'], "delete"=>$v['Ausencia']['delete']);
+	$fila[] = array('model' => "Empleador", 'field' => "nombre", 'valor' => $v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
+	$fila[] = array('model' => "Trabajador", 'field' => "numero_documento", 'valor' => $v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
+	$fila[] = array('model' => "Trabajador", 'field' => "apellido", 'valor' => $v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
+	$fila[] = array('model' => "AusenciasMotivo", 'field' => "motivo", 'valor' => $v['AusenciasMotivo']['motivo']);
+	$fila[] = array('model' => "Ausencia", 'field' => "desde", 'valor' => $v['Ausencia']['desde'], "tipoDato"=>"date");
+	$fila[] = array('model' => "Ausencia", 'field' => "dias", 'valor' => $v['Ausencia']['dias'], "tipoDato"=>"decimal");
 	$cuerpo[] = $fila;
 }
 
@@ -64,7 +64,7 @@ $accionesExtra['opciones'] = array("acciones"=>array("nuevo", "modificar", "elim
 	$formulario->link("Confirmar", null,
 		array(	"class"=>"link_boton confirmar",
 				"title"=>"Confirma las ausencias seleccionadas"))));
-echo $this->renderElement("index/index", array("accionesExtra"=>$accionesExtra, "condiciones"=>$fieldset, "cuerpo"=>$cuerpo));
+echo $this->element('index/index', array("accionesExtra"=>$accionesExtra, "condiciones"=>$fieldset, 'cuerpo' => $cuerpo));
 
 /**
 * Agrego el evento click asociado al boton confirmar.

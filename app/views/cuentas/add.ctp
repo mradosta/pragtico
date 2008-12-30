@@ -36,11 +36,11 @@ $campos['Cuenta.tipo'] = array();
 $campos['Cuenta.numero'] = array();
 $campos['Cuenta.cbu'] = array();
 $campos['Cuenta.identificador'] = array();
-$fieldsets[] = array("campos"=>$campos);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"cuenta del empleador", "imagen"=>"cuentas.gif")));
+$fieldsets[] = array('campos' => $campos);
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"cuenta del empleador", 'imagen' => 'cuentas.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset));
+echo $this->element('add/add', array('fieldset' => $fieldset));
 ?>

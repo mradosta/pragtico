@@ -31,7 +31,7 @@ $campos['Trabajador.sexo'] = array();
 $campos['Trabajador.nacimiento'] = array();
 $campos['Trabajador.archivo'] = array("type"=>"file", "label"=>"Foto", "mostrar"=>true);
 $campos['Trabajador.nacionalidad'] = array();
-$fieldsets[] = array("campos"=>$campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Identificacion", "imagen"=>"identificacion.gif")));
+$fieldsets[] = array('campos' => $campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Identificacion", 'imagen' => 'identificacion.gif')));
 
 $campos = null;
 $campos['Trabajador.direccion'] = array();
@@ -44,13 +44,13 @@ $campos['Trabajador.localidad_id'] = array("lov"=>array("controller"		=>	"locali
 														"camposRetorno"		=>	array(	"Provincia.nombre",
 																						"Localidad.nombre")));
 $campos['Trabajador.pais'] = array();
-$fieldsets[] = array("campos"=>$campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Ubicacion", "imagen"=>"ubicacion.gif")));
+$fieldsets[] = array('campos' => $campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Ubicacion", 'imagen' => 'ubicacion.gif')));
 
 $campos = null;
 $campos['Trabajador.telefono'] = array();
 $campos['Trabajador.celular'] = array();
 $campos['Trabajador.email'] = array();
-$fieldsets[] = array("campos"=>$campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Contacto", "imagen"=>"contacto.gif")));
+$fieldsets[] = array('campos' => $campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Contacto", 'imagen' => 'contacto.gif')));
 
 $campos = null;
 $campos['Trabajador.tipo_cuenta'] = array("label"=>"Tipo");
@@ -60,7 +60,7 @@ if($this->action === "edit") {
 	$campos['Trabajador.sucursal'] = array("type"=>"soloLectura");
 	$campos['Trabajador.cuenta'] = array("type"=>"soloLectura");
 }
-$fieldsets[] = array("campos"=>$campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Informacion Bancaria", "imagen"=>"pagos.gif")));
+$fieldsets[] = array('campos' => $campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Informacion Bancaria", 'imagen' => 'pagos.gif')));
 
 $campos = null;
 $campos['Trabajador.jubilacion'] = array();
@@ -81,11 +81,11 @@ $campos['Trabajador.siniestrado_id'] = array(	"aclaracion"=>"Indica algun tipo d
 														"seleccionMultiple"	=> 	0,
 														"camposRetorno"		=>	array(	"Siniestrado.codigo",
 																						"Siniestrado.nombre")));
-$fieldsets[] = array("campos"=>$campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Afip", "imagen"=>"afip.gif")));
+$fieldsets[] = array('campos' => $campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Afip", 'imagen' => 'afip.gif')));
 
 $campos = null;
 $campos['Trabajador.observacion'] = array();
-$fieldsets[] = array("campos"=>$campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Observaciones", "imagen"=>"observaciones.gif")));
+$fieldsets[] = array('campos' => $campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Observaciones", 'imagen' => 'observaciones.gif')));
 
 
 
@@ -94,7 +94,7 @@ $fieldsets[] = array("campos"=>$campos, "opciones"=>array("div"=>array("class"=>
 */
 $miga = array('format' 	=> '%s %s', 
 			  'content' => array('Trabajador.apellido', 'Trabajador.nombre'));
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"trabajadores.gif")));
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "opcionesForm"=>array("enctype"=>"multipart/form-data"), "miga" => $miga));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'trabajadores.gif')));
+echo $this->element('add/add', array('fieldset' => $fieldset, "opcionesForm"=>array("enctype"=>"multipart/form-data"), "miga" => $miga));
 
 ?>

@@ -50,5 +50,5 @@ if(isset($acciones)) {
 	$codigoHtml .= $formulario->tag("span", $acciones, array("class"=>"acciones"));
 }
 $codigoHtml = $formulario->tag("div", $codigoHtml, array("class"=>"cabecera"));
-echo $formulario->tag("div", $codigoHtml . $formulario->tag("div", $formulario->tabla(array_merge(array("cuerpo"=>$cuerpo), $opcionesTabla)), array("class"=>"tabla")), array("class"=>"unica"));
+echo $formulario->tag("div", $codigoHtml . $formulario->tag("div", $formulario->tabla(array_merge(array('cuerpo' => $cuerpo), $opcionesTabla)), array("class"=>"tabla")), array("class"=>"unica"));
 ?>

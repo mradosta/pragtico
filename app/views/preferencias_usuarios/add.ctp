@@ -29,12 +29,12 @@ $campos['PreferenciasUsuario.preferencia_id'] = array(	"empty"			=> true,
 														"model"			=> "Preferencia");
 $campos['PreferenciasUsuario.preferencias_valor_id'] = array("label"=>"Valor", "valor"=>"PreferenciasValor.valor", "type"=>"relacionado", "relacion"=>"PreferenciasUsuario.preferencia_id", "url"=>"preferencias_usuarios/valores_relacionado");
 
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"registro de Preferencias del Usuario", "imagen"=>"preferencias.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"registro de Preferencias del Usuario", 'imagen' => 'preferencias.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset));
+echo $this->element('add/add', array('fieldset' => $fieldset));
 ?>

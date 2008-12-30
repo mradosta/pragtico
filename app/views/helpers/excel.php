@@ -49,18 +49,18 @@ class ExcelHelper extends AppHelper {
 	}
 
 	function save($file, $formato = "excel2007") {
-		if($formato === "excel2007") {
+		if ($formato === "excel2007") {
 			require_once(APP . "vendors" . DS . "PHPExcel" . DS . "Classes" . DS . "PHPExcel" . DS . "Writer" . DS . "Excel2007.php");
 			$__objPHPExcelWriter = new PHPExcel_Writer_Excel2007($this->__objPHPExcel);
 			$__objPHPExcelWriter->setPreCalculateFormulas(false);
 			$extension = "xlsx";
 		}
-		elseif($formato === "html") {
+		elseif ($formato === "html") {
 			require_once(APP . "vendors" . DS . "PHPExcel" . DS . "Classes" . DS . "PHPExcel" . DS . "Writer" . DS . "HTML.php");
 			$__objPHPExcelWriter = new PHPExcel_Writer_HTML($this->__objPHPExcel);
 			$extension = "html";
 		}
-		elseif($formato === "pdf") {
+		elseif ($formato === "pdf") {
 			require_once(APP . "vendors" . DS . "PHPExcel" . DS . "Classes" . DS . "PHPExcel" . DS . "Writer" . DS . "PDF.php");
 			$__objPHPExcelWriter = new PHPExcel_Writer_PDF($this->__objPHPExcel);
 			$extension = "pdf";

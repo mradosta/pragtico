@@ -24,8 +24,8 @@ $condiciones['Condicion.Accion-nombre'] = array();
 $condiciones['Condicion.Accion-etiqueta'] = array();
 $condiciones['Condicion.Accion-estado'] = array();
 $condiciones['Condicion.Accion-seguridad'] = array();
-$fieldsets[] = array("campos"=>$condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("imagen"=>"acciones.gif")));
+$fieldsets[] = array('campos' => $condiciones);
+$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'acciones.gif')));
 
 
 /**
@@ -34,12 +34,12 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("im
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array("model"=>"Accion", "field"=>"id", "valor"=>$v['Accion']['id'], "write"=>$v['Accion']['write'], "delete"=>$v['Accion']['delete']);
-	$fila[] = array("model"=>"Controlador", "field"=>"nombre", "valor"=>$v['Controlador']['nombre'], "nombreEncabezado"=>"Controlador");
-	$fila[] = array("model"=>"Accion", "field"=>"nombre", "valor"=>$v['Accion']['nombre']);
-	$fila[] = array("model"=>"Accion", "field"=>"etiqueta", "valor"=>$v['Accion']['etiqueta']);
-	$fila[] = array("model"=>"Accion", "field"=>"estado", "valor"=>$v['Accion']['estado']);
-	$fila[] = array("model"=>"Accion", "field"=>"seguridad", "valor"=>$v['Accion']['seguridad']);
+	$fila[] = array('model' => "Accion", 'field' => "id", 'valor' => $v['Accion']['id'], "write"=>$v['Accion']['write'], "delete"=>$v['Accion']['delete']);
+	$fila[] = array('model' => "Controlador", 'field' => "nombre", 'valor' => $v['Controlador']['nombre'], "nombreEncabezado"=>"Controlador");
+	$fila[] = array('model' => "Accion", 'field' => "nombre", 'valor' => $v['Accion']['nombre']);
+	$fila[] = array('model' => "Accion", 'field' => "etiqueta", 'valor' => $v['Accion']['etiqueta']);
+	$fila[] = array('model' => "Accion", 'field' => "estado", 'valor' => $v['Accion']['estado']);
+	$fila[] = array('model' => "Accion", 'field' => "seguridad", 'valor' => $v['Accion']['seguridad']);
 
 	if($v['Accion']['seguridad'] == "No") {
 		$cuerpo[] = array("contenido"=>$fila, "opciones"=>array("title"=>"No se esta controlando la seguridad sobre esta accion.", "class"=>"fila_resaltada"));
@@ -50,6 +50,6 @@ foreach ($registros as $k=>$v) {
 }
 
 $accionesExtra = $formulario->bloque($formulario->link("Act. Masiva", "../controladores/actualizar_controladores", array("class"=>"link_boton", "title"=>"Actualiza automaticamente todos controladores y sus acciones")));
-echo $this->renderElement("index/index", array("condiciones"=>$fieldset, "cuerpo"=>$cuerpo, "accionesExtra"=>$accionesExtra));
+echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, "accionesExtra"=>$accionesExtra));
 
 ?>

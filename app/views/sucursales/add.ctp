@@ -26,13 +26,13 @@ $campos['Sucursal.codigo'] = array();
 $campos['Sucursal.direccion'] = array();
 $campos['Sucursal.telefono'] = array();
 $campos['Sucursal.observacion'] = array();
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"sucursales.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'sucursales.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
 $miga = 'Sucursal.codigo';
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "miga" => $miga));
+echo $this->element('add/add', array('fieldset' => $fieldset, "miga" => $miga));
 ?>

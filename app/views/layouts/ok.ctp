@@ -18,11 +18,11 @@
  
 
 $mensaje[0] = $formulario->tag("span", $formulario->link("Cerrar", null, array("class"=>"link_boton", "title"=>"Cerrar")));
-$mensaje[1] = $formulario->image("ok_icono_verde.gif");
+$mensaje[1] = $formulario->image('ok_icono_verde.gif');
 $mensaje[2] = $formulario->tag("span", $content_for_layout, array("class"=>"contenido"));
 
 if(!empty($warnings)) {
-	$mensaje[1] = $formulario->image("ok_icono_amarillo.gif");
+	$mensaje[1] = $formulario->image('ok_icono_amarillo.gif');
 	foreach($warnings as $k=>$warning) {
 		$textoWarnings = null;
 		foreach($warning as $w) {

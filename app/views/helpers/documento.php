@@ -9,20 +9,20 @@
  *
  * @filesource
  * @copyright		Copyright 2005-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.views.helpers
- * @since			Pragtico v 1.0.0
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.views.helpers
+ * @since           Pragtico v 1.0.0
  * @version			$Revision$
  * @modifiedby		$LastChangedBy$
  * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * Helper para la creacion de documentos.
  *
- * @package		pragtico
- * @subpackage	app.views.helpers
+ * @package     pragtico
+ * @subpackage  app.views.helpers
  */
 class DocumentoHelper extends AppHelper {
 
@@ -73,15 +73,15 @@ class DocumentoHelper extends AppHelper {
 		$this->doc->setActiveSheetIndex(0);
 		$this->doc->getActiveSheet()->setShowGridlines(false);
 		$this->doc->getActiveSheet()->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
-    	if(isset($options['orientation']) && $options['orientation'] === "landscape") {
+    	if (isset($options['orientation']) && $options['orientation'] === "landscape") {
 			$this->doc->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
 		}
 		
 		/**
 		* Protejo la hoja para que no me la modifiquen, excepto lo que realmente necesito que modifique que lo desbloqueo luego.
 		*/
-		if(isset($options['password'])) {
-			if(empty($options['password'])) {
+		if (isset($options['password'])) {
+			if (empty($options['password'])) {
 				$options['password'] = substr(Configure::read('Security.salt'), 0, 10);
 			}
 			else {
@@ -107,13 +107,13 @@ class DocumentoHelper extends AppHelper {
 		/**
 		* Busco si me setearon una celda solo con numeros.
 		*/
-		if(preg_match("/^([0-9]+)\,([0-9]+)$/", $cellName, $matches)) {
+		if (preg_match("/^([0-9]+)\,([0-9]+)$/", $cellName, $matches)) {
 			return PHPExcel_Cell::stringFromColumnIndex($matches[1]) . $matches[2];
 		}
-		elseif(preg_match("/^[A-Z]+[0-9]+$/", $cellName)) {
+		elseif (preg_match("/^[A-Z]+[0-9]+$/", $cellName)) {
 			return $cellName;
 		}
-		elseif(is_null($cellName)) {
+		elseif (is_null($cellName)) {
 			/**
 			* Busco la proxima columna y fila libre.
 			*/
@@ -148,7 +148,7 @@ class DocumentoHelper extends AppHelper {
 		* Verifico si tengo un rango.
 		*/
 		$tmp = explode(":", $cellName);
-		if(count($tmp) === 2) {
+		if (count($tmp) === 2) {
 			$cellName = $this->__getCellName($tmp[0]);
 			$this->doc->getActiveSheet()->mergeCells($cellName . ":" . $this->__getCellName($tmp[1]));
 			unset($options['merge']);
@@ -157,12 +157,12 @@ class DocumentoHelper extends AppHelper {
 			$cellName = $this->__getCellName($cellName);
 		}
 		
-		if(!empty($options['merge'])) {
+		if (!empty($options['merge'])) {
 			$this->doc->getActiveSheet()->mergeCells($cellName . ":"  .  $this->__getCellName($options['merge']));
 		}
 		
 		$this->doc->getActiveSheet()->setCellValue($cellName, $value);
-		if(!empty($options['style'])) {
+		if (!empty($options['style'])) {
 			$this->doc->getActiveSheet()->getStyle($cellName)->applyFromArray($options['style']);
 		}
 	}
@@ -187,24 +187,24 @@ class DocumentoHelper extends AppHelper {
 		* Si estoy validando un dato, es porque el usuario debe introducirlo, entonces, 
 		* si el documento esta bloqueado, le desbloqueo la celda.
 		*/
-		if($this->doc->getActiveSheet()->getProtection()->isProtectionEnabled()) {
+		if ($this->doc->getActiveSheet()->getProtection()->isProtectionEnabled()) {
 			$this->doc->getActiveSheet()->getStyle($cellName)->getProtection()->setLocked(PHPExcel_Style_Protection::PROTECTION_UNPROTECTED);
 		}
 		
 		$objValidation = $this->doc->getActiveSheet()->getCell($cellName)->getDataValidation();
 		
-		if($type === "decimal") {
+		if ($type === "decimal") {
 			$tipo = PHPExcel_Cell_DataValidation::TYPE_DECIMAL;
 			$mensaje = "Solo puede ingresar numeros";
 		}
-		elseif($type === "lista") {
+		elseif ($type === "lista") {
 			/**
 			* Creo una lista qu eluego la oculto, con esto valido.
 			*/
 			preg_match("/^([A-Z]+)([0-9]+)$/", $cellName, $matches);
 			$colPosition = PHPExcel_Cell::columnIndexFromString($matches[1]) + 100;
 			$ff = 0;
-			foreach($options['valores'] as $valores) {
+			foreach ($options['valores'] as $valores) {
 				$ff++;
 				$this->doc->getActiveSheet()->setCellValueByColumnAndRow($colPosition, $ff, $valores);
 			}
@@ -247,7 +247,7 @@ class DocumentoHelper extends AppHelper {
 	function save($formato = "Excel2007", $archivo = null) {
 		$objPHPExcelWriter = PHPExcel_IOFactory::createWriter($this->doc, $formato);
 
-		if($formato === "Excel2007") {
+		if ($formato === "Excel2007") {
 			/**
 			* Si se trata de Excel 2007, no precalculo por que no tiene sentido, ya que perdere tiempo ahora, y luego,
 			* al abrilo, excel, calcula automaticamente las formulas.
@@ -255,20 +255,20 @@ class DocumentoHelper extends AppHelper {
 			$objPHPExcelWriter->setPreCalculateFormulas(false);
 			$extension = "xlsx";
 		}
-		elseif($formato === "Excel5") {
+		elseif ($formato === "Excel5") {
 			$extension = "xls";
 		}
-		elseif($formato === "PDF") {
+		elseif ($formato === "PDF") {
 			$extension = "pdf";
 		}
-		elseif($formato === "HTML") {
+		elseif ($formato === "HTML") {
 			$extension = "html";
 		}
 
 		/**
 		* Obligo a que me aparezca el dialogo de descarga para guardar el archivo.
 		*/
-		if(empty($archivo)) {
+		if (empty($archivo)) {
 			$archivo = "php://output";
 			header("Pragma: public");
 			header("Expires: 0");

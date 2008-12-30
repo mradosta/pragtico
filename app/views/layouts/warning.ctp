@@ -17,7 +17,7 @@
  */
   
 $codigo_html = "";
-$mensaje = "<p class='session_titulo_warning'>" . $formulario->image("warnings.gif") . " " . $content_for_layout . "</p>";
+$mensaje = "<p class='session_titulo_warning'>" . $formulario->image('warnings.gif') . " " . $content_for_layout . "</p>";
 
 $mensaje .= "<p class='session_aceptar'>" . $formulario->link("Aceptar", "#", array("onclick"=>"return ocultarSessionFlash();", "class"=>"link_boton", "title"=>"Aceptar")) . "</p>";
 $mensaje .= $formulario->bloque("", array("div"=>array("class"=>"clear")));

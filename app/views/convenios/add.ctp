@@ -26,12 +26,12 @@ $campos['Convenio.nombre'] = array();
 $campos['Convenio.archivo'] = array("type"=>"file", "descargar"=>true);
 $campos['Convenio.actualizacion'] = array("label"=>"Ultima Actualizacion");
 $campos['Convenio.observacion'] = array();
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"convenios.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'convenios.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "opcionesForm"=>array("enctype"=>"multipart/form-data"), "migaEdit" => $this->data[0]['Convenio']['nombre']));
+echo $this->element('add/add', array('fieldset' => $fieldset, "opcionesForm"=>array("enctype"=>"multipart/form-data"), "migaEdit" => $this->data[0]['Convenio']['nombre']));
 ?>

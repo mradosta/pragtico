@@ -34,12 +34,12 @@ foreach($data as $k=>$v) {
 	$campos['RolesAccion.controlador_' . $k] = array("value"=>$value, "label" => $dataControladores[$k], "options"=>$options, "type"=>"checkboxMultiple");
 }
 $campos['Form.tipo'] = array("value"=>"addRapido", "type"=>"hidden");
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Accion", "imagen"=>"acciones.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Accion", 'imagen' => 'acciones.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset));
+echo $this->element('add/add', array('fieldset' => $fieldset));
 ?>

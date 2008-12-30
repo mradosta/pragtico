@@ -26,7 +26,7 @@ $campos['Documento.patrones'] = array("type"=>"hidden");
 $campos['Documento.model'] = array("type"=>"select", "options"=>$models, "empty"=>true);
 $campos['Documento.archivo'] = array("aclaracion"=>"Debe cargar un archivo RTF con los patrones de la forma #*Model.campo*#.", "type"=>"file", "label"=>"Archivo Origen (.rtf)");
 $campos['Documento.observacion'] = array();
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
@@ -45,6 +45,6 @@ if(!empty($patrones)) {
 }
 
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"documentos.gif")));
-echo $this->renderElement("add/add", array("bloqueAdicional"=>$bloqueAdicional, "opcionesForm"=>array("enctype"=>"multipart/form-data"), "fieldset"=>$fieldset, "migaEdit" => $this->data[0]['Documento']['nombre']));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'documentos.gif')));
+echo $this->element('add/add', array("bloqueAdicional"=>$bloqueAdicional, "opcionesForm"=>array("enctype"=>"multipart/form-data"), "fieldset"=>$fieldset, "migaEdit" => $this->data[0]['Documento']['nombre']));
 ?>

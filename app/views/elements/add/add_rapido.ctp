@@ -5,8 +5,8 @@
 $erroresDb = $this->renderElement('error_base_datos');
 
 
-$t1 = $this->renderElement("tablas_from_to/tabla", array("cuerpo"=>$cuerpoTablaIzquierda, "encabezados"=>$encabezadosTablaIzquierda, "opciones"=>array("class"=>"izquierda")));
-$t2 = $this->renderElement("tablas_from_to/tabla", array("cuerpo"=>$cuerpoTablaDerecha, "encabezados"=>$encabezadosTablaDerecha, "opciones"=>array("class"=>"derecha")));
+$t1 = $this->renderElement("tablas_from_to/tabla", array('cuerpo' => $cuerpoTablaIzquierda, "encabezados"=>$encabezadosTablaIzquierda, "opciones"=>array("class"=>"izquierda")));
+$t2 = $this->renderElement("tablas_from_to/tabla", array('cuerpo' => $cuerpoTablaDerecha, "encabezados"=>$encabezadosTablaDerecha, "opciones"=>array("class"=>"derecha")));
 $tablas = $formulario->tag("div", am($t1, $t2), array("class"=>"tablasFromTo"));
 
 $autocomplete = "";
@@ -22,7 +22,7 @@ if(!empty($busqueda)) {
 }
 
 
-$contenido = $formulario->bloque($autocomplete . $tablas . $extra, array("fieldset"=>$fieldset));
+$contenido = $formulario->bloque($autocomplete . $tablas . $extra, array('fieldset' => $fieldset));
 if(!empty($extra)) {
 	if(is_array($extra)) {
 		$contenido .= implode("", $extra);

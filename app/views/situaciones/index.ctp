@@ -21,8 +21,8 @@
 */
 $condiciones['Condicion.Situacion-codigo'] = array();
 $condiciones['Condicion.Situacion-nombre'] = array();
-$fieldsets[] = array("campos"=>$condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("imagen"=>"situaciones.gif")));
+$fieldsets[] = array('campos' => $condiciones);
+$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'situaciones.gif')));
 
 
 /**
@@ -31,13 +31,13 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("im
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array("tipo"=>"desglose", "id"=>$v['Situacion']['id'], "update"=>"desglose1", "imagen"=>array("nombre"=>"ausencias_motivos.gif", "alt"=>"Motivos de Ausencia"), "url"=>'ausencias_motivos');
-	$fila[] = array("model"=>"Situacion", "field"=>"id", "valor"=>$v['Situacion']['id'], "write"=>$v['Situacion']['write'], "delete"=>$v['Situacion']['delete']);
-	$fila[] = array("model"=>"Situacion", "field"=>"codigo", "valor"=>$v['Situacion']['codigo']);
-	$fila[] = array("model"=>"Situacion", "field"=>"nombre", "valor"=>$v['Situacion']['nombre']);
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Situacion']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'ausencias_motivos.gif', 'alt' => "Motivos de Ausencia"), "url"=>'ausencias_motivos');
+	$fila[] = array('model' => "Situacion", 'field' => "id", 'valor' => $v['Situacion']['id'], "write"=>$v['Situacion']['write'], "delete"=>$v['Situacion']['delete']);
+	$fila[] = array('model' => "Situacion", 'field' => "codigo", 'valor' => $v['Situacion']['codigo']);
+	$fila[] = array('model' => "Situacion", 'field' => "nombre", 'valor' => $v['Situacion']['nombre']);
 	$cuerpo[] = $fila;
 }
 
-echo $this->renderElement("index/index", array("condiciones"=>$fieldset, "cuerpo"=>$cuerpo));
+echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo));
 
 ?>

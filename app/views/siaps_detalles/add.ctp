@@ -30,12 +30,12 @@ $campos['SiapsDetalle.direccion_relleno'] = array();
 $campos['SiapsDetalle.desde'] = array();
 $campos['SiapsDetalle.longitud'] = array();
 $campos['SiapsDetalle.observacion'] = array();
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Detalles de la Version de SIAP", "imagen"=>"detalles.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Detalles de la Version de SIAP", 'imagen' => 'detalles.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset));
+echo $this->element('add/add', array('fieldset' => $fieldset));
 ?>

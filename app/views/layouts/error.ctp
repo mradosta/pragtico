@@ -18,7 +18,7 @@
  
 
 $mensaje[] = $formulario->tag("span", $formulario->link("Cerrar", null, array("class"=>"link_boton", "title"=>"Cerrar")));
-$mensaje[] = $formulario->image("error_icono_naranja.gif");
+$mensaje[] = $formulario->image('error_icono_naranja.gif');
 $mensaje[] = $formulario->tag("span", $content_for_layout, array("class"=>"contenido"));
 
 if(!empty($errores['errorDescripcion'])) {

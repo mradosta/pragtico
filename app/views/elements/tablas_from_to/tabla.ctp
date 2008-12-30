@@ -20,7 +20,7 @@ $opcionesTabla =  array("tabla"=>
 									"omitirMensajeVacio"=>true,
 									"class"				=>$opciones['class']));
 
-$tabla = $formulario->tabla(am(array("cuerpo"=>$cuerpo, "encabezado"=>$encabezados), $opcionesTabla));
+$tabla = $formulario->tabla(am(array('cuerpo' => $cuerpo, "encabezado"=>$encabezados), $opcionesTabla));
 //echo $formulario->codeBlock("transformarTabla" . $tablaUbicacion . "();bindearTabla" . $tablaUbicacion . "()");
 echo $formulario->bloque($tabla, array("div"=>array("id"=>$divId)));
 

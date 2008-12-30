@@ -25,14 +25,14 @@ $campos['Asignar.empleador_id'] = array(	"lov"=>array("controller"	=>	"empleador
 																								"Empleador.nombre")));
 
 
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>ucfirst($accion) . " el Concepto " . $concepto['Concepto']['nombre'] . " a todos los Trabajadores de:", "imagen"=>$accion . ".gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>ucfirst($accion) . " el Concepto " . $concepto['Concepto']['nombre'] . " a todos los Trabajadores de:", "imagen"=>$accion . ".gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("opcionesForm"=>array("action"=>"manipular_concepto"), "fieldset"=>$fieldset));
+echo $this->element('add/add', array("opcionesForm"=>array("action"=>"manipular_concepto"), "fieldset"=>$fieldset));
 
 if($accion == "agregar") {
 	$msg = "Esta seguro que desea asigar el concepto " . $concepto['Concepto']['nombre'] . " a todos los Trabajadores que pertenezcan a los Convenios Colectivos seleccionados?	";

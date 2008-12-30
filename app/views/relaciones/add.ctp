@@ -41,7 +41,7 @@ $campos['Relacion.horas'] = array("label"=>"Horas de Trabajo");
 $campos['Relacion.basico'] = array("label"=>"Basico $", "aclaracion"=>"Si lo deja en cero, se utilizara el basico de convenio.");
 $campos['Relacion.estado'] = array();
 $campos['Relacion.antiguedad_reconocida'] = array();
-$fieldsets[] = array("campos"=>$campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Trabajador", "imagen"=>"trabajadores.gif")));
+$fieldsets[] = array('campos' => $campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Trabajador", 'imagen' => 'trabajadores.gif')));
 
 
 /**
@@ -58,7 +58,7 @@ $campos['Relacion.legajo'] = array("aclaracion"=>"Si lo deja en blanco, se utili
 if($this->action == "add") {
 	$campos['Relacion.recibo_id'] = array("type"=>"relacionado", "valor"=>"Recibo.nombre", "relacion"=>"Relacion.empleador_id", "url"=>"relaciones/recibos_relacionado");
 }
-$fieldsets[] = array("campos"=>$campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Empleador", "imagen"=>"empleadores.gif")));
+$fieldsets[] = array('campos' => $campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Empleador", 'imagen' => 'empleadores.gif')));
 
 
 /**
@@ -79,7 +79,7 @@ $campos['Relacion.modalidad_id'] = array(	"lov"	=>	array(	"controller"		=> 	"mod
 																"seleccionMultiple"	=> 	0,
 																	"camposRetorno"	=> 	array(	"Modalidad.codigo",
 																								"Modalidad.nombre")));
-$fieldsets[] = array("campos"=>$campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Afip", "imagen"=>"afip.gif")));
+$fieldsets[] = array('campos' => $campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Afip", 'imagen' => 'afip.gif')));
 
 
 /**
@@ -88,17 +88,17 @@ $fieldsets[] = array("campos"=>$campos, "opciones"=>array("div"=>array("class"=>
 $campos = null;
 $campos['Relacion.egreso'] = array();
 $campos['Relacion.observacion'] = array();
-$fieldsets[] = array("campos"=>$campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Desvinculacion", "imagen"=>"fin_relacion_laboral.gif")));
+$fieldsets[] = array('campos' => $campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Desvinculacion", 'imagen' => 'fin_relacion_laboral.gif')));
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Relacion Laboral", "imagen"=>"relaciones.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Relacion Laboral", 'imagen' => 'relaciones.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"trabajadores.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'trabajadores.gif')));
 $miga = array('format' 	=> '%s %s (%s)', 
 			  'content' => array('Trabajador.apellido', 'Trabajador.nombre', 'Empleador.nombre'));
-echo $this->element("add/add", array("fieldset"=>$fieldset, "miga" => $miga));
+echo $this->element("add/add", array('fieldset' => $fieldset, "miga" => $miga));
 
 
 ?>

@@ -18,7 +18,7 @@
  
 
 $mensaje[] = $formulario->tag("span", $formulario->link("Cerrar", null, array("class"=>"link_boton", "title"=>"Cerrar")));
-$mensaje[] = $formulario->image("permisos.gif");
+$mensaje[] = $formulario->image('permisos.gif');
 $mensaje[] = $formulario->tag("span", "Usted no tiene permisos suficientes para realizar esta operacion.", array("class"=>"contenido"));
 $erroresTmp[] = $formulario->tag("span", "Detalles (el registro no se ha modificado)", array("class"=>"titulos"));
 echo $formulario->tag("div", $mensaje, array("class"=>"session_flash session_flash_error"));

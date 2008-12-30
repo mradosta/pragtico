@@ -28,12 +28,12 @@ $campos['RolesMenu.menu_id'] = array(	"lov"=>array(	"controller"		=>	"menus",
 															"camposRetorno"	=> 	array("Menu.etiqueta")));
 
 $campos['RolesMenu.estado'] = array();
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"relacion entre menu y rol", "imagen"=>"menus.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"relacion entre menu y rol", 'imagen' => 'menus.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset));
+echo $this->element('add/add', array('fieldset' => $fieldset));
 ?>

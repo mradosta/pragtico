@@ -34,7 +34,7 @@ $campos['Ausencia.ausencia_motivo_id'] = array(	"empty"			=> true,
 												"model"			=> "AusenciasMotivo",
 												"label"			=> "Motivo");
 $campos['Ausencia.desde'] = array();
-$fieldsets[] = 	array("campos"=>$campos);
+$fieldsets[] = 	array('campos' => $campos);
 
 
 $campos = null;
@@ -44,16 +44,16 @@ $campos['AusenciasSeguimiento.comprobante'] = array("label"=>"Presento Comproban
 $campos['AusenciasSeguimiento.archivo'] = array("label"=>"Comprobante", "type"=>"file", "descargar"=>true, "mostrar"=>true);
 $campos['AusenciasSeguimiento.estado'] = array();
 $campos['AusenciasSeguimiento.observacion'] = array();
-$fieldsets[] = 	array("campos"=>$campos, "opciones"=>array("fieldset"=>array("class"=>"detail", "legend"=>"Seguimientos", "imagen"=>"seguimientos.gif")));
+$fieldsets[] = 	array('campos' => $campos, "opciones"=>array('fieldset' => array("class"=>"detail", "legend"=>"Seguimientos", 'imagen' => 'seguimientos.gif')));
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Ausencias", "imagen"=>"ausencias.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Ausencias", 'imagen' => 'ausencias.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
 $miga = array('format' 	=> '%s %s (%s)', 
 			  'content' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));
-echo $this->element("add/add", array("fieldset"=>$fieldset, "opcionesForm"=>array("enctype"=>"multipart/form-data"), "miga" => $miga));
+echo $this->element("add/add", array('fieldset' => $fieldset, "opcionesForm"=>array("enctype"=>"multipart/form-data"), "miga" => $miga));
 $ajax->jsPredefinido(array("tipo"=>"detalle", "agregar"=>true, "quitar"=>true));
 
 ?>

@@ -23,9 +23,9 @@
 $cuerpo = null;
 foreach ($this->data['RecibosConcepto'] as $k=>$v) {
 	$fila = null;
-	$fila[] = array("model"=>"RecibosConcepto", "field"=>"id", "valor"=>$v['id'], "write"=>$v['write'], "delete"=>$v['delete']);
-	$fila[] = array("model"=>"Concepto", "field"=>"codigo", "valor"=>$v['Concepto']['codigo'], "nombreEncabezado"=>"Codigo");
-	$fila[] = array("model"=>"Concepto", "field"=>"nombre", "valor"=>$v['Concepto']['nombre'], "nombreEncabezado"=>"Concepto");
+	$fila[] = array('model' => "RecibosConcepto", 'field' => "id", 'valor' => $v['id'], "write"=>$v['write'], "delete"=>$v['delete']);
+	$fila[] = array('model' => "Concepto", 'field' => "codigo", 'valor' => $v['Concepto']['codigo'], "nombreEncabezado"=>"Codigo");
+	$fila[] = array('model' => "Concepto", 'field' => "nombre", 'valor' => $v['Concepto']['nombre'], "nombreEncabezado"=>"Concepto");
 $cuerpo[] = $fila;
 }
 
@@ -42,11 +42,11 @@ $opcionesTabla =  array("tabla"=>
 									"zebra"				=>false,
 									"mostrarIds"		=>false));
 
-$url[] = array("controller"=>"recibos_conceptos", "action"=>"add", "RecibosConcepto.recibo_id"=>$this->data['Recibo']['id']);
+$url[] = array('controller' => "recibos_conceptos", 'action' => 'add', "RecibosConcepto.recibo_id"=>$this->data['Recibo']['id']);
 $texto[] = "Conceptos";
-$url[] = array("controller"=>"recibos_conceptos", "texto"=>"Carga Rapida", "action"=>"add_rapido", "RecibosConcepto.recibo_id"=>$this->data['Recibo']['id']);
+$url[] = array('controller' => "recibos_conceptos", "texto"=>"Carga Rapida", 'action' => "add_rapido", "RecibosConcepto.recibo_id"=>$this->data['Recibo']['id']);
 $texto[] = "Carga Rapida";
-echo $this->renderElement("desgloses/agregar", array("url"=>$url, "titulo"=>"Conceptos (Detalle del Recibo)", "cuerpo"=>$cuerpo));
+echo $this->element('desgloses/agregar', array('url' => $url, 'titulo' => "Conceptos (Detalle del Recibo)", 'cuerpo' => $cuerpo));
 
 
 ?>

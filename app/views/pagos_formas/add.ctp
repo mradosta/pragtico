@@ -37,7 +37,7 @@ else {
 }
 $campos['PagosForma.monto'] = array();
 $campos['PagosForma.observacion'] = array();
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
 $campos = null;
 $campos['PagosForma.empleador_id'] =  array(		"lov"	=>array("controller"		=> 	"empleadores",
@@ -46,22 +46,22 @@ $campos['PagosForma.empleador_id'] =  array(		"lov"	=>array("controller"		=> 	"e
 																								"Empleador.nombre")));
 $campos['PagosForma.cuenta_id'] = array("label"=>"Cuenta", "type"=>"relacionado", "relacion"=>"PagosForma.empleador_id", "url"=>"pagos/cuentas_relacionado");
 
-$campos['PagosForma.cheque_numero'] = array("after"=>$formulario->image("cheques.gif", array("class"=>"after", "id"=>"buscarUltimoNumero", "alt"=>"Buscar ultimo numero de cheque")));
+$campos['PagosForma.cheque_numero'] = array("after"=>$formulario->image('cheques.gif', array("class"=>"after", "id"=>"buscarUltimoNumero", 'alt' => "Buscar ultimo numero de cheque")));
 $campos['PagosForma.fecha_pago'] = array();
-$fieldsets[] = array("campos"=>$campos, "opciones"=>array("fieldset"=>array("id"=>"chequeFieldSet", "legend"=>"Cheque", "imagen"=>"cheques.gif")));
+$fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array("id"=>"chequeFieldSet", "legend"=>"Cheque", 'imagen' => 'cheques.gif')));
 
 
 $campos = null;
 $campos['PagosForma.cbu_numero'] =  array();
-$fieldsets[] = array("campos"=>$campos, "opciones"=>array("fieldset"=>array("id"=>"depositoFieldSet", "legend"=>"Deposito en Cuenta", "imagen"=>"pagos.gif")));
+$fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array("id"=>"depositoFieldSet", "legend"=>"Deposito en Cuenta", 'imagen' => 'pagos.gif')));
 
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Forma de Pago", "imagen"=>"pagos_formas.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Forma de Pago", 'imagen' => 'pagos_formas.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset));
+echo $this->element('add/add', array('fieldset' => $fieldset));
 
 $js = "
 	jQuery('#buscarUltimoNumero').bind('click',

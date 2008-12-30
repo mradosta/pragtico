@@ -8,20 +8,20 @@
  *
  * @filesource
  * @copyright		Copyright 2005-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.views.helpers
- * @since			Pragtico v 1.0.0
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.views.helpers
+ * @since           Pragtico v 1.0.0
  * @version			$Revision$
  * @modifiedby		$LastChangedBy$
  * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * Clase que contiene el helper para el uso de ajax mediante jQuery.
  *
- * @package		pragtico
- * @subpackage	app.views.helpers
+ * @package     pragtico
+ * @subpackage  app.views.helpers
  */
 class AjaxHelper extends AppHelper {
 
@@ -51,7 +51,7 @@ class AjaxHelper extends AppHelper {
 			}
 		});";
 			
-        if(!isset($options['onclick'])) {
+        if (!isset($options['onclick'])) {
 			$options['onclick'] = "";
 		}
 		
@@ -104,10 +104,10 @@ function jsPredefinido($options = array()) {
 				function() {
 					jQuery(this).find('td').each(
 						function() {
-							if(jQuery(this).attr('class') == 'agregar' || jQuery(this).attr('class') == 'oculto') {
+							if (jQuery(this).attr('class') == 'agregar' || jQuery(this).attr('class') == 'oculto') {
 								jQuery(this).hide();
 							}
-							if(jQuery(this).attr('class') == 'acciones') {
+							if (jQuery(this).attr('class') == 'acciones') {
 								jQuery(this).show();
 							}
 						}
@@ -128,7 +128,7 @@ function jsPredefinido($options = array()) {
 				function() {
 					jQuery(this).find('td').each(
 						function() {
-							if(jQuery(this).attr('class') == 'quitar' || jQuery(this).attr('class') == 'acciones') {
+							if (jQuery(this).attr('class') == 'quitar' || jQuery(this).attr('class') == 'acciones') {
 								jQuery(this).hide();
 							}
 						}
@@ -146,10 +146,10 @@ function jsPredefinido($options = array()) {
 		var agregar = function() {
 			jQuery(this).parent().find('td').each (
 				function() {
-					if(jQuery(this).attr('class') == 'agregar' || jQuery(this).attr('class') == 'acciones' || jQuery(this).attr('class') == 'oculto') {
+					if (jQuery(this).attr('class') == 'agregar' || jQuery(this).attr('class') == 'acciones' || jQuery(this).attr('class') == 'oculto') {
 						jQuery(this).hide();
 					}
-					if(jQuery(this).attr('class') == 'acciones') {
+					if (jQuery(this).attr('class') == 'acciones') {
 						jQuery(this).show();
 					}
 				}
@@ -165,7 +165,7 @@ function jsPredefinido($options = array()) {
 		var quitar = function() {
 			jQuery(this).parent().find('td').each (
 				function() {
-					if(jQuery(this).attr('class') == 'acciones' || jQuery(this).attr('class') == 'quitar') {
+					if (jQuery(this).attr('class') == 'acciones' || jQuery(this).attr('class') == 'quitar') {
 						jQuery(this).hide();
 					}
 				}
@@ -193,7 +193,7 @@ function jsPredefinido($options = array()) {
 						}
 					);
 					tmp = tds.join('|');
-					if(tmp.length > 0) {
+					if (tmp.length > 0) {
 						trs.push(tmp);
 					}
 					tds = Array();
@@ -217,7 +217,7 @@ function jsPredefinido($options = array()) {
 
 			jQuery('table.izquierda thead').find('tr').each(function() {
 					jQuery(this).find('th').each(function() {
-						if(jQuery(this).html() == 'Acciones') {
+						if (jQuery(this).html() == 'Acciones') {
 							jQuery(this).hide();
 						}
 					});
@@ -234,7 +234,7 @@ function jsPredefinido($options = array()) {
 			var encabezados = jQuery('table.izquierda thead').clone();
 
 			/*
-			if(jQuery('table.derecha thead').find('tr').each(function(){}).size() == 0) {
+			if (jQuery('table.derecha thead').find('tr').each(function(){}).size() == 0) {
 				encabezados.createPrepend('td', {}, 'x');
 				jQuery('table.derecha thead').append(encabezados);
 			}
@@ -273,7 +273,7 @@ function jsPredefinido($options = array()) {
 
 
 	$quitar = "";
-	if(!empty($options['quitar']) && $options['quitar'] === true) {
+	if (!empty($options['quitar']) && $options['quitar'] === true) {
 		$quitar = "botonQuitar(this, id);";
 	}
 
@@ -286,7 +286,7 @@ function jsPredefinido($options = array()) {
 				/**
 				* Solo puedo quitar mientras tenga por lo menos un detail.
 				*/
-				if(jQuery('fieldSet.detail').length > 1) {
+				if (jQuery('fieldSet.detail').length > 1) {
 					jQuery('#' + jQuery(this).attr('id').replace('linkQuitar_', 'fieldset_')).remove();
 					jQuery(this).remove();
 				}
@@ -308,7 +308,7 @@ function jsPredefinido($options = array()) {
 				}
 			)";
 
-	if(!empty($options['agregar']) && $options['agregar'] === true) {
+	if (!empty($options['agregar']) && $options['agregar'] === true) {
 		$js['detalle']['view'] .= "
 			var img = \"<img alt='Agregar' title='Agregar' src='".Router::url("/") . "img/add.gif' />\";
 			var i = 0;
@@ -362,7 +362,7 @@ function jsPredefinido($options = array()) {
 				*/
 				this.id = this.id + '_' + id;
 				var indice = parseInt(this.name.replace(/(^data\[[a-z,A-Z]+\])\[([0-9]+)\](\[[a-z,A-Z]+\])/, '$2')) + 1;
-				if(isNaN(indice)) {
+				if (isNaN(indice)) {
 					indice = parseInt(this.name.replace(/(^data\[[0-9]+\]\[[a-z,A-Z]+\])\[([0-9]+)\](\[[a-z,A-Z]+\])/, '$2')) + 1;
 					this.name = this.name.replace(/(^data\[[0-9]+\]\[[a-z,A-Z]+\])\[([0-9]+)\](\[[a-z,A-Z]+\])/, '$1\[' + indice + '\]$3')
 				}
@@ -391,7 +391,7 @@ function jsPredefinido($options = array()) {
 				function() {
 					jQuery(this).hide();
 					var tmp = this.id.split('_');
-					if(tmp[1] == 'on') {
+					if (tmp[1] == 'on') {
 						jQuery('#autoincremental_off_' + tmp[2]).show();
 					}
 					else {
@@ -408,7 +408,7 @@ function jsPredefinido($options = array()) {
 				function() {
 					jQuery(this).hide();
 					var tmp = this.id.split('_');
-					if(tmp[0] == 'empiece') {
+					if (tmp[0] == 'empiece') {
 						jQuery('#contenga_' + tmp[1]).show();
 					}
 					else {
@@ -419,21 +419,21 @@ function jsPredefinido($options = array()) {
 			);
 		";
 
-		if($this->traerPreferencia("busqueda_tipo") == "empiece") {
+		if ($this->traerPreferencia("busqueda_tipo") == "empiece") {
 			$js['busqueda']['view'] .= "jQuery('.busqueda_tipo').each(
 				function() {
 					var tmp = this.id.split('_');
-					if(tmp[0] == 'contenga') {
+					if (tmp[0] == 'contenga') {
 						jQuery(this).hide();
 					}
 				});";
 		}
 
-		if($this->traerPreferencia("busqueda_autoincremental") == "activado") {
+		if ($this->traerPreferencia("busqueda_autoincremental") == "activado") {
 			$js['busqueda']['view'] .= "jQuery('.busqueda_autoincremental').each(
 				function() {
 					var tmp = this.id.split('_');
-					if(tmp[1] == 'off') {
+					if (tmp[1] == 'off') {
 						jQuery(this).hide();
 					}
 				});";
@@ -446,10 +446,10 @@ function jsPredefinido($options = array()) {
 	$js['busqueda']['view'] .= "}";
 	$js['busqueda']['ready'] = "busqueda();";
 		
-		if(!empty($js[$options['tipo']]['ready'])) {
+		if (!empty($js[$options['tipo']]['ready'])) {
 			$this->Formulario->addScript($js[$options['tipo']]['ready'], "ready");
 		}
-		if(!empty($js[$options['tipo']]['view'])) {
+		if (!empty($js[$options['tipo']]['view'])) {
 			$this->Formulario->addScript($js[$options['tipo']]['view'], "view");
 		}
 	}

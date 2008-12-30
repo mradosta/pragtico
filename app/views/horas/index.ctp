@@ -37,8 +37,8 @@ $condiciones['Condicion.Hora-estado'] = array("type"=>"checkboxMultiple");
 $condiciones['Condicion.Hora-periodo'] = array("type"=>"periodo");
 
 
-$fieldsets[] = array("campos"=>$condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"horas de la relacion laboral", "imagen"=>"horas.gif")));
+$fieldsets[] = array('campos' => $condiciones);
+$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"horas de la relacion laboral", 'imagen' => 'horas.gif')));
 
 
 /**
@@ -47,14 +47,14 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("le
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array("model"=>"Hora", "field"=>"id", "valor"=>$v['Hora']['id'], "write"=>$v['Hora']['write'], "delete"=>$v['Hora']['delete']);
-	$fila[] = array("model"=>"Empleador", "field"=>"nombre", "valor"=>$v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
-	$fila[] = array("model"=>"Trabajador", "field"=>"numero_documento", "valor"=>$v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
-	$fila[] = array("model"=>"Trabajador", "field"=>"apellido", "valor"=>$v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
-	$fila[] = array("model"=>"Hora", "field"=>"periodo", "valor"=>$v['Hora']['periodo']);
-	$fila[] = array("model"=>"Hora", "field"=>"cantidad", "valor"=>$v['Hora']['cantidad']);
-	$fila[] = array("model"=>"Hora", "field"=>"tipo", "valor"=>$v['Hora']['tipo']);
-	$fila[] = array("model"=>"Hora", "field"=>"estado", "valor"=>$v['Hora']['estado']);
+	$fila[] = array('model' => "Hora", 'field' => "id", 'valor' => $v['Hora']['id'], "write"=>$v['Hora']['write'], "delete"=>$v['Hora']['delete']);
+	$fila[] = array('model' => "Empleador", 'field' => "nombre", 'valor' => $v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
+	$fila[] = array('model' => "Trabajador", 'field' => "numero_documento", 'valor' => $v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
+	$fila[] = array('model' => "Trabajador", 'field' => "apellido", 'valor' => $v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
+	$fila[] = array('model' => "Hora", 'field' => "periodo", 'valor' => $v['Hora']['periodo']);
+	$fila[] = array('model' => "Hora", 'field' => "cantidad", 'valor' => $v['Hora']['cantidad']);
+	$fila[] = array('model' => "Hora", 'field' => "tipo", 'valor' => $v['Hora']['tipo']);
+	$fila[] = array('model' => "Hora", 'field' => "estado", 'valor' => $v['Hora']['estado']);
 	if($v['Hora']['estado'] === "Liquidada") {
 		$cuerpo[] = array("contenido"=>$fila, "opciones"=>array("seleccionMultiple"=>false, "eliminar"=>false, "modificar"=>false));
 	}
@@ -63,15 +63,15 @@ foreach ($registros as $k=>$v) {
 	}
 }
 $fila = null;
-$fila[] = array("model"=>"Hora", "field"=>"id", "valor"=>"");
-$fila[] = array("model"=>"Empleador", "field"=>"nombre", "valor"=>"");
-$fila[] = array("model"=>"Trabajador", "field"=>"numero_documento", "valor"=>"");
-$fila[] = array("model"=>"Trabajador", "field"=>"apellido", "valor"=>"");
-$fila[] = array("model"=>"Hora", "field"=>"periodo", "valor"=>"");
-$fila[] = array("model"=>"Hora", "field"=>"cantidad", "valor"=>$totales['cantidad']);
-$fila[] = array("model"=>"Hora", "field"=>"tipo", "valor"=>"");
-$fila[] = array("model"=>"Hora", "field"=>"estado", "valor"=>"");
+$fila[] = array('model' => "Hora", 'field' => "id", "valor"=>"");
+$fila[] = array('model' => "Empleador", 'field' => "nombre", "valor"=>"");
+$fila[] = array('model' => "Trabajador", 'field' => "numero_documento", "valor"=>"");
+$fila[] = array('model' => "Trabajador", 'field' => "apellido", "valor"=>"");
+$fila[] = array('model' => "Hora", 'field' => "periodo", "valor"=>"");
+$fila[] = array('model' => "Hora", 'field' => "cantidad", "valor"=>$totales['cantidad']);
+$fila[] = array('model' => "Hora", 'field' => "tipo", "valor"=>"");
+$fila[] = array('model' => "Hora", 'field' => "estado", "valor"=>"");
 
 $pie[] = $fila;
-echo $this->renderElement("index/index", array("condiciones"=>$fieldset, "cuerpo"=>$cuerpo, "pie"=>$pie));
+echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, "pie"=>$pie));
 ?>

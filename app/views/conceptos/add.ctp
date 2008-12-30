@@ -38,30 +38,30 @@ $campos['Concepto.desde'] = array();
 $campos['Concepto.hasta'] = array();
 $campos['Concepto.formula'] = array();
 $campos['Concepto.observacion'] = array();
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
 $campos = null;
 $campos['Concepto.sac'] = array();
 $campos['Concepto.antiguedad'] = array();
 $campos['Concepto.plus_vacacional'] = array();
-$fieldsets[] = array("campos"=>$campos, "opciones"=>array("fieldset"=>array("legend"=>"Este concepto debe acumular", "imagen"=>"acumula.gif")));
+$fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array("legend"=>"Este concepto debe acumular", 'imagen' => 'acumula.gif')));
 
 $campos = null;
 $campos['Concepto.pago'] = array();
 $campos['Concepto.imprimir'] = array();
 $campos['Concepto.orden'] = array();
 $campos['Concepto.cantidad'] = array("aclaracion"=>"Indica desde que variable se sacara la cantidad que se mostrara");
-$fieldsets[] = array("campos"=>$campos, "opciones"=>array("fieldset"=>array("legend"=>"Visualizacion", "imagen"=>"visualizacion.gif")));
+$fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array("legend"=>"Visualizacion", 'imagen' => 'visualizacion.gif')));
 
 $campos = null;
 $campos['Concepto.retencion_sindical'] = array("aclaracion"=>"Indica si corresponde a una retencion sindical");
 $campos['Concepto.novedad'] = array("aclaracion"=>"Indica si permite ser ingresado desde Planilla de Novedades");
-$fieldsets[] = array("campos"=>$campos, "opciones"=>array("fieldset"=>array("legend"=>"Datos complementarios", "imagen"=>"observaciones.gif")));
+$fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array("legend"=>"Datos complementarios", 'imagen' => 'observaciones.gif')));
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"conceptos.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'conceptos.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "migaEdit" => $this->data[0]['Concepto']['nombre']));
+echo $this->element('add/add', array('fieldset' => $fieldset, "migaEdit" => $this->data[0]['Concepto']['nombre']));
 ?>

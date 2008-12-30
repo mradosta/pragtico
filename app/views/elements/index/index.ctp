@@ -107,7 +107,7 @@ if(!empty($opcionesTabla['tabla']['contenido'])) {
 	$bloques[] = $opcionesTabla['tabla']['contenido'];
 }
 else if(!((isset($opcionesTabla['tabla']['omitirMensajeVacio']) && $opcionesTabla['tabla']['omitirMensajeVacio'] === true) && empty($cuerpo))) {
-	$tabla = $formulario->tag("div", $formulario->tabla(array_merge(array("cuerpo"=>$cuerpo, "pie"=>$pie), $opcionesTabla)), array("class"=>"tabla"));
+	$tabla = $formulario->tag("div", $formulario->tabla(array_merge(array('cuerpo' => $cuerpo, "pie"=>$pie), $opcionesTabla)), array("class"=>"tabla"));
 	$bloque_superior = $formulario->tag('div', $acciones . $bloque_paginador_superior, array("class"=>"bloque_superior_index"));
 	$bloque_inferior = $formulario->tag('div', $bloque_paginador_inferior, array("class"=>"bloque_inferior_index"));
 	$bloques[] = $formulario->tag('div', $bloque_superior . $tabla . $bloque_inferior, array("class"=>"unica"));

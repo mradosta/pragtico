@@ -26,7 +26,7 @@ $ingresar = $formulario->submit("Ingresar");
 $campos[] = $formulario->bloque($ingresar, array("div"=>array("class"=>"derecha")));
 $campos[] = $formulario->bloque("", array("div"=>array("class"=>"clear")));
 
-$bloques[] = $formulario->bloque($formulario->image("login.gif"), array("div"=>array("class"=>"centro")));
+$bloques[] = $formulario->bloque($formulario->image('login.gif'), array("div"=>array("class"=>"centro")));
 $bloques[] = $formulario->bloque("&nbsp;", array("div"=>array("class"=>"clear")));
 $bloques[] = $formulario->bloque($campos);
  */

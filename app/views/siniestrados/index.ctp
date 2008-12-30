@@ -21,8 +21,8 @@
 */
 $condiciones['Condicion.Siniestrado-codigo'] = array();
 $condiciones['Condicion.Siniestrado-nombre'] = array();
-$fieldsets[] = array("campos"=>$condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("imagen"=>"siniestrados.gif")));
+$fieldsets[] = array('campos' => $condiciones);
+$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'siniestrados.gif')));
 
 
 /**
@@ -31,12 +31,12 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("im
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array("model"=>"Siniestrado", "field"=>"id", "valor"=>$v['Siniestrado']['id'], "write"=>$v['Siniestrado']['write'], "delete"=>$v['Siniestrado']['delete']);
-	$fila[] = array("model"=>"Siniestrado", "field"=>"codigo", "valor"=>$v['Siniestrado']['codigo']);
-	$fila[] = array("model"=>"Siniestrado", "field"=>"nombre", "valor"=>$v['Siniestrado']['nombre']);
+	$fila[] = array('model' => "Siniestrado", 'field' => "id", 'valor' => $v['Siniestrado']['id'], "write"=>$v['Siniestrado']['write'], "delete"=>$v['Siniestrado']['delete']);
+	$fila[] = array('model' => "Siniestrado", 'field' => "codigo", 'valor' => $v['Siniestrado']['codigo']);
+	$fila[] = array('model' => "Siniestrado", 'field' => "nombre", 'valor' => $v['Siniestrado']['nombre']);
 	$cuerpo[] = $fila;
 }
 
-echo $this->renderElement("index/index", array("condiciones"=>$fieldset, "cuerpo"=>$cuerpo));
+echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo));
 
 ?>

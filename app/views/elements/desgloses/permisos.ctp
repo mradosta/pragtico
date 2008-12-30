@@ -52,10 +52,10 @@ unset($registro['Grupos']['permisos']);
 foreach($registro['Grupo'] as $k=>$v){
 	$cellsOut = array();
 	if(isset($v['Grupo']['posible_accion']) && $v['Grupo']['posible_accion'] === "agregar") {
-		$cellsOut[] = $formulario->tag("th", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $formulario->link($formulario->image("add.gif", array("alt"=>"Agregar")), array("action"=>"permisos", $id, "agregarGrupo"=>$v['Grupo']['id']), $options) . "&nbsp;" . $v['Grupo']['nombre'] . " <i>(No Incluido)</i>", array("class"=>"izquierda"));
+		$cellsOut[] = $formulario->tag("th", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $formulario->link($formulario->image('add.gif', array('alt' => "Agregar")), array("action"=>"permisos", $id, "agregarGrupo"=>$v['Grupo']['id']), $options) . "&nbsp;" . $v['Grupo']['nombre'] . " <i>(No Incluido)</i>", array("class"=>"izquierda"));
 	}
 	elseif(isset($v['Grupo']['posible_accion']) && $v['Grupo']['posible_accion'] === "quitar") {
-		$cellsOut[] = $formulario->tag("th", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $formulario->link($formulario->image("remove.gif", array("alt"=>"Quitar")), array("action"=>"permisos", $id, "quitarGrupo"=>$v['Grupo']['id']), $options) . "&nbsp;" . $v['Grupo']['nombre'] . " <i>(Incluido)</i>", array("class"=>"izquierda"));
+		$cellsOut[] = $formulario->tag("th", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $formulario->link($formulario->image('remove.gif', array('alt' => "Quitar")), array("action"=>"permisos", $id, "quitarGrupo"=>$v['Grupo']['id']), $options) . "&nbsp;" . $v['Grupo']['nombre'] . " <i>(Incluido)</i>", array("class"=>"izquierda"));
 	}
 	else {
 		$cellsOut[] = $formulario->tag("th", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $v['Grupo']['nombre'], array("class"=>"izquierda"));
@@ -69,10 +69,10 @@ foreach($registro['Grupo'] as $k=>$v){
 foreach($registro['Rol'] as $k=>$v){
 	$cellsOut = array();
 	if(isset($v['Rol']['posible_accion']) && $v['Rol']['posible_accion'] === "agregar") {
-		$cellsOut[] = $formulario->tag("th", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $formulario->link($formulario->image("add.gif", array("alt"=>"Agregar")), array("action"=>"permisos", $id, "agregarRol"=>$v['Rol']['id']), $options) . "&nbsp;" . $v['Rol']['nombre'] . " <i>(No Incluido)</i>", array("class"=>"izquierda"));
+		$cellsOut[] = $formulario->tag("th", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $formulario->link($formulario->image('add.gif', array('alt' => "Agregar")), array("action"=>"permisos", $id, "agregarRol"=>$v['Rol']['id']), $options) . "&nbsp;" . $v['Rol']['nombre'] . " <i>(No Incluido)</i>", array("class"=>"izquierda"));
 	}
 	elseif(isset($v['Rol']['posible_accion']) && $v['Rol']['posible_accion'] === "quitar") {
-		$cellsOut[] = $formulario->tag("th", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $formulario->link($formulario->image("remove.gif", array("alt"=>"Quitar")), array("action"=>"permisos", $id, "quitarRol"=>$v['Rol']['id']), $options) . "&nbsp;" . $v['Rol']['nombre'] . " <i>(Incluido)</i>", array("class"=>"izquierda"));
+		$cellsOut[] = $formulario->tag("th", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $formulario->link($formulario->image('remove.gif', array('alt' => "Quitar")), array("action"=>"permisos", $id, "quitarRol"=>$v['Rol']['id']), $options) . "&nbsp;" . $v['Rol']['nombre'] . " <i>(Incluido)</i>", array("class"=>"izquierda"));
 	}
 	else {
 		$cellsOut[] = $formulario->tag("th", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $v['Rol']['nombre'], array("class"=>"izquierda"));
@@ -111,24 +111,24 @@ function __getImagen(&$formulario, $puedeCambiarPermisos, $permiso, $accion, $id
 		$altAdicional = " " . $altAdicional;
 		if(!$permiso) {
 			$parametros['accion'] = "d" . $accion;
-			$imagen = $formulario->image("error_icono_naranja.gif");
+			$imagen = $formulario->image('error_icono_naranja.gif');
 			$options['title'] = "Denegar" . $altAdicional;
 		}
 		else {
 			$parametros['accion'] = "p" . $accion;
-			$imagen = $formulario->image("ok_icono_verde.gif");
+			$imagen = $formulario->image('ok_icono_verde.gif');
 			$options['title'] = "Permitir" . $altAdicional;
 		}
 	}
 	else {
 		if($permiso) {
 			$parametros['accion'] = "d" . $accion;
-			$imagen = $formulario->image("ok_icono_verde.gif");
+			$imagen = $formulario->image('ok_icono_verde.gif');
 			$options['title'] = "Denegar" . $altAdicional;
 		}
 		else {
 			$parametros['accion'] = "p" . $accion;
-			$imagen = $formulario->image("error_icono_naranja.gif");
+			$imagen = $formulario->image('error_icono_naranja.gif');
 			$options['title'] = "Permitir" . $altAdicional;
 		}
 	}

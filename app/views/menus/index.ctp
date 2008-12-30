@@ -25,8 +25,8 @@ $condiciones['Condicion.Menu-parent_id'] = array("options"=>"listable", "display
 $condiciones['Condicion.Menu-orden__desde'] = array("label"=>"Orden Desde");
 $condiciones['Condicion.Menu-orden__hasta'] = array("label"=>"Orden Hasta");
 $condiciones['Condicion.Menu-estado'] = array();
-$fieldsets[] = array("campos"=>$condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("imagen"=>"menus.gif")));
+$fieldsets[] = array('campos' => $condiciones);
+$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'menus.gif')));
 
 
 /**
@@ -36,18 +36,18 @@ $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
 	$id = $v['Menu']['id'];
-	$fila[] = array("tipo"=>"desglose", "id"=>$id, "update"=>"desglose1", "imagen"=>array("nombre"=>"roles.gif", "alt"=>"Roles"), "url"=>'roles');
-	$fila[] = array("model"=>"Menu", "field"=>"id", "valor"=>$id, "write"=>$v['Menu']['write'], "delete"=>$v['Menu']['delete']);
-	$fila[] = array("model"=>"Menu", "field"=>"etiqueta", "valor"=>$v['Menu']['etiqueta']);
-	$fila[] = array("model"=>"Menu", "field"=>"imagen", "valor"=>$v['Menu']['imagen']);
-	$fila[] = array("model"=>"Menu", "field"=>"orden", "valor"=>$v['Menu']['orden']);
-	$fila[] = array("model"=>"Menu", "field"=>"controller", "valor"=>$v['Menu']['controller']);
-	$fila[] = array("model"=>"Menu", "field"=>"action", "valor"=>$v['Menu']['action']);
-	$fila[] = array("model"=>"Menu", "field"=>"estado", "valor"=>$v['Menu']['estado']);
-	$fila[] = array("model"=>"Parentmenu", "field"=>"etiqueta", "valor"=>$v['Parentmenu']['etiqueta'], "nombreEncabezado"=>"Padre", "class"=>"izquierda");
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose1', 'imagen' => array('nombre' => 'roles.gif', 'alt' => "Roles"), "url"=>'roles');
+	$fila[] = array('model' => "Menu", 'field' => "id", "valor"=>$id, "write"=>$v['Menu']['write'], "delete"=>$v['Menu']['delete']);
+	$fila[] = array('model' => "Menu", 'field' => "etiqueta", 'valor' => $v['Menu']['etiqueta']);
+	$fila[] = array('model' => "Menu", 'field' => "imagen", 'valor' => $v['Menu']['imagen']);
+	$fila[] = array('model' => "Menu", 'field' => "orden", 'valor' => $v['Menu']['orden']);
+	$fila[] = array('model' => "Menu", 'field' => "controller", 'valor' => $v['Menu']['controller']);
+	$fila[] = array('model' => "Menu", 'field' => "action", 'valor' => $v['Menu']['action']);
+	$fila[] = array('model' => "Menu", 'field' => "estado", 'valor' => $v['Menu']['estado']);
+	$fila[] = array('model' => "Parentmenu", 'field' => "etiqueta", 'valor' => $v['Parentmenu']['etiqueta'], "nombreEncabezado"=>"Padre", "class"=>"izquierda");
 	$cuerpo[] = $fila;
 }
 
-echo $this->renderElement("index/index", array("condiciones"=>$fieldset, "cuerpo"=>$cuerpo));
+echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo));
 
 ?>

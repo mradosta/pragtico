@@ -212,13 +212,13 @@ else {
 																									"Trabajador.apellido")));
 	$condiciones['Condicion.Novedad-tipo'] = array("type"=>"checkboxMultiple", "options"=>$tiposIngreso);
 	$condiciones['Condicion.Novedad-formato'] = array("type"=>"radio");
-	$fieldsets[] = array("campos"=>$condiciones);
+	$fieldsets[] = array('campos' => $condiciones);
 	
-	$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"Novedades", "imagen"=>"novedades.gif")));
+	$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Novedades", 'imagen' => 'novedades.gif')));
 	$opcionesTabla['tabla']['omitirMensajeVacio'] = true;
 	$accionesExtra['opciones'] = array("acciones"=>array($formulario->link("Generar", null, array("class"=>"link_boton", "id"=>"confirmar", "title"=>"Confirma las liquidaciones seleccionadas"))));
 	$botonesExtra['opciones'] = array("botones"=>array("limpiar", $formulario->submit("Generar", array("title"=>"Genera la planilla base para importar novedades"))));
-	echo $this->renderElement("index/index", array("botonesExtra"=>$botonesExtra, "condiciones"=>$fieldset, "opcionesForm"=>array("action"=>"generar_planilla"), "opcionesTabla"=>$opcionesTabla));
+	echo $this->element('index/index', array("botonesExtra"=>$botonesExtra, "condiciones"=>$fieldset, "opcionesForm"=>array("action"=>"generar_planilla"), "opcionesTabla"=>$opcionesTabla));
 }
 
 ?>

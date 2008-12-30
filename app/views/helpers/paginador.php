@@ -8,20 +8,20 @@
  *
  * @filesource
  * @copyright		Copyright 2005-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.views.helpers
- * @since			Pragtico v 1.0.0
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.views.helpers
+ * @since           Pragtico v 1.0.0
  * @version			$Revision$
  * @modifiedby		$LastChangedBy$
  * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * Clase que contiene el helper para la paginacion.
  *
- * @package		pragtico
- * @subpackage	app.views.helpers
+ * @package     pragtico
+ * @subpackage  app.views.helpers
  */
 class PaginadorHelper extends AppHelper {
 
@@ -49,18 +49,18 @@ class PaginadorHelper extends AppHelper {
 		$options['url'] = array();
 		
 		$modelClass = Inflector::classify($this->params['controller']);
-		if(isset($this->params['paging'][$modelClass]['options']['order'])) {
-			if($options['model'] . "." . $this->Paginator->sortKey() === key($this->params['paging'][$modelClass]['options']['order'])) {
-				if($key == $this->Paginator->sortKey()) {
-					if($this->Paginator->sortDir() === "asc") {
+		if (isset($this->params['paging'][$modelClass]['options']['order'])) {
+			if ($options['model'] . "." . $this->Paginator->sortKey() === key($this->params['paging'][$modelClass]['options']['order'])) {
+				if ($key == $this->Paginator->sortKey()) {
+					if ($this->Paginator->sortDir() === "asc") {
 						$options['class'] = "asc_orden";
 						$options['title'] = __("Descending order", true);
-						$options['url'] = array("direction"=>"desc");
+						$options['url'] = array("direction" => "desc");
 					}
 					else {
 						$options['class'] = "desc_orden";
 						$options['title'] = __("Ascending order", true);
-						$options['url'] = array("direction"=>"asc");
+						$options['url'] = array("direction" => "asc");
 					}
 				}
 			}
@@ -71,23 +71,23 @@ class PaginadorHelper extends AppHelper {
 		*/
 		else {
 			$instanciaModel =& ClassRegistry::getObject($modelClass);
-			if(!empty($instanciaModel->order)) {
-				if(!empty($instanciaModel->order[$modelClass . "." . $key])) {
-					if($instanciaModel->order[$modelClass . "." . $key] === "desc") {
+			if (!empty($instanciaModel->order)) {
+				if (!empty($instanciaModel->order[$modelClass . "." . $key])) {
+					if ($instanciaModel->order[$modelClass . "." . $key] === "desc") {
 						$options['class'] = "desc_orden";
 						$options['title'] = __("Ascending order", true);
-						$options['url'] = array("direction"=>"asc");
+						$options['url'] = array("direction" => "asc");
 					}
-					elseif($instanciaModel->order[$modelClass . "." . $key] === "asc") {
+					elseif ($instanciaModel->order[$modelClass . "." . $key] === "asc") {
 						$options['class'] = "asc_orden";
 						$options['title'] = __("Descending order", true);
-						$options['url'] = array("direction"=>"desc");
+						$options['url'] = array("direction" => "desc");
 					}
 				}
 				else {
 					$options['class'] = "sin_orden";
 					$options['title'] = __("Ascending order", true);
-					$options['url'] = array("direction"=>"asc");
+					$options['url'] = array("direction" => "asc");
 				}
 			}
 		}
@@ -97,8 +97,8 @@ class PaginadorHelper extends AppHelper {
 		* Me aseguro de no perder ningun parametro que venga via url.
 		* Saco los propios del paginador.
 		*/
-		foreach(array("named", "pass") as $nombre) {
-			if(!empty($this->params[$nombre])) {
+		foreach (array("named", "pass") as $nombre) {
+			if (!empty($this->params[$nombre])) {
 				unset($this->params[$nombre]['direction']);
 				unset($this->params[$nombre]['sort']);
 				unset($this->params[$nombre]['page']);
@@ -126,7 +126,7 @@ class PaginadorHelper extends AppHelper {
 		* Si no estan seteadas la variables de la paginacion, no hago nada con el paginador.
 		*/
 		$model = Inflector::classify($this->Paginator->params['controller']);
-		if(empty($this->Paginator->params['paging'][$model]['count'])) {
+		if (empty($this->Paginator->params['paging'][$model]['count'])) {
 			return "";
 		}
 		
@@ -140,10 +140,10 @@ class PaginadorHelper extends AppHelper {
 				$out = null;
 				
 				/*
-				if($this->traerPreferencia("paginacion") === "ajax") {
+				if ($this->traerPreferencia("paginacion") === "ajax") {
 					$targetId = "index";
 					//$targetId = "contenido";
-					if($this->traerPreferencia("lov_apertura") !== "popup" && !empty($opciones['url']['targetId'])) {
+					if ($this->traerPreferencia("lov_apertura") !== "popup" && !empty($opciones['url']['targetId'])) {
 						$targetId = $opciones['url']['targetId'];
 					}
 					$this->Paginator->options(am(array('update'=>$targetId), $this->Paginator->options, $opciones));
@@ -152,24 +152,24 @@ class PaginadorHelper extends AppHelper {
 				$params=$this->Paginator->params();
 				
 				if (isset($params['page']) && $params['page']>1) {
-					$retorno = $this->Paginator->link($this->Formulario->image("primera.gif", array("alt"=>__("Go to first page", true))), array('page'=>1), array_merge(array('escape'=>false), $opciones));
+					$retorno = $this->Paginator->link($this->Formulario->image('primera.gif', array("alt"=>__("Go to first page", true))), array('page'=>1), array_merge(array('escape'=>false), $opciones));
 				} else {
-					$retorno = $this->Formulario->image("primeraoff.gif");
+					$retorno = $this->Formulario->image('primeraoff.gif');
 				}
 				$out[] = $this->Formulario->tag("span", $retorno);
 
-				$prev = $this->Paginator->prev($this->Formulario->image("anterior.gif", array("alt"=>__("Go to previews page", true))), array_merge(array('escape'=>false), $opciones));
+				$prev = $this->Paginator->prev($this->Formulario->image('anterior.gif', array("alt"=>__("Go to previews page", true))), array_merge(array('escape'=>false), $opciones));
 				if (is_null($prev)) {
-					$retorno = $this->Formulario->image("anterioroff.gif");
+					$retorno = $this->Formulario->image('anterioroff.gif');
 				} else {
 					$retorno = $prev;
 				}
 				$out[] = $this->Formulario->tag("span", $retorno);
 
 				
-				$next = $this->Paginator->next($this->Formulario->image("siguiente.gif", array("alt"=>__("Go to next page", true))), array_merge($opciones, array('escape'=>false)));
+				$next = $this->Paginator->next($this->Formulario->image('siguiente.gif', array("alt"=>__("Go to next page", true))), array_merge($opciones, array('escape'=>false)));
 				if (is_null($next)) {
-					$retorno = $this->Formulario->image("siguienteoff.gif");
+					$retorno = $this->Formulario->image('siguienteoff.gif');
 				}
 				else {
 					$retorno = $next;
@@ -178,10 +178,10 @@ class PaginadorHelper extends AppHelper {
 
 				
 				if (isset($params['page']) && $params['page']<$params['pageCount']) {
-					$retorno = $this->Paginator->link($this->Formulario->image("ultima.gif", array("alt"=>__("Go to last page", true))), array('page'=>$params['pageCount']), array_merge(array('escape'=>false), $opciones));
+					$retorno = $this->Paginator->link($this->Formulario->image('ultima.gif', array("alt"=>__("Go to last page", true))), array('page'=>$params['pageCount']), array_merge(array('escape'=>false), $opciones));
 				}
 				else {
-					$retorno = $this->Formulario->image("ultimaoff.gif");
+					$retorno = $this->Formulario->image('ultimaoff.gif');
 				}
 				$out[] = $this->Formulario->tag("span", $retorno);
 				

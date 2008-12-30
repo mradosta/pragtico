@@ -30,12 +30,12 @@ $campos['ConveniosInformacion.informacion_id'] = array(	"options"		=> "listable"
 														"displayField"	=> "Informacion.nombre",
 														"model"			=> "Informacion");
 $campos['ConveniosInformacion.valor'] = array();
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Informacion", "imagen"=>"informaciones.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Informacion", 'imagen' => 'informaciones.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset));
+echo $this->element('add/add', array('fieldset' => $fieldset));
 ?>

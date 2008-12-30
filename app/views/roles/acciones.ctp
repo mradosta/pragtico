@@ -23,15 +23,15 @@
 $cuerpo = null;
 foreach ($this->data['Accion'] as $k=>$v) {
 	$fila = null;
-	$fila[] = array("model"=>"RolesAccion", "field"=>"id", "valor"=>$v['RolesAccion']['id'], "write"=>$v['RolesAccion']['write'], "delete"=>$v['RolesAccion']['delete']);
-	$fila[] = array("model"=>"Controlador", "field"=>"etiqueta", "valor"=>$v['Controlador']['nombre'], "nombreEncabezado"=>"Controlador");
-	$fila[] = array("model"=>"Accion", "field"=>"etiqueta", "valor"=>$v['etiqueta'], "nombreEncabezado"=>"Accion");
-	$fila[] = array("model"=>"RolesAccion", "field"=>"estado", "valor"=>$v['RolesAccion']['estado']);
+	$fila[] = array('model' => "RolesAccion", 'field' => "id", 'valor' => $v['RolesAccion']['id'], "write"=>$v['RolesAccion']['write'], "delete"=>$v['RolesAccion']['delete']);
+	$fila[] = array('model' => "Controlador", 'field' => "etiqueta", 'valor' => $v['Controlador']['nombre'], "nombreEncabezado"=>"Controlador");
+	$fila[] = array('model' => "Accion", 'field' => "etiqueta", 'valor' => $v['etiqueta'], "nombreEncabezado"=>"Accion");
+	$fila[] = array('model' => "RolesAccion", 'field' => "estado", 'valor' => $v['RolesAccion']['estado']);
 	$cuerpo[] = $fila;
 }
 
-$url[] = array("controller"=>"roles_acciones", "action"=>"add", "RolesAccion.rol_id"=>$this->data['Rol']['id']);
-$url[] = array("controller"=>"roles_acciones", "action"=>"add_rapido", "RolesAccion.rol_id"=>$this->data['Rol']['id'], "texto"=>"Carga Rapida");
-echo $this->renderElement("desgloses/agregar", array("url"=>$url, "titulo"=>"Acciones", "cuerpo"=>$cuerpo));
+$url[] = array('controller' => "roles_acciones", 'action' => 'add', "RolesAccion.rol_id"=>$this->data['Rol']['id']);
+$url[] = array('controller' => "roles_acciones", 'action' => "add_rapido", "RolesAccion.rol_id"=>$this->data['Rol']['id'], "texto"=>"Carga Rapida");
+echo $this->element('desgloses/agregar', array('url' => $url, 'titulo' => "Acciones", 'cuerpo' => $cuerpo));
 
 ?>

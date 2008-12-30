@@ -28,12 +28,12 @@ $campos['AusenciasMotivo.situacion_id'] = array(	"aclaracion"=>	"Opcional: Se re
 																	"seleccionMultiple"	=> 	0,
 																		"camposRetorno"	=> 	array(	"Situacion.codigo",
 																									"Situacion.nombre")));
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Motivos de Ausencia", "imagen"=>"motivos.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Motivos de Ausencia", 'imagen' => 'motivos.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset));
+echo $this->element('add/add', array('fieldset' => $fieldset));
 ?>

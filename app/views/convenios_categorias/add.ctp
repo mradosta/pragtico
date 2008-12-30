@@ -29,7 +29,7 @@ $campos['ConveniosCategoria.nombre'] = array();
 $campos['ConveniosCategoria.jornada'] = array();
 $campos['ConveniosCategoria.observacion'] = array();
 
-$fieldsets[] = 	array("campos"=>$campos, "opciones"=>array("fieldset"=>array("legend"=>"Datos de la Categoria", "imagen"=>"categorias.gif")));
+$fieldsets[] = 	array('campos' => $campos, "opciones"=>array('fieldset' => array("legend"=>"Datos de la Categoria", 'imagen' => 'categorias.gif')));
 
 $campos = null;
 $campos['ConveniosCategoriasHistorico.id'] = array();
@@ -37,7 +37,7 @@ $campos['ConveniosCategoriasHistorico.desde'] = array();
 $campos['ConveniosCategoriasHistorico.hasta'] = array();
 $campos['ConveniosCategoriasHistorico.costo'] = array("label"=>"Costo $");
 $campos['ConveniosCategoriasHistorico.observacion'] = array();
-$fieldsets[] = array("campos"=>$campos, "opciones"=>array("fieldset"=>array("class"=>"detail", "legend"=>"Historicos", "imagen"=>"historicos.gif")));
+$fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array("class"=>"detail", "legend"=>"Historicos", 'imagen' => 'historicos.gif')));
 
 
 $fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Categoria")));
@@ -45,7 +45,7 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "migaEdit" => $this->data[0]['ConveniosCategoria']['nombre']));
+echo $this->element('add/add', array('fieldset' => $fieldset, "migaEdit" => $this->data[0]['ConveniosCategoria']['nombre']));
 $this->addScript($ajax->jsPredefinido(array("tipo"=>"detalle", "agregar"=>true, "quitar"=>true)));
 
 ?>

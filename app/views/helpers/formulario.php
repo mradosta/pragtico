@@ -8,21 +8,21 @@
  *
  * @filesource
  * @copyright		Copyright 2005-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.views.helpers
- * @since			Pragtico v 1.0.0
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.views.helpers
+ * @since           Pragtico v 1.0.0
  * @version			$Revision$
  * @modifiedby		$LastChangedBy$
  * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 App::import('Helper', 'Form');
 /**
  * Helper para la creacion de la capa de presentacion.
  *
- * @package		pragtico
- * @subpackage	app.views.helpers
+ * @package     pragtico
+ * @subpackage  app.views.helpers
  */
 class FormularioHelper extends FormHelper {
 	
@@ -40,7 +40,7 @@ class FormularioHelper extends FormHelper {
  *
  * @param string $name Text for link
  * @param string $link URL for link (if empty it won't be a link)
- * @param mixed $options Link attributes e.g. array('id'=>'selected')
+ * @param mixed $options Link attributes e.g. array('id' => 'selected')
  */
 	function addCrumb($name, $link = null, $options = null) {
 		$this->Html->addCrumb($name, $link, $options);
@@ -70,7 +70,7 @@ class FormularioHelper extends FormHelper {
  * @return string The formatted tag element
  */
 	function tag($name, $text = null, $attributes = array(), $escape = false) {
-		if(is_array($text)) {
+		if (is_array($text)) {
 			$text = implode("", $text);
 		}
 		$out = $this->Html->tag($name, $text, $attributes, $escape);
@@ -109,17 +109,17 @@ class FormularioHelper extends FormHelper {
 		* Genero la leyenda.
 		*/
 		$legend = "";
-		if($this->action === "edit") {
+		if ($this->action === "edit") {
 			$legend = __('Edit', true) . ' ';
 		}
-		elseif($this->action === "add") {
+		elseif ($this->action === "add") {
 			$legend = __('New', true) . ' ';
 		}
-		elseif($this->action === "index") {
+		elseif ($this->action === "index") {
 			$legend = __('Search', true) . ' ';
 		}
-		if(!empty($opcionesFs['fieldset']['legend'])) {
-			if($opcionesFs['fieldset']['legend'][0] !== "!") {
+		if (!empty($opcionesFs['fieldset']['legend'])) {
+			if ($opcionesFs['fieldset']['legend'][0] !== "!") {
 				$opcionesFs['fieldset']['legend'] = $legend . " " . $opcionesFs['fieldset']['legend'];
 			}
 			else {
@@ -134,20 +134,20 @@ class FormularioHelper extends FormHelper {
 		/**
 		* Me aseguro de trabajar siempre con un array. Si no lo es, lo convierto en uno.
 		*/
-		if(!isset($this->data[0])) {
+		if (!isset($this->data[0])) {
 			$this->data = array($this->data);
 		}
 		/**
 		* Separo los fieldSets de master de los de details.
 		*/
-		foreach($fieldsets as $fieldset) {
+		foreach ($fieldsets as $fieldset) {
 			$classes = null;
-			if(empty($fieldset['opciones'])) {
+			if (empty($fieldset['opciones'])) {
 				$fieldset['opciones'] = array();
 			}
 			
-			if(empty($fieldset['opciones']['fieldset']['class']) || strpos("master", $fieldset['opciones']['fieldset']['class']) !== false) {
-				if(empty($fieldset['opciones']['fieldset']['class'])) {
+			if (empty($fieldset['opciones']['fieldset']['class']) || strpos("master", $fieldset['opciones']['fieldset']['class']) !== false) {
+				if (empty($fieldset['opciones']['fieldset']['class'])) {
 					$fieldset['opciones']['fieldset']['class'] = "master";
 				}
 				$fieldsetsMaster[] = $fieldset;
@@ -161,21 +161,21 @@ class FormularioHelper extends FormHelper {
 
 		$salida = null;
 		$cantidadRegistros = count($this->data);
-		foreach($this->data as $k=>$v) {
+		foreach ($this->data as $k=>$v) {
 
-			foreach($fieldsetsMaster as $key=>$fieldset) {
+			foreach ($fieldsetsMaster as $key=>$fieldset) {
 				$salidaMaster = null;
-				foreach($fieldset['campos'] as $campo=>$opcionesCampo) {
+				foreach ($fieldset['campos'] as $campo=>$opcionesCampo) {
 
-					if(preg_match("/^Condicion./", $campo)) {
+					if (preg_match("/^Condicion./", $campo)) {
 						$tmpName = $campo;
 						$tmpName = preg_replace("/^Condicion./", "", $tmpName);
 						list($model, $field) = explode("-", $tmpName);
 
-						if(substr($field, strlen($field) - 7) == "__desde") {
+						if (substr($field, strlen($field) - 7) == "__desde") {
 							$field = str_replace("__desde", "", $field);
 						}
-						elseif(substr($field, strlen($field) - 7) == "__hasta") {
+						elseif (substr($field, strlen($field) - 7) == "__hasta") {
 							$field = str_replace("__hasta", "", $field);
 						}
 					}
@@ -183,15 +183,15 @@ class FormularioHelper extends FormHelper {
 						list($model, $field) = explode(".", $campo);
 					}
 
-					if(isset($v[$model][$field])) {
+					if (isset($v[$model][$field])) {
 						$opcionesCampo['value'] = $v[$model][$field];
 					}
 
-					if(!empty($this->validationErrors[$model][$k][$field]) || !empty($this->validationErrors[$model][$k][$model][$field])) {
-						if(empty($opcionesCampo['after'])) {
+					if (!empty($this->validationErrors[$model][$k][$field]) || !empty($this->validationErrors[$model][$k][$model][$field])) {
+						if (empty($opcionesCampo['after'])) {
 							$opcionesCampo['after'] = "";
 						}
-						if(!empty($this->validationErrors[$model][$k][$field])) {
+						if (!empty($this->validationErrors[$model][$k][$field])) {
 							$opcionesCampo['after'] .= $this->Html->tag("div", $this->validationErrors[$model][$k][$field], array("class" => "error-message"));
 						}
 						else {
@@ -202,7 +202,7 @@ class FormularioHelper extends FormHelper {
 					* Si no se trata de una edicionMultiple o un formulario en el que haya mas de un fs,
 					* no la complico con arrays y me manejo con la forma de cakePHP.
 					*/
-					if($cantidadRegistros > 1) {
+					if ($cantidadRegistros > 1) {
 						$opcionesCampo['name'] = "data[" . $k . "][" . $model . "][" . $field . "]";
 					}
 					$this->data = $v;
@@ -212,39 +212,39 @@ class FormularioHelper extends FormHelper {
 				//$fsMaster[$k][] = $this->tag('div', $salidaMaster, $fieldset['opciones']);
 				$salidaMaster = null;
 
-				if(!empty($fieldsetsDetail)) {
+				if (!empty($fieldsetsDetail)) {
 					$salidaDetail = null;
-					foreach($fieldsetsDetail as $key=>$fieldset) {
+					foreach ($fieldsetsDetail as $key=>$fieldset) {
 						$modelsDetail = null;
-						foreach($fieldset['campos'] as $campo=>$opcionesCampoDetail) {
+						foreach ($fieldset['campos'] as $campo=>$opcionesCampoDetail) {
 							list($modelDetail, $fieldDetail) = explode(".", $campo);
 							$modelsDetail[$modelDetail] = $modelDetail;
 						}
 						
-						foreach($modelsDetail as $modelDetail) {
+						foreach ($modelsDetail as $modelDetail) {
 							/**
 							* Cuando sea un nuevo registro, esto estara vacio. Lo creo vacio para que de una vuelta.
 							*/
-							if(empty($v[$modelDetail])) {
+							if (empty($v[$modelDetail])) {
 								$v[$modelDetail] = array(array());
 							}
 							
-							foreach($v[$modelDetail] as $kDetail=>$vDetail) {
+							foreach ($v[$modelDetail] as $kDetail=>$vDetail) {
 								$this->data = $vDetail;
-								foreach($fieldset['campos'] as $campo=>$opcionesCampoDetail) {
+								foreach ($fieldset['campos'] as $campo=>$opcionesCampoDetail) {
 									list($modelDetail, $fieldDetail) = explode(".", $campo);
 									$opcionesCampoDetail['error'] = false;
-									if(!empty($this->validationErrors[$model][$k][$modelDetail][$kDetail][$fieldDetail])) {
-										if(empty($opcionesCampoDetail['after'])) {
+									if (!empty($this->validationErrors[$model][$k][$modelDetail][$kDetail][$fieldDetail])) {
+										if (empty($opcionesCampoDetail['after'])) {
 											$opcionesCampoDetail['after'] = "";
 										}
 										$opcionesCampoDetail['after'] .= $this->Html->tag("div", $this->validationErrors[$model][$k][$modelDetail][$kDetail][$fieldDetail], array("class" => "error-message"));
 									}
 
-									if(isset($vDetail[$fieldDetail])) {
+									if (isset($vDetail[$fieldDetail])) {
 										$opcionesCampoDetail['value'] = $vDetail[$fieldDetail];
 									}
-									if($cantidadRegistros > 1) {
+									if ($cantidadRegistros > 1) {
 										$opcionesCampoDetail['name'] = "data[" . $k . "][" . $modelDetail . "][" . $kDetail . "][" . $fieldDetail . "]";
 									}
 									else {
@@ -261,8 +261,8 @@ class FormularioHelper extends FormHelper {
 			}
 		}
 
-		if(count($fsMaster) > 1) {
-			if(empty($opcionesFs['fieldset']['legend'])) {
+		if (count($fsMaster) > 1) {
+			if (empty($opcionesFs['fieldset']['legend'])) {
 				$legend = " (Registro ##NUMERO## de " . count($fsMaster) . ")";
 			}
 			else {
@@ -271,17 +271,17 @@ class FormularioHelper extends FormHelper {
 		}
 		
 		$salida = null;
-		foreach($fsMaster as $k=>$v) {
+		foreach ($fsMaster as $k=>$v) {
 			$return = null;
-			foreach($v as $contenidoMaster) {
+			foreach ($v as $contenidoMaster) {
 				$return .= $contenidoMaster;
 			}
-			if(!empty($fsDetail[$k])) {
-				foreach($fsDetail[$k] as $contenidoDetail) {
+			if (!empty($fsDetail[$k])) {
+				foreach ($fsDetail[$k] as $contenidoDetail) {
 					$return .= $contenidoDetail;
 				}
 			}
-			if(count($fsMaster) > 1) {
+			if (count($fsMaster) > 1) {
 				$k++;
 				$opcionesFs['fieldset']['legend'] = str_replace("##NUMERO##", $k, $legend);
 			}
@@ -303,7 +303,7 @@ class FormularioHelper extends FormHelper {
 	
 	function addScript($script, $ubicacion = "ready") {
 		$view =& ClassRegistry::getObject('view');
-		if(in_array($ubicacion, array("ready", "links", "view"))) {
+		if (in_array($ubicacion, array("ready", "links", "view"))) {
 			$view->__myScripts[$ubicacion][] = $script;
 		}
 	}
@@ -318,10 +318,10 @@ class FormularioHelper extends FormHelper {
  * @return string The full SCRIPT element, with the JavaScript inside it.
  */
 	function codeBlock($script = null, $options = array()) {
-		if(!empty($options['ready']) && $options['ready'] === true) {
+		if (!empty($options['ready']) && $options['ready'] === true) {
 			$script = "jQuery(document).ready(function($) {" . $script . "});";
 		}
-		if(isset($options['script']) && $options['script'] === false) {
+		if (isset($options['script']) && $options['script'] === false) {
 			return $script;
 		}
 		
@@ -363,8 +363,8 @@ class FormularioHelper extends FormHelper {
 		/**
 		* Me aseguro que el archivo de la imagen exista, sino pongo una por defecto.
 		*/
-		if(!file_exists(WWW_ROOT . IMAGES_URL . $path)) {
-			$path = "noimage.gif";
+		if (!file_exists(WWW_ROOT . IMAGES_URL . $path)) {
+			$path = 'noimage.gif';
 		}
 
 		/**
@@ -393,8 +393,8 @@ class FormularioHelper extends FormHelper {
  * Ejemplo del array de encabezados encaso de que lo quiera especificar manualmente.
  *
  * <code>
- * $encabezado[] = $paginador->sort('Campo 1', 'campo1', array("model"=>"Model1"));
- * $encabezado[] = $paginador->sort('Campo 2', 'campo2', array("model"=>"Model2"));
+ * $encabezado[] = $paginador->sort('Campo 1', 'campo1', array("model" => "Model1"));
+ * $encabezado[] = $paginador->sort('Campo 2', 'campo2', array("model" => "Model2"));
  * </code>
  *
  *
@@ -403,12 +403,12 @@ class FormularioHelper extends FormHelper {
  * <code>
  *
  *	$fila = array();
- *	$fila[] 	= array("model"=>"Model1", "field"=>"campo1", "valor"=>"xx1");
- *	$fila[] 	= array("model"=>"Model1", "field"=>"campo1", "valor"=>"xx1", "orden"=>false);
- *	$fila[] 	= array("model"=>"Model2", "field"=>"campo1", "valor"=>"xxx2", "nombreEncabezado"=>"Cod.");
- *	$fila[] 	= array("tipo"=>"idDetail", "model"=>"Model2", "field"=>"campo1", "valor"=>"xxx2", "nombreEncabezado"=>"Cod.");
- *	$fila[] 	= array("tipo"=>"accion", "model"=>"Model2", "field"=>"campo1", "valor"=>"xxx2", "nombreEncabezado"=>"Cod.");
- *	$fila[] 	= array("tipo"=>"valor", "model"=>"Model2", "field"=>"campo1", "valor"=>"xxx2", "nombreEncabezado"=>"Cod.");
+ *	$fila[] 	= array("model" => "Model1", "field" => "campo1", "valor" => "xx1");
+ *	$fila[] 	= array("model" => "Model1", "field" => "campo1", "valor" => "xx1", "orden"=>false);
+ *	$fila[] 	= array("model" => "Model2", "field" => "campo1", "valor" => "xxx2", "nombreEncabezado" => "Cod.");
+ *	$fila[] 	= array("tipo" => "idDetail", "model" => "Model2", "field" => "campo1", "valor" => "xxx2", "nombreEncabezado" => "Cod.");
+ *	$fila[] 	= array("tipo" => "accion", "model" => "Model2", "field" => "campo1", "valor" => "xxx2", "nombreEncabezado" => "Cod.");
+ *	$fila[] 	= array("tipo" => "valor", "model" => "Model2", "field" => "campo1", "valor" => "xxx2", "nombreEncabezado" => "Cod.");
  *	$cuerpo[] = $fila;
  *  Los tipos pueden ser:
  *			- valor: el valor que tiene para pintarse.
@@ -417,7 +417,7 @@ class FormularioHelper extends FormHelper {
  *			- desglose: datos para generar un desglose.
  *
  * Puedo tambien querer enviar opciones a la fila, en cuyo caso queda asi:
- *  $cuerpo[] = array("contenido"=>$fila, "opciones"=>array("class"=>"fila_resaltada", "seleccionMultiple"=>false, "eliminar"=>false, "modificar"=>false, "permisos"=>false));
+ *  $cuerpo[] = array("contenido"=>$fila, "opciones"=>array("class" => "fila_resaltada", "seleccionMultiple"=>false, "eliminar"=>false, "modificar"=>false, "permisos"=>false));
  *
  * Ejemplo de uso de la funcion tabla.
  *
@@ -457,18 +457,18 @@ class FormularioHelper extends FormHelper {
 							'zebra'				=> true,
 							'simple'			=> false);
 
-		if(!empty($datos['tabla'])) {
+		if (!empty($datos['tabla'])) {
 			$opciones = array_merge($opciones, $datos['tabla']);
 		}
 
-		if(isset($this->params['named']['seleccionMultiple']) && $this->params['named']['seleccionMultiple'] == 0) {
+		if (isset($this->params['named']['seleccionMultiple']) && $this->params['named']['seleccionMultiple'] == 0) {
 			$opciones['seleccionMultiple'] = false;
 		}
 		
 		$opcionesHtmlValidas = array('class', 'colspan', 'id');
 		$opcionesHtml = array();
-		foreach($opcionesHtmlValidas as $v) {
-			if(isset($opciones[$v])) {
+		foreach ($opcionesHtmlValidas as $v) {
+			if (isset($opciones[$v])) {
 				$opcionesHtml[$v] = $opciones[$v];
 			}
 		}
@@ -478,30 +478,30 @@ class FormularioHelper extends FormHelper {
 		* Si es una tabla simple, no le pongo inteligencia, es decir,
 		* pinto lo que me venga.
 		*/
-		if($opciones['simple']){
-			foreach($datos['cuerpo'] as $f) {
+		if ($opciones['simple']){
+			foreach ($datos['cuerpo'] as $f) {
 				$cells = $headers = array();
-				foreach($f as $columna) {
-					if(empty($columna['type'])) {
+				foreach ($f as $columna) {
+					if (empty($columna['type'])) {
 						$columna['type'] == "cell";
 					}
-					if(empty($columna['opciones'])) {
+					if (empty($columna['opciones'])) {
 						$columna['opciones'] = array();
 					}
 					
-					if($columna['type'] == "header") {
+					if ($columna['type'] == "header") {
 						$headers[] = array($columna['valor'], $columna['opciones']);
 					}
-					elseif($columna['type'] == "cell") {
+					elseif ($columna['type'] == "cell") {
 						$cells[] = array($columna['valor'], $columna['opciones']);
 					}
 				}
 				
-				if(!empty($headers)) {
+				if (!empty($headers)) {
 					$filaHeaders[] = $headers;
 				}
 				
-				if(!empty($cells)) {
+				if (!empty($cells)) {
 					$filaCells[] = $cells;
 				}
 			}
@@ -517,37 +517,37 @@ class FormularioHelper extends FormHelper {
 		}
 		
 		$encabezados = array();
-		if(!empty($datos['encabezado'])) {
+		if (!empty($datos['encabezado'])) {
 			$encabezados = $datos['encabezado'];
 		}
 		
-		if(!empty($datos['cuerpo'])) {
+		if (!empty($datos['cuerpo'])) {
 			$cuerpo = array();
 			
-			if($opciones['permisos']) {
+			if ($opciones['permisos']) {
 				/**
 				* Lo agrego al array del cuerpo de la tabla.
 				*/
-				foreach($datos['cuerpo'] as $kk=>$vv) {
+				foreach ($datos['cuerpo'] as $kk=>$vv) {
 					/**
 					* El contenido de la fila puede venir como un array puro o dentro del elemento contenido.
 					*/
 					$opcionesFila = array();
-					if(!empty($vv['opciones'])) {
+					if (!empty($vv['opciones'])) {
 						$opcionesFila = $vv['opciones'];
 					}
 
 					/**
 					* Agrego el desglose de los permisos.
 					*/
-					if(!(isset($opcionesFila['permisos']) && $opcionesFila['permisos'] === false)) {
+					if (!(isset($opcionesFila['permisos']) && $opcionesFila['permisos'] === false)) {
 						$contenido = false;
-						if(!empty($vv['contenido'])) {
+						if (!empty($vv['contenido'])) {
 							$vv = $vv['contenido'];
 							$contenido = true;
 						}
-						foreach($vv as $kk1=>$vv1) {
-							if(isset($vv1['field']) && $vv1['field'] == "id" && !empty($vv1['valor'])) {
+						foreach ($vv as $kk1=>$vv1) {
+							if (isset($vv1['field']) && $vv1['field'] == "id" && !empty($vv1['valor'])) {
 								$registroPermisos = array(
 									"tipo"		=> "desglose",
 									"id"		=> $vv1['valor'],
@@ -556,7 +556,7 @@ class FormularioHelper extends FormHelper {
 									"alt"		=> "Permisos"),
 									"url"		=> array(	'controller' 	=> strtolower(Inflector::pluralize(Inflector::underscore($vv1['model']))), 
 															'action' 		=> 'permisos'));
-								if($contenido === true) {
+								if ($contenido === true) {
 									array_unshift($datos['cuerpo'][$kk]['contenido'], $registroPermisos);
 								}
 								else {
@@ -567,23 +567,23 @@ class FormularioHelper extends FormHelper {
 					}
 				}
 			}
-			foreach($datos['cuerpo'] as $k=>$v) {
+			foreach ($datos['cuerpo'] as $k=>$v) {
 				/**
 				* El contenido de la fila puede venir como un array puro o dentro del elemento contenido.
 				*/
 				$opcionesFila = array();
-				if(!empty($v['opciones'])) {
+				if (!empty($v['opciones'])) {
 					$opcionesFila = $v['opciones'];
 					/**
 					* Si por parametros me dice que no se permite la seleccion multiple, prevalece a la especificacion
 					* de la tabla y de la fila.
 					*/
-					if(isset($this->params['named']['seleccionMultiple']) && $this->params['named']['seleccionMultiple'] == 0) {
+					if (isset($this->params['named']['seleccionMultiple']) && $this->params['named']['seleccionMultiple'] == 0) {
 						$opcionesFila['opciones']['seleccionMultiple'] = false;
 					}
 					
 				}
-				if(!empty($v['contenido'])) {
+				if (!empty($v['contenido'])) {
 					$v = $v['contenido'];
 				}
 				
@@ -591,20 +591,20 @@ class FormularioHelper extends FormHelper {
 				$outDesgloses = array();
 
 				$acciones = array();
-				foreach($v as $campo) {
+				foreach ($v as $campo) {
 					$valor = "&nbsp;";
 					$atributosCelda = null;
 
-					if(isset($campo['valor'])) {
+					if (isset($campo['valor'])) {
 						$valor = $campo['valor'];
 					}
 					
-					if(!isset($campo['tipo']) || $campo['tipo'] == "datos") {
+					if (!isset($campo['tipo']) || $campo['tipo'] == "datos") {
 						$tipoCelda = "datos";
-						if(isset($campo['model'])) {
+						if (isset($campo['model'])) {
 							$modelKey = $campo['model'];
 						}
-						if(isset($campo['field'])) {
+						if (isset($campo['field'])) {
 							$nombreCampo = $campo['field'];
 						}
 					}
@@ -612,18 +612,18 @@ class FormularioHelper extends FormHelper {
 						$tipoCelda = $campo['tipo'];
 					}
 
-					if($tipoCelda === "accion") {
+					if ($tipoCelda === "accion") {
 						$acciones[] = $valor;
 						continue;
 					}
-					elseif($tipoCelda === "idDetail"){
+					elseif ($tipoCelda === "idDetail"){
 						$detailUrls = $campo['urls'];
 						continue;
 					}
-					elseif($tipoCelda === "desglose") {
+					elseif ($tipoCelda === "desglose") {
 						$sId = $campo['id'];
 						$image = $campo['url'];
-						if(isset($campo['imagen']['nombre'])) {
+						if (isset($campo['imagen']['nombre'])) {
 							$nombre = $campo['imagen']['nombre'];
 							unset($campo['imagen']['nombre']);
 							$image = $this->image($nombre, $campo['imagen']);
@@ -637,12 +637,12 @@ class FormularioHelper extends FormHelper {
 						* Puede que la url venga de la forma ../controller/action
 						* En este caso, solo me interesa la action.
 						$action = $campo['url'];
-						if(strstr($campo['url'], "/")) {
+						if (strstr($campo['url'], "/")) {
 							$action = array_pop(explode("/", $campo['url']));
 						}
 						*/
 						$url = null;
-						if(is_string($campo['url'])) {
+						if (is_string($campo['url'])) {
 							$url['controller'] = $this->params['controller'];
 							$url['action'] = $campo['url'];
 						}
@@ -659,52 +659,52 @@ class FormularioHelper extends FormHelper {
 						/**
 						* Si esta seteada la session de este desglose, pinto este desglose.
 						*/
-						if($this->Session->check("desgloses")) {
+						if ($this->Session->check("desgloses")) {
 							$desgloses = $this->Session->read("desgloses");
-						 	if(isset($desgloses[$this->params['controller'] . "-" . $url['action'] . "-" . $sId])) {
+						 	if (isset($desgloses[$this->params['controller'] . "-" . $url['action'] . "-" . $sId])) {
 								$jsDesglose[] = "jQuery('." . $this->params['controller'] . "-" . $url['action'] . "-" . $sId . "').trigger('click');";
 							}
 						}
 						
-						//$contenido = $this->Html->div(null, null, array("id"=>$campo['update'] . "_" . $sId, "class"=>"div_desglose"));
-						$contenido = $this->tag("div", "", array("id"=>$campo['update'] . "_" . $sId, "class"=>"desglose"));
-						$atributosFila = array("id"=>"tr_" . $campo['update'] . "_" . $sId, "class"=>"desglose");
+						//$contenido = $this->Html->div(null, null, array("id"=>$campo['update'] . "_" . $sId, "class" => "div_desglose"));
+						$contenido = $this->tag("div", "", array("id"=>$campo['update'] . "_" . $sId, "class" => "desglose"));
+						$atributosFila = array("id" => "tr_" . $campo['update'] . "_" . $sId, "class" => "desglose");
 						$outDesgloses[] = array($contenido, array("colspan"=>10), $atributosFila);
 						continue;
 					}
 					
 					$atributos = array();
-					foreach($opcionesHtmlValidas as $opcionHtml) {
-						if(isset($campo[$opcionHtml])) {
+					foreach ($opcionesHtmlValidas as $opcionHtml) {
+						if (isset($campo[$opcionHtml])) {
 							$atributos[$opcionHtml] = $campo[$opcionHtml];
 						}
 					}
-					if(!empty($modelKey)) {
-						if($k==0 && $opciones['mostrarEncabezados'] && empty($datos['encabezado'])) {
+					if (!empty($modelKey)) {
+						if ($k==0 && $opciones['mostrarEncabezados'] && empty($datos['encabezado'])) {
 							/**
 							* El parametro, en caso de ser una lov, viene o por url o en $this->data
 							*/
-							if(isset($this->params['pass']['retornarA']) && !empty($this->params['pass']['retornarA'])) {
-								$params['url'] = array("retornarA"=>$opciones['seleccionLov']['retornarA'], "layout"=>"lov");
+							if (isset($this->params['pass']['retornarA']) && !empty($this->params['pass']['retornarA'])) {
+								$params['url'] = array("retornarA"=>$opciones['seleccionLov']['retornarA'], "layout" => "lov");
 							}
-							elseif(isset($this->data['Formulario']['retornarA']) && !empty($this->data['Formulario']['retornarA'])) {
-								$params['url'] = array("retornarA"=>$this->data['Formulario']['retornarA'], "layout"=>"lov");
+							elseif (isset($this->data['Formulario']['retornarA']) && !empty($this->data['Formulario']['retornarA'])) {
+								$params['url'] = array("retornarA"=>$this->data['Formulario']['retornarA'], "layout" => "lov");
 							}
 							$params['model'] = $modelKey;
 
-							if(isset($campo['nombreEncabezado'])) {
+							if (isset($campo['nombreEncabezado'])) {
 								$nombre = inflector::humanize($campo['nombreEncabezado']);
 							}
 							else {
 								$nombre = inflector::humanize($nombreCampo);
 							}
 							
-							if(!($nombreCampo == "id" && !$opciones['mostrarIds'])) {
-								if(isset($campo['orden']) && $campo['orden'] === false) {
+							if (!($nombreCampo == "id" && !$opciones['mostrarIds'])) {
+								if (isset($campo['orden']) && $campo['orden'] === false) {
 									$encabezados[] = $nombre;
 								}
 								else {
-									if($opciones['ordenEnEncabezados']) {
+									if ($opciones['ordenEnEncabezados']) {
 										$encabezados[] = $this->Paginador->sort($nombre, $nombreCampo, $params);
 									}
 									else {
@@ -715,20 +715,20 @@ class FormularioHelper extends FormHelper {
 						}
 
 						$model =& ClassRegistry::getObject($modelKey);
-						if(!array_key_exists("class", $atributos) && is_object($model)) {
+						if (!array_key_exists("class", $atributos) && is_object($model)) {
 							$columnType = $model->getColumnType($nombreCampo);
-							if(substr($columnType, 0, 5) == "enum(") {
+							if (substr($columnType, 0, 5) == "enum(") {
 								$columnType = "enum";
 							}
 						}
-						if(!empty($campo['tipoDato'])) {
+						if (!empty($campo['tipoDato'])) {
 							$columnType = $campo['tipoDato'];
 						}
-						if(!empty($columnType)) {
+						if (!empty($columnType)) {
 							switch($columnType) {
 								case "moneda":
 									$clase = "derecha";
-									$valor = $this->Formato->format($valor, array("type"=>"moneda"));
+									$valor = $this->Formato->format($valor, array("type" => "moneda"));
 									break;
 								case "enum":
 									$clase = "centro";
@@ -754,7 +754,7 @@ class FormularioHelper extends FormHelper {
 									$clase = "izquierda";
 									break;
 							}
-							if(empty($campo['class'])) {
+							if (empty($campo['class'])) {
 								$atributos = array("class"=>$clase);
 							}
 							else {
@@ -762,31 +762,31 @@ class FormularioHelper extends FormHelper {
 							}
 						}
 						
-						if($nombreCampo == "id") {
+						if ($nombreCampo == "id") {
 							$id = $valor;
 
 							$controller = "";
-							if(isset($this->params['url']['url'])) {
+							if (isset($this->params['url']['url'])) {
 								$parse = router::parse($this->params['url']['url']);
 								$esController = strtolower(inflector::pluralize(inflector::underscore($campo['model'])));
-								if($parse['controller'] != $esController) {
+								if ($parse['controller'] != $esController) {
 									$controller = "../" . $esController . "/";
 								}
 							}
 							
-							if($opciones['seleccionLov']) {
-								if(isset($opciones['seleccionLov']['camposRetorno']) && !empty($opciones['seleccionLov']['camposRetorno'])) {
+							if ($opciones['seleccionLov']) {
+								if (isset($opciones['seleccionLov']['camposRetorno']) && !empty($opciones['seleccionLov']['camposRetorno'])) {
 									$valoresRetorno = array();
-									foreach(explode("|", $opciones['seleccionLov']['camposRetorno']) as $campoRetorno) {
+									foreach (explode("|", $opciones['seleccionLov']['camposRetorno']) as $campoRetorno) {
 										list($mRetorno, $cRetorno) = explode(".", $campoRetorno);
-										foreach($v as $kk=>$vv){
-											if(isset($vv['model']) && isset($vv['field']) && $vv['model'] == $mRetorno && $vv['field'] == $cRetorno) {
+										foreach ($v as $kk=>$vv){
+											if (isset($vv['model']) && isset($vv['field']) && $vv['model'] == $mRetorno && $vv['field'] == $cRetorno) {
 												$valoresRetorno[] = $vv['valor'];
 												break;
 											}
 										}
 									}
-									if(isset($opciones['seleccionLov']['separadorRetorno'])) {
+									if (isset($opciones['seleccionLov']['separadorRetorno'])) {
 										$retono = implode($opciones['seleccionLov']['separadorRetorno'], $valoresRetorno);
 									}
 									else {
@@ -797,19 +797,18 @@ class FormularioHelper extends FormHelper {
 									$retono = $id;
 								}
 								/*
-								if($this->traerPreferencia("lov_apertura") == "popup") {
+								if ($this->traerPreferencia("lov_apertura") == "popup") {
 									$padre = "opener";
 								}
 								else {
 									$padre = "";
 								}
-								array_unshift($acciones, $this->link($this->image("seleccionar.gif", array("alt"=>"Selecciona este registro")), null, array("class"=>"seleccionar jqmClose", "id"=>"xsxs", "title"=>$retono, "onclick"=>"retornoLov('" . $opciones['seleccionLov']['retornarA'] . "','" . $id . "', '" . str_replace("'", "\'", $retono) . "', '" . $padre . "');")));
+								array_unshift($acciones, $this->link($this->image('seleccionar.gif', array("alt" => "Selecciona este registro")), null, array("class" => "seleccionar jqmClose", "id" => "xsxs", "title"=>$retono, "onclick" => "retornoLov('" . $opciones['seleccionLov']['retornarA'] . "','" . $id . "', '" . str_replace("'", "\'", $retono) . "', '" . $padre . "');")));
 								*/
-								array_unshift($acciones, $this->link($this->image("seleccionar.gif", array("alt"=>"Selecciona este registro")), null, array("class"=>"seleccionar jqmClose", "id"=>"xsxs", "title"=>$retono, "onclick"=>"retornoLov('" . $opciones['seleccionLov']['retornarA'] . "','" . $id . "', '" . str_replace("'", "\'", $retono) . "', 'opener');")));
 								/**
 								* Cuando se trata de una lov que viene de una busqueda y solo retorna un registro, se lo autoselecciono y cierro la lov.
 								*/
-								if(!empty($this->params['named']['layout']) && $this->params['named']['layout'] === "lov" && !empty($this->params['named']['accion']) && $this->params['named']['accion'] === "buscar" && count($datos['cuerpo']) === 1) {
+								if (!empty($this->params['named']['layout']) && $this->params['named']['layout'] === "lov" && !empty($this->params['named']['accion']) && $this->params['named']['accion'] === "buscar" && count($datos['cuerpo']) === 1) {
 									$view =& ClassRegistry::getObject('view');
 									$view->jsCode[] = "jQuery('.jqmClose').trigger('click');";
 								}
@@ -819,53 +818,53 @@ class FormularioHelper extends FormHelper {
 							* Lo utilizo para saber cual fue el origen (desde donde viene) este request,
 							* asi evito agregarlo al history.
 							$origen = "";
-							if($this->params['isAjax'] == "1") {
+							if ($this->params['isAjax'] == "1") {
 								$origen = "/origenIsAjax:1";
 							}
 							*/
 							
-							if($opciones['eliminar'] && (!(isset($opcionesFila['eliminar']) && $opcionesFila['eliminar'] === false))) {
-								if($campo['delete']) {
+							if ($opciones['eliminar'] && (!(isset($opcionesFila['eliminar']) && $opcionesFila['eliminar'] === false))) {
+								if ($campo['delete']) {
 									$urlLink = $controller . "delete/" . $id;
-									if(isset($detailUrls['delete'])) {
+									if (isset($detailUrls['delete'])) {
 										$urlLink = $detailUrls['delete'];
 									}
-									array_unshift($acciones, $this->link($this->image("delete.gif", array("alt"=>"Elimina este registro")), $urlLink, array(), "Esta seguro que desea eliminar el registro?", false));
+									array_unshift($acciones, $this->link($this->image('delete.gif', array("alt" => "Elimina este registro")), $urlLink, array(), "Esta seguro que desea eliminar el registro?", false));
 								}
 								else {
-									array_unshift($acciones, $this->image("delete_disable.gif", array("alt"=>"Elimina este registro")));
+									array_unshift($acciones, $this->image('delete_disable.gif', array("alt" => "Elimina este registro")));
 								}
 							}
 							
-							if($opciones['modificar'] && (!(isset($opcionesFila['modificar']) && $opcionesFila['modificar'] === false))) {
-								if($campo['write']) {
+							if ($opciones['modificar'] && (!(isset($opcionesFila['modificar']) && $opcionesFila['modificar'] === false))) {
+								if ($campo['write']) {
 									//$urlLink = $controller . "edit/" . $id . $origen;
 									$urlLink = $controller . "edit/" . $id;
-									if(isset($detailUrls['edit'])) {
+									if (isset($detailUrls['edit'])) {
 										$urlLink = $detailUrls['edit'];
 									}
-									array_unshift($acciones, $this->link($this->image("edit.gif", array("alt"=>"Modifica este registro")), $urlLink));
+									array_unshift($acciones, $this->link($this->image('edit.gif', array("alt" => "Modifica este registro")), $urlLink));
 								}
 								else {
-									array_unshift($acciones, $this->image("edit_disable.gif", array("alt"=>"Modifica este registro")));
+									array_unshift($acciones, $this->image('edit_disable.gif', array("alt" => "Modifica este registro")));
 								}
 							}
 							
 							/**
 							* Puede que la tabla indique seleccion multiple, pero esta fila particular no.
 							*/
-							if($opciones['seleccionMultiple'] && (!(isset($opcionesFila['seleccionMultiple']) && $opcionesFila['seleccionMultiple'] === false))) {
+							if ($opciones['seleccionMultiple'] && (!(isset($opcionesFila['seleccionMultiple']) && $opcionesFila['seleccionMultiple'] === false))) {
 								/**
 								* Si debo agregarlo, lo agrego al principio de todas las acciones.
 								*/
-								array_unshift($acciones, $this->input("seleccionMultiple.id_" . $id, array("type"=>"checkbox", "label"=>false, "div"=>false)));
+								array_unshift($acciones, $this->input("seleccionMultiple.id_" . $id, array("type" => "checkbox", "label"=>false, "div"=>false)));
 							}
 							
 							/**
 							* Si debo mostrar los Ids y tengo alguna accion debo agregar una columna
 							*/
-							if($opciones['mostrarIds'] && !empty($acciones)) {
-								if(empty($atributos['class'])) {
+							if ($opciones['mostrarIds'] && !empty($acciones)) {
+								if (empty($atributos['class'])) {
 									$atributos['class'] = "derecha";
 								}
 								$cellsOut[] = array($id, $atributos);
@@ -879,13 +878,13 @@ class FormularioHelper extends FormHelper {
 					/**
 					* Fuerzo $valor a string, porque si $valor = 0, no evaluara.
 					*/
-					if($valor . "" != "NO PINTAR") {
+					if ($valor . "" != "NO PINTAR") {
 						$cellsOut[] = array($valor, $atributos);
 					}
 				}
 
-				if(!empty($acciones)) {
-					array_unshift($cellsOut, array(implode("", $acciones), array("class"=>"acciones")));
+				if (!empty($acciones)) {
+					array_unshift($cellsOut, array(implode("", $acciones), array("class" => "acciones")));
 				}
 				
 				/**
@@ -894,11 +893,11 @@ class FormularioHelper extends FormHelper {
 				* se veria igual, aunque w3c no validaria) y si no se usa align char, no cambia nada.
 				* ver: http://www.w3schools.com/tags/tag_tr.asp
 				*/
-				if(!empty($id)) {
-					$atributosFila = array("class"=>"fila_datos", "charoff"=>$id);
+				if (!empty($id)) {
+					$atributosFila = array("class" => "fila_datos", "charoff"=>$id);
 				}
 				else {
-					$atributosFila = array("class"=>"fila_datos");
+					$atributosFila = array("class" => "fila_datos");
 				}
 				$atributosFila = array_merge($atributosFila, $opcionesFila);
 				$rowsOut[] = $this->_fila($cellsOut, $atributosFila);
@@ -906,9 +905,9 @@ class FormularioHelper extends FormHelper {
 				/**
 				* Si tengo desgloses, los agrego.
 				*/
-				if(!empty($outDesgloses)) {
-					foreach($outDesgloses as $outDesglose) {
-						if(!empty($outDesglose['2'])) {
+				if (!empty($outDesgloses)) {
+					foreach ($outDesgloses as $outDesglose) {
+						if (!empty($outDesglose['2'])) {
 							$atributosFila = $outDesglose['2'];
 							unset($outDesglose['2']);
 						}
@@ -918,14 +917,14 @@ class FormularioHelper extends FormHelper {
 			}
 		}
 		
-		if(!empty($encabezados) && $opciones['mostrarEncabezados']) {
-			if($opciones['eliminar'] || $opciones['modificar'] || $opciones['seleccionMultiple'] || $opciones['seleccionLov'] || !empty($acciones)) {
+		if (!empty($encabezados) && $opciones['mostrarEncabezados']) {
+			if ($opciones['eliminar'] || $opciones['modificar'] || $opciones['seleccionMultiple'] || $opciones['seleccionLov'] || !empty($acciones)) {
 			
-				if($opciones['seleccionMultiple']) {
-					$seleccion[] = $this->link("T", null, array("class"=>"seleccionarTodos")) . " ";
-					$seleccion[] = $this->link("N", null, array("class"=>"deseleccionarTodos")) . " ";
-					$seleccion[] = $this->link("I", null, array("class"=>"invertir"));
-					$accionesString = $this->tag("div", implode("", $seleccion) . $this->tag("span", "Acciones"), array("class"=>"acciones"));
+				if ($opciones['seleccionMultiple']) {
+					$seleccion[] = $this->link("T", null, array("class" => "seleccionarTodos")) . " ";
+					$seleccion[] = $this->link("N", null, array("class" => "deseleccionarTodos")) . " ";
+					$seleccion[] = $this->link("I", null, array("class" => "invertir"));
+					$accionesString = $this->tag("div", implode("", $seleccion) . $this->tag("span", "Acciones"), array("class" => "acciones"));
 				}
 				else {
 					$accionesString = "Acciones";
@@ -935,31 +934,31 @@ class FormularioHelper extends FormHelper {
 			$tabla .= "\n<thead>\n" . $this->Html->tableHeaders($encabezados) . "\n</thead>";
 		}
 
-		if(!empty($rowsOut)) {
+		if (!empty($rowsOut)) {
 			$tabla .= $this->tag("tbody", implode("\n", $rowsOut));
 		}
-		elseif(!empty($encabezados)){
+		elseif (!empty($encabezados)){
 			$tabla .= $this->output("\n<tbody></tbody>");
 		}
 
 		/**
 		* Si la tabla tiene un pie, lo agrego.
 		*/
-		if(!empty($datos['pie'])) {
+		if (!empty($datos['pie'])) {
 			$out = array();
 			$cellsOut = array();
-			if(!empty($datos['cuerpo'][0])) {
-				if(!empty($datos['cuerpo'][0]['contenido'])) {
+			if (!empty($datos['cuerpo'][0])) {
+				if (!empty($datos['cuerpo'][0]['contenido'])) {
 					$v = $datos['cuerpo'][0]['contenido'];
 				}
 				else {
 					$v = $datos['cuerpo'][0];
 				}
-				foreach($v as $columna) {
-					if(isset($columna['model'])) {
-						foreach($datos['pie'] as $k=>$pies) {
-							foreach($pies as $pie) {
-								if($columna['model'] == $pie['model'] && $columna['field'] == $pie['field']) {
+				foreach ($v as $columna) {
+					if (isset($columna['model'])) {
+						foreach ($datos['pie'] as $k=>$pies) {
+							foreach ($pies as $pie) {
+								if ($columna['model'] == $pie['model'] && $columna['field'] == $pie['field']) {
 									$cellsOut[] = $pie['valor'];
 								}
 							}
@@ -967,14 +966,14 @@ class FormularioHelper extends FormHelper {
 					}
 				}
 			}
-			if(!empty($cellsOut)) {
+			if (!empty($cellsOut)) {
 				$out[] = $this->Html->tableHeaders($cellsOut);
 				$tabla .= "\n<tfoot>\n" . implode("", $out) . "\n</tfoot>";
 			}
 		}
 		
-		if(!empty($tabla)) {
-			//if(!isset($opcionesHtml['class'])) {
+		if (!empty($tabla)) {
+			//if (!isset($opcionesHtml['class'])) {
 			//	$opcionesHtml['class'] = "tabla";
 			//}
 			//$tabla = $this->output("\n\n<table " . $this->_parseAttributes($opcionesHtml, null, '', '') . ">" . $tabla . "\n</table>\n\n");
@@ -1031,13 +1030,13 @@ class FormularioHelper extends FormHelper {
 					var c = jQuery(".tabla input[@type=\'checkbox\']").checkbox("contar");
 					if (c>0) {
 						var mensaje = "Esta seguro que desea eliminar " + c;
-						if(c==1) {
+						if (c==1) {
 							mensaje = mensaje + " registro?";
 						}
 						else {
 							mensaje = mensaje + " registros?";
 						}
-						if(confirm(mensaje)) {
+						if (confirm(mensaje)) {
 							var action = "' . $this->Html->url("/") . $this->params['controller'] . '/delete";
 							jQuery("#form")[0].action = action;
 							jQuery("#form")[0].submit();
@@ -1072,18 +1071,18 @@ class FormularioHelper extends FormHelper {
 
 		$jsZebra = "";
 		$jsTabla = "";
-		if(($opciones['zebra'] || $opciones['seleccionMultiple'] || !empty($jsDesglose)) && !empty($tabla)) {
-			if(!empty($jsDesglose)) {
+		if (($opciones['zebra'] || $opciones['seleccionMultiple'] || !empty($jsDesglose)) && !empty($tabla)) {
+			if (!empty($jsDesglose)) {
 				$jsTabla .= implode("\n", $jsDesglose);
 			}
-			if($opciones['zebra']) {
+			if ($opciones['zebra']) {
 				$jsTabla .= $jsZebra;
 			}
-			if($opciones['seleccionMultiple']) {
+			if ($opciones['seleccionMultiple']) {
 				$jsTabla .= $jsSeleccionMultiple;
 			}
-			if(!empty($opciones['seleccionLov'])) {
-				if(isset($padre) && $padre == "opener") {
+			if (!empty($opciones['seleccionLov'])) {
+				if (isset($padre) && $padre == "opener") {
 					$hidden = "opener.document.getElementById('" . $opciones['seleccionLov']['retornarA'] . "')";
 				}
 				else {
@@ -1093,11 +1092,11 @@ class FormularioHelper extends FormHelper {
 				$jsSeleccionLov = '
 					var seleccionMultipleId = ' . $hidden . ';
 					var ids = new Array();
-					if(seleccionMultipleId != null) {
-						if(seleccionMultipleId.value.indexOf("**||**") > 0) {
+					if (seleccionMultipleId != null) {
+						if (seleccionMultipleId.value.indexOf("**||**") > 0) {
 							ids = seleccionMultipleId.value.split("**||**");
 						}
-						if(seleccionMultipleId.value.length > 0 && ids.length == 0) {
+						if (seleccionMultipleId.value.length > 0 && ids.length == 0) {
 							ids.push(seleccionMultipleId.value);
 						}
 						for (var i=0; i< ids.length; i++ ) {
@@ -1110,9 +1109,9 @@ class FormularioHelper extends FormHelper {
 			$this->addScript($jsTabla, "ready");
 		}
 
-		if(empty($tabla)) {
-			if($opciones['omitirMensajeVacio'] === false) {
-				$tabla = $this->tag("span", "No existen datos cargados o los criterios de su busqueda no arrojan resultados.", array("class"=>"color_rojo"));
+		if (empty($tabla)) {
+			if ($opciones['omitirMensajeVacio'] === false) {
+				$tabla = $this->tag("span", "No existen datos cargados o los criterios de su busqueda no arrojan resultados.", array("class" => "color_rojo"));
 			}
 			else {
 				/**
@@ -1133,16 +1132,16 @@ class FormularioHelper extends FormHelper {
 		static $count = 0;
 		$out = null;
 		foreach ($celdas as $celda) {
-			if(is_string($celda)) {
+			if (is_string($celda)) {
 				$out[] = $this->tag("td", $celda);
 			}
-			elseif(isset($celda[0]) && isset($celda[1])) {
+			elseif (isset($celda[0]) && isset($celda[1])) {
 				$out[] = $this->tag("td", $celda[0], $celda[1]);
 			}
-			elseif(isset($celda[0]) && !isset($celda[1])) {
+			elseif (isset($celda[0]) && !isset($celda[1])) {
 				$out[] = $this->tag("td", $celda[0]);
 			}
-			elseif(!isset($celda[0])) {
+			elseif (!isset($celda[0])) {
 				$out[] = $this->tag("td", $celda);
 			}
 		}
@@ -1150,9 +1149,9 @@ class FormularioHelper extends FormHelper {
 		/**
 		* Las filas de desglose y las resaltadas, no las cuento para la zebra.
 		*/
-		if(!in_array($trOptions['class'], array("desglose", "fila_resaltada"))) {
-			if($count % 2) {
-				if(!empty($trOptions['class'])) {
+		if (!in_array($trOptions['class'], array("desglose", "fila_resaltada"))) {
+			if ($count % 2) {
+				if (!empty($trOptions['class'])) {
 					$trOptions['class'] .= " alternativo";
 				}
 				else {
@@ -1164,7 +1163,7 @@ class FormularioHelper extends FormHelper {
 		
 		/**
 		* Las filas de desglose, no las cuento para la zebra.
-		if(!(!empty($trOptions['tipo']) && $trOptions['tipo'] == "desglose")) {
+		if (!(!empty($trOptions['tipo']) && $trOptions['tipo'] == "desglose")) {
 			$count++;
 		}
 		*/
@@ -1180,23 +1179,23 @@ class FormularioHelper extends FormHelper {
 		/**
 		* Si viene nulo, asumo que solo esta puesto el link para ejecutar codigo JS, entonces, hago que se quede en el lugar.
 		*/
-		if(empty($href)) {
+		if (empty($href)) {
 			$href = "javascript:void(0);";
 		}
 		
 		/**
 		* Detecto si viene una imagen, hay que escarparlo.
 		*/
-		if(strstr($title, '<img src="')) {
+		if (strstr($title, '<img src="')) {
 			$escapeTitle = false;
 		}
 		
-		if(isset($options['tipo']) && $options['tipo'] == "ajax") {
+		if (isset($options['tipo']) && $options['tipo'] == "ajax") {
 			unset($options['tipo']);
 			return $this->output($this->Ajax->link($title, $href, $options, $confirm, $escapeTitle));
 		}
 		else {
-			if(is_null($confirm)) {
+			if (is_null($confirm)) {
 				$confirmMessage = false;
 			}
 			else {
@@ -1209,18 +1208,18 @@ class FormularioHelper extends FormHelper {
 
 	function bloque($contenido=null, $opciones=array()) {
 		//trigger_error("bloque esta deprecado.");
-		if(is_array($contenido)) {
+		if (is_array($contenido)) {
 			$codigo_html = implode("\n", $contenido);
 		}
 		else {
 			$codigo_html = "\n" . $contenido;
 		}
 
-		if(isset($opciones['fieldset'])) {
+		if (isset($opciones['fieldset'])) {
 			$imagen = "";
 			$legend = "";
 			if (!empty($opciones['fieldset']['imagen'])) {
-				$imagen = $this->image($opciones['fieldset']['imagen'], array("class"=>"legend"));
+				$imagen = $this->image($opciones['fieldset']['imagen'], array("class" => "legend"));
 				unset($opciones['fieldset']['imagen']);
 			}
 			if (!empty($opciones['fieldset']['legend']) && is_string($opciones['fieldset']['legend'])) {
@@ -1228,15 +1227,15 @@ class FormularioHelper extends FormHelper {
 				unset($opciones['fieldset']['legend']);
 			}
 			$attr = "";
-			if(!empty($opciones['fieldset'])) {
+			if (!empty($opciones['fieldset'])) {
 				$attr = " " . $this->_parseAttributes($opciones['fieldset'], null, '', '');
 			}
 			$fieldset = sprintf($this->Html->tags['fieldset'], $attr, $legend . $codigo_html);
 			$codigo_html = $fieldset;
 		}
 		
-		if(!empty($opciones['div'])) {
-			if(!isset($opciones['fieldset'])) {
+		if (!empty($opciones['div'])) {
+			if (!isset($opciones['fieldset'])) {
 				$codigo_html = "\n\n" . $this->Html->div(null,"\n" . $codigo_html . "\n", $opciones['div'], false);
 			}
 			else {
@@ -1244,8 +1243,8 @@ class FormularioHelper extends FormHelper {
 			}
 		}
 
-		if(isset($opciones['caja_redondeada'])) {
-			if(isset($opciones['caja_redondeada']["clase"])){
+		if (isset($opciones['caja_redondeada'])) {
+			if (isset($opciones['caja_redondeada']["clase"])){
 				$clase = $opciones['caja_redondeada']["clase"];
 			}
 			else {
@@ -1278,19 +1277,19 @@ class FormularioHelper extends FormHelper {
 		/**
 		* Cuando data tiene mas de dos dimensiones, es porque es un update multiple.
 		*/
-		if(!isset($opciones['action']) && isset($this->data) && $this->action === "edit") {
+		if (!isset($opciones['action']) && isset($this->data) && $this->action === "edit") {
 			$opciones['action'] = "saveMultiple";
 		}
 		
-		if(!isset($opciones['id'])) {
+		if (!isset($opciones['id'])) {
 			$opciones['id'] = "form";
 		}
 		
 		$form = "\n" . parent::create(null, $opciones);
-		if(is_array($contenido)) {
+		if (is_array($contenido)) {
 			$form .= implode("\n", $contenido);
 		}
-		elseif(is_string($contenido)) {
+		elseif (is_string($contenido)) {
 			$form .= $contenido;
 		}
 		$form .= "\n" . parent::end();
@@ -1320,11 +1319,11 @@ class FormularioHelper extends FormHelper {
 		/**
 		* Pongo un valor por defecto para el after, ya que lo uso para la lov, la fecha, etc...
 		*/
-		if(empty($options['after'])) {
+		if (empty($options['after'])) {
 			$options['after'] = "";
 		}
 		$requerido = "";
-		if(!isset($options['verificarRequerido'])) {
+		if (!isset($options['verificarRequerido'])) {
 			$verificarRequerido = true;
 		}
 		else {
@@ -1336,7 +1335,7 @@ class FormularioHelper extends FormHelper {
 		* En caso de ser un campo de condiciones (los filtros),
 		* si no me cargo el valor de label para el campo, lo saco del nombre del campo.
 		*/
-		if(preg_match("/^Condicion\..+/", $tagName)) {
+		if (preg_match("/^Condicion\..+/", $tagName)) {
 			/**
 			* A las condiciones no las marco como requeridas. No me interesa esto.
 			*/
@@ -1354,36 +1353,36 @@ class FormularioHelper extends FormHelper {
 				$texto = $tmpName;
 			}
 			$texto = str_replace("_id", "", str_replace("__hasta", "", str_replace("__desde", "", $texto)));
-			if(!isset($options['label'])) {
+			if (!isset($options['label'])) {
 				$options['label'] = Inflector::humanize($texto);
 			}
 
-			if(empty($options['value']) && !empty($this->data['Condicion'][$model . "-" . $field])) {
+			if (empty($options['value']) && !empty($this->data['Condicion'][$model . "-" . $field])) {
 				$options['value'] = $this->data['Condicion'][$model . "-" . $field];
 			}
 			
-			if(substr($field, strlen($field) - 7) === "__desde") {
+			if (substr($field, strlen($field) - 7) === "__desde") {
 				$field = str_replace("__desde", "", $field);
 			}
-			elseif(substr($field, strlen($field) - 7) === "__hasta") {
+			elseif (substr($field, strlen($field) - 7) === "__hasta") {
 				$field = str_replace("__hasta", "", $field);
 			}
 		}
 
-		if(!isset($model) && !isset($field)) {
+		if (!isset($model) && !isset($field)) {
 			list($model, $field) = explode(".", $tagName);
 		}
 		
 		/**
 		* Busco que tipo de campo es.
 		*/
-		if(isset($options['type'])){
+		if (isset($options['type'])){
 			$tipoCampo = $options['type'];
 		}
 		/**
 		* Si viene la opcion lov no vacia y no seteo el tipo, especifico el tipo a lov.
 		*/
-		elseif(!empty($options['lov']) && is_array($options['lov'])) {
+		elseif (!empty($options['lov']) && is_array($options['lov'])) {
 			$tipoCampo = "lov";
 		}
 		
@@ -1391,9 +1390,9 @@ class FormularioHelper extends FormHelper {
 			!(!empty($options['options']) && is_string($options['options']) && $options['options'] === "listable")) {
 			$modelClass =& ClassRegistry::getObject($model);
 			$tableInfo = $modelClass->schema();
-			if(empty($options['options']) && !empty($modelClass->opciones[$field])) {
+			if (empty($options['options']) && !empty($modelClass->opciones[$field])) {
 				$options['options'] = $modelClass->opciones[$field];
-				if(empty($tipoCampo)) {
+				if (empty($tipoCampo)) {
 					$tipoCampo = "checkboxMultiple";
 				}
 			}
@@ -1402,11 +1401,11 @@ class FormularioHelper extends FormHelper {
 			* Determino si es un campo requerido para marcarlo con el (*).
 			* Esto lo hago si es que no viene dado ningun "after" en las opciones.
 			*/
-			if($verificarRequerido === true) {
-				if(isset($modelClass->validate[$field])) {
-					foreach($modelClass->validate[$field] as $regla) {
-						if(isset($regla["rule"]) && $regla["rule"] == "/.+/") {
-							$requerido = $this->tag("span", "(*)", array("class"=>"color_rojo"));
+			if ($verificarRequerido === true) {
+				if (isset($modelClass->validate[$field])) {
+					foreach ($modelClass->validate[$field] as $regla) {
+						if (isset($regla["rule"]) && $regla["rule"] == "/.+/") {
+							$requerido = $this->tag("span", "(*)", array("class" => "color_rojo"));
 						}
 					}
 				}
@@ -1415,21 +1414,21 @@ class FormularioHelper extends FormHelper {
 			/**
 			* Si es un nuevo registro agrego el valor por defecto en caso de que este exista.
 			*/
-			if($this->action === "add" && !isset($this->data[$model][$field]) && !empty($tableInfo[$field]['default']) && !isset($options['value']) && $tableInfo[$field]['default'] !== "0000-00-00") {
+			if ($this->action === "add" && !isset($this->data[$model][$field]) && !empty($tableInfo[$field]['default']) && !isset($options['value']) && $tableInfo[$field]['default'] !== "0000-00-00") {
 				$options['value'] = $tableInfo[$field]['default'];
 			}
 
-			if(!empty($tableInfo[$field]['type'])) {
-				if(substr($tableInfo[$field]['type'], 0, 5) == "enum(") {
+			if (!empty($tableInfo[$field]['type'])) {
+				if (substr($tableInfo[$field]['type'], 0, 5) == "enum(") {
 					/**
 					* De los tipo de campo enum, busco las opciones.
 					* Si ya me viene especificado las options, respeto lo que viene,
 					* sino, cargo con los valores de la DB.
 					*/
-					if(empty($options['options'])) {
+					if (empty($options['options'])) {
 						$valores = str_replace("'", "", str_replace(")", "", substr($tableInfo[$field]['type'], 5)));
 						$values = explode(",", $valores);
-						foreach($values as $v) {
+						foreach ($values as $v) {
 							$options['options'][$v] = $v;
 						}
 					}
@@ -1439,11 +1438,11 @@ class FormularioHelper extends FormHelper {
 					$tipo = $tableInfo[$field]['type'];
 				}
 				
-				if(empty($tipoCampo)) {
+				if (empty($tipoCampo)) {
 					$mapeoTipos['string'] = "text";
 					$mapeoTipos['enum'] = "radio";
 					
-					if(isset($mapeoTipos[$tipo])) {
+					if (isset($mapeoTipos[$tipo])) {
 						$tipoCampo = $mapeoTipos[$tipo];
 					}
 					else {
@@ -1456,19 +1455,19 @@ class FormularioHelper extends FormHelper {
 			/**
 			* Verifico el largo del campo para setear el maxLength
 			*/
-			if(!empty($tableInfo[$field]['length']) && !isset($options['maxlength']) && $tipoCampo != "float") {
+			if (!empty($tableInfo[$field]['length']) && !isset($options['maxlength']) && $tipoCampo != "float") {
 				$options['maxlength'] = $tableInfo[$field]['length'];
 			}
 		}
-		elseif(!empty($options['options']) && is_string($options['options']) && $options['options'] === "listable") {
+		elseif (!empty($options['options']) && is_string($options['options']) && $options['options'] === "listable") {
 			$opcionesValidas = array("displayField", "groupField", "conditions", "fields", "order", "limit", "recursive", "group", "contain", "model");
 			$opcionesValidasArray = array("displayField", "groupField", "conditions", "fields", "order", "contain");
-			foreach($opcionesValidas as $opcionValida) {
-				if(!empty($options[$opcionValida])) {
-					if(!is_array($options[$opcionValida]) && in_array($opcionValida, $opcionesValidasArray)) {
+			foreach ($opcionesValidas as $opcionValida) {
+				if (!empty($options[$opcionValida])) {
+					if (!is_array($options[$opcionValida]) && in_array($opcionValida, $opcionesValidasArray)) {
 						$condiciones[$opcionValida] = $opcionValida . ":" . serialize(array($options[$opcionValida]));
 					}
-					elseif(in_array($opcionValida, $opcionesValidasArray)) {
+					elseif (in_array($opcionValida, $opcionesValidasArray)) {
 						$condiciones[$opcionValida] = $opcionValida . ":" . serialize($options[$opcionValida]);
 					}
 					else {
@@ -1485,12 +1484,12 @@ class FormularioHelper extends FormHelper {
 		}
 
 		if ($verificarRequerido === "forzado") {
-			$requerido = $this->tag("span", "(*)", array("class"=>"color_rojo"));
+			$requerido = $this->tag("span", "(*)", array("class" => "color_rojo"));
 		}
 
-		if(isset($tipoCampo)) {
+		if (isset($tipoCampo)) {
 
-			if(isset($this->data[$model][$field])) {
+			if (isset($this->data[$model][$field])) {
 				$valorCampo = $this->data[$model][$field];
 			}
 			elseif (isset($options['value'])) {
@@ -1503,24 +1502,24 @@ class FormularioHelper extends FormHelper {
 			/**
 			* Manejo los tipos de datos date para que me arme el control seleccion de fechas.
 			*/
-			if($tipoCampo === "soloLectura") {
-				return $this->tag("div", $this->label($tagName, null, array("for"=>false)) . $this->tag("span", $valorCampo, array("class"=>"solo_lectura")), array("class"=>"input text"));
+			if ($tipoCampo === "soloLectura") {
+				return $this->tag("div", $this->label($tagName, null, array("for"=>false)) . $this->tag("span", $valorCampo, array("class" => "solo_lectura")), array("class" => "input text"));
 			}
 			
 			/**
 			* Manejo los tipos de datos date para que me arme el control seleccion de fechas.
 			*/
-			else if($tipoCampo === "date") {
+			else if ($tipoCampo === "date") {
 				/**
 				* Cuando el campo ya tiene un valor y este es una fecha valida, no lo vuelvo a formatear.
 				* si lo mando al helper, me lo formatear para mysql. Esto puede darse durante un add al volver a insertar
 				* o cuando un edit no valida.
 				*/
-				if(preg_match(VALID_DATE, $valorCampo)) {
+				if (preg_match(VALID_DATE, $valorCampo)) {
 					$options['value'] = $valorCampo;
 				}
 				else {
-					$options['value'] = $this->Formato->format($valorCampo, array("default"=>false, "type"=>"date"));
+					$options['value'] = $this->Formato->format($valorCampo, array("default"=>false, "type" => "date"));
 				}
 				$options['type'] = "text";
 				$options['class'] = "fecha";
@@ -1530,12 +1529,12 @@ class FormularioHelper extends FormHelper {
 			/**
 			* Manejo los tipos de datos datetime para que me arme el control seleccion de fechas con hora.
 			*/
-			elseif($tipoCampo === "datetime") {
-				if(preg_match(VALID_DATE, $valorCampo)) {
+			elseif ($tipoCampo === "datetime") {
+				if (preg_match(VALID_DATE, $valorCampo)) {
 					$options['value'] = $valorCampo;
 				}
 				else {
-					$options['value'] = $this->Formato->format($valorCampo, array("default"=>false, "type"=>"datetime"));
+					$options['value'] = $this->Formato->format($valorCampo, array("default"=>false, "type" => "datetime"));
 				}
 				$options['type'] = "text";
 				$options['class'] = "fecha";
@@ -1545,14 +1544,14 @@ class FormularioHelper extends FormHelper {
 			/**
 			* Agrega el link para poder descargar en caso de que sea un edit.
 			*/
-			elseif($tipoCampo === "file") {
-				if(!empty($options['descargar']) && $options['descargar'] === true && $this->action == "edit") {
-					if($this->params['action'] == "edit" && !empty($this->params['pass'][0])) {
-						$options['aclaracion'] = "Puede descargar el archivo y ver su contenido desde aca " . $this->link($this->image("archivo.gif", array("alt"=>"Descargar")), "descargar/" . $this->params['pass'][0]);
+			elseif ($tipoCampo === "file") {
+				if (!empty($options['descargar']) && $options['descargar'] === true && $this->action == "edit") {
+					if ($this->params['action'] == "edit" && !empty($this->params['pass'][0])) {
+						$options['aclaracion'] = "Puede descargar el archivo y ver su contenido desde aca " . $this->link($this->image('archivo.gif', array("alt" => "Descargar")), "descargar/" . $this->params['pass'][0]);
 					}
 				}
-				if(!empty($options['mostrar']) && $options['mostrar'] === true && $this->action == "edit" && isset($this->params['pass'][0])) {
-					$options['after'] = str_replace(">", " />" ,$this->tag("img", null, array("alt"=>"", "class"=>"imagen_mostrar", "src"=>Router::url("/") . $this->params['controller'] . "/descargar/" . $this->params['pass'][0] . "/mostrar:true")));
+				if (!empty($options['mostrar']) && $options['mostrar'] === true && $this->action == "edit" && isset($this->params['pass'][0])) {
+					$options['after'] = str_replace(">", " />" ,$this->tag("img", null, array("alt" => "", "class" => "imagen_mostrar", "src"=>Router::url("/") . $this->params['controller'] . "/descargar/" . $this->params['pass'][0] . "/mostrar:true")));
 				}
 				unset($options['descargar']);
 				unset($options['mostrar']);
@@ -1578,12 +1577,12 @@ class FormularioHelper extends FormHelper {
 			*	}
 			*
 			*/
-			elseif($tipoCampo === "autocomplete") {
+			elseif ($tipoCampo === "autocomplete") {
 				$rnd = intval(rand());
 				$options['id'] = $rnd;
 				$options['type'] = "text";
-				$options['after'] .= $this->image("contenga.gif", array("class"=>"busqueda_tipo", "id"=>"contenga_" . $rnd, "style"=>"cursor: pointer;", "alt"=>"Busqueda que contenga el texto ingresado"));
-				$options['after'] .= $this->image("empiece.gif", array("class"=>"busqueda_tipo", "id"=>"empiece_" . $rnd, "style"=>"cursor: pointer;", "alt"=>"Busqueda que empiece con el texto ingresado"));
+				$options['after'] .= $this->image('contenga.gif', array("class" => "busqueda_tipo", "id" => "contenga_" . $rnd, "style" => "cursor: pointer;", "alt" => "Busqueda que contenga el texto ingresado"));
+				$options['after'] .= $this->image('empiece.gif', array("class" => "busqueda_tipo", "id" => "empiece_" . $rnd, "style" => "cursor: pointer;", "alt" => "Busqueda que empiece con el texto ingresado"));
 			
 				$opcionesDefaultAutocomplete = array(	"class"					=>"autocomplete",
 														"funcionBusqueda"		=>"autocompleteBuscar",
@@ -1594,15 +1593,15 @@ class FormularioHelper extends FormHelper {
 				/**
 				* Si no ha especificado una url ni un div para hacer update, asumo un input autocomplete comun.
 				*/
-				if($options['onItemSelect'] === false) {
+				if ($options['onItemSelect'] === false) {
 					$urlAutocomplete = Router::url(array("controller"=>$this->params["controller"], "action"=>$options['funcionBusqueda']));
 					$jsAutocomplete = $this->codeBlock('
 						jQuery("#' . $options['id'] . '").autocomplete("' . $urlAutocomplete . '");
 					');
 				}
 				else {
-					$options['after'] .= $this->image("auto_off.gif", array("class"=>"busqueda_autoincremental", "id"=>"autoincremental_off_" . $rnd, "style"=>"cursor: pointer;", "alt"=>"Busca al presionar la tecla enter (menos veloz)"));
-					$options['after'] .= $this->image("auto_on.gif", array("class"=>"busqueda_autoincremental", "id"=>"autoincremental_on_" . $rnd, "style"=>"cursor: pointer;", "alt"=>"Busca al presionar cada tecla (mas veloz)"));
+					$options['after'] .= $this->image('auto_off.gif', array("class" => "busqueda_autoincremental", "id" => "autoincremental_off_" . $rnd, "style" => "cursor: pointer;", "alt" => "Busca al presionar la tecla enter (menos veloz)"));
+					$options['after'] .= $this->image('auto_on.gif', array("class" => "busqueda_autoincremental", "id" => "autoincremental_on_" . $rnd, "style" => "cursor: pointer;", "alt" => "Busca al presionar cada tecla (mas veloz)"));
 					$jsAutocomplete = $this->codeBlock('
 						jQuery("#' . $options['id'] . '").blur(
 							function(){
@@ -1620,7 +1619,7 @@ class FormularioHelper extends FormHelper {
 								* Si es una busqueda autoincremental, solo posteo cuando presiona enter.
 								*/
 							
-								if(jQuery("#autoincremental_off_" + this.id).css("display") == "inline" && e.which != 13) {
+								if (jQuery("#autoincremental_off_" + this.id).css("display") == "inline" && e.which != 13) {
 									return;
 								}
 								
@@ -1634,14 +1633,14 @@ class FormularioHelper extends FormHelper {
 									/**
 									* backspace: Quito el ultimo caracter, porque el val aun lo tiene.
 									*/
-									if(e.which == 8) { 
+									if (e.which == 8) { 
 										var textoBuscar = jQuery(this).val();
 										textoBuscar = textoBuscar.substring(0, textoBuscar.length-1);
 									}
 									/**
 									* space: Se lo agrego como texto, porque cuando postea, lo elimina.
 									*/
-									else if(e.which == 32) {
+									else if (e.which == 32) {
 										var textoBuscar = jQuery(this).val() + "[SPACE]";
 									}
 									/**
@@ -1654,7 +1653,7 @@ class FormularioHelper extends FormHelper {
 									/**
 									* Determino si se trata de una busque que empiece/contenga.
 									*/
-									if($("#empiece_' . $options['id'] . '").css("display") == "inline") {
+									if ($("#empiece_' . $options['id'] . '").css("display") == "inline") {
 										textoBuscar += "[EXPANSOR]";
 									}
 									else {
@@ -1662,7 +1661,7 @@ class FormularioHelper extends FormHelper {
 									}
 
 									function agregarParametrosAdicionales() {
-										if(typeof agregarParametrosAdicionalesRedefinido == "function") {
+										if (typeof agregarParametrosAdicionalesRedefinido == "function") {
 											return agregarParametrosAdicionalesRedefinido();
 										}
 										else {
@@ -1693,20 +1692,20 @@ class FormularioHelper extends FormHelper {
 			/**
 			* Manejo los campos periodo.
 			*/
-			elseif($tipoCampo === "periodo") {
+			elseif ($tipoCampo === "periodo") {
 				$rnd = intval(rand());
 				$options['type'] = "text";
 				$options['class'] = "periodo";
 				$options['id'] = $rnd;
 				$after = "";
-				$q1 = $this->link($this->image("1q.gif", array("class"=>"periodo")), null, array("title"=>"Primera Quincena", "onclick"=>"jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array("type" => "1QAnterior")) . "');"));
-				$q2 = $this->link($this->image("2q.gif", array("class"=>"periodo")), null, array("title"=>"Segunda Quincena", "onclick"=>"jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array("type" => "2QAnterior")) . "');"));
-				$m = $this->link($this->image("m.gif", array("class"=>"periodo")), null, array("title"=>"Mensual", "onclick"=>"jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array("type" => "mensualAnterior")) . "');"));
-				if(empty($options['periodo'])) {
+				$q1 = $this->link($this->image('1q.gif', array("class" => "periodo")), null, array("title" => "Primera Quincena", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array("type" => "1QAnterior")) . "');"));
+				$q2 = $this->link($this->image('2q.gif', array("class" => "periodo")), null, array("title" => "Segunda Quincena", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array("type" => "2QAnterior")) . "');"));
+				$m = $this->link($this->image('m.gif', array("class" => "periodo")), null, array("title" => "Mensual", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array("type" => "mensualAnterior")) . "');"));
+				if (empty($options['periodo'])) {
 					$after .= $q1 . $q2 . $m;
 				}
 				else {
-					foreach($options['periodo'] as $v) {
+					foreach ($options['periodo'] as $v) {
 						switch($v) {
 							case "1Q":
 								$after .= $q1;
@@ -1718,7 +1717,7 @@ class FormularioHelper extends FormHelper {
 								$after .= $m;
 								break;
 							case "soloAAAAMM":
-								$after .= $this->link($this->image("m.gif", array("class"=>"periodo")), null, array("title"=>"Mensual", "onclick"=>"jQuery('#" . $rnd . "').attr('value', '" . substr($this->Formato->format(null, array("type" => "mensualAnterior")), 0, 6) . "');"));
+								$after .= $this->link($this->image('m.gif', array("class" => "periodo")), null, array("title" => "Mensual", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . substr($this->Formato->format(null, array("type" => "mensualAnterior")), 0, 6) . "');"));
 								break;
 						}
 					}
@@ -1726,12 +1725,12 @@ class FormularioHelper extends FormHelper {
 				$options['after'] = $after . $options['after'];
 			}
 			
-			elseif($tipoCampo === "radio") {
+			elseif ($tipoCampo === "radio") {
 				$options['type'] = "radio";
 				$options['legend'] = false;
-				if(!isset($options['label'])) {
+				if (!isset($options['label'])) {
 
-					if(isset($tmpName)) {
+					if (isset($tmpName)) {
 						$options['before'] = $this->label($tmpName, null, array("for"=>false));
 					}
 					else {
@@ -1753,22 +1752,22 @@ class FormularioHelper extends FormHelper {
 				* Cuando esta vacio, cakePHP agrega un hidden para postear el vacio.
 				* Yo agrego el hidden a mano, por lo cual le pongo siempre una valor para que cake no lo creen al hidden.
 				*/
-				if(empty($options['value'])) {
+				if (empty($options['value'])) {
 					$options['value'] = "/**VACIO**/";
-					if(!empty($options['name'])) {
-						$options['before'] .= parent::hidden($tagName, array("name"=>$options['name'], "value"=>""));
+					if (!empty($options['name'])) {
+						$options['before'] .= parent::hidden($tagName, array("name"=>$options['name'], "value" => ""));
 					}
 					else {
-						$options['before'] .= parent::hidden($tagName, array("value"=>""));
+						$options['before'] .= parent::hidden($tagName, array("value" => ""));
 					}
 				}
 			}
 
 			/**
 			* El array parametros posteara (si los encuentra) via params->named los valores de los controles especificados.
-			* $formulario->input('Banco.id', array("label"=>"Cuenta", "type"=>"relacionado", "valor"=>"Banco.id", "relacion"=>"Soporte.modo", "parametros"=>array("Soporte.empleador_id", "Soporte.grupo_id"), "url"=>"pagos/cuentas_relacionado"));
+			* $formulario->input('Banco.id', array("label" => "Cuenta", "type" => "relacionado", "valor" => "Banco.id", "relacion" => "Soporte.modo", "parametros"=>array("Soporte.empleador_id", "Soporte.grupo_id"), "url" => "pagos/cuentas_relacionado"));
 			*/
-			elseif($tipoCampo === "relacionado") {
+			elseif ($tipoCampo === "relacionado") {
 
 				$tmp = explode(".", $tagName);
 				$id = Inflector::camelize($tmp[0]) . Inflector::camelize($tmp[1]);
@@ -1780,22 +1779,22 @@ class FormularioHelper extends FormHelper {
 				/**
 				* Busco el valor cuando sea un edit, o cuando es un add que no ha validado.
 				*/
-				if(!empty($options['valor']) && ($this->action != "add" ||
+				if (!empty($options['valor']) && ($this->action != "add" ||
 					($this->action == "add" && !empty($this->validationErrors) && !empty($this->data)))) {
 					$valueId = $this->value($tagName);
 					list($mRetorno, $cRetorno) = explode(".", $options['valor']);
-					if(isset($mRetorno) && isset($cRetorno) && isset($this->data[$mRetorno][$cRetorno])) {
+					if (isset($mRetorno) && isset($cRetorno) && isset($this->data[$mRetorno][$cRetorno])) {
 						$value[$valueId] = $this->data[$mRetorno][$cRetorno];
 					}
 					/**
 					* No le pongo model ni campo, ya que es temporal, nunca debere guardar estos valores.
 					*/
-					$options['after'] .= $this->input("Bar.foo", array("value"=>$id . "|" . $valueId, "id"=>$idHiddenRelacionadoTmp, "type"=>"hidden"));
+					$options['after'] .= $this->input("Bar.foo", array("value"=>$id . "|" . $valueId, 'id' => $idHiddenRelacionadoTmp, "type" => "hidden"));
 				}
 				
 				$jsParametros = "";
-				if(!empty($options['parametros'])) {
-					foreach($options['parametros'] as $parametro) {
+				if (!empty($options['parametros'])) {
+					foreach ($options['parametros'] as $parametro) {
 						list($modelParametro, $fieldParametro) = explode(".", $parametro);
 						$parametroRelacionado = $modelParametro . inflector::camelize($fieldParametro);
 						$jsParametrosArray[] =
@@ -1815,18 +1814,18 @@ class FormularioHelper extends FormHelper {
  						});
  						
 						var reg = new RegExp("^[0-9]+$");
-						if(!reg.test(valor)) {
+						if (!reg.test(valor)) {
 							alert("Antes de continuar debe seleccionar un valor para ' . str_replace(" Id", "", Inflector::humanize($tmp[1])) . '");
 						}
 						else {
 							var elHidden = document.getElementById("' . $idHiddenRelacionadoTmp . '");
 
-							if(elHidden != null) {
+							if (elHidden != null) {
 								var tmp = elHidden.value.split("|");
 								/**
 								* Si ya existe el hidden, comparo que no haya cambiado el valor.
 								*/
-								if(tmp[1] == valor) {
+								if (tmp[1] == valor) {
 									return;
 								}
 
@@ -1859,7 +1858,7 @@ class FormularioHelper extends FormHelper {
 					})';
 				
 				$this->addScript($requestAjax);
-				$options = am($options, array("type"=>"select"), array("options"=>$value), array("maxlength"=>false));
+				$options = am($options, array("type" => "select"), array("options"=>$value), array("maxlength"=>false));
 				unset($options['url']);
 				unset($options['relacion']);
 				unset($options['valor']);
@@ -1869,15 +1868,15 @@ class FormularioHelper extends FormHelper {
 			/**
 			* Manejo los tipos de datos numericos.
 			*/
-			elseif($tipoCampo === "float" || $tipoCampo === "integer") {
+			elseif ($tipoCampo === "float" || $tipoCampo === "integer") {
 				$options['class'] = "derecha";
 			}
 
-			elseif($tipoCampo === "checkboxMultiple") {
+			elseif ($tipoCampo === "checkboxMultiple") {
 				return $this->__checkboxMultiple($tagName, $options);
 			}
 		
-			elseif($tipoCampo === "lov"
+			elseif ($tipoCampo === "lov"
 				&& isset($options['lov']['controller'])
 					&& !empty($options['lov']['controller'])
 						&& is_string($options['lov']['controller'])) {
@@ -1889,10 +1888,10 @@ class FormularioHelper extends FormHelper {
 				* Cargo nuevamente los valores.
 				*/
 				$value = array();
-				if(true || $this->action == "edit") {
-					foreach($options['lov']['camposRetorno'] as $campoRetorno) {
+				if (true || $this->action == "edit") {
+					foreach ($options['lov']['camposRetorno'] as $campoRetorno) {
 						list($mRetorno, $cRetorno) = explode(".", $campoRetorno);
-						if(isset($this->data[$mRetorno][$cRetorno])) {
+						if (isset($this->data[$mRetorno][$cRetorno])) {
 							$value[] = $this->data[$mRetorno][$cRetorno];
 						}
 						else {
@@ -1901,7 +1900,7 @@ class FormularioHelper extends FormHelper {
 							* Trato de buscarlo mas adentro en el array.
 							*/
 							$modelParent = Inflector::classify($options['lov']['controller']);
-							if(isset($this->data[$modelParent][$mRetorno][$cRetorno])) {
+							if (isset($this->data[$modelParent][$mRetorno][$cRetorno])) {
 								$value[] = $this->data[$modelParent][$mRetorno][$cRetorno];
 							}
 						}
@@ -1922,14 +1921,14 @@ class FormularioHelper extends FormHelper {
 				/**
 				* Si permite seleccion multiple, pongo un textarea, sino un text comun.
 				*/
-				if(isset($options['lov']['seleccionMultiple']) && $options['lov']['seleccionMultiple'] == 0) {
+				if (isset($options['lov']['seleccionMultiple']) && $options['lov']['seleccionMultiple'] == 0) {
 					$type = "text";
 				}
 				else {
 					$type = "textarea";
 				}
 
-				$lupa = $this->image("buscar.gif", array(	"alt" 	=>"Seleccione una opcion",
+				$lupa = $this->image('buscar.gif', array(	"alt" 	=>"Seleccione una opcion",
 															"class" =>"lupa_lov",
 															"id"	=>"lupa_" . $rnd));
 
@@ -1938,15 +1937,15 @@ class FormularioHelper extends FormHelper {
 				*/
 				$options['after'] = $this->link($lupa, null, array('onclick' => "abrirVentana('" . $rnd . "', '" . $url . "')")) . $options['after'];
 				/*
-				if($this->traerPreferencia("lov_apertura") === "popup") {
+				if ($this->traerPreferencia("lov_apertura") === "popup") {
 					$options['after'] = $this->link($lupa, null, array('onclick' => "abrirVentana('" . $rnd . "', '" . $url . "')")) . $options['after'];
 				}
 				else {
 					$idDiv = "div_" . $this->domId($tagName);
-					$cerrar = $this->link("", null, array("title"=>"Cerrar", "class"=>"jqmCloseEstilo jqmClose"));
+					$cerrar = $this->link("", null, array("title" => "Cerrar", "class" => "jqmCloseEstilo jqmClose"));
 					$target = "target_" . $rnd;
-					$targetDiv = $this->bloque($this->image("cargando.gif", array("alt"=>"Cargando...")) . "<h1>Aguarde por favor...</h1>", array("div"=>array("id"=>$target)));
-					$divLov = $this->tag('div', $cerrar . $targetDiv, array("class"=>"jqmWindow", "id"=>$idDiv));
+					$targetDiv = $this->bloque($this->image('cargando.gif', array("alt" => "Cargando...")) . "<h1>Aguarde por favor...</h1>", array("div"=>array("id"=>$target)));
+					$divLov = $this->tag('div', $cerrar . $targetDiv, array("class" => "jqmWindow", 'id' => $idDiv));
 
 					
 					$divLov .= $this->codeBlock('
@@ -1974,18 +1973,18 @@ class FormularioHelper extends FormHelper {
 				* Creo la hidden que sera quien en definitiva, contenga el valor correto a actualizar, lo que
 				* muestra la lov es solo una "pantalla" linda al usuario, esta input hidden tiene el valor que se actualizara.
 				*/
-				$options['after'] .= $this->input($tagName, am($options, array("id"=>$id, "type"=>"hidden")));
+				$options['after'] .= $this->input($tagName, am($options, array('id' => $id, "type" => "hidden")));
 
 				/**
 				* Busco el valor "descriptivo" para mostrarle al usuario.
 				*/
-				if(!empty($value)) {
-					foreach($value as $k=>$v) {
-						if(preg_match(VALID_DATE_MYSQL, $v)) {
-							$value[$k] = $this->Formato->format($v, array("type"=>"date"));
+				if (!empty($value)) {
+					foreach ($value as $k=>$v) {
+						if (preg_match(VALID_DATE_MYSQL, $v)) {
+							$value[$k] = $this->Formato->format($v, array("type" => "date"));
 						}
 					}
-					if(isset($options['lov']['separadorRetorno']) && !empty($options['lov']['separadorRetorno'])) {
+					if (isset($options['lov']['separadorRetorno']) && !empty($options['lov']['separadorRetorno'])) {
 						$options['value'] = implode($options['lov']['separadorRetorno'], $value);
 					}
 					else {
@@ -1997,8 +1996,8 @@ class FormularioHelper extends FormHelper {
 				/**
 				* Busco una etiqueta que vera el usuario.
 				*/
-				if(!isset($options['label'])) {
-					if(isset($tmpName)) {
+				if (!isset($options['label'])) {
+					if (isset($tmpName)) {
 						$options['label'] = Inflector::humanize(array_pop(explode(".", str_replace("_id", "", $tmpName))));
 					}
 					else {
@@ -2012,20 +2011,20 @@ class FormularioHelper extends FormHelper {
 														'class'		=> 'izquierda'));
 
 				list($model, $field) = explode(".", $tagName);
-				if(!empty($this->data[$model][$field . "__"])) {
+				if (!empty($this->data[$model][$field . "__"])) {
 					$options['value'] = $this->data[$model][$field . "__"];
 				}
 				return $this->input($tagName . "__", $options);
 			}
 		}
 		$aclaracion = "";
-		if(!empty($options['aclaracion'])) {
-			$aclaracion = $this->tag("span", $options['aclaracion'], array("class"=>"aclaracion"));
+		if (!empty($options['aclaracion'])) {
+			$aclaracion = $this->tag("span", $options['aclaracion'], array("class" => "aclaracion"));
 			unset($options['aclaracion']);
 		}
 
 		$options['after'] .= $aclaracion . $requerido;
-		if(isset($options['maxlength']) && $options['maxlength'] === false) {
+		if (isset($options['maxlength']) && $options['maxlength'] === false) {
 			unset($options['maxlength']);
 		}
 		return parent::input($tagName, $options);
@@ -2040,7 +2039,7 @@ class FormularioHelper extends FormHelper {
  */
 	function label($fieldName = null, $text = null, $attributes = array()) {
 		$return = parent::label($fieldName, $text, $attributes);
-		if(isset($attributes['for']) && $attributes['for'] === false) {
+		if (isset($attributes['for']) && $attributes['for'] === false) {
 			return str_replace(' for=""', "", $return);
 		}
 		return $return;
@@ -2059,24 +2058,24 @@ class FormularioHelper extends FormHelper {
  */
 	function button($caption = '', $options = array()) {
 		$return = '<input type="button" value="' . $caption . '" ' . $this->_parseAttributes($options, null, '', '') . ' />';
-		return $this->tag('div', $return, array('class'=>'submit'));
+		return $this->tag('div', $return, array('class' => 'submit'));
 	}
 
 	
 	function __inputFecha($tagName, $options = array(), $seleccionarHora=false) {
 		$this->setEntity($tagName);
 		$id = $this->domId(implode('.', array_filter(array($this->model(), $this->field()))));
-		$codigo_html = $this->image("calendario.gif", array("class"	=>"fecha", "alt"=>"Seleccione una fecha"));
+		$codigo_html = $this->image('calendario.gif', array("class"	=>"fecha", "alt" => "Seleccione una fecha"));
 
 
-		if($seleccionarHora) {
+		if ($seleccionarHora) {
 			$codigo_html = $this->link($codigo_html, "javascript:NewCal('".$id."','dd/mm/yyyy', true, 24, 'dropdown', true)");
 			//$codigo_html .= $this->codeBlock('
 			//	jQuery("#' . $id . '").mask("99/99/9999 99:99");
 			//');
 		}
 		else {
-			$codigo_html = $this->link($codigo_html, "javascript:NewCal('".$id."','dd/mm/yyyy')", array("id"=>$id . "Fecha"));
+			$codigo_html = $this->link($codigo_html, "javascript:NewCal('".$id."','dd/mm/yyyy')", array('id' => $id . "Fecha"));
 			//$codigo_html .= $this->codeBlock('
 			//	jQuery("#' . $id . '").mask("99/99/9999");
 			//');
@@ -2101,17 +2100,17 @@ class FormularioHelper extends FormHelper {
 		unset($options['type']);
 		$options = array_merge($opciones, $options);
         
-        foreach($options['options'] as $id=>$valor) {
+        foreach ($options['options'] as $id=>$valor) {
 	        $elementosHtmlAttributes = $options['elementosHtmlAttributes'];
 			$elementosHtmlAttributes['id'] = $model . Inflector::camelize($field) . $id;
             $elementosHtmlAttributes['value'] = $id;
-			if(!empty($this->data[$model][$field])) {
+			if (!empty($this->data[$model][$field])) {
 				$seleccionados = $this->data[$model][$field];
 			}
-			elseif(!empty($this->data[$model])) {
+			elseif (!empty($this->data[$model])) {
 				$options['value'] = Set::extract("/" . $model . "/" . $field, $this->data);
 			}
-			if((is_numeric($id) && !empty($seleccionados) && is_numeric($seleccionados) && ($id & $seleccionados))
+			if ((is_numeric($id) && !empty($seleccionados) && is_numeric($seleccionados) && ($id & $seleccionados))
 				|| (!empty($options['value']) && is_array($options['value']) && in_array($id, $options['value']))
 				|| (is_string($id) && isset($options['value']) && is_string($options['value']) && $id === $options['value'])) {
 				$checked['checked'] = 'checked';
@@ -2126,15 +2125,15 @@ class FormularioHelper extends FormHelper {
 		$seleccion[] = $this->link("T", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("seleccionar");return false;')) . " / ";
 		$seleccion[] = $this->link("N", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("deseleccionar");return false;')) . " / ";
 		$seleccion[] = $this->link("I", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("invertir");return false;'));
-		$seleccionString = $this->tag("div", $seleccion, array("class"=>"seleccion"));
+		$seleccionString = $this->tag("div", $seleccion, array("class" => "seleccion"));
 		
 		$lista = "";
-		if(!empty($checkbox)) {
+		if (!empty($checkbox)) {
 			$lista = "\n<ul" . $this->_parseAttributes($options['contenedorHtmlAttributes']).">\n" . implode($checkbox) . "</ul>\n";
 		}
 		
-        $control = $this->tag("div", $seleccionString . $lista, array("id"=>$id, "class"=>$options['contenedorHtmlAttributes']['class']));
-        if(!empty($options['label'])) {
+        $control = $this->tag("div", $seleccionString . $lista, array('id' => $id, "class"=>$options['contenedorHtmlAttributes']['class']));
+        if (!empty($options['label'])) {
         	$label = $this->label($options['label']);
         }
         else {
@@ -2142,10 +2141,10 @@ class FormularioHelper extends FormHelper {
         }
 		
 		$aclaracion = "";
-		if(!empty($options['aclaracion'])) {
-			$aclaracion = $this->tag("span", $options['aclaracion'], array("class"=>"aclaracion"));
+		if (!empty($options['aclaracion'])) {
+			$aclaracion = $this->tag("span", $options['aclaracion'], array("class" => "aclaracion"));
 		}
-        return $this->tag("div", $label . $control . $aclaracion, array("class"=>"input"));
+        return $this->tag("div", $label . $control . $aclaracion, array("class" => "input"));
     }
 
 

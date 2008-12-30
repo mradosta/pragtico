@@ -32,12 +32,12 @@ if($this->action === "add") {
 	$campos['RolesUsuario.rol_id'] = array("type"=>"checkboxMultiple", "options"=>"listable", "model"=>"Rol", "displayField"=>array("Rol.nombre"), "order"=>array("Rol.nombre"));
 	$campos['GruposUsuario.grupo_id'] = array("type"=>"checkboxMultiple", "options"=>"listable", "model"=>"Grupo", "displayField"=>array("Grupo.nombre"), "order"=>array("Grupo.nombre"));
 }
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"usuarios.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'usuarios.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset));
+echo $this->element('add/add', array('fieldset' => $fieldset));
 ?>

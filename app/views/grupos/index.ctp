@@ -21,8 +21,8 @@
 */
 $condiciones['Condicion.Grupo-nombre'] = array();
 $condiciones['Condicion.Grupo-estado'] = array();
-$fieldsets[] = array("campos"=>$condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("imagen"=>"grupos.gif")));
+$fieldsets[] = array('campos' => $condiciones);
+$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'grupos.gif')));
 
 
 /**
@@ -31,14 +31,14 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("im
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array("tipo"=>"desglose", "id"=>$v['Grupo']['id'], "update"=>"desglose1", "imagen"=>array("nombre"=>"usuarios.gif", "alt"=>"Usuarios"), "url"=>'usuarios');
-	$fila[] = array("tipo"=>"desglose", "id"=>$v['Grupo']['id'], "update"=>"desglose2", "imagen"=>array("nombre"=>"parametros.gif", "alt"=>"Parametros"), "url"=>'parametros');
-	$fila[] = array("model"=>"Grupo", "field"=>"id", "valor"=>$v['Grupo']['id'], "write"=>$v['Grupo']['write'], "delete"=>$v['Grupo']['delete']);
-	$fila[] = array("model"=>"Grupo", "field"=>"nombre", "valor"=>$v['Grupo']['nombre']);
-	$fila[] = array("model"=>"Grupo", "field"=>"estado", "valor"=>$v['Grupo']['estado']);
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Grupo']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'usuarios.gif', 'alt' => "Usuarios"), "url"=>'usuarios');
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Grupo']['id'], 'update' => 'desglose2', 'imagen' => array('nombre' => 'parametros.gif', 'alt' => "Parametros"), "url"=>'parametros');
+	$fila[] = array('model' => "Grupo", 'field' => "id", 'valor' => $v['Grupo']['id'], "write"=>$v['Grupo']['write'], "delete"=>$v['Grupo']['delete']);
+	$fila[] = array('model' => "Grupo", 'field' => "nombre", 'valor' => $v['Grupo']['nombre']);
+	$fila[] = array('model' => "Grupo", 'field' => "estado", 'valor' => $v['Grupo']['estado']);
 	$cuerpo[] = $fila;
 }
 
-echo $this->renderElement("index/index", array("condiciones"=>$fieldset, "cuerpo"=>$cuerpo));
+echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo));
 
 ?>

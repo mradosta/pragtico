@@ -18,12 +18,12 @@ class PdfHelper extends Cezpdf {
 	}
 
 	function ezInicio($opciones = array()) {
-		$default = array("encabezado"=>true, "font"=>true, "usuario"=>"");
+		$default = array("encabezado"=>true, "font"=>true, "usuario" => "");
 		$opciones = am($default, $opciones);
-		if($opciones['font'] === true) {
+		if ($opciones['font'] === true) {
 			$this->selectFont(APP . "vendors" . DS . "pdf-php" . DS . "fonts" . DS . "Helvetica.afm");
 		}
-		if($opciones['encabezado'] === true) {
+		if ($opciones['encabezado'] === true) {
 			$this->ezEncabezado($opciones);
 		}
 	}
@@ -32,7 +32,7 @@ class PdfHelper extends Cezpdf {
 	// 2006-11-20: Radosta Martin (mradosta@pragmatia.com)
 	// Setea el encabezado
 	function ezEncabezado($opciones=array()) {
-		$default = array("usuario"=>"");
+		$default = array("usuario" => "");
 		$opciones = am($default, $opciones);
 	
 		$this->ezStartPageNumbers(550,28,8,'','pagina {PAGENUM} de {TOTALPAGENUM}',1);

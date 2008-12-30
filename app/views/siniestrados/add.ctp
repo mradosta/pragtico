@@ -24,12 +24,12 @@ $campos['Variable.id'] = array();
 $campos['Variable.codigo'] = array();
 $campos['Variable.nombre'] = array();
 $campos['Variable.descripcion'] = array();
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"siniestrados.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'siniestrados.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "migaEdit" => $this->data[0]['Variable']['nombre']));
+echo $this->element('add/add', array('fieldset' => $fieldset, "migaEdit" => $this->data[0]['Variable']['nombre']));
 ?>

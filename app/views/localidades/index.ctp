@@ -22,8 +22,8 @@
 $condiciones['Condicion.Localidad-provincia_id'] = array("options"=>"listable", "model"=>"Provincia", "displayField"=>array("Provincia.nombre"), "empty"=>true);
 $condiciones['Condicion.Localidad-codigo'] = array();
 $condiciones['Condicion.Localidad-nombre'] = array("label"=>"Localidad");
-$fieldsets[] = array("campos"=>$condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("imagen"=>"localidades.gif")));
+$fieldsets[] = array('campos' => $condiciones);
+$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'localidades.gif')));
 
 
 /**
@@ -32,14 +32,14 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("im
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array("model"=>"Localidad", "field"=>"id", "valor"=>$v['Localidad']['id'], "write"=>$v['Localidad']['write'], "delete"=>$v['Localidad']['delete']);
-	$fila[] = array("model"=>"Provincia", "field"=>"nombre", "valor"=>$v['Provincia']['nombre'], "nombreEncabezado"=>"Provincia");
-	$fila[] = array("model"=>"Localidad", "field"=>"codigo", "valor"=>$v['Localidad']['codigo']);
-	$fila[] = array("model"=>"Localidad", "field"=>"nombre", "valor"=>$v['Localidad']['nombre'], "nombreEncabezado"=>"Localidad");
-	$fila[] = array("model"=>"Localidad", "field"=>"codigo_zona", "valor"=>$v['Localidad']['codigo_zona']);
+	$fila[] = array('model' => "Localidad", 'field' => "id", 'valor' => $v['Localidad']['id'], "write"=>$v['Localidad']['write'], "delete"=>$v['Localidad']['delete']);
+	$fila[] = array('model' => "Provincia", 'field' => "nombre", 'valor' => $v['Provincia']['nombre'], "nombreEncabezado"=>"Provincia");
+	$fila[] = array('model' => "Localidad", 'field' => "codigo", 'valor' => $v['Localidad']['codigo']);
+	$fila[] = array('model' => "Localidad", 'field' => "nombre", 'valor' => $v['Localidad']['nombre'], "nombreEncabezado"=>"Localidad");
+	$fila[] = array('model' => "Localidad", 'field' => "codigo_zona", 'valor' => $v['Localidad']['codigo_zona']);
 	$cuerpo[] = $fila;
 }
 
-echo $this->renderElement("index/index", array("condiciones"=>$fieldset, "cuerpo"=>$cuerpo));
+echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo));
 
 ?>

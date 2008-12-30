@@ -38,14 +38,14 @@ $campos['Descuento.concurrencia'] = array();
 $campos['Descuento.tipo'] = array();
 $campos['Descuento.estado'] = array();
 $campos['Descuento.observacion'] = array();
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"descuentos.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'descuentos.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
 $miga = array('format' 	=> '%s %s (%s)', 
 			  'content' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));
-echo $this->element("add/add", array("fieldset"=>$fieldset, "miga" => $miga));
+echo $this->element("add/add", array('fieldset' => $fieldset, "miga" => $miga));
 ?>

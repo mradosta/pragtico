@@ -28,12 +28,12 @@ $campos['Accion.ayuda'] = array();
 $campos['Accion.estado'] = array();
 $campos['Accion.seguridad'] = array("aclaracion"=>"Indica si debe chequearse la seguridad sobre esta accion.");
 $campos['Accion.observacion'] = array();
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"acciones.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'acciones.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "migaEdit" => $this->data[0]['Accion']['nombre']);
+echo $this->element('add/add', array('fieldset' => $fieldset, "migaEdit" => $this->data[0]['Accion']['nombre']);
 ?>

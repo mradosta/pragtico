@@ -27,12 +27,12 @@ $campos['GruposParametro.nombre'] = array();
 $campos['GruposParametro.valor'] = array();
 $campos['GruposParametro.descripcion'] = array();
 
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Parametro del Grupo", "imagen"=>"parametros.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Parametro del Grupo", 'imagen' => 'parametros.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "migaEdit" => $this->data[0]['GruposParametro']['nombre']));
+echo $this->element('add/add', array('fieldset' => $fieldset, "migaEdit" => $this->data[0]['GruposParametro']['nombre']));
 ?>

@@ -34,8 +34,8 @@ $condiciones['Condicion.Relacion-id'] = array(	"label"	=> "Relacion",
 $condiciones['Condicion.Novedad-tipo'] = array("type"=>"checkboxMultiple");
 $condiciones['Condicion.Novedad-periodo'] = array("type"=>"periodo");
 
-$fieldsets[] = array("campos"=>$condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"novedades de la relacion laboral", "imagen"=>"novedades.gif")));
+$fieldsets[] = array('campos' => $condiciones);
+$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"novedades de la relacion laboral", 'imagen' => 'novedades.gif')));
 
 
 /**
@@ -44,14 +44,14 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("le
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array("model"=>"Novedad", "field"=>"id", "valor"=>$v['Novedad']['id'], "write"=>$v['Novedad']['write'], "delete"=>$v['Novedad']['delete']);
-	$fila[] = array("model"=>"Empleador", "field"=>"nombre", "valor"=>$v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
-	$fila[] = array("model"=>"Trabajador", "field"=>"numero_documento", "valor"=>$v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
-	$fila[] = array("model"=>"Trabajador", "field"=>"apellido", "valor"=>$v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
-	$fila[] = array("model"=>"Novedad", "field"=>"periodo", "valor"=>$v['Novedad']['periodo']);
-	$fila[] = array("model"=>"Novedad", "field"=>"tipo", "valor"=>$v['Novedad']['tipo']);
-	$fila[] = array("model"=>"Novedad", "field"=>"subtipo", "valor"=>$v['Novedad']['subtipo'], 'nombreEncabezado' => 'Detalle');
-	$fila[] = array("model"=>"Novedad", "field"=>"data", "valor"=>$v['Novedad']['data'], 'tipoDato' => 'integer', 'nombreEncabezado' => 'Valor');
+	$fila[] = array('model' => "Novedad", 'field' => "id", 'valor' => $v['Novedad']['id'], "write"=>$v['Novedad']['write'], "delete"=>$v['Novedad']['delete']);
+	$fila[] = array('model' => "Empleador", 'field' => "nombre", 'valor' => $v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
+	$fila[] = array('model' => "Trabajador", 'field' => "numero_documento", 'valor' => $v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
+	$fila[] = array('model' => "Trabajador", 'field' => "apellido", 'valor' => $v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
+	$fila[] = array('model' => "Novedad", 'field' => "periodo", 'valor' => $v['Novedad']['periodo']);
+	$fila[] = array('model' => "Novedad", 'field' => "tipo", 'valor' => $v['Novedad']['tipo']);
+	$fila[] = array('model' => "Novedad", 'field' => "subtipo", 'valor' => $v['Novedad']['subtipo'], 'nombreEncabezado' => 'Detalle');
+	$fila[] = array('model' => "Novedad", 'field' => "data", 'valor' => $v['Novedad']['data'], 'tipoDato' => 'integer', 'nombreEncabezado' => 'Valor');
 	if($v['Novedad']['existe'] === true) {
 		$cuerpo[] = array("contenido"=>$fila, "opciones"=>array("seleccionMultiple"=>false, "eliminar"=>false, "modificar"=>false, "title"=>"Existe una novedad del mismo tipo ya ingresada para el mismo periodo. Verifique.", "class"=>"fila_resaltada"));
 	}
@@ -64,7 +64,7 @@ $importar = $formulario->link("Importar Planilla", "importar_planilla", array("c
 $confirmar = $formulario->link("Confirmar", null, array("class"=>"link_boton", "id"=>"confirmar", "title"=>"Confirma las novedades seleccionadas"));
 $accionesExtra['opciones'] = array("acciones"=>array($confirmar, "eliminar", $generar, $importar));
 $opcionesTabla =  array("tabla"=>array("modificar"=>false));
-echo $this->renderElement("index/index", array("opcionesTabla"=>$opcionesTabla, "condiciones"=>$fieldset, "cuerpo"=>$cuerpo, "accionesExtra"=>$accionesExtra));
+echo $this->element('index/index', array("opcionesTabla"=>$opcionesTabla, "condiciones"=>$fieldset, 'cuerpo' => $cuerpo, "accionesExtra"=>$accionesExtra));
 
 $js = "
 	jQuery('#confirmar').bind('click', function() {

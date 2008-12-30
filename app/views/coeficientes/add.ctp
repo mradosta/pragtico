@@ -25,12 +25,12 @@ $campos['Coeficiente.nombre'] = array();
 $campos['Coeficiente.tipo'] = array();
 $campos['Coeficiente.valor'] = array();
 $campos['Coeficiente.descripcion'] = array();
-$fieldsets[] = array("campos"=>$campos);
+$fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("imagen"=>"coeficientes.gif")));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'coeficientes.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->renderElement("add/add", array("fieldset"=>$fieldset, "migaEdit" => $this->data[0]['Coeficiente']['nombre']));
+echo $this->element('add/add', array('fieldset' => $fieldset, "migaEdit" => $this->data[0]['Coeficiente']['nombre']));
 ?>

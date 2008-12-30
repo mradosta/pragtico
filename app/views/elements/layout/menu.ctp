@@ -24,7 +24,7 @@ foreach($MenuItems as $k=>$padre) {
 	}
 
 	if(empty($padre['Menu']['imagen'])) {
-		$padre['Menu']['imagen'] = $padre['Menu']['nombre'] . ".gif";
+		$padre['Menu']['imagen'] = $padre['Menu']['nombre'] . '.gif';
 	}
 
 	$menu .=  $formulario->tag("dt", $formulario->image($padre['Menu']['imagen']) . $padre['Menu']['etiqueta'], array("title" => $padre['Menu']['ayuda']));
@@ -36,7 +36,7 @@ foreach($MenuItems as $k=>$padre) {
 		}
 
 		if(empty($hijo['Menu']['imagen'])) {
-			$hijo['Menu']['imagen'] = $hijo['Menu']['nombre'] . ".gif";
+			$hijo['Menu']['imagen'] = $hijo['Menu']['nombre'] . '.gif';
 		}
 		
 		$url = array(	"controller"	=> $hijo['Menu']['controller'],

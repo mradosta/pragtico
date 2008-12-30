@@ -21,8 +21,8 @@ $condiciones['Permisos.model_id'] = array("label"=>"Modelo", "options"=>$models)
 $condiciones['Permisos.grupo_id'] = array("type"=>"checkboxMultiple", "options"=>"listable", "empty"=>true, "model"=>"Grupo", "displayField"=>array("Grupo.nombre"), "order"=>array("Grupo.nombre"), "empty"=>true);
 $condiciones['Permisos.rol_id'] = array("type"=>"checkboxMultiple", "options"=>"listable", "empty"=>true, "model"=>"Rol", "displayField"=>array("Rol.nombre"), "order"=>array("Rol.nombre"), "empty"=>true);
 
-$fieldsets[] = array("campos"=>$condiciones);
-$condiciones = $formulario->pintarFieldsets($fieldsets, array("fieldset"=>array("legend"=>"Cambiar permisos", "imagen"=>"permisos.gif")));
+$fieldsets[] = array('campos' => $condiciones);
+$condiciones = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Cambiar permisos", 'imagen' => 'permisos.gif')));
 
 if(empty($accion)) {
 	$bloque_confirmacion = "";
@@ -98,7 +98,7 @@ $opcionesTabla =  array("tabla"=>
 									"omitirMensajeVacio"=>true));
 
 
-$tabla = $formulario->tag("div", $formulario->tabla(am(array("cuerpo"=>$cuerpo, "encabezado"=>$encabezado), $opcionesTabla)), array("class"=>"tabla", "style"=>"margin-left:13px;"));
+$tabla = $formulario->tag("div", $formulario->tabla(am(array('cuerpo' => $cuerpo, "encabezado"=>$encabezado), $opcionesTabla)), array("class"=>"tabla", "style"=>"margin-left:13px;"));
 
 $bloques[] = $formulario->tag("div", am($condiciones, $tabla, $bloque_confirmacion, $botones), array("class"=>"unica"));
 
