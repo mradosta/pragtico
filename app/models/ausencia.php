@@ -6,23 +6,23 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a las actividades.
  *
  * Se refiere a cuando un trabajador no se presenta a trabajar para con un empleador (una relacion laboral).
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class Ausencia extends AppModel {
 
@@ -80,10 +80,10 @@ class Ausencia extends AppModel {
  * @access public
  */	
 	function afterFind($results, $primary = false) {
-		if($primary) {
-			foreach($results as $k=>$ausencia) {
-				if(isset($ausencia['Ausencia']['id'])) {
-					if(isset($ausencia['AusenciasSeguimiento'])) {
+		if ($primary) {
+			foreach ($results as $k=>$ausencia) {
+				if (isset($ausencia['Ausencia']['id'])) {
+					if (isset($ausencia['AusenciasSeguimiento'])) {
 						
 						$results[$k]['Ausencia']['dias'] = array_sum(Set::extract("/AusenciasSeguimiento[estado=Confirmado]/dias", $ausencia));
 					}
@@ -91,11 +91,11 @@ class Ausencia extends AppModel {
 			}
 		}
 		else {
-			if(!empty($results[0]['Ausencia'][0])) {
-				foreach($results as $k => $v) {
-					foreach($v as $k1 => $v1) {
-						foreach($v1 as $k2 => $ausencia) {
-							if(!isset($ausencia['AusenciasSeguimiento'])) {
+			if (!empty($results[0]['Ausencia'][0])) {
+				foreach ($results as $k => $v) {
+					foreach ($v as $k1 => $v1) {
+						foreach ($v1 as $k2 => $ausencia) {
+							if (!isset($ausencia['AusenciasSeguimiento'])) {
 								$ausenciasSeguimiento = $this->AusenciasSeguimiento->find("all", 
 																array(	"recursive"	=> -1, 
 																		"conditions"=> 
@@ -132,8 +132,8 @@ class Ausencia extends AppModel {
 
 		$return['Justificada'] = 0;
 		$return['Injustificada'] = 0;
-		if(!empty($r)) {
-			foreach($r as $k=>$v) {
+		if (!empty($r)) {
+			foreach ($r as $k=>$v) {
 				$return[$v['AusenciasMotivo']['tipo']] += $v['Ausencia']['dias'];
 			}
 		}

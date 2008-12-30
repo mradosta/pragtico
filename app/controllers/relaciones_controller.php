@@ -6,21 +6,21 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.controllers
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.controllers
  * @since			pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de negocio asociada a las relaciones laborales.
  *
- * @package		pragtico
- * @subpackage	app.controllers
+ * @package     pragtico
+ * @subpackage  app.controllers
  */
 class RelacionesController extends AppController {
 
@@ -30,7 +30,7 @@ class RelacionesController extends AppController {
  */
 	function areas_relacionado($id) {
 		$c=0;
-		foreach($this->Relacion->Area->find("list", array("fields"=>array("Area.nombre"), "conditions"=>array("Area.empleador_id"=>$id))) as $k=>$v) {
+		foreach ($this->Relacion->Area->find("list", array("fields"=>array("Area.nombre"), "conditions"=>array("Area.empleador_id"=>$id))) as $k=>$v) {
 			$areas[$c]['optionValue'] = $k;
 			$areas[$c]['optionDisplay'] = $v;
 			$c++;
@@ -45,7 +45,7 @@ class RelacionesController extends AppController {
  */
 	function recibos_relacionado($id) {
 		$c=0;
-		foreach($this->Relacion->Empleador->Recibo->find("list", array("fields"=>array("Recibo.nombre"), "conditions"=>array("Recibo.empleador_id"=>$id))) as $k=>$v) {
+		foreach ($this->Relacion->Empleador->Recibo->find("list", array("fields"=>array("Recibo.nombre"), "conditions"=>array("Recibo.empleador_id"=>$id))) as $k=>$v) {
 			$recibos[$c]['optionValue'] = $k;
 			$recibos[$c]['optionDisplay'] = $v;
 			$c++;
@@ -62,9 +62,9 @@ class RelacionesController extends AppController {
 		* Si esta grabando y selecciona un recibo del empleador, agrego a la relacion laboral,
 		* los conceptos que posea ese recibo.
 		*/
-        if(!empty($this->data['Relacion']['recibo_id']) && !empty($this->data['Form']['accion']) && $this->data['Form']['accion'] == "grabar") {
+        if (!empty($this->data['Relacion']['recibo_id']) && !empty($this->data['Form']['accion']) && $this->data['Form']['accion'] == "grabar") {
         	$recibo = $this->Relacion->Empleador->Recibo->findById($this->data['Relacion']['recibo_id']);
-        	foreach($recibo['RecibosConcepto'] as $v) {
+        	foreach ($recibo['RecibosConcepto'] as $v) {
         		$relacionesConcepto[] = array("concepto_id"=>$v['concepto_id']);
         	}
         	unset($this->data['Relacion']['recibo_id']);
@@ -158,7 +158,7 @@ class RelacionesController extends AppController {
  * PasarAHistorico.
  * Al no poder eliminar una relacion laboral le cambia el estado a historico.
 	function pasarAHistorico($id) {
-		if($this->Relacion->save(array("Relacion"=>array("id"=>$id, "estado"=>"Historica")))) {
+		if ($this->Relacion->save(array("Relacion"=>array('id' => $id, "estado" => "Historica")))) {
 			$this->Session->setFlash("Se paso al historico la relacion laboral correctamente.", 'ok');
 		}
 		else {

@@ -5,23 +5,23 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.controllers
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.controllers
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de negocio asociada a los conceptos.
  *
  * Son los conceptos que daran origen a las liquidaciones.
  *
- * @package		pragtico
- * @subpackage	app.controllers
+ * @package     pragtico
+ * @subpackage  app.controllers
  */
 class ConceptosController extends AppController {
 
@@ -69,25 +69,25 @@ class ConceptosController extends AppController {
  * Asigna un concepto a todos los trabajadores de un convenio celectivo incluyendo o excluyendo a los ciertos empleadores.
  */
 	function manipular_concepto($accion = null) {
-		if(!empty($this->params['pass']['1']) && is_numeric($this->params['pass']['1']) && !empty($accion)) {
+		if (!empty($this->params['pass']['1']) && is_numeric($this->params['pass']['1']) && !empty($accion)) {
 			$this->set("convenios", $this->Concepto->ConveniosConcepto->Convenio->find("list", array("fields"=>array("Convenio.id", "Convenio.nombre"))));
 			$this->set("concepto", $this->Concepto->findById($this->params['pass']['1']));
 			$this->set("accion", $accion);
-			$this->set("comportamientos", array("incluir"=>"Incluir", "excluir"=>"Excluir"));
+			$this->set("comportamientos", array("incluir" => "Incluir", "excluir" => "Excluir"));
 		}
-		elseif(!empty($this->data['Asignar']['accion']) && !empty($this->data['Asignar']['convenio_id']) && !empty($this->data['Asignar']['concepto_id'])) {
+		elseif (!empty($this->data['Asignar']['accion']) && !empty($this->data['Asignar']['convenio_id']) && !empty($this->data['Asignar']['concepto_id'])) {
 			$accion = $this->data['Asignar']['accion'];
-			if($this->data['Form']['accion'] == "grabar") {
+			if ($this->data['Form']['accion'] == "grabar") {
 				$conditions = array();
 				/**
 				* Si tengo empleadores seleccionados, debo decidir si los incluto o los exluyo a estos.
 				*/
-				if(!empty($this->data['Asignar']['empleador_id'])) {
+				if (!empty($this->data['Asignar']['empleador_id'])) {
 					$empleadoresId = explode("**||**", $this->data['Asignar']['empleador_id']);
-					if($this->data['Asignar']['empleador_comportamiento'] == "incluir") {
+					if ($this->data['Asignar']['empleador_comportamiento'] == "incluir") {
 						$conditions = array("Relacion.empleador_id" => $empleadoresId);
 					}
-					elseif($this->data['Asignar']['empleador_comportamiento'] == "excluir") {
+					elseif ($this->data['Asignar']['empleador_comportamiento'] == "excluir") {
 						$conditions = array(array("NOT" => array("Relacion.empleador_id" => $empleadoresId)));
 					}
 				}
@@ -98,7 +98,7 @@ class ConceptosController extends AppController {
 				$relaciones = $this->Concepto->RelacionesConcepto->Relacion->find("list", array("fields"=>array("Relacion.id"), "conditions"=>$conditions));
 
 				$c = $this->Concepto->RelacionesConcepto->Concepto->agregarQuitarConcepto($relaciones, array($this->data['Asignar']['concepto_id']), array("accion"=>$accion));
-				if($c > 0) {
+				if ($c > 0) {
 					$this->Session->setFlash("El concepto se pudo " . $accion . " correctamente a " . $c . " trabajadores.", "ok");
 				}
 				else {

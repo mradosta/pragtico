@@ -5,28 +5,28 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada al detalle de cada version de Siap.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class SiapsDetalle extends AppModel {
 
 /*	
 	var $unique = array("controlador_id", "nombre");
 
-	var $order = array('Accion.nombre'=>'asc');
+	var $order = array('Accion.nombre' => 'asc');
 
 	var $validate = array(
         'nombre' => array(

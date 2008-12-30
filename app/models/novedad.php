@@ -6,22 +6,22 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a las novedades.
  * Una novedad es un ingreso de datos al sistema no confirmado aun.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class Novedad extends AppModel {
 
@@ -59,7 +59,7 @@ class Novedad extends AppModel {
  * @var array
  * @access public
  */
-	var $opciones = array("formato"=>array("Excel5"=>"Excel", "Excel2007"=>"Excel 2007"));
+	var $opciones = array("formato"=>array("Excel5" => "Excel", "Excel2007" => "Excel 2007"));
 	
 	var $belongsTo = array(	'Relacion' =>
                         array('className'    => 'Relacion',
@@ -168,7 +168,7 @@ class Novedad extends AppModel {
 						*/
 						$this->Relacion->RelacionesConcepto->Concepto->recursive = -1;
 						$concepto = $this->Relacion->RelacionesConcepto->Concepto->findByNombre($tipo);
-						if(empty($concepto['Concepto']['id'])) {
+						if (empty($concepto['Concepto']['id'])) {
 							continue;
 						}
 						//$save['Novedad']['data'] = "#valor_planilla:" . $registro;
@@ -191,7 +191,7 @@ class Novedad extends AppModel {
 							} else {
 								$save['Novedad']['data'] = $registros['Dias'];
 								
-								if(empty($registro)) {
+								if (empty($registro)) {
 									$save['Novedad']['subtipo'] = 1;
 								} else {
 									$this->Relacion->Ausencia->AusenciasMotivo->recursive = -1;
@@ -275,11 +275,11 @@ class Novedad extends AppModel {
 		   								'RelacionesConcepto.concepto_id'	=> $saves[$i]['RelacionesConcepto']['concepto_id'])
 									));
 					
-					if(empty($find)) {
+					if (empty($find)) {
 						$saves[$i]['RelacionesConcepto']['id'] = null;
 						$formula = "=" . $novedad['Novedad']['data'];
 					}
-					if(empty($find['RelacionesConcepto']['formula'])) {
+					if (empty($find['RelacionesConcepto']['formula'])) {
 						$saves[$i]['RelacionesConcepto']['id'] = $find['RelacionesConcepto']['id'];
 						$formula = "=" . $novedad['Novedad']['data'];
 					}
@@ -295,14 +295,14 @@ class Novedad extends AppModel {
 		}
 		
 		$this->begin();
-		foreach($saves as $save) {
+		foreach ($saves as $save) {
 			$keys = array_keys($save);
-			if($this->Relacion->{$keys[0]}->save($save)	) {
+			if ($this->Relacion->{$keys[0]}->save($save)	) {
 				$c++;
 			}
 		}
 		
-		if($i === $c) {
+		if ($i === $c) {
 			$this->deleteAll(array("Novedad.id"=>$ids), false, false, false);
 			$this->commit();
 			return $i;
@@ -324,12 +324,12 @@ class Novedad extends AppModel {
 		$predefinidos[] = "Horas";
 		$predefinidos[] = "Ausencias";
 		$predefinidos[] = "Vales";
-		if($tipo === "todos") {
+		if ($tipo === "todos") {
 			$Concepto = new Concepto();
-			$conceptos = $Concepto->find("all", array("conditions"=>array("Concepto.novedad"=>"Si"), "recursive"=>-1));
+			$conceptos = $Concepto->find("all", array("conditions"=>array("Concepto.novedad" => "Si"), "recursive"=>-1));
 			return array_merge($predefinidos, Set::extract("/Concepto/nombre", $conceptos));
 		}
-		elseif($tipo === "predefinidos") {
+		elseif ($tipo === "predefinidos") {
 			return $predefinidos;	
 		}
 	}

@@ -5,23 +5,23 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.controllers
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.controllers
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 
 /**
  * La clase encapsula la logica de negocio asociada a los grupos de usuarios.
  *
  *
- * @package		pragtico
- * @subpackage	app.controllers
+ * @package     pragtico
+ * @subpackage  app.controllers
  */
 class GruposController extends AppController {
 
@@ -54,7 +54,7 @@ class GruposController extends AppController {
  */
 	function setear_grupo_default($id) {
 		$usuario = $this->Session->read("__Usuario");
-		if($usuario['Usuario']['grupos'] & (int)$id) {
+		if ($usuario['Usuario']['grupos'] & (int)$id) {
 			$usuario['Usuario']['preferencias']['grupo_default_id'] = $id;
 			$this->Session->write("__Usuario", $usuario);
 			$this->Session->setFlash('El nuevo grupo por defecto se seteo correctamente.', 'ok');
@@ -74,12 +74,12 @@ class GruposController extends AppController {
  * @access public 
  */
 	function cambiar_grupo_activo() {
-		if(!empty($this->params['named']['accion']) && !empty($this->params['named']['grupo_id']) && is_numeric($this->params['named']['grupo_id'])) {
+		if (!empty($this->params['named']['accion']) && !empty($this->params['named']['grupo_id']) && is_numeric($this->params['named']['grupo_id'])) {
 			$usuario = $this->Session->read("__Usuario");
-			if($this->params['named']['accion'] === "agregar") {
+			if ($this->params['named']['accion'] === "agregar") {
 				$usuario['Usuario']['preferencias']['grupos_seleccionados'] = $usuario['Usuario']['preferencias']['grupos_seleccionados'] + $this->params['named']['grupo_id'];
 			}
-			elseif($this->params['named']['accion'] === "quitar") {
+			elseif ($this->params['named']['accion'] === "quitar") {
 				$usuario['Usuario']['preferencias']['grupos_seleccionados'] = $usuario['Usuario']['preferencias']['grupos_seleccionados'] - $this->params['named']['grupo_id'];
 			}
 			$this->Session->write("__Usuario", $usuario);

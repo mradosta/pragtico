@@ -6,21 +6,21 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a las preferencias.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class Preferencia extends AppModel {
 
@@ -65,28 +65,28 @@ class Preferencia extends AppModel {
 		/**
 		* Verifica que haya seleccionado por lo menos un valor asociado a la preferencia.
 		*/
-		if(count($this->data['PreferenciasValor']) == 0) {
+		if (count($this->data['PreferenciasValor']) == 0) {
 			$this->dbError['errorDescripcion'] = "Debe ingresar al menos un valor para la preferencia.";
 			return false;
 		}
 		
 		$c=0;
-		foreach($this->data['PreferenciasValor'] as $v) {
-			if($v['predeterminado'] == "Si") {
+		foreach ($this->data['PreferenciasValor'] as $v) {
+			if ($v['predeterminado'] == "Si") {
 				$c++;;
 			}
 		}
 		/**
 		* Verifica que haya seleccionado solo un valor de la preferencia como predeterminado.
 		*/
-		if($c > 1) {
+		if ($c > 1) {
 			$this->dbError['errorDescripcion'] = "Debe seleccionar solo un valor como predeterminado para la preferencia.";
 			return false;
 		}
 		/**
 		* Verifica que haya seleccionado por lo menos un valor de la preferencia como predeterminado.
 		*/
-		elseif($c==0) {
+		elseif ($c==0) {
 			$this->dbError['errorDescripcion'] = "Debe ingresar por lo menos un valor como prederminado para la preferencia.";
 			return false;
 		}
@@ -103,11 +103,11 @@ class Preferencia extends AppModel {
 		$preferencias = $this->find("all", 
 				array("contain"	=> array(	
 					  "PreferenciasUsuario", "PreferenciasValor" => 
-						array("conditions"	=> array("PreferenciasValor.predeterminado"=>"Si"))), 
+						array("conditions"	=> array("PreferenciasValor.predeterminado" => "Si"))), 
 							  "checkSecurity"=>false));
 		//d($preferencias);
-		foreach($preferencias as $preferencia) {
-			if(!empty($preferencia['PreferenciasUsuario'][0]['PreferenciasValor']['valor'])) {
+		foreach ($preferencias as $preferencia) {
+			if (!empty($preferencia['PreferenciasUsuario'][0]['PreferenciasValor']['valor'])) {
 				$valor = $preferencia['PreferenciasUsuario'][0]['PreferenciasValor']['valor'];
 			}
 			else {

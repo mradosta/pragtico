@@ -5,23 +5,23 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a las categorias.
  *
  * Se refiere a las categorias (puestos) de los convenios colectivos.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class ConveniosCategoria extends AppModel {
 
@@ -62,13 +62,13 @@ class ConveniosCategoria extends AppModel {
 	
 	function afterFind($results, $primary = false) {
 		if ($primary) {
-			foreach($results as $k=>$v) {
-				if(isset($v['ConveniosCategoriasHistorico'])) {
+			foreach ($results as $k=>$v) {
+				if (isset($v['ConveniosCategoriasHistorico'])) {
 					$results[$k]['ConveniosCategoria']['costo'] = $this->__getCosto($v['ConveniosCategoriasHistorico']);
 				}
 			}
 		} else {
-			if(!empty($results['ConveniosCategoriasHistorico'])) {
+			if (!empty($results['ConveniosCategoriasHistorico'])) {
 				$results['costo'] = $this->__getCosto($results['ConveniosCategoriasHistorico']);
 			} else {
 				foreach ($results as $k=>$v) {

@@ -5,25 +5,25 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a los descuentos.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class Descuento extends AppModel {
 
-	var $order = array('Descuento.alta'=>'desc');
+	var $order = array('Descuento.alta' => 'desc');
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
@@ -101,10 +101,10 @@ class Descuento extends AppModel {
 
 		switch($opciones['tipo']) {
 			case "normal":
-				if($opciones['periodo'] === "1Q") {
+				if ($opciones['periodo'] === "1Q") {
 					$descontar = 3;
 				}
-				elseif($opciones['periodo'] === "2Q" || $opciones['periodo'] === "M") {
+				elseif ($opciones['periodo'] === "2Q" || $opciones['periodo'] === "M") {
 					$descontar = 5;
 				}
 				break;
@@ -181,7 +181,7 @@ class Descuento extends AppModel {
 		d($r);
 */
 		$conceptos = $auxiliares = array();
-		if(!empty($r)) {
+		if (!empty($r)) {
 			foreach ($r as $k=>$v) {
 				$cuotaDescontadas = count($v['DescuentosDetalle']);
 				$totalDescontado = array_sum(Set::extract("/monto", $v['DescuentosDetalle']));
@@ -203,7 +203,7 @@ class Descuento extends AppModel {
 				/**
 				* Establezco el maximo a descontar.
 				*/
-				if($v['Descuento']['maximo'] > 0 && $valorCuota > $v['Descuento']['maximo']) {
+				if ($v['Descuento']['maximo'] > 0 && $valorCuota > $v['Descuento']['maximo']) {
 					$valorCuota = $v['Descuento']['maximo'];
 				}
 
@@ -211,7 +211,7 @@ class Descuento extends AppModel {
 				* Verifico que la cuota no sea mayor al saldo.
 				*/
 				$saldo = $v['Descuento']['monto'] - $totalDescontado;
-				if($saldo < $valorCuota) {
+				if ($saldo < $valorCuota) {
 					$valorCuota = $saldo;
 				}
 				
@@ -222,7 +222,7 @@ class Descuento extends AppModel {
 				$modelConcepto = ClassRegistry::init('Concepto');
 				$codigoConcepto = strtolower($v['Descuento']['tipo']);
 				$concepto = $modelConcepto->findConceptos("ConceptoPuntual", array_merge(array('relacion' => $relacion, 'codigoConcepto' => $codigoConcepto), $opciones));
-				if(!empty($formula)) {
+				if (!empty($formula)) {
 					$concepto[$codigoConcepto]['formula'] = $formula;
 				}
 				$concepto[$codigoConcepto]['debug'] = "Tipo:" . $codigoConcepto . ", Monto Total:$" . $v['Descuento']['monto'] . ", Total de Cuotas:" . $v['Descuento']['cuotas'] . ", Cuotas Descontadas:" . $cuotaDescontadas . ", Saldo:$" . $saldo . ", Cuota a Descontar en esta Liquidacion:" . $cuotaActual . ", Valor esta Cuota:$" . $valorCuota;
@@ -239,23 +239,23 @@ class Descuento extends AppModel {
 				$auxiliar['liquidacion_id'] = "##MACRO:liquidacion_id##";
 				$auxiliar['monto'] = $valorCuota;
 				$auxiliar['observacion'] = "(Cuota: " . $cuotaActual . "/" . $v['Descuento']['cuotas'] . ")";
-				$auxiliares[] = array("save"=>serialize($auxiliar), "model"=>"DescuentosDetalle");
+				$auxiliares[] = array("save"=>serialize($auxiliar), "model" => "DescuentosDetalle");
 
 				/**
 				* Si se termino de pagar el credito, debo actualizar el estado a Finalizado.
 				*/
-				if(($totalDescontado + $valorCuota) >=  $v['Descuento']['monto']) {
+				if (($totalDescontado + $valorCuota) >=  $v['Descuento']['monto']) {
 					$auxiliar = null;
 					$auxiliar['estado'] = "Finalizado";
 					$auxiliar['id'] = $v['Descuento']['id'];
-					$auxiliares[] = array("save"=>serialize($auxiliar), "model"=>"Descuento");
+					$auxiliares[] = array("save"=>serialize($auxiliar), "model" => "Descuento");
 				}
 
 				/**
 				* Si solo uno a la vez, no puedo ponerle otro descuento, por lo tanto, salgo del foreach.
 				* De la query vienen ordenados por fecha de alta.
 				*/
-				if($v['Descuento']['concurrencia'] === "Solo uno a la vez") {
+				if ($v['Descuento']['concurrencia'] === "Solo uno a la vez") {
 					break;
 				}
 			}

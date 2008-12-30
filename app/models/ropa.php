@@ -6,22 +6,22 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a la ropa
  * que se le entrega a un trabajador de una relacion laboral.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class Ropa extends AppModel {
 
@@ -31,7 +31,7 @@ class Ropa extends AppModel {
 	var $modificadores = array(	'index'	=>
 			array('contain'	=> array('Relacion'	=> array('Trabajador', 'Empleador'))),
 								'add' 	=>
-			array('valoresDefault'	=> array('fecha'=>'date("d/m/Y")')),
+			array('valoresDefault'	=> array('fecha' => 'date("d/m/Y")')),
 								'edit'	=>
 			array('contain'	=> array('Relacion'	=> array('Trabajador', 'Empleador'), 'RopasDetalle')));
 	

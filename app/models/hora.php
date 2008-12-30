@@ -6,22 +6,22 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a las horas de una relacion laboral.
  * Las horas pueden ser horas extras, horas de ajuste, horas nocturnas, etc.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class Hora extends AppModel {
 
@@ -80,7 +80,7 @@ class Hora extends AppModel {
  * @return boolean True if the operation should continue, false if it should abort
  */    
     function beforeSave() {
-    	if(!empty($this->data['Hora']['periodo'])) {
+    	if (!empty($this->data['Hora']['periodo'])) {
     		$this->data['Hora']['periodo'] = strtoupper($this->data['Hora']['periodo']);
     	}
     	return parent::beforeSave();
@@ -120,7 +120,7 @@ class Hora extends AppModel {
 		* Cuando se trata de un trabajador mensual, por mas que las horas esten cargadas para una de las quincenas,
 		* las busco indistintamente para ambas.
 		*/
-		if($relacion['ConveniosCategoria']['jornada'] === "Mensual") {
+		if ($relacion['ConveniosCategoria']['jornada'] === "Mensual") {
 			$conditions['conditions']['Hora.periodo'] =	array	(	$periodo['ano'] . $periodo['mes'] . "1Q",
 																	$periodo['ano'] . $periodo['mes'] . "2Q",
 																	$periodo['ano'] . $periodo['mes'] . "M");
@@ -143,14 +143,14 @@ class Hora extends AppModel {
 		/**
 		* Inicializo el array.
 		*/
-		foreach($map as $v) {
+		foreach ($map as $v) {
 			$horas[$v] = 0;
 		}
 		$conceptos = $auxiliares = array();
-		if(!empty($r)) {
+		if (!empty($r)) {
 			$modelConcepto = new Concepto();
-			foreach($r as $hora) {
-				if($relacion['ConveniosCategoria']['jornada'] === "Mensual" && ($hora['Hora']['tipo'] === "Normal")) {
+			foreach ($r as $hora) {
+				if ($relacion['ConveniosCategoria']['jornada'] === "Mensual" && ($hora['Hora']['tipo'] === "Normal")) {
 					continue;
 				}
 				$tipo = $map[$hora['Hora']['tipo']];
@@ -175,12 +175,12 @@ class Hora extends AppModel {
 			* Creo un registro en la tabla auxiliar que debera ejecutarse en caso de que se confirme la pre-liquidacion.
 			* El registro es para cambiarle el estado a Liquidada, basicamente.
 			*/
-			foreach($r as $v) {
+			foreach ($r as $v) {
 				$auxiliar = null;
 				$auxiliar['id'] = $v['Hora']['id'];
 				$auxiliar['estado'] = "Liquidada";
 				$auxiliar['liquidacion_id'] = "##MACRO:liquidacion_id##";
-				$auxiliares[] = array("save"=>serialize($auxiliar), "model"=>"Hora");
+				$auxiliares[] = array("save"=>serialize($auxiliar), "model" => "Hora");
 			}
 		}
 		return array("conceptos"=>$conceptos, "variables"=>$horas, "auxiliar"=>$auxiliares);

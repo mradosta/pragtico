@@ -5,23 +5,23 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a los convenios.
  *
  * Se refiere a los convenios colectivos.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class Convenio extends AppModel {
 
@@ -30,7 +30,7 @@ class Convenio extends AppModel {
 	*/
 	//var $modificadores = array("index"=>array("contain"=>array("Convenio")));
 	
-	var $order = array('Convenio.nombre'=>'asc');
+	var $order = array('Convenio.nombre' => 'asc');
 
 	var $validate = array(
         'nombre' => array(
@@ -69,7 +69,7 @@ class Convenio extends AppModel {
  * Antes de guardar, saco las propiedades del archivo y lo guardo como campo binary de la base.
  */
 	function beforeSave() {
-		if($this->getFile()) {
+		if ($this->getFile()) {
 			return parent::beforeSave();
 		}
 		else {
@@ -90,7 +90,7 @@ class Convenio extends AppModel {
 		$r = $this->ConveniosInformacion->find("all", 
 			array(	"contain"		=> array("Informacion"),
 					"conditions"	=> array("ConveniosInformacion.convenio_id"	=>	$conveniosId)));
-		foreach($r as $v) {
+		foreach ($r as $v) {
 			$return[$v['ConveniosInformacion']['convenio_id']][$v['Informacion']['nombre']] = $v['ConveniosInformacion']['valor'];
 		}
 		return $return;

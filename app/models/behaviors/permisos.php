@@ -5,15 +5,15 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models.behaviors
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models.behaviors
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * Especifico todos los metodos que me garantizan que de manera automagica cada registro que es recuperado o
@@ -22,8 +22,8 @@
  * Me baso en la idea expuesta por:
  * http://www.xaprb.com/blog/2006/08/16/how-to-build-role-based-access-control-in-sql/
  *
- * @package		pragtico
- * @subpackage	app.models.behaviors
+ * @package     pragtico
+ * @subpackage  app.models.behaviors
  */
 class PermisosBehavior extends ModelBehavior {
 
@@ -84,7 +84,7 @@ class PermisosBehavior extends ModelBehavior {
  * @access public.
  */
 	function setup(&$model, $settings = array()) {		
-		if($this->Session === null) {
+		if ($this->Session === null) {
 			$this->Session = &new SessionComponent();
 		}
 	}
@@ -101,17 +101,17 @@ class PermisosBehavior extends ModelBehavior {
 		
 		$usuario = $this->Session->read('__Usuario');
 		
-    	if(empty($model->id)) {
-			if(!isset($model->data[$model->name]['user_id'])) {
+    	if (empty($model->id)) {
+			if (!isset($model->data[$model->name]['user_id'])) {
     			$model->data[$model->name]['user_id'] = $usuario['Usuario']['id'];
     		}
-    		if(!isset($model->data[$model->name]['role_id'])) {
+    		if (!isset($model->data[$model->name]['role_id'])) {
     			$model->data[$model->name]['role_id'] = $usuario['Usuario']['roles'];
     		}
-    		if(!isset($model->data[$model->name]['group_id'])) {
+    		if (!isset($model->data[$model->name]['group_id'])) {
     			$model->data[$model->name]['group_id'] = $usuario['Usuario']['preferencias']['grupo_default_id'];
     		}
-    		if(!isset($model->data[$model->name]['permissions'])) {
+    		if (!isset($model->data[$model->name]['permissions'])) {
     			$model->data[$model->name]['permissions'] = $model->getPermissions();
     		}
     	}
@@ -138,7 +138,7 @@ class PermisosBehavior extends ModelBehavior {
 		* Pueden existir casos, por ejemplo, cuando aun no tengo un usuario logueado y hago queries a la 
 		* base para buscar un par de usuario/clave valido, odnde no tenga el usuario en la sesion.
 		*/
-		if(!empty($usuario)) {
+		if (!empty($usuario)) {
 			$results = $this->__colocarPermisos($results, $usuario);
 		}
 		
@@ -170,13 +170,13 @@ class PermisosBehavior extends ModelBehavior {
  */	 
 	function __colocarPermisos($results, $usuario) {
 		
-		foreach($results as $k=>$v) {
-			if(is_array($v)) {
+		foreach ($results as $k=>$v) {
+			if (is_array($v)) {
 				$results[$k] = $this->__colocarPermisos($v, $usuario);
 			}
 		}
 		
-		if(isset($results['user_id']) && isset($results['group_id']) && isset($results['permissions'])) {
+		if (isset($results['user_id']) && isset($results['group_id']) && isset($results['permissions'])) {
 			return array_merge($results, array(	'write'	=> $this->__puede($usuario, $results, "write"),
 												'delete'=> $this->__puede($usuario, $results, "delete")));
 		}
@@ -203,14 +203,14 @@ class PermisosBehavior extends ModelBehavior {
 		/**
 		* Verifico si es el root.
 		*/
-		if((int)$usuario['Usuario']['id'] === 1) {
+		if ((int)$usuario['Usuario']['id'] === 1) {
 			return true;
 		}
 		
 		/**
 		* Verifico lo que puede hacer el dueno.
 		*/
-		if(($usuario['Usuario']['id'] === $registro['user_id'])
+		if (($usuario['Usuario']['id'] === $registro['user_id'])
 			&& ((int)$registro['permissions'] & (int)$this->__permisos['owner_' . $acceso])) {
 			return true;
 		}
@@ -218,7 +218,7 @@ class PermisosBehavior extends ModelBehavior {
 		/**
 		* Verifico lo que pueden hacer el grupo en funcion del rol.
 		*/
-		if((((int)$usuario['Usuario']['grupos'] & (int)$registro['group_id'])
+		if ((((int)$usuario['Usuario']['grupos'] & (int)$registro['group_id'])
 			&& ((int)$registro['permissions'] & (int)$this->__permisos['group_' . $acceso])) &&
 		   (((int)$usuario['Usuario']['roles'] & (int)$registro['role_id'])
 			&& ((int)$registro['permissions'] & (int)$this->__permisos['group_' . $acceso]))) {
@@ -228,7 +228,7 @@ class PermisosBehavior extends ModelBehavior {
 		/**
 		* Verifico lo que pueden hacer los otros.
 		*/
-		if($usuario['Usuario']['id'] !== $registro['user_id'] &&
+		if ($usuario['Usuario']['id'] !== $registro['user_id'] &&
 			((int)$usuario['Usuario']['grupos'] & (int)$registro['group_id'] === 0) &&
 			((int)$registro['permissions'] & (int)$this->__permisos['other_' . $acceso])) {
 			return true;
@@ -238,7 +238,7 @@ class PermisosBehavior extends ModelBehavior {
 
 	
 	function setSecurityAccess(&$model, $access) {
-		if(in_array($access, array("read", "write", "delete"))) {
+		if (in_array($access, array("read", "write", "delete"))) {
 			
 			/**
 			* Assign same security access to related models.
@@ -255,7 +255,7 @@ class PermisosBehavior extends ModelBehavior {
 	
 
 	function getSecurityAccess(&$model) {
-		if(!empty($model->access)) {
+		if (!empty($model->access)) {
 			return $model->access;
 		}
 		return false;
@@ -293,7 +293,7 @@ class PermisosBehavior extends ModelBehavior {
 		/**
 		* La unica posibilidad de no chequear la seguridad, es que me venga explicitamente especificado no hacerlo.
 		*/
-		if($securityAccess === false) {
+		if ($securityAccess === false) {
 			unset($queryData['conditions']['checkSecurity']);
 			return $queryData;
 		}
@@ -301,7 +301,7 @@ class PermisosBehavior extends ModelBehavior {
 		/**
 		* Verifico que se trate de alguno de los unicos 3 metodos soportados.
 		*/
-		if(in_array($securityAccess, array("read", "write", "delete"))) {
+		if (in_array($securityAccess, array("read", "write", "delete"))) {
 			$seguridad = $this->__generarCondicionSeguridad($securityAccess, $model->name);
 		}
 		else {
@@ -358,7 +358,7 @@ class PermisosBehavior extends ModelBehavior {
 		* si tiene seteadas las preferencias de los grupos_seleccionados, es porque el usuario quiere trabajar
 		* con alguno/s de su/s grupo/s, y no con todos.
 		*/
-		if(isset($usuario['Usuario']['preferencias']['grupos_seleccionados'])) {
+		if (isset($usuario['Usuario']['preferencias']['grupos_seleccionados'])) {
 			$grupos = $usuario['Usuario']['preferencias']['grupos_seleccionados'];
 		}
 		else {
@@ -367,7 +367,7 @@ class PermisosBehavior extends ModelBehavior {
 		$roles = $usuario['Usuario']['roles'];
 		
 
-		if($acceso === "delete") {
+		if ($acceso === "delete") {
 			$resultPermissions = $this->__simplifiedPermissions;
 		} else {
 			$resultPermissions = $this->__permisos;
@@ -375,7 +375,7 @@ class PermisosBehavior extends ModelBehavior {
 		/**
 		* Si se trata de un usuario perteneciente al rol administradores, que no tiene grupo (root), no verifico permisos.
 		*/
-		if(empty($usuario['Grupo']) && (int)$usuario['Usuario']['roles'] & 1) {
+		if (empty($usuario['Grupo']) && (int)$usuario['Usuario']['roles'] & 1) {
 			return array();
 		}
 		else {
@@ -383,7 +383,7 @@ class PermisosBehavior extends ModelBehavior {
 			* Si explicitamente no ha seleccionado ningun grupo, supongo que desea ver solo sus registros...
 			* Los registros de los cuales el es dueno.
 			*/
-			if(empty($grupos)) {
+			if (empty($grupos)) {
 				$seguridad['OR'][] =
 					array(
 						$modelName . ".user_id" => $usuarioId,
@@ -425,7 +425,7 @@ class PermisosBehavior extends ModelBehavior {
 		/**
 		* Cuando hago un delete, con los permisos solo del dueno es suficiente, por lo que los del grupo los quito.
 		*/
-		if($acceso === "delete") {
+		if ($acceso === "delete") {
 			unset($seguridad['OR'][0]['AND'][1]);
 		}
 		//return array();
@@ -445,13 +445,13 @@ class PermisosBehavior extends ModelBehavior {
 		/**
 		* Evito que entre en loop infinito.
 		*/
-		if($model->name !== "Auditoria") {
+		if ($model->name !== "Auditoria") {
 			//App::import("model", "Auditoria");
 			//$Auditoria = new Auditoria();
 			$Auditoria = ClassRegistry::init('Auditoria');
 			$save['model'] = $model->name;
 			$save['data'] = $model->data;
-			if($created) {
+			if ($created) {
 				$save['tipo'] = "Alta";
 			}
 			else {

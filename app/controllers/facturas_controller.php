@@ -5,21 +5,21 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.controllers
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.controllers
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de negocio asociada a la facturacion.
  *
- * @package		pragtico
- * @subpackage	app.controllers
+ * @package     pragtico
+ * @subpackage  app.controllers
  */
 class FacturasController extends AppController {
 
@@ -28,12 +28,12 @@ class FacturasController extends AppController {
 
 
 	function resumen() {
-		if(!isset($this->data['Resumen']['tipo'])) {
+		if (!isset($this->data['Resumen']['tipo'])) {
 			$this->data['Resumen']['tipo'] = "resumido";
 		}
-		if(!empty($this->data['Condicion']['Liquidacion-periodo']) && !empty($this->data['Condicion']['Liquidacion-empleador_id'])) {
+		if (!empty($this->data['Condicion']['Liquidacion-periodo']) && !empty($this->data['Condicion']['Liquidacion-empleador_id'])) {
 			$periodo = $this->Util->traerPeriodo($this->data['Condicion']['Liquidacion-periodo']);
-			if(!empty($periodo)) {
+			if (!empty($periodo)) {
 				$this->data['Condicion']['Liquidacion-ano'] = $periodo['ano'];
 				$this->data['Condicion']['Liquidacion-mes'] = $periodo['mes'];
 				$this->data['Condicion']['Liquidacion-periodo'] = $periodo['periodo'];
@@ -46,16 +46,16 @@ class FacturasController extends AppController {
 				$this->render("resumen_" . $this->data['Resumen']['tipo'] . "_pdf", "pdf");
 			}
 		}
-		$this->set("tipos", array("resumido"=>"Resumido", "detallado"=>"Detallado"));
+		$this->set("tipos", array("resumido" => "Resumido", "detallado" => "Detallado"));
 	}
 	
 	
 	function prefacturar() {
-		if(!empty($this->data['Condicion']['Liquidacion-grupo_id']) && !empty($this->data['Condicion']['Liquidacion-periodo']) && $this->data['Formulario']['accion'] === "buscar") {
+		if (!empty($this->data['Condicion']['Liquidacion-grupo_id']) && !empty($this->data['Condicion']['Liquidacion-periodo']) && $this->data['Formulario']['accion'] === "buscar") {
 			/**
 			* Obtengo el periodo separado por ano, mes y periodo propiamente dicho.
 			//$periodo = $this->Util->traerPeriodo($this->data['Facturacion']['periodo']);
-			if($periodo === false) {
+			if ($periodo === false) {
 				$this->Session->setFlash("Debe especificar un periodo valido.", "error");
 				$this->redirect("prefacturar");
 			}
@@ -84,7 +84,7 @@ class FacturasController extends AppController {
 		$resultados = $this->Paginador->paginar(array("Factura.id"=>$ids));
 		$this->set("grupos", $this->Util->getUserGroups());
         $this->set('registros', $resultados['registros']);
-		$this->set("estados", array("Confirmada"=>"Solo Liquidaciones Confirmadas", "Sin Confirmar"=>"Solo Liquidaciones Sin Confirmar", "indistinto"=>"Indistinto"));
+		$this->set("estados", array("Confirmada" => "Solo Liquidaciones Confirmadas", "Sin Confirmar" => "Solo Liquidaciones Sin Confirmar", "indistinto" => "Indistinto"));
 	}
 	
 

@@ -6,22 +6,22 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.controllers
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.controllers
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de negocio asociada a las horas de una relacion laboral.
  * Las horas puedenser horas extras, horas de enfermedad, etc.
  *
- * @package		pragtico
- * @subpackage	app.controllers
+ * @package     pragtico
+ * @subpackage  app.controllers
  */
 
  //App::import('Vendor', "oleread", true, array(APP . "vendors" . DS . "phpExcelReader" . DS . "Excel"), "oleread.inc");
@@ -66,8 +66,8 @@ class HorasController extends AppController {
 */
 	function confirmar() {
 		$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
-		if(!empty($ids)) {
-			if($this->Hora->updateAll(array("estado"=>"'Pendiente'"), array("Hora.id"=>$ids))) {
+		if (!empty($ids)) {
+			if ($this->Hora->updateAll(array("estado" => "'Pendiente'"), array("Hora.id"=>$ids))) {
 				$this->Session->setFlash("Se confirmaron correctamente las horas importadas.", "ok");
 			}
 			else {
@@ -86,11 +86,11 @@ class HorasController extends AppController {
 		* Me aseguro de mostrar solo las que estan en estodo Temporal (Sin confirmar).
 		*/
 		$this->__filasPorPagina();
-		$this->paginate = am($this->paginate, array('conditions' => array("Hora.estado"=>"Temporal")));
+		$this->paginate = am($this->paginate, array('conditions' => array("Hora.estado" => "Temporal")));
 		
-		if(!empty($this->data['Formulario']['accion'])) {
-			if($this->data['Formulario']['accion'] == "importar") {
-				if(!empty($this->data['Hora']['planilla']['tmp_name'])) {
+		if (!empty($this->data['Formulario']['accion'])) {
+			if ($this->data['Formulario']['accion'] == "importar") {
+				if (!empty($this->data['Hora']['planilla']['tmp_name'])) {
 					set_include_path(get_include_path() . PATH_SEPARATOR . APP . "vendors" . DS . "PHPExcel" . DS . "Classes");
 					App::import('Vendor', "IOFactory", true, array(APP . "vendors" . DS . "PHPExcel" . DS . "Classes" . DS . "PHPExcel"), "IOFactory.php");
 					$objReader = PHPExcel_IOFactory::createReader('Excel5');
@@ -105,8 +105,8 @@ class HorasController extends AppController {
 					$mapeo[] = array("Ausencias"=> array("Dias"				=> "L"));
 					$mapeo[] = array("Vales"	=> array("Importe"			=> "M"));
 					for($i=10; $i<=$objPHPExcel->getActiveSheet()->getHighestRow(); $i++) {
-						foreach($mapeo as $v) {
-							foreach($v as $k=>$v1) {
+						foreach ($mapeo as $v) {
+							foreach ($v as $k=>$v1) {
 								$data[$k][$objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue()][key($v1)] = $objPHPExcel->getActiveSheet()->getCell($v1[key($v1)] . $i)->getValue();
 							}
 						}
@@ -119,17 +119,17 @@ class HorasController extends AppController {
 					* Solo resumida.
 					*/
 					$periodoDefault = null;
-					if(preg_match(VALID_PERIODO, $this->data['Hora']['periodo'])) {
+					if (preg_match(VALID_PERIODO, $this->data['Hora']['periodo'])) {
 						$periodoDefault = $this->data['Hora']['periodo'];
 					}
 					/**
 					* Recorro cada fila de la hoja excel.
 					*/
-					foreach($data->sheets[0]['cells'] as $k=>$v) {
+					foreach ($data->sheets[0]['cells'] as $k=>$v) {
 						/**
 						* Las filas de titulos y cabeceras las descarto.
 						*/
-						if($k<5) {
+						if ($k<5) {
 							continue;
 						}
 						$tipos[6] = "Periodo";
@@ -141,14 +141,14 @@ class HorasController extends AppController {
 						$tipos[12] = "Ajuste Extra 100%";
 						
 						$periodo = $cantidad = $tipo = $observacion = null;
-						if(!empty($v[14])) {
+						if (!empty($v[14])) {
 							$observacion = $v[14];
 						}
-						if(!empty($v[6])) {
+						if (!empty($v[6])) {
 							$periodo = $v[6];
 							$periodo = strtoupper($periodo);
-							if(!preg_match(VALID_PERIODO, $periodo)) {
-								if(!empty($periodoDefault)) {
+							if (!preg_match(VALID_PERIODO, $periodo)) {
+								if (!empty($periodoDefault)) {
 									$periodo = $periodoDefault;
 								}
 								else {
@@ -156,7 +156,7 @@ class HorasController extends AppController {
 								}
 							}
 						}
-						elseif(!empty($periodoDefault)) {
+						elseif (!empty($periodoDefault)) {
 							$periodo = $periodoDefault;
 						}
 						else {
@@ -166,15 +166,15 @@ class HorasController extends AppController {
 						/**
 						* Recorro cada columna, omitiendo aquellas que no tienen valores de las horas.
 						*/
-						foreach($v as $k1=>$v1) {
-							if($k1 < 7 || $k1 > 12) {
+						foreach ($v as $k1=>$v1) {
+							if ($k1 < 7 || $k1 > 12) {
 								continue;
 							}
 							
 							$cantidad = str_replace(",", ".", $v1);
 							$tipo = $tipos[$k1];
 						
-							if(is_numeric($cantidad) && !empty($periodo)) {
+							if (is_numeric($cantidad) && !empty($periodo)) {
 								$save = array();
 								$save['Hora']['relacion_id'] = trim(array_shift(explode("||", $v[1])));
 								$save['Hora']['periodo'] = $periodo;
@@ -197,12 +197,12 @@ class HorasController extends AppController {
 		* Pagino los resultados
 		*/
 		$this->Hora->contain(array("Relacion", "Relacion.Trabajador", "Relacion.Empleador"));
-		$resultados = $this->Paginador->paginar(array("Hora.estado"=>"Temporal"));
+		$resultados = $this->Paginador->paginar(array("Hora.estado" => "Temporal"));
 		$group = "Hora.relacion_id, Hora.tipo, Hora.periodo, Hora.estado";
-		foreach($resultados['registros'] as $k=>$v) {
+		foreach ($resultados['registros'] as $k=>$v) {
 			$condiciones = array("Hora.relacion_id"=>$v['Hora']['relacion_id'], "Hora.tipo"=>$v['Hora']['tipo'], "Hora.periodo"=>$v['Hora']['periodo'], "Hora.estado"=>array("Pendiente", "Liquidada"));
-			$cantidad = $this->Hora->find("all", array("fields"=>"SUM(Hora.cantidad) as cantidad", "group"=>$group, "conditions"=>$condiciones));
-			if(!empty($cantidad[0][0]['cantidad'])) {
+			$cantidad = $this->Hora->find("all", array("fields" => "SUM(Hora.cantidad) as cantidad", "group"=>$group, "conditions"=>$condiciones));
+			if (!empty($cantidad[0][0]['cantidad'])) {
 				$resultados['registros'][$k]['Hora']['confirmadas'] = $cantidad[0][0]['cantidad'];
 			}
 			else {

@@ -5,21 +5,21 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.controllers
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.controllers
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de negocio asociada a los conceptos de los recibos.
  *
- * @package		pragtico
- * @subpackage	app.controllers
+ * @package     pragtico
+ * @subpackage  app.controllers
  */
 class RecibosConceptosController extends AppController {
 
@@ -28,38 +28,38 @@ class RecibosConceptosController extends AppController {
 		/**
 		* Detecto si viene de un addRapido.
 		*/
-		if(!empty($this->data['Form']['tipo']) && $this->data['Form']['tipo'] == "addRapido" && !empty($this->data['RecibosConcepto']['recibo_id'])) {
+		if (!empty($this->data['Form']['tipo']) && $this->data['Form']['tipo'] == "addRapido" && !empty($this->data['RecibosConcepto']['recibo_id'])) {
 
-			if($this->data['Form']['accion'] == "grabar") {
+			if ($this->data['Form']['accion'] == "grabar") {
 				$registros = explode("*||*", $this->data['Form']['valores_derecha']);
 
-				foreach($registros as $registro) {
+				foreach ($registros as $registro) {
 					$seleccionados[] = array_shift(explode("|", $registro));
 				}
 				
 				$conceptosSeleccionados = $this->RecibosConcepto->Concepto->find("list", array("recursive"=>-1, "conditions"=>array("Concepto.codigo"=>$seleccionados)));
-				$conceptosConvenio = $this->RecibosConcepto->find("list", array("fields"=>"RecibosConcepto.recibo_id", "contain"=>"Concepto", "conditions"=>array("RecibosConcepto.recibo_id"=>$this->data['RecibosConcepto']['recibo_id'])));
+				$conceptosConvenio = $this->RecibosConcepto->find("list", array("fields" => "RecibosConcepto.recibo_id", "contain" => "Concepto", "conditions"=>array("RecibosConcepto.recibo_id"=>$this->data['RecibosConcepto']['recibo_id'])));
 				
 				$quitar = array_diff($conceptosConvenio, $conceptosSeleccionados);
 				$agregar = array_diff($conceptosSeleccionados, $conceptosConvenio);
 				$this->RecibosConcepto->begin();
 				$c = 0;
-				foreach($quitar as $k=>$v) {
-					if($this->RecibosConcepto->del($k)) {
+				foreach ($quitar as $k=>$v) {
+					if ($this->RecibosConcepto->del($k)) {
 						$c++;
 					}
 				}
 				
 				$save['RecibosConcepto']['recibo_id'] = $this->data['RecibosConcepto']['recibo_id'];
-				foreach($agregar as $k=>$v) {
+				foreach ($agregar as $k=>$v) {
 					$this->RecibosConcepto->create();
 					$save['RecibosConcepto']['concepto_id'] = $v;
 					$this->RecibosConcepto->set($save);
-					if($this->RecibosConcepto->save($save)) {
+					if ($this->RecibosConcepto->save($save)) {
 						$c++;
 					}
 				}
-				if($c == count($agregar) + count($quitar)) {
+				if ($c == count($agregar) + count($quitar)) {
 					$this->Session->setFlash("La operacion se realizo con exito.", "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
 					$this->RecibosConcepto->commit();
 				}
@@ -81,7 +81,7 @@ class RecibosConceptosController extends AppController {
 */
 	function add_rapido() {
 
-		if(!empty($this->passedArgs['RecibosConcepto.recibo_id'])) {
+		if (!empty($this->passedArgs['RecibosConcepto.recibo_id'])) {
 			$this->RecibosConcepto->Recibo->contain(array("RecibosConcepto.Concepto", "Empleador"));
 			$recibo = $this->RecibosConcepto->Recibo->findById($this->passedArgs['RecibosConcepto.recibo_id']);
 
@@ -109,7 +109,7 @@ class RecibosConceptosController extends AppController {
 	function add_rapido_XXX() {
 		$reciboId = $this->passedArgs['RecibosConcepto.recibo_id'];
 		$recibo = $this->RecibosConcepto->Recibo->findById($reciboId);
-		if(!empty($recibo['RecibosConcepto'])) {
+		if (!empty($recibo['RecibosConcepto'])) {
 			$idsConceptosAsignados = Set::combine($recibo['RecibosConcepto'], "{n}.concepto_id", "{n}.concepto_id");
 		}
 		else {
@@ -119,12 +119,12 @@ class RecibosConceptosController extends AppController {
 		$this->RecibosConcepto->Concepto->contain();
 		$conceptos = $this->RecibosConcepto->Concepto->findConceptos("Todos");
 		$conceptosAsignados = $conceptosNoAsignados = array();
-		foreach($conceptos as $codigo=>$concepto) {
-			if(in_array($concepto['id'], $idsConceptosAsignados)) {
+		foreach ($conceptos as $codigo=>$concepto) {
+			if (in_array($concepto['id'], $idsConceptosAsignados)) {
 				$conceptosAsignados[] = $concepto;
 			}
 			else {
-				if($concepto['imprimir'] == "Si" || $concepto['imprimir'] == "Solo con valor") {
+				if ($concepto['imprimir'] == "Si" || $concepto['imprimir'] == "Solo con valor") {
 					$conceptosNoAsignados[$codigo] = $concepto;
 				}
 			}
@@ -140,7 +140,7 @@ class RecibosConceptosController extends AppController {
 
 
 	function actualizarTablaIzquierda() {
-		if(isset($this->params['named']['partialText'])) {
+		if (isset($this->params['named']['partialText'])) {
 			$this->params['named']['partialText'] = str_replace("[EXPANSOR]", "%", str_replace("[SPACE]", " ", $this->params['named']['partialText']));
 			$acciones = $this->RecibosConcepto->Concepto->find("all", array("conditions"=>array("Concepto.nombre like"=>$this->params['named']['partialText'] . "%"), "order"=>array("Concepto.nombre")));
 		}

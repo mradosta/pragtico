@@ -5,22 +5,22 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models.behaviors
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models.behaviors
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  *Intento concentrar en esta clase todo los comportamientos reusables a nivel de models.
  *
  *
- * @package		pragtico
- * @subpackage	app.models.behaviors
+ * @package     pragtico
+ * @subpackage  app.models.behaviors
  */
 //class UtilBehavior extends ModelBehavior {
 App::import('Behavior', 'Containable');
@@ -47,17 +47,17 @@ class UtilBehavior extends ContainableBehavior {
 	
     function beforeFind(&$model, $query) {
 		
-        if(!empty($query['order'][0])) {
+        if (!empty($query['order'][0])) {
         	$schema = $model->schema();
-        	if(!is_array($query['order'][0])) {
+        	if (!is_array($query['order'][0])) {
         		$query['order'][0] = array($query['order'][0]);
         	}
-        	elseif(isset($query['order'][0][0]) && strpos($query['order'][0][0], ",")) {
-        		foreach(explode(",", $query['order'][0][0]) as $v) {
-        			if(stripos($v, "asc")) {
+        	elseif (isset($query['order'][0][0]) && strpos($query['order'][0][0], ",")) {
+        		foreach (explode(",", $query['order'][0][0]) as $v) {
+        			if (stripos($v, "asc")) {
         				$query['order'][0][trim(str_replace("asc", "", $v))] = "asc";
         			}
-        			elseif(stripos($v, "desc")) {
+        			elseif (stripos($v, "desc")) {
         				$query['order'][0][trim(str_replace("desc", "", $v))] = "desc";
         			}
         			else {
@@ -67,22 +67,22 @@ class UtilBehavior extends ContainableBehavior {
         		unset($query['order'][0][0]);
         	}
         	
-        	foreach($query['order'][0] as $field=>$direccion) {
-        		if(is_numeric($field)) {
+        	foreach ($query['order'][0] as $field=>$direccion) {
+        		if (is_numeric($field)) {
         			$field = $direccion;
         			$modelName = $model->name;
         			$direccion = "asc";
         		}
-        		if(strpos($field, '.')) {
+        		if (strpos($field, '.')) {
         			$tmp = explode(".", $field);
         			$field = $tmp[1];
         			$modelName = $tmp[0];
-        			if(preg_match("/asc|desc$/", $field, $matches)) {
+        			if (preg_match("/asc|desc$/", $field, $matches)) {
         				$direccion = $matches[0];
         				$field = trim(str_replace($direccion, "", $field));
         			}
         		}
-        		if($schema[$field]['type'] === "string" || $schema[$field]['type'] === "text" || substr($schema[$field]['type'], 0, 5) === "enum(") {
+        		if ($schema[$field]['type'] === "string" || $schema[$field]['type'] === "text" || substr($schema[$field]['type'], 0, 5) === "enum(") {
         			$direccion = "COLLATE utf8_spanish2_ci " . $direccion;
         		}
         		$orden[$modelName . "." . $field] = $direccion;
@@ -93,17 +93,17 @@ class UtilBehavior extends ContainableBehavior {
 	}
     function xbeforeFind(&$model, $query) {
 		
-        if(!empty($query['order'][0])) {
+        if (!empty($query['order'][0])) {
         	$schema = $model->schema();
-        	if(!is_array($query['order'][0])) {
+        	if (!is_array($query['order'][0])) {
         		$query['order'][0] = array($query['order'][0]);
         	}
-        	elseif(isset($query['order'][0][0]) && strpos($query['order'][0][0], ",")) {
-        		foreach(explode(",", $query['order'][0][0]) as $v) {
-        			if(stripos($v, "asc")) {
+        	elseif (isset($query['order'][0][0]) && strpos($query['order'][0][0], ",")) {
+        		foreach (explode(",", $query['order'][0][0]) as $v) {
+        			if (stripos($v, "asc")) {
         				$query['order'][0][trim(str_replace("asc", "", $v))] = "asc";
         			}
-        			elseif(stripos($v, "desc")) {
+        			elseif (stripos($v, "desc")) {
         				$query['order'][0][trim(str_replace("desc", "", $v))] = "desc";
         			}
         			else {
@@ -113,22 +113,22 @@ class UtilBehavior extends ContainableBehavior {
         		unset($query['order'][0][0]);
         	}
         	
-        	foreach($query['order'][0] as $field=>$direccion) {
-        		if(is_numeric($field)) {
+        	foreach ($query['order'][0] as $field=>$direccion) {
+        		if (is_numeric($field)) {
         			$field = $direccion;
         			$modelName = $model->name;
         			$direccion = "asc";
         		}
-        		if(strpos($field, '.')) {
+        		if (strpos($field, '.')) {
         			$tmp = explode(".", $field);
         			$field = $tmp[1];
         			$modelName = $tmp[0];
-        			if(preg_match("/asc|desc$/", $field, $matches)) {
+        			if (preg_match("/asc|desc$/", $field, $matches)) {
         				$direccion = $matches[0];
         				$field = trim(str_replace($direccion, "", $field));
         			}
         		}
-        		if($schema[$field]['type'] === "string" || $schema[$field]['type'] === "text" || substr($schema[$field]['type'], 0, 5) === "enum(") {
+        		if ($schema[$field]['type'] === "string" || $schema[$field]['type'] === "text" || substr($schema[$field]['type'], 0, 5) === "enum(") {
         			$direccion = "COLLATE utf8_spanish2_ci " . $direccion;
         		}
         		$orden[$modelName . "." . $field] = $direccion;
@@ -243,10 +243,10 @@ class UtilBehavior extends ContainableBehavior {
  * @access public
  */
 	function getFile(&$model, $opciones = array()) {
-		if(!empty($model->data[$model->name]['archivo']['name'])) {
-			if(isset($model->data[$model->name]['archivo']['error']) && $model->data[$model->name]['archivo']['error'] === 0) {
-				if(!empty($opciones['validTypes'])) {
-					if(!in_array($model->data[$model->name]['archivo']['type'], $opciones['validTypes'])) {
+		if (!empty($model->data[$model->name]['archivo']['name'])) {
+			if (isset($model->data[$model->name]['archivo']['error']) && $model->data[$model->name]['archivo']['error'] === 0) {
+				if (!empty($opciones['validTypes'])) {
+					if (!in_array($model->data[$model->name]['archivo']['type'], $opciones['validTypes'])) {
 						$model->dbError['errorDescripcion'] = "El archivo No corresponde al tipo esperado (" . implode(", ", $opciones['validTypes']) . ")";
 						return false;
 					}
@@ -293,10 +293,10 @@ class UtilBehavior extends ContainableBehavior {
  */	 
 	function traerPeriodo(&$model, $periodo) {
 		$periodo = strtoupper($periodo);
-		if(!empty($periodo) && preg_match(VALID_PERIODO, $periodo, $matches)) {
+		if (!empty($periodo) && preg_match(VALID_PERIODO, $periodo, $matches)) {
 
 			$return['periodoCompleto'] = $matches[0];
-			if($matches[3] == "M") {
+			if ($matches[3] == "M") {
 				$return['tipo'] = "Mensual";
 			}
 			else {
@@ -305,7 +305,7 @@ class UtilBehavior extends ContainableBehavior {
 			$return['ano'] = $matches[1];
 			$return['mes'] = $matches[2];
 			$return['periodo'] = $matches[3];
-			if($matches[3] === "M" || $matches[3] === "1Q") {
+			if ($matches[3] === "M" || $matches[3] === "1Q") {
 				$return['primerDia'] = "1";
 				$return['fechaInicio'] = $return['ano'] . "-" . $return['mes'] . "-01";
  			}
@@ -313,8 +313,8 @@ class UtilBehavior extends ContainableBehavior {
 				$return['primerDia'] = "16";
 				$return['fechaInicio'] = $return['ano'] . "-" . $return['mes'] . "-16";
  			}
-			if($matches[3] === "M" || $matches[3] === "2Q") {
-				$return['ultimoDia'] = $this->format($return['fechaInicio'], array("type"=>"ultimoDiaDelMes"));
+			if ($matches[3] === "M" || $matches[3] === "2Q") {
+				$return['ultimoDia'] = $this->format($return['fechaInicio'], array("type" => "ultimoDiaDelMes"));
 				$return['fechaFin'] = $return['ano'] . "-" . $return['mes'] . "-" . $return['ultimoDia'];
  			}
  			else {
@@ -368,18 +368,18 @@ class UtilBehavior extends ContainableBehavior {
  */
 	function __getConditions($condiciones) {
 		$return = array();
-		if(!empty($condiciones['Condicion']) && is_array($condiciones['Condicion'])) {
-			foreach($condiciones['Condicion'] as $k => $v) {
-				if(!empty($v) && strpos($k, "-") && is_string($v) && strlen($v) > 0) {
+		if (!empty($condiciones['Condicion']) && is_array($condiciones['Condicion'])) {
+			foreach ($condiciones['Condicion'] as $k => $v) {
+				if (!empty($v) && strpos($k, "-") && is_string($v) && strlen($v) > 0) {
 				
 					$t = explode("-", $k);
-					if(count($t) == 2) {
-						if(substr($t[1], -2) != "__") {
+					if (count($t) == 2) {
+						if (substr($t[1], -2) != "__") {
 							/**
 							* La seleccion multiple desde una lov viene separada por **||**. En este caso
 							* debo armar un IN
 							*/
-							if(strpos($v, "**||**") > 0) {
+							if (strpos($v, "**||**") > 0) {
 								$return[$t[0] . "." . $t[1]] = explode("**||**", $v);
 							}
 							else {
@@ -406,7 +406,7 @@ class UtilBehavior extends ContainableBehavior {
  */
 	function generarSql(&$model, $data, &$modelPreferido = null) {
 
-		if(empty($modelPreferido)) {
+		if (empty($modelPreferido)) {
 			$modelPreferido = $model;
 		}
 		
@@ -424,16 +424,16 @@ class UtilBehavior extends ContainableBehavior {
 		$queryData = am($default, $data);
 		$queryData['alias'] = $db->name(Inflector::classify($queryData['table']));
 		
-		if(empty($queryData['fields'])) {
+		if (empty($queryData['fields'])) {
 			$queryData['fields'] = $db->fields($modelPreferido);
 		}
 		else {
 			$queryData['fields'] = $db->fields($modelPreferido, null, $queryData['fields']);
 		}
-		foreach($queryData['joins'] as $k=>$v) {
+		foreach ($queryData['joins'] as $k=>$v) {
 			$queryData['joins'][$k]['table'] = $db->name($v['table']);
 			$queryData['joins'][$k]['alias'] = $db->name(Inflector::classify($v['table']));
-			if(empty($v['conditions'])) {
+			if (empty($v['conditions'])) {
 				$queryData['joins'][$k]['conditions'][] = $queryData['alias'] . ".id = " . $queryData['joins'][$k]['alias'] . "." . strtolower($queryData['alias']) . "_id";
 			}
 		}
@@ -444,7 +444,7 @@ class UtilBehavior extends ContainableBehavior {
 		* Parseo la query sql muy simple y rapidamente, de modo de poder ver la query mas facilmente cuando debugeo.
 		* Hay mucho para mejorar en este parseo....
 		*/
-		if(Configure::read("debug") > 0) {
+		if (Configure::read("debug") > 0) {
 			$sql = preg_replace("/(^SELECT)/", "\n$1\t\t", $sql);
 			$sql = str_replace(",", ",\n\t\t", $sql);
 			$sql = str_replace("FROM", "\nFROM\t\t", $sql);
@@ -454,7 +454,7 @@ class UtilBehavior extends ContainableBehavior {
 			$sql = preg_replace("/(INNER JOIN.*)(ON.*)/", "$1\n\t\t\t$2", $sql);
 			$sql = preg_replace("/(WHERE)(.*)/", "\n$1\t\t$2", $sql);
 			$tmp = explode("WHERE", $sql);
-			if(isset($tmp[0]) && isset($tmp[1])) {
+			if (isset($tmp[0]) && isset($tmp[1])) {
 				$tmp[0] = preg_replace("/(ON.*)(AND.*)/", "$1\n\t\t\t\t$2", $tmp[0]);
 				$tmp[1] = implode("\n\t\t\tIN", explode("IN", $tmp[1]));
 				$tmp[1] = str_replace(",\n\t\t", ",", $tmp[1]);
@@ -463,12 +463,12 @@ class UtilBehavior extends ContainableBehavior {
 			$sql = str_replace("ORDER BY", "\nORDER BY\t", $sql);
 			$sql = str_replace("GROUP BY", "\nGROUP BY\t", $sql);
 			$tmp = explode("ORDER", $sql);
-			if(isset($tmp[0]) && isset($tmp[1])) {
+			if (isset($tmp[0]) && isset($tmp[1])) {
 				$tmp[1] = str_replace(",", ",\n\t\t", $tmp[1]);
 				$sql = $tmp[0] . "ORDER" . $tmp[1];
 			}
 			$tmp = explode("GROUP", $sql);
-			if(isset($tmp[0]) && isset($tmp[1])) {
+			if (isset($tmp[0]) && isset($tmp[1])) {
 				$tmp[1] = str_replace(",", ",\n\t\t", $tmp[1]);
 				$sql = $tmp[0] . "GROUP" . $tmp[1];
 			}
@@ -488,22 +488,22 @@ class UtilBehavior extends ContainableBehavior {
  * ej: 	$model->mapToKey($data);
  *
  *
- * ej: 	$niveles[0] = array("model"=>"A", "field"=>"aa");
- *		$niveles[1] = array("model"=>"A", "field"=>"bb");
- *		$niveles[2] = array("model"=>"B", "field"=>"aa");
- *		$model->mapToKey($data, array("keyLevels"=>$niveles, "valor"=>array("model"=>"A"))); //todos los campos del model A
- *		$model->mapToKey($data, array("keyLevels"=>$niveles, "valor"=>array("models"=>array(array("name"=>"A", "fields"=>array("cc")), array("name"=>"B", "fields"=>"aa")))));
- *		$model->mapToKey($data, array("keyLevels"=>$niveles, "valor"=>array("models"=>array(array("name"=>"A", "fields"=>array("cc")), array("name"=>"B", "fields"=>array("aa", "bb"))))));
+ * ej: 	$niveles[0] = array("model" => "A", "field" => "aa");
+ *		$niveles[1] = array("model" => "A", "field" => "bb");
+ *		$niveles[2] = array("model" => "B", "field" => "aa");
+ *		$model->mapToKey($data, array("keyLevels"=>$niveles, "valor"=>array("model" => "A"))); //todos los campos del model A
+ *		$model->mapToKey($data, array("keyLevels"=>$niveles, "valor"=>array("models"=>array(array("name" => "A", "fields"=>array("cc")), array("name" => "B", "fields" => "aa")))));
+ *		$model->mapToKey($data, array("keyLevels"=>$niveles, "valor"=>array("models"=>array(array("name" => "A", "fields"=>array("cc")), array("name" => "B", "fields"=>array("aa", "bb"))))));
  *
  */
 
 	function mapToKey(&$model, $datos, $opciones = array()) {
 
 		$return = false;
-		if(!empty($datos) && is_array($datos)) {
+		if (!empty($datos) && is_array($datos)) {
 
 			$opcionesDefault = array();
-			if(!isset($opciones['keyLevels'][0]['model']) && isset($opciones['keyLevels']['model']) && isset($opciones['keyLevels']['field'])) {
+			if (!isset($opciones['keyLevels'][0]['model']) && isset($opciones['keyLevels']['model']) && isset($opciones['keyLevels']['field'])) {
 				$opciones['keyLevels'] = array($opciones['keyLevels']);
 			}
 			$opcionesDefault['keyLevels'][0]['model'] = $model->name;
@@ -513,46 +513,46 @@ class UtilBehavior extends ContainableBehavior {
 			$opciones = am($opcionesDefault, $opciones);
 
 
-			foreach($datos as $data) {
+			foreach ($datos as $data) {
 			
-				foreach($opciones['keyLevels'] as $k=>$level) {
-					if(isset($data[$level['model']][$level['field']])) {
+				foreach ($opciones['keyLevels'] as $k=>$level) {
+					if (isset($data[$level['model']][$level['field']])) {
 						$l[$k] = $data[$level['model']][$level['field']];
 					}
 				}
 
-				if(!empty($opciones['valor']['models'])) {
-					if(!is_array($opciones['valor']['models'])) {
+				if (!empty($opciones['valor']['models'])) {
+					if (!is_array($opciones['valor']['models'])) {
 						$opciones['valor']['models'] = array($opciones['valor']['models']);
 					}
-					foreach($opciones['valor']['models'] as $modelo) {
+					foreach ($opciones['valor']['models'] as $modelo) {
 						/**
 						* Si no tengo los fields, asumo que son todos.
 						*/
-						if(empty($modelo['fields'])) {
-							if(isset($data[$modelo['name']])) {
-								foreach($data[$modelo['name']] as $field=>$v) {
+						if (empty($modelo['fields'])) {
+							if (isset($data[$modelo['name']])) {
+								foreach ($data[$modelo['name']] as $field=>$v) {
 									$valor[$field] = $v;
 								}
 							}
 						}
 						else {
-							if(!is_array($modelo['fields'])) {
+							if (!is_array($modelo['fields'])) {
 								$modelo['fields'] = array($modelo['fields']);
 							}
-							foreach($modelo['fields'] as $field) {
-								if(isset($data[$modelo['name']][$field])) {
+							foreach ($modelo['fields'] as $field) {
+								if (isset($data[$modelo['name']][$field])) {
 									$valor[$field] = $data[$modelo['name']][$field];
 								}
 							}
 						}
 					}
 				}
-				elseif(!empty($opciones['valor']['fields'])) {
-					if(is_array($opciones['valor']['fields'])) {
-						foreach($opciones['valor']['fields'] as $field) {
+				elseif (!empty($opciones['valor']['fields'])) {
+					if (is_array($opciones['valor']['fields'])) {
+						foreach ($opciones['valor']['fields'] as $field) {
 							$valor = null;
-							if(isset($data[$opciones['valor']['model']][$field])) {
+							if (isset($data[$opciones['valor']['model']][$field])) {
 								$valor[$field] = $data[$opciones['valor']['model']][$field];
 							}
 						}
@@ -650,9 +650,9 @@ class UtilBehavior extends ContainableBehavior {
  */
 	function getValoresEnPotenciaDeDos(&$model, $valores) {
 		$return = array();
-		if(!empty($valores) && is_array($valores)) {
+		if (!empty($valores) && is_array($valores)) {
 			$key = 1;
-			foreach($valores as $k=>$v) {
+			foreach ($valores as $k=>$v) {
 				$return[$key] = $v;
 				$key = $key * 2;
 			}

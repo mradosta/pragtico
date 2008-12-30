@@ -5,21 +5,21 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a los empleadores.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class Empleador extends AppModel {
 	
@@ -29,8 +29,8 @@ class Empleador extends AppModel {
 	var $modificadores = array("index"=>array("contain"=>array()),
 							   "edit" =>array("contain"=>array("Localidad", "Actividad")),
 								"add" =>array(								
-										"valoresDefault"=>array("alta"=>"date('d/m/Y')",
-																"pais"=>"Argentina")));
+										"valoresDefault"=>array("alta" => "date('d/m/Y')",
+																"pais" => "Argentina")));
 
 	
 	var $validate = array( 
@@ -106,7 +106,7 @@ class Empleador extends AppModel {
 		* Si las foraneas opcionales no las saco del array, en caso de que esten vacias, el framework intentara
 		* guardarlas con el valor vacio, y este fallara.
 		*/
-		if(empty($this->data['Empleador']['actividad_id'])) {
+		if (empty($this->data['Empleador']['actividad_id'])) {
 			unset($this->data['Empleador']['actividad_id']);
 		}
 		return parent::beforeSave();

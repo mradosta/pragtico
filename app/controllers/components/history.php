@@ -9,15 +9,15 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.controllers.components
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.controllers.components
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 
  /**
@@ -28,8 +28,8 @@ define('MAX_HISTORY', 10);
 /**
  * La clase encapsula la logica necesaria para resolver la navegacion.
  *
- * @package		pragtico
- * @subpackage	app.controllers.components
+ * @package     pragtico
+ * @subpackage  app.controllers.components
  */
 class HistoryComponent extends Object {
     
@@ -73,7 +73,7 @@ class HistoryComponent extends Object {
         /**
         * Prevengo que entre mas de una vez.
         */
-        if(!$this->__started) {
+        if (!$this->__started) {
             $this->__started = true;
             $this->controller = $controller;
 			$this->_addUrl();
@@ -90,10 +90,10 @@ class HistoryComponent extends Object {
  */
 	
     function goBack($pos = 1) {
-        if(is_numeric($pos)) {
+        if (is_numeric($pos)) {
 	        $history = array();
-	        foreach($this->__historia as $k=>$v) {
-	        	if($v !== "/fake/url/do_not_add") {
+	        foreach ($this->__historia as $k=>$v) {
+	        	if ($v !== "/fake/url/do_not_add") {
 	        		$history[] = $v;
 	        	}
 	        }
@@ -101,7 +101,7 @@ class HistoryComponent extends Object {
 	        $pos = count($this->__historia) - $pos;
 			//d($pos);
 	        
-        	if(isset($this->__historia[$pos])){
+        	if (isset($this->__historia[$pos])){
 				//file_put_contents("/tmp/historia.txt", "\n\n=========================", FILE_APPEND);
 				//file_put_contents("/tmp/historia.txt", "\nBACK A: " . $this->__historia[$pos] . "(" . $pos . ")\n\n", FILE_APPEND);
         		$this->controller->redirect($this->__historia[$pos], true);
@@ -128,7 +128,7 @@ class HistoryComponent extends Object {
  * @access public
  */
     function addFakeUrl() {
-		if(count($this->controller->Session->read('historia')) == MAX_HISTORY) {
+		if (count($this->controller->Session->read('historia')) == MAX_HISTORY) {
 			array_shift($this->__historia);
 		}
 		$this->__historia[] = "/fake/url/do_not_add";
@@ -144,7 +144,7 @@ class HistoryComponent extends Object {
  */
 	function _addUrl() {
 		$url = $this->controller->referer();
-    	if(empty($url)) {
+    	if (empty($url)) {
     		return;
     	}
 		
@@ -154,7 +154,7 @@ class HistoryComponent extends Object {
 		/**
 		* Cuando abro una lov o un desglose ajax, o cancelo no guardo esto en el history.
 		*/
-		if(    (!empty($this->controller->data['Form']['accion']) && $this->controller->data['Form']['accion'] === "cancelar")
+		if (    (!empty($this->controller->data['Form']['accion']) && $this->controller->data['Form']['accion'] === "cancelar")
 			|| (!empty($this->controller->params['named']['layout']) && $this->controller->params['named']['layout'] === "lov")
 			|| (!empty($this->controller->data['Formulario']['layout']) && $this->controller->data['Formulario']['layout'] === "lov")
 			|| (!empty($this->controller->data['Formulario']['layout']) && $this->controller->data['Formulario']['layout'] === "lov")
@@ -167,8 +167,8 @@ class HistoryComponent extends Object {
 		* Prevengo que se inserte en la history dos veces el mismo.
 		* Por ejemplo, cuando un validate no valida, etc.
 		*/
-		if($url != $this->__historia[$cantidad - 1]) {
-			if($cantidad == MAX_HISTORY) {
+		if ($url != $this->__historia[$cantidad - 1]) {
+			if ($cantidad == MAX_HISTORY) {
 				array_shift($this->__historia);
 			}
 			$this->__historia[] = $url;

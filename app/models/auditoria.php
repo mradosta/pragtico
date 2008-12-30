@@ -6,21 +6,21 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a las auditorias.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class Auditoria extends AppModel {
 
@@ -31,9 +31,9 @@ class Auditoria extends AppModel {
  * @access private
  */
     function __getIp() {
-    	if(getenv("HTTP_CLIENT_IP"))
+    	if (getenv("HTTP_CLIENT_IP"))
         	return getenv("HTTP_CLIENT_IP"); 
-    	elseif(getenv("HTTP_X_FORWARDED_FOR"))
+    	elseif (getenv("HTTP_X_FORWARDED_FOR"))
 			return getenv("HTTP_X_FORWARDED_FOR");
 	else
 		return getenv("REMOTE_ADDR");
@@ -50,7 +50,7 @@ class Auditoria extends AppModel {
     function auditar($data) {
 		$session = &new SessionComponent();
 		$usuario = $session->read('__Usuario');
-		if(!empty($usuario)) {
+		if (!empty($usuario)) {
 			$save['usuario'] = $usuario['Usuario']['nombre'];
 		} else {
 			$save['usuario'] = "publico";

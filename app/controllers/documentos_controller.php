@@ -6,20 +6,20 @@
  *
  * @filesource
  * @copyright		Copyright 2005-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.controllers
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.controllers
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de negocio asociada a los documentos modelo del sistema.
  *
- * @package		pragtico
- * @subpackage	app.controllers
+ * @package     pragtico
+ * @subpackage  app.controllers
  */
 class DocumentosController extends AppController {
 
@@ -27,7 +27,7 @@ class DocumentosController extends AppController {
  * Permite la generacion de un documento a partir de una plantilla rtf.
  */
 	function generar() {
-		if(empty($this->data['Documento']['id'])) {
+		if (empty($this->data['Documento']['id'])) {
 			/**
 			* Me aseguro de cargar el model que utilizare, y lo llevo a recursive level 2, de modo de contar con la
 			* mayor cantidad de datos posible.
@@ -35,7 +35,7 @@ class DocumentosController extends AppController {
 			App::import("model", $this->params['named']['model']);
 			
 			$model = new $this->params['named']['model']();
-			if(!empty($this->params['named']['contain'])) {
+			if (!empty($this->params['named']['contain'])) {
 				$this->set("contain", $this->params['named']['contain']);
 				$model->contain(unserialize(str_replace("**", "\"", $this->params['named']['contain'])));
 			}
@@ -57,7 +57,7 @@ class DocumentosController extends AppController {
 			*/
 			App::import("model", $this->data['Extra']['model']);
 			$model = new $this->data['Extra']['model']();
-			if(!empty($this->data['Extra']['contain'])) {
+			if (!empty($this->data['Extra']['contain'])) {
 				$model->contain(unserialize(str_replace("**", "\"", $this->data['Extra']['contain'])));
 			}
 			$data = $model->findById($this->data['Extra']['id']);
@@ -85,29 +85,29 @@ class DocumentosController extends AppController {
 		}
 
 		$removeKey = array("user_id", "role_id", "group_id", "permissions", "write", "delete", "created", "modified", "file_data", "file_size", "file_type");
-		foreach($array as $k=>$v) {
-			if(is_array($v)) {
-				foreach($v as $k1=>$v1) {
-					if(is_array($v1)) {
-						foreach($v1 as $k2=>$v2) {
-							if(is_array($v2)) {
-								foreach($v2 as $k3=>$v3) {
-									if(in_array($k3, $removeKey)) {
+		foreach ($array as $k=>$v) {
+			if (is_array($v)) {
+				foreach ($v as $k1=>$v1) {
+					if (is_array($v1)) {
+						foreach ($v1 as $k2=>$v2) {
+							if (is_array($v2)) {
+								foreach ($v2 as $k3=>$v3) {
+									if (in_array($k3, $removeKey)) {
 										unset($array[$k][$k1][$k2][$k3]);
 									}
 								}
 							}
-							elseif(in_array($k2, $removeKey)) {
+							elseif (in_array($k2, $removeKey)) {
 								unset($array[$k][$k1][$k2]);
 							}
 						}
 					}
-					elseif(in_array($k1, $removeKey)) {
+					elseif (in_array($k1, $removeKey)) {
 						unset($array[$k][$k1]);
 					}
 				}
 			}
-			elseif(in_array($k, $removeKey)) {
+			elseif (in_array($k, $removeKey)) {
 				unset($array[$k]);
 			}
 		}
@@ -119,8 +119,8 @@ class DocumentosController extends AppController {
  * Si lo subio correctamente, lo graba en la session para luego poder hacer un preview.
  */
 	function __getFile() {
-		if(!empty($this->data['Documento']['archivo'])) {
-			if(isset($this->data['Documento']['archivo']['error']) && $this->data['Documento']['archivo']['error'] === 0) {
+		if (!empty($this->data['Documento']['archivo'])) {
+			if (isset($this->data['Documento']['archivo']['error']) && $this->data['Documento']['archivo']['error'] === 0) {
 				$contenido = fread(fopen($this->data['Documento']['archivo']['tmp_name'], "r"), $this->data['Documento']['archivo']['size']);
 				$archivo['file_size'] = $this->data['Documento']['archivo']['size'];
 				$archivo['file_type'] = $this->data['Documento']['archivo']['type'];
@@ -141,9 +141,9 @@ class DocumentosController extends AppController {
  * presentara un preview de los patrones encontrados, y si el usuario lo confirma, se graba.
  */
 	function add() {
-		if($this->__getFile() && !isset($this->data['Form']['confirmar'])) {
+		if ($this->__getFile() && !isset($this->data['Form']['confirmar'])) {
 			$contenido = file_get_contents($this->data['Documento']['archivo']['tmp_name']);
-			if(preg_match_all("/#\*(.+)\*#/U", $contenido, $matches)) {
+			if (preg_match_all("/#\*(.+)\*#/U", $contenido, $matches)) {
 				$this->data['Documento']['patrones'] = serialize($matches[1]);
 				$this->set("patrones", $matches[1]);
 			}
@@ -152,7 +152,7 @@ class DocumentosController extends AppController {
 			}
 		}
 		else {
-			if($this->Session->check("tmpArchivo")) {
+			if ($this->Session->check("tmpArchivo")) {
 				$archivo = $this->Session->read("tmpArchivo");
 				$this->Session->del("tmpArchivo");
 				$this->data['Documento']['file_type'] = $archivo['file_type'];
@@ -164,7 +164,7 @@ class DocumentosController extends AppController {
 		}
 		$modelsTmp = Configure::listObjects('model');
 		sort($modelsTmp);
-		foreach($modelsTmp as $v) {
+		foreach ($modelsTmp as $v) {
 			$models[$v] = $v;
 		}
 		$this->set("models", $models);

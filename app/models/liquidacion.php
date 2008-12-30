@@ -5,21 +5,21 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a las liquidaciones.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class Liquidacion extends AppModel {
 
@@ -88,16 +88,16 @@ class Liquidacion extends AppModel {
 			$sql = sprintf("DELETE FROM %s %s", $table, $db->conditions($conditions));
 			$this->query($sql);
 			$this->__buscarError();
-			if(empty($this->dbError)) {
+			if (empty($this->dbError)) {
 				$c++;
 			}
 		}
 		
-		if(count($this->hasMany) === $c) {
+		if (count($this->hasMany) === $c) {
 			$sql = sprintf("DELETE FROM %s %s", $db->name($this->useTable), $db->conditions(array($this->primaryKey => $ids)));
 			$this->query($sql);
 			$this->__buscarError();
-			if(empty($this->dbError)) {
+			if (empty($this->dbError)) {
 				$db->commit($this);
 				return true;
 			}
@@ -120,7 +120,7 @@ class Liquidacion extends AppModel {
 		$this->recursive = -1;
 		$liquidacion = $this->findById($opciones['liquidacionId']);
 		$conceptosHora = array("horas_extra_50", "horas_extra_100");
-		if(in_array($opciones['conceptoCodigo'], $conceptosHora)) {
+		if (in_array($opciones['conceptoCodigo'], $conceptosHora)) {
 			$this->LiquidacionesDetalle->Concepto->recursive = -1;
 			$concepto = $this->LiquidacionesDetalle->Concepto->findByCodigo($opciones['conceptoCodigo']);
 
@@ -203,7 +203,7 @@ class Liquidacion extends AppModel {
 		*/
 		@$this->query($sql);
 		$this->__buscarError();
-		if(empty($this->dbError['errorRdbms'])) {
+		if (empty($this->dbError['errorRdbms'])) {
 			return true;
 		}
 		else {

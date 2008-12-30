@@ -5,21 +5,21 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a las facturas.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class Factura extends AppModel {
 
@@ -37,7 +37,7 @@ class Factura extends AppModel {
 
 	function resumen($condiciones = null, $tipo = "resumido") {
 		
-		if($tipo == "resumido") {
+		if ($tipo == "resumido") {
 			$sql = "
 				select
 							Empleador.id,
@@ -74,14 +74,14 @@ class Factura extends AppModel {
 			";
 
 			$r = $this->query($sql);
-			foreach($r as $v) {
+			foreach ($r as $v) {
 				$data = null;
 				$data['nombre'] = $v['LiquidacionesDetalle']['concepto_nombre'];
 				$data['coeficiente'] = $v['LiquidacionesDetalle']['coeficiente_valor'];
 				$data['total'] = $v['0']['total'];
 				$data['cantidad'] = $v['0']['cantidad'];
 
-				if(!isset($return[$v['Empleador']['id']])) {
+				if (!isset($return[$v['Empleador']['id']])) {
 					$return[$v['Empleador']['id']]['cuit'] = $v['Empleador']['cuit'];
 					$return[$v['Empleador']['id']]['nombre'] = $v['Empleador']['nombre'];
 				}
@@ -89,7 +89,7 @@ class Factura extends AppModel {
 			}
 			return array_values($return);
 		}
-		elseif($tipo == "detallado") {
+		elseif ($tipo == "detallado") {
 			$sql = "
 				select
 							Empleador.id,
@@ -130,18 +130,18 @@ class Factura extends AppModel {
 			";
 
 			$r = $this->query($sql);
-			foreach($r as $v) {
+			foreach ($r as $v) {
 				$data = null;
 				$data['nombre'] = $v['LiquidacionesDetalle']['concepto_nombre'];
 				$data['coeficiente'] = $v['LiquidacionesDetalle']['coeficiente_valor'];
 				$data['total'] = $v['LiquidacionesDetalle']['total'];
 				$data['cantidad'] = $v['LiquidacionesDetalle']['cantidad'];
 
-				if(!isset($return[$v['Empleador']['id']])) {
+				if (!isset($return[$v['Empleador']['id']])) {
 					$return[$v['Empleador']['id']]['cuit'] = $v['Empleador']['cuit'];
 					$return[$v['Empleador']['id']]['nombre'] = $v['Empleador']['nombre'];
 				}
-				if(!isset($return[$v['Empleador']['id']]['Trabajador'][$v['Trabajador']['id']])) {
+				if (!isset($return[$v['Empleador']['id']]['Trabajador'][$v['Trabajador']['id']])) {
 					$return[$v['Empleador']['id']]['Trabajador'][$v['Trabajador']['id']]['legajo'] = $v['Trabajador']['legajo'];
 					$return[$v['Empleador']['id']]['Trabajador'][$v['Trabajador']['id']]['cuil'] = $v['Trabajador']['cuil'];
 					$return[$v['Empleador']['id']]['Trabajador'][$v['Trabajador']['id']]['apellido'] = $v['Trabajador']['apellido'];
@@ -159,7 +159,7 @@ class Factura extends AppModel {
 		/**
 		* Adecuo las condiciones.
 		*/
-		if($periodo = $this->format($condiciones['Condicion']['Liquidacion-periodo'], 'periodo')) {
+		if ($periodo = $this->format($condiciones['Condicion']['Liquidacion-periodo'], 'periodo')) {
 			$conditions['Liquidacion.mes'] = $periodo['mes'];
 			$conditions['Liquidacion.ano'] = $periodo['ano'];
 			unset($condiciones['Condicion']['Liquidacion-periodo']);
@@ -227,19 +227,19 @@ class Factura extends AppModel {
 									array("OR"=>array(	"LiquidacionesDetalle.concepto_imprimir" => array("Si", "Solo con valor"))));
 
 		$r = $this->query($this->generarSql($query, $this->Liquidacion));
-		if(!empty($r)) {
-			$niveles[0] = array("model"=>"Empleador", "field"=>"id");
-			$niveles[1] = array("model"=>"Coeficiente", "field"=>"id");
-			$r = $this->mapToKey($r, array("keyLevels"=>$niveles, "valor"=>array("model"=>"0")));
+		if (!empty($r)) {
+			$niveles[0] = array("model" => "Empleador", "field" => "id");
+			$niveles[1] = array("model" => "Coeficiente", "field" => "id");
+			$r = $this->mapToKey($r, array("keyLevels"=>$niveles, "valor"=>array("model" => "0")));
 			$ids = array();
-			foreach($r as $empleadorId => $v) {
+			foreach ($r as $empleadorId => $v) {
 				$saveEncabezado = null;
 				$saveDetalle = null;
 				$c = $total = 0;
 				$saveEncabezado['fecha'] = date("d/m/Y");
 				$saveEncabezado['empleador_id'] = $empleadorId;
 				$saveEncabezado['estado'] = "Sin Confirmar";
-				foreach($v as $coeficienteId => $valores) {
+				foreach ($v as $coeficienteId => $valores) {
 					$saveDetalle[$c]['coeficiente_id'] = $coeficienteId;
 					$saveDetalle[$c]['subtotal'] = $valores['subtotal'];
 					$saveDetalle[$c]['valor'] = $valores['valor'];
@@ -249,7 +249,7 @@ class Factura extends AppModel {
 				}
 				$saveEncabezado['total'] = $total;
 				//d($this->save(array("Factura"=>$saveEncabezado, "FacturasDetalle"=>$saveDetalle)));
-				if($saveEstado = $this->saveAll(array("Factura"=>$saveEncabezado, "FacturasDetalle"=>$saveDetalle))) {
+				if ($saveEstado = $this->saveAll(array("Factura"=>$saveEncabezado, "FacturasDetalle"=>$saveDetalle))) {
 					$ids[] = $this->id;
 				}
 			}

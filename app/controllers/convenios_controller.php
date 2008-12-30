@@ -5,23 +5,23 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.controllers
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.controllers
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de negocio asociada a los convenios.
  *
  * Son los convenios colectivos.
  *
- * @package		pragtico
- * @subpackage	app.controllers
+ * @package     pragtico
+ * @subpackage  app.controllers
  */
 class ConveniosController extends AppController {
 
@@ -83,7 +83,7 @@ class ConveniosController extends AppController {
  * Asigna un concepto a todos los trabajadores de todos los empleadores de un convenio.
  */
 	function manipular_concepto($accion = null) {
-		if(!empty($this->params['named']['concepto_id']) && !empty($this->params['named']['convenio_id'])
+		if (!empty($this->params['named']['concepto_id']) && !empty($this->params['named']['convenio_id'])
 			&& is_numeric($this->params['named']['concepto_id']) && is_numeric($this->params['named']['convenio_id'])
 			&& !empty($accion)) {
 			$this->Convenio->ConveniosCategoria->contain();
@@ -92,7 +92,7 @@ class ConveniosController extends AppController {
 			
 			$relaciones = $this->Convenio->ConveniosCategoria->Relacion->find("list", array("fields"=>array("Relacion.id"), "conditions"=>array("Relacion.convenios_categoria_id"=>array_values($conveniosCategoria))));
 			$c = $this->Convenio->ConveniosCategoria->Relacion->RelacionesConcepto->Concepto->agregarQuitarConcepto($relaciones, array($this->params['named']['concepto_id']), array("accion"=>$accion));
-			if($c > 0) {
+			if ($c > 0) {
 				$this->Session->setFlash("El concepto se pudo " . $accion . " correctamente a " . $c . " trabajadores.", "ok");
 			}
 			else {

@@ -6,22 +6,22 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a las relaciones.
  * Se refiere a las relaciones laborales que hay entre en un trabajador y un empleador.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class Relacion extends AppModel {
 
@@ -38,7 +38,7 @@ class Relacion extends AppModel {
 												"Area",
 												"ConveniosCategoria.Convenio")),
 								"add" =>array(								
-										"valoresDefault"=>array("ingreso"=>"date('d/m/Y')")));
+										"valoresDefault"=>array("ingreso" => "date('d/m/Y')")));
 
 	
 	var $validate = array(
@@ -54,7 +54,7 @@ class Relacion extends AppModel {
         ),
         'area_id' => array(
 			array(
-				'rule'	=> "/^[1-9]{1}[0-9]{0,10}$/",
+				'rule'	=> '/^[1-9]{1}[0-9]{0,10}$/',
 				'message'	=>'Debe seleccionar un area.')
         ),
         'horas' => array(
@@ -156,7 +156,7 @@ class Relacion extends AppModel {
 		/**
 		* Si no cargo el legajo, lo obtengo desde el documento del trabajador.
 		*/
-		if(empty($this->data['Relacion']['legajo']) && !empty($this->data['Relacion']['trabajador_id'])) {
+		if (empty($this->data['Relacion']['legajo']) && !empty($this->data['Relacion']['trabajador_id'])) {
 			$this->Trabajador->recursive = -1;
 			$trabajador = $this->Trabajador->findById($this->data['Relacion']['trabajador_id']);
 			$this->data['Relacion']['legajo'] = $trabajador['Trabajador']['numero_documento'];
@@ -166,13 +166,13 @@ class Relacion extends AppModel {
 		* Si las foraneas opcionales no las saco del array, en caso de que esten vacias, el framework intentara
 		* guardarlas con el valor vacio, y este fallara.
 		*/
-		if(empty($this->data['Relacion']['actividad_id'])) {
+		if (empty($this->data['Relacion']['actividad_id'])) {
 			unset($this->data['Relacion']['actividad_id']);
 		}
-		if(empty($this->data['Relacion']['modalidad_id'])) {
+		if (empty($this->data['Relacion']['modalidad_id'])) {
 			unset($this->data['Relacion']['modalidad_id']);
 		}
-		if(empty($this->data['Relacion']['situacion_id'])) {
+		if (empty($this->data['Relacion']['situacion_id'])) {
 			unset($this->data['Relacion']['situacion_id']);
 		}
 		return parent::beforeSave();

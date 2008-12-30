@@ -5,21 +5,21 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a las vacaciones.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class Vacacion extends AppModel {
 
@@ -77,10 +77,10 @@ class Vacacion extends AppModel {
 		d($r);
 		$horas['#horas'] = $horas['#horas_extra_50'] = $horas['#horas_extra_100'] = $horas['#horas_enfermedad'] = 0;
 		$conceptos = array();
-		if(!empty($r)) {
+		if (!empty($r)) {
 			$modelConcepto = new Concepto();
-			foreach($r as $hora) {
-				if($relacion['ConveniosCategoria']['jornada'] == "Mensual" && ($hora['h']['tipo'] == "Normal" || $hora['h']['tipo'] == "Enfermedad")) {
+			foreach ($r as $hora) {
+				if ($relacion['ConveniosCategoria']['jornada'] == "Mensual" && ($hora['h']['tipo'] == "Normal" || $hora['h']['tipo'] == "Enfermedad")) {
 					continue;
 				}
 				

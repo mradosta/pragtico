@@ -5,28 +5,28 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a los pagos que se le realizan a las relaciones laborales.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class Pago extends AppModel {
 
 	var $modificadores = array(	'index' =>
 			array('contain'	=> array('Relacion'	=> array('Empleador', 'Trabajador'))));
 	
-	var $order = array('Pago.fecha'=>'desc');
+	var $order = array('Pago.fecha' => 'desc');
 
 	var $validate = array(
         'fecha' => array(
@@ -53,28 +53,28 @@ class Pago extends AppModel {
 		$retorno = true;
 		$tipo = ucfirst($tipo);
 			
-		if($tipo == 'Deposito') {
+		if ($tipo == 'Deposito') {
 			$this->contain(array('PagosForma', 'Relacion.Trabajador'));
 		}
 		else {
 			$this->contain('PagosForma');
 		}
-		$pagosTmp = $this->find('all', array('conditions'=>array('Pago.id'=>$ids, 'Pago.estado'=>'Pendiente')));
+		$pagosTmp = $this->find('all', array('conditions'=>array('Pago.id'=>$ids, 'Pago.estado' => 'Pendiente')));
 		
 		$ids = array();
-		foreach($pagosTmp as $pago) {
+		foreach ($pagosTmp as $pago) {
 			$pagos[$pago['Pago']['id']] = $pago;
 			$ids[] = $pago['Pago']['id'];
 		}
 		$c=0;
-		foreach($ids as $id) {
-			if(($pagos[$id]['Pago']['moneda'] == 'Beneficios' && $tipo == 'Beneficios') || $pagos[$id]['Pago']['moneda'] == 'Pesos' && $tipo != 'Beneficios') {
+		foreach ($ids as $id) {
+			if (($pagos[$id]['Pago']['moneda'] == 'Beneficios' && $tipo == 'Beneficios') || $pagos[$id]['Pago']['moneda'] == 'Pesos' && $tipo != 'Beneficios') {
 
 				/**
 				* Determino si tiene la pagos parciales.
 				*/
 				$acumulado = 0;
-				foreach($pagos[$id]['PagosForma'] as $v) {
+				foreach ($pagos[$id]['PagosForma'] as $v) {
 					$acumulado += $v['monto'];
 				}
 				$save = null;
@@ -91,7 +91,7 @@ class Pago extends AppModel {
 				$save['pago_monto'] = $pagos[$id]['Pago']['monto'];
 				$save['pago_acumulado'] = $acumulado;
 				
-				if($tipo == 'Deposito') {
+				if ($tipo == 'Deposito') {
 					$save['cbu_numero'] = $pagos[$id]['Relacion']['Trabajador']['cbu'];
 				}
 				
@@ -102,7 +102,7 @@ class Pago extends AppModel {
 				$savePago['estado'] = 'Imputado';
 				$savePago['id'] = $id;
 				$this->begin();
-				if($this->save(array('Pago'=>$savePago)) && $this->PagosForma->save(array('PagosForma'=>$save))) {
+				if ($this->save(array('Pago'=>$savePago)) && $this->PagosForma->save(array('PagosForma'=>$save))) {
 					$this->commit();
 					$c++;
 				}
@@ -135,7 +135,7 @@ class Pago extends AppModel {
 	
 		$contenido = $banco = false;
 		
-		if(!empty($opciones['cuenta_id']) && !empty($opciones['pago_id']) && !empty($opciones['empleador_id'])) {
+		if (!empty($opciones['cuenta_id']) && !empty($opciones['pago_id']) && !empty($opciones['empleador_id'])) {
 
 			//$this->Relacion->Empleador->Cuenta->recursive = 2;
 			$this->Relacion->Empleador->Cuenta->contain(array('Empleador', 'Sucursal.Banco'));
@@ -179,24 +179,24 @@ class Pago extends AppModel {
 			  		array(	'contain'		=> array('Relacion.Trabajador'),
 						  	'conditions' 	=> $conditions));
 			//$pagos = $this->query($sql);
-			//$pagos = $this->find('all', array('conditions'=>array('Pago.estado'=>'Pendiente', 'Pago.id'=>$opciones['pago_id'])));
+			//$pagos = $this->find('all', array('conditions'=>array('Pago.estado' => 'Pendiente', 'Pago.id'=>$opciones['pago_id'])));
 			//d($pagos);
 			
 			if (!empty($pagos)) {
 			
 				//$empleador = $this->Relacion->Empleador->findById($opciones['Empleador.id']);
 				$total = 0;
-				foreach($pagos as $pago) {
+				foreach ($pagos as $pago) {
 
 					preg_match('/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d$/', $pago['Relacion']['Trabajador']['cbu'], $matches);
-					if(!empty($matches[2]) && !empty($matches[3])) {
+					if (!empty($matches[2]) && !empty($matches[3])) {
 					
 						$total += number_format($pago['Pago']['monto'], 2, '.', '');					
 						switch ($banco) {
 							case 'Santander-Rio':
-								if($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Cta. Cte.') {
+								if ($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Cta. Cte.') {
 									$tipoCuentaTrabajador = '2';
-								} elseif($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Caja de Ahorro') {
+								} elseif ($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Caja de Ahorro') {
 									$tipoCuentaTrabajador = '3';
 								}
 								$c = null;
@@ -210,10 +210,10 @@ class Pago extends AppModel {
 								$rds[] = implode(';', $c);
 								break;
 							case 'Galicia':
-								if($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Cta. Cte.') {
+								if ($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Cta. Cte.') {
 									$tipoCuentaTrabajador = '0';
 								}
-								elseif($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Caja de Ahorro') {
+								elseif ($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Caja de Ahorro') {
 									$tipoCuentaTrabajador = '4';
 								}
 								$rd = null;												
@@ -233,9 +233,9 @@ class Pago extends AppModel {
 								break;
 							case 'Nacion':
 								$fechaAcreditacion = date('Ymd');
-								if(!empty($opciones['fecha_acreditacion'])) {
+								if (!empty($opciones['fecha_acreditacion'])) {
 									preg_match('/(\d\d)\/(\d\d)\/\d\d(\d\d)$/', $opciones['fecha_acreditacion'], $matches);
-									if(!empty($matches[1]) && !empty($matches[2]) && !empty($matches[3])) {
+									if (!empty($matches[1]) && !empty($matches[2]) && !empty($matches[3])) {
 										$fechaAcreditacion = $matches[1] . $matches[2] . $matches[3];
 									}
 								}
@@ -256,7 +256,7 @@ class Pago extends AppModel {
 					}
 				}
 				
-				if(!empty($rds)) {
+				if (!empty($rds)) {
 					switch ($banco) {
 						case 'Santander-Rio':
 						case 'Nacion':
@@ -264,16 +264,16 @@ class Pago extends AppModel {
 							break;
 						case 'Galicia':
 								$fechaAcreditacion = date('Ymd');
-								if(!empty($opciones['fecha_acreditacion'])) {
+								if (!empty($opciones['fecha_acreditacion'])) {
 									preg_match('/(\d\d)\/(\d\d)\/(\d\d\d\d)$/', $opciones['fecha_acreditacion'], $matches);
-									if(!empty($matches[1]) && !empty($matches[2]) && !empty($matches[3])) {
+									if (!empty($matches[1]) && !empty($matches[2]) && !empty($matches[3])) {
 										$fechaAcreditacion = $matches[3] . $matches[2] . $matches[1];
 									}
 								}
-								if($cuenta['Cuenta']['tipo'] == 'Cta. Cte.') {
+								if ($cuenta['Cuenta']['tipo'] == 'Cta. Cte.') {
 									$tipoCuentaEmpleador = '0';
 								}
-								elseif($cuenta['Cuenta']['tipo'] == 'Caja de Ahorro') {
+								elseif ($cuenta['Cuenta']['tipo'] == 'Caja de Ahorro') {
 									$tipoCuentaEmpleador = '9';
 								}
 								$rh[] = 'H';
@@ -315,8 +315,8 @@ class Pago extends AppModel {
 		$return = true;
 		$this->contain('PagosForma');
 		$pago = $this->findById($id);
-		foreach($pago['PagosForma'] as $v) {
-			if(!$this->PagosForma->revertir($v['id'])) {
+		foreach ($pago['PagosForma'] as $v) {
+			if (!$this->PagosForma->revertir($v['id'])) {
 				$return = false;
 				break;
 			}
@@ -324,8 +324,8 @@ class Pago extends AppModel {
 		/**
 		* Si pude revertir todas las formas de pago, lo dejo nuevamente pendiente al pago.
 		*/
-		if($return === true) {
-			if($this->save(array('Pago'=>array('id'=>$pago['Pago']['id'], 'estado'=>'Pendiente')))) {
+		if ($return === true) {
+			if ($this->save(array('Pago'=>array('id'=>$pago['Pago']['id'], 'estado' => 'Pendiente')))) {
 				$this->commit();
 				return true;
 			}
@@ -438,10 +438,10 @@ class Pago extends AppModel {
 		$r = $this->query($sql);
 		d($r);
 		$pagos = null;
-		foreach($r as $v) {
+		foreach ($r as $v) {
 			$cuil = $v['Trabajador']['cuil'];
 			$cuit = $v['Empleador']['cuit'];
-			if(!isset($pagos[$cuit][$cuil])) {
+			if (!isset($pagos[$cuit][$cuil])) {
 				$pagos[$cuit][$cuil]['empleador'] = $v['Empleador']['nombre'];
 				$pagos[$cuit][$cuil]['apellido'] = $v['Trabajador']['apellido'];
 				$pagos[$cuit][$cuil]['nombre'] = $v['Trabajador']['nombre'];
@@ -455,7 +455,7 @@ class Pago extends AppModel {
 				$pagos[$cuit][$cuil]['total_pesos'] = 0;
 				$pagos[$cuit][$cuil]['total_beneficios'] = 0;
 			}
-			if($v['Pago']['pago'] == 'Beneficios') {
+			if ($v['Pago']['pago'] == 'Beneficios') {
 				$pagos[$cuit][$cuil]['beneficios'] = $v['0']['monto'];
 				$pagos[$cuit][$cuil]['total_beneficios'] += $v['0']['monto'];
 			}

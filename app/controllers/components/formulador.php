@@ -6,15 +6,15 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.controllers.components
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.controllers.components
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
  
  set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes');
@@ -23,8 +23,8 @@
  * La clase encapsula la logica necesaria para resolver una formula.
  * Parsea la formula proveniente del sistema, y la deja de la forma en que PHPExcel la necesita para funcionar correctamente.
  *
- * @package		pragtico
- * @subpackage	app.controllers.components
+ * @package     pragtico
+ * @subpackage  app.controllers.components
  */
 class FormuladorComponent extends Object {
 
@@ -84,11 +84,11 @@ class FormuladorComponent extends Object {
 		* En el formulador, si hay una comparacion de strings se equivoca.
 		* Lo verifico en php, y pongo en en la celda un valor booleano.
 		*/
-		if(preg_match_all("/\((\'[\w\s\/]+\'=\'[\w\s\/]+\')/", $formula, $strings)) {
-			foreach($strings[1] as $k=>$string) {
+		if (preg_match_all("/\((\'[\w\s\/]+\'=\'[\w\s\/]+\')/", $formula, $strings)) {
+			foreach ($strings[1] as $k=>$string) {
 				$cellId++;
 				$partes = explode("=", str_replace(" ", "", str_replace("'", "", $string)));
-				if($partes[0] == $partes[1]) {
+				if ($partes[0] == $partes[1]) {
 					$this->__objPHPExcel->getActiveSheet()->setCellValue("A" . $cellId, true);
 				}
 				else {
@@ -107,7 +107,7 @@ class FormuladorComponent extends Object {
 		/**
 		* Puede que los valores del camino verdadero y el falso de un if sean string, entonces debo colocarlos en celdas separadas.
 		*/
-		if(preg_match_all("/\([A-Z]+\d\,\'([\w\s]+)\'\,\'([\w\s]+)\'\)/", $formula, $strings)) {
+		if (preg_match_all("/\([A-Z]+\d\,\'([\w\s]+)\'\,\'([\w\s]+)\'\)/", $formula, $strings)) {
 			$cellId++;
 			$this->__objPHPExcel->getActiveSheet()->setCellValue("A" . $cellId, $strings[1][0]);
 			$formula = preg_replace("/\'" . $strings[1][0] . "\'/", "A" . $cellId, $formula, 1);
@@ -121,13 +121,13 @@ class FormuladorComponent extends Object {
 		* Las funciones de grupo, me van a venir como una lista de valores, y el formulador de excel, las necesita
 		* cargadas en celdas y la formula ser expresada como rango, entonces, lo convierto.
 		*/
-		if(preg_match_all("/(.*)([min|max|sum|average]+)\(([[0-9]\,]+)\)/Ui", $formula, $partes)) {
-			if(!empty($partes[3])) {
+		if (preg_match_all("/(.*)([min|max|sum|average]+)\(([[0-9]\,]+)\)/Ui", $formula, $partes)) {
+			if (!empty($partes[3])) {
 				$formulaParcialRecontruida = null;
-				foreach($partes[3] as $k=>$valores) {
+				foreach ($partes[3] as $k=>$valores) {
 					$tmpValores = explode(",", $valores);
 					$rangoInferior = "A" . ($cellId + 1);
-					foreach($tmpValores as $valor) {
+					foreach ($tmpValores as $valor) {
 						$cellId++;
 						$this->__objPHPExcel->getActiveSheet()->setCellValue("A" . $cellId, (int)$valor);
 					}

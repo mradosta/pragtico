@@ -5,25 +5,25 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a los conceptos.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class Concepto extends AppModel {
 
-	var $order = array('Concepto.orden'=>'asc');
+	var $order = array('Concepto.orden' => 'asc');
 
 		/*
         'formula' => array(
@@ -121,7 +121,7 @@ class Concepto extends AppModel {
 
 		
 		
-		if(!empty($opciones['condicionAdicional'])) {
+		if (!empty($opciones['condicionAdicional'])) {
 			$condicionAdicional = " and " . $opciones['condicionAdicional'] . " ";
 		}
 		else {
@@ -172,7 +172,7 @@ class Concepto extends AppModel {
 									WHEN 'Deduccion' THEN 2
 								END";
 
-		if($tipo === "Relacion") {
+		if ($tipo === "Relacion") {
 			$fields = am($fieldsRelaciones, $fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente);
 			$table 	= 	"relaciones_conceptos";
 			$joins	=	array(
@@ -223,7 +223,7 @@ class Concepto extends AppModel {
 												"RelacionesConcepto.hasta >=" => $opciones['hasta']))
 						);
 		}
-		elseif($tipo === "Empleador") {
+		elseif ($tipo === "Empleador") {
 			$fields = am($fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente);
 			$table 	= 	"empleadores_conceptos";
 			$joins 	=	array(
@@ -271,7 +271,7 @@ class Concepto extends AppModel {
 													"EmpleadoresConcepto.hasta >=" => $opciones['hasta']))
 						);
 		}
-		elseif($tipo === "ConvenioColectivo") {
+		elseif ($tipo === "ConvenioColectivo") {
 			$fields = am($fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente);
 			$table 	= 	"convenios_conceptos";
 			$joins 	=	array(
@@ -306,7 +306,7 @@ class Concepto extends AppModel {
 													"ConveniosConcepto.hasta >=" => $opciones['hasta']))
 						);
 		}
-		elseif($tipo === "ConceptoPuntual") {
+		elseif ($tipo === "ConceptoPuntual") {
 			$fields = am($fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente);
 			$table 	= 	"conceptos";
 			$joins 	=	array(
@@ -350,7 +350,7 @@ class Concepto extends AppModel {
 													"Concepto.hasta >=" => $opciones['hasta']))
 						);
 		}
-		elseif($tipo === "Todos") {
+		elseif ($tipo === "Todos") {
 
 			$fields = $fieldsConceptos;
 			$table	= "conceptos";
@@ -367,7 +367,7 @@ class Concepto extends AppModel {
 		$r = $this->query($sql);
 		
 		$conceptos = array();
-		foreach($r as $v) {
+		foreach ($r as $v) {
 			/**
 			* En principio tomo el concepto como verdad, luego puede estar sobreescrito.
 			* La jerarquia es: 	Relacion,
@@ -383,40 +383,40 @@ class Concepto extends AppModel {
 			/**
 			* De la relacion.
 			*/
-			if(!empty($v['RelacionesConcepto']['desde']) && $v['RelacionesConcepto']['desde'] != "0000-00-00" && $v['RelacionesConcepto']['desde'] > $opciones['desde']) {
+			if (!empty($v['RelacionesConcepto']['desde']) && $v['RelacionesConcepto']['desde'] != "0000-00-00" && $v['RelacionesConcepto']['desde'] > $opciones['desde']) {
 				continue;
 			}
-			if(!empty($v['RelacionesConcepto']['hasta']) && $v['RelacionesConcepto']['hasta'] != "0000-00-00" && $v['RelacionesConcepto']['hasta'] < $opciones['hasta']) {
+			if (!empty($v['RelacionesConcepto']['hasta']) && $v['RelacionesConcepto']['hasta'] != "0000-00-00" && $v['RelacionesConcepto']['hasta'] < $opciones['hasta']) {
 				continue;
 			}
 			
 			/**
 			* Del empleador.
 			*/
-			if(!empty($v['EmpleadoresConcepto']['desde']) && $v['EmpleadoresConcepto']['desde'] != "0000-00-00" && $v['EmpleadoresConcepto']['desde'] > $opciones['desde']) {
+			if (!empty($v['EmpleadoresConcepto']['desde']) && $v['EmpleadoresConcepto']['desde'] != "0000-00-00" && $v['EmpleadoresConcepto']['desde'] > $opciones['desde']) {
 				continue;
 			}
-			if(!empty($v['EmpleadoresConcepto']['hasta']) && $v['EmpleadoresConcepto']['hasta'] != "0000-00-00" && $v['EmpleadoresConcepto']['hasta'] < $opciones['hasta']) {
+			if (!empty($v['EmpleadoresConcepto']['hasta']) && $v['EmpleadoresConcepto']['hasta'] != "0000-00-00" && $v['EmpleadoresConcepto']['hasta'] < $opciones['hasta']) {
 				continue;
 			}
 
 			/**
 			* Del convenio.
 			*/
-			if(!empty($v['ConveniosConcepto']['desde']) && $v['ConveniosConcepto']['desde'] != "0000-00-00" && $v['ConveniosConcepto']['desde'] > $opciones['desde']) {
+			if (!empty($v['ConveniosConcepto']['desde']) && $v['ConveniosConcepto']['desde'] != "0000-00-00" && $v['ConveniosConcepto']['desde'] > $opciones['desde']) {
 				continue;
 			}
-			if(!empty($v['ConveniosConcepto']['hasta']) && $v['ConveniosConcepto']['hasta'] != "0000-00-00" && $v['ConveniosConcepto']['hasta'] < $opciones['hasta']) {
+			if (!empty($v['ConveniosConcepto']['hasta']) && $v['ConveniosConcepto']['hasta'] != "0000-00-00" && $v['ConveniosConcepto']['hasta'] < $opciones['hasta']) {
 				continue;
 			}
 			
 			/**
 			* Del concepto.
 			*/
-			if(!empty($v['Concepto']['desde']) && $v['Concepto']['desde'] != "0000-00-00" && $v['Concepto']['desde'] > $opciones['desde']) {
+			if (!empty($v['Concepto']['desde']) && $v['Concepto']['desde'] != "0000-00-00" && $v['Concepto']['desde'] > $opciones['desde']) {
 				continue;
 			}
-			if(!empty($v['Concepto']['hasta']) && $v['Concepto']['hasta'] != "0000-00-00" && $v['Concepto']['hasta'] < $opciones['hasta']) {
+			if (!empty($v['Concepto']['hasta']) && $v['Concepto']['hasta'] != "0000-00-00" && $v['Concepto']['hasta'] < $opciones['hasta']) {
 				continue;
 			}
 
@@ -424,7 +424,7 @@ class Concepto extends AppModel {
 			/**
 			* Asigo como valido el concepto y su coeficiente,
 			* luego, en base a la jerarquia, sobreescribo la formula si coresponde.
-			if(isset($v['Coeficiente'])) {
+			if (isset($v['Coeficiente'])) {
 				//$conceptos[$v['Concepto']['codigo']] = am($v['Concepto'], $v['Coeficiente']);
 			}
 			else {
@@ -441,7 +441,7 @@ class Concepto extends AppModel {
 			$conceptos[$v['Concepto']['codigo']]['coeficiente_nombre'] = $v['Coeficiente']['nombre'];
 			$conceptos[$v['Concepto']['codigo']]['coeficiente_tipo'] = $v['Coeficiente']['tipo'];
 			$conceptos[$v['Concepto']['codigo']]['coeficiente_valor'] = $v['Coeficiente']['valor'];
-			if(!empty($v['EmpleadoresCoeficiente']['coeficiente_valor'])) {
+			if (!empty($v['EmpleadoresCoeficiente']['coeficiente_valor'])) {
 				$conceptos[$v['Concepto']['codigo']]['coeficiente_valor'] = $v['EmpleadoresCoeficiente']['coeficiente_valor'];
 			}
 
@@ -449,26 +449,26 @@ class Concepto extends AppModel {
 			* Sobreescribo Formulas.
 			* Nota: El elemento 0 surge de la funcion replace de RelacionesConcepto.
 			*/
-			if(!empty($v['0']['formula'])) {
+			if (!empty($v['0']['formula'])) {
 				$conceptos[$v['Concepto']['codigo']]['formula'] = $v['0']['formula'];
 			}
-			elseif(!empty($v['EmpleadoresConcepto']['formula'])) {
+			elseif (!empty($v['EmpleadoresConcepto']['formula'])) {
 				$conceptos[$v['Concepto']['codigo']]['formula'] = $v['EmpleadoresConcepto']['formula'];
 			}
-			elseif(!empty($v['ConveniosConcepto']['formula'])) {
+			elseif (!empty($v['ConveniosConcepto']['formula'])) {
 				$conceptos[$v['Concepto']['codigo']]['formula'] = $v['ConveniosConcepto']['formula'];
 			}
 			
 			/**
 			* Sobreescribo ids.
 			*/
-			if(!empty($v['RelacionesConcepto']['id'])) {
+			if (!empty($v['RelacionesConcepto']['id'])) {
 				$conceptos[$v['Concepto']['codigo']]['id'] = $v['RelacionesConcepto']['id'];
 			}
-			elseif(!empty($v['EmpleadoresConcepto']['formula'])) {
+			elseif (!empty($v['EmpleadoresConcepto']['formula'])) {
 				$conceptos[$v['Concepto']['codigo']]['id'] = $v['EmpleadoresConcepto']['id'];
 			}
-			elseif(!empty($v['ConveniosConcepto']['formula'])) {
+			elseif (!empty($v['ConveniosConcepto']['formula'])) {
 				$conceptos[$v['Concepto']['codigo']]['id'] = $v['ConveniosConcepto']['id'];
 			}
 		}
@@ -489,19 +489,19 @@ class Concepto extends AppModel {
  */
 	function agregarQuitarConcepto($relaciones = array(), $conceptos = array(), $opciones) {
 		$c = 0;
-		if(isset($opciones['accion']) && ($opciones['accion'] == "quitar" || $opciones['accion'] == "agregar")) {
+		if (isset($opciones['accion']) && ($opciones['accion'] == "quitar" || $opciones['accion'] == "agregar")) {
 			$accion = $opciones['accion'];
 			$error = false;
 			$this->begin();
-			foreach($relaciones as $relacion_id) {
-				foreach($conceptos as $concepto_id) {
+			foreach ($relaciones as $relacion_id) {
+				foreach ($conceptos as $concepto_id) {
 					$save['relacion_id'] = $relacion_id;
 					$save['concepto_id'] = $concepto_id;
 					$this->RelacionesConcepto->recursive = -1;
 					$existe = $this->RelacionesConcepto->find($save);
-					if(empty($existe) && $accion == "agregar") {
+					if (empty($existe) && $accion == "agregar") {
 						$this->RelacionesConcepto->create();
-						if($this->RelacionesConcepto->save($save)) {
+						if ($this->RelacionesConcepto->save($save)) {
 							$c++;
 						}
 						else {
@@ -509,8 +509,8 @@ class Concepto extends AppModel {
 							break 2;
 						}
 					}
-					elseif(!empty($existe) && $accion == "quitar") {
-						if($this->RelacionesConcepto->del($existe['RelacionesConcepto']['id'])) {
+					elseif (!empty($existe) && $accion == "quitar") {
+						if ($this->RelacionesConcepto->del($existe['RelacionesConcepto']['id'])) {
 							$c++;
 						}
 						else {
@@ -520,7 +520,7 @@ class Concepto extends AppModel {
 					}
 				}
 			}
-			if($error) {
+			if ($error) {
 				$this->rollback();
 			}
 			else {

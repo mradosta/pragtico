@@ -5,15 +5,15 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models.behaviors
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models.behaviors
  * @since			Practico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * Especifico todos los metodos de validacion que requiera.
@@ -21,8 +21,8 @@
  *		validRule(&$model, $rule, $ruleParams)
  * Esto para no ser confundido con algun otro metodo de algun otro behavior.
  *
- * @package		pragtico
- * @subpackage	app.models.behaviors
+ * @package     pragtico
+ * @subpackage  app.models.behaviors
  */
 class ValidacionesBehavior extends ModelBehavior {
 
@@ -53,20 +53,20 @@ class ValidacionesBehavior extends ModelBehavior {
 		*/
 		$tipoDato = $model->schema($this->__getField($rule));
 		$campoNumericos = array("integer", "float");
-		if(in_array($tipoDato['type'], $campoNumericos) && $value == 0) {
+		if (in_array($tipoDato['type'], $campoNumericos) && $value == 0) {
 			return true;
 		}
-		elseif(!empty($value)) {
-			if(!empty($ruleParams['opciones']['otrosCampos'])) {
-				if(is_string($ruleParams['opciones']['otrosCampos'])) {
+		elseif (!empty($value)) {
+			if (!empty($ruleParams['opciones']['otrosCampos'])) {
+				if (is_string($ruleParams['opciones']['otrosCampos'])) {
 					$ruleParams['opciones']['otrosCampos'] = array($ruleParams['opciones']['otrosCampos']);
 				}
-				foreach($ruleParams['opciones']['otrosCampos'] as $campo) {
+				foreach ($ruleParams['opciones']['otrosCampos'] as $campo) {
 					$tipoDato = $model->schema($campo);
-					if(in_array($tipoDato['type'], $campoNumericos) && $model->data[$model->name][$campo] == 0) {
+					if (in_array($tipoDato['type'], $campoNumericos) && $model->data[$model->name][$campo] == 0) {
 						continue;
 					}
-					elseif(!empty($model->data[$model->name][$campo])) {
+					elseif (!empty($model->data[$model->name][$campo])) {
 						return false;
 					}
 				}
@@ -88,27 +88,27 @@ class ValidacionesBehavior extends ModelBehavior {
  */
     function validRango(&$model, $rule, $ruleParams) {
 		$value = $this->__getValue($rule);
-		if(empty($value)) {
+		if (empty($value)) {
     		return true;
     	}
     	
-		if(empty($ruleParams['opciones']['condicion'])) {
+		if (empty($ruleParams['opciones']['condicion'])) {
 			trigger_error("Debe especificar la condicion en el model " . $model->name . " para la validacion (validRango).", E_USER_WARNING);
 			return false;
 		}
 		else {
 			$posiblesCondiciones = array(">", ">=", "<", "<=");
 			$condicion = $ruleParams['opciones']['condicion'];
-			if(!in_array($condicion, $posiblesCondiciones)) {
+			if (!in_array($condicion, $posiblesCondiciones)) {
 				trigger_error("La condicion en el model " . $model->name . " para la validacion (validRango) solo puede ser " . implode(", ", $posiblesCondiciones) . ".", E_USER_WARNING);
 				return false;
 			}
 		}
 		
-    	if(!empty($ruleParams['opciones']['limiteInferior']) && !empty($model->data[$model->name][$ruleParams['opciones']['limiteInferior']])) {
+    	if (!empty($ruleParams['opciones']['limiteInferior']) && !empty($model->data[$model->name][$ruleParams['opciones']['limiteInferior']])) {
     		$campoAComparar = $ruleParams['opciones']['limiteInferior'];
     	}
-    	if(!empty($ruleParams['opciones']['limiteSuperior']) && !empty($model->data[$model->name][$ruleParams['opciones']['limiteSuperior']])) {
+    	if (!empty($ruleParams['opciones']['limiteSuperior']) && !empty($model->data[$model->name][$ruleParams['opciones']['limiteSuperior']])) {
     		$campoAComparar = $ruleParams['opciones']['limiteSuperior'];
     	}
 
@@ -119,40 +119,40 @@ class ValidacionesBehavior extends ModelBehavior {
 		$tipoCampo = $schema[$campo]['type'];
 		$tipoCampoAComparar = $schema[$campoAComparar]['type'];
 
-		if($tipoCampo != $tipoCampoAComparar) {
+		if ($tipoCampo != $tipoCampoAComparar) {
 			trigger_error("Debe especificar campos del mismo tipo en el model " . $model->name . " para la validacion (validRango).", E_USER_WARNING);
 			return false;
 		}
 
-		if($tipoCampo == "date" || $tipoCampo == "datetime") {
+		if ($tipoCampo == "date" || $tipoCampo == "datetime") {
 			$tmp = substr($value, 0, 10);
-			if(preg_match(VALID_DATE, $tmp, $matches)) {
+			if (preg_match(VALID_DATE, $tmp, $matches)) {
 				$value = $matches[3] . "-" . $matches[2] . "-" . $matches[1] . " " . substr($value, 10);
 			}
 			$tmp = substr($valorAComparar, 0, 10);
-			if(preg_match(VALID_DATE, $tmp, $matches)) {
+			if (preg_match(VALID_DATE, $tmp, $matches)) {
 				$valorAComparar = $matches[3] . "-" . $matches[2] . "-" . $matches[1] . " " . substr($valorAComparar, 10);
 			}
 		}
 			
 		switch($condicion) {
 			case ">":
-				if($value > $valorAComparar) {
+				if ($value > $valorAComparar) {
 					return true;
 				}
 				break;
 			case ">=":
-				if($value >= $valorAComparar) {
+				if ($value >= $valorAComparar) {
 					return true;
 				}
 				break;
 			case "<":
-				if($value < $valorAComparar) {
+				if ($value < $valorAComparar) {
 					return true;
 				}
 				break;
 			case "<=":
-				if($value <= $valorAComparar) {
+				if ($value <= $valorAComparar) {
 					return true;
 				}
 				break;
@@ -183,15 +183,15 @@ class ValidacionesBehavior extends ModelBehavior {
  */
     function validUnoPorLoMenos(&$model, $rule, $ruleParams) {
     	$value = $this->__getValue($rule);
-		if(!empty($value)) {
+		if (!empty($value)) {
 			return true;
 		}
-		elseif(!empty($ruleParams['opciones']['otrosCampos'])) {
-			if(is_string($ruleParams['opciones']['otrosCampos'])) {
+		elseif (!empty($ruleParams['opciones']['otrosCampos'])) {
+			if (is_string($ruleParams['opciones']['otrosCampos'])) {
 				$ruleParams['opciones']['otrosCampos'] = array($ruleParams['opciones']['otrosCampos']);
 			}
-			foreach($ruleParams['opciones']['otrosCampos'] as $campo) {
-				if(!empty($model->data[$model->name][$campo])) {
+			foreach ($ruleParams['opciones']['otrosCampos'] as $campo) {
+				if (!empty($model->data[$model->name][$campo])) {
 					return true;
 				}
 			}
@@ -217,7 +217,7 @@ class ValidacionesBehavior extends ModelBehavior {
 		* Si viene vacio lo valida como correcto, ya que la funcion valida si un cuit/cuil es valido o no. No valida
 		* que este deba venir necesariamente. 
 		*/
-		if(empty($value)) {
+		if (empty($value)) {
 			return true;
 		}
 
@@ -246,7 +246,7 @@ class ValidacionesBehavior extends ModelBehavior {
 			$coeficiente[10]=1;
 			
 			$suma = 0;
-			foreach($coeficiente as $k=>$v) {
+			foreach ($coeficiente as $k=>$v) {
 				$suma += $value[$k] * $v;
 			}
 
@@ -280,7 +280,7 @@ class ValidacionesBehavior extends ModelBehavior {
 		* Si viene vacio lo valida como correcto, ya que la funcion valida si un Cbu es valido o no. No valida
 		* que este deba necesariamente venir.
 		*/
-		if(empty($value)) {
+		if (empty($value)) {
 			return true;
 		}
 
@@ -305,12 +305,12 @@ class ValidacionesBehavior extends ModelBehavior {
 		*/
 
 		$value = str_replace("-", "", $value);
-		if(strlen($value) == 22) {
+		if (strlen($value) == 22) {
 			$parteA = substr($value, 0, 7);
 			$digitoParteA = substr($value, 7, 1);
 			$parteB = substr($value, 8, 13);
 			$digitoParteB = substr($value, 21, 1);
-			if($this->__getDigitoVerificador($parteA) == $digitoParteA && $this->__getDigitoVerificador($parteB) == $digitoParteB) {
+			if ($this->__getDigitoVerificador($parteA) == $digitoParteA && $this->__getDigitoVerificador($parteB) == $digitoParteB) {
 				return true;
 			}
 		}
@@ -332,7 +332,7 @@ class ValidacionesBehavior extends ModelBehavior {
 		$j=3;
 		for($i=1;$i<=$lnLargo;$i++){
 			$lnSuma = $lnSuma + (substr($lcBloque, $lnLargo - $i, 1)) * (substr($Pond, $j, 1));
-			if($j==0) {
+			if ($j==0) {
 				$j=3;
 			}
 			else {
@@ -351,9 +351,9 @@ class ValidacionesBehavior extends ModelBehavior {
  * @access private
  */
 	function __getValue($rule) {
-		if(!empty($rule)) {
-			if(is_string(key($rule))) {
-				if(!empty($rule[key($rule)])) {
+		if (!empty($rule)) {
+			if (is_string(key($rule))) {
+				if (!empty($rule[key($rule)])) {
 					return $rule[key($rule)];
 				}
 			}
@@ -370,8 +370,8 @@ class ValidacionesBehavior extends ModelBehavior {
  * @access private
  */
 	function __getField($rule) {
-		if(!empty($rule)) {
-			if(is_string(key($rule))) {
+		if (!empty($rule)) {
+			if (is_string(key($rule))) {
 				return key($rule);
 			}
 		}
@@ -396,25 +396,25 @@ class ValidacionesBehavior extends ModelBehavior {
 	* Si hay un campo que debe ser null y viene vacio, lo hago null.
 	*/
 	function __setDBFieldValue($fieldDescriptor, $value) {
-		if(isset($fieldDescriptor['null']) && !$fieldDescriptor['null']) {
-			if(!empty($fieldDescriptor['default']) && empty($value)) {
+		if (isset($fieldDescriptor['null']) && !$fieldDescriptor['null']) {
+			if (!empty($fieldDescriptor['default']) && empty($value)) {
 				return $fieldDescriptor['default'];
 			}
-			elseif(in_array($fieldDescriptor['type'], array("datetime", "date"))) {
-				if(empty($value)) {
+			elseif (in_array($fieldDescriptor['type'], array("datetime", "date"))) {
+				if (empty($value)) {
 					return "0000-00-00";
 				}
 				return $this->__getMySqlDate($value);
 			}
-			elseif(in_array($fieldDescriptor['type'], array("float", "integer", "binary")) && empty($value)) {
+			elseif (in_array($fieldDescriptor['type'], array("float", "integer", "binary")) && empty($value)) {
 				return 0;
 			}
-			elseif(in_array($fieldDescriptor['type'], array("string", "text")) && empty($value)) {
+			elseif (in_array($fieldDescriptor['type'], array("string", "text")) && empty($value)) {
 				return "";
 			}
 		}
 		else {
-			if(empty($value)) {
+			if (empty($value)) {
 				return null;
 			}
 		}
@@ -425,17 +425,17 @@ class ValidacionesBehavior extends ModelBehavior {
  *
  */	
     function setDBFieldValue(&$model, &$modelDetail = null, $field = null, $value = null, $returnValue = false) {
-		if(!empty($modelDetail) && !empty($field)) {
-			if($returnValue === true) {
+		if (!empty($modelDetail) && !empty($field)) {
+			if ($returnValue === true) {
 				$fieldDescriptor = $modelDetail->schema($field);
 				return $this->__setDBFieldValue($fieldDescriptor, $value);
 			}
 		}
 		else {
-			foreach($model->data as $k=>$v) {
-				if($model->name == $k) {
-					foreach($model->schema() as $field=>$fieldDescriptor) {
-						if(in_array($field, array("created", "modified", "user_id", "group_id", "rol_id", "permissions"))) {
+			foreach ($model->data as $k=>$v) {
+				if ($model->name == $k) {
+					foreach ($model->schema() as $field=>$fieldDescriptor) {
+						if (in_array($field, array("created", "modified", "user_id", "group_id", "rol_id", "permissions"))) {
 							continue;
 						}
 
@@ -444,32 +444,32 @@ class ValidacionesBehavior extends ModelBehavior {
 						* Para un add, debo formatear todo.
 						*/
 						$value = null;
-						if(isset($model->data[$model->name][$field])) {
+						if (isset($model->data[$model->name][$field])) {
 							$value = $model->data[$model->name][$field];
 						}
-						if(empty($model->data[$model->name][$model->primaryKey])) {
+						if (empty($model->data[$model->name][$model->primaryKey])) {
 							$model->data[$model->name][$field] = $this->__setDBFieldValue($fieldDescriptor, $value);
 						}
-						elseif(!is_null($value)){
+						elseif (!is_null($value)){
 							$model->data[$model->name][$field] = $this->__setDBFieldValue($fieldDescriptor, $value);
 						}
 					}
 				}
 				else {
-					foreach($model->data[$k] as $kDetail=>$vDetail) {
-						foreach($vDetail as $field=>$v) {
-							if(in_array($field, array("created", "modified", "user_id", "group_id", "rol_id", "permissions"))) {
+					foreach ($model->data[$k] as $kDetail=>$vDetail) {
+						foreach ($vDetail as $field=>$v) {
+							if (in_array($field, array("created", "modified", "user_id", "group_id", "rol_id", "permissions"))) {
 								continue;
 							}
 							
 							$value = null;
-							if(isset($model->data[$k][$kDetail][$field])) {
+							if (isset($model->data[$k][$kDetail][$field])) {
 								$value = $model->data[$k][$kDetail][$field];
 							}
-							if(empty($model->data[$k][$kDetail]['id'])) {
+							if (empty($model->data[$k][$kDetail]['id'])) {
 								$model->data[$k][$kDetail][$field] = $this->__setDBFieldValue($model->{$k}->schema($field), $value);
 							}
-							elseif(!is_null($value)){
+							elseif (!is_null($value)){
 								$model->data[$k][$kDetail][$field] = $this->__setDBFieldValue($model->{$k}->schema($field), $value);
 							}
 						}
@@ -488,10 +488,10 @@ class ValidacionesBehavior extends ModelBehavior {
  * @access private
  */
 	function __getMySqlDate($fecha) {
-		if(!empty($fecha) && (preg_match(VALID_DATETIME, $fecha, $matches) || preg_match(VALID_DATE, $fecha, $matches))) {
+		if (!empty($fecha) && (preg_match(VALID_DATETIME, $fecha, $matches) || preg_match(VALID_DATE, $fecha, $matches))) {
 			return $matches[3] . "-" . $matches[2] . "-" . $matches[1] . substr($fecha, 10);
 		}
-		elseif(preg_match(VALID_DATE_MYSQL, $fecha)) {
+		elseif (preg_match(VALID_DATE_MYSQL, $fecha)) {
 			return $fecha;
 		}
 		return false;

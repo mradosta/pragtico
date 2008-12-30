@@ -6,28 +6,28 @@
  *
  * @filesource
  * @copyright		Copyright 2005-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.controllers
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.controllers
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de negocio asociada al manejo de usuarios.
  *
  * @package	    pragtico
- * @subpackage	app.controllers
+ * @subpackage  app.controllers
  */
 class UsuariosController extends AppController { 
 
 
 	function add() {
 		
-		if(!empty($this->data['GruposUsuario']['grupo_id'])) {
-			foreach($this->data['GruposUsuario']['grupo_id'] as $v) {
+		if (!empty($this->data['GruposUsuario']['grupo_id'])) {
+			foreach ($this->data['GruposUsuario']['grupo_id'] as $v) {
 				$grupos[] = array("grupo_id" => $v);
 			}
 			$this->data['GruposUsuario'] = $grupos;
@@ -40,8 +40,8 @@ class UsuariosController extends AppController {
 			$this->Usuario->GruposUsuario->unique = array("grupo_id", "usuario_id");
 		}
 		
-		if(!empty($this->data['RolesUsuario']['rol_id'])) {
-			foreach($this->data['RolesUsuario']['rol_id'] as $v) {
+		if (!empty($this->data['RolesUsuario']['rol_id'])) {
+			foreach ($this->data['RolesUsuario']['rol_id'] as $v) {
 				$roles[] = array("rol_id" => $v);
 			}
 			$this->data['RolesUsuario'] = $roles;
@@ -84,8 +84,8 @@ class UsuariosController extends AppController {
 		*/
 		$this->Usuario->contain(array("Grupo"));
 		$usuario = $this->Usuario->read(null, $id);
-		foreach($usuario['Grupo'] as $k=>$v) {
-			if(!is_numeric($k)) {
+		foreach ($usuario['Grupo'] as $k=>$v) {
+			if (!is_numeric($k)) {
 				unset($usuario['Grupo'][$k]);
 			}
 			
@@ -101,8 +101,8 @@ class UsuariosController extends AppController {
  * @access public 
  */
     function login() {
-        if(!empty($this->data)) {
-			if($usuario = $this->Usuario->verificarLogin(array("nombre"=>$this->data['Usuario']['loginNombre'], "clave"=>$this->data['Usuario']['loginClave']))) {
+        if (!empty($this->data)) {
+			if ($usuario = $this->Usuario->verificarLogin(array("nombre"=>$this->data['Usuario']['loginNombre'], "clave"=>$this->data['Usuario']['loginClave']))) {
 
 				/**
 				* Guardo en la session el usuario.
@@ -139,18 +139,18 @@ class UsuariosController extends AppController {
 
 
 	function cambiar_grupo_deprecated() {
-		if(!empty($this->data)) {
-			if($this->data['Form']['accion'] == "grabar") {
+		if (!empty($this->data)) {
+			if ($this->data['Form']['accion'] == "grabar") {
 				$usuario = $this->Session->read("__Usuario");
 			}
 		}
 		$usuario = $this->Session->read("__Usuario");
-		foreach($usuario['Grupo'] as $grupo) {
-			if($grupo['tipo'] == "De Grupos") {
+		foreach ($usuario['Grupo'] as $grupo) {
+			if ($grupo['tipo'] == "De Grupos") {
 				$grupos[$grupo['id']] = $grupo['nombre'];
 			}
 		}
-		if(empty($grupos)) {
+		if (empty($grupos)) {
 			$this->Session->setFlash('Usted no tiene otro grupo para realizar el cambio.', 'error');
 		}
 		else {
@@ -168,14 +168,14 @@ class UsuariosController extends AppController {
  * @access public 
  */
     function cambiar_clave($id = null) {
-    	if(!empty($id) && is_numeric($id)) {
+    	if (!empty($id) && is_numeric($id)) {
     		$this->set("usuario", $this->Usuario->findById($id));
     		$this->set("noVerificar", false);
     	}
-    	else if(!empty($this->data)) {
-    		if(!empty($this->data['Form']['accion']) && $this->data['Form']['accion'] === "grabar" && $this->Usuario->validates()) {
+    	else if (!empty($this->data)) {
+    		if (!empty($this->data['Form']['accion']) && $this->data['Form']['accion'] === "grabar" && $this->Usuario->validates()) {
     			unset($this->data['Form']);
-    			if($this->Usuario->save($this->data)) {
+    			if ($this->Usuario->save($this->data)) {
     				$this->Session->setFlash("La clave se cambio correctamente.", "ok");
 					$this->History->goBack();
     			}

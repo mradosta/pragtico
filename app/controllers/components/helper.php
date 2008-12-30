@@ -17,13 +17,13 @@ class HelperComponent extends Object {
 
 	function startup(&$controller) {
 		$this->controller = $controller;
-		if(isset($controller->actionHelpers)) {
+		if (isset($controller->actionHelpers)) {
 			$this->pushHelpers();
 		}
 	}
  
 	function pushHelpers() {
-		foreach($this->controller->actionHelpers as $helper) {
+		foreach ($this->controller->actionHelpers as $helper) {
 			$helper = ucfirst($helper);
 			App::import("Helper", $helper);
 			$_helperClassName = $helper . "Helper";

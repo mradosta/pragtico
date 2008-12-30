@@ -5,21 +5,21 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.controllers
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.controllers
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de negocio asociada a los trabajadores.
  *
- * @package		pragtico
- * @subpackage	app.controllers
+ * @package     pragtico
+ * @subpackage  app.controllers
  */
 class TrabajadoresController extends AppController {
 
@@ -43,7 +43,7 @@ class TrabajadoresController extends AppController {
 		$archivo['type'] = $trabajador['Trabajador']['file_type'];
 		$archivo['name'] = $this->Util->getFileName($trabajador['Trabajador']['nombre'], $trabajador['Trabajador']['file_type']);
 		$this->set("archivo", $archivo);
-		if(!empty($this->params['named']['mostrar']) && $this->params['named']['mostrar'] == true) {
+		if (!empty($this->params['named']['mostrar']) && $this->params['named']['mostrar'] == true) {
 			$this->set("mostrar", true);
 		}
 		$this->render("../elements/descargar", "descargar");

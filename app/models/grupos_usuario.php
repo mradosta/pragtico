@@ -6,21 +6,21 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a la relacion entre grupos y usuarios.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class GruposUsuario extends AppModel {
 
@@ -55,9 +55,9 @@ class GruposUsuario extends AppModel {
  */
 	function __soloUnGrupoPrimario($value, $params = array()) {
 		return true;
-		if($this->data['GruposUsuario']['tipo'] == "Primario") {
-			$find = array("Usuario.id"=>$this->data['GruposUsuario']['usuario_id'], "GruposUsuario.tipo"=>"Primario");
-			if($this->findCount($find) > 0) {
+		if ($this->data['GruposUsuario']['tipo'] == "Primario") {
+			$find = array("Usuario.id"=>$this->data['GruposUsuario']['usuario_id'], "GruposUsuario.tipo" => "Primario");
+			if ($this->findCount($find) > 0) {
 				return false;
 			}
 		}

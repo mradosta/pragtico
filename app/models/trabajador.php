@@ -5,21 +5,21 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
+ * @copyright       Copyright 2007-2009, Pragmatia
  * @link			http://www.pragmatia.org
- * @package			pragtico
- * @subpackage		app.models
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @package         pragtico
+ * @subpackage      app.models
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a los trabajadores.
  *
- * @package		pragtico
- * @subpackage	app.models
+ * @package     pragtico
+ * @subpackage  app.models
  */
 class Trabajador extends AppModel {
 
@@ -31,8 +31,8 @@ class Trabajador extends AppModel {
 																"Siniestrado",
 																"ObrasSocial")),
 								"add" =>array(								
-										"valoresDefault"=>array("pais"=>"Argentina",
-																"nacionalidad"=>"Argentina")));
+										"valoresDefault"=>array("pais" => "Argentina",
+																"nacionalidad" => "Argentina")));
 
 	var $validate = array(
         'apellido' => array(
@@ -117,9 +117,9 @@ class Trabajador extends AppModel {
 		* Si tengo la sucursal y la cuenta, puedo generar el CBU.
 		* Solo lo necesito mostrar con un edit.
 		*/
-		if($primary === true && isset($results[0]['Trabajador']['cbu'])) {
+		if ($primary === true && isset($results[0]['Trabajador']['cbu'])) {
 			$pattern = "/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d/";
-			if(preg_match($pattern, $results[0]['Trabajador']['cbu'], $matches)) {
+			if (preg_match($pattern, $results[0]['Trabajador']['cbu'], $matches)) {
 				$Sucursal = ClassRegistry::init('Sucursal');
 				$sucursal = $Sucursal->findByCodigo($matches[2]);
 				$results[0]['Trabajador']['banco'] = $sucursal['Banco']['nombre'];
@@ -140,7 +140,7 @@ class Trabajador extends AppModel {
 		/**
 		* Si no cargo el documento, lo obtengo desde el cuit.
 		*/
-		if(empty($this->data['Trabajador']['numero_documento']) && !empty($this->data['Trabajador']['cuil'])) {
+		if (empty($this->data['Trabajador']['numero_documento']) && !empty($this->data['Trabajador']['cuil'])) {
 			$this->data['Trabajador']['numero_documento'] = substr(str_replace("-", "", $this->data['Trabajador']['cuil']), 2, 8);
 		}
 		
@@ -148,16 +148,16 @@ class Trabajador extends AppModel {
 		* Si las foraneas opcionales no las saco del array, en caso de que esten vacias, el framework intentara
 		* guardarlas con el valor vacio, y este fallara.
 		*/
-		if(empty($this->data['Trabajador']['localidad_id'])) {
+		if (empty($this->data['Trabajador']['localidad_id'])) {
 			unset($this->data['Trabajador']['localidad_id']);
 		}
-		if(empty($this->data['Trabajador']['obra_social_id'])) {
+		if (empty($this->data['Trabajador']['obra_social_id'])) {
 			unset($this->data['Trabajador']['obra_social_id']);
 		}
-		if(empty($this->data['Trabajador']['condicion_id'])) {
+		if (empty($this->data['Trabajador']['condicion_id'])) {
 			unset($this->data['Trabajador']['condicion_id']);
 		}
-		if(empty($this->data['Trabajador']['siniestrado_id'])) {
+		if (empty($this->data['Trabajador']['siniestrado_id'])) {
 			unset($this->data['Trabajador']['siniestrado_id']);
 		}
 		

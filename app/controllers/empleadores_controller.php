@@ -5,36 +5,35 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.controllers
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.controllers
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de negocio asociada a los empleadores.
  *
- * @package		pragtico
- * @subpackage	app.controllers
+ * @package     pragtico
+ * @subpackage  app.controllers
  */
 class EmpleadoresController extends AppController {
 	
 /**
  * Add.
  */
-	function add() {
+	function save_multiple() {
 		/**
 		* Si esta grabando y selecciona que desea crear el area general por defecto, se la creo.
 		*/
-        if(!empty($this->data['Area']['crear_area_general']) && !empty($this->data['Form']['accion']) && $this->data['Form']['accion'] == "grabar") {
-        	unset($this->data['Area']['crear_area_general']);
-	        $this->data = am($this->data, array("Area"=>array(array("nombre"=>"General"))));
+        if (!empty($this->data) && !empty($this->data['Form']['accion']) && $this->data['Form']['accion'] === "grabar") {
+	        $this->data = array_merge($this->data, array('Area' => array(array('nombre' => 'General'))));
         }
-        parent::add();
+        parent::save_multiple();
 	}
 
 /**
@@ -123,28 +122,28 @@ class EmpleadoresController extends AppController {
  * Asigna un recibo a los trabajadores del empleador.
  */
 	function asignar_recibo() {
-		if(!empty($this->params['named']['recibo_id']) && !empty($this->params['named']['empleador_id'])
+		if (!empty($this->params['named']['recibo_id']) && !empty($this->params['named']['empleador_id'])
 			&& is_numeric($this->params['named']['recibo_id']) && is_numeric($this->params['named']['empleador_id'])) {
 			$this->Empleador->contain("Trabajador", "Recibo.RecibosConcepto");
 			$empleador = $this->Empleador->findById($this->params['named']['empleador_id']);
 			
-			foreach($empleador['Recibo'] as $r) {
-				if($this->params['named']['recibo_id'] == $r['id']) {
+			foreach ($empleador['Recibo'] as $r) {
+				if ($this->params['named']['recibo_id'] == $r['id']) {
 					$recibo = $r;
 					break;
 				}
 			}
-			if(!empty($recibo)) {
-				foreach($empleador['Trabajador'] as $k=>$v) {
+			if (!empty($recibo)) {
+				foreach ($empleador['Trabajador'] as $k=>$v) {
 					$relaciones[] = $v['Relacion']['id'];
 				}
-				foreach($recibo['RecibosConcepto'] as $r) {
+				foreach ($recibo['RecibosConcepto'] as $r) {
 					$conceptos[] = $r['concepto_id'];
 				}
 			}
 
-			$c = $this->Empleador->EmpleadoresConcepto->Concepto->agregarQuitarConcepto($relaciones, $conceptos, array("accion"=>"agregar"));
-			if($c > 0) {
+			$c = $this->Empleador->EmpleadoresConcepto->Concepto->agregarQuitarConcepto($relaciones, $conceptos, array("accion" => "agregar"));
+			if ($c > 0) {
 				$this->Session->setFlash("Los conceptos del recibo se asignaron correctamente a " . $c . " trabajadores.", "ok");
 			}
 			else {
@@ -159,18 +158,18 @@ class EmpleadoresController extends AppController {
  * Asigna un concepto a todos los trabajadores de un empleador.
  */
 	function manipular_concepto($accion = null) {
-		if(!empty($this->params['named']['concepto_id']) && !empty($this->params['named']['empleador_id'])
+		if (!empty($this->params['named']['concepto_id']) && !empty($this->params['named']['empleador_id'])
 			&& is_numeric($this->params['named']['concepto_id']) && is_numeric($this->params['named']['empleador_id'])
 			&& !empty($accion)) {
 			$this->Empleador->contain("Trabajador");
 			$empleador = $this->Empleador->findById($this->params['named']['empleador_id']);
 			
-			foreach($empleador['Trabajador'] as $k=>$v) {
+			foreach ($empleador['Trabajador'] as $k=>$v) {
 				$relaciones[] = $v['Relacion']['id'];
 			}
 				
 			$c = $this->Empleador->EmpleadoresConcepto->Concepto->agregarQuitarConcepto($relaciones, array($this->params['named']['concepto_id']), array("accion"=>$accion));
-			if($c > 0) {
+			if ($c > 0) {
 				$this->Session->setFlash("El concepto se pudo " . $accion . " correctamente a " . $c . " trabajadores.", "ok");
 			}
 			else {

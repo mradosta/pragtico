@@ -5,23 +5,23 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.controllers
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.controllers
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de negocio asociada a los controladores.
  *
  * Se refiere a los controllers del framework cakephp.
  *
- * @package		pragtico
- * @subpackage	app.controllers
+ * @package     pragtico
+ * @subpackage  app.controllers
  */
 class ControladoresController extends AppController {
 
@@ -53,7 +53,7 @@ class ControladoresController extends AppController {
 		$accionesPredefinidas[] = "deleteMultiple";
 		$accionesPredefinidas[] = "permisos";
 										
-        foreach($controllerClasses as $controller) {
+        foreach ($controllerClasses as $controller) {
             if ($controller != 'App' && $controller != 'Pages') {
                 $nombreArchivo = inflector::underscore($controller).'_controller.php';
                 $archivo = CONTROLLERS . $nombreArchivo;
@@ -61,7 +61,7 @@ class ControladoresController extends AppController {
                 $className = $controller . 'Controller';
                 $actions = get_class_methods($className);
 
-                foreach($actions as $k => $v) {
+                foreach ($actions as $k => $v) {
                     if ($v{0} == '_') {
                         unset($actions[$k]);
                     }
@@ -82,16 +82,16 @@ class ControladoresController extends AppController {
 		* Busco los que debo agregar (estan en el fs y no en la DB.
 		*/
 		$controladoresFs = array();
-		foreach($controllersFs as $controllerFs) {
+		foreach ($controllersFs as $controllerFs) {
 			$controladoresFs[] = $controllerFs['archivo'];
 			/**
 			* Si no esta en la base debo agregar el controlador y sus acciones relacionadas.
 			*/
-			if(!(in_array($controllerFs['archivo'], $controllersBase))) {
+			if (!(in_array($controllerFs['archivo'], $controllersBase))) {
 				$controllerFs['estado'] = "Activo";
 				$controllerFs['etiqueta'] = inflector::humanize(inflector::underscore($controllerFs['nombre']));
 				$acciones = array();
-				foreach($controllerFs['acciones'] as $accion) {
+				foreach ($controllerFs['acciones'] as $accion) {
 					$acciones[] = array("estado"	=> "Activo",
 										"nombre"	=> $accion,
 										"etiqueta"	=> inflector::humanize(inflector::underscore($accion)));
@@ -106,14 +106,14 @@ class ControladoresController extends AppController {
 			* Si esta, debo verificar que las acciones esten correctamente actualizadas tambien.
 			*/
 			$controllersBaseFlip = array_flip($controllersBase);
-			if(isset($controllersBaseFlip[$controllerFs['archivo']])) {
+			if (isset($controllersBaseFlip[$controllerFs['archivo']])) {
 				$controlador_id = $controllersBaseFlip[$controllerFs['archivo']];
 				$actionsBase = $this->Util->combine($this->Controlador->Accion->find("all", array("conditions"=>array("Accion.controlador_id"=>$controlador_id))), "{n}.Accion.id", "{n}.Accion.nombre");
-				foreach($controllerFs['acciones'] as $accion) {
+				foreach ($controllerFs['acciones'] as $accion) {
 					/**
 					* Si la accion esta en el FS y no en la DB, la agrego.
 					*/
-					if(!(in_array($accion, $actionsBase))) {
+					if (!(in_array($accion, $actionsBase))) {
 						$accion = array("estado"			=> "Activo",
 										"nombre"			=> $accion,
 										"controlador_id"	=> $controlador_id,
@@ -127,8 +127,8 @@ class ControladoresController extends AppController {
 				* Si la accion esta en la DB y no en el FS, la borro.
 				*/
 				$accionesParaBorrar = array_keys(array_diff($actionsBase, $controllerFs['acciones']));
-				if(!empty($accionesParaBorrar)) {
-					foreach($accionesParaBorrar as $id) {
+				if (!empty($accionesParaBorrar)) {
+					foreach ($accionesParaBorrar as $id) {
 						$this->Controlador->Accion->del($id);
 					}
 				}
@@ -138,18 +138,18 @@ class ControladoresController extends AppController {
 		/**
 		* Busco los que debo eliminar (no estan en el fs y si en la DB).
 		*/
-		foreach($controllersBase as $id=>$controllerDb) {
+		foreach ($controllersBase as $id=>$controllerDb) {
 			/**
 			* Si no esta en el fs y si en la db, debo eliminarlo de la db.
 			*/
-			if(!(in_array($controllerDb, $controladoresFs))) {
+			if (!(in_array($controllerDb, $controladoresFs))) {
 				$this->Controlador->del($id);
 			}
 		}
 		
 		/**
 		* Detecto si viene desde el actualizar de acciones, vuelvo a acciones...
-		if($this->History->historia[count($this->History->historia)-2] == "/acciones/index/index") {
+		if ($this->History->historia[count($this->History->historia)-2] == "/acciones/index/index") {
 			$this->redirect("../acciones/index");
 		}
 		else {

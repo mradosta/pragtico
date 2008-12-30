@@ -5,23 +5,23 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.controllers
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.controllers
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 
 /**
  * La clase encapsula la logica de negocio asociada a la liquidacion de sueldos.
  *
  *
- * @package		pragtico
- * @subpackage	app.controllers
+ * @package     pragtico
+ * @subpackage  app.controllers
  */
 class LiquidacionesController extends AppController {
 
@@ -43,13 +43,13 @@ class LiquidacionesController extends AppController {
 	function preliquidar() {
 
 		$this->__filasPorPagina();
-		$this->paginate = array_merge($this->paginate, array('conditions' => array("Liquidacion.estado"=>"Sin Confirmar")));
+		$this->paginate = array_merge($this->paginate, array('conditions' => array("Liquidacion.estado" => "Sin Confirmar")));
 
-		if($this->data['Formulario']['accion'] === "generar") {
+		if ($this->data['Formulario']['accion'] === "generar") {
 			/**
 			* Realizo las validaciones basicas para poder preliquidar.
 			*/
-			if(empty($this->data['Condicion']['Liquidacion-periodo'])) {
+			if (empty($this->data['Condicion']['Liquidacion-periodo'])) {
 				$this->Session->setFlash("Debe especificar un periodo.", "error");
 			}
 			else {
@@ -57,11 +57,11 @@ class LiquidacionesController extends AppController {
 				* Obtengo el periodo separado por ano, mes y periodo propiamente dicho.
 				*/
 				$this->__periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], "periodo");
-				if($this->__periodo === false) {
+				if ($this->__periodo === false) {
 					$this->Session->setFlash("Debe especificar un periodo valido de la forma AAAAMM[1Q|2Q|M].", "error");
 					//redirect
 				}
-				else if(empty($this->data['Condicion']['Relacion-empleador_id'])
+				else if (empty($this->data['Condicion']['Relacion-empleador_id'])
 						&& empty($this->data['Condicion']['Relacion-trabajador_id'])
 							&& empty($this->data['Condicion']['Relacion-id'])) {
 							$this->Session->setFlash("Debe seleccionar un empleador, un trabajador o una relacion laboral.", "error");
@@ -93,7 +93,7 @@ class LiquidacionesController extends AppController {
 					*/
 					$usuario = $this->Session->read("__Usuario");
 					$delete = array("Liquidacion.user_id"=>$usuario['Usuario']['id'], "Liquidacion.estado"=>'Sin Confirmar');
-					if(!$this->Liquidacion->deleteAll($delete)) {
+					if (!$this->Liquidacion->deleteAll($delete)) {
 						d("ERROR al borrare");
 					}
 					
@@ -102,7 +102,7 @@ class LiquidacionesController extends AppController {
 					*/
 					$Variable = ClassRegistry::init("Variable");
 					$variablesTmp = $Variable->find("all", array("order"=>false));
-					foreach($variablesTmp as $v) {
+					foreach ($variablesTmp as $v) {
 						$variables[$v['Variable']['nombre']] = $v['Variable'];
 					}
 					//$variables['#tipo_liquidacion']['valor'] = $this->data['Condicion']['Liquidacion-tipo'];
@@ -143,8 +143,8 @@ class LiquidacionesController extends AppController {
 					$ids = null;
 					$opciones['variables'] = $variables;
 					$opciones['informaciones'] = $informaciones;
-					foreach($relaciones as $k=>$relacion) {
-						if(!in_array($relacion['Relacion']['id'], $confirmadas)) {
+					foreach ($relaciones as $k=>$relacion) {
+						if (!in_array($relacion['Relacion']['id'], $confirmadas)) {
 							$ids[] = $this->__getLiquidacion($relacion, $opciones);
 						}
 					}
@@ -156,7 +156,7 @@ class LiquidacionesController extends AppController {
 			}
 		}
 
-		if(empty($resultados)) {
+		if (empty($resultados)) {
 			$this->Liquidacion->contain(array("Relacion.Trabajador", "Relacion.Empleador", "LiquidacionesError"));
 			$resultados = $this->Paginador->paginar();
 		}
@@ -192,7 +192,7 @@ class LiquidacionesController extends AppController {
 		/**
 		* Las informaciones que vienen dadas por convenio, son variables ya resuletas.
 		*/
-		if(!empty($opciones['informaciones'][$relacion['ConveniosCategoria']['convenio_id']])) {
+		if (!empty($opciones['informaciones'][$relacion['ConveniosCategoria']['convenio_id']])) {
 			$this->__setVariable($opciones['informaciones'][$relacion['ConveniosCategoria']['convenio_id']]);
 		}
 		
@@ -208,7 +208,7 @@ class LiquidacionesController extends AppController {
 		//$condicionesDescuentos['smvm'] = $this->__getVariableValor("#smvm");
 		$descuentos = $this->Liquidacion->Relacion->Descuento->getDescuentos($relacion, $opcionesDescuentos);
 		
-		foreach($descuentos['concepto'] as $v) {
+		foreach ($descuentos['concepto'] as $v) {
 			$this->__setConcepto($v, "SinCalcular");
 		}
 		$this->__setAuxiliar($descuentos['auxiliar']);
@@ -220,9 +220,9 @@ class LiquidacionesController extends AppController {
 		$opciones['desde'] = $this->__variables['#fecha_desde_liquidacion']['valor'];
 		$opciones['hasta'] = $this->__variables['#fecha_hasta_liquidacion']['valor'];
 		$licencias = $this->Liquidacion->Relacion->Licencia->buscarDiasLicencia($opciones, $this->__relacion);
-		foreach($licencias as $licencia) {
-			foreach($licencia['variables'] as $licenciaTipo=>$licenciaValor) {
-				if(isset($this->__variables[$licenciaTipo])) {
+		foreach ($licencias as $licencia) {
+			foreach ($licencia['variables'] as $licenciaTipo=>$licenciaValor) {
+				if (isset($this->__variables[$licenciaTipo])) {
 					$this->__variables[$licenciaTipo]['valor'] = $licenciaValor;
 				}
 				else {
@@ -238,7 +238,7 @@ class LiquidacionesController extends AppController {
 				}
 			}
 			$conceptosExrasSinCalcular = am($conceptosExrasSinCalcular, array($licencia['conceptos']));
-			if(!empty($licencia['errores'])) {
+			if (!empty($licencia['errores'])) {
 				$errores[] = $licencia['errores'];
 			}
 		}
@@ -263,7 +263,7 @@ class LiquidacionesController extends AppController {
 		$condicionesAusencias['desde'] = $this->__variables['#fecha_desde_liquidacion']['valor'];
 		$condicionesAusencias['hasta'] = $this->__variables['#fecha_hasta_liquidacion']['valor'];
 		$ausencias = $this->Liquidacion->Relacion->Ausencia->buscarAusencia($condicionesAusencias, $this->__relacion);
-		foreach($horas['variables'] as $horaTipo=>$horaValor) {
+		foreach ($horas['variables'] as $horaTipo=>$horaValor) {
 			$this->__variables[$horaTipo]['valor'] = $horaValor;
 		}
 		$auxiliar = am($auxiliar, $horas['auxiliar']);
@@ -276,7 +276,7 @@ class LiquidacionesController extends AppController {
 		$condicionesHoras = null;
 		$condicionesHoras['periodo'] = $this->__getVariableValor("#periodo_liquidacion_completo");
 		$horas = $this->Liquidacion->Relacion->Hora->buscarHora($condicionesHoras, $relacion);
-		foreach($horas['variables'] as $horaTipo=>$horaValor) {
+		foreach ($horas['variables'] as $horaTipo=>$horaValor) {
 			$this->__variables[$horaTipo]['valor'] = $horaValor;
 		}
 		$auxiliar = am($auxiliar, $horas['auxiliar']);
@@ -294,8 +294,8 @@ class LiquidacionesController extends AppController {
 		
 		/**
 		* Verifico que este el concepto sueldo_basico.
-		if(!in_array("sueldo_basico", array_keys($this->__conceptos))) {
-			$conceptosExrasSinCalcular = am($conceptosExrasSinCalcular, $this->Liquidacion->Relacion->RelacionesConcepto->Concepto->findConceptos("ConceptoPuntual", am(array("relacion"=>$this->__relacion, "codigoConcepto"=>"sueldo_basico"), $opcionesFindConcepto)));
+		if (!in_array("sueldo_basico", array_keys($this->__conceptos))) {
+			$conceptosExrasSinCalcular = am($conceptosExrasSinCalcular, $this->Liquidacion->Relacion->RelacionesConcepto->Concepto->findConceptos("ConceptoPuntual", am(array("relacion"=>$this->__relacion, "codigoConcepto" => "sueldo_basico"), $opcionesFindConcepto)));
 		}
 		*/
 
@@ -309,7 +309,7 @@ class LiquidacionesController extends AppController {
 		/**
 		* Resuelvo.
 		*/
-		foreach($this->__conceptos as $cCod=>$concepto) {
+		foreach ($this->__conceptos as $cCod=>$concepto) {
 			$resolucion = $this->__getConceptoValor($concepto, $opcionesFindConcepto);
 			$this->__conceptos[$cCod] = array_merge($this->__conceptos[$cCod], $resolucion);
 		}
@@ -318,9 +318,9 @@ class LiquidacionesController extends AppController {
 		/**
 		* Verifico si se generaron errores. No lo hago en el mismo ciclo anterior, porque de la
 		* resolucion pueden haberse necesitado conceptos y los errores pueden venir de estos.
-		foreach($this->__conceptos as $cCod=>$concepto) {
-			if(!empty($this->__conceptos[$cCod]['errores'])) {
-				foreach($this->__conceptos[$cCod]['errores'] as $error) {
+		foreach ($this->__conceptos as $cCod=>$concepto) {
+			if (!empty($this->__conceptos[$cCod]['errores'])) {
+				foreach ($this->__conceptos[$cCod]['errores'] as $error) {
 					$errores[] = $this->__agregarError($error);
 				}
 			}
@@ -331,7 +331,7 @@ class LiquidacionesController extends AppController {
 		* Agrego los conceptos que aunque no este asociados a la relacion, deben necesariamente estar.
 		* Ya los tengo calculados.
 		* Los vengo cargando en el array $conceptosExrasCalculados.
-		foreach($conceptosExrasCalculados as $conceptoExraCalculado) {
+		foreach ($conceptosExrasCalculados as $conceptoExraCalculado) {
 			$this->__conceptos = am($conceptoExraCalculado, $this->__conceptos);
 		}
 		*/
@@ -372,14 +372,14 @@ class LiquidacionesController extends AppController {
 		$totales['total_beneficios'] = 0;
 		$totales['total_pesos'] = 0;
 		$detalle = null;
-		foreach($this->__conceptos as $detalleLiquidacion) {
+		foreach ($this->__conceptos as $detalleLiquidacion) {
 			$v = $this->__agregarDetalle($detalleLiquidacion);
-			if(!empty($v)) {
+			if (!empty($v)) {
 				$detalle[] = $this->__agregarDetalle($detalleLiquidacion);
 			}
 
 
-			if($detalleLiquidacion['imprimir'] === "Si" || $detalleLiquidacion['imprimir'] === "Solo con valor") {
+			if ($detalleLiquidacion['imprimir'] === "Si" || $detalleLiquidacion['imprimir'] === "Solo con valor") {
 
 				$pago = "total_" . strtolower($detalleLiquidacion['pago']);
 				switch ($detalleLiquidacion['tipo']) {
@@ -404,9 +404,9 @@ class LiquidacionesController extends AppController {
 		* Si a este empleador hay que aplicarle redondeo, lo hago y lo dejo expresado
 		* con el concepto redondeo en el detalle de la liquidacion.
 		*/
-		if($this->__relacion['Empleador']['redondear'] === "Si") {
+		if ($this->__relacion['Empleador']['redondear'] === "Si") {
 			$redondeo = round($totales['total']) - $totales['total'];
-			if($redondeo !== 0) {
+			if ($redondeo !== 0) {
 				$opcionesFindConcepto['codigoConcepto'] = "redondeo";
 				$conceptoRedondeo = $this->Liquidacion->Relacion->RelacionesConcepto->Concepto->findConceptos("ConceptoPuntual", am(array("relacion"=>$this->__relacion), $opcionesFindConcepto));
 				$conceptoRedondeo['redondeo']['debug'] = "=" . round($totales['total']) . " - " . $totales['total'];
@@ -421,7 +421,7 @@ class LiquidacionesController extends AppController {
 				/**
 				* Dependiendo del signo, lo meto como un concepto Remunerativo o una Deduccion.
 				*/
-				if($redondeo > 0) {
+				if ($redondeo > 0) {
 					$totales['remunerativo'] += $redondeo;
 					$conceptoRedondeo['redondeo']['tipo'] = "No Remunerativo";
 					$conceptoRedondeo['redondeo']['valor'] = $redondeo;
@@ -447,24 +447,24 @@ class LiquidacionesController extends AppController {
 		
 		$auxiliar['monto'] = $totales['total_pesos'];
 		$auxiliar['moneda'] = "Pesos";
-		$this->__setAuxiliar(array("save"=>serialize($auxiliar), "model"=>"Pago"));
+		$this->__setAuxiliar(array("save"=>serialize($auxiliar), "model" => "Pago"));
 		
 		$auxiliar['monto'] = $totales['total_beneficios'];
 		$auxiliar['moneda'] = "Beneficios";
-		$this->__setAuxiliar(array("save"=>serialize($auxiliar), "model"=>"Pago"));
+		$this->__setAuxiliar(array("save"=>serialize($auxiliar), "model" => "Pago"));
 		
 		$save['Liquidacion']			= array_merge($liquidacion, $totales);
 		$save['LiquidacionesDetalle']	= $detalle;
 		
 		$auxiliar = null;
 		$auxiliar = $this->__getAuxiliar();
-		if(!empty($auxiliar)) {
+		if (!empty($auxiliar)) {
 			$save['LiquidacionesAuxiliar'] = $auxiliar;
 		}
 		
 		$error = null;
 		$error = $this->__getError();
-		if(!empty($error)) {
+		if (!empty($error)) {
 			$save['LiquidacionesError'] = $error;
 		}
 		*/
@@ -473,7 +473,7 @@ class LiquidacionesController extends AppController {
 		$save['Liquidacion']			= array_merge($liquidacion, $totales);
 		$save['LiquidacionesDetalle']	= $detalle;
 		$this->Liquidacion->create();
-		if($this->Liquidacion->saveAll($save)) {
+		if ($this->Liquidacion->saveAll($save)) {
 			return $this->Liquidacion->id;
 		}
 		else {
@@ -496,9 +496,9 @@ class LiquidacionesController extends AppController {
 		/**
 		* Si en la formula hay variables, busco primero estos valores.
 		*/
-		if(preg_match_all("/(#[a-z0-9_]+)/", $formula, $variablesTmp)) {
+		if (preg_match_all("/(#[a-z0-9_]+)/", $formula, $variablesTmp)) {
 
-			foreach($variablesTmp[1] as $k=>$v) {
+			foreach ($variablesTmp[1] as $k=>$v) {
 				/**
 				* Debe buscar la variable para reemplazarla dentro de la formula.
 				* Usa la RegEx y no str_replace, porque por ejemplo, si debo reemplzar #horas, y en cuentra
@@ -515,9 +515,9 @@ class LiquidacionesController extends AppController {
 		/**
 		* Si en la cantidad hay una variable, la reemplazo.
 		$conceptoCantidad = 0;
-		if(!empty($concepto['cantidad'])) {
-			if(isset($this->__variables[$concepto['cantidad']])) {
-				if($this->__variables[$concepto['cantidad']] !== "#N/A") {
+		if (!empty($concepto['cantidad'])) {
+			if (isset($this->__variables[$concepto['cantidad']])) {
+				if ($this->__variables[$concepto['cantidad']] !== "#N/A") {
 					$conceptoCantidad = $this->__variables[$concepto['cantidad']]['valor'];
 				}
 				else {
@@ -548,14 +548,14 @@ class LiquidacionesController extends AppController {
 		/**
 		* Verifico si el nombre que se muestra del concepto es una formula, la resuelvo.
 		*/
-		if(!empty($concepto['nombre_formula'])) {
+		if (!empty($concepto['nombre_formula'])) {
 			$nombreConcepto = $concepto['nombre_formula'];
 			
 			/**
 			* Si en el nombre hay variables, busco primero estos valores.
 			*/
-			if(preg_match_all("/(#[a-z0-9_]+)/", $nombreConcepto, $variablesTmp)) {
-				foreach($variablesTmp[1] as $k=>$v) {
+			if (preg_match_all("/(#[a-z0-9_]+)/", $nombreConcepto, $variablesTmp)) {
+				foreach ($variablesTmp[1] as $k=>$v) {
 					/**
 					* Debe buscar la variable para reemplazarla dentro de la formula.
 					* Usa la RegEx y no str_replace, porque por ejemplo, si debo reemplzar #horas, y en cuentra
@@ -564,7 +564,7 @@ class LiquidacionesController extends AppController {
 					$nombreConcepto = preg_replace("/".$v."(\W)|".$v."$/", $this->__getVariableValor($v) . "$1", $nombreConcepto);
 				}
 			}
-			if(substr($nombreConcepto, 0, 4) === "=if(") {
+			if (substr($nombreConcepto, 0, 4) === "=if (") {
 				$nombreConcepto = $this->Formulador->resolver($nombreConcepto);
 			}
 			else {
@@ -578,9 +578,9 @@ class LiquidacionesController extends AppController {
 		/**
 		* Veo si es una formula, hay un not, obtengo los conceptos y rearmo los formula eliminando la perte del not.
 		*/
-		if(preg_match("/not\((.*)\)/", $formula, $matches)) {
+		if (preg_match("/not\((.*)\)/", $formula, $matches)) {
 			$pos = strpos($matches[1], ")");
-			if($pos) {
+			if ($pos) {
 				$formula = str_replace(", ", ",", $formula);
 				$formula = str_replace(" ,", ",", $formula);
 				$reemplazoNot = str_replace(", ", ",", $matches[1]);
@@ -596,13 +596,13 @@ class LiquidacionesController extends AppController {
 		/**
 		* Veo si es una formula, que me indica la suma del remunerativo, de las deducciones o del no remunerativo.
 		*/
-		if(preg_match("/^=sum[\s]*\([\s]*(Remunerativo|Deduccion|No\sRemunerativo)[\s]*\)$/i", $formula, $matches)) {
-			if(!isset($conceptosNot)) {
+		if (preg_match("/^=sum[\s]*\([\s]*(Remunerativo|Deduccion|No\sRemunerativo)[\s]*\)$/i", $formula, $matches)) {
+			if (!isset($conceptosNot)) {
 				$conceptosNot = array();
 			}
-			foreach($this->__conceptos as $conceptoTmp) {
-				if(!in_array($conceptoTmp['codigo'], $conceptosNot) && $conceptoTmp['tipo'] == $matches[1] && ($conceptoTmp['imprimir'] === "Si" || $conceptoTmp['imprimir'] === "Solo con valor")) {
-					if(empty($conceptoTmp['valor'])) {
+			foreach ($this->__conceptos as $conceptoTmp) {
+				if (!in_array($conceptoTmp['codigo'], $conceptosNot) && $conceptoTmp['tipo'] == $matches[1] && ($conceptoTmp['imprimir'] === "Si" || $conceptoTmp['imprimir'] === "Solo con valor")) {
+					if (empty($conceptoTmp['valor'])) {
 						$resolucionCalculo = $this->__getConceptoValor($conceptoTmp, $opciones);
 						$this->__conceptos[$conceptoTmp['codigo']] = am($resolucionCalculo, $this->__conceptos[$conceptoTmp['codigo']]);
 						$conceptoTmp['valor'] = $resolucionCalculo['valor'];
@@ -616,26 +616,26 @@ class LiquidacionesController extends AppController {
 		* Veo si es una formula, que tiene otros conceptos dentro.
 		* Lo se porque los codigos de los conceptos empiezan siempre con @.
 		*/
-		elseif(substr($formula, 0, 1) === "=") {
+		elseif (substr($formula, 0, 1) === "=") {
 			
 			/**
 			* Verifico que tenga calculado todos los conceptos que esta formula me pide.
 			* Si aun no lo tengo, lo calculo.
 			*/
-			if(preg_match_all("/(@[\w]+)/", $formula, $matches)) {
-				foreach($matches[1] as $match) {
+			if (preg_match_all("/(@[\w]+)/", $formula, $matches)) {
+				foreach ($matches[1] as $match) {
 					$match = substr($match, 1);
 					
 					/**
 					* Si no esta, lo busco.
 					*/
-					if(!isset($this->__conceptos[$match])) {
+					if (!isset($this->__conceptos[$match])) {
 						/**
 						* Busco los conceptos que puedan estar faltandome.
 						* Los agrego al array de conceptos identificandolos y poniendoles el estado a no imprimir.
 						*/
 						$conceptoParaCalculoTmp = $this->Liquidacion->Relacion->RelacionesConcepto->Concepto->findConceptos("ConceptoPuntual", array_merge(array("relacion"=>$this->__relacion, "codigoConcepto"=>$match), $opciones));
-						if(empty($conceptoParaCalculoTmp)) {
+						if (empty($conceptoParaCalculoTmp)) {
 							$this->__setError(array(	"tipo"					=> "Concepto Inexistente",
 														"gravedad"				=> "Alta",
 														"concepto"				=> $match,
@@ -655,8 +655,8 @@ class LiquidacionesController extends AppController {
 					/**
 					* Si no tiene valor, lo calculo.
 					*/
-					if(!isset($this->__conceptos[$match]['valor'])) {
-						if(isset($this->__conceptos[$match])) {
+					if (!isset($this->__conceptos[$match]['valor'])) {
+						if (isset($this->__conceptos[$match])) {
 							$resolucionCalculo = $this->__getConceptoValor($this->__conceptos[$match], $opciones);
 							$this->__conceptos[$match] = array_merge($resolucionCalculo, $this->__conceptos[$match]);
 						}
@@ -675,7 +675,7 @@ class LiquidacionesController extends AppController {
 					/**
 					* Reemplazo en la formula el concepto por su valor.
 					*/
-					if(isset($this->__conceptos[$match])) {
+					if (isset($this->__conceptos[$match])) {
 						$resolucionCalculo['valor'] = $this->__conceptos[$match]['valor'];
 						$formula = preg_replace("/(@" . $match . ")([\)|\s|\*|\+\/\-|\=|\,]*[^_])/", $resolucionCalculo['valor'] . "$2", $formula);
 						$resolucionCalculo['debug'] = $formula;
@@ -698,7 +698,7 @@ class LiquidacionesController extends AppController {
 			*/
 			$valor = $this->Formulador->resolver($formula);
 		}
-		elseif(empty($formula)) {
+		elseif (empty($formula)) {
 			$this->__setError(array(	"tipo"					=> "Formula de Concepto Inexistente",
 										"gravedad"				=> "Media",
 										"concepto"				=> $concepto['codigo'],
@@ -737,7 +737,7 @@ class LiquidacionesController extends AppController {
  */
 	function __getVariableValor($variable) {
 		
-		if(!isset($this->__variables[$variable])) {
+		if (!isset($this->__variables[$variable])) {
 			$this->__setError(array(	"tipo"					=> "Variable Inexistente",
 										"gravedad"    			=> "Media",
 										"concepto"				=> "",
@@ -753,7 +753,7 @@ class LiquidacionesController extends AppController {
 		/**
 		* Ya he resuelto esta variable anteriormente.
 		*/
-		else if(isset($this->__variables[$variable]['valor'])) {
+		else if (isset($this->__variables[$variable]['valor'])) {
 			return $this->__variables[$variable]['valor'];
 		}
 		/**
@@ -763,22 +763,22 @@ class LiquidacionesController extends AppController {
 			/**
 			* Si es una formula, la resuelvo.
 			*/
-			if(substr($this->__variables[$variable]['formula'], 0, 1) === "=") {
+			if (substr($this->__variables[$variable]['formula'], 0, 1) === "=") {
 				//d("X");
 				//d($this->__variables[$variable]['formula']);
 				$formula = $this->__variables[$variable]['formula'];
 				/**
 				* Si en la formula hay variables, busco primero estos valores.
 				*/
-				if(preg_match_all("/(#[a-z0-9_]+)/", $formula, $variables_tmp)) {
-					foreach($variables_tmp[1] as $v) {
+				if (preg_match_all("/(#[a-z0-9_]+)/", $formula, $variables_tmp)) {
+					foreach ($variables_tmp[1] as $v) {
 						$formula = preg_replace("/(" . $v . ")([\)|\s|\*|\+\/\-|\=|\,]*[^_])/", $this->__getVariableValor($v) . "$2", $formula);
 					}
 				}
 				
 				$valor = $this->Formulador->resolver($formula);
 				
-				if($valor === "#N/A") {
+				if ($valor === "#N/A") {
 					$valor = 0;
 					$this->__setError(array(	"tipo"					=> "Variable No Resuelta",
 												"gravedad"    			=> "Alta",
@@ -798,11 +798,11 @@ class LiquidacionesController extends AppController {
 			* Busco si es una variable que viene dada por la relacion.
 			* Depende de recursive, puede venir $data[model1][model2][campo] 0 $data[model1][campo]
 			*/
-			if(preg_match("/^\[([a-zA-Z]*)\]\[([a-zA-Z]*)\]\[([a-zA-Z_]*)\]$/", $this->__variables[$variable]['formula'], $matchesA) || preg_match("/^\[([a-zA-Z]*)\]\[([a-zA-Z_]*)\]$/", $this->__variables[$variable]['formula'], $matchesB)) {
-				if(isset($matchesA[1]) && isset($matchesA[2]) && isset($matchesA[3]) && isset($this->__relacion[$matchesA[1]][$matchesA[2]][$matchesA[3]])) {
+			if (preg_match("/^\[([a-zA-Z]*)\]\[([a-zA-Z]*)\]\[([a-zA-Z_]*)\]$/", $this->__variables[$variable]['formula'], $matchesA) || preg_match("/^\[([a-zA-Z]*)\]\[([a-zA-Z_]*)\]$/", $this->__variables[$variable]['formula'], $matchesB)) {
+				if (isset($matchesA[1]) && isset($matchesA[2]) && isset($matchesA[3]) && isset($this->__relacion[$matchesA[1]][$matchesA[2]][$matchesA[3]])) {
 					$valor = $this->__relacion[$matchesA[1]][$matchesA[2]][$matchesA[3]];
 				}
-				elseif(isset($matchesB[1]) && isset($matchesB[2]) && isset($this->__relacion[$matchesB[1]][$matchesB[2]])) {
+				elseif (isset($matchesB[1]) && isset($matchesB[2]) && isset($this->__relacion[$matchesB[1]][$matchesB[2]])) {
 					$valor = $this->__relacion[$matchesB[1]][$matchesB[2]];
 				}
 				else {
@@ -885,7 +885,7 @@ class LiquidacionesController extends AppController {
 				case "#meses_antiguedad":
 				case "#anos_antiguedad":
 					$fechaEgreso = $this->__getVariableValor('#fecha_egreso');
-					if($fechaEgreso !== "0000-00-00" && $fechaEgreso < $this->__getVariableValor('#fecha_hasta_liquidacion')) {
+					if ($fechaEgreso !== "0000-00-00" && $fechaEgreso < $this->__getVariableValor('#fecha_hasta_liquidacion')) {
 						$antiguedad = $this->Util->dateDiff($this->__getVariableValor('#fecha_ingreso'), $fechaEgreso);
 						$agregarDias = 0;
 					}
@@ -893,18 +893,18 @@ class LiquidacionesController extends AppController {
 						$antiguedad = $this->Util->dateDiff($this->__getVariableValor('#fecha_ingreso'), $this->__getVariableValor('#fecha_hasta_liquidacion'));
 						$agregarDias = 1;
 					}
-					if($variable === "#dias_antiguedad") {
+					if ($variable === "#dias_antiguedad") {
 						$this->__variables[$variable]['valor'] = ($antiguedad['dias'] + $agregarDias);
 					}
-					elseif($variable === "#meses_antiguedad") {
+					elseif ($variable === "#meses_antiguedad") {
 						$this->__variables[$variable]['valor'] = floor(($antiguedad['dias'] + $agregarDias) / 30);
 					}
-					elseif($variable === "#anos_antiguedad") {
+					elseif ($variable === "#anos_antiguedad") {
 						$this->__variables[$variable]['valor'] = floor(($antiguedad['dias'] + $agregarDias) / 365);
 					}
 				break;
 				case "#dias_corridos_periodo":
-					if($this->__getVariableValor('#dia_ingreso') > 1
+					if ($this->__getVariableValor('#dia_ingreso') > 1
 						&& $this->__getVariableValor('#mes_ingreso') === $this->__getVariableValor('#mes_liquidacion')
 						&& $this->__getVariableValor('#ano_ingreso') === $this->__getVariableValor('#ano_liquidacion')) {
 						$desde = $this->__getVariableValor('#fecha_ingreso');
@@ -913,7 +913,7 @@ class LiquidacionesController extends AppController {
 						$desde = $this->__getVariableValor('#fecha_desde_liquidacion');
 					}
 	
-					if($this->__getVariableValor('#dia_egreso') < $this->__getVariableValor('#dia_hasta_liquidacion')
+					if ($this->__getVariableValor('#dia_egreso') < $this->__getVariableValor('#dia_hasta_liquidacion')
 						&& $this->__getVariableValor('#mes_egreso') === $this->__getVariableValor('#mes_liquidacion')
 						&& $this->__getVariableValor('#ano_egreso') === $this->__getVariableValor('#ano_liquidacion')) {
 						$hasta = $this->__getVariableValor('#fecha_egreso');
@@ -932,19 +932,19 @@ class LiquidacionesController extends AppController {
 					$this->__getVariables(array("#fecha_ingreso"));
 					$anoAnterior = $this->Util->traerAno(array("fecha" => $this->__variables['#fecha_ingreso']['valor'])) - 1;
 					$fechaHasta = $this->Util->traerFecha(array("ano"=>$anoAnterior, "mes"=>12, "dia"=>31));
-					if($fechaHasta > $this->__variables['#fecha_ingreso']['valor']) {
+					if ($fechaHasta > $this->__variables['#fecha_ingreso']['valor']) {
 						$antiguedad = $this->Util->diferenciaEntreFechas(array("hasta"=>$fechaHasta, "desde"=>$this->__variables['#fecha_ingreso']['valor']));
 					}
 					else {
 						$antiguedad['dias'] = 0;
 					}
-					if($variable == "#dias_antiguedad_al_31_12") {
+					if ($variable == "#dias_antiguedad_al_31_12") {
 						$this->__variables[$variable]['valor'] = $antiguedad['dias'];
 					}
-					elseif($variable == "#meses_antiguedad_al_31_12") {
+					elseif ($variable == "#meses_antiguedad_al_31_12") {
 						$this->__variables[$variable]['valor'] = floor($antiguedad['dias'] / 30);
 					}
-					elseif($variable == "#anos_antiguedad_al_31_12") {
+					elseif ($variable == "#anos_antiguedad_al_31_12") {
 						$this->__variables[$variable]['valor'] = floor($antiguedad['dias'] / 365);
 					}
 					break;
@@ -972,7 +972,7 @@ class LiquidacionesController extends AppController {
 					* Busco las horas trabajadas en el periodo y las cargo al array variables.
 					*/
 					$horas = $this->Liquidacion->Relacion->Hora->getHoras($this->__relacion, $this->__periodo);
-					foreach($horas['variables'] as $horaTipo=>$horaValor) {
+					foreach ($horas['variables'] as $horaTipo=>$horaValor) {
 						$this->__variables[$horaTipo]['valor'] = $horaValor;
 					}
 					$this->__setAuxiliar($horas['auxiliar']);
@@ -1010,8 +1010,8 @@ class LiquidacionesController extends AppController {
  * @access private.
  */
 	function __setVariable($variable) {
-		foreach($variable as $variableNombre => $variableDefinicion) {
-			if(!is_array($variableDefinicion)) {
+		foreach ($variable as $variableNombre => $variableDefinicion) {
+			if (!is_array($variableDefinicion)) {
 				$tmp = $variableDefinicion;
 				$variableDefinicion = null;
 				$variableDefinicion['valor'] = $tmp;
@@ -1030,8 +1030,8 @@ class LiquidacionesController extends AppController {
  * @access private.
  */
 	function __setConcepto($conceptos, $tipo) {
-		if($tipo === "SinCalcular") {
-			if(empty($this->__conceptosSinCalcular)) {
+		if ($tipo === "SinCalcular") {
+			if (empty($this->__conceptosSinCalcular)) {
 				$this->__conceptosSinCalcular = $conceptos;
 			}
 			else {
@@ -1049,11 +1049,11 @@ class LiquidacionesController extends AppController {
  * @access private.
  */
 	function __setAuxiliar($auxiliar) {
-		if(!empty($auxiliar)) {
-			if(!isset($auxiliar[0])) {
+		if (!empty($auxiliar)) {
+			if (!isset($auxiliar[0])) {
 				$auxiliar = array($auxiliar);
 			}
-			if(empty($this->__saveAuxiliar)) {
+			if (empty($this->__saveAuxiliar)) {
 				$this->__saveAuxiliar = $auxiliar;
 			}
 			else {
@@ -1103,7 +1103,7 @@ class LiquidacionesController extends AppController {
 	function __agregarDetalle($detalleLiquidacion) {
 		//debug($detalleLiquidacion);
 		$detalle = null;
-		if(!empty($detalleLiquidacion['concepto_id'])) {
+		if (!empty($detalleLiquidacion['concepto_id'])) {
 			$detalle['concepto_id'] = $detalleLiquidacion['concepto_id'];
 			$detalle['concepto_codigo'] = $detalleLiquidacion['codigo'];
 			$detalle['concepto_nombre'] = $detalleLiquidacion['nombre'];
@@ -1175,10 +1175,10 @@ class LiquidacionesController extends AppController {
 		//test - borrar
 		//$id = null;
 		//$this->params['form'] = unserialize('a:4:{s:5:"valor";s:5:"6.001";s:2:"id";s:0:"";s:13:"liquidacionId";s:2:"36";s:14:"conceptoCodigo";s:14:"horas_extra_50";}');
-		if(!empty($id)) {
+		if (!empty($id)) {
 			$this->data = $this->Liquidacion->read(null, $id);
 		}
-		elseif(!empty($this->params['form']['valor']) && !empty($this->params['form']['conceptoCodigo']) && !empty($this->params['form']['liquidacionId'])) {
+		elseif (!empty($this->params['form']['valor']) && !empty($this->params['form']['conceptoCodigo']) && !empty($this->params['form']['liquidacionId'])) {
 			//$valor = $this->params['form']['valor'];
 			//$conceptoCodigo = $this->params['form']['conceptoCodigo'];
 			//$liquidacionId = $this->params['form']['liquidacionId'];
@@ -1213,7 +1213,7 @@ class LiquidacionesController extends AppController {
 					array(	"LiquidacionesDetalle.liquidacion_id"=>$liquidacionId,
 							"LiquidacionesDetalle.concepto_codigo"=>$conceptoCodigo)));
 
-			if(!empty($liquidacionesDetalleId['LiquidacionesDetalle']['id'])) {
+			if (!empty($liquidacionesDetalleId['LiquidacionesDetalle']['id'])) {
 				$this->Liquidacion->LiquidacionesDetalle->save(array("LiquidacionesDetalle"=>
 					array(	"id"=>$liquidacionesDetalleId['LiquidacionesDetalle']['id'],
 							"valor_cantidad"=>$valor	)));
@@ -1270,16 +1270,16 @@ class LiquidacionesController extends AppController {
 */
 	function generar_archivo_siap() {
 		
-		if(!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === "generar" && !empty($this->data['Condicion']['Siap-version'])) {
-			if(!empty($this->data['Condicion']['Siap-empleador_id'])
+		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === "generar" && !empty($this->data['Condicion']['Siap-version'])) {
+			if (!empty($this->data['Condicion']['Siap-empleador_id'])
 				&& !empty($this->data['Condicion']['Siap-grupo_id'])) {
 				$this->Session->setFlash("Debe seleccionar el Empleador o el Grupo, pero no ambos.", "error");
 			}
-			elseif(empty($this->data['Condicion']['Siap-empleador_id'])
+			elseif (empty($this->data['Condicion']['Siap-empleador_id'])
 				&& empty($this->data['Condicion']['Siap-grupo_id'])) {
 				$this->Session->setFlash("Debe seleccionar un Empleador o un Grupo por lo menos.", "error");
 			}
-			elseif(empty($this->data['Condicion']['Siap-periodo']) || !preg_match("/^(20\d\d)(0[1-9]|1[012])$/", $this->data['Condicion']['Siap-periodo'], $periodo)) {
+			elseif (empty($this->data['Condicion']['Siap-periodo']) || !preg_match("/^(20\d\d)(0[1-9]|1[012])$/", $this->data['Condicion']['Siap-periodo'], $periodo)) {
 				$this->Session->setFlash("Debe especificar un periodo valido de la forma AAAAMM.", "error");
 			}
 			else {
@@ -1288,7 +1288,7 @@ class LiquidacionesController extends AppController {
 				/**
 				* Busco los empleadores para los cuales debo generar el archivo.
 				*/
-				if(!empty($this->data['Condicion']['Siap-empleador_id'])) {
+				if (!empty($this->data['Condicion']['Siap-empleador_id'])) {
 					$empleadores = $this->data['Condicion']['Siap-empleador_id'];
 				}
 				else {
@@ -1306,7 +1306,7 @@ class LiquidacionesController extends AppController {
 				
 				$Siap = ClassRegistry::init("Siap");
 				$data = $Siap->findById($this->data['Condicion']['Siap-version']);
-				foreach($data['SiapsDetalle'] as $k=>$v) {
+				foreach ($data['SiapsDetalle'] as $k=>$v) {
 					$detalles[$v['elemento']] = $v;
 				}
 				
@@ -1322,26 +1322,26 @@ class LiquidacionesController extends AppController {
 																							"Trabajador" => array("ObrasSocial", "Condicion", "Siniestrado", "Localidad")),
 															 	"conditions"=> $conditions));
 				
-				if(!empty($liquidaciones)) {
+				if (!empty($liquidaciones)) {
 					$lineas = null;
-					foreach($liquidaciones as $liquidacion) {
+					foreach ($liquidaciones as $liquidacion) {
 						$campos = $detalles;
 						$campos['c1']['valor'] = str_replace("-", "", $liquidacion['Trabajador']['cuil']);
 						$campos['c2']['valor'] = $liquidacion['Trabajador']['apellido'] . " " . $liquidacion['Trabajador']['nombre'];
-						if(!empty($liquidacion['Relacion']['situacion_id'])) {
+						if (!empty($liquidacion['Relacion']['situacion_id'])) {
 							$campos['c5']['valor'] = $liquidacion['Relacion']['Situacion']['codigo'];
 						}
-						if(!empty($liquidacion['Trabajador']['condicion_id'])) {
+						if (!empty($liquidacion['Trabajador']['condicion_id'])) {
 							$campos['c6']['valor'] = $liquidacion['Trabajador']['Condicion']['codigo'];
 						}
-						if(!empty($liquidacion['Trabajador']['actividad_id'])) {
+						if (!empty($liquidacion['Trabajador']['actividad_id'])) {
 							$campos['c7']['valor'] = $liquidacion['Trabajador']['Actividad']['codigo'];
 						}
 						$campos['c8']['valor'] = $liquidacion['Trabajador']['Localidad']['codigo_zona'];
-						if(!empty($liquidacion['Trabajador']['modalidad_id'])) {
+						if (!empty($liquidacion['Trabajador']['modalidad_id'])) {
 							$campos['c10']['valor'] = $liquidacion['Trabajador']['Modalidad']['codigo'];
 						}
-						if(!empty($liquidacion['Trabajador']['obra_social_id'])) {
+						if (!empty($liquidacion['Trabajador']['obra_social_id'])) {
 							$campos['c11']['valor'] = $liquidacion['Trabajador']['ObrasSocial']['codigo'];
 						}
 						$campos['c12']['valor'] = $liquidacion['Trabajador']['adherentes_os'];
@@ -1356,16 +1356,16 @@ class LiquidacionesController extends AppController {
 						*/
 						$campos['c23']['valor'] = $this->Formulador->resolver(str_replace("c23", $liquidacion['Liquidacion']['remunerativo'], $campos['c23']['valor']));
 						
-						if(!empty($liquidacion['Trabajador']['siniestrado_id'])) {
+						if (!empty($liquidacion['Trabajador']['siniestrado_id'])) {
 							$campos['c24']['valor'] = $liquidacion['Trabajador']['Siniestrado']['codigo'];
 						}
-						if($liquidacion['Empleador']['corresponde_reduccion'] === "Si") {
+						if ($liquidacion['Empleador']['corresponde_reduccion'] === "Si") {
 							$campos['c25']['valor'] = "S";
 						}
 						else {
 							$campos['c25']['valor'] = " ";
 						}
-						if($liquidacion['Trabajador']['jubilacion'] === "Reparto") {
+						if ($liquidacion['Trabajador']['jubilacion'] === "Reparto") {
 							$campos['c29']['valor'] = "1";
 						}
 						else {
@@ -1379,8 +1379,8 @@ class LiquidacionesController extends AppController {
 						$cantidadAusencias = 0;
 						$camposTmp = null;
 						$camposTmp[0] = array();
-						foreach($liquidacion['Relacion']['Ausencia'] as $k => $ausencia) {
-							if(isset($ausenciasMotivo[$ausencia['ausencia_motivo_id']])) {
+						foreach ($liquidacion['Relacion']['Ausencia'] as $k => $ausencia) {
+							if (isset($ausenciasMotivo[$ausencia['ausencia_motivo_id']])) {
 								$cantidadAusencias++;
 								$camposTmp[$k]['situacion'] = $ausenciasMotivo[$ausencia['ausencia_motivo_id']]['codigo'];
 								$camposTmp[$k]['dia'] = array_pop(explode('-', $ausencia['desde']));
@@ -1388,9 +1388,9 @@ class LiquidacionesController extends AppController {
 						}	
 							
 						$campoNumero = 30;
-						foreach($camposTmp as $k => $tmp) {
+						foreach ($camposTmp as $k => $tmp) {
 							$campoNumero += ($k * 2);
-							if($cantidadAusencias < 3 && $k === 0) {
+							if ($cantidadAusencias < 3 && $k === 0) {
 								$campos['c' . $campoNumero]['valor'] = "1";
 								if ($liquidacion['Relacion']['ingreso'] <= $periodo['desde']) {
 									$campos['c' . ($campoNumero + 1)]['valor'] = array_pop(explode('-', $periodo['desde']));
@@ -1408,7 +1408,7 @@ class LiquidacionesController extends AppController {
 						
 						$campos['c36']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
 						$campos['c42']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
-						if($liquidacion['Relacion']['ConveniosCategoria']['nombre'] === "Fuera de convenio") {
+						if ($liquidacion['Relacion']['ConveniosCategoria']['nombre'] === "Fuera de convenio") {
 							$campos['c43']['valor'] = "0";
 						}
 						else {
@@ -1416,7 +1416,7 @@ class LiquidacionesController extends AppController {
 						}
 						$lineas[] = $this->__generarRegistro($campos);
 					}
-					$this->set("archivo", array("contenido"=>implode("\n\r", $lineas), "nombre"=>"SIAP-" . $periodo['ano'] . "-" . $periodo['mes'] . ".txt"));
+					$this->set("archivo", array("contenido"=>implode("\n\r", $lineas), "nombre" => "SIAP-" . $periodo['ano'] . "-" . $periodo['mes'] . ".txt"));
 					$this->render(".." . DS . "elements" . DS . "txt", "txt");
 				}
 				else {
@@ -1428,8 +1428,8 @@ class LiquidacionesController extends AppController {
 		$this->set("grupos", $this->Util->getUserGroups());
 		/*
 		$usuario = $this->Session->read('__Usuario');
-		if(!empty($usuario['Grupo'])) {
-			foreach($usuario['Grupo'] as $grupo) {
+		if (!empty($usuario['Grupo'])) {
+			foreach ($usuario['Grupo'] as $grupo) {
 				$grupos[$grupo['id']] = $grupo['nombre'];
 			}
 			$this->set("grupos", $grupos);
@@ -1447,12 +1447,12 @@ class LiquidacionesController extends AppController {
 */
 	function __generarRegistro($campos) {
 		$v = array();
-		if(!empty($campos)) {
-			foreach($campos as $campo) {
-				if($campo['direccion_relleno'] === "Derecha") {
+		if (!empty($campos)) {
+			foreach ($campos as $campo) {
+				if ($campo['direccion_relleno'] === "Derecha") {
 					$v[] = str_pad($campo['valor'], $campo['longitud'], $campo['caracter_relleno'], STR_PAD_RIGHT);
 				}
-				elseif($campo['direccion_relleno'] === "Izquierda") {
+				elseif ($campo['direccion_relleno'] === "Izquierda") {
 					$v[] = str_pad($campo['valor'], $campo['longitud'], $campo['caracter_relleno'], STR_PAD_LEFT);
 				}
 				else {
@@ -1465,10 +1465,10 @@ class LiquidacionesController extends AppController {
 
 
 	function asignar_suss() {
-		if(!empty($this->data['Formulario']['accion'])) {
-			if($this->data['Formulario']['accion'] == "asignar") {
-				if(!empty($this->data['Condicion']['Suss-fecha']) && !empty($this->data['Condicion']['Suss-banco_id']) && !empty($this->data['Condicion']['Suss-periodo'])) {
-					if(preg_match("/^(20\d\d)(0[1-9]|1[012])$/", $this->data['Condicion']['Suss-periodo'], $periodo)) {
+		if (!empty($this->data['Formulario']['accion'])) {
+			if ($this->data['Formulario']['accion'] == "asignar") {
+				if (!empty($this->data['Condicion']['Suss-fecha']) && !empty($this->data['Condicion']['Suss-banco_id']) && !empty($this->data['Condicion']['Suss-periodo'])) {
+					if (preg_match("/^(20\d\d)(0[1-9]|1[012])$/", $this->data['Condicion']['Suss-periodo'], $periodo)) {
 						d($periodo);
 					}
 					else {
@@ -1489,8 +1489,8 @@ class LiquidacionesController extends AppController {
 	
 	
 	function index() {
-		if(!empty($this->data['Condicion']['Liquidacion-periodo'])) {
-			if($tmp = $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], "periodo")) {
+		if (!empty($this->data['Condicion']['Liquidacion-periodo'])) {
+			if ($tmp = $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], "periodo")) {
 				$condiciones['Liquidacion.ano'] = $tmp['ano'];
 				$condiciones['Liquidacion.mes'] = $tmp['mes'];
 				$condiciones['Liquidacion.periodo'] = $tmp['periodo'];
@@ -1521,7 +1521,7 @@ class LiquidacionesController extends AppController {
 		$periodos["1Q"] = "Primera Quincena";
 		$periodos["2Q"] = "Segunda Quincena";
 		$this->set("periodos", $periodos);
-		$this->set("meses", $this->Util->format("all", array("type"=>"mesEnLetras", "case"=>"ucfirst")));
+		$this->set("meses", $this->Util->format("all", array("type" => "mesEnLetras", "case" => "ucfirst")));
 	}
 
 
@@ -1545,7 +1545,7 @@ class LiquidacionesController extends AppController {
 	function confirmar() {
 		$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
 		
-		if(!empty($ids)) {
+		if (!empty($ids)) {
 			/**
 			* En la tabla auxiliares tengo un array de los datos listos para guardar.
 			* Puede haber campos que deben ser guardados y no tienen valor, estos debo ponerle valor actual,
@@ -1555,13 +1555,13 @@ class LiquidacionesController extends AppController {
 			$c = 0;
 			$this->Liquidacion->begin();
 			$idsAuxiliares = null;
-			foreach($auxiliares as $v) {
+			foreach ($auxiliares as $v) {
 				$model = $v['LiquidacionesAuxiliar']['model'];
 				$idsAuxiliares[] = $v['LiquidacionesAuxiliar']['id'];
 				$save = unserialize($v['LiquidacionesAuxiliar']['save']);
-				foreach($save as $campo=>$valor) {
+				foreach ($save as $campo=>$valor) {
 					preg_match("/^##MACRO:([a-z,_]+)##$/",$valor, $matches);
-					if(!empty($matches[1])) {
+					if (!empty($matches[1])) {
 						switch($matches[1]) {
 							case "fecha_liquidacion": //Indica la fecha de la liquidacion.
 								$save[$campo] = date("d/m/Y");
@@ -1576,7 +1576,7 @@ class LiquidacionesController extends AppController {
 				$modelSave = ClassRegistry::init($model);
 				$save = array($model => $save);
 				$modelSave->create($save);
-				if($modelSave->save($save)) {
+				if ($modelSave->save($save)) {
 					$c++;
 				}
 			}
@@ -1591,13 +1591,13 @@ class LiquidacionesController extends AppController {
 			/**
 			* Si lo anterior salio todo ok, continuo.
 			*/
-			if($c === count($auxiliares)) {
+			if ($c === count($auxiliares)) {
 				$this->Liquidacion->recursive = 1;
-				if($this->Liquidacion->updateAll(array("estado"=>"'Confirmada'"), array("Liquidacion.id"=>$ids))) {
+				if ($this->Liquidacion->updateAll(array("estado" => "'Confirmada'"), array("Liquidacion.id"=>$ids))) {
 					/**
 					* Borro de la tabla auxiliar.
 					*/
-					if(!empty($idsAuxiliares)) {
+					if (!empty($idsAuxiliares)) {
 						$this->Liquidacion->LiquidacionesAuxiliar->recursive = 1;;
 						$this->Liquidacion->LiquidacionesAuxiliar->deleteAll(array("LiquidacionesAuxiliar.id"=>$idsAuxiliares));
 					}
