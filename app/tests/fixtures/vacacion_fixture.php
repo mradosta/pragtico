@@ -5,13 +5,13 @@
 * PHP versions 5
 *
 * @filesource
-* @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
+* @copyright       Copyright 2007-2009, Pragmatia
 * @link				http://www.pragmatia.com
-* @package			pragtico
-* @subpackage		app.tests.fixtures
-* @since			Pragtico v 1.0.0
-* @version			$Revision: 54 $
-* @modifiedby		$LastChangedBy: mradosta $
+* @package         pragtico
+* @subpackage      app.tests.fixtures
+* @since           Pragtico v 1.0.0
+* @version         $Revision: 54 $
+* @modifiedby      $LastChangedBy: mradosta $
 * @lastmodified		$Date: 2008-10-23 23:14:28 -0300 (Thu, 23 Oct 2008) $
 * @author      		Martin Radosta <mradosta@pragmatia.com>
 */

@@ -5,15 +5,15 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.tests.controllers
- * @since			Pragtico v 1.0.0
- * @version			$Revision: 54 $
- * @modifiedby		$LastChangedBy: mradosta $
- * @lastmodified	$Date: 2008-10-23 23:14:28 -0300 (Thu, 23 Oct 2008) $
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.tests.controllers
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision: 54 $
+ * @modifiedby      $LastChangedBy: mradosta $
+ * @lastmodified    $Date: 2008-10-23 23:14:28 -0300 (Thu, 23 Oct 2008) $
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
  
 App::import('Component', array('Session', 'Util'));
@@ -106,7 +106,7 @@ class LiquidacionesTestController extends CakeTestCase {
 		  								'data' 		=> $data));
 		
 		d($this->__LiquidacionesDetalle);
-		foreach($this->__LiquidacionesDetalle as $v) {
+		foreach ($this->__LiquidacionesDetalle as $v) {
 			$detalles[$v['LiquidacionesDetalle']['concepto_codigo']] = $v['LiquidacionesDetalle']['valor'];
 		}
 		d($detalles);
@@ -126,7 +126,7 @@ class LiquidacionesTestController extends CakeTestCase {
 		*/
 		$Variable = ClassRegistry::init("Variable");
 		$variablesTmp = $Variable->find("all", array("order"=>false));
-		foreach($variablesTmp as $v) {
+		foreach ($variablesTmp as $v) {
 			$variables[$v['Variable']['nombre']] = $v['Variable'];
 		}
 		$variables['#tipo_liquidacion']['valor'] = "normal";

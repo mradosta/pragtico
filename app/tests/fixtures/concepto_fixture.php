@@ -5,15 +5,15 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.tests.fixtures
- * @since			Pragtico v 1.0.0
- * @version			$Revision: 54 $
- * @modifiedby		$LastChangedBy: mradosta $
- * @lastmodified	$Date: 2008-10-23 23:14:28 -0300 (Thu, 23 Oct 2008) $
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2009, Pragmatia
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.tests.fixtures
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision: 54 $
+ * @modifiedby      $LastChangedBy: mradosta $
+ * @lastmodified    $Date: 2008-10-23 23:14:28 -0300 (Thu, 23 Oct 2008) $
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase para un fixture para un caso de prueba.
@@ -81,7 +81,7 @@ class ConceptoFixture extends CakeTestFixture {
             'coeficiente_id' => '6',
             'codigo' => 'sueldo_basico',
             'nombre' => 'Sueldo Basico',
-            'nombre_formula' => '=if(\'#contratacion\' = \'mensual\', \'Basico\', \'Horas\')',
+            'nombre_formula' => '=if (\'#contratacion\' = \'mensual\', \'Basico\', \'Horas\')',
             'tipo' => 'Remunerativo',
             'retencion_sindical' => 'No',
             'novedad' => 'No',
@@ -90,7 +90,7 @@ class ConceptoFixture extends CakeTestFixture {
             'imprimir' => 'Solo con valor',
             'antiguedad' => 'No',
             'plus_vacacional' => 'Si',
-            'formula' => '=if(\'#contratacion\' = \'mensual\', (#valor * if(#dias_corridos_periodo > 30, 30, #dias_corridos_periodo) / 30) / 8 * #jornada, @valor_hora * #horas)',
+            'formula' => '=if (\'#contratacion\' = \'mensual\', (#valor * if (#dias_corridos_periodo > 30, 30, #dias_corridos_periodo) / 30) / 8 * #jornada, @valor_hora * #horas)',
             'desde' => '0000-00-00',
             'hasta' => '0000-00-00',
             'cantidad' => '',
@@ -286,7 +286,7 @@ class ConceptoFixture extends CakeTestFixture {
             'imprimir' => 'Si',
             'antiguedad' => 'No',
             'plus_vacacional' => 'Si',
-            'formula' => '=if(#ausencias_injustificadas <= #presentismo_dias_tolerancia, if(#presentismo_porcentaje > 0, @sueldo_basico * #presentismo_porcentaje / 100, #presentismo_importe))',
+            'formula' => '=if (#ausencias_injustificadas <= #presentismo_dias_tolerancia, if (#presentismo_porcentaje > 0, @sueldo_basico * #presentismo_porcentaje / 100, #presentismo_importe))',
             'desde' => '0000-00-00',
             'hasta' => '0000-00-00',
             'cantidad' => '',
@@ -622,7 +622,7 @@ class ConceptoFixture extends CakeTestFixture {
             'imprimir' => 'Si',
             'antiguedad' => 'No',
             'plus_vacacional' => 'Si',
-            'formula' => '=if(\'#periodo_liquidacion\' = \'M\', 60, 30)',
+            'formula' => '=if (\'#periodo_liquidacion\' = \'M\', 60, 30)',
             'desde' => '0000-00-00',
             'hasta' => '0000-00-00',
             'cantidad' => '',
@@ -902,7 +902,7 @@ class ConceptoFixture extends CakeTestFixture {
             'imprimir' => 'Solo con valor',
             'antiguedad' => 'No',
             'plus_vacacional' => 'Si',
-            'formula' => '=if(\'#contratacion\' = \'mensual\', #valor * #dias_licencia_enfermedad / 30, #jornada * @valor_hora * #dias_licencia_enfermedad)',
+            'formula' => '=if (\'#contratacion\' = \'mensual\', #valor * #dias_licencia_enfermedad / 30, #jornada * @valor_hora * #dias_licencia_enfermedad)',
             'desde' => '0000-00-00',
             'hasta' => '0000-00-00',
             'cantidad' => '#dias_licencia_enfermedad',
@@ -1182,7 +1182,7 @@ class ConceptoFixture extends CakeTestFixture {
             'imprimir' => 'No',
             'antiguedad' => 'No',
             'plus_vacacional' => 'Si',
-            'formula' => '=if(\'#contratacion\' = \'mensual\', #valor / 176, #valor)',
+            'formula' => '=if (\'#contratacion\' = \'mensual\', #valor / 176, #valor)',
             'desde' => '0000-00-00',
             'hasta' => '0000-00-00',
             'cantidad' => '',
@@ -1714,7 +1714,7 @@ class ConceptoFixture extends CakeTestFixture {
             'imprimir' => 'Si',
             'antiguedad' => 'No',
             'plus_vacacional' => 'Si',
-            'formula' => '=if(@sueldo_bruto > 2 * #smvm, ((@sueldo_bruto - #smvm) * 20 / 100), ((@sueldo_bruto - #smvm) * 10 / 100))',
+            'formula' => '=if (@sueldo_bruto > 2 * #smvm, ((@sueldo_bruto - #smvm) * 20 / 100), ((@sueldo_bruto - #smvm) * 10 / 100))',
             'desde' => '0000-00-00',
             'hasta' => '0000-00-00',
             'cantidad' => '',
