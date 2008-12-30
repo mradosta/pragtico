@@ -42,7 +42,7 @@ echo $this->renderElement("add/add_rapido", array(
 				"encabezadosTablaIzquierda"	=> array("Nombre"),
 				"encabezadosTablaDerecha"	=> array("Nombre"),
 				"busqueda"					=> array("label"=>"Concepto"),
-				"fieldset"					=> array(	"imagen"=>	"conceptos.gif',
+				"fieldset"					=> array(	"imagen"=>	'conceptos.gif',
 														"legend"=>	"Asignar conceptos al Recibo " . $recibo['Recibo']['nombre'] . " del empleador " . $recibo['Empleador']['nombre'])
 				));
 
