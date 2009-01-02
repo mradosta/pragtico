@@ -29,7 +29,7 @@ msgstr "No fue posible guardar el registro. Verifique los errores e intente nuev
 
 #: /app_controller.php:422
 msgid "Record deleted"
-msgstr "El registro se a eliminado"
+msgstr "El registro se ha eliminado"
 
 #: /app_controller.php:424
 msgid "%s records deleted"
