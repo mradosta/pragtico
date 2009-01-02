@@ -16,9 +16,7 @@
  * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 
-App::import("Helper", "Formato");
-App::import("Helper", "Number");
-App::import("Helper", "Time");
+App::import('Helper', array('Formato', 'Number', 'Time'));
 
 /**
  * Caso de prueba para el Helper Formato.
@@ -51,6 +49,115 @@ class FormatoTest extends CakeTestCase {
 
 
 /**
+ * Testing text replacements.
+ * 
+ * @access public
+ * @return void
+ */
+	function testReplace() {
+		
+		/**
+		* Iterations with numeric patterns.
+		*/
+		$texto = 'My name is #*1*#, my first address was #*2*#. My second address was #*2*#';
+		$patrones = array('1:Trabajador.nombre', '2:TrabajadoresDireccion.{n}.calle');
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin'), 'TrabajadoresDireccion' => array(array('calle' => 'O. Mercadillo'), array('calle' => 'O. Oro')));
+		$result = $this->formato->replace($patrones, $reemplazos, $texto);
+		$expected = 'My name is Martin, my first address was O. Mercadillo. My second address was O. Oro';
+		$this->assertEqual($expected, $result);
+		
+		/**
+		* Iterations.
+		*/
+		$texto = 'My name is #*1*#, my first address was #*TrabajadoresDireccion.{n}.calle*#. My second address was #*TrabajadoresDireccion.{n}.calle*#';
+		$patrones = array('1:Trabajador.nombre', 'TrabajadoresDireccion.{n}.calle');
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin'), 'TrabajadoresDireccion' => array(array('calle' => 'O. Mercadillo'), array('calle' => 'O. Oro')));
+		$result = $this->formato->replace($patrones, $reemplazos, $texto);
+		$expected = 'My name is Martin, my first address was O. Mercadillo. My second address was O. Oro';
+		$this->assertEqual($expected, $result);
+		
+		/**
+		* Add format with options and numeric patterns.
+		*/
+		$texto = 'My name is #*1*#, I work in #*Trabajador.pais*#. My first working day was #*2*#';
+		$patrones = array('1:Trabajador.nombre', 'Trabajador.pais', '2:Trabajador.ingreso|date:default=>true;format=>d/m/Y');
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina', 'ingreso' => ''));
+		$result = $this->formato->replace($patrones, $reemplazos, $texto);
+		$expected = 'My name is Martin, I work in Argentina. My first working day was ' . date('d/m/Y');
+		$this->assertEqual($expected, $result);
+		
+		/**
+		* Numeric patterns.
+		*/
+		$texto = 'My name is #*1*#, I work in #*2*#.';
+		$patrones = array('1:Trabajador.nombre', '2:Trabajador.pais');
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina'));
+		$result = $this->formato->replace($patrones, $reemplazos, $texto);
+		$expected = 'My name is Martin, I work in Argentina.';
+		$this->assertEqual($expected, $result);
+		
+		/**
+		* Add format with options.
+		*/
+		$texto = 'My name is #*Trabajador.nombre*#, I work in #*Trabajador.pais*#. My first working day was #*Trabajador.ingreso*#';
+		$patrones = array('Trabajador.nombre', 'Trabajador.pais', 'Trabajador.ingreso|date:default=>true;format=>d/m/Y');
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina', 'ingreso' => ''));
+		$result = $this->formato->replace($patrones, $reemplazos, $texto);
+		$expected = 'My name is Martin, I work in Argentina. My first working day was ' . date('d/m/Y');
+		$this->assertEqual($expected, $result);
+		
+		/**
+		* Add format.
+		*/
+		$texto = 'My name is #*Trabajador.nombre*#, I work in #*Trabajador.pais*#. My first working day was #*Trabajador.ingreso*#';
+		$patrones = array('Trabajador.nombre', 'Trabajador.pais', 'Trabajador.ingreso|date');
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina', 'ingreso' => '2008-05-10'));
+		$result = $this->formato->replace($patrones, $reemplazos, $texto);
+		$expected = 'My name is Martin, I work in Argentina. My first working day was 10/05/2008';
+		$this->assertEqual($expected, $result);
+		
+		/**
+		* Pattern => Replacement.
+		*/
+		$texto = 'My name is #*Trabajador.nombre*#, I work in #*Trabajador.pais*#. How are you?';
+		$patrones = array('Trabajador.nombre' => 'Martin', 'Trabajador.pais' => 'Argentina');
+		$result = $this->formato->replace($patrones, null, $texto);
+		$expected = 'My name is Martin, I work in Argentina. How are you?';
+		$this->assertEqual($expected, $result);
+		
+		/**
+		* No Pattern, extract it from text.
+		*/
+		$texto = 'My name is #*Trabajador.nombre*#, I work in #*Trabajador.pais*#. How are you?';
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina'));
+		$result = $this->formato->replace(null, $reemplazos, $texto);
+		$expected = 'My name is Martin, I work in Argentina. How are you?';
+		$this->assertEqual($expected, $result);
+		
+		$texto = 'My name is #*Trabajador.nombre*#, I work in #*Trabajador.pais*#. How are you?';
+		$patrones = array('Trabajador.nombre', 'Trabajador.pais');
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina'));
+		$result = $this->formato->replace($patrones, $reemplazos, $texto);
+		$expected = 'My name is Martin, I work in Argentina. How are you?';
+		$this->assertEqual($expected, $result);
+		
+		$texto = 'My name is #*Trabajador.nombre*#*#. How are you?';
+		$patrones = array('Trabajador.nombre');
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin'));
+		$result = $this->formato->replace($patrones, $reemplazos, $texto);
+		$expected = 'My name is Martin*#. How are you?';
+		$this->assertEqual($expected, $result);
+		
+		$texto = 'My name is #*Trabajador.nombre*#. How are you?';
+		$patrones = array('Trabajador.nombre');
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin'));
+		$result = $this->formato->replace($patrones, $reemplazos, $texto);
+		$expected = 'My name is Martin. How are you?';
+		$this->assertEqual($expected, $result);
+	}
+	
+
+/**
  * Pruebo el formateo de datos.
  * 
  * @access public
@@ -58,365 +165,365 @@ class FormatoTest extends CakeTestCase {
  */
 	function testformat() {
 		
-		$valor = "1000";
+		$valor = '1000';
 		$result = $this->formato->format($valor);
 		$expected = '1000,00';
 		$this->assertEqual($expected, $result);
 
-		$valor = "1000.353";
+		$valor = '1000.353';
 		$result = $this->formato->format($valor);
 		$expected = '1000,35';
 		$this->assertEqual($expected, $result);
 
-		$valor = "1";
-		$result = $this->formato->format($valor, "numero");
+		$valor = '1';
+		$result = $this->formato->format($valor, 'numero');
 		$expected = '1,00';
 		$this->assertEqual($expected, $result);
 
-		$valor = "1301100.353";
-		$result = $this->formato->format($valor, array("places" => "3"));
+		$valor = '1301100.353';
+		$result = $this->formato->format($valor, array('places' => '3'));
 		$expected = '1301100,353';
 		$this->assertEqual($expected, $result);
 
-		$valor = "130.333";
-		$result = $this->formato->format($valor, array("type" => "moneda", "places"=>3));
-		$expected = "$ 130,333";
+		$valor = '130.333';
+		$result = $this->formato->format($valor, array('type' => 'moneda', 'places'=>3));
+		$expected = '$ 130,333';
 		$this->assertEqual($expected, $result);
 
-		$valor = "130.333";
-		$result = $this->formato->format($valor, "moneda");
-		$expected = "$ 130,33";
+		$valor = '130.333';
+		$result = $this->formato->format($valor, 'moneda');
+		$expected = '$ 130,33';
 		$this->assertEqual($expected, $result);
 
-		$valor = "";
-		$result = $this->formato->format($valor, array("type" => "date"));
-		$expected = date("Y-m-d");
+		$valor = '';
+		$result = $this->formato->format($valor, array('type' => 'date'));
+		$expected = date('Y-m-d');
 		$this->assertEqual($expected, $result);
 		
-		$valor = "0000-00-00";
-		$result = $this->formato->format($valor, array("type" => "date"));
-		$expected = "";
+		$valor = '0000-00-00';
+		$result = $this->formato->format($valor, array('type' => 'date'));
+		$expected = '';
 		$this->assertEqual($expected, $result);
 
-		$valor = "";
-		$result = $this->formato->format($valor, array("type" => "date", "default"=>true));
-		$expected = date("Y-m-d");
+		$valor = '';
+		$result = $this->formato->format($valor, array('type' => 'date', 'default'=>true));
+		$expected = date('Y-m-d');
 		$this->assertEqual($expected, $result);
 		
-		$valor = "";
-		$result = $this->formato->format($valor, array("type" => "date", "format" => "d/m/Y"));
-		$expected = date("d/m/Y");
+		$valor = '';
+		$result = $this->formato->format($valor, array('type' => 'date', 'format' => 'd/m/Y'));
+		$expected = date('d/m/Y');
 		$this->assertEqual($expected, $result);
 		
-		$valor = "1943-03-10";
-		$result = $this->formato->format($valor, array("type" => "date", "default"=>false));
-		$expected = "10/03/1943";
+		$valor = '1943-03-10';
+		$result = $this->formato->format($valor, array('type' => 'date', 'default'=>false));
+		$expected = '10/03/1943';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "";
-		$result = $this->formato->format($valor, array("type" => "date", "default"=>false));
-		$expected = "";
+		$valor = '';
+		$result = $this->formato->format($valor, array('type' => 'date', 'default'=>false));
+		$expected = '';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "15/10/2005";
-		$result = $this->formato->format($valor, array("type" => "date"));
-		$expected = "2005-10-15";
+		$valor = '15/10/2005';
+		$result = $this->formato->format($valor, array('type' => 'date'));
+		$expected = '2005-10-15';
 		$this->assertEqual($expected, $result);
 		
-		$valor = array("dia" => "15", "mes" => "10", "ano" => "2005");
-		$result = $this->formato->format($valor, array("type" => "date"));
-		$expected = "15/10/2005";
+		$valor = array('dia' => '15', 'mes' => '10', 'ano' => '2005');
+		$result = $this->formato->format($valor, array('type' => 'date'));
+		$expected = '15/10/2005';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "15/10/2005 10:54";
-		$result = $this->formato->format($valor, array("type" => "date"));
-		$expected = "2005-10-15";
+		$valor = '15/10/2005 10:54';
+		$result = $this->formato->format($valor, array('type' => 'date'));
+		$expected = '2005-10-15';
 		$this->assertEqual($expected, $result);
 
-		$valor = "2005-10-15";
-		$result = $this->formato->format($valor, array("type" => "date"));
-		$expected = "15/10/2005";
+		$valor = '2005-10-15';
+		$result = $this->formato->format($valor, array('type' => 'date'));
+		$expected = '15/10/2005';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2005-10-15 10:54";
-		$result = $this->formato->format($valor, array("type" => "date"));
-		$expected = "15/10/2005";
+		$valor = '2005-10-15 10:54';
+		$result = $this->formato->format($valor, array('type' => 'date'));
+		$expected = '15/10/2005';
 		$this->assertEqual($expected, $result);
 
-		$valor = "15/10/2005";
-		$result = $this->formato->format($valor, array("type" => "dateTime"));
-		$expected = "2005-10-15 00:00:00";
+		$valor = '15/10/2005';
+		$result = $this->formato->format($valor, array('type' => 'dateTime'));
+		$expected = '2005-10-15 00:00:00';
 		$this->assertEqual($expected, $result);
 
-		$valor = "15/10/2005 10:54:32";
-		$result = $this->formato->format($valor, array("type" => "dateTime"));
-		$expected = "2005-10-15 10:54:32";
+		$valor = '15/10/2005 10:54:32';
+		$result = $this->formato->format($valor, array('type' => 'dateTime'));
+		$expected = '2005-10-15 10:54:32';
 		$this->assertEqual($expected, $result);
 
-		$valor = "2005-10-15";
-		$result = $this->formato->format($valor, array("type" => "dateTime"));
-		$expected = "15/10/2005 00:00:00";
+		$valor = '2005-10-15';
+		$result = $this->formato->format($valor, array('type' => 'dateTime'));
+		$expected = '15/10/2005 00:00:00';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2005-10-15 10:54:32";
-		$result = $this->formato->format($valor, array("type" => "dateTime"));
-		$expected = "15/10/2005 10:54:32";
+		$valor = '2005-10-15 10:54:32';
+		$result = $this->formato->format($valor, array('type' => 'dateTime'));
+		$expected = '15/10/2005 10:54:32';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2005-10-15 10:54:32";
-		$result = $this->formato->format($valor, array("type" => "dateTime", "format" => "H:i"));
-		$expected = "15/10/2005 10:54";
+		$valor = '2005-10-15 10:54:32';
+		$result = $this->formato->format($valor, array('type' => 'dateTime', 'format' => 'H:i'));
+		$expected = '15/10/2005 10:54';
 		$this->assertEqual($expected, $result);
     
-		$valor = "15/10/2005 10:54:32";
-		$result = $this->formato->format($valor, array("type" => "dateTime", "format" => "H:i"));
-		$expected = "2005-10-15 10:54";
+		$valor = '15/10/2005 10:54:32';
+		$result = $this->formato->format($valor, array('type' => 'dateTime', 'format' => 'H:i'));
+		$expected = '2005-10-15 10:54';
 		$this->assertEqual($expected, $result);
     
-		$valor = "";
-		$result = $this->formato->format($valor, array("type" => "dateTime", "default"=>false));
-		$expected = "";
+		$valor = '';
+		$result = $this->formato->format($valor, array('type' => 'dateTime', 'default'=>false));
+		$expected = '';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2005-10-15 10:54:32";
-		$result = $this->formato->format($valor, array("type" => "ano"));
-		$expected = "2005";
+		$valor = '2005-10-15 10:54:32';
+		$result = $this->formato->format($valor, array('type' => 'ano'));
+		$expected = '2005';
 		$this->assertEqual($expected, $result);
     
-		$valor = "2005-10-15 10:54:32";
-		$result = $this->formato->format($valor, array("type" => "mes"));
-		$expected = "10";
+		$valor = '2005-10-15 10:54:32';
+		$result = $this->formato->format($valor, array('type' => 'mes'));
+		$expected = '10';
 		$this->assertEqual($expected, $result);
     
-		$valor = "2005-10-15 10:54:32";
-		$result = $this->formato->format($valor, array("type" => "dia"));
-		$expected = "15";
+		$valor = '2005-10-15 10:54:32';
+		$result = $this->formato->format($valor, array('type' => 'dia'));
+		$expected = '15';
 		$this->assertEqual($expected, $result);
 
-		$valor = "0000-00-00";
-		$result = $this->formato->format($valor, array("type" => "dia"));
-		$expected = "";
+		$valor = '0000-00-00';
+		$result = $this->formato->format($valor, array('type' => 'dia'));
+		$expected = '';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2004-02-15";
-		$result = $this->formato->format($valor, array("type" => "ultimoDiaDelMes"));
-		$expected = "29";
+		$valor = '2004-02-15';
+		$result = $this->formato->format($valor, array('type' => 'ultimoDiaDelMes'));
+		$expected = '29';
 		$this->assertEqual($expected, $result);
     
-		$valor = "2008-12-15 13:34";
-		$result = $this->formato->format($valor, array("type" => "ultimoDiaDelMes"));
-		$expected = "31";
+		$valor = '2008-12-15 13:34';
+		$result = $this->formato->format($valor, array('type' => 'ultimoDiaDelMes'));
+		$expected = '31';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2004-03-01";
-		$result = $this->formato->format($valor, array("type" => "diaAnterior"));
-		$expected = "29";
+		$valor = '2004-03-01';
+		$result = $this->formato->format($valor, array('type' => 'diaAnterior'));
+		$expected = '29';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2005-03-01";
-		$result = $this->formato->format($valor, array("type" => "diaAnterior"));
-		$expected = "28";
+		$valor = '2005-03-01';
+		$result = $this->formato->format($valor, array('type' => 'diaAnterior'));
+		$expected = '28';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2008-12-15";
-		$result = $this->formato->format($valor, array("type" => "diaAnterior"));
-		$expected = "14";
+		$valor = '2008-12-15';
+		$result = $this->formato->format($valor, array('type' => 'diaAnterior'));
+		$expected = '14';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2008-01-01";
-		$result = $this->formato->format($valor, array("type" => "diaAnterior"));
-		$expected = "31";
+		$valor = '2008-01-01';
+		$result = $this->formato->format($valor, array('type' => 'diaAnterior'));
+		$expected = '31';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2008-12-15";
-		$result = $this->formato->format($valor, array("type" => "mesAnterior"));
-		$expected = "11";
+		$valor = '2008-12-15';
+		$result = $this->formato->format($valor, array('type' => 'mesAnterior'));
+		$expected = '11';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2008-03-22";
-		$result = $this->formato->format($valor, array("type" => "anoAnterior"));
-		$expected = "2007";
+		$valor = '2008-03-22';
+		$result = $this->formato->format($valor, array('type' => 'anoAnterior'));
+		$expected = '2007';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2008-01-15";
-		$result = $this->formato->format($valor, array("type" => "mesAnterior"));
-		$expected = "12";
+		$valor = '2008-01-15';
+		$result = $this->formato->format($valor, array('type' => 'mesAnterior'));
+		$expected = '12';
 		$this->assertEqual($expected, $result);
 
-		$valor = "2008-01-22";
-		$result = $this->formato->format($valor, array("type" => "1QAnterior"));
-		$expected = "2008011Q";
+		$valor = '2008-01-22';
+		$result = $this->formato->format($valor, array('type' => '1QAnterior'));
+		$expected = '2008011Q';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2008-03-12";
-		$result = $this->formato->format($valor, array("type" => "1QAnterior"));
-		$expected = "2008021Q";
+		$valor = '2008-03-12';
+		$result = $this->formato->format($valor, array('type' => '1QAnterior'));
+		$expected = '2008021Q';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2008-01-12";
-		$result = $this->formato->format($valor, array("type" => "1QAnterior"));
-		$expected = "2007121Q";
+		$valor = '2008-01-12';
+		$result = $this->formato->format($valor, array('type' => '1QAnterior'));
+		$expected = '2007121Q';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2008-01-22";
-		$result = $this->formato->format($valor, array("type" => "2QAnterior"));
-		$expected = "2007122Q";
+		$valor = '2008-01-22';
+		$result = $this->formato->format($valor, array('type' => '2QAnterior'));
+		$expected = '2007122Q';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2008-03-12";
-		$result = $this->formato->format($valor, array("type" => "2QAnterior"));
-		$expected = "2008022Q";
+		$valor = '2008-03-12';
+		$result = $this->formato->format($valor, array('type' => '2QAnterior'));
+		$expected = '2008022Q';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2008-03-22";
-		$result = $this->formato->format($valor, array("type" => "2QAnterior"));
-		$expected = "2008022Q";
+		$valor = '2008-03-22';
+		$result = $this->formato->format($valor, array('type' => '2QAnterior'));
+		$expected = '2008022Q';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2008-03-22";
-		$result = $this->formato->format($valor, array("type" => "mensualAnterior"));
-		$expected = "200802M";
+		$valor = '2008-03-22';
+		$result = $this->formato->format($valor, array('type' => 'mensualAnterior'));
+		$expected = '200802M';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2008-01-22";
-		$result = $this->formato->format($valor, array("type" => "mensualAnterior"));
-		$expected = "200712M";
+		$valor = '2008-01-22';
+		$result = $this->formato->format($valor, array('type' => 'mensualAnterior'));
+		$expected = '200712M';
 		$this->assertEqual($expected, $result);
 		
-    	$valor = "2008021Q";
-		$result = $this->formato->format($valor, array("type" => "periodoEnLetras", "case" => "ucfirst"));
-		$expected = "Primera quincena de febrero de 2008";
+    	$valor = '2008021Q';
+		$result = $this->formato->format($valor, array('type' => 'periodoEnLetras', 'case' => 'ucfirst'));
+		$expected = 'Primera quincena de febrero de 2008';
 		$this->assertEqual($expected, $result);
     
-    	$valor = "200802";
-		$result = $this->formato->format($valor, array("type" => "periodoEnLetras", "case" => "ucfirst"));
-		$expected = "Febrero de 2008";
+    	$valor = '200802';
+		$result = $this->formato->format($valor, array('type' => 'periodoEnLetras', 'case' => 'ucfirst'));
+		$expected = 'Febrero de 2008';
 		$this->assertEqual($expected, $result);
 
-    	$valor = "20082";
-		$result = $this->formato->format($valor, array("type" => "periodoEnLetras", "case" => "upper"));
-		$expected = "FEBRERO DE 2008";
+    	$valor = '20082';
+		$result = $this->formato->format($valor, array('type' => 'periodoEnLetras', 'case' => 'upper'));
+		$expected = 'FEBRERO DE 2008';
 		$this->assertEqual($expected, $result);
 
-    	$valor = "200811";
-		$result = $this->formato->format($valor, "periodoEnLetras");
-		$expected = "noviembre de 2008";
+    	$valor = '200811';
+		$result = $this->formato->format($valor, 'periodoEnLetras');
+		$expected = 'noviembre de 2008';
 		$this->assertEqual($expected, $result);
 
-		$valor = "2008-01-22";
-		$result = $this->formato->format($valor, array("type" => "mesEnLetras", "case" => "ucfirst"));
-		$expected = "Enero";
+		$valor = '2008-01-22';
+		$result = $this->formato->format($valor, array('type' => 'mesEnLetras', 'case' => 'ucfirst'));
+		$expected = 'Enero';
 		$this->assertEqual($expected, $result);
 
-		$valor = "2008-01-22";
-		$result = $this->formato->format($valor, array("type" => "mesEnLetras"));
-		$expected = "enero";
+		$valor = '2008-01-22';
+		$result = $this->formato->format($valor, array('type' => 'mesEnLetras'));
+		$expected = 'enero';
 		$this->assertEqual($expected, $result);
 
-		$valor = "2008-01-22";
-		$result = $this->formato->format($valor, array("type" => "mesEnLetras", "case" => "upper"));
-		$expected = "ENERO";
+		$valor = '2008-01-22';
+		$result = $this->formato->format($valor, array('type' => 'mesEnLetras', 'case' => 'upper'));
+		$expected = 'ENERO';
 		$this->assertEqual($expected, $result);
 
-		$valor = "all";
-		$result = $this->formato->format($valor, array("type" => "mesEnLetras", "case" => "upper"));
+		$valor = 'all';
+		$result = $this->formato->format($valor, array('type' => 'mesEnLetras', 'case' => 'upper'));
 		$expected = Array(
-			"1" => "ENERO",
-			"2" => "FEBRERO",
-			"3" => "MARZO",
-			"4" => "ABRIL",
-			"5" => "MAYO",
-			"6" => "JUNIO",
-			"7" => "JULIO",
-			"8" => "AGOSTO",
-			"9" => "SETIEMBRE",
-			"10" => "OCTUBRE",
-			"11" => "NOVIEMBRE",
-			"12" => "DICIEMBRE");
+			'1' => 'ENERO',
+			'2' => 'FEBRERO',
+			'3' => 'MARZO',
+			'4' => 'ABRIL',
+			'5' => 'MAYO',
+			'6' => 'JUNIO',
+			'7' => 'JULIO',
+			'8' => 'AGOSTO',
+			'9' => 'SETIEMBRE',
+			'10' => 'OCTUBRE',
+			'11' => 'NOVIEMBRE',
+			'12' => 'DICIEMBRE');
 		$this->assertEqual($expected, $result);
 
-		$valor = "200808";
-		$result = $this->formato->format($valor, array("type" => "periodo"));
+		$valor = '200808';
+		$result = $this->formato->format($valor, array('type' => 'periodo'));
 		$expected = Array (
-			"periodoCompleto" => "200808",
-			"ano" => "2008",
-			"mes" => "08",
-			"periodo" => "M",
-			"desde" => "2008-08-01",
-			"hasta" => "2008-08-31");
+			'periodoCompleto' => '200808',
+			'ano' => '2008',
+			'mes' => '08',
+			'periodo' => 'M',
+			'desde' => '2008-08-01',
+			'hasta' => '2008-08-31');
 		$this->assertEqual($expected, $result);
 		
-		$valor = "200808M";
-		$result = $this->formato->format($valor, array("type" => "periodo"));
+		$valor = '200808M';
+		$result = $this->formato->format($valor, array('type' => 'periodo'));
 		$expected = Array (
-			"periodoCompleto" => "200808M",
-			"ano" => "2008",
-			"mes" => "08",
-			"periodo" => "M",
-			"desde" => "2008-08-01",
-			"hasta" => "2008-08-31");
+			'periodoCompleto' => '200808M',
+			'ano' => '2008',
+			'mes' => '08',
+			'periodo' => 'M',
+			'desde' => '2008-08-01',
+			'hasta' => '2008-08-31');
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2008082Q";
-		$result = $this->formato->format($valor, array("type" => "periodo"));
+		$valor = '2008082Q';
+		$result = $this->formato->format($valor, array('type' => 'periodo'));
 		$expected = Array (
-			"periodoCompleto" => "2008082Q",
-			"ano" => "2008",
-			"mes" => "08",
-			"periodo" => "2Q",
-			"desde" => "2008-08-16",
-			"hasta" => "2008-08-31");
+			'periodoCompleto' => '2008082Q',
+			'ano' => '2008',
+			'mes' => '08',
+			'periodo' => '2Q',
+			'desde' => '2008-08-16',
+			'hasta' => '2008-08-31');
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2008081Q";
-		$result = $this->formato->format($valor, "periodo");
+		$valor = '2008081Q';
+		$result = $this->formato->format($valor, 'periodo');
 		$expected = Array (
-			"periodoCompleto" => "2008081Q",
-			"ano" => "2008",
-			"mes" => "08",
-			"periodo" => "1Q",
-			"desde" => "2008-08-01",
-			"hasta" => "2008-08-15");
+			'periodoCompleto' => '2008081Q',
+			'ano' => '2008',
+			'mes' => '08',
+			'periodo' => '1Q',
+			'desde' => '2008-08-01',
+			'hasta' => '2008-08-15');
 		$this->assertEqual($expected, $result);
 
-		$valor = "2008081QQ";
-		$result = $this->formato->format($valor, "periodo");
+		$valor = '2008081QQ';
+		$result = $this->formato->format($valor, 'periodo');
 		$expected =false;
 		$this->assertFalse($result);
 		
-		$valor = "200";
-		$result = $this->formato->format($valor, array("type" => "numeroEnLetras", "option" => "moneda", "case" => "lower"));
-		$expected = "pesos doscientos";
+		$valor = '200';
+		$result = $this->formato->format($valor, array('type' => 'numeroEnLetras', 'option' => 'moneda', 'case' => 'lower'));
+		$expected = 'pesos doscientos';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "1";
-		$result = $this->formato->format($valor, array("type" => "numeroEnLetras", "option" => "palabras", "case" => "lower"));
-		$expected = "uno";
+		$valor = '1';
+		$result = $this->formato->format($valor, array('type' => 'numeroEnLetras', 'option' => 'palabras', 'case' => 'lower'));
+		$expected = 'uno';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "234,00";
-		$result = $this->formato->format($valor, array("type" => "numeroEnLetras", "option" => "moneda", "ceroCents"=>true, "case" => "upper"));
-		$expected = "PESOS DOSCIENTOS TREINTA Y CUATRO CON CERO CENTAVOS";
+		$valor = '234,00';
+		$result = $this->formato->format($valor, array('type' => 'numeroEnLetras', 'option' => 'moneda', 'ceroCents'=>true, 'case' => 'upper'));
+		$expected = 'PESOS DOSCIENTOS TREINTA Y CUATRO CON CERO CENTAVOS';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "103.21";
-		$result = $this->formato->format($valor, array("type" => "numeroEnLetras", "option" => "moneda"));
-		$expected = "pesos ciento tres con veintiun centavos";
+		$valor = '103.21';
+		$result = $this->formato->format($valor, array('type' => 'numeroEnLetras', 'option' => 'moneda'));
+		$expected = 'pesos ciento tres con veintiun centavos';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "2008.34";
-		$result = $this->formato->format($valor, array("type" => "numeroEnLetras"));
-		$expected = "dos mil ocho con treinta y cuatro";
+		$valor = '2008.34';
+		$result = $this->formato->format($valor, array('type' => 'numeroEnLetras'));
+		$expected = 'dos mil ocho con treinta y cuatro';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "1008.345";
-		$result = $this->formato->format($valor, array("type" => "numeroEnLetras", "case" => "lower"));
-		$expected = "mil ocho con treinta y cinco";
+		$valor = '1008.345';
+		$result = $this->formato->format($valor, array('type' => 'numeroEnLetras', 'case' => 'lower'));
+		$expected = 'mil ocho con treinta y cinco';
 		$this->assertEqual($expected, $result);
 		
-		$valor = "1008.345";
-		$result = $this->formato->format($valor, array("places"=>3, "type" => "numeroEnLetras", "case" => "lower"));
-		$expected = "mil ocho con trescientos cuarenta y cinco";
+		$valor = '1008.345';
+		$result = $this->formato->format($valor, array('places'=>3, 'type' => 'numeroEnLetras', 'case' => 'lower'));
+		$expected = 'mil ocho con trescientos cuarenta y cinco';
 		$this->assertEqual($expected, $result);
 
     }
