@@ -686,6 +686,22 @@ div.add div.textarea {
  	width: 720px;
 }
 
+div.wysiwyg {                                                                                                                                                               
+	padding: 20px 0 3px 0;                                                                                                                                                
+	margin-left: 15px;                                                                                                                                                    
+	float: left;                                                                                                                                                          
+	width: 770px;                                                                                                                                                         
+}                                                                                                                                                                           
+
+div.wysiwyg div.editor {                                                                                                                                                    
+	width: 560px;                                                                                                                                                         
+	float: left;                                                                                                                                                          
+}                                                                                                                                                                           
+
+div.wysiwyg label {                                                                                                                                                         
+	width: 110px;                                                                                                                                                         
+}
+
 span.solo_lectura {
 	font-weight: bold;
 }

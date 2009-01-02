@@ -54,7 +54,7 @@ class AppController extends Controller {
 		if ($this->RequestHandler->isAjax()) {
 			$this->RequestHandler->renderAs($this, 'ajax');
 		}
-			
+		
 		/**
 		* Puedo tener cualquier condicion de las que soporta el metodo find.
 		*/
@@ -64,8 +64,7 @@ class AppController extends Controller {
 			if (!empty($this->params['named'][$opcionValida])) {
 				if (in_array($opcionValida, $opcionesValidasArray)) {
 					$condiciones[$opcionValida] = unserialize($this->params['named'][$opcionValida]);
-				}
-				else {
+				} else {
 					$condiciones[$opcionValida] = $this->params['named'][$opcionValida];
 				}
 			}

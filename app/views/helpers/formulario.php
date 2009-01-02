@@ -32,7 +32,7 @@ class FormularioHelper extends FormHelper {
  * @var arraya
  * @access public.
  */
-	var $helpers = array('Html', 'Form', 'Ajax', 'Session', 'Javascript', 'Paginador', 'Formato');
+	var $helpers = array('Html', 'Ajax', 'Session', 'Javascript', 'Paginador', 'Formato');
 
 
 /**
@@ -372,8 +372,7 @@ class FormularioHelper extends FormHelper {
 		*/
 		if (isset($htmlAttributes['alt']) && !isset($htmlAttributes['title'])) {
 			$htmlAttributes['title'] = $htmlAttributes['alt'];
-		}
-		elseif (isset($htmlAttributes['title']) && !isset($htmlAttributes['alt'])) {
+		} elseif (isset($htmlAttributes['title']) && !isset($htmlAttributes['alt'])) {
 			$htmlAttributes['alt'] = $htmlAttributes['title'];
 		}
 
@@ -483,16 +482,16 @@ class FormularioHelper extends FormHelper {
 				$cells = $headers = array();
 				foreach ($f as $columna) {
 					if (empty($columna['type'])) {
-						$columna['type'] == "cell";
+						$columna['type'] = "cell";
 					}
 					if (empty($columna['opciones'])) {
 						$columna['opciones'] = array();
 					}
 					
-					if ($columna['type'] == "header") {
+					if ($columna['type'] === "header") {
 						$headers[] = array($columna['valor'], $columna['opciones']);
 					}
-					elseif ($columna['type'] == "cell") {
+					elseif ($columna['type'] === "cell") {
 						$cells[] = array($columna['valor'], $columna['opciones']);
 					}
 				}
@@ -547,7 +546,7 @@ class FormularioHelper extends FormHelper {
 							$contenido = true;
 						}
 						foreach ($vv as $kk1=>$vv1) {
-							if (isset($vv1['field']) && $vv1['field'] == "id" && !empty($vv1['valor'])) {
+							if (isset($vv1['field']) && $vv1['field'] === "id" && !empty($vv1['valor'])) {
 								$registroPermisos = array(
 									"tipo"		=> "desglose",
 									"id"		=> $vv1['valor'],
@@ -599,7 +598,7 @@ class FormularioHelper extends FormHelper {
 						$valor = $campo['valor'];
 					}
 					
-					if (!isset($campo['tipo']) || $campo['tipo'] == "datos") {
+					if (!isset($campo['tipo']) || $campo['tipo'] === "datos") {
 						$tipoCelda = "datos";
 						if (isset($campo['model'])) {
 							$modelKey = $campo['model'];
@@ -680,7 +679,7 @@ class FormularioHelper extends FormHelper {
 						}
 					}
 					if (!empty($modelKey)) {
-						if ($k==0 && $opciones['mostrarEncabezados'] && empty($datos['encabezado'])) {
+						if ($k===0 && $opciones['mostrarEncabezados'] && empty($datos['encabezado'])) {
 							/**
 							* El parametro, en caso de ser una lov, viene o por url o en $this->data
 							*/
@@ -973,12 +972,7 @@ class FormularioHelper extends FormHelper {
 		}
 		
 		if (!empty($tabla)) {
-			//if (!isset($opcionesHtml['class'])) {
-			//	$opcionesHtml['class'] = "tabla";
-			//}
-			//$tabla = $this->output("\n\n<table " . $this->_parseAttributes($opcionesHtml, null, '', '') . ">" . $tabla . "\n</table>\n\n");
 			$tabla = $this->tag("table", $tabla, $opcionesHtml);
-			//$tabla = $this->output("\n\n<table " . $this->_parseAttributes($opcionesHtml, null, '', '') . ">" . $tabla . "\n</table>\n\n");
 		}
 
 
@@ -1111,7 +1105,7 @@ class FormularioHelper extends FormHelper {
 
 		if (empty($tabla)) {
 			if ($opciones['omitirMensajeVacio'] === false) {
-				$tabla = $this->tag("span", "No existen datos cargados o los criterios de su busqueda no arrojan resultados.", array("class" => "color_rojo"));
+				$tabla = $this->tag('span', __('The grid is empty. Enter data or verify your search.'), array('class' => 'color_rojo'));
 			}
 			else {
 				/**
@@ -1174,8 +1168,6 @@ class FormularioHelper extends FormHelper {
 
 	function link($title, $href = null, $options = array(), $confirm = null, $escapeTitle = true) {
 
-		//return $this->output(sprintf($this->tags['link'], $url, $this->_parseAttributes($htmlAttributes), $title));
-		//return "<a>XXX</a>";
 		/**
 		* Si viene nulo, asumo que solo esta puesto el link para ejecutar codigo JS, entonces, hago que se quede en el lugar.
 		*/
@@ -1190,15 +1182,13 @@ class FormularioHelper extends FormHelper {
 			$escapeTitle = false;
 		}
 		
-		if (isset($options['tipo']) && $options['tipo'] == "ajax") {
+		if (isset($options['tipo']) && $options['tipo'] === "ajax") {
 			unset($options['tipo']);
 			return $this->output($this->Ajax->link($title, $href, $options, $confirm, $escapeTitle));
-		}
-		else {
+		} else {
 			if (is_null($confirm)) {
 				$confirmMessage = false;
-			}
-			else {
+			} else {
 				$confirmMessage = $confirm;
 			}
 			return $this->output($this->Html->link($title, $href, $options, $confirmMessage, $escapeTitle));
@@ -1288,8 +1278,7 @@ class FormularioHelper extends FormHelper {
 		$form = "\n" . parent::create(null, $opciones);
 		if (is_array($contenido)) {
 			$form .= implode("\n", $contenido);
-		}
-		elseif (is_string($contenido)) {
+		} elseif (is_string($contenido)) {
 			$form .= $contenido;
 		}
 		$form .= "\n" . parent::end();
@@ -1325,8 +1314,7 @@ class FormularioHelper extends FormHelper {
 		$requerido = "";
 		if (!isset($options['verificarRequerido'])) {
 			$verificarRequerido = true;
-		}
-		else {
+		} else {
 			$verificarRequerido = $options['verificarRequerido'];
 			unset($options['verificarRequerido']);
 		}
@@ -1348,8 +1336,7 @@ class FormularioHelper extends FormHelper {
 			$tmpName = str_replace("-", ".", $tmpName);
 			if (strpos($tmpName, '.') !== false) {
 				list( , $texto) = preg_split('/[\.]+/', $tmpName);
-			}
-			else {
+			} else {
 				$texto = $tmpName;
 			}
 			$texto = str_replace("_id", "", str_replace("__hasta", "", str_replace("__desde", "", $texto)));
@@ -1458,19 +1445,16 @@ class FormularioHelper extends FormHelper {
 			if (!empty($tableInfo[$field]['length']) && !isset($options['maxlength']) && $tipoCampo != "float") {
 				$options['maxlength'] = $tableInfo[$field]['length'];
 			}
-		}
-		elseif (!empty($options['options']) && is_string($options['options']) && $options['options'] === "listable") {
+		} elseif (!empty($options['options']) && is_string($options['options']) && $options['options'] === "listable") {
 			$opcionesValidas = array("displayField", "groupField", "conditions", "fields", "order", "limit", "recursive", "group", "contain", "model");
 			$opcionesValidasArray = array("displayField", "groupField", "conditions", "fields", "order", "contain");
 			foreach ($opcionesValidas as $opcionValida) {
 				if (!empty($options[$opcionValida])) {
 					if (!is_array($options[$opcionValida]) && in_array($opcionValida, $opcionesValidasArray)) {
 						$condiciones[$opcionValida] = $opcionValida . ":" . serialize(array($options[$opcionValida]));
-					}
-					elseif (in_array($opcionValida, $opcionesValidasArray)) {
+					} elseif (in_array($opcionValida, $opcionesValidasArray)) {
 						$condiciones[$opcionValida] = $opcionValida . ":" . serialize($options[$opcionValida]);
-					}
-					else {
+					} else {
 						$condiciones[$opcionValida] = $opcionValida . ":" . $options[$opcionValida];
 					}
 					unset($options[$opcionValida]);
@@ -1480,6 +1464,8 @@ class FormularioHelper extends FormHelper {
 			/**
 			* Armo la url y voy al controller a buscar los valores.
 			*/
+			//$url = array('controller' => $this->params['controller'], 'action' => 'listable', 'named' => $condiciones);
+			//$options['options'] = $this->requestAction($url);
 			$options['options'] = $this->requestAction("/" . $this->params['controller'] . "/" . $options['options'] . "/" . implode("/", $condiciones));
 		}
 
@@ -1499,6 +1485,37 @@ class FormularioHelper extends FormHelper {
 				$valorCampo = null;
 			}
 
+			/**
+			* Wysiwyg control based on FCKEditor.
+			* Isolate vendors code in js/vendors/fckeditor for easily later upgrade.
+			* Add a custom config file in js dir called fckconfig.js.
+			*/
+			if($tipoCampo === 'wysiwyg') {
+				include_once(WWW_ROOT . 'js' . DS . 'vendors' . DS . 'fckeditor' . DS . 'fckeditor.php');
+				$oFCKeditor = null;
+				if(empty($options['name'])) {
+						$oFCKeditor = new FCKeditor(sprintf("data[%s][%s]", $model, $field));
+				} else {
+						$oFCKeditor = new FCKeditor($options['name']);
+				}
+				$path = Router::url('/', true);
+				$oFCKeditor->BasePath = $path . 'js/vendors/fckeditor/' ;
+				$oFCKeditor->Config["CustomConfigurationsPath"] = $path . 'js/fckconfig.js';
+				$oFCKeditor->ToolbarSet = 'Custom';
+				//$oFCKeditor->ToolbarSet = 'Basic';
+				if (!empty($this->data[$field])) {
+						$oFCKeditor->Value = $this->data[$field];
+				}
+				ob_start();
+				$oFCKeditor->Create() ;
+				$out = ob_get_clean();
+				if (!isset($options['label'])) {
+						$options['label'] = Inflector::humanize($field);
+				}
+				$label = $this->tag('label', $options['label']);
+				return $this->tag('div', $label . $this->tag('div', $out, array('class' => 'editor')), array('class' => 'wysiwyg'));
+			}
+			
 			/**
 			* Manejo los tipos de datos date para que me arme el control seleccion de fechas.
 			*/
@@ -1598,8 +1615,7 @@ class FormularioHelper extends FormHelper {
 					$jsAutocomplete = $this->codeBlock('
 						jQuery("#' . $options['id'] . '").autocomplete("' . $urlAutocomplete . '");
 					');
-				}
-				else {
+				} else {
 					$options['after'] .= $this->image('auto_off.gif', array("class" => "busqueda_autoincremental", "id" => "autoincremental_off_" . $rnd, "style" => "cursor: pointer;", "alt" => "Busca al presionar la tecla enter (menos veloz)"));
 					$options['after'] .= $this->image('auto_on.gif', array("class" => "busqueda_autoincremental", "id" => "autoincremental_on_" . $rnd, "style" => "cursor: pointer;", "alt" => "Busca al presionar cada tecla (mas veloz)"));
 					$jsAutocomplete = $this->codeBlock('
@@ -1703,8 +1719,7 @@ class FormularioHelper extends FormHelper {
 				$m = $this->link($this->image('m.gif', array("class" => "periodo")), null, array("title" => "Mensual", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array("type" => "mensualAnterior")) . "');"));
 				if (empty($options['periodo'])) {
 					$after .= $q1 . $q2 . $m;
-				}
-				else {
+				} else {
 					foreach ($options['periodo'] as $v) {
 						switch($v) {
 							case "1Q":
