@@ -2086,6 +2086,8 @@ class FormularioHelper extends FormHelper {
 
 /**
  * Genera una serie de controles checkBox.
+ * TODO: ver "type"=>"select", 'multiple' => 'checkbox'
+ *			http://book.cakephp.org/view/193/options-multiple
  *
  * @param string $tagName El nombre del tag de la forma Model.field.
  * @param array $options Las opciones para generar el control.
@@ -2093,7 +2095,6 @@ class FormularioHelper extends FormHelper {
  * @access private
  */
 	function __checkboxMultiple($tagName, $options) {
-
 		list($model, $field) = explode(".", $tagName);
 		$opciones['elementosHtmlAttributes'] = array("class" => "checkboxMultiple");
 		$opciones['contenedorHtmlAttributes'] = array("class" => "checkboxMultiple");
