@@ -6,9 +6,8 @@
 */
 $accion = $formulario->input("Form.accion", array("type"=>"hidden", "id"=>"accion", "value"=>"grabar"));
 $cancelar = $formulario->button(__('Cancel', true), array("class"=>"cancelar", "onclick"=>"document.getElementById('accion').value='cancelar';form.submit();"));
-$action = Router::url('/') . $this->params['controller'] . '/add';
-$duplicar = $formulario->button(__('Duplicate', true), array("onclick"=>"document.getElementById('accion').value='duplicar';document.getElementById('form').action='" . $action . "';form.submit();"));
-$eliminar = $formulario->button(__('Delete', true), array("class"=>"boton_rojo", "onclick"=>"document.getElementById('accion').value='delete';document.getElementById('form').action='" . $action . "';form.submit();"));
+$duplicar = $formulario->button(__('Duplicate', true), array("onclick"=>"document.getElementById('accion').value='duplicar';document.getElementById('form').action='../save_multiple';form.submit();"));
+$eliminar = $formulario->button(__('Delete', true), array("class"=>"boton_rojo", "onclick"=>"document.getElementById('accion').value='delete';document.getElementById('form').action='../delete/#*ID*#/2';form.submit();"));
 $grabar = $formulario->submit(__('Save', true), array("id"=>"boton_grabar", "onclick"=>"document.getElementById('accion').value='grabar';form.submit();"));
 
 if(isset($accionesExtra['opciones']['acciones'])) {
@@ -37,8 +36,8 @@ else {
 		$acciones[] = $formulario->tag("div", $formulario->input("Form.volverAInsertar", array("div"=>false, "label"=>"Insertar un nuevo registro despues de grabar", "type"=>"checkbox", "checked"=>"false")), array("class"=>"volver_a_insertar"));
 	}
 	$acciones[] = $cancelar;
-	if($this->params['action'] === "edit" && count($this->data) == 1) {
-		$acciones[] = $eliminar;
+	if($this->params['action'] === "edit" && count($this->data) === 1) {
+		$acciones[] = str_replace('#*ID*#', $this->data[0][Inflector::classify($this->params['controller'])]['id'], $eliminar);
 		$acciones[] = $duplicar;
 	}
 	$acciones[] = $accion;

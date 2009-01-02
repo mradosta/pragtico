@@ -260,7 +260,6 @@ class AppController extends Controller {
  * @access public
  */
 	function save_multiple() {
-		
 		if (isset($this->data['Form']['volverAInsertar'])) {
 			$this->action = 'add';
 		} else {
@@ -268,9 +267,13 @@ class AppController extends Controller {
 		}
 		
 		if (!empty($this->data['Form']['accion'])) {
-			if ($this->data['Form']['accion'] === "grabar") {
+			if ($this->data['Form']['accion'] === 'duplicar') {
+				unset($this->data[$this->modelClass][$this->{$this->modelClass}->primaryKey]);
+				$this->data['Form']['accion'] = 'grabar';
+			}
+			
+			if ($this->data['Form']['accion'] === 'grabar') {
 				$c = 0;
-
 				/**
 				* Saco lo que no tengo que grabar.
 				* En form, tenfo informacion que mande desde la vista.
@@ -409,7 +412,7 @@ class AppController extends Controller {
  * @return void.
  * @access public
  */
-   	function delete($id = null) {
+   	function delete($id = null, $goBack = 1) {
         if (!empty($id) && is_numeric($id)) {
 			$ids[] = $id;
 		} else {
@@ -432,7 +435,7 @@ class AppController extends Controller {
 				$this->Session->setFlash(__('The record could not be deleted', true), 'error', array('errores' => $errores));
 			}			
 		}
-		$this->History->goBack();
+		$this->History->goBack($goBack);
 	}
 
 
