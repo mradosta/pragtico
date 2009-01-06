@@ -1306,7 +1306,7 @@ class LiquidacionesController extends AppController {
 				
 				$Siap = ClassRegistry::init("Siap");
 				$data = $Siap->findById($this->data['Condicion']['Siap-version']);
-				foreach ($data['SiapsDetalle'] as $k=>$v) {
+				foreach ($data['SiapsDetalle'] as $k => $v) {
 					$detalles[$v['elemento']] = $v;
 				}
 				
@@ -1316,13 +1316,42 @@ class LiquidacionesController extends AppController {
 		 							"Liquidacion.mes"			=> $periodo['mes']);
 				
 				$liquidaciones = $this->Liquidacion->find("all", 
-														array(	"checkSecurity"	=> false,
-																"contain"		=> array(	"Empleador",
-																							"Relacion" => array("Situacion", "ConveniosCategoria", "Ausencia" => array("conditions" => array("Ausencia.desde >=" => $periodo['desde'], "Ausencia.desde <=" => $periodo['hasta']))),
-																							"Trabajador" => array("ObrasSocial", "Condicion", "Siniestrado", "Localidad")),
-															 	"conditions"=> $conditions));
+						array(	"checkSecurity"	=> false,
+								"contain"		=> array(	"Empleador",
+										"Relacion" 		=> array("Situacion", "ConveniosCategoria", "Ausencia" => 
+												array("conditions" => array("Ausencia.desde >=" => $periodo['desde'], "Ausencia.desde <=" => $periodo['hasta']))),
+										"Trabajador" 	=> array("ObrasSocial", "Condicion", "Siniestrado", "Localidad")),
+								"conditions"	=> $conditions));
 				
 				if (!empty($liquidaciones)) {
+					
+					/**
+					* Must sumarize. Can't do in by query because of contain.
+					*/
+					$all = Set::extract('/Liquidacion/relacion_id', $liquidaciones);
+					$unique = array_unique($all);
+					$duplicates = Set::diff($unique, $all);
+					
+					$liquidacionesOriginal = $liquidaciones;
+					$liquidaciones = Set::combine($liquidaciones, '{n}.Relacion.id', '{n}');
+					
+					$totales = array('remunerativo', 'no_remunerativo', 'deduccion', 'total_pesos', 'total_beneficios');
+					foreach ($duplicates as $duplicateRelacionId) {
+						foreach ($totales as $total) {
+							$liquidaciones[$duplicateRelacionId]['Liquidacion'][$total] = 0;
+						}
+					}
+					
+					foreach ($liquidacionesOriginal as $liquidacion) {
+						if (!in_array($liquidacion['Liquidacion']['relacion_id'], $duplicates)) {
+							continue;
+						}
+						
+						foreach ($totales as $total) {
+							$liquidaciones[$liquidacion['Liquidacion']['relacion_id']]['Liquidacion'][$total] += $liquidacion['Liquidacion'][$total];
+						}
+					}
+					
 					$lineas = null;
 					foreach ($liquidaciones as $liquidacion) {
 						$campos = $detalles;
@@ -1352,8 +1381,8 @@ class LiquidacionesController extends AppController {
 						$campos['c22']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
 						
 						/**
-						* Viene expresado como una formula.
-						*/
+						 * Viene expresado como una formula.
+						 */
 						$campos['c23']['valor'] = $this->Formulador->resolver(str_replace("c23", $liquidacion['Liquidacion']['remunerativo'], $campos['c23']['valor']));
 						
 						if (!empty($liquidacion['Trabajador']['siniestrado_id'])) {
