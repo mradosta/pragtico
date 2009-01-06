@@ -95,10 +95,6 @@ $acciones[] = $formulario->link('Beneficios', null,
 			array(	'id' 		=> 'pago_beneficios', 
 					'class' 	=> 'link_boton', 
 	 				'title' 	=> 'Realiza un pago masivo con Beneficios'));
-$acciones[] = $formulario->link('Deposito', null, 
-			array(	'id' 		=> 'pago_deposito', 
-					'class' 	=> 'link_boton', 
-	 				'title' 	=> 'Realiza un pago masivo con Deposito en la Cuenta del Trabajador'));
 $accionesExtra['opciones'] = array('acciones' => $acciones);
 $botonesExtra = $formulario->button('Det. Cambio', 
 			array(	'id' 		=> 'detalle_cambio', 
