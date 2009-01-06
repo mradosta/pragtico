@@ -804,6 +804,7 @@ class FormularioHelper extends FormHelper {
 								}
 								array_unshift($acciones, $this->link($this->image('seleccionar.gif', array("alt" => "Selecciona este registro")), null, array("class" => "seleccionar jqmClose", "id" => "xsxs", "title"=>$retono, "onclick" => "retornoLov('" . $opciones['seleccionLov']['retornarA'] . "','" . $id . "', '" . str_replace("'", "\'", $retono) . "', '" . $padre . "');")));
 								*/
+								array_unshift($acciones, $this->link($this->image('seleccionar.gif', array("alt" => __('Select current record', true))), null, array("class" => "seleccionar jqmClose", "id" => "xsxs", "title"=>$retono, "onclick" => "retornoLov('" . $opciones['seleccionLov']['retornarA'] . "','" . $id . "', '" . str_replace("'", "\'", $retono) . "', 'opener');")));
 								/**
 								* Cuando se trata de una lov que viene de una busqueda y solo retorna un registro, se lo autoselecciono y cierro la lov.
 								*/
@@ -1105,7 +1106,7 @@ class FormularioHelper extends FormHelper {
 
 		if (empty($tabla)) {
 			if ($opciones['omitirMensajeVacio'] === false) {
-				$tabla = $this->tag('span', __('The grid is empty. Enter data or verify your search.'), array('class' => 'color_rojo'));
+				$tabla = $this->tag('span', __('The grid is empty. Enter some data or verify your search criterias.', true), array('class' => 'color_rojo'));
 			}
 			else {
 				/**
