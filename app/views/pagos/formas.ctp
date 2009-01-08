@@ -27,16 +27,20 @@ foreach ($this->data['PagosForma'] as $k=>$v) {
 	$fila[] = array('model' => "PagosForma", 'field' => "id", 'valor' => $v['id'], "write"=>$v['write'], "delete"=>$v['delete']);
 	$fila[] = array('model' => "PagosForma", 'field' => "forma", "class" => "izquierda", 'valor' => $v['forma']);
 	$fila[] = array('model' => "PagosForma", 'field' => "fecha", 'valor' => $v['fecha']);
-	$fila[] = array('model' => "PagosForma", 'field' => "monto", "valor" => $formato->format($v['monto']));
-	$fila[] = array('model' => "PagosForma", 'field' => "fecha_pago", 'valor' => $v['fecha']);
-	$fila[] = array('model' => "PagosForma", 'field' => "cheque_numero", 'valor' => $v['cheque_numero'], "class"=>"derecha", "nombreEncabezado"=>"Cheque");
+	$fila[] = array('model' => "PagosForma", 'field' => "monto", 'tipoDato' => 'moneda', "valor" => $v['monto']);
+	$fila[] = array('model' => "PagosForma", 'field' => "fecha_pago", 'valor' => $v['fecha_pago']);
+	$fila[] = array('model' => "PagosForma", 'field' => "cheque_numero", 'valor' => $v['cheque_numero'], "tipoDato"=>"integer", "nombreEncabezado"=>"Cheque");
 	$cuerpo[] = $fila;
 }
 
-
+$opcionesTabla['tabla']['modificar'] = false;
+$opcionesTabla['tabla']['eliminar'] = false;
+$opcionesTabla['tabla']['permisos'] = false;
+$opcionesTabla['tabla']['ordenEnEncabezados'] = false;
+$url = null;
 if($this->data['Pago']['estado'] == "Pendiente") {
 	$url = array('controller' => "pagos_formas", 'action' => 'add', "PagosForma.pago_id"=>$this->data['Pago']['id']);
-	echo $this->element('desgloses/agregar', array('cuerpo' => $cuerpo, 'url' => $url, 'titulo' => "Formas de Pago"));
 }
+echo $this->element('desgloses/agregar', array('cuerpo' => $cuerpo, 'url' => $url, 'titulo' => 'Formas de Pago', 'opcionesTabla' => $opcionesTabla));
 
 ?>

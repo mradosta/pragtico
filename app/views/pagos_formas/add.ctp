@@ -24,36 +24,28 @@ $campos['PagosForma.id'] = array();
 $campos['PagosForma.pago_monto'] = array("type"=>"hidden");
 $campos['PagosForma.pago_acumulado'] = array("type"=>"hidden");
 $campos['PagosForma.pago_id'] = array(	"label"=>"Pago",
-											"lov"=>array("controller"	=>	"pagos",
-													"seleccionMultiple"	=> 	0,
-														"camposRetorno"	=>	array(	"Pago.fecha",
-																					"Pago.monto")));
+		"lov"=>array("controller"	=>	"pagos",
+				"seleccionMultiple"	=> 	0,
+					"camposRetorno"	=>	array(	"Pago.fecha",
+												"Pago.monto")));
 $campos['PagosForma.fecha'] = array();
-if(count($formas) == 1) {
-	$campos['PagosForma.forma'] = array("options"=>$formas, "value"=>$formas[key($formas)]);
-}
-else {
-	$campos['PagosForma.forma'] = array("options"=>$formas);
-}
-$campos['PagosForma.monto'] = array();
+$campos['PagosForma.forma'] = array();
+$campos['PagosForma.monto'] = array('label' => 'Monto $');
 $campos['PagosForma.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
 $campos = null;
-$campos['PagosForma.empleador_id'] =  array(		"lov"	=>array("controller"		=> 	"empleadores",
-																"seleccionMultiple"	=> 	0,
-																"camposRetorno"		=> 	array(	"Empleador.cuit",
-																								"Empleador.nombre")));
+$campos['PagosForma.empleador_id'] =  array(		"lov"	=>
+		array(	"controller"		=> 	"empleadores",
+				"seleccionMultiple"	=> 	0,
+				"camposRetorno"		=> 	array(	"Empleador.cuit",
+												"Empleador.nombre")));
 $campos['PagosForma.cuenta_id'] = array("label"=>"Cuenta", "type"=>"relacionado", "relacion"=>"PagosForma.empleador_id", "url"=>"pagos/cuentas_relacionado");
 
 $campos['PagosForma.cheque_numero'] = array("after"=>$formulario->image('cheques.gif', array("class"=>"after", "id"=>"buscarUltimoNumero", 'alt' => "Buscar ultimo numero de cheque")));
 $campos['PagosForma.fecha_pago'] = array();
-$fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array("id"=>"chequeFieldSet", "legend"=>"Cheque", 'imagen' => 'cheques.gif')));
-
-
-$campos = null;
-$campos['PagosForma.cbu_numero'] =  array();
-$fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array("id"=>"depositoFieldSet", "legend"=>"Deposito en Cuenta", 'imagen' => 'pagos.gif')));
+$campos['PagosForma.cbu_numero'] =  array('aclaracion' => 'Si lo deja en blanco, se utilizara el cbu del Trabajador');
+$fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array("id"=>"bancarioFieldSet", "legend"=>"Bancario", 'imagen' => 'pagos.gif')));
 
 
 $fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Forma de Pago", 'imagen' => 'pagos_formas.gif')));
@@ -84,31 +76,36 @@ $js = "
 	);
 	
 	
-	jQuery('#chequeFieldSet').hide();
-	jQuery('#depositoFieldSet').hide();
+	jQuery('#bancarioFieldSet').hide();
 
-	if(jQuery('#PagosFormaFormaDeposito').attr('checked') == true) {
+	if(jQuery('#PagosFormaFormaDeposito,').attr('checked') == true) {
 		jQuery('#depositoFieldSet').show();
+		jQuery('#PagosFormaChequeNumero').parent().hide();
 	}
 	else if(jQuery('#PagosFormaFormaCheque').attr('checked') == true) {
-		jQuery('#chequeFieldSet').show();
+		jQuery('#bancarioFieldSet').show();
+		jQuery('#PagosFormaCbuNumero').parent().hide();
 	}
 
 	jQuery('input:radio').bind('click',
 		function() {
-			jQuery('#chequeFieldSet').hide();
-			jQuery('#depositoFieldSet').hide();
+			jQuery('#bancarioFieldSet').hide();
 		});
 		
 	jQuery('#PagosFormaFormaDeposito').bind('click',
 		function() {
-			jQuery('#depositoFieldSet').show();
+			jQuery('#bancarioFieldSet').show();
+			jQuery('#PagosFormaChequeNumero').parent().hide();
+			jQuery('#PagosFormaCbuNumero').parent().show();
 		});
 		
 	jQuery('#PagosFormaFormaCheque').bind('click',
 		function() {
-			jQuery('#chequeFieldSet').show();
+			jQuery('#bancarioFieldSet').show();
+			jQuery('#PagosFormaChequeNumero').parent().show();
+			jQuery('#PagosFormaCbuNumero').parent().hide();
 		});
+		
 ";
 $formulario->addScript($js);
 ?>

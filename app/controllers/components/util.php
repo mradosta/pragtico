@@ -162,167 +162,6 @@ class UtilComponent extends Object {
 		$formato->Number = new NumberHelper();
 		return $formato->format($valor, $options);
 	}
-
-
-/**
- * Formatea un valor de acuerdo a un formato.
- *
- * @param string $valor Un valor a formatear.
- * @param array $options Array que contiene el tipo de formato y/o sus opciones.
- * @return string Un string con el formato especificado.
- */
-	function format_deprecated($valor, $options = array()) {
-		if (is_string($options)) {
-			$tmp = $options;
-			$options = array();
-			$options['type'] = $tmp;
-		}
-
-		$return = $valor;
-		if (!isset($options['type'])) {
-			$return = $this->Number->format($valor, $options);
-		}
-		else {
-			switch($options['type']) {
-				case "helper2db":
-					$tmpFecha = explode("/", substr($valor,0,10));
-					$mes=$tmpFecha[1];
-					$dia=$tmpFecha[0];
-					$anio=$tmpFecha[2];
-					$return = $anio . "-" . $mes . "-" . $dia . substr($valor,10);
-					break;
-				case "db2helper":
-					if ($valor == "0000-00-00" || $valor == "0000-00-00 00:00:00") {
-						$return = "";
-					}
-					else {
-						$tmpFecha = explode("-", substr($valor,0,10));
-						$mes=$tmpFecha[1];
-						$dia=$tmpFecha[2];
-						$anio=$tmpFecha[0];
-						$return = $dia . "/" . $mes . "/" . $anio . substr($valor,10);
-					}
-					break;
-				case "ano":
-					$return = $this->Time->format("Y", substr($valor,0,10));
-					break;
-				case "mes":
-					$return = $this->Time->format("m", substr($valor,0,10));
-					break;
-				case "dia":
-					$return = $this->Time->format("d", substr($valor,0,10));
-					break;
-				case "ultimoDiaDelMes":
-					$return = idate('d', mktime(0, 0, 0, ($options['mes'] + 1), 0, $options['ano']));
-					break;
-				case "mesEnLetras":
-					$meses = $this->getMeses();
-					$mes = $this->Time->format("m", substr($valor,0,10));
-					/**
-					* Me aseguro de que sea un numero, y no un string.
-					*/
-					$mes = $mes * 1;
-					if (is_numeric($mes) && $mes >=1 && $mes <= 12) {
-						$return = $meses[$mes];
-					}
-					break;
-			}
-		}
-		return $return;
-	}
-
-
-/**
- * Trae el dia.
- * $options['fecha']
- */
-	function traerDia_deprecated($options = null) {
-		return date("d", strtotime($options['fecha']));
-	}
-	
-
-/**
- * Trae el mes.
- * $options['fecha']
- */
-	function traerMes_deprecated($options = null) {
-		return date("m", strtotime($options['fecha']));
-	}
-
-	
-/**
- * Trae el ano.
- * $options['fecha']
- */
-	function traerAno_deprecated($options = null) {
-		return date("Y", strtotime($options['fecha']));
-	}
-	
-	
-/**
- * Trae el ultimo dia del mes en numero.
- * $options['mes']
- * $options['ano']
- */
-	function traerUltimoDiaDelMes_deprecated($options = null) {
-		return  idate('d', mktime(0, 0, 0, ($options['mes'] + 1), 0, $options['ano']));
-	}
-
-/**
- * Trae una fecha.
- * $options['dia']
- * $options['mes']
- * $options['ano']
- */
-	function traerFecha_deprecated($options = null) {
-		return $options['ano'] . "-" . str_pad($options['mes'], 2, "0", STR_PAD_LEFT) . "-" . str_pad($options['dia'], 2, "0", STR_PAD_LEFT);
-	}
-
-/**
- * A partir de un periodo expresado en formato string, retorna un array de ano, mes y periodo.
- * El string (case-insensitive) puede ser:
- * 			- 2008031Q	Ano:2008, Mes:03, Periodo: 1Q
- * 			- 2007112Q	Ano:2007, Mes:11, Periodo: 2Q
- * 			- 200712M	Ano:2007, Mes:12, Periodo: M
- * false en caso de que venga vacio o no cumpla con el formato.
- */
-	function traerPeriodo_deprecated($periodo) {
-		if (!empty($periodo) && preg_match(VALID_PERIODO, strtoupper($periodo), $matches)) {
-
-			$return['periodoCompleto'] = $matches[0];
-			$return['ano'] = $matches[1];
-			$return['mes'] = $matches[2];
-			$return['periodo'] = $matches[3];
-
-			$opciones = array(	"mes"	=> $periodo['mes'],
-								"ano"	=> $periodo['ano']);
-
-			if ($matches[3] == "1Q") {
-				$opciones = am($opciones, array("dia" => "01"));
-				$fechaDesde = $this->traerFecha($opciones);
-				$opciones = am($opciones, array("dia" => "15"));
-				$fechaHasta = $this->traerFecha($opciones);
-			}
-			elseif ($matches[3] == "2Q") {
-				$opciones = am($opciones, array("dia" => "16"));
-				$fechaDesde = $this->traerFecha($opciones);
-				$opciones = am($opciones, array("dia"=>$this->traerUltimoDiaDelMes($opciones)));
-				$fechaHasta = $this->traerFecha($opciones);
-			}
-			elseif ($matches[3] == "M") {
-				$opciones = am($opciones, array("dia" => "01"));
-				$fechaDesde = $this->traerFecha($opciones);
-				$opciones = am($opciones, array("dia"=>$this->traerUltimoDiaDelMes($opciones)));
-				$fechaHasta = $this->traerFecha($opciones);
-			}
-			$return['desde'] = $fechaDesde;
-			$return['hasta'] = $fechaHasta;
-			
-			return $return;
-		}
-		return false;
-	}
-
 	
 	
 /**
@@ -347,97 +186,33 @@ class UtilComponent extends Object {
 		$Dates = new Dates();
 		return $Dates->dateDiff($fechaDesde, $fechaHasta);
 	}
+
 	
-
 /**
- * Suma una cantidad de intervalo a una fecha.
+ * Suma una cantidad de "intervalo" a una fecha.
  *
- * El intervalor puede ser y,q,m,w,d,h,n,s
+ * @param string $fecha La fecha a la cual se le debe sumar el intervalo.
+ * @param string $intervalo El intervalo de tiempo.
+ * El intervalo puede ser:
+ *		y Year
+ *		q Quarter
+ *		m Month
+ * 		w Week
+ * 		d Day
+ * 		h Hour
+ * 		n minute
+ * 		s second
+ * @param integer $cantidad La cantidad de intervalo a sumar a la fecha.
+ * @return mixed La fecha en formato yyyy-mm-dd hh:mm:ss con el intervalo agregado, false si no fue posible realizar la operacion.
+ * @access public
  */
-	function dateAdd_deprecated ($options = array()) {
-		$default = array("intervalo" => "d", "cantidad" => "1", "fecha"=>date("Y-m-d"));
-		$options = am($default, $options);
-		$fecha = strtotime($options['fecha']);
-		
-		$ds = getdate($fecha);
-		$h = $ds["hours"];
-		$n = $ds["minutes"];
-		$s = $ds["seconds"];
-		$m = $ds["mon"];
-		$d = $ds["mday"];
-		$y = $ds["year"];
-
-		$n = $options['cantidad'];
-		switch ($options['intervalo']) {
-			case "y":
-				$y += $n;
-				break;
-			case "q":
-				$m +=($n * 3);
-				break;
-			case "m":
-				$m += $n;
-				break;
-			case "w":
-				$d +=($n * 7);
-				break;
-			case "d":
-				$d += $n;
-				break;
-			case "h":
-				$h += $n;
-				break;
-			case "n":
-				$n += $n;
-				break;
-			case "s":
-				$s += $n;
-				break;
-		}
-		return date("Y-m-d", mktime($h ,$n, $s,$m ,$d, $y));
+	function dateAdd($fecha, $intervalo="d", $cantidad=1) {
+		App::import("Vendor", "dates", "pragmatia");
+		$Dates = new Dates();
+		return $Dates->dateAdd($fecha, $intervalo, $cantidad);
 	}
- 
 
-/**
- * Calcula la diferencia entre dos fechas.
- *
- * Las fechas deben estar en formato mysql (yyyy-mm-dd)
- * Si no se pasa la segunda fecha, se tomara la fecha actual como segunda fecha.
- * @return mixed 	array con dias, horas, minutos y segundos en caso de que las fechas sean validas.
- * 					False en caso de que las fechas sean invalidas.
- */
-function diferenciaEntreFechas_deprecated($options = null) {
-
-	$fecha1 = strtotime($options['desde']);
-	if (empty($options['hasta'])) {
-		$fecha2 = time();
-	}
-	else {
-		$fecha2 = strtotime($options['hasta']);
-	}
 	
-	if ($fecha1 && $fecha2) {
-		$diff = abs($fecha1-$fecha2);
-		$daysDiff = floor($diff/60/60/24);
-		$diff -= $daysDiff*60*60*24;
-		$hrsDiff = floor($diff/60/60);
-		$diff -= $hrsDiff*60*60;
-		$minsDiff = floor($diff/60);
-		$diff -= $minsDiff*60;
-		$secsDiff = $diff;
-
-		$diferencia=false;
-		$diferencia['dias']=$daysDiff;
-		$diferencia['horas']=$hrsDiff;
-		$diferencia['minutos']=$minsDiff;
-		$diferencia['segundos']=$secsDiff;
-		return $diferencia;
-	}
-	else {
-		return false;
-	}
-}
-
 	function getFileName($name, $type) {
 		return $this->__getName($name) . "." . $this->__getType($type);
 	}

@@ -26,12 +26,14 @@
 class PagosForma extends AppModel {
 
 
-	var $chequearBeforeSave = true;
-
+	var $modificadores = array(	'add'  	=> 
+			array('valoresDefault' => array(	'fecha' 		=> array('date' => 'd/m/Y'),
+										   		'fecha_pago' 	=> array('date' => 'd/m/Y'))));
+	
 	var $validate = array(
         'fecha' => array(
 			array(
-				'rule'	=> VALID_DATE, 
+				'rule'		=> VALID_DATE, 
 				'message'	=> 'Debe especificar una fecha valida.')
         ),
         'forma' => array(
@@ -41,22 +43,22 @@ class PagosForma extends AppModel {
         ),
         'cbu_numero' => array(
 			array(
-				'rule'	=> array('minLength', 22),
+				'rule'		=> array('minLength', 22),
 				'allowEmpty' => true,
-				'message' => 'Debe ingresar los 22 numeros del CBU.'),
+				'message' 	=> 'Debe ingresar los 22 numeros del CBU.'),
 			array(
-				'rule'	=> 'validarCbu',
+				'rule'		=> 'validCbu',
 				'message'	=> 'El Cbu ingresado no es valido.')
         ),
         'cheque_numero' => array(
 			array(
-				'rule'	=> array('minLength', 8),
+				'rule'		=> array('minLength', 8),
 				'allowEmpty' => true,
-				'message' => 'Debe ingresar los 8 numeros del cheque.')
+				'message'	 => 'Debe ingresar los 8 numeros del cheque.')
         ),
         'monto' => array(
 			array(
-				'rule'	=> VALID_NUMBER_MAYOR_A_CERO, 
+				'rule'		=> VALID_NUMBER_MAYOR_A_CERO, 
 				'message'	=> 'Debe especificar un monto mayor a cero.')
         )
 	);
@@ -78,35 +80,22 @@ class PagosForma extends AppModel {
 		$pagosForma = $this->findById($id);
 		$pagosForma['PagosForma']['id'] = null;
 		$pagosForma['PagosForma']['monto'] = $pagosForma['PagosForma']['monto'] * -1;
+		$pagosForma['PagosForma']['observacion'] = 'Esta forma de pago ha sido revertida';
 		$this->chequearBeforeSave = false;
-		return $this->save($pagosForma, false);
-	}
-
-
-/**
- * Antes de borrar una forma de pago, actualizo el estado del pago.
- */
-	function beforeDelete($cascade = true) {
-		$pago = $this->findById($this->id);
-		if (!empty($pago)) {
-			if ($this->Pago->save(array('Pago'	=>array('id'		=> $pago['Pago']['id'],
-														'estado'	=> 'Pendiente')), false)) {
-				return parent::beforeDelete($cascade);							
+		$this->begin();
+		if ($this->save($pagosForma, false)) {
+			if ($this->Pago->updateState($pagosForma['PagosForma']['pago_id'])) {
+				$this->commit();
+				return true;
 			}
-			die;
 		}
+		$this->rollback();
 		return false;
 	}
-	
-	function beforeSave() {
 
-		/**
-		* Cuando revierto, no debo ejecutar ningun chequeo.
-		*/
-		if ($this->chequearBeforeSave === false) {
-			return true;
-		}
-		
+	
+	function beforeValidate($options = array()) {
+
 		/**
 		* Cada forma de pago tiene valores que no corresponden, me aseguro de quitarlos.
 		*/
@@ -118,13 +107,27 @@ class PagosForma extends AppModel {
 				$this->data['PagosForma']['cuenta_id'] = null;
 				$this->data['PagosForma']['cbu_numero'] = '0';
 				break;
-			case 'Deposito en Cuenta':
+			case 'Deposito':
 				if (empty($this->data['PagosForma']['cbu_numero'])) {
-					$this->invalidate('cbu_numero', 'Debe ingresar el Numero de Cbu.');
+					$pago = $this->Pago->find('first', 
+					  		array('contain'		=> array( 'Liquidacion.Relacion.Trabajador'),
+								  'conditions' 	=> 
+										array('Pago.id' => $this->data['PagosForma']['pago_id'])));
+					if (empty($pago['Liquidacion']['Relacion']['Trabajador']['cbu'])) {
+						$this->invalidate('cbu_numero', 'El trabajador no tiene CBU asignado y no ha ingresado ninguno.');
+						return false;
+					}
+					$this->data['PagosForma']['cbu_numero'] = $pago['Liquidacion']['Relacion']['Trabajador']['cbu'];
+				}
+				if (empty($this->data['PagosForma']['fecha_pago'])) {
+					$this->invalidate('fecha_pago', 'Debe ingresar La fecha de acreditacion del deposito.');
 					return false;
 				}
+				if (empty($this->data['PagosForma']['cuenta_id'])) {
+					$this->invalidate('cuenta_id', 'Debe seleccionar la Cuenta Emisora del Deposito.');
+				}
 				$this->data['PagosForma']['cheque_numero'] = '0';
-				$this->data['PagosForma']['cuenta_id'] = null;
+				d($this->data);
 				break;
 			case 'Cheque':
 				if (empty($this->data['PagosForma']['fecha_pago'])) {

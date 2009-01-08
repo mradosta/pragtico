@@ -26,14 +26,14 @@ class EmpleadoresController extends AppController {
 /**
  * Add.
  */
-	function save_multiple() {
+	function save() {
 		/**
 		* Si esta grabando y selecciona que desea crear el area general por defecto, se la creo.
 		*/
         if (!empty($this->data) && !empty($this->data['Form']['accion']) && $this->data['Form']['accion'] === "grabar") {
 	        $this->data = array_merge($this->data, array('Area' => array(array('nombre' => 'General'))));
         }
-        parent::save_multiple();
+        parent::save();
 	}
 
 /**

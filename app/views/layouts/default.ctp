@@ -67,9 +67,9 @@ $css[] = "jquery.autocomplete";
 */
 $css[] = "aplicacion.default.screen";
 
-if($formulario->traerPreferencia("lov_apertura") != "popup") {
-	$css[] = "jquery.jqmodal";
-}
+//if($formulario->traerPreferencia("lov_apertura") != "popup") {
+//	$css[] = "jquery.jqmodal";
+//}
 $html->css($css, null, array("media"=>"screen"), false);
 
 $formulario->addScript("default", "links");

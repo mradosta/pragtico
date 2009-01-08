@@ -435,10 +435,14 @@ class LiquidacionesController extends AppController {
 			}
 		}
 
+		foreach (array('remunerativo', 'no_remunerativo', 'deduccion', 'total_pesos', 'total_beneficios', 'total') as $total) {
+			$totales[$total] = number_format($totales[$total], 3, '.', '');
+		}
 		
 		/**
 		* Genero los pagos pendientes.
 		* Diferencio en los diferentes tipos (beneficios o pesos).
+		*/
 		$auxiliar = null;
 		$auxiliar['estado'] = "Pendiente";
 		$auxiliar['fecha'] = "##MACRO:fecha_liquidacion##";
@@ -467,8 +471,6 @@ class LiquidacionesController extends AppController {
 		if (!empty($error)) {
 			$save['LiquidacionesError'] = $error;
 		}
-		*/
-		
 		
 		$save['Liquidacion']			= array_merge($liquidacion, $totales);
 		$save['LiquidacionesDetalle']	= $detalle;
@@ -1335,7 +1337,7 @@ class LiquidacionesController extends AppController {
 					$liquidacionesOriginal = $liquidaciones;
 					$liquidaciones = Set::combine($liquidaciones, '{n}.Relacion.id', '{n}');
 					
-					$totales = array('remunerativo', 'no_remunerativo', 'deduccion', 'total_pesos', 'total_beneficios');
+					$totales = array('remunerativo', 'no_remunerativo', 'deduccion', 'total_pesos', 'total_beneficios', 'total');
 					foreach ($duplicates as $duplicateRelacionId) {
 						foreach ($totales as $total) {
 							$liquidaciones[$duplicateRelacionId]['Liquidacion'][$total] = 0;
@@ -1588,14 +1590,15 @@ class LiquidacionesController extends AppController {
 				$model = $v['LiquidacionesAuxiliar']['model'];
 				$idsAuxiliares[] = $v['LiquidacionesAuxiliar']['id'];
 				$save = unserialize($v['LiquidacionesAuxiliar']['save']);
+
 				foreach ($save as $campo=>$valor) {
-					preg_match("/^##MACRO:([a-z,_]+)##$/",$valor, $matches);
+					preg_match('/^##MACRO:([a-z,_]+)##$/',$valor, $matches);
 					if (!empty($matches[1])) {
 						switch($matches[1]) {
-							case "fecha_liquidacion": //Indica la fecha de la liquidacion.
+							case 'fecha_liquidacion':
 								$save[$campo] = date("d/m/Y");
 								break;
-							case "liquidacion_id": //Indica el id de la liquidacion que se grabara.
+							case 'liquidacion_id':
 								$save[$campo] = $v['LiquidacionesAuxiliar']['liquidacion_id'];
 								break;
 						}
@@ -1610,42 +1613,35 @@ class LiquidacionesController extends AppController {
 				}
 			}
 			
-			/**
-			* Cada liquidacion confirmada, es en teoria un pago pendiente, entonces lo inserto.
-			*/
-			//$creacionPagos = false;
-			//$creacionPagos = $this->Liquidacion->generarPagosPendientes($ids);
-			
 
 			/**
-			* Si lo anterior salio todo ok, continuo.
-			*/
+			 * Si lo anterior salio todo ok, continuo.
+			 */
 			if ($c === count($auxiliares)) {
-				$this->Liquidacion->recursive = 1;
-				if ($this->Liquidacion->updateAll(array("estado" => "'Confirmada'"), array("Liquidacion.id"=>$ids))) {
+				$this->Liquidacion->recursive = -1;
+				if ($this->Liquidacion->updateAll(array('estado' => "'Confirmada'"), array('Liquidacion.id' => $ids))) {
 					/**
-					* Borro de la tabla auxiliar.
-					*/
+					 * Borro de la tabla auxiliar.
+					 */
 					if (!empty($idsAuxiliares)) {
-						$this->Liquidacion->LiquidacionesAuxiliar->recursive = 1;;
-						$this->Liquidacion->LiquidacionesAuxiliar->deleteAll(array("LiquidacionesAuxiliar.id"=>$idsAuxiliares));
+						$this->Liquidacion->LiquidacionesAuxiliar->recursive = -1;;
+						$this->Liquidacion->LiquidacionesAuxiliar->deleteAll(array('LiquidacionesAuxiliar.id' => $idsAuxiliares));
 					}
 					$this->Liquidacion->commit();
-					$this->Session->setFlash("Se confirmaron correctamente " . count($ids) . " liquidacion/es.", "ok");
-				}
-				else {
+					$this->Session->setFlash('Se confirmaron correctamente ' . count($ids) . ' liquidacion/es.', 'ok');
+				} else {
 					$this->Liquidacion->rollback();
 					$this->Liquidacion->__buscarError();
-					$this->Session->setFlash("Ocurrio un error al intentar confirmar las liquidaciones.", "error");
+					$this->Session->setFlash('Ocurrio un error al intentar confirmar las liquidaciones.', 'error');
 				}
-			}
-			else {
+			} else {
 				$this->Liquidacion->rollback();
-				$this->Session->setFlash("Ocurrio un error al intentar confirmar las liquidaciones. No se puedieron actualizar los registros relacionados.", "error");
+				$this->Session->setFlash('Ocurrio un error al intentar confirmar las liquidaciones. No se puedieron actualizar los registros relacionados.', 'error');
 			}
 		}
 		$this->History->goBack(2);
 	}
+	
 
 /**
  * recibo_excel.

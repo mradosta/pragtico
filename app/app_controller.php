@@ -173,22 +173,23 @@ class AppController extends Controller {
 			foreach ($this->passedArgs as $k => $v) {
 				list($model, $field) = explode(".", $k);
 				$this->data[$model][$field] = $v;
-				$modelAsociado = str_replace(" ", "", Inflector::humanize(str_replace("_id", "", $field)));
-				
-				/**
-				* Doy tratamiento al tipo especial de relacion con sigo mismo.
-				*/
-				if ($modelAsociado === 'Parent') {
-					$resultado = $this->{$model}->find('first', array('conditions' => array($model . "." . $this->{$model}->primaryKey => $v)));
-				} else {
-					$resultado = $this->{$model}->{$modelAsociado}->find('first', array('conditions' => array($modelAsociado . "." . $this->{$model}->{$modelAsociado}->primaryKey => $v)));
-				}
-				
-				if (!empty($resultado)) {
+				if (substr($field, -3) === '_id') {
+					$modelAsociado = str_replace(" ", "", Inflector::classify(str_replace("_id", "", $field)));
+					
+					/**
+					* Doy tratamiento al tipo especial de relacion con sigo mismo.
+					*/
+					if ($modelAsociado === 'Parent') {
+						$resultado = $this->{$model}->find('first', array('conditions' => array($model . "." . $this->{$model}->primaryKey => $v)));
+					} else {
+						$resultado = $this->{$model}->{$modelAsociado}->find('first', array('conditions' => array($modelAsociado . "." . $this->{$model}->{$modelAsociado}->primaryKey => $v)));
+					}
 					$this->data[$modelAsociado] = $resultado;
+				} else {
+					$this->data[$model][$field] = $v;
 				}
 			}
-		}		
+		}
 	}
 	
 
@@ -250,7 +251,7 @@ class AppController extends Controller {
 
 
 /**
- * saveMultiple.
+ * save.
  * Se encarga ed guardar datos editados.
  * Maneja arrays de data, es decir, puede guardar data de edicion multiple como simple.
  * Valida y guarda master/detail.
@@ -258,7 +259,7 @@ class AppController extends Controller {
  * @return void.
  * @access public
  */
-	function save_multiple() {
+	function save() {
 		if (isset($this->data['Form']['volverAInsertar'])) {
 			$this->action = 'add';
 		} else {
@@ -360,8 +361,7 @@ class AppController extends Controller {
 					}
 					$this->Session->setFlash($mensaje, "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
 					$this->History->goBack(2);
-				}
-				else {
+				} else {
 
 					/**
 					 * Debo recuperar nuevamente los datos porque los necesito en los controler relacionados (Lov, relacionado).

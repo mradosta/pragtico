@@ -103,9 +103,9 @@ if(!empty($variablesForm)) {
  * Creo el formulario y pongo todo dentro.
  */
 if(!isset($opcionesForm['action'])) {
-	$opcionesForm['action'] = "save_multiple";
+	$opcionesForm['action'] = "save";
 }
-$opcionesForm['action'] = "save_multiple";
+$opcionesForm['action'] = "save";
 $form = $formulario->form($bloques, $opcionesForm);
 
 

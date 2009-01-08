@@ -35,7 +35,7 @@ $condiciones['Condicion.Pago-relacion_id'] = array('lov '=>
 $condiciones['Condicion.Pago-fecha__desde'] = array('label' => 'Desde', 'type' => 'date');
 $condiciones['Condicion.Pago-fecha__hasta'] = array('label' => 'Hasta', 'type' => 'date');
 $condiciones['Condicion.Liquidacion-periodo'] = array('type' => 'periodo');
-$condiciones['Condicion.Pago-estado'] = array();
+$condiciones['Condicion.Pago-estado'] = array('type' => 'checkboxMultiple');
 $fieldsets[] = array('campos' => $condiciones);
 
 $fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset'=>array('imagen' => 'pagos.gif')));
@@ -70,6 +70,7 @@ foreach ($registros as $k=>$v) {
 	$fila[] = array('model' => 'Pago', 'field' => 'fecha', 'valor' => $v['Pago']['fecha']);
 	$fila[] = array('model' => 'Pago', 'field' => 'moneda', 'valor' => $v['Pago']['moneda']);
 	$fila[] = array('model' => 'Pago', 'field' => 'monto', 'valor' => $v['Pago']['monto'], 'tipoDato' => 'moneda');
+	$fila[] = array('model' => 'Pago', 'field' => 'saldo', 'valor' => $v['Pago']['saldo'], 'tipoDato' => 'moneda');
 	$fila[] = array('model' => 'Pago', 'field' => 'estado', 'valor' => $v['Pago']['estado']);
 	if ($v['Pago']['estado'] === 'Imputado' || $v['Pago']['estado'] === 'Cancelado') {
 		$cuerpo[] = array('contenido' 	=> $fila, 
@@ -96,12 +97,20 @@ $acciones[] = $formulario->link('Beneficios', null,
 					'class' 	=> 'link_boton', 
 	 				'title' 	=> 'Realiza un pago masivo con Beneficios'));
 $accionesExtra['opciones'] = array('acciones' => $acciones);
+/*
 $botonesExtra = $formulario->button('Det. Cambio', 
 			array(	'id' 		=> 'detalle_cambio', 
 					'title' 	=> 'Imprime el Detalle de Cambio'));
+					
 echo $this->element('index/index', 
 			array(	'botonesExtra' => array('opciones' => 
 					array(	'botones' 		=> array('limpiar', 'buscar', $botonesExtra))), 
+						  	'accionesExtra' => $accionesExtra, 
+							'opcionesTabla' => array('tabla' => array('eliminar' => false, 'modificar' => false)), 
+							'condiciones' 	=> $fieldset, 
+	   						'cuerpo' 		=> $cuerpo));
+*/
+echo $this->element('index/index', array(
 						  	'accionesExtra' => $accionesExtra, 
 							'opcionesTabla' => array('tabla' => array('eliminar' => false, 'modificar' => false)), 
 							'condiciones' 	=> $fieldset, 

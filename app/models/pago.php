@@ -24,7 +24,7 @@
 class Pago extends AppModel {
 
 	var $modificadores = array(	'index' =>
-			array('contain'	=> array('Relacion'	=> array('Empleador', 'Trabajador'))));
+			array('contain'	=> array('PagosForma', 'Relacion'	=> array('Empleador', 'Trabajador'))));
 	
 	var $order = array('Pago.fecha' => 'desc');
 
@@ -43,6 +43,19 @@ class Pago extends AppModel {
                               'foreignKey'   => 'pago_id'));
 
 
+/**
+ * Calculate balance. Total payment - sum(partial payments).
+ */
+	function afterFind($results, $primary = false) {
+		if ($primary === true && !empty($results[0]['Pago'])) {
+			foreach ($results as $k => $result) {
+				$results[$k]['Pago']['saldo'] = $results[$k]['Pago']['monto'] - $this->__getPartialPayments($result);
+			}
+		}
+		return $results;
+	}
+	
+	
 
 /**
  *
@@ -52,10 +65,9 @@ class Pago extends AppModel {
 		$retorno = true;
 		$tipo = ucfirst($tipo);
 			
-		if ($tipo == 'Deposito') {
+		if ($tipo === 'Deposito') {
 			$this->contain(array('PagosForma', 'Relacion.Trabajador'));
-		}
-		else {
+		} else {
 			$this->contain('PagosForma');
 		}
 		$pagosTmp = $this->find('all', array('conditions'=>array('Pago.id'=>$ids, 'Pago.estado' => 'Pendiente')));
@@ -67,8 +79,10 @@ class Pago extends AppModel {
 		}
 		$c=0;
 		foreach ($ids as $id) {
-			if (($pagos[$id]['Pago']['moneda'] == 'Beneficios' && $tipo == 'Beneficios') || $pagos[$id]['Pago']['moneda'] == 'Pesos' && $tipo != 'Beneficios') {
+			if (($pagos[$id]['Pago']['moneda'] === 'Beneficios' && $tipo === 'Beneficios') || $pagos[$id]['Pago']['moneda'] === 'Pesos' && $tipo !== 'Beneficios') {
 
+				
+				$acumulado = $this->__getPartialPayments($pagos[$id]);
 				/**
 				* Determino si tiene la pagos parciales.
 				*/
@@ -114,8 +128,77 @@ class Pago extends AppModel {
 	}
  
 
+/**
+ * Gets the sum of partials payments.
+ *
+ * @param mixed $payment The payment with all it's partial payments or the paymentId.
+ * @return 	double The sum of partial payments.
+ *	
+ * @access private
+ */	
+	function __getPartialPayments($payment) {
+		if (!is_array($payment)) {
+			$this->contain('PagosForma');
+			$payment = $this->findById($payment);
+		} 
+		return array_sum(Set::extract('/PagosForma/monto', $payment));
+	}
 
-
+	
+/**
+ * Sets the payment state.
+ *
+ * @param array $payment The payment id.
+ * @return 	boolean True on success, false in other case.
+ *	
+ * @access public
+ */	
+	function updateState($paymentId) {
+		$save = null;
+		
+		/**
+		 * Cuando un pago esta imputado, ya no permito que sea borrado o modificado.
+		 */
+		$save['id'] = $paymentId;
+		$save['permissions'] = '292';
+		
+		$this->contain('PagosForma');
+		$payment = $this->findById($paymentId);
+		if ($payment['Pago']['monto'] == $this->__getPartialPayments($payment)) {
+			$save['estado'] = 'Imputado';
+		} else {
+			$save['estado'] = 'Pendiente';
+		}
+		if ($this->save(array('Pago' => $save))) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+/**
+ * Permite revertir un pago.
+ */
+	function revertir($id) {
+		$this->begin();
+		$save = null;
+		$save['id'] = null;
+		$save['monto'] = $this->__getPartialPayments($id) * -1;
+		$save['forma'] = 'Efectivo';
+		$save['observacion'] = 'Este pago ha sido revertido';
+		$save['fecha'] = date('d/m/Y');
+		$save['pago_id'] = $id;
+		
+		$this->begin();
+		if ($this->PagosForma->save(array('PagosForma' => $save), false) && $this->updateState($id)) {
+			$this->commit();
+			return true;
+		}
+		$this->rollBack();
+		return false;
+	}	
+	
+	
 /**
  * Genera el contenido del archivo para presentar en los bancos para la acreditacion de haberes.
  *
@@ -305,35 +388,8 @@ class Pago extends AppModel {
 		return array('contenido'=>$contenido, 'banco'=>$banco);
 	}
 
-/**
- * Permite revertir un pago.
- */
 
-	function revertir($id) {
-		$this->begin();
-		$return = true;
-		$this->contain('PagosForma');
-		$pago = $this->findById($id);
-		foreach ($pago['PagosForma'] as $v) {
-			if (!$this->PagosForma->revertir($v['id'])) {
-				$return = false;
-				break;
-			}
-		}
-		/**
-		* Si pude revertir todas las formas de pago, lo dejo nuevamente pendiente al pago.
-		*/
-		if ($return === true) {
-			if ($this->save(array('Pago'=>array('id'=>$pago['Pago']['id'], 'estado' => 'Pendiente')))) {
-				$this->commit();
-				return true;
-			}
-		}
-		$this->rollBack();
-		return false;
-	}
-
-	function traerDetalleCambio($condiciones) {
+	function traerDetalleCambio_deprecated($condiciones) {
 			$fields = am($fieldsRelaciones, $fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente);
 			$table 	= 	'relaciones_conceptos';
 			$joins	=	array(
@@ -386,84 +442,5 @@ class Pago extends AppModel {
 		d($condiciones);
 	}
 
-	function xtraerDetalleCambio($condiciones) {
-		$sql = '
-			select		Empleador.cuit,
-						Empleador.nombre,
-						Trabajador.cuil,
-						Trabajador.apellido,
-						Trabajador.nombre,
-						Trabajador.numero_documento,
-						Pago.pago,
-						Banco.nombre,
-						Sucursal.codigo,
-						substr(Pago.cbu, 9, 13) as cuenta,
-						Liquidacion.periodo,
-						sum(Pago.monto) as monto
-			from		pagos Pago
-							left join pagos_formas PagosForma on (Pago.id = PagosForma.pago_id)
-							left join bancos Banco on (Banco.codigo = substr(Pago.cbu, 1, 3))
-							left join sucursales Sucursal on (Sucursal.codigo = substr(Pago.cbu, 4, 4) and Banco.id = Sucursal.banco_id),
-						relaciones Relacion,
-						trabajadores Trabajador,
-						empleadores Empleador,
-						liquidaciones Liquidacion
-			where		Relacion.id = Pago.relacion_id
-			and			Trabajador.id = Relacion.trabajador_id
-			and			Empleador.id = Relacion.empleador_id
-			and			Liquidacion.id = Pago.liquidacion_id
-			and			Liquidacion.estado = \'Confirmada\'
-			and			Pago.estado = \'Imputado\'
-			and			';
-
-		$db =& ConnectionManager::getDataSource($this->useDbConfig);
-		$sql .= $db->conditions($condiciones, true, false);
-		$sql .= ' group by
-						Empleador.cuit,
-						Empleador.nombre,
-						Trabajador.cuil,
-						Trabajador.apellido,
-						Trabajador.nombre,
-						Trabajador.numero_documento,
-						Pago.pago,
-						Banco.nombre,
-						Sucursal.codigo,
-						substr(Pago.cbu, 9, 13),
-						Liquidacion.periodo';
-		$sql .= ' order by
-						Trabajador.apellido,
-						Trabajador.nombre';
-
-		$r = $this->query($sql);
-		d($r);
-		$pagos = null;
-		foreach ($r as $v) {
-			$cuil = $v['Trabajador']['cuil'];
-			$cuit = $v['Empleador']['cuit'];
-			if (!isset($pagos[$cuit][$cuil])) {
-				$pagos[$cuit][$cuil]['empleador'] = $v['Empleador']['nombre'];
-				$pagos[$cuit][$cuil]['apellido'] = $v['Trabajador']['apellido'];
-				$pagos[$cuit][$cuil]['nombre'] = $v['Trabajador']['nombre'];
-				$pagos[$cuit][$cuil]['numero_documento'] = $v['Trabajador']['numero_documento'];
-				$pagos[$cuit][$cuil]['banco'] = $v['Banco']['nombre'];
-				$pagos[$cuit][$cuil]['sucursal'] = $v['Sucursal']['codigo'];
-				$pagos[$cuit][$cuil]['cuenta'] = $v['0']['cuenta'];
-				$pagos[$cuit][$cuil]['periodo'] = $v['Liquidacion']['periodo'];
-				$pagos[$cuit][$cuil]['pesos'] = '0';
-				$pagos[$cuit][$cuil]['beneficios'] = '0';
-				$pagos[$cuit][$cuil]['total_pesos'] = 0;
-				$pagos[$cuit][$cuil]['total_beneficios'] = 0;
-			}
-			if ($v['Pago']['pago'] == 'Beneficios') {
-				$pagos[$cuit][$cuil]['beneficios'] = $v['0']['monto'];
-				$pagos[$cuit][$cuil]['total_beneficios'] += $v['0']['monto'];
-			}
-			else {
-				$pagos[$cuit][$cuil]['pesos'] = $v['0']['monto'];
-				$pagos[$cuit][$cuil]['total_pesos'] += $v['0']['monto'] ;
-			}
-		}
-		return $pagos;
-	}
 }
 ?>

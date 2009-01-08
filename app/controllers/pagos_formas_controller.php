@@ -27,46 +27,10 @@
  */
 class PagosFormasController extends AppController {
 
-
-	/**
-	* Guarda las posibles formas que soporta un pago.
-	*/
-	var $formas = array();
-	
-	function add() {
-		if (!empty($this->params['named']['PagosForma.forma']) && $this->params['named']['PagosForma.forma'] == "Cheque") {
-			$this->formas = array('Cheque' => 'Cheque');
-		}
-		unset($this->passedArgs['PagosForma.forma']);
-		unset($this->params['named']['PagosForma.forma']);
-		
-		if (!empty($this->params['named']['PagosForma.pago_id'])) {
-			$pagoId = $this->params['named']['PagosForma.pago_id'];
-		}
-		else if (!empty($this->data['PagosForma']['pago_id'])) {
-			$pagoId = $this->data['PagosForma']['pago_id'];
-		}
-		if (!empty($pagoId)) {
-			$this->PagosForma->Pago->recursive = -1;
-			$pago = $this->PagosForma->Pago->read(null, $pagoId);
-			if ($pago['Pago']['estado'] != "Pendiente") {
-				$this->Session->setFlash("El pago seleccionado se encuentra en estado " . $pago['Pago']['estado'] . " y solo a los pagos Pendientes se les puede agregar una forma.", "error");
-				$this->History->goBack();
-			}
-			else {
-				parent::add();
-			}
-		}
-		else {
-			$this->Session->setFlash("El pago seleccionado no existe.", "error");
-			$this->History->goBack();
-		}
-	}
-
-
 	function buscar_ultimo_numero_cheque($cuenta_id) {
 		$ultimoNumeroCheque = $this->PagosForma->getUltimoNumeroCheque($cuenta_id);
-		$this->set("ultimoNumeroCheque", $ultimoNumeroCheque + 1);
+		$this->set("data", str_pad($ultimoNumeroCheque + 1, 8, '0', STR_PAD_LEFT) );
+		$this->render('../elements/string');
 	}
 
 
@@ -85,47 +49,26 @@ class PagosFormasController extends AppController {
 /**
  * Realiza los seteos especificos (valores por defecto) al agregar y/o editar.
  */
-	function __seteos() {
+	function beforeRender() {
 		if (!empty($this->params['named']['PagosForma.pago_id'])) {
 			$pagoId = $this->params['named']['PagosForma.pago_id'];
-		}
-		else if (!empty($this->data['PagosForma']['pago_id'])) {
+		} else if (!empty($this->data['PagosForma']['pago_id'])) {
 			$pagoId = $this->data['PagosForma']['pago_id'];
 		}
 
+		if (!empty($this->params['named']['PagosForma.forma']) && $this->params['named']['PagosForma.forma'] === "Cheque") {
+			$this->data['PagosForma']['forma'] = 'Cheque';
+			$this->data['PagosForma']['fecha_pago'] = $this->Util->format($this->Util->dateAdd(date("Y-m-d")), 'date');
+		}
+		
 		if (!empty($pagoId) && empty($this->data['PagosForma']['monto'])) {
-			$this->PagosForma->Pago->contain("PagosForma");
-			$total = 0;
+			$this->PagosForma->Pago->contain('PagosForma');
 			$pago = $this->PagosForma->Pago->read(null, $pagoId);
-			if (!empty($pago['PagosForma'])) {
-				foreach ($pago['PagosForma'] as $v) {
-					$total += $v['monto'];
-				}
-			}
+			$total = array_sum(Set::extract('/PagosForma/monto', $pago));
 			$this->data['PagosForma']['monto'] = $pago['Pago']['monto'] - $total;
 			$this->data['PagosForma']['pago_monto'] = $pago['Pago']['monto'];
 			$this->data['PagosForma']['pago_acumulado'] = $total;
-			$usuario = $this->Session->read("__Usuario");
-			if ($this->action == "add" && $usuario['Usuario']['grupo_default_id'] > 0) {
-				if (empty($this->data['PagosForma']['empleador_id'])) {
-					$this->data['PagosForma']['empleador_id'] = $usuario['Usuario']['grupo_default']['empleador_id'];
-					$this->data['PagosForma']['empleador_id__'] = $usuario['Usuario']['grupo_default']['Empleador']['cuit'] . " - " . $usuario['Usuario']['grupo_default']['Empleador']['nombre'];
-				}
-				if (empty($this->data['PagosForma']['fecha_pago'])) {
-					$this->data['PagosForma']['fecha_pago'] = $this->Util->dateAdd();
-				}
-			}
-			if (empty($this->formas)) {
-				if ($pago['Pago']['moneda'] == "Pesos") {
-					$this->formas = array('Deposito' => 'Deposito', 'Cheque' => 'Cheque', 'Efectivo' => 'Efectivo', 'Otro' => 'Otro');
-				}
-				else {
-					$this->formas = array('Beneficios' => 'Beneficios');
-				}
-			}
 		}
-		$this->set("formas", $this->formas);
-		$this->data['PagosForma']['fecha'] = date("d/m/Y");
 	}
 
 }
