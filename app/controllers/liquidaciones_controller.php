@@ -71,6 +71,7 @@ class LiquidacionesController extends AppController {
 					/**
 					* Busco las relaciones que debo liquidar de acuerdo a los criterios ingresados.
 					*/
+					$tipoLiquidacion = $this->data['Condicion']['Liquidacion-tipo'];
 					unset($this->data['Condicion']['Liquidacion-tipo']);
 					unset($this->data['Condicion']['Liquidacion-periodo']);
 					$condiciones = $this->Paginador->generarCondicion($this->data);
@@ -105,8 +106,9 @@ class LiquidacionesController extends AppController {
 					foreach ($variablesTmp as $v) {
 						$variables[$v['Variable']['nombre']] = $v['Variable'];
 					}
+					$variables['#tipo_liquidacion']['valor'] = $tipoLiquidacion;
 					//$variables['#tipo_liquidacion']['valor'] = $this->data['Condicion']['Liquidacion-tipo'];
-					$variables['#tipo_liquidacion']['valor'] = "normal";
+					//$variables['#tipo_liquidacion']['valor'] = "normal";
 					//d($this->__getVariableValor("#tipo_liquidacion"));
 					/**
 					* Resuelvo las variables que vienen por parametros.
@@ -208,9 +210,9 @@ class LiquidacionesController extends AppController {
 		//$condicionesDescuentos['smvm'] = $this->__getVariableValor("#smvm");
 		$descuentos = $this->Liquidacion->Relacion->Descuento->getDescuentos($relacion, $opcionesDescuentos);
 		
-		foreach ($descuentos['concepto'] as $v) {
-			$this->__setConcepto($v, "SinCalcular");
-		}
+		//foreach ($descuentos['concepto'] as $v) {
+		$this->__setConcepto($descuentos['concepto'], "SinCalcular");
+		//}
 		$this->__setAuxiliar($descuentos['auxiliar']);
 		
 
@@ -286,11 +288,13 @@ class LiquidacionesController extends AppController {
 		/**
 		* Busco los conceptos para esta relacion.
 		*/
-		$opcionesFindConcepto = null;
-		$opcionesFindConcepto['desde'] = $this->__getVariableValor("#fecha_desde_liquidacion");
-		$opcionesFindConcepto['hasta'] = $this->__getVariableValor("#fecha_hasta_liquidacion");
-		$this->__conceptos = $this->Liquidacion->Relacion->RelacionesConcepto->Concepto->findConceptos("Relacion", array_merge(array("relacion"=>$this->__relacion), $opcionesFindConcepto));
-	
+		if ($this->__getVariableValor("#tipo_liquidacion") === 'normal') {
+			$opcionesFindConcepto = null;
+			$opcionesFindConcepto['desde'] = $this->__getVariableValor("#fecha_desde_liquidacion");
+			$opcionesFindConcepto['hasta'] = $this->__getVariableValor("#fecha_hasta_liquidacion");
+			//$this->__conceptos = $this->Liquidacion->Relacion->RelacionesConcepto->Concepto->findConceptos("Relacion", array_merge(array("relacion"=>$this->__relacion), $opcionesFindConcepto));
+			$this->__setConcepto($this->Liquidacion->Relacion->RelacionesConcepto->Concepto->findConceptos("Relacion", array_merge(array("relacion"=>$this->__relacion), $opcionesFindConcepto)), "SinCalcular");
+		}
 		
 		/**
 		* Verifico que este el concepto sueldo_basico.
@@ -398,6 +402,8 @@ class LiquidacionesController extends AppController {
 				}
 			}
 		}
+		//d($totales);
+		$totales['no_remunerativo'] -= $totales['total_beneficios'] ;
 		$totales['total'] = $totales['remunerativo'] + $totales['no_remunerativo'] - $totales['deduccion'];
 
 		/**
@@ -1031,13 +1037,15 @@ class LiquidacionesController extends AppController {
  * @return void.
  * @access private.
  */
-	function __setConcepto($conceptos, $tipo) {
+	function __setConcepto($conceptos, $tipo = "SinCalcular") {
 		if ($tipo === "SinCalcular") {
-			if (empty($this->__conceptosSinCalcular)) {
-				$this->__conceptosSinCalcular = $conceptos;
+			if (empty($this->__conceptos)) {
+				//$this->__conceptosSinCalcular = $conceptos;
+				$this->__conceptos = $conceptos;
 			}
 			else {
-				$this->__conceptosSinCalcular = array_merge($this->__conceptosSinCalcular, $conceptos);
+				//$this->__conceptosSinCalcular = array_merge($this->__conceptosSinCalcular, $conceptos);
+				$this->__conceptos = array_merge($this->__conceptos, $conceptos);
 			}
 		}
 	}

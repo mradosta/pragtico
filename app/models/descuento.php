@@ -94,6 +94,8 @@ class Descuento extends AppModel {
 
 /**
  * getDescuentos
+ * TODO: Puede que haya dos conceptos de embargo concurrentes, entoces se pisarian.
+ * Esto implica un gran cambio en el liquidador. Revisar.		   
  * Dada un ralacion XXXXXXXXXX.
  * @return array vacio si no hay nada que descontar.
  */
@@ -117,7 +119,7 @@ class Descuento extends AppModel {
 			case 'liquidacion_final':
 				$descontar = 33;
 			break;
-			case 'especial':
+			case 'descuentos':
 				$descontar = 1;
 			break;
 		}
@@ -128,58 +130,11 @@ class Descuento extends AppModel {
 				  	'checkSecurity'	=> false,
 					'conditions' 	=> array(
 				'Descuento.relacion_id' 						=> $relacion['Relacion']['id'],
-				'Descuento.desde <=' 							=> $opciones['desde'],
+				'Descuento.desde >=' 							=> $opciones['desde'],
  				'(Descuento.descontar & ' . $descontar . ') >' 	=> 0,
  				'Descuento.estado' 								=> 'Activo')
 		));
-/*		
-		$fields = array(
-			'Descuento.id',
-			'Descuento.tipo',
-			'Descuento.relacion_id',
-			'Descuento.descripcion',
-			'Descuento.monto',
-			'Descuento.maximo',
-			'Descuento.concurrencia',
-			'Descuento.cuotas',
-   			'COUNT(DescuentosDetalle.id) AS cuotas_descontadas',
-			'SUM(DescuentosDetalle.monto) as total_pagado'
-		);
 		
-		$sql = $this->generarSql(array('fields'=>$fields, 'table'=>$table, 'conditions'=>$conditions, 'joins'=>$joins, 'order'=>$order));
-		
-		$sql = '
-			select 		d.id,
-						d.tipo,
-						d.relacion_id,
-						d.descripcion,
-						d.monto,
-						d.maximo,
-						d.concurrencia,
-						d.cuotas as cuotas,
-						count(dd.id) as cuotas_descontadas,
-						sum(dd.monto) as total_pagado
-			from 		descuentos d
-						left join descuentos_detalles dd on (dd.descuento_id = d.id)
-			where		1=1
-			and			d.desde >= '' . $opciones['desde'] . ''
-			and			d.relacion_id = '' . $relacion['Relacion']['id'] . ''
-			and			(d.descontar & ' . $descontar . ') > 0
-			and			d.estado = 'Activo'
-			group by	d.id,
-						d.tipo,
-						d.relacion_id,
-						d.descripcion,
-						d.monto,
-						d.maximo,
-						d.concurrencia,
-						d.cuotas
-			order by	d.alta
-		';
-
-		$r = $this->query($sql);
-		d($r);
-*/
 		$conceptos = $auxiliares = array();
 		if (!empty($r)) {
 			foreach ($r as $k=>$v) {
@@ -227,9 +182,12 @@ class Descuento extends AppModel {
 				}
 				$concepto[$codigoConcepto]['debug'] = 'Tipo:' . $codigoConcepto . ', Monto Total:$' . $v['Descuento']['monto'] . ', Total de Cuotas:' . $v['Descuento']['cuotas'] . ', Cuotas Descontadas:' . $cuotaDescontadas . ', Saldo:$' . $saldo . ', Cuota a Descontar en esta Liquidacion:' . $cuotaActual . ', Valor esta Cuota:$' . $valorCuota;
 				$concepto[$codigoConcepto]['valor_cantidad'] = '0';
-				$concepto[$codigoConcepto]['nombre'] = $v['Descuento']['tipo'] . ' ' . $v['Descuento']['descripcion'] . ' (Cuota: ' . $cuotaActual . '/' . $v['Descuento']['cuotas'] . ')';
-				$conceptos[] = $concepto;
-
+				if ($v['Descuento']['tipo'] === 'Prestamo') {
+					$concepto[$codigoConcepto]['nombre'] = $v['Descuento']['tipo'] . ' ' . $v['Descuento']['descripcion'] . '. Fecha: ' . $this->format($v['Descuento']['alta'], 'date') . ' (Cuota: ' . $cuotaActual . '/' . $v['Descuento']['cuotas'] . ')';
+				} else {
+					$concepto[$codigoConcepto]['nombre'] = $v['Descuento']['tipo'] . ' ' . $v['Descuento']['descripcion'] . '. Fecha: ' . $this->format($v['Descuento']['alta'], 'date');
+				}
+				
 				/**
 				* Creo un registro el la tabla auxiliar que debera ejecutarse en caso de que se confirme la pre-liquidacion.
 				*/
@@ -260,7 +218,7 @@ class Descuento extends AppModel {
 				}
 			}
 		}
-		return array('concepto'=>$conceptos, 'auxiliar'=>$auxiliares);
+		return array('concepto'=>$concepto, 'auxiliar'=>$auxiliares);
 	}
 
 
@@ -269,6 +227,9 @@ class Descuento extends AppModel {
  */
 	function beforeSave() {
 		$this->data['Descuento']['descontar'] = array_sum($this->data['Descuento']['descontar']);
+		if ($this->data['Descuento']['tipo'] === 'Vale') {
+			$this->data['Descuento']['cuotas'] = 1;
+		}
 		return parent::beforeSave();
 	}
 
