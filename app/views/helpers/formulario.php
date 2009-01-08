@@ -301,13 +301,20 @@ class FormularioHelper extends FormHelper {
  *			- links:	Crea los links a arcihvos js.
  */
 	
-	function addScript($script, $ubicacion = "ready") {
-		$view =& ClassRegistry::getObject('view');
-		if (in_array($ubicacion, array("ready", "links", "view"))) {
-			$view->__myScripts[$ubicacion][] = $script;
+	function addScript($script, $location = 'ready', $order = 0) {
+		$view = ClassRegistry::getObject('view');
+		if (in_array($location, array('ready', 'links', 'view'))) {
+			for ($i = 0; $i<100; $i++) {
+				if (!isset($view->__myScripts[$location][($order + $i)])) {
+					$view->__myScripts[$location][($order + $i)] = $script;
+					break;
+				}
+			}
+		} else {
+			trigger_error(__('Invalid script location', true));
 		}
 	}
-
+	
 
 /**
  * Returns a JavaScript script tag.
@@ -593,8 +600,8 @@ class FormularioHelper extends FormHelper {
 				foreach ($v as $campo) {
 					$valor = "&nbsp;";
 					$atributosCelda = null;
-
-					if (isset($campo['valor'])) {
+					
+					if (isset($campo['valor']) && $campo['valor'] != '0') {
 						$valor = $campo['valor'];
 					}
 					
@@ -754,14 +761,13 @@ class FormularioHelper extends FormHelper {
 									break;
 							}
 							if (empty($campo['class'])) {
-								$atributos = array("class"=>$clase);
-							}
-							else {
-								$atributos = array("class"=>$campo['class']);
+								$atributos = array('class' => $clase);
+							} else {
+								$atributos = array('class' => $campo['class'] . ' ' . $clase);
 							}
 						}
 						
-						if ($nombreCampo == "id") {
+						if ($nombreCampo === "id") {
 							$id = $valor;
 
 							$controller = "";
@@ -878,7 +884,7 @@ class FormularioHelper extends FormHelper {
 					/**
 					* Fuerzo $valor a string, porque si $valor = 0, no evaluara.
 					*/
-					if ($valor . "" != "NO PINTAR") {
+					if ($valor . "" !== "NO PINTAR") {
 						$cellsOut[] = array($valor, $atributos);
 					}
 				}

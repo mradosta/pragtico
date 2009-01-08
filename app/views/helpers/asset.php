@@ -39,12 +39,24 @@ class AssetHelper extends Helper {
 			return;
 		}
 		
+		/**
+		* It's important to sort because of dependencies before rendering.
+		*/
+		foreach (array("view", "ready", "links") as $location) {
+			if (empty($view->__myScripts[$location])) {
+				$view->__myScripts[$location] = array();
+			} else {
+				$tmp = $view->__myScripts[$location];
+				ksort($tmp);
+				$view->__myScripts[$location] = $tmp;
+			}
+		}
 
 		/**
 		* Cuando este en debug level 0 y no este debugeando este helper se ejecuta, sino retorna
 		* los scripts como los fui agregando.
 		*/
-		$view->__myScripts = am(array("view"=>array(), "ready"=>array(), "links"=>array()), $view->__myScripts);
+		
 		if (Configure::read('debug') > 0) {
 			$scripts_for_layout = "\n\n";
 			$scripts_for_layout .= join("\n\t", $view->__scripts);
