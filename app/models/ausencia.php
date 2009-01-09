@@ -131,13 +131,20 @@ class Ausencia extends AppModel {
 											'AusenciasSeguimiento'	=> array('conditions' => 
 															array(	'AusenciasSeguimiento.estado'	=> 'Confirmado'))),
 			'conditions'		=> array(	'Ausencia.relacion_id' 	=> $relacion['Relacion']['id'],
-											'Ausencia.desde >='		=> $periodo['desde'])));
-
+											array('AND' => array('Ausencia.desde >='		=> $periodo['desde'],
+																 'Ausencia.desde <='		=> $periodo['hasta'])))));
+		
 		$return['Justificada'] = 0;
 		$return['Injustificada'] = 0;
 		if (!empty($r)) {
-			foreach ($r as $k=>$v) {
-				$return[$v['AusenciasMotivo']['tipo']] += $v['Ausencia']['dias'];
+			foreach ($r as $k => $ausencia) {
+				$diff = $this->dateDiff($periodo['hasta'], $ausencia['Ausencia']['desde']);
+				if ($ausencia['Ausencia']['dias'] > ($diff['dias'] + 1)) {
+					$dias = $diff['dias'] + 1;
+				} else {
+					$dias = $ausencia['Ausencia']['dias'];
+				}
+				$return[$ausencia['AusenciasMotivo']['tipo']] += $dias;
 			}
 		}
 		return $return;
