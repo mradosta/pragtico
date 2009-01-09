@@ -326,9 +326,9 @@ class AppController extends Controller {
 							
 							
 							/**
-							* Debo verificar que no haya eliminado algun detalle.
-							* Si lo hizo, lo borro.
-							*/
+							 * if any detail has been deleted, must delete then so.
+							 */
+							$postedDetailsId = array();
 							foreach ($tmp as $detailKey => $detailValue) {
 								$originalDetailsId = Set::extract("/" . $this->{$this->modelClass}->{$detailKey}->primaryKey, $find[$detailKey]);
 								foreach ($v[$detailKey] as $tv) {
