@@ -29,12 +29,16 @@ class AusenciasSeguimiento extends AppModel {
 	*		Confirmado: Se cargo y se confirmo. Se liquidara.
 	* 		Liquidado: Se cargo, se confirmo y se liquido. No se volvera a liquidar.
 	*/
-
+	var $opciones = array('estado'=> array(		'Confirmado'	=> 'Confirmado',
+												'Pendiente'		=> 'Pendiente'));
+	
 
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array('edit'=>array('contain'=>array('Ausencia.AusenciasMotivo')));
+	var $modificadores = array('edit'=>array('contain'	=> array('Ausencia.AusenciasMotivo')),
+								'add'  	=> array(								
+										'valoresDefault'=> array('dias' => '1')));
 
 	var $validate = array(
         'dias' => array(

@@ -42,7 +42,7 @@ $campos['AusenciasSeguimiento.id'] = array();
 $campos['AusenciasSeguimiento.dias'] = array();
 $campos['AusenciasSeguimiento.comprobante'] = array("label"=>"Presento Comprobante");
 $campos['AusenciasSeguimiento.archivo'] = array("label"=>"Comprobante", "type"=>"file", "descargar"=>true, "mostrar"=>true);
-$campos['AusenciasSeguimiento.estado'] = array();
+$campos['AusenciasSeguimiento.estado'] = array('type' => 'radio');
 $campos['AusenciasSeguimiento.observacion'] = array();
 $fieldsets[] = 	array('campos' => $campos, "opciones"=>array('fieldset' => array("class"=>"detail", "legend"=>"Seguimientos", 'imagen' => 'seguimientos.gif')));
 

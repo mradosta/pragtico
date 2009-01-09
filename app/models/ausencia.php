@@ -29,8 +29,11 @@ class Ausencia extends AppModel {
 	var $modificadores = array(	'index'=>array('contain'=>array('Relacion' => array('Empleador', 'Trabajador'),
 																'AusenciasMotivo',
 																'AusenciasSeguimiento')),
+								'add'  	=> array(								
+										'valoresDefault'=>array('desde' => array('date' => 'd/m/Y'))),
 								'edit'=>array('contain'=>array(	'Relacion'=>array('Empleador','Trabajador'),
 																'AusenciasSeguimiento')));
+	
 	var $validate = array( 
         'relacion_id__' => array(
 			array(
@@ -126,9 +129,9 @@ class Ausencia extends AppModel {
 		$r = $this->find('all',
 			array('contain'		=> array(	'AusenciasMotivo',
 											'AusenciasSeguimiento'	=> array('conditions' => 
-															array(	'AusenciasSeguimiento.estado'	=> 'Confirmado')),
+															array(	'AusenciasSeguimiento.estado'	=> 'Confirmado'))),
 			'conditions'		=> array(	'Ausencia.relacion_id' 	=> $relacion['Relacion']['id'],
-											'Ausencia.desde >='		=> $periodo['desde']))));
+											'Ausencia.desde >='		=> $periodo['desde'])));
 
 		$return['Justificada'] = 0;
 		$return['Injustificada'] = 0;
