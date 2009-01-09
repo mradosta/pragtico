@@ -56,18 +56,13 @@ class Dates {
 	function dateDiff($fechaDesde, $fechaHasta = null) {
 		if($fechaDesde = $this->__getValidDateTime($fechaDesde)) {
 			$fechaDesde = strtotime($fechaDesde);
-		}
-		else {
+		} else {
 			return false;
 		}
 		
-		if(empty($fechaHasta)) {
-			$fechaHasta = time();
-		}
-		elseif($fechaHasta = $this->__getValidDateTime($fechaHasta)) {
+		if($fechaHasta = $this->__getValidDateTime($fechaHasta)) {
 			$fechaHasta = strtotime($fechaHasta);
-		}
-		else {
+		} else {
 			return false;
 		}
 		
@@ -93,7 +88,7 @@ class Dates {
 
 
 /**
- * Suma una cantidad de "intervalo" a una fecha.
+ * Suma una cantidad de 'intervalo' a una fecha.
  *
  * @param string $fecha La fecha a la cual se le debe sumar el intervalo.
  * @param string $intervalo El intervalo de tiempo.
@@ -110,8 +105,8 @@ class Dates {
  * @return mixed La fecha en formato yyyy-mm-dd hh:mm:ss con el intervalo agregado, false si no fue posible realizar la operacion.
  * @access public
  */
-	function dateAdd($fecha, $intervalo="d", $cantidad=1) {
-		$validIntervalo = array("y", "q", "m", "w", "d", "h", "n", "s");
+	function dateAdd($fecha = null, $cantidad = 1, $intervalo = 'd') {
+		$validIntervalo = array('y', 'q', 'm', 'w', 'd', 'h', 'n', 's');
 		if(!in_array($intervalo, $validIntervalo) || !is_numeric($cantidad)) {
 			return false;
 		}
@@ -124,41 +119,41 @@ class Dates {
 		}
 		$ds = getdate($fecha);
 
-		$h = $ds["hours"];
-		$n = $ds["minutes"];
-		$s = $ds["seconds"];
-		$m = $ds["mon"];
-		$d = $ds["mday"];
-		$y = $ds["year"];
+		$h = $ds['hours'];
+		$n = $ds['minutes'];
+		$s = $ds['seconds'];
+		$m = $ds['mon'];
+		$d = $ds['mday'];
+		$y = $ds['year'];
 
 		switch ($intervalo) {
-			case "y":
+			case 'y':
 				$y += $cantidad;
 				break;
-			case "q":
+			case 'q':
 				$m +=($cantidad * 3);
 				break;
-			case "m":
+			case 'm':
 				$m += $cantidad;
 				break;
-			case "w":
+			case 'w':
 				$d +=($cantidad * 7);
 				break;
-			case "d":
+			case 'd':
 				$d += $cantidad;
 				break;
-			case "h":
+			case 'h':
 				$h += $cantidad;
 				break;
-			case "n":
+			case 'n':
 				$n += $cantidad;
 				break;
-			case "s":
+			case 's':
 				$s += $cantidad;
 				break;
 		}
 		
-		return date("Y-m-d h:i:s", mktime($h ,$n, $s, $m ,$d, $y));
+		return date('Y-m-d h:i:s', mktime($h ,$n, $s, $m ,$d, $y));
 	}
 	
 	
@@ -175,18 +170,22 @@ class Dates {
  * @access private
  */
 	function __getValidDateTime($fecha) {
-		$fecha = trim($fecha);
+		if (empty($fecha)) {
+			$fecha = date('Y-m-d H:i:s');
+		} else {
+			$fecha = trim($fecha);
+		}
 		if(preg_match(VALID_DATETIME_MYSQL, $fecha, $matches) || preg_match(VALID_DATE_MYSQL, $fecha, $matches)) {
 			if(!isset($matches[4])) {
-				$matches[4] = "00";
+				$matches[4] = '00';
 			}
 			if(!isset($matches[5])) {
-				$matches[5] = "00";
+				$matches[5] = '00';
 			}
 			if(!isset($matches[6])) {
-				$matches[6] = "00";
+				$matches[6] = '00';
 			}
-			return $matches[1] . "-" . $matches[2] . "-" . $matches[3] . " " . $matches[4] . ":" . $matches[5] . ":" . $matches[6];
+			return $matches[1] . '-' . $matches[2] . '-' . $matches[3] . ' ' . $matches[4] . ':' . $matches[5] . ':' . $matches[6];
 		}
 		else {
 			return false;

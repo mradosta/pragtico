@@ -206,10 +206,10 @@ class UtilComponent extends Object {
  * @return mixed La fecha en formato yyyy-mm-dd hh:mm:ss con el intervalo agregado, false si no fue posible realizar la operacion.
  * @access public
  */
-	function dateAdd($fecha, $intervalo="d", $cantidad=1) {
-		App::import("Vendor", "dates", "pragmatia");
+	function dateAdd($fecha, $cantidad = 1, $intervalo = 'd') {
+		App::import('Vendor', 'dates', 'pragmatia');
 		$Dates = new Dates();
-		return $Dates->dateAdd($fecha, $intervalo, $cantidad);
+		return $Dates->dateAdd($fecha, $cantidad, $intervalo);
 	}
 
 	
