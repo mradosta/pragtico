@@ -355,20 +355,22 @@ function jsPredefinido($options = array()) {
 			});
 
 			fieldset.find('input, select, textarea').each(function(){
+				
 				/**
 				* Debo cambiar el subindice del nombre (name) de cada control,
 				* para que no se me repita y se me pisen.
 				* puede ser un solo registro o un edit multiple.
 				*/
 				this.id = this.id + '_' + id;
-				var indice = parseInt(this.name.replace(/(^data\[[a-z,A-Z]+\])\[([0-9]+)\](\[[a-z,A-Z]+\])/, '$2')) + 1;
+				var indice = parseInt(this.name.replace(/(^data\[[a-zA-Z]+\])\[([0-9]+)\](\[[a-zA-Z_]+\])/, '$2')) + 1;
 				if (isNaN(indice)) {
-					indice = parseInt(this.name.replace(/(^data\[[0-9]+\]\[[a-z,A-Z]+\])\[([0-9]+)\](\[[a-z,A-Z]+\])/, '$2')) + 1;
-					this.name = this.name.replace(/(^data\[[0-9]+\]\[[a-z,A-Z]+\])\[([0-9]+)\](\[[a-z,A-Z]+\])/, '$1\[' + indice + '\]$3')
+					indice = parseInt(this.name.replace(/(^data\[[0-9]+\]\[[a-zA-Z]+\])\[([0-9]+)\](\[[a-zA-Z_]+\])/, '$2')) + 1;
+					this.name = this.name.replace(/(^data\[[0-9]+\]\[[a-zA-Z]+\])\[([0-9]+)\](\[[a-zA-Z_]+\])/, '$1\[' + indice + '\]$3')
 				}
 				else {
-					this.name = this.name.replace(/(^data\[[a-z,A-Z]+\])\[([0-9]+)\](\[[a-z,A-Z]+\])/, '$1\[' + indice + '\]$3')
+					this.name = this.name.replace(/(^data\[[a-zA-Z]+\])\[([0-9]+)\](\[[a-zA-Z_]+\])/, '$1\[' + indice + '\]$3')
 				}
+
 			});
 
 			/**
