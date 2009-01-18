@@ -262,8 +262,13 @@ class AppController extends Controller {
 	function save() {
 		if (isset($this->data['Form']['volverAInsertar'])) {
 			$this->action = 'add';
+			$back = 2;
+			if (!empty($this->data['Form']['volverAInsertar'])) {
+				$back = 1;
+			}
 		} else {
 			$this->action = 'edit';
+			$back = 2;
 		}
 		
 		if (!empty($this->data['Form']['accion'])) {
@@ -276,8 +281,8 @@ class AppController extends Controller {
 				$c = 0;
 				/**
 				* Saco lo que no tengo que grabar.
-				* En form, tenfo informacion que mande desde la vista.
-				* En Bar es informacion temporal que neesita el control relacionado.
+				* En form, tengo informacion que mande desde la vista.
+				* En Bar es informacion temporal que necesita el control relacionado.
 				*/
 				unset($this->data['Form']);
 				unset($this->data['Bar']);
@@ -290,9 +295,9 @@ class AppController extends Controller {
 				}
 				
 				/**
-				* Debo verificar si dentro del array todos los elementos son del mismo model,
-				* o tengo elementos de algun model relacionado (detail);
-				*/
+				 * Must verify if all elements in the array part of the same model. Maybe I've
+				 * elements of a related model.
+				 */
 				$ant = array_shift(array_keys($this->data[0]));
 				$mismoModel = true;
 				foreach ($this->data as $k=>$v) {
@@ -320,31 +325,85 @@ class AppController extends Controller {
 						$findBy = "findBy" . $this->{$this->modelClass}->primaryKey;
 						$this->{$this->modelClass}->contain(array_keys($tmp));
 						$find = $this->{$this->modelClass}->{$findBy}($v[$this->modelClass][$this->{$this->modelClass}->primaryKey]);
-							
-						$this->{$this->modelClass}->create();
-						if ($this->{$this->modelClass}->saveAll($v, array('validate' => 'first'))) {
-							
-							
-							/**
-							 * if any detail has been deleted, must delete then so.
-							 */
-							$postedDetailsId = array();
-							foreach ($tmp as $detailKey => $detailValue) {
-								$originalDetailsId = Set::extract("/" . $this->{$this->modelClass}->{$detailKey}->primaryKey, $find[$detailKey]);
-								foreach ($v[$detailKey] as $tv) {
-									if (!empty($tv['id'])) {
-										$postedDetailsId[] = $tv['id'];
+						
+						/**
+						 * Must take care of habtm relations when saving.
+						 */
+						if (!empty($this->{$this->modelClass}->hasAndBelongsToMany)) {
+							foreach($this->{$this->modelClass}->hasAndBelongsToMany as $habtmModel => $habtmOptions) {
+								if (!empty($v[$habtmModel][$habtmOptions['associationForeignKey']]) && $this->{$this->modelClass}->{$habtmModel}->Behaviors->trigger($this->{$this->modelClass}->{$habtmModel}, 'beforeSave') === true) {
+									$news = null;
+									
+									$v[$habtmModel] = array_merge($v[$habtmModel], $this->{$this->modelClass}->{$habtmModel}->data[$habtmOptions['className']]);
+									$this->{$this->modelClass}->{$habtmModel}->data = array();
+									
+									if (empty($v[$habtmModel][$habtmOptions['foreignKey']]) && !empty($v[$this->modelClass][$this->{$this->modelClass}->primaryKey])) {
+										$v[$habtmModel][$habtmOptions['foreignKey']] = $v[$this->modelClass][$this->{$this->modelClass}->primaryKey];
+									} else {
+										$v[$habtmModel][$habtmOptions['foreignKey']] = null;
+									}
+									
+									if (isset($v[$habtmModel][$habtmOptions['associationForeignKey']]) && is_array($v[$habtmModel][$habtmOptions['associationForeignKey']])) {
+										$new = $v[$habtmModel];
+										foreach ($v[$habtmModel][$habtmOptions['associationForeignKey']] as $associationForeignKeyValue) {
+											$new[$habtmOptions['associationForeignKey']] = null;
+											$new[$habtmOptions['associationForeignKey']] = $associationForeignKeyValue;
+											$new[$this->{$this->modelClass}->{$habtmOptions['with']}->primaryKey] = null;
+											$news[] = $new;
+										}
+										$v[$habtmModel] = $news;
+									}
+									
+									if (!empty($v[$habtmModel])) {
+										foreach ($v[$habtmModel] as $kHabtmData => $vHabtmData) {
+											$exits = Set::extract($find, '/' . $habtmModel . '[' . $this->{$this->modelClass}->{$habtmModel}->primaryKey . '=' . $vHabtmData[$habtmOptions['associationForeignKey']] . ']/' . $habtmOptions['with'] . '/' . $this->{$this->modelClass}->{$habtmModel}->primaryKey);
+											if (isset($exits[0])) {
+												$v[$habtmModel][$kHabtmData][$this->{$this->modelClass}->{$habtmModel}->primaryKey] = $exits[0];
+											}
+										}
 									}
 								}
 							}
-							$this->{$this->modelClass}->{$detailKey}->recursive = -1;
-							foreach (array_diff($originalDetailsId, $postedDetailsId) as $id) {
-								$this->{$this->modelClass}->{$detailKey}->del($id);
+						}
+						
+						$db = ConnectionManager::getDataSource($this->{$this->modelClass}->useDbConfig);
+						$db->begin($this->{$this->modelClass});
+						
+						/**
+						* if any detail has been deleted, must delete them so manually.
+						*/
+						$associations = $this->{$this->modelClass}->getAssociated();
+						$errorsDeletingDetails = false;
+						foreach ($tmp as $detailKey => $detailValue) {
+							if ($associations[$detailKey] !== 'hasAndBelongsToMany') {
+								$originalDetailsId = Set::extract("/" . $this->{$this->modelClass}->{$detailKey}->primaryKey, $find[$detailKey]);
+								
+								$postedDetailsId = array();
+								foreach ($v[$detailKey] as $tv) {
+									if (!empty($tv[$this->{$this->modelClass}->{$detailKey}->primaryKey])) {
+										$postedDetailsId[] = $tv[$this->{$this->modelClass}->{$detailKey}->primaryKey];
+									}
+								}
+								
+								foreach (array_diff($originalDetailsId, $postedDetailsId) as $id) {
+									if (!$this->{$this->modelClass}->{$detailKey}->del($id)) {
+										$errorsDeletingDetails = true;
+									}
+								}
 							}
-							
-							$c++;
+						}
+						
+						if ($errorsDeletingDetails === false) {
+							$this->{$this->modelClass}->create();
+							if ($this->{$this->modelClass}->saveAll($v, array('validate' => 'first'))) {
+								$c++;
+							} elseif (!empty($this->{$this->modelClass}->validationErrors)) {
+								$invalidFields[$k] = $this->{$this->modelClass}->validationErrors;
+							} else {
+								$c++;
+							}
 						} else {
-							$invalidFields[$k] = $this->{$this->modelClass}->validationErrors;
+							$db->rollback($this->{$this->modelClass});
 						}
 					}
 				}
@@ -360,7 +419,7 @@ class AppController extends Controller {
 						$mensaje = sprintf(__('%s of %s records have been saved', true), $c, $cantidad);
 					}
 					$this->Session->setFlash($mensaje, "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
-					$this->History->goBack(2);
+					$this->History->goBack($back);
 				} else {
 
 					/**
