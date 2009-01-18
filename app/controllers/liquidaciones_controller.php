@@ -215,6 +215,7 @@ class LiquidacionesController extends AppController {
 		//}
 		$this->__setAuxiliar($descuentos['auxiliar']);
 		
+		//d($this->Liquidacion->Relacion->Ausencia->getAusencias($relacion, $this->__periodo));
 
 		/**
 		* Verifico si tiene licencias para el periodo.
@@ -572,14 +573,13 @@ class LiquidacionesController extends AppController {
 					$nombreConcepto = preg_replace("/".$v."(\W)|".$v."$/", $this->__getVariableValor($v) . "$1", $nombreConcepto);
 				}
 			}
-			if (substr($nombreConcepto, 0, 4) === "=if (") {
+			
+			if (substr($nombreConcepto, 0, 3) === '=if') {
 				$nombreConcepto = $this->Formulador->resolver($nombreConcepto);
+			} else {
+				$nombreConcepto = substr($nombreConcepto, 1);
 			}
-			else {
-				$nombreConcepto = str_replace("=", "", $nombreConcepto);
-			}
-		}
-		else {
+		} else {
 			$nombreConcepto = $concepto['nombre'];
 		}
 
