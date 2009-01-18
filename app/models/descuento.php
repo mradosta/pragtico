@@ -135,7 +135,7 @@ class Descuento extends AppModel {
  				'Descuento.estado' 								=> 'Activo')
 		));
 		
-		$conceptos = $auxiliares = array();
+		$concepto = $auxiliares = array();
 		if (!empty($r)) {
 			foreach ($r as $k=>$v) {
 				$cuotaDescontadas = count($v['DescuentosDetalle']);
