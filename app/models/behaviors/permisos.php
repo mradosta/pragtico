@@ -282,7 +282,7 @@ class PermisosBehavior extends ModelBehavior {
 		} elseif (isset($queryData['checkSecurity'])) {
 			$securityAccess = $queryData['checkSecurity'];
 			unset($queryData['checkSecurity']);
-		} elseif (isset($queryData['conditions']['checkSecurity'])) {
+		} elseif (isset($queryData['conditions']) && !is_string($queryData['conditions']) && isset($queryData['conditions']['checkSecurity'])) {
 			$securityAccess = $queryData['conditions']['checkSecurity'];
 			unset($queryData['conditions']['checkSecurity']);
 		}
@@ -309,7 +309,7 @@ class PermisosBehavior extends ModelBehavior {
 		}
 
 		if (!empty($seguridad)) {
-			if (!empty($queryData['conditions'])) {
+			if (!empty($queryData['conditions']) && is_array($queryData['conditions'])) {
 				$queryData['conditions'] = array_merge($queryData['conditions'], $seguridad);
 			} else {
 				$queryData['conditions'] = $seguridad;
