@@ -117,7 +117,7 @@ class Ausencia extends AppModel {
 
 
 /**
- * Dada un ralacion y un periodo retorna los dias ausencias que esten confirmadas.
+ * Dada un ralacion y un periodo retorna los dias ausencias que esten confirmadas para el periodo.
  *
  * @param array $relacion Una relacion laboral.
  * @param array $perido Un periodo.
