@@ -44,9 +44,9 @@ if ((!empty($this->params['named']['layout']) && $this->params['named']['layout'
 		$acciones[] = $eliminar;
 		$acciones = array_merge($acciones, $accionesExtra);
 	}
-	//if (!empty($acciones)) {
+	if (!empty($acciones)) {
 		echo $formulario->tag('div', $acciones, array("class"=>"botones_acciones"));
-	//}
+	}
 }
 
 ?>

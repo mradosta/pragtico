@@ -33,7 +33,7 @@ $campos['Descuento.descripcion'] = array("aclaracion"=>"Esta descripcion saldra 
 $campos['Descuento.monto'] = array("label"=>"Monto $", "aclaracion"=>"Se refiere al monto total a descontar.");
 $campos['Descuento.cuotas'] = array();
 $campos['Descuento.maximo'] = array("aclaracion"=>"Es el porcentaje a descontar con cada cuota sobre el SMVM.");
-$campos['Descuento.descontar'] = array("type"=>"checkboxMultiple");
+$campos['Descuento.descontar'] = array('multiple' => 'checkbox');
 $campos['Descuento.concurrencia'] = array();
 $campos['Descuento.tipo'] = array();
 $campos['Descuento.estado'] = array();

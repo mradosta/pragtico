@@ -21,7 +21,7 @@
 */
 $campos = null;
 $campos['Usuario.id'] = array("value"=>$usuario['Usuario']['id']);
-$campos['Usuario.grupos'] = array("type"=>"checkboxMultiple", "options"=>$grupos);
+$campos['Usuario.grupos'] = array('type' => 'select', 'multiple' => 'checkbox', "options"=>$grupos);
 
 $fieldsets[] = array('campos' => $campos);
 $fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Cambio de grupo para " . $usuario['Usuario']['nombre_completo'] . " (" . $usuario['Usuario']['nombre'] . ")", 'imagen' => 'usuarios.gif')));

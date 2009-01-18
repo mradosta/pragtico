@@ -33,8 +33,8 @@ $condiciones['Condicion.Descuento-relacion_id'] = array(	"lov"=>array("controlle
 
 $condiciones['Condicion.Descuento-desde'] = array();
 $condiciones['Condicion.Descuento-descontar'] = array("type"=>"select", "empty"=>true);
-$condiciones['Condicion.Descuento-estado'] = array();
-$condiciones['Condicion.Descuento-tipo'] = array();
+$condiciones['Condicion.Descuento-estado'] = array('type' => 'select', 'multiple' => 'checkbox');
+$condiciones['Condicion.Descuento-tipo'] = array('type' => 'select', 'multiple' => 'checkbox');
 
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'descuentos.gif')));

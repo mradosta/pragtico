@@ -35,7 +35,7 @@ $condiciones['Condicion.Pago-relacion_id'] = array('lov '=>
 $condiciones['Condicion.Pago-fecha__desde'] = array('label' => 'Desde', 'type' => 'date');
 $condiciones['Condicion.Pago-fecha__hasta'] = array('label' => 'Hasta', 'type' => 'date');
 $condiciones['Condicion.Liquidacion-periodo'] = array('type' => 'periodo');
-$condiciones['Condicion.Pago-estado'] = array('type' => 'checkboxMultiple');
+$condiciones['Condicion.Pago-estado'] = array("type"=>"select", 'multiple' => 'checkbox');
 $fieldsets[] = array('campos' => $condiciones);
 
 $fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset'=>array('imagen' => 'pagos.gif')));

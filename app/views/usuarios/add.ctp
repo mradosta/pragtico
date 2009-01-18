@@ -22,22 +22,24 @@
 $campos = null;
 $campos['Usuario.id'] = array();
 $campos['Usuario.nombre'] = array();
-if($this->action === "add") {
-	$campos['Usuario.clave'] = array("type"=>"password");
+if($this->action === 'add') {
+	$campos['Usuario.clave'] = array('type' => 'password');
 }
 $campos['Usuario.nombre_completo'] = array();
-$campos['Usuario.email'] = array("label"=>"E-Mail");
+$campos['Usuario.email'] = array('label' => 'E-Mail');
 $campos['Usuario.estado'] = array();
-if($this->action === "add") {
-	$campos['RolesUsuario.rol_id'] = array("type"=>"checkboxMultiple", "options"=>"listable", "model"=>"Rol", "displayField"=>array("Rol.nombre"), "order"=>array("Rol.nombre"));
-	$campos['GruposUsuario.grupo_id'] = array("type"=>"checkboxMultiple", "options"=>"listable", "model"=>"Grupo", "displayField"=>array("Grupo.nombre"), "order"=>array("Grupo.nombre"));
+if($this->action === 'add') {
+	$campos['RolesUsuario.rol_id'] = array('type' => 'select', 'multiple' => 'checkbox', 'options' => 'listable', 'model' => 'Rol', 'displayField'=>array('Rol.nombre'), 'order'=>array('Rol.nombre'));
+	$campos['GruposUsuario.grupo_id'] = array('type' => 'select', 'multiple' => 'checkbox', 'options' => 'listable', 'model' => 'Grupo', 'displayField'=>array('Grupo.nombre'), 'order'=>array('Grupo.nombre'));
 }
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'usuarios.gif')));
+$fieldset = $formulario->pintarFieldsets($fieldsets, array('div'=>array('class' => 'unica'), 'fieldset'=>array('imagen' => 'usuarios.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->element('add/add', array('fieldset' => $fieldset));
+$miga = array('format' 	=> '%s (%s)', 
+			  'content' => array('Usuario.nombre', 'Usuario.nombre_completo'));
+echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => $miga));
 ?>

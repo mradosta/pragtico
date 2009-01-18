@@ -33,8 +33,8 @@ class FormularioHelper extends FormHelper {
  * @access public.
  */
 	var $helpers = array('Html', 'Ajax', 'Session', 'Javascript', 'Paginador', 'Formato');
-
-
+	
+	
 /**
  * Adds a link to the breadcrumbs array.
  *
@@ -117,6 +117,8 @@ class FormularioHelper extends FormHelper {
 		}
 		elseif ($this->action === "index") {
 			$legend = __('Search', true) . ' ';
+			//$legend = $this->tag('a', $legend, array('onclick' => 'jQuery(this).parent().parent().parent().parent().hide()'));
+			//$legend = $this->tag('a', $legend, array('onclick' => 'jQuery(".menu").hide()'));
 		}
 		if (!empty($opcionesFs['fieldset']['legend'])) {
 			if ($opcionesFs['fieldset']['legend'][0] !== "!") {
@@ -130,6 +132,9 @@ class FormularioHelper extends FormHelper {
 			$opcionesFs['fieldset']['legend'] = $legend . " " . $model;
 		}
 
+		//if ($this->action === "index") {
+		//	$opcionesFs['fieldset']['legend'] .= $this->tag('span', 'xx', array('class' => 'derecha'));
+		//}
 
 		/**
 		* Me aseguro de trabajar siempre con un array. Si no lo es, lo convierto en uno.
@@ -346,7 +351,7 @@ class FormularioHelper extends FormHelper {
  * @param boolean $escape If true, $text will be HTML-escaped
  * @return string The formatted DIV element
  */
-	function div($class = null, $text = null, $attributes = array(), $escape = false) {
+	function div_deprecated($class = null, $text = null, $attributes = array(), $escape = false) {
 		return $this->Html->div($class, $text, $attributes, $escape);
 	}
 
@@ -1239,24 +1244,6 @@ class FormularioHelper extends FormHelper {
 				$codigo_html = "\n" . $this->Html->div(null, $fieldset, $opciones['div'], false);
 			}
 		}
-
-		if (isset($opciones['caja_redondeada'])) {
-			if (isset($opciones['caja_redondeada']["clase"])){
-				$clase = $opciones['caja_redondeada']["clase"];
-			}
-			else {
-				$clase = "caja_redondeada_contenido";
-			}
-
-			//$html_inicio = '<!-- start roundcorners --><div class="top-left"></div><div class="top-right"></div><div class="inside">';
-			//$html_fin = '<!-- finish roundcorners --></div><div class="bottom-left"></div><div class="bottom-right"></div>';
-
-			$html_inicio = '<div class="t"><div class="b"><div class="l"><div class="r"><div class="bl"><div class="br"><div class="tl"><div class="tr">';
-			$html_fin = '</div></div></div></div></div></div></div></div>';
-			
-			$codigo_html = "\n" . $html_inicio . "\n" . $codigo_html . "\n" . $html_fin;
-			
-		}
 		return $this->output($codigo_html);
 	}
     
@@ -1330,41 +1317,44 @@ class FormularioHelper extends FormHelper {
 		* En caso de ser un campo de condiciones (los filtros),
 		* si no me cargo el valor de label para el campo, lo saco del nombre del campo.
 		*/
-		if (preg_match("/^Condicion\..+/", $tagName)) {
+		if (preg_match('/^Condicion\..+/', $tagName)) {
 			/**
 			* A las condiciones no las marco como requeridas. No me interesa esto.
 			*/
 			$verificarRequerido = false;
 			
 			$tmpName = $tagName;
-			$tmpName = preg_replace("/^Condicion\./", "", $tmpName);
-			list($model, $field) = explode("-", $tmpName);
+			$tmpName = preg_replace('/^Condicion\./', '', $tmpName);
+			list($model, $field) = explode('-', $tmpName);
 			
-			$tmpName = str_replace("-", ".", $tmpName);
+			$tmpName = str_replace('-', '.', $tmpName);
 			if (strpos($tmpName, '.') !== false) {
 				list( , $texto) = preg_split('/[\.]+/', $tmpName);
 			} else {
 				$texto = $tmpName;
 			}
-			$texto = str_replace("_id", "", str_replace("__hasta", "", str_replace("__desde", "", $texto)));
+			$texto = str_replace('_id', '', str_replace('__hasta', '', str_replace('__desde', '', $texto)));
 			if (!isset($options['label'])) {
 				$options['label'] = Inflector::humanize($texto);
 			}
 
-			if (empty($options['value']) && !empty($this->data['Condicion'][$model . "-" . $field])) {
-				$options['value'] = $this->data['Condicion'][$model . "-" . $field];
+			if (empty($options['value']) && !empty($this->data['Condicion'][$model . '-' . $field])) {
+				$options['value'] = $this->data['Condicion'][$model . '-' . $field];
 			}
 			
-			if (substr($field, strlen($field) - 7) === "__desde") {
-				$field = str_replace("__desde", "", $field);
-			}
-			elseif (substr($field, strlen($field) - 7) === "__hasta") {
-				$field = str_replace("__hasta", "", $field);
+			if (substr($field, strlen($field) - 7) === '__desde') {
+				$field = str_replace('__desde', '', $field);
+			} elseif (substr($field, strlen($field) - 7) === '__hasta') {
+				$field = str_replace('__hasta', '', $field);
 			}
 		}
 
 		if (!isset($model) && !isset($field)) {
 			list($model, $field) = explode(".", $tagName);
+		}
+		
+		if (!isset($options['label'])) {
+			$options['label'] = Inflector::humanize(str_replace('_id', '', $field));
 		}
 		
 		/**
@@ -1491,7 +1481,11 @@ class FormularioHelper extends FormHelper {
 			else {
 				$valorCampo = null;
 			}
-
+			
+			if (!empty($options['format'])) {
+				$valorCampo = $this->Formato->format($valorCampo, $options['format']);
+			}
+			
 			/**
 			* Wysiwyg control based on FCKEditor.
 			* Isolate vendors code in js/vendors/fckeditor for easily later upgrade.
@@ -1511,14 +1505,13 @@ class FormularioHelper extends FormHelper {
 				$oFCKeditor->ToolbarSet = 'Custom';
 				//$oFCKeditor->ToolbarSet = 'Basic';
 				if (!empty($this->data[$field])) {
-						$oFCKeditor->Value = $this->data[$field];
+					$oFCKeditor->Value = $this->data[$field];
+				} elseif (!empty($this->data[$model][$field])) {
+					$oFCKeditor->Value = $this->data[$model][$field];
 				}
 				ob_start();
 				$oFCKeditor->Create() ;
 				$out = ob_get_clean();
-				if (!isset($options['label'])) {
-						$options['label'] = Inflector::humanize($field);
-				}
 				$label = $this->tag('label', $options['label']);
 				return $this->tag('div', $label . $this->tag('div', $out, array('class' => 'editor')), array('class' => 'wysiwyg'));
 			}
@@ -1527,7 +1520,7 @@ class FormularioHelper extends FormHelper {
 			* Manejo los tipos de datos date para que me arme el control seleccion de fechas.
 			*/
 			if ($tipoCampo === "soloLectura") {
-				return $this->tag("div", $this->label($tagName, null, array("for"=>false)) . $this->tag("span", $valorCampo, array("class" => "solo_lectura")), array("class" => "input text"));
+				return $this->tag("div", $this->label($options['label'], null, array("for"=>false)) . $this->tag("span", $valorCampo, array("class" => "solo_lectura")), array("class" => "input text"));
 			}
 			
 			/**
@@ -1750,18 +1743,8 @@ class FormularioHelper extends FormHelper {
 			elseif ($tipoCampo === "radio") {
 				$options['type'] = "radio";
 				$options['legend'] = false;
-				if (!isset($options['label'])) {
-
-					if (isset($tmpName)) {
-						$options['before'] = $this->label($tmpName, null, array("for"=>false));
-					}
-					else {
-						$options['before'] = $this->label($tagName, null, array("for"=>false));
-					}
-				}
-				else {
-					$options['before'] = $this->label(null, $options['label'], array("for"=>false));
-				}
+				$options['before'] = $this->label(null, $options['label'], array("for"=>false));
+				
 				/**
 				* Pongo todas las opciones dentro de un div para poder asignarles estilos.
 				*/
@@ -1894,8 +1877,45 @@ class FormularioHelper extends FormHelper {
 				$options['class'] = "derecha";
 			}
 
-			elseif ($tipoCampo === "checkboxMultiple") {
-				return $this->__checkboxMultiple($tagName, $options);
+			//elseif ($tipoCampo === "checkboxMultiple") {
+			//	return $this->__checkboxMultiple($tagName, $options);
+			//}
+			
+			
+			elseif (isset($options['multiple']) && $options['multiple'] === 'checkbox') {
+				$id = mt_rand();
+				$seleccion[] = $this->link("T", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("seleccionar");return false;')) . " / ";
+				$seleccion[] = $this->link("N", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("deseleccionar");return false;')) . " / ";
+				$seleccion[] = $this->link("I", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("invertir");return false;'));
+				$seleccionString = $this->tag("div", $seleccion, array("class" => "seleccion"));
+				if (empty($options['after'])) {
+					unset($options['after']);
+				}
+				
+				if (!empty($this->data)) {
+					$parent = array_shift(array_keys($this->data));
+					if (!empty($this->data[$model])) {
+						if (ClassRegistry::isKeySet($model)) {
+							$modelClass =& ClassRegistry::getObject($model);
+							if (!empty($modelClass->hasAndBelongsToMany[$parent]['with'])) {
+								$options['value'] = Set::extract('/' . $modelClass->hasAndBelongsToMany[$parent]['with'] . '/' . $field, $this->data[$model]);
+							}
+						}
+					}
+				}
+				
+				/**
+				 * Try to find bitwise.
+				 */
+				if (!empty($options['options']) && !empty($this->data[$model][$field]) && is_numeric($this->data[$model][$field])) {
+					foreach ($options['options'] as $k => $v) {
+						if ($this->data[$model][$field] & $k) {
+							$options['value'] = array_merge((Array)$options['value'], (Array)$k);
+						}
+					}
+				}
+				
+				$options = array_merge(array('after'=>$seleccionString, 'div'=>array('id' =>$id, 'class'=>'input'), 'type' => 'select', 'multiple' => 'checkbox'), $options);
 			}
 		
 			elseif ($tipoCampo === "lov"
@@ -2017,7 +2037,6 @@ class FormularioHelper extends FormHelper {
 				
 				/**
 				* Busco una etiqueta que vera el usuario.
-				*/
 				if (!isset($options['label'])) {
 					if (isset($tmpName)) {
 						$options['label'] = Inflector::humanize(array_pop(explode(".", str_replace("_id", "", $tmpName))));
@@ -2026,6 +2045,7 @@ class FormularioHelper extends FormHelper {
 						$options['label'] = Inflector::humanize(array_pop(explode(".", str_replace("_id", "", $tagName))));
 					}
 				}
+				*/
 				
 				$options = array_merge($options, array(	'id'		=> $id . "__",
 														'readonly'	=> true,
@@ -2116,7 +2136,7 @@ class FormularioHelper extends FormHelper {
  * @return string El codigo HTML con los controles checkBox.
  * @access private
  */
-	function __checkboxMultiple($tagName, $options) {
+	function __checkboxMultiple_deprecated($tagName, $options) {
 		list($model, $field) = explode(".", $tagName);
 		$opciones['elementosHtmlAttributes'] = array("class" => "checkboxMultiple");
 		$opciones['contenedorHtmlAttributes'] = array("class" => "checkboxMultiple");
@@ -2132,15 +2152,22 @@ class FormularioHelper extends FormHelper {
 			}
 			elseif (!empty($this->data[$model])) {
 				$options['value'] = Set::extract("/" . $model . "/" . $field, $this->data);
+				
+				/**
+				* In case to be a habtm relation.
+				*/
+				if (empty($options['value'])) {
+					$options['value'] = Set::extract("/" . $model . "/id", $this->data);
+				}
 			}
 			if ((is_numeric($id) && !empty($seleccionados) && is_numeric($seleccionados) && ($id & $seleccionados))
 				|| (!empty($options['value']) && is_array($options['value']) && in_array($id, $options['value']))
 				|| (is_string($id) && isset($options['value']) && is_string($options['value']) && $id === $options['value'])) {
 				$checked['checked'] = 'checked';
-				$checkbox[] = "<li>" . sprintf($this->tags['checkboxmultiple'], $model, $field, $this->_parseAttributes(array_merge($elementosHtmlAttributes, $checked))) . $this->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
+				$checkbox[] = "<li>" . sprintf($this->tags['xcheckboxmultiple'], $model, $field, $this->_parseAttributes(array_merge($elementosHtmlAttributes, $checked))) . $this->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
 			}
 			else {
-				$checkbox[] = "<li>" . sprintf($this->tags['checkboxmultiple'], $model, $field, $this->_parseAttributes($elementosHtmlAttributes)) . $this->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
+				$checkbox[] = "<li>" . sprintf($this->tags['xcheckboxmultiple'], $model, $field, $this->_parseAttributes($elementosHtmlAttributes)) . $this->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
 			}
         }
 		

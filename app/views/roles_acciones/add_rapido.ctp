@@ -31,7 +31,7 @@ foreach($data as $k=>$v) {
 		$options[$k1] = $dataAcciones[$k1];
 	}
 	//debug($value);
-	$campos['RolesAccion.controlador_' . $k] = array("value"=>$value, "label" => $dataControladores[$k], "options"=>$options, "type"=>"checkboxMultiple");
+	$campos['RolesAccion.controlador_' . $k] = array("value"=>$value, "label" => $dataControladores[$k], "options"=>$options, 'type' => 'select', 'multiple' => 'checkbox');
 }
 $campos['Form.tipo'] = array("value"=>"addRapido", "type"=>"hidden");
 $fieldsets[] = array('campos' => $campos);

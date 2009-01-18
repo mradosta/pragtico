@@ -8,20 +8,18 @@
  *
  * @filesource
  * @copyright		Copyright 2005-2008, Pragmatia de RPB S.A.
- * @link            http://www.pragmatia.com
- * @package         pragtico
- * @subpackage      app.config
- * @since           Pragtico v 1.0.0
+ * @link			http://www.pragmatia.com
+ * @package			pragtico
+ * @subpackage		app.config
+ * @since			Pragtico v 1.0.0
  * @version			$Revision$
  * @modifiedby		$LastChangedBy$
  * @lastmodified	$Date$
- * @author          Martin Radosta <mradosta@pragmatia.com>
+ * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
 
 $tags = array(
 	"radio" => "<p class='radio'><input type='radio' name='%s' id='%s' %s /><label for='%2\$s' class='radio_label'>%s</label></p>",
-	"checkboxmultiple" => "<input type='checkbox' class='checkbox' name='data[%s][%s][]' %s/>",
-	"hiddenmultiple" => "<input type='hidden' name='data[%s][%s][]' />%s",
 	"dt" => "<dt %s />%s</dt>",
 	"dd" => "<dd/>%s</dd>",
 	"dl" => "<dl/>%s</dl>",

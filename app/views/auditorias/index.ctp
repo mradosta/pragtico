@@ -19,11 +19,11 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-$condiciones['Condicion.Auditoria-created__desde'] = array("label"=>"Desde");
-$condiciones['Condicion.Auditoria-created__hasta'] = array("label"=>"Hasta");
-$condiciones['Condicion.Auditoria-tipo'] = array("type"=>"checkboxMultiple");
+$condiciones['Condicion.Auditoria-created__desde'] = array('label' => 'Desde');
+$condiciones['Condicion.Auditoria-created__hasta'] = array('label' => 'Hasta');
+$condiciones['Condicion.Auditoria-tipo'] = array('type' => 'select', 'multiple' => 'checkbox');
 $condiciones['Condicion.Auditoria-usuario'] = array();
-$condiciones['Condicion.Auditoria-ip'] = array("label"=>"Direccion IP");
+$condiciones['Condicion.Auditoria-ip'] = array('label' => 'Direccion IP');
 
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'auditorias.gif')));
@@ -35,22 +35,22 @@ $fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "Auditoria", 'field' => "id", 'valor' => $v['Auditoria']['id'], "write"=>$v['Auditoria']['write'], "delete"=>$v['Auditoria']['delete']);
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Auditoria']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'detalles.gif', 'alt' => "Detalles"), "url"=>"detalles");
-	$fila[] = array('model' => "Auditoria", 'field' => "tipo", 'valor' => $v['Auditoria']['tipo']);
-	$fila[] = array('model' => "Auditoria", 'field' => "usuario", 'valor' => $v['Auditoria']['usuario']);
-	$fila[] = array('model' => "Auditoria", 'field' => "created", 'valor' => $v['Auditoria']['created'], "nombreEncabezado"=>"Fecha");
-	$fila[] = array('model' => "Auditoria", 'field' => "ip", 'valor' => $v['Auditoria']['ip'], "nombreEncabezado"=>"Direccion IP");
+	$fila[] = array('model' => 'Auditoria', 'field' => 'id', 'valor' => $v['Auditoria']['id'], 'write'=>$v['Auditoria']['write'], 'delete'=>$v['Auditoria']['delete']);
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Auditoria']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'detalles.gif', 'alt' => 'Detalles'), 'url' => 'detalles');
+	$fila[] = array('model' => 'Auditoria', 'field' => 'tipo', 'valor' => $v['Auditoria']['tipo']);
+	$fila[] = array('model' => 'Auditoria', 'field' => 'usuario', 'valor' => $v['Auditoria']['usuario']);
+	$fila[] = array('model' => 'Auditoria', 'field' => 'created', 'valor' => $v['Auditoria']['created'], 'nombreEncabezado' => 'Fecha');
+	$fila[] = array('model' => 'Auditoria', 'field' => 'ip', 'valor' => $v['Auditoria']['ip'], 'nombreEncabezado' => 'Direccion IP');
 	$cuerpo[] = $fila;
 }
 
-$opcionesTabla =  array("tabla"=> array(
-									"eliminar"			=> false,
-									"modificar"			=> false,
-									"seleccionMultiple"	=> false,
-									"permisos"			=> false));
-$accionesExtra['opciones'] = array("acciones"=>array());									
-echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, "opcionesTabla"=>$opcionesTabla, "accionesExtra"=>$accionesExtra));
+$opcionesTabla =  array('tabla'=> array(
+									'eliminar'			=> false,
+									'modificar'			=> false,
+									'seleccionMultiple'	=> false,
+									'permisos'			=> false));
+$accionesExtra['opciones'] = array('acciones'=>array());									
+echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, 'opcionesTabla'=>$opcionesTabla, 'accionesExtra'=>$accionesExtra));
 
 
 ?>

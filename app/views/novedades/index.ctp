@@ -31,7 +31,7 @@ $condiciones['Condicion.Relacion-id'] = array(	"label"	=> "Relacion",
 												"lov"	=> array(	"controller"	=> "relaciones",
 																	"camposRetorno"	=> array(	"Empleador.nombre",
 																								"Trabajador.apellido")));
-$condiciones['Condicion.Novedad-tipo'] = array("type"=>"checkboxMultiple");
+$condiciones['Condicion.Novedad-tipo'] = array("type"=>"select", 'multiple' => 'checkbox');
 $condiciones['Condicion.Novedad-periodo'] = array("type"=>"periodo");
 
 $fieldsets[] = array('campos' => $condiciones);

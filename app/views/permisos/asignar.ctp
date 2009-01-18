@@ -18,8 +18,8 @@
  
 $condiciones['Permisos.usuario_id'] = array("options"=>"listable", "empty"=>true, "model"=>"Usuario", "displayField"=>array("Usuario.nombre"), "order"=>array("Usuario.nombre"), "empty"=>true);
 $condiciones['Permisos.model_id'] = array("label"=>"Modelo", "options"=>$models);
-$condiciones['Permisos.grupo_id'] = array("type"=>"checkboxMultiple", "options"=>"listable", "empty"=>true, "model"=>"Grupo", "displayField"=>array("Grupo.nombre"), "order"=>array("Grupo.nombre"), "empty"=>true);
-$condiciones['Permisos.rol_id'] = array("type"=>"checkboxMultiple", "options"=>"listable", "empty"=>true, "model"=>"Rol", "displayField"=>array("Rol.nombre"), "order"=>array("Rol.nombre"), "empty"=>true);
+$condiciones['Permisos.grupo_id'] = array('type' => 'select', 'multiple' => 'checkbox', "options"=>"listable", "model"=>"Grupo", "displayField"=>array("Grupo.nombre"), "order"=>array("Grupo.nombre"));
+$condiciones['Permisos.rol_id'] = array('type' => 'select', 'multiple' => 'checkbox', "options"=>"listable", "model"=>"Rol", "displayField"=>array("Rol.nombre"), "order"=>array("Rol.nombre"));
 
 $fieldsets[] = array('campos' => $condiciones);
 $condiciones = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Cambiar permisos", 'imagen' => 'permisos.gif')));
