@@ -26,7 +26,7 @@ $condiciones['Condicion.Liquidacion-periodo'] = array('type' => 'periodo');
 $condiciones['Condicion.Liquidacion-estado'] = array('type' => 'select', 'multiple' => 'checkbox', 'aclaracion' => 'Se refiere a que liquidaciones tomar como base para la prefacturacion.');
 
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'liquidaciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'liquidaciones.gif')));
 
 
 /**

@@ -26,7 +26,7 @@ $condiciones['Condicion.Menu-orden__desde'] = array("label"=>"Orden Desde");
 $condiciones['Condicion.Menu-orden__hasta'] = array("label"=>"Orden Hasta");
 $condiciones['Condicion.Menu-estado'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'menus.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'menus.gif')));
 
 
 /**

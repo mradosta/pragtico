@@ -31,7 +31,7 @@ class AppController extends Controller {
 	 * @var array
 	 * @access public
 	 */
-	var $helpers = array('Formato', 'Formulario', 'Paginador', 'Asset');
+	var $helpers = array('Formato', 'AppForm', 'Paginador', 'Asset');
 
 	/**
 	 * Los components que usara toda la aplicacion.

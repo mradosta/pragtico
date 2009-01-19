@@ -26,7 +26,7 @@ $campos['Rol.estado'] = array();
 $campos['Rol.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Rol", 'imagen' => 'roles.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Rol", 'imagen' => 'roles.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

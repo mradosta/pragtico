@@ -25,7 +25,7 @@ $condiciones['Condicion.ConveniosCategoria-convenio_id'] = array(	"lov"=>array("
 																										"Convenio.nombre")));
 $condiciones['Condicion.ConveniosCategoria-jornada'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Categoria", 'imagen' => 'categorias.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Categoria", 'imagen' => 'categorias.gif')));
 
 
 /**

@@ -35,7 +35,7 @@ $condiciones['Condicion.RelacionesConcepto-concepto_id'] = array(	"lov"=>array("
 																		"camposRetorno"	=>array("Concepto.codigo",
 																								"Concepto.nombre")));
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"concepto de la relacion laboral", 'imagen' => 'conceptos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"concepto de la relacion laboral", 'imagen' => 'conceptos.gif')));
 
 
 /**

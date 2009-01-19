@@ -29,7 +29,7 @@ $campos['GruposUsuario.grupo_id'] = array("options"=>"listable", "model"=>"Grupo
 $campos['GruposUsuario.estado'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"relacion entre Usuario y Grupo", 'imagen' => 'usuarios.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"relacion entre Usuario y Grupo", 'imagen' => 'usuarios.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

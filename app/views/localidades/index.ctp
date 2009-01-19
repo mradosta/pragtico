@@ -23,7 +23,7 @@ $condiciones['Condicion.Localidad-provincia_id'] = array("options"=>"listable", 
 $condiciones['Condicion.Localidad-codigo'] = array();
 $condiciones['Condicion.Localidad-nombre'] = array("label"=>"Localidad");
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'localidades.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'localidades.gif')));
 
 
 /**

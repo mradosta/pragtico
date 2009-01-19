@@ -23,7 +23,7 @@
 $cuerpo = null;
 foreach ($this->data['PagosForma'] as $k=>$v) {
 	$fila = null;
-	$fila[] = array("tipo"=>"accion", "valor"=>$formulario->link($formulario->image('revertir_pago.gif'), "../pagos_formas/revertir_pagos_forma/" . $v['id'], array("title"=>"Revertir Forma de Pago")));
+	$fila[] = array("tipo"=>"accion", "valor"=>$appForm->link($appForm->image('revertir_pago.gif'), "../pagos_formas/revertir_pagos_forma/" . $v['id'], array("title"=>"Revertir Forma de Pago")));
 	$fila[] = array('model' => "PagosForma", 'field' => "id", 'valor' => $v['id'], "write"=>$v['write'], "delete"=>$v['delete']);
 	$fila[] = array('model' => "PagosForma", 'field' => "forma", "class" => "izquierda", 'valor' => $v['forma']);
 	$fila[] = array('model' => "PagosForma", 'field' => "fecha", 'valor' => $v['fecha']);

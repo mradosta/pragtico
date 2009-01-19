@@ -36,7 +36,7 @@ $campos['Sucursal.telefono'] = array();
 $campos['Sucursal.observacion'] = array();
 $fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array("class"=>"detail", "legend"=>"Sucursal", 'imagen' => 'sucursales.gif')));
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'bancos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'bancos.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

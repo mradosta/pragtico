@@ -42,13 +42,13 @@ $campos['PagosForma.empleador_id'] =  array(		"lov"	=>
 												"Empleador.nombre")));
 $campos['PagosForma.cuenta_id'] = array("label"=>"Cuenta", "type"=>"relacionado", "relacion"=>"PagosForma.empleador_id", "url"=>"pagos/cuentas_relacionado");
 
-$campos['PagosForma.cheque_numero'] = array("after"=>$formulario->image('cheques.gif', array("class"=>"after", "id"=>"buscarUltimoNumero", 'alt' => "Buscar ultimo numero de cheque")));
+$campos['PagosForma.cheque_numero'] = array("after"=>$appForm->image('cheques.gif', array("class"=>"after", "id"=>"buscarUltimoNumero", 'alt' => "Buscar ultimo numero de cheque")));
 $campos['PagosForma.fecha_pago'] = array();
 $campos['PagosForma.cbu_numero'] =  array('aclaracion' => 'Si lo deja en blanco, se utilizara el cbu del Trabajador');
 $fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array("id"=>"bancarioFieldSet", "legend"=>"Bancario", 'imagen' => 'pagos.gif')));
 
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Forma de Pago", 'imagen' => 'pagos_formas.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Forma de Pago", 'imagen' => 'pagos_formas.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
@@ -107,5 +107,5 @@ $js = "
 		});
 		
 ";
-$formulario->addScript($js);
+$appForm->addScript($js);
 ?>

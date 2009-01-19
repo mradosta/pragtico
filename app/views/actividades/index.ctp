@@ -23,7 +23,7 @@ $condiciones['Condicion.Actividad-codigo'] = array();
 $condiciones['Condicion.Actividad-nombre'] = array();
 $condiciones['Condicion.Actividad-tipo'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'actividades.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'actividades.gif')));
 
 
 /**

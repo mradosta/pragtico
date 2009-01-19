@@ -23,7 +23,7 @@ $campos = null;
 $campos['Novedad.periodo'] = array("type"=>"periodo", "aclaracion"=>"Tomara este periodo para los datos ingresados desde la planilla.", "verificarRequerido"=>false);
 $campos['Novedad.planilla'] = array("type"=>"file");
 
-$fieldset = $formulario->pintarFieldsets(array(array('campos' => $campos)), array('fieldset' => array("legend"=>"Importar novedades desde planilla", 'imagen' => 'excel.gif')));
+$fieldset = $appForm->pintarFieldsets(array(array('campos' => $campos)), array('fieldset' => array("legend"=>"Importar novedades desde planilla", 'imagen' => 'excel.gif')));
 
 
 /**
@@ -60,8 +60,8 @@ if(!empty($registros)) {
 	$pie[] = $fila;
 }
 
-$botonesExtra[] = $formulario->button("Cancelar", array("title"=>"Cancelar", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='cancelar';form.submit();"));
-$botonesExtra[] = $formulario->submit("Importar", array("title"=>"Importar la PLanilla", "onclick"=>"document.getElementById('accion').value='importar'"));
+$botonesExtra[] = $appForm->button("Cancelar", array("title"=>"Cancelar", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='cancelar';form.submit();"));
+$botonesExtra[] = $appForm->submit("Importar", array("title"=>"Importar la PLanilla", "onclick"=>"document.getElementById('accion').value='importar'"));
 $opcionesTabla['tabla']['omitirMensajeVacio'] = true;
 echo $this->element('index/index', array("botonesExtra"=>array("opciones"=>array("botones"=>$botonesExtra)), "condiciones"=>$fieldset, "opcionesTabla"=>$opcionesTabla, "opcionesForm"=>array("enctype"=>"multipart/form-data", 'action' => "importar_planilla")));
 

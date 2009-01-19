@@ -25,7 +25,7 @@ $condiciones['Condicion.Trabajador-sexo'] = array();
 $condiciones['Condicion.Trabajador-numero_documento'] = array("label"=>"Documento");
 $condiciones['Condicion.Trabajador-cuil'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'trabajadores.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'trabajadores.gif')));
 
 
 /**
@@ -45,7 +45,7 @@ foreach ($registros as $k=>$v) {
 	$cuerpo[] = $fila;
 }
 
-$accionesExtra[] = $formulario->link("Imprimir", "imprimir", array("title"=>"Imprimir", "class"=>"link_boton"));
+$accionesExtra[] = $appForm->link("Imprimir", "imprimir", array("title"=>"Imprimir", "class"=>"link_boton"));
 echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, "accionesExtra"=>$accionesExtra));
 
 ?>

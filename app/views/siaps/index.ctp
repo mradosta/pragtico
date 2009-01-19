@@ -21,7 +21,7 @@
 */
 $condiciones['Condicion.Siap-version'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Siap", 'imagen' => 'afip.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Siap", 'imagen' => 'afip.gif')));
 
 
 /**

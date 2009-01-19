@@ -67,22 +67,22 @@ $css[] = "jquery.autocomplete";
 */
 $css[] = "aplicacion.default.screen";
 
-//if($formulario->traerPreferencia("lov_apertura") != "popup") {
+//if($appForm->traerPreferencia("lov_apertura") != "popup") {
 //	$css[] = "jquery.jqmodal";
 //}
 $html->css($css, null, array("media"=>"screen"), false);
 
-$formulario->addScript("default", "links");
-$formulario->addScript("datetimepicker", "links");
-$formulario->addScript("jquery", "links");
-$formulario->addScript("jquery.autocomplete", "links");
-$formulario->addScript("jquery.jqmodal", "links");
-$formulario->addScript("jquery.jeditable", "links");
-$formulario->addScript("jquery.form", "links");
-$formulario->addScript("jquery.flydom", "links");
-$formulario->addScript("jquery.maskedinput", "links");
-$formulario->addScript("jquery.accordion", "links");
-$formulario->addScript("jquery.checkbox", "links");
+$appForm->addScript("default", "links");
+$appForm->addScript("datetimepicker", "links");
+$appForm->addScript("jquery", "links");
+$appForm->addScript("jquery.autocomplete", "links");
+$appForm->addScript("jquery.jqmodal", "links");
+$appForm->addScript("jquery.jeditable", "links");
+$appForm->addScript("jquery.form", "links");
+$appForm->addScript("jquery.flydom", "links");
+$appForm->addScript("jquery.maskedinput", "links");
+$appForm->addScript("jquery.accordion", "links");
+$appForm->addScript("jquery.checkbox", "links");
 /*
 $javascript->link(array(	"default",
 							"datetimepicker",
@@ -103,8 +103,8 @@ $codigo_html[] = "<body>";
 $codigo_html[] = $flash;
 $codigo_html[] = $encabezado;
 $codigo_html[] = $barra;
-$contenido = $formulario->tag("div", $content_for_layout, array("class"=>"cuerpo"));
-$codigo_html[] = $formulario->tag("div", $menu . $contenido, array("class"=>"contenido"));
+$contenido = $appForm->tag("div", $content_for_layout, array("class"=>"cuerpo"));
+$codigo_html[] = $appForm->tag("div", $menu . $contenido, array("class"=>"contenido"));
 $codigo_html[] = $cakeDebug;
 $codigo_html[] = "</body>";
 $codigo_html[] = "</html>";

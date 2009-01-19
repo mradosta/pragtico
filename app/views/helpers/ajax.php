@@ -31,7 +31,7 @@ class AjaxHelper extends AppHelper {
  * @var arraya
  * @access public.
  */
-    var $helpers = array("Html", "Javascript","Formulario");
+    var $helpers = array("Html", "Javascript", "AppForm");
     
     
 /**
@@ -449,10 +449,10 @@ function jsPredefinido($options = array()) {
 	$js['busqueda']['ready'] = "busqueda();";
 		
 		if (!empty($js[$options['tipo']]['ready'])) {
-			$this->Formulario->addScript($js[$options['tipo']]['ready'], "ready");
+			$this->AppForm->addScript($js[$options['tipo']]['ready'], "ready");
 		}
 		if (!empty($js[$options['tipo']]['view'])) {
-			$this->Formulario->addScript($js[$options['tipo']]['view'], "view");
+			$this->AppForm->addScript($js[$options['tipo']]['view'], "view");
 		}
 	}
 

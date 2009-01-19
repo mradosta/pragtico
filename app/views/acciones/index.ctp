@@ -25,7 +25,7 @@ $condiciones['Condicion.Accion-etiqueta'] = array();
 $condiciones['Condicion.Accion-estado'] = array();
 $condiciones['Condicion.Accion-seguridad'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'acciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'acciones.gif')));
 
 
 /**
@@ -49,7 +49,7 @@ foreach ($registros as $k=>$v) {
 	}
 }
 
-$accionesExtra = $formulario->bloque($formulario->link("Act. Masiva", "../controladores/actualizar_controladores", array("class"=>"link_boton", "title"=>"Actualiza automaticamente todos controladores y sus acciones")));
+$accionesExtra = $appForm->bloque($appForm->link("Act. Masiva", "../controladores/actualizar_controladores", array("class"=>"link_boton", "title"=>"Actualiza automaticamente todos controladores y sus acciones")));
 echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, "accionesExtra"=>$accionesExtra));
 
 ?>

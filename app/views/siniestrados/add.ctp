@@ -26,7 +26,7 @@ $campos['Variable.nombre'] = array();
 $campos['Variable.descripcion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'siniestrados.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'siniestrados.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

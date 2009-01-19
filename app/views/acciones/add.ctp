@@ -30,7 +30,7 @@ $campos['Accion.seguridad'] = array("aclaracion"=>"Indica si debe chequearse la 
 $campos['Accion.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'acciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'acciones.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

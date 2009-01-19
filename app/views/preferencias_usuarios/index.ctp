@@ -26,7 +26,7 @@ $condiciones['Condicion.PreferenciasUsuario-usuario_id'] = array(	"lov"=>array("
 $condiciones['Condicion.PreferenciasUsuario-valor'] = array();
 $condiciones['Condicion.Preferencia-nombre'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Preferencias de Usuario", 'imagen' => 'preferencias.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Preferencias de Usuario", 'imagen' => 'preferencias.gif')));
 
 
 /**

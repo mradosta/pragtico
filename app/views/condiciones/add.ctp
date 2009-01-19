@@ -29,7 +29,7 @@ $campos['Condicion.codigo'] = array("label"=>"Codigo");
 $campos['Condicion.nombre'] = array("label"=>"Nombre");
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'condiciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'condiciones.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

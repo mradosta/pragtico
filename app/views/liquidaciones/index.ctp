@@ -37,7 +37,7 @@ $condiciones['Condicion.Relacion-id'] = array(	"label" => "Relacion",
 																						"Trabajador.apellido")));
 $condiciones['Condicion.Liquidacion-periodo'] = array("type"=>"periodo");
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Liquidaciones",'imagen' => 'liquidaciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Liquidaciones",'imagen' => 'liquidaciones.gif')));
 
 
 /**
@@ -50,8 +50,8 @@ foreach ($registros as $k=>$v) {
 	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose1', 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => "liquidaciones"), "url"=>'recibo_html');
 	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose2', 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => "liquidaciones (debug)"), "url"=>'recibo_html_debug');
 	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose3', 'imagen' => array('nombre' => 'pagos.gif', 'alt' => "Pagos"), "url"=>'pagos');
-	$fila[] = array("tipo"=>"accion", "valor"=>$formulario->link($formulario->image('acciones/excel.gif', array('alt' => "Generar recibo excel", "title"=>"Generar recibo excel")), "recibo_excel/" . $id));
-	$fila[] = array("tipo"=>"accion", "valor"=>$formulario->link($formulario->image('acciones/pdf.gif', array('alt' => "Generar recibo pdf", "title"=>"Generar recibo pdf")), "recibo_pdf/" . $id));
+	$fila[] = array("tipo"=>"accion", "valor"=>$appForm->link($appForm->image('acciones/excel.gif', array('alt' => "Generar recibo excel", "title"=>"Generar recibo excel")), "recibo_excel/" . $id));
+	$fila[] = array("tipo"=>"accion", "valor"=>$appForm->link($appForm->image('acciones/pdf.gif', array('alt' => "Generar recibo pdf", "title"=>"Generar recibo pdf")), "recibo_pdf/" . $id));
 	$fila[] = array('model' => "Liquidacion", 'field' => "id", 'valor' => $v['Liquidacion']['id'], "write"=>$v['Liquidacion']['write'], "delete"=>$v['Liquidacion']['delete']);
 	$fila[] = array('model' => "Liquidacion", 'field' => "ano", 'valor' => $v['Liquidacion']['ano'] . str_pad($v['Liquidacion']['mes'], 2, "0" ,STR_PAD_LEFT) . $v['Liquidacion']['periodo'], "nombreEncabezado"=>"Periodo");
 	$fila[] = array('model' => "Empleador", 'field' => "nombre", 'valor' => $v['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");

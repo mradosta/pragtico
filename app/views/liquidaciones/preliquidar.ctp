@@ -45,7 +45,7 @@ $condiciones['Condicion.Relacion-id'] = array(	"label" => "Relacion",
 $condiciones['Condicion.Liquidacion-tipo'] = array("label"=>"Tipo", "type" => "select");
 $condiciones['Condicion.Liquidacion-periodo'] = array("label"=>"Periodo", "type"=>"periodo");
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Preliquidar",'imagen' => 'preliquidar.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Preliquidar",'imagen' => 'preliquidar.gif')));
 
 
 /**
@@ -59,7 +59,7 @@ foreach ($registros as $k=>$v) {
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'update' => 'desglose2', 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => "liquidaciones (debug)"), "url"=>"recibo_html_debug");
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'update' => 'desglose3', 'imagen' => array('nombre' => 'observaciones.gif', 'alt' => "Agregar Observacion"), "url"=>'agregar_observacion');
 	//$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose3', 'imagen' => array('nombre' => 'observaciones.gif', 'alt' => "Agregar Observacion"), "url"=>"add");
-	$fila[] = array("tipo"=>"accion", "valor"=>$formulario->link($formulario->image('excel.gif', array('alt' => "Generar recibo excel", "title"=>"Generar recibo excel")), "recibo_excel/" . $v['Liquidacion']['id']));
+	$fila[] = array("tipo"=>"accion", "valor"=>$appForm->link($appForm->image('excel.gif', array('alt' => "Generar recibo excel", "title"=>"Generar recibo excel")), "recibo_excel/" . $v['Liquidacion']['id']));
 
 	$fila[] = array('model' => "Liquidacion", 'field' => "id", 'valor' => $v['Liquidacion']['id'], "write"=>$v['Liquidacion']['write'], "delete"=>$v['Liquidacion']['delete']);
 	$fila[] = array('model' => "Liquidacion", 'field' => "ano", 'valor' => $v['Liquidacion']['ano'] . str_pad($v['Liquidacion']['mes'], 2, "0" ,STR_PAD_LEFT) . $v['Liquidacion']['periodo'], "nombreEncabezado"=>"Periodo");
@@ -90,14 +90,14 @@ $opcionesTabla =  array("tabla"=> array("ordenEnEncabezados"=> false,
 										"eliminar"			=> false,
 										"permisos"			=> false));
 
-$accionesExtra['opciones'] = array("acciones"=>array($formulario->link("Confirmar", null, array("class"=>"link_boton", "id"=>"confirmar", "title"=>"Confirma las liquidaciones seleccionadas"))));
-$botonesExtra[] = $formulario->button("Limpiar", array("title"=>"Limpia las busquedas", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='limpiar';form.submit();"));
-$botonesExtra[] = $formulario->submit("Generar", array("title"=>"Genera una Pre-liquidacion", "onclick"=>"document.getElementById('accion').value='generar'"));
+$accionesExtra['opciones'] = array("acciones"=>array($appForm->link("Confirmar", null, array("class"=>"link_boton", "id"=>"confirmar", "title"=>"Confirma las liquidaciones seleccionadas"))));
+$botonesExtra[] = $appForm->button("Limpiar", array("title"=>"Limpia las busquedas", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='limpiar';form.submit();"));
+$botonesExtra[] = $appForm->submit("Generar", array("title"=>"Genera una Pre-liquidacion", "onclick"=>"document.getElementById('accion').value='generar'"));
 echo $this->element('index/index', array("botonesExtra"=>array("opciones"=>array("botones"=>$botonesExtra)), "accionesExtra"=>$accionesExtra, "condiciones"=>$fieldset, 'cuerpo' => $cuerpo, "opcionesTabla"=>$opcionesTabla, "opcionesForm"=>array("action"=>"preliquidar")));
 /**
 * Agrego el evento click asociado al boton confirmar.
 */
-$formulario->addScript('
+$appForm->addScript('
 	jQuery("#confirmar").click(
 		function() {
 			var c = jQuery(".tabla input[@type=\'checkbox\']").checkbox("contar");

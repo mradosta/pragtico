@@ -37,7 +37,7 @@ $condiciones['Condicion.Descuento-estado'] = array('type' => 'select', 'multiple
 $condiciones['Condicion.Descuento-tipo'] = array('type' => 'select', 'multiple' => 'checkbox');
 
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'descuentos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'descuentos.gif')));
 
 
 /**

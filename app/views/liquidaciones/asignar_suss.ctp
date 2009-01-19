@@ -23,11 +23,11 @@ $condiciones['Condicion.Suss-fecha'] = array("type"=>"date", "label"=>"Fecha de 
 $condiciones['Condicion.Suss-periodo'] = array("aclaracion"=>"De la forma AAAAMM");
 $condiciones['Condicion.Suss-banco_id'] = array("options"=>$bancos);
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Realiza la confirmacion del pago de SUSS", 'imagen' => '../legends/bancos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Realiza la confirmacion del pago de SUSS", 'imagen' => '../legends/bancos.gif')));
 
 $accionesExtra['opciones'] = array("acciones"=>array());
-$botonesExtra[] = $formulario->button("Cancelar", array("title"=>"Cancelar", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='cancelar';form.submit();"));
-$botonesExtra[] = $formulario->submit("Generar", array("title"=>"Importar la PLanilla", "onclick"=>"document.getElementById('accion').value='asignar'"));
+$botonesExtra[] = $appForm->button("Cancelar", array("title"=>"Cancelar", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='cancelar';form.submit();"));
+$botonesExtra[] = $appForm->submit("Generar", array("title"=>"Importar la PLanilla", "onclick"=>"document.getElementById('accion').value='asignar'"));
 
 echo $this->element('index/index', array("opcionesTabla"=>array("tabla"=>array("omitirMensajeVacio"=>true)), "botonesExtra"=>array("opciones"=>array("botones"=>$botonesExtra)), "accionesExtra"=>$accionesExtra, "opcionesForm"=>array("action"=>"asignar_suss"), "condiciones"=>$fieldset, "cuerpo"=>null));
 ?>

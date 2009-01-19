@@ -21,7 +21,7 @@
 */
 $condiciones['Condicion.Rubro-nombre'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'rubros.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'rubros.gif')));
 
 
 /**

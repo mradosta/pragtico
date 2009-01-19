@@ -33,7 +33,7 @@ foreach($datosDerecha as $k=>$v) {
 	$cuerpoT2[] = $fila;
 }
 
-$extra = $formulario->input("RelacionesConcepto.relacion_id", array("type"=>"hidden", "value"=>$relacion['Relacion']['id']));
+$extra = $appForm->input("RelacionesConcepto.relacion_id", array("type"=>"hidden", "value"=>$relacion['Relacion']['id']));
 
 echo $this->renderElement("add/add_rapido", array(
 				"cuerpoTablaIzquierda"		=> $cuerpoT1,

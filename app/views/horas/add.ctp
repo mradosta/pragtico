@@ -32,7 +32,7 @@ $campos['Hora.cantidad'] = array();
 $campos['Hora.tipo'] = array();
 $campos['Hora.estado'] = array("type" => "radio");
 $campos['Hora.observacion'] = array();
-$fieldset = $formulario->pintarFieldsets(array(array('campos' => $campos)), array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"horas manual", 'imagen' => 'horas.gif')));
+$fieldset = $appForm->pintarFieldsets(array(array('campos' => $campos)), array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"horas manual", 'imagen' => 'horas.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

@@ -40,7 +40,7 @@ $campos['ConveniosCategoriasHistorico.observacion'] = array();
 $fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array("class"=>"detail", "legend"=>"Historicos", 'imagen' => 'historicos.gif')));
 
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Categoria")));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Categoria")));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

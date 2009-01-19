@@ -23,7 +23,7 @@ $condiciones['Condicion.Suss-periodo'] = array("type"=>"periodo", "periodo"=>arr
 $condiciones['Condicion.Suss-banco_id'] = array("options"=>"listable", "model"=>"Banco", "empty"=>true, "displayField"=>array("Banco.nombre"));
 $condiciones['Condicion.Suss-fecha'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Suss", 'imagen' => 'suss.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Suss", 'imagen' => 'suss.gif')));
 
 
 /**

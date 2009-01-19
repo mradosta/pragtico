@@ -22,7 +22,7 @@
 $condiciones['Condicion.Rol-nombre'] = array();
 $condiciones['Condicion.RolesMenu-estado'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'roles.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'roles.gif')));
 
 
 /**

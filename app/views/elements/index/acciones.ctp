@@ -6,20 +6,20 @@
 *
 * Ejemplos:
 * Solo el boton de accion nuevo y uno propio del formulario.
-* $accionesExtra['opciones'] = array("acciones"=>array("nuevo", $formulario->bloque($formulario->link("Importar Planilla", "importarPlanillas", array("class"=>"link_boton", "title"=>"Importa las planillas de ingreso masivo de horas")))));
+* $accionesExtra['opciones'] = array("acciones"=>array("nuevo", $appForm->bloque($appForm->link("Importar Planilla", "importarPlanillas", array("class"=>"link_boton", "title"=>"Importa las planillas de ingreso masivo de horas")))));
 *
 * Ninguna accion.
 * $accionesExtra['opciones'] = array("acciones"=>array());
 */
-$modificar = $formulario->link(__('Edit', true), null, 
+$modificar = $appForm->link(__('Edit', true), null, 
 		array("id"=>"modificar", "class"=>"link_boton", "title"=>__('Edit selected records', true)));
-$nuevo = $formulario->link(__('New', true), 'add', 
+$nuevo = $appForm->link(__('New', true), 'add', 
 		array("class"=>"link_boton", "title"=>__('Insert a new record', true)));
-$eliminar = $formulario->link(__('Delete', true), null, 
+$eliminar = $appForm->link(__('Delete', true), null, 
 		array("id"=>"eliminar", "class"=>"link_boton_rojo", "title"=>__('Delete selected records', true)));
 
 if ((!empty($this->params['named']['layout']) && $this->params['named']['layout'] == "lov")) {
-	echo $formulario->tag('div', '&nbsp;', array("class"=>"botones_acciones"));
+	echo $appForm->tag('div', '&nbsp;', array("class"=>"botones_acciones"));
 } else {
 	if (isset($accionesExtra['opciones']['acciones'])) {
 		foreach ($accionesExtra['opciones']['acciones'] as $v) {
@@ -45,7 +45,7 @@ if ((!empty($this->params['named']['layout']) && $this->params['named']['layout'
 		$acciones = array_merge($acciones, $accionesExtra);
 	}
 	if (!empty($acciones)) {
-		echo $formulario->tag('div', $acciones, array("class"=>"botones_acciones"));
+		echo $appForm->tag('div', $acciones, array("class"=>"botones_acciones"));
 	}
 }
 

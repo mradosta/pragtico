@@ -48,7 +48,7 @@ $opcionesTabla =  array("tabla"=>
 									"mostrarIds"		=>false));
 
 
-echo $formulario->bloque($formulario->tabla(am(array('cuerpo' => $cuerpo), $opcionesTabla)), array("div"=>array("class"=>"unica")));
+echo $appForm->bloque($appForm->tabla(am(array('cuerpo' => $cuerpo), $opcionesTabla)), array("div"=>array("class"=>"unica")));
 */
 $url = array('controller' => "ropas_detalles", 'action' => 'add', "RopasDetalle.ropa_id"=>$this->data['Ropa']['id']);
 echo $this->element('desgloses/agregar', array('url' => $url, 'titulo' => "Prendas", 'cuerpo' => $cuerpo));

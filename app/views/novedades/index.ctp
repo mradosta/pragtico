@@ -35,7 +35,7 @@ $condiciones['Condicion.Novedad-tipo'] = array("type"=>"select", 'multiple' => '
 $condiciones['Condicion.Novedad-periodo'] = array("type"=>"periodo");
 
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"novedades de la relacion laboral", 'imagen' => 'novedades.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"novedades de la relacion laboral", 'imagen' => 'novedades.gif')));
 
 
 /**
@@ -59,9 +59,9 @@ foreach ($registros as $k=>$v) {
 		$cuerpo[] = $fila;
 	}
 }
-$generar = $formulario->link("Generar Planilla", "generar_planilla", array("title"=>"Genera las planillas para el ingreso de novedades", "class"=>"link_boton"));
-$importar = $formulario->link("Importar Planilla", "importar_planilla", array("class"=>"link_boton", "title"=>"Importa las planillas de novedades"));
-$confirmar = $formulario->link("Confirmar", null, array("class"=>"link_boton", "id"=>"confirmar", "title"=>"Confirma las novedades seleccionadas"));
+$generar = $appForm->link("Generar Planilla", "generar_planilla", array("title"=>"Genera las planillas para el ingreso de novedades", "class"=>"link_boton"));
+$importar = $appForm->link("Importar Planilla", "importar_planilla", array("class"=>"link_boton", "title"=>"Importa las planillas de novedades"));
+$confirmar = $appForm->link("Confirmar", null, array("class"=>"link_boton", "id"=>"confirmar", "title"=>"Confirma las novedades seleccionadas"));
 $accionesExtra['opciones'] = array("acciones"=>array($confirmar, "eliminar", $generar, $importar));
 $opcionesTabla =  array("tabla"=>array("modificar"=>false));
 echo $this->element('index/index', array("opcionesTabla"=>$opcionesTabla, "condiciones"=>$fieldset, 'cuerpo' => $cuerpo, "accionesExtra"=>$accionesExtra));
@@ -73,5 +73,5 @@ $js = "
 		jQuery('#form').submit();
 	});
 ";
-$formulario->addScript($js);
+$appForm->addScript($js);
 ?>

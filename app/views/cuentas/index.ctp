@@ -30,7 +30,7 @@ $condiciones['Condicion.Cuenta-tipo'] = array();
 $condiciones['Condicion.Cuenta-numero'] = array();
 
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Cuentas de los Empleadores", 'imagen' => 'cuentas.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Cuentas de los Empleadores", 'imagen' => 'cuentas.gif')));
 
 
 /**

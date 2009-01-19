@@ -38,7 +38,7 @@ $condiciones['Condicion.Liquidacion-periodo'] = array('type' => 'periodo');
 $condiciones['Condicion.Pago-estado'] = array("type"=>"select", 'multiple' => 'checkbox');
 $fieldsets[] = array('campos' => $condiciones);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset'=>array('imagen' => 'pagos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset'=>array('imagen' => 'pagos.gif')));
 
 
 /**
@@ -51,7 +51,7 @@ foreach ($registros as $k=>$v) {
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Pago']['id'], 'update' => 'desglose2', 'imagen'=>array('nombre' => 'pagos_formas.gif', 'alt' => 'Formas de Pago'), 'url'=>'formas');
 	if ($v['Pago']['estado'] === 'Pendiente' && $v['Pago']['moneda'] === 'Pesos') {
 		$fila[] = array('tipo' => 'accion', 'valor' => 
-				$formulario->link($formulario->image('cheques.gif'), 
+				$appForm->link($appForm->image('cheques.gif'), 
 						array(	'controller'			=> 'pagos_formas',
 								'action'				=> 'add',
 								'PagosForma.forma'		=> 'Cheque',
@@ -59,7 +59,7 @@ foreach ($registros as $k=>$v) {
 						array(	'title' 				=> 'Pago con Cheque')));
 	} elseif ($v['Pago']['estado'] === 'Imputado') {
 		$fila[] = array('tipo' => 'accion', 'valor' =>
-				$formulario->link($formulario->image('revertir_pago.gif'), 
+				$appForm->link($appForm->image('revertir_pago.gif'), 
 						'revertir_pago/' . $v['Pago']['id'], 
 	  					array('title' => 'Revertir Pago')));
 	}
@@ -84,21 +84,21 @@ foreach ($registros as $k=>$v) {
 	}
 }
 
-$acciones[] = $formulario->link('Soporte Mag.', null, 
+$acciones[] = $appForm->link('Soporte Mag.', null, 
 			array(	'id' 		=> 'generar_soporte_magnetico', 
 				  	'class' 	=> 'link_boton', 
 	  				'title' 	=> 'Generar Soporte Magnetico'));
-$acciones[] = $formulario->link('Efectivo', null, 
+$acciones[] = $appForm->link('Efectivo', null, 
 			array(	'id' 		=> 'pago_efectivo', 
 					'class' 	=> 'link_boton', 
 	 				'title' 	=> 'Realiza un pago masivo en Efectivo'));
-$acciones[] = $formulario->link('Beneficios', null, 
+$acciones[] = $appForm->link('Beneficios', null, 
 			array(	'id' 		=> 'pago_beneficios', 
 					'class' 	=> 'link_boton', 
 	 				'title' 	=> 'Realiza un pago masivo con Beneficios'));
 $accionesExtra['opciones'] = array('acciones' => $acciones);
 /*
-$botonesExtra = $formulario->button('Det. Cambio', 
+$botonesExtra = $appForm->button('Det. Cambio', 
 			array(	'id' 		=> 'detalle_cambio', 
 					'title' 	=> 'Imprime el Detalle de Cambio'));
 					
@@ -162,6 +162,6 @@ $js = "
 		}
 	);
 ";
-$formulario->addScript($js);
+$appForm->addScript($js);
 
 ?>

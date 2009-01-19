@@ -32,7 +32,7 @@ $campos['SiapsDetalle.longitud'] = array();
 $campos['SiapsDetalle.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Detalles de la Version de SIAP", 'imagen' => 'detalles.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Detalles de la Version de SIAP", 'imagen' => 'detalles.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

@@ -25,7 +25,7 @@ $condiciones['Condicion.Recibo-empleador_id'] = array(	"lov"=>array("controller"
 
 $condiciones['Condicion.Recibo-nombre'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'recibos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'recibos.gif')));
 
 
 /**

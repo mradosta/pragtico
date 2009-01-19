@@ -30,7 +30,7 @@ $campos['Suss.banco_id'] = array("options"=>"listable", "model"=>"Banco", "empty
 $campos['Suss.periodo'] = array("type"=>"periodo", "periodo"=>array("soloAAAAMM"), "aclaracion"=>"De la forma AAAAMM");
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'suss.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'suss.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

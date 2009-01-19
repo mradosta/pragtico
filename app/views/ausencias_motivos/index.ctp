@@ -21,7 +21,7 @@
 */
 $condiciones['Condicion.Banco-nombre'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Motivos de las Ausencias", 'imagen' => 'ausencias_motivos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Motivos de las Ausencias", 'imagen' => 'ausencias_motivos.gif')));
 
 
 /**

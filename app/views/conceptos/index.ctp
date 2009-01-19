@@ -27,7 +27,7 @@ $condiciones['Condicion.Concepto-coeficiente_id'] = array(	"lov"=>array("control
 																				"camposRetorno"	=>array("Coeficiente.nombre",
 																										"Coeficiente.tipo")));
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'conceptos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'conceptos.gif')));
 
 
 /**
@@ -41,8 +41,8 @@ foreach ($registros as $k=>$v) {
 	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose2', 'imagen' => array('nombre' => 'empleadores.gif', 'alt' => "Empleadores asociados al Concepto"), "url"=>'empleadores');
 	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose3', 'imagen' => array('nombre' => 'relaciones.gif', 'alt' => "Relaciones asociadas al Concepto"), "url"=>'relaciones');
 	//$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose5', 'imagen' => array('nombre' => 'ok.gif', 'alt' => "Agregar a Todos los Trabajadores"), "url"=>'asignar_concepto');
-	$fila[] = array("tipo"=>"accion", "valor"=>$formulario->link($formulario->image('asignar.gif', array('alt' => "Asignar este concepto a todos los Trabajadores", "title"=>"Asignar este concepto a todos los Trabajadores")), "manipular_concepto/agregar/" . $id));
-	$fila[] = array("tipo"=>"accion", "valor"=>$formulario->link($formulario->image('quitar.gif', array('alt' => "Quitara este concepto de todos los Trabajadores", "title"=>"Quitara este concepto de todos los Trabajadores")), "manipular_concepto/quitar/" . $id));
+	$fila[] = array("tipo"=>"accion", "valor"=>$appForm->link($appForm->image('asignar.gif', array('alt' => "Asignar este concepto a todos los Trabajadores", "title"=>"Asignar este concepto a todos los Trabajadores")), "manipular_concepto/agregar/" . $id));
+	$fila[] = array("tipo"=>"accion", "valor"=>$appForm->link($appForm->image('quitar.gif', array('alt' => "Quitara este concepto de todos los Trabajadores", "title"=>"Quitara este concepto de todos los Trabajadores")), "manipular_concepto/quitar/" . $id));
 	$fila[] = array('model' => "Concepto", 'field' => "id", "valor"=>$id, "write"=>$v['Concepto']['write'], "delete"=>$v['Concepto']['delete']);
 	$fila[] = array('model' => "Concepto", 'field' => "codigo", 'valor' => $v['Concepto']['codigo']);
 	$fila[] = array('model' => "Concepto", 'field' => "nombre", 'valor' => $v['Concepto']['nombre']);

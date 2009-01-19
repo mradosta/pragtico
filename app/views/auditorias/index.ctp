@@ -26,7 +26,7 @@ $condiciones['Condicion.Auditoria-usuario'] = array();
 $condiciones['Condicion.Auditoria-ip'] = array('label' => 'Direccion IP');
 
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'auditorias.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'auditorias.gif')));
 
 
 /**

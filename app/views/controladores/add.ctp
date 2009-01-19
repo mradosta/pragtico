@@ -28,7 +28,7 @@ $campos['Controlador.estado'] = array();
 $campos['Controlador.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'controladores.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'controladores.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

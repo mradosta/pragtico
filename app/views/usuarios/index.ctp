@@ -23,7 +23,7 @@ $condiciones['Condicion.Usuario-nombre'] = array();
 $condiciones['Condicion.Usuario-estado'] = array();
 $condiciones['Condicion.Usuario-nombre_completo'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'usuarios.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'usuarios.gif')));
 
 
 /**

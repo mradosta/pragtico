@@ -3,15 +3,15 @@
 /**
  * Creo la miga de pan.
  */
-$formulario->addCrumb($this->name, 
+$appForm->addCrumb($this->name, 
 		array('controller' 	=> $this->params['controller'], 
 			  'action' 		=> 'index'));
 
 if ($this->action === 'add') {
-	$formulario->addCrumb(__('New', true));
+	$appForm->addCrumb(__('New', true));
 }
 else {
-	$formulario->addCrumb(__('Edit', true));
+	$appForm->addCrumb(__('Edit', true));
 	if (!empty($miga)) {
 		
 		if (is_string($miga)) {
@@ -49,10 +49,10 @@ else {
 			
 			$count = count($this->data);
 			if($count === 1) {
-				$formulario->addCrumb("<h5>" . $breadCrumbText . "</h5>");
+				$appForm->addCrumb("<h5>" . $breadCrumbText . "</h5>");
 			}
 			else {
-				$formulario->addCrumb(sprintf(__('%s Records', true), $count));
+				$appForm->addCrumb(sprintf(__('%s Records', true), $count));
 			}
 		}
 	}
@@ -92,7 +92,7 @@ $bloques[] = $this->element("add/acciones", array("accionesExtra"=>$accionesExtr
  */
 if(!empty($variablesForm)) {
 	foreach($variablesForm as $variable=>$valor) {
-		$bloques[] = $formulario->input("Form." . $variable, 
+		$bloques[] = $appForm->input("Form." . $variable, 
 										array(	"type"	=> "hidden", 
 												"value"	=> $valor));
 	}
@@ -106,11 +106,11 @@ if(!isset($opcionesForm['action'])) {
 	$opcionesForm['action'] = "save";
 }
 $opcionesForm['action'] = "save";
-$form = $formulario->form($bloques, $opcionesForm);
+$form = $appForm->form($bloques, $opcionesForm);
 
 
 /**
 * Pongo todo dentro de un div (add) y muestro el resultado.
 */
-echo $formulario->bloque($form, array("div"=>array("class"=>"add")));
+echo $appForm->bloque($form, array("div"=>array("class"=>"add")));
 ?>

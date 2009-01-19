@@ -25,7 +25,7 @@ $condiciones['Condicion.ConveniosInformacion-convenio_id'] = array(	"lov"=>array
 $condiciones['Condicion.ConveniosInformacion-informacion_id'] = array("options"=>"listable", "model"=>"Informacion", "empty"=>true, "displayField"=>array("Informacion.nombre"));
 $condiciones['Condicion.ConveniosInformacion-valor'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Informacion del Convenio Colectivo", 'imagen' => 'informaciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Informacion del Convenio Colectivo", 'imagen' => 'informaciones.gif')));
 
 
 /**

@@ -46,7 +46,7 @@ $campos['AusenciasSeguimiento.estado'] = array('type' => 'radio');
 $campos['AusenciasSeguimiento.observacion'] = array();
 $fieldsets[] = 	array('campos' => $campos, "opciones"=>array('fieldset' => array("class"=>"detail", "legend"=>"Seguimientos", 'imagen' => 'seguimientos.gif')));
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Ausencias", 'imagen' => 'ausencias.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Ausencias", 'imagen' => 'ausencias.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

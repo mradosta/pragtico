@@ -2,7 +2,7 @@
 /**
  * Crea el hidden que lleva la accion, esta accion puede ser buscar o limpiar.
  */
-$out[] = $formulario->input("Formulario.accion", array("type"=>"hidden", "id"=>"accion", "value"=>"buscar"));
+$out[] = $appForm->input("Formulario.accion", array("type"=>"hidden", "id"=>"accion", "value"=>"buscar"));
 
 /**
  * Si tengo el parametro de una seleccion multiple (cuando habro una lov), lo pongo en un hidden para no perderlo.
@@ -10,7 +10,7 @@ $out[] = $formulario->input("Formulario.accion", array("type"=>"hidden", "id"=>"
  if(!empty($this->params['named'])) {
  	foreach($this->params['named'] as $k=>$v) {
  		if($k != "accion" && $k != "layout") {
- 			$out[] = $formulario->input("Formulario." . $k, array("type"=>"hidden", "value"=>$v));
+ 			$out[] = $appForm->input("Formulario." . $k, array("type"=>"hidden", "value"=>$v));
  		}
  	}
  }
@@ -19,15 +19,15 @@ $out[] = $formulario->input("Formulario.accion", array("type"=>"hidden", "id"=>"
 /**
 * Decido en base a la preferencia si hacer un request ajax o comun.
 */
-//if($formulario->traerPreferencia("buscadores_posteo") == "ajax") {
+//if($appForm->traerPreferencia("buscadores_posteo") == "ajax") {
 if(false) {
 
 	/**
 	* Creo los botones de los buscadores.
 	* El boton de Buscar y el de Limpiar.
 	*/
-	$out[] = $formulario->button(__("Clear", true), array("class"=>"buscador_ajax", "title"=>"Limpiar los criterios de busqueda"));
-	$out[] = $formulario->button(__("Search", true), array("class"=>"buscador_ajax", "title"=>"Realizar la busqueda"));
+	$out[] = $appForm->button(__("Clear", true), array("class"=>"buscador_ajax", "title"=>"Limpiar los criterios de busqueda"));
+	$out[] = $appForm->button(__("Search", true), array("class"=>"buscador_ajax", "title"=>"Realizar la busqueda"));
 	
 	/**
 	* Si esta seteado el valor retornarA y es un request AJAX, significa que es una lov (div).
@@ -35,24 +35,24 @@ if(false) {
 	*/
 	if(!empty($this->params['isAjax']) && !empty($layout) && $layout == "lov") {
 		//array_pop($botones);
-		//$out[] = $formulario->button("Buscar", array("class"=>"buscador_ajax", "title"=>"Realizar la busqueda"));
-		$out[] = $formulario->input("Formulario.layout", array("type"=>"hidden", "id"=>"layout", "value"=>"lov"));
+		//$out[] = $appForm->button("Buscar", array("class"=>"buscador_ajax", "title"=>"Realizar la busqueda"));
+		$out[] = $appForm->input("Formulario.layout", array("type"=>"hidden", "id"=>"layout", "value"=>"lov"));
 
 		/**
 		 * Si tengo el parametro de un targetId (cuando habro una lov en un div), lo pongo en un hidden para no perderlo.
 		 */
 		if(isset($this->params['named']['targetId'])) {
-			//$out[] = $formulario->input("Formulario.targetId", array("type"=>"hidden", "value"=>$this->params['named']['targetId']));
+			//$out[] = $appForm->input("Formulario.targetId", array("type"=>"hidden", "value"=>$this->params['named']['targetId']));
 			$target = $this->params['named']['targetId'];
 		}
-		//$out[] = $formulario->input("Formulario.targetId", array("type"=>"hidden", "id"=>"targetId", "value"=>$this->viewVars['targetId']));
+		//$out[] = $appForm->input("Formulario.targetId", array("type"=>"hidden", "id"=>"targetId", "value"=>$this->viewVars['targetId']));
 		//$target = $this->viewVars['targetId'];
 	}
 	else {
 		$target = "index";
 	}
 	
-	$out[] = $formulario->codeBlock("
+	$out[] = $appForm->codeBlock("
 		jQuery('#{$target} .buscador_ajax').click(function(){
 
 			/**
@@ -82,10 +82,10 @@ else {
 	/**
 	* hidden para no perder el layout en el que estoy ni si es permitido seleccion Multiple o no.
 	*/
-	$out[] = $formulario->input("Formulario.layout", array("type"=>"hidden", "value"=>$this->layout));
+	$out[] = $appForm->input("Formulario.layout", array("type"=>"hidden", "value"=>$this->layout));
 	
-	$limpiar = $formulario->button(__("Clear", true), array("class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='limpiar';form.action='" . Router::url(array("controller" => $this->params['controller'], "action" => $opcionesForm['action'])) . "';form.submit();"));
-	$buscar = $formulario->submit(__("Search", true), array("onclick"=>"document.getElementById('accion').value='buscar'"));
+	$limpiar = $appForm->button(__("Clear", true), array("class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='limpiar';form.action='" . Router::url(array("controller" => $this->params['controller'], "action" => $opcionesForm['action'])) . "';form.submit();"));
+	$buscar = $appForm->submit(__("Search", true), array("onclick"=>"document.getElementById('accion').value='buscar'"));
 	
 	if(isset($botonesExtra['opciones']['botones'])) {
 		foreach($botonesExtra['opciones']['botones'] as $v) {
@@ -115,9 +115,9 @@ else {
 /**
 * Creo un bloque con los botones y agrego el div clear antes para cerrar la caja redondeada.
 */
-$out[] = $formulario->tag("div", "", array("class"=>"clear"));
+$out[] = $appForm->tag("div", "", array("class"=>"clear"));
 
 
-echo $formulario->tag("div", $out, array("class"=>"buscadores"));
+echo $appForm->tag("div", $out, array("class"=>"buscadores"));
 
 ?>

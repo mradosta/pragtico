@@ -45,6 +45,6 @@ $opcionesTabla =  array("tabla"=>
 
 $url = array('controller' => "vacaciones", 'action' => 'add', "Vacacion.relacion_id"=>$this->data['Relacion']['id']);
 echo $this->element('desgloses/agregar', array('url' => $url, "texto"=>"Vacaciones"));
-echo $formulario->bloque($formulario->tabla(am(array('cuerpo' => $cuerpo), $opcionesTabla)), array("div"=>array("class"=>"unica")));
+echo $appForm->bloque($appForm->tabla(am(array('cuerpo' => $cuerpo), $opcionesTabla)), array("div"=>array("class"=>"unica")));
 
 ?>

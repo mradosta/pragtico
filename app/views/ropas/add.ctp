@@ -39,7 +39,7 @@ $campos['RopasDetalle.modelo'] = array();
 $campos['RopasDetalle.tamano'] = array("label"=>"Tamaño / Numero");
 $fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array("class"=>"detail", "legend"=>"prenda", 'imagen' => 'prendas.gif')));
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Orden para la entrega de ropa", 'imagen' => 'ropas.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Orden para la entrega de ropa", 'imagen' => 'ropas.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

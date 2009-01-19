@@ -22,7 +22,7 @@
 $condiciones['Condicion.Modalidad-codigo'] = array();
 $condiciones['Condicion.Modalidad-nombre'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'modalidades.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'modalidades.gif')));
 
 
 /**

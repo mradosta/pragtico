@@ -31,7 +31,7 @@ class PaginadorHelper extends AppHelper {
  * @var arraya
  * @access public.
  */
-	var $helpers = array("Paginator", "Formulario");
+	var $helpers = array("Paginator", "AppForm");
 
 	
 /**
@@ -152,38 +152,38 @@ class PaginadorHelper extends AppHelper {
 				$params=$this->Paginator->params();
 				
 				if (isset($params['page']) && $params['page']>1) {
-					$retorno = $this->Paginator->link($this->Formulario->image('primera.gif', array("alt"=>__("Go to first page", true))), array('page'=>1), array_merge(array('escape'=>false), $opciones));
+					$retorno = $this->Paginator->link($this->AppForm->image('primera.gif', array("alt"=>__("Go to first page", true))), array('page'=>1), array_merge(array('escape'=>false), $opciones));
 				} else {
-					$retorno = $this->Formulario->image('primeraoff.gif');
+					$retorno = $this->AppForm->image('primeraoff.gif');
 				}
-				$out[] = $this->Formulario->tag("span", $retorno);
+				$out[] = $this->AppForm->tag("span", $retorno);
 
-				$prev = $this->Paginator->prev($this->Formulario->image('anterior.gif', array("alt"=>__("Go to previews page", true))), array_merge(array('escape'=>false), $opciones));
+				$prev = $this->Paginator->prev($this->AppForm->image('anterior.gif', array("alt"=>__("Go to previews page", true))), array_merge(array('escape'=>false), $opciones));
 				if (is_null($prev)) {
-					$retorno = $this->Formulario->image('anterioroff.gif');
+					$retorno = $this->AppForm->image('anterioroff.gif');
 				} else {
 					$retorno = $prev;
 				}
-				$out[] = $this->Formulario->tag("span", $retorno);
+				$out[] = $this->AppForm->tag("span", $retorno);
 
 				
-				$next = $this->Paginator->next($this->Formulario->image('siguiente.gif', array("alt"=>__("Go to next page", true))), array_merge($opciones, array('escape'=>false)));
+				$next = $this->Paginator->next($this->AppForm->image('siguiente.gif', array("alt"=>__("Go to next page", true))), array_merge($opciones, array('escape'=>false)));
 				if (is_null($next)) {
-					$retorno = $this->Formulario->image('siguienteoff.gif');
+					$retorno = $this->AppForm->image('siguienteoff.gif');
 				}
 				else {
 					$retorno = $next;
 				}
-				$out[] = $this->Formulario->tag("span", $retorno);
+				$out[] = $this->AppForm->tag("span", $retorno);
 
 				
 				if (isset($params['page']) && $params['page']<$params['pageCount']) {
-					$retorno = $this->Paginator->link($this->Formulario->image('ultima.gif', array("alt"=>__("Go to last page", true))), array('page'=>$params['pageCount']), array_merge(array('escape'=>false), $opciones));
+					$retorno = $this->Paginator->link($this->AppForm->image('ultima.gif', array("alt"=>__("Go to last page", true))), array('page'=>$params['pageCount']), array_merge(array('escape'=>false), $opciones));
 				}
 				else {
-					$retorno = $this->Formulario->image('ultimaoff.gif');
+					$retorno = $this->AppForm->image('ultimaoff.gif');
 				}
-				$out[] = $this->Formulario->tag("span", $retorno);
+				$out[] = $this->AppForm->tag("span", $retorno);
 				
 				return implode("", $out);
 			break;

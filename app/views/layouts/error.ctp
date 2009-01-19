@@ -17,19 +17,19 @@
  */
  
 
-$mensaje[] = $formulario->tag("span", $formulario->link("Cerrar", null, array("class"=>"link_boton", "title"=>"Cerrar")));
-$mensaje[] = $formulario->image('error_icono_naranja.gif');
-$mensaje[] = $formulario->tag("span", $content_for_layout, array("class"=>"contenido"));
+$mensaje[] = $appForm->tag("span", $appForm->link("Cerrar", null, array("class"=>"link_boton", "title"=>"Cerrar")));
+$mensaje[] = $appForm->image('error_icono_naranja.gif');
+$mensaje[] = $appForm->tag("span", $content_for_layout, array("class"=>"contenido"));
 
 if(!empty($errores['errorDescripcion'])) {
-	$erroresTmp[] = $formulario->tag("span", "Detalles (el registro no se ha modificado)", array("class"=>"titulos"));
-	$erroresTmp[] = $formulario->tag("span", $errores['errorDescripcion'], array("class"=>"detalle"));
+	$erroresTmp[] = $appForm->tag("span", "Detalles (el registro no se ha modificado)", array("class"=>"titulos"));
+	$erroresTmp[] = $appForm->tag("span", $errores['errorDescripcion'], array("class"=>"detalle"));
 	if(!empty($dbError['errorDescripcionAdicional'])) {
-		$erroresTmp[] = $formulario->tag("span", $errores['errorDescripcionAdicional'], array("class"=>"detalle"));
+		$erroresTmp[] = $appForm->tag("span", $errores['errorDescripcionAdicional'], array("class"=>"detalle"));
 	}
-	echo $formulario->tag("div", $erroresTmp, array("class"=>"session_flash session_flash_error_detalle"));
+	echo $appForm->tag("div", $erroresTmp, array("class"=>"session_flash session_flash_error_detalle"));
 }
-echo $formulario->tag("div", $mensaje, array("class"=>"session_flash session_flash_error"));
+echo $appForm->tag("div", $mensaje, array("class"=>"session_flash session_flash_error"));
 
 $js = "
 	jQuery('.session_flash img').attr('style', 'cursor:pointer');
@@ -42,6 +42,6 @@ $js = "
 ";
 
 //$this->addScript($js);
-$formulario->addScript($js);
+$appForm->addScript($js);
 
 ?>

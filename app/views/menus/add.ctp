@@ -31,7 +31,7 @@ $campos['Menu.action'] = array();
 $campos['Menu.parent_id'] = array("options"=>"listable", "displayField"=>array("Menu.etiqueta"), "conditions"=>array("Menu.parent_id is null"), "order"=>array("Menu.nombre"), "empty"=>true, "label"=>"Padre");
 $campos['Menu.estado'] = array();
 $fieldsets[] = array('campos' => $campos);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'menus.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'menus.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

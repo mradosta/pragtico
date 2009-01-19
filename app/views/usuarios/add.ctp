@@ -34,7 +34,7 @@ if($this->action === 'add') {
 }
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('div'=>array('class' => 'unica'), 'fieldset'=>array('imagen' => 'usuarios.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div'=>array('class' => 'unica'), 'fieldset'=>array('imagen' => 'usuarios.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

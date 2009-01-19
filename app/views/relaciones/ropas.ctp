@@ -23,7 +23,7 @@
 $cuerpo = null;
 foreach ($this->data['Ropa'] as $k=>$v) {
 	$fila = null;
-	$accionImprimir = $formulario->link($formulario->image('print.gif', array('alt' => "Imprimir Orden de Ropa", "title"=>"Imprimir Orden de Ropa")), "../ropas/imprimirOrden/" . $v['id'], array("target"=>"_blank"));
+	$accionImprimir = $appForm->link($appForm->image('print.gif', array('alt' => "Imprimir Orden de Ropa", "title"=>"Imprimir Orden de Ropa")), "../ropas/imprimirOrden/" . $v['id'], array("target"=>"_blank"));
 	$fila[] = array("tipo"=>"accion", "valor"=>$accionImprimir);
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['id'], "update"=>"desglose_1", 'imagen' => array('nombre' => 'prendas.gif', 'alt' => "Prendas entregadas"), "url"=>'../ropas/prendas');
 	$fila[] = array('model' => "Ropa", 'field' => "id", 'valor' => $v['id'], "write"=>$v['write'], "delete"=>$v['delete']);

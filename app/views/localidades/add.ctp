@@ -27,7 +27,7 @@ $campos['Localidad.nombre'] = array();
 $campos['Localidad.codigo_zona'] = array("aclaracion"=>"Indica el codigo de la zona para AFIP.");
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'localidades.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'localidades.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

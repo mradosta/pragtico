@@ -32,7 +32,7 @@ $campos['AusenciasSeguimiento.estado'] = array();
 $campos['AusenciasSeguimiento.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Seguimiento de Ausencias", 'imagen' => 'seguimiento.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Seguimiento de Ausencias", 'imagen' => 'seguimiento.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

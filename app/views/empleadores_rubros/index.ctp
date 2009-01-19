@@ -24,7 +24,7 @@ $condiciones['Condicion.EmpleadoresRubro-empleador_id'] = array(	"lov"=>array("c
 																								"Empleador.nombre")));
 $condiciones['Condicion.EmpleadoresRubro-rubro_id'] = array("options"=>"listable", "model"=>"Rubro", "displayField"=>array("Rubro.nombre"), "empty"=>true, "label"=>"Rubro");
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Rubros de los Empleadores", 'imagen' => 'rubros.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Rubros de los Empleadores", 'imagen' => 'rubros.gif')));
 
 
 /**

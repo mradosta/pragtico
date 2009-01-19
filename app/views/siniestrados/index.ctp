@@ -22,7 +22,7 @@
 $condiciones['Condicion.Siniestrado-codigo'] = array();
 $condiciones['Condicion.Siniestrado-nombre'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'siniestrados.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'siniestrados.gif')));
 
 
 /**

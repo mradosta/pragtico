@@ -25,10 +25,10 @@ $condiciones['Condicion.Liquidacion-periodo'] = array("type"=>"periodo");
 $condiciones['Resumen.tipo'] = array("type"=>"radio", "options"=>$tipos);
 
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'buscar.gif', "legend"=>"Resumen")));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'buscar.gif', "legend"=>"Resumen")));
 
 
-$botonesExtra = $formulario->submit("Generar", array("title"=>"Imprime el Resumen de Facturacion"));
+$botonesExtra = $appForm->submit("Generar", array("title"=>"Imprime el Resumen de Facturacion"));
 $accionesExtra['opciones'] = array("acciones"=>array());
 $opcionesTabla =  array("tabla"=>array(	"omitirMensajeVacio"=>true));
 

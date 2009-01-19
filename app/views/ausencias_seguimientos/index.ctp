@@ -21,7 +21,7 @@
 */
 $condiciones['Condicion.AusenciasSeguimiento-fecha'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Seguimiento de las Ausencias", 'imagen' => 'buscar.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Seguimiento de las Ausencias", 'imagen' => 'buscar.gif')));
 
 
 /**

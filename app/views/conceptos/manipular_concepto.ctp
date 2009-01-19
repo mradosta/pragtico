@@ -27,7 +27,7 @@ $campos['Asignar.empleador_comportamiento'] = array("value"=>"incluir", "after"=
 
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>ucfirst($accion) . " el Concepto " . $concepto['Concepto']['nombre'] . " a todos los Trabajadores de:", "imagen"=>"conceptos.gif")));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>ucfirst($accion) . " el Concepto " . $concepto['Concepto']['nombre'] . " a todos los Trabajadores de:", "imagen"=>"conceptos.gif")));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
@@ -41,7 +41,7 @@ else {
 	$msg = "Esta seguro que desea quitar el concepto " . $concepto['Concepto']['nombre'] . " de todos los Trabajadores que pertenezcan a los Convenios Colectivos seleccionados?	";
 }
 
-echo $formulario->codeBlock("
+echo $appForm->codeBlock("
 	/**
 	* Quito el evento por defecto del onclick del submit grabar y lo manejo en esta funcion.
 	*/

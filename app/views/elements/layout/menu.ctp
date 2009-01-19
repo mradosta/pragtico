@@ -12,7 +12,7 @@ else {
 }
 
 $MenuItems = $session->read('__MenuItems');
-$navegacion = $formulario->traerPreferencia("navegacion");
+$navegacion = $appForm->traerPreferencia("navegacion");
 
 $actual = 0;
 $c = 0;
@@ -27,7 +27,7 @@ foreach($MenuItems as $k=>$padre) {
 		$padre['Menu']['imagen'] = $padre['Menu']['nombre'] . '.gif';
 	}
 
-	$menu .=  $formulario->tag("dt", $formulario->image($padre['Menu']['imagen']) . $padre['Menu']['etiqueta'], array("title" => $padre['Menu']['ayuda']));
+	$menu .=  $appForm->tag("dt", $appForm->image($padre['Menu']['imagen']) . $padre['Menu']['etiqueta'], array("title" => $padre['Menu']['ayuda']));
 
 	$hijos = "";
 	foreach($padre['children'] as $k1=>$hijo) {
@@ -43,10 +43,10 @@ foreach($MenuItems as $k=>$padre) {
 						"action"		=> $hijo['Menu']['action']);
 
 		if($navegacion === "ajax") {
-			$hijos .= $ajax->link($formulario->image($hijo['Menu']['imagen']) . $formulario->tag("span", $hijo['Menu']['etiqueta']), $url, array("update"=>"index", "title"=>$hijo['Menu']['ayuda']));
+			$hijos .= $ajax->link($appForm->image($hijo['Menu']['imagen']) . $appForm->tag("span", $hijo['Menu']['etiqueta']), $url, array("update"=>"index", "title"=>$hijo['Menu']['ayuda']));
 		}
 		else {
-			$hijos .= $formulario->link($formulario->image($hijo['Menu']['imagen']) . $formulario->tag("span", $hijo['Menu']['etiqueta']), $url, array("title"=>$hijo['Menu']['ayuda']));
+			$hijos .= $appForm->link($appForm->image($hijo['Menu']['imagen']) . $appForm->tag("span", $hijo['Menu']['etiqueta']), $url, array("title"=>$hijo['Menu']['ayuda']));
 		}
 		
 		if($menuActual['controller'] === $hijo['Menu']['controller'] && $menuActual['action'] == $hijo['Menu']['action']) {
@@ -56,11 +56,11 @@ foreach($MenuItems as $k=>$padre) {
 			$actual = $c;
 		}
 	}
-	$menu .=  $formulario->tag("dd", $hijos);
+	$menu .=  $appForm->tag("dd", $hijos);
 	$c++;
 }
-$menu =  $formulario->tag("dl", $menu);
-echo $formulario->tag("div", $menu, array("class"=>"menu"));
+$menu =  $appForm->tag("dl", $menu);
+echo $appForm->tag("div", $menu, array("class"=>"menu"));
 
 $js = "
 	jQuery('.menu').Accordion( {
@@ -74,5 +74,5 @@ $js = "
 		}
 	);
 ";
-$formulario->addScript($js, "ready");
+$appForm->addScript($js, "ready");
 ?>

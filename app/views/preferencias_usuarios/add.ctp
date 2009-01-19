@@ -31,7 +31,7 @@ $campos['PreferenciasUsuario.preferencias_valor_id'] = array("label"=>"Valor", "
 
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"registro de Preferencias del Usuario", 'imagen' => 'preferencias.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"registro de Preferencias del Usuario", 'imagen' => 'preferencias.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

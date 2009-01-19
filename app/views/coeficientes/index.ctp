@@ -23,7 +23,7 @@ $condiciones['Condicion.Coeficiente-nombre'] = array();
 $condiciones['Condicion.Coeficiente-tipo'] = array();
 $condiciones['Condicion.Coeficiente-descripcion'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'coeficientes.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'coeficientes.gif')));
 
 
 /**

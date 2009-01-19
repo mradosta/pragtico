@@ -23,7 +23,7 @@
 $condiciones['Condicion.Banco-codigo'] = array();
 $condiciones['Condicion.Banco-nombre'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'bancos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'bancos.gif')));
 
 
 

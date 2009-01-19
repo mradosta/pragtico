@@ -29,7 +29,7 @@ $campos['RolesUsuario.rol_id'] = array("options"=>"listable", "model"=>"Rol", "d
 $campos['RolesUsuario.estado'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"relacion entre Usuario y Rol", 'imagen' => 'usuarios.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"relacion entre Usuario y Rol", 'imagen' => 'usuarios.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

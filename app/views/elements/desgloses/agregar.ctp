@@ -19,7 +19,7 @@ if(!empty($url)) {
 			$texto = $v['texto'];
 			unset($v['texto']);
 		}
-		$acciones[] = $formulario->link($texto, $v, array("class"=>"link_boton"));
+		$acciones[] = $appForm->link($texto, $v, array("class"=>"link_boton"));
 	}
 }
 
@@ -45,10 +45,10 @@ if(empty($texto)) {
 	$texto = "";
 }
 
-$codigoHtml = $formulario->tag("span", $titulo, array("class"=>"titulo"));
+$codigoHtml = $appForm->tag("span", $titulo, array("class"=>"titulo"));
 if(isset($acciones)) {
-	$codigoHtml .= $formulario->tag("span", $acciones, array("class"=>"acciones"));
+	$codigoHtml .= $appForm->tag("span", $acciones, array("class"=>"acciones"));
 }
-$codigoHtml = $formulario->tag("div", $codigoHtml, array("class"=>"cabecera"));
-echo $formulario->tag("div", $codigoHtml . $formulario->tag("div", $formulario->tabla(array_merge(array('cuerpo' => $cuerpo), $opcionesTabla)), array("class"=>"tabla")), array("class"=>"unica"));
+$codigoHtml = $appForm->tag("div", $codigoHtml, array("class"=>"cabecera"));
+echo $appForm->tag("div", $codigoHtml . $appForm->tag("div", $appForm->tabla(array_merge(array('cuerpo' => $cuerpo), $opcionesTabla)), array("class"=>"tabla")), array("class"=>"unica"));
 ?>

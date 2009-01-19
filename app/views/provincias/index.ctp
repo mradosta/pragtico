@@ -21,7 +21,7 @@
 */
 $condiciones['Condicion.Provincia-nombre'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'provincias.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'provincias.gif')));
 
 
 /**

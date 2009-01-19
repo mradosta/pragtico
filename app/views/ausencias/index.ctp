@@ -40,7 +40,7 @@ $condiciones['Condicion.Ausencia-ausencia_motivo_id'] = array(	"empty"			=> true
 																"label"			=> "Motivo");
 																								
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'ausencias.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'ausencias.gif')));
 
 
 /**
@@ -61,7 +61,7 @@ foreach ($registros as $k=>$v) {
 }
 
 $accionesExtra['opciones'] = array("acciones"=>array("nuevo", "modificar", "eliminar",
-	$formulario->link("Confirmar", null,
+	$appForm->link("Confirmar", null,
 		array(	"class"=>"link_boton confirmar",
 				"title"=>"Confirma las ausencias seleccionadas"))));
 echo $this->element('index/index', array("accionesExtra"=>$accionesExtra, "condiciones"=>$fieldset, 'cuerpo' => $cuerpo));
@@ -84,5 +84,5 @@ $js = '
 	);
 ';
 
-$formulario->addScript($js);
+$appForm->addScript($js);
 ?>

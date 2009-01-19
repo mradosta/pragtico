@@ -27,7 +27,7 @@ $condiciones['Condicion.Area-nombre'] = array();
 $condiciones['Condicion.Area-direccion'] = array();
 $condiciones['Condicion.Area-contacto'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'areas.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'areas.gif')));
 
 
 /**

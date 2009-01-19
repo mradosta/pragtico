@@ -27,7 +27,7 @@ $condiciones['Condicion.ConveniosCategoriasHistorico-convenios_categoria_id'] = 
 $condiciones['Condicion.ConveniosCategoriasHistorico-desde'] = array();
 $condiciones['Condicion.ConveniosCategoriasHistorico-hasta'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Historicos de Categorias", 'imagen' => 'historicos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Historicos de Categorias", 'imagen' => 'historicos.gif')));
 
 
 /**

@@ -34,16 +34,16 @@ $codigo_html[] = "\t<link rel='icon' href='" . $this->webroot . "favicon.ico' ty
 $codigo_html[] = "\t<link rel='shortcut icon' href='" . $this->webroot . "favicon.ico' type='image/x-icon'/>";
 
 $html->css("aplicacion.default.screen", null, array("media"=>"screen"), false);
-$formulario->addScript("jquery", "links");
+$appForm->addScript("jquery", "links");
 $codigo_html[] = $asset->scripts_for_layout();
 $codigo_html[] = "</head>";
 
 $codigo_html[] = "\n<body>";
 $codigo_html[] = $flash;
-$codigo_html[] = $formulario->tag("div", $content_for_layout, array("class"=>"login"));
-$links[] = $formulario->link($formulario->image('cake.power.gif'), "http://www.cakephp.org", array('alt' => "CakePhp"));
-$links[] = $formulario->link($formulario->image('firefox.gif'), "http://www.spreadfirefox.com/node&id=0&t=308", array('alt' => "Firefox 3"));
-$codigo_html[] = $formulario->tag("div", $links, array("class"=>"links_externos"));
+$codigo_html[] = $appForm->tag("div", $content_for_layout, array("class"=>"login"));
+$links[] = $appForm->link($appForm->image('cake.power.gif'), "http://www.cakephp.org", array('alt' => "CakePhp"));
+$links[] = $appForm->link($appForm->image('firefox.gif'), "http://www.spreadfirefox.com/node&id=0&t=308", array('alt' => "Firefox 3"));
+$codigo_html[] = $appForm->tag("div", $links, array("class"=>"links_externos"));
 $codigo_html[] = $cakeDebug;
 $codigo_html[] = "</body>";
 $codigo_html[] = "</html>";

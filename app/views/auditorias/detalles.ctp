@@ -24,8 +24,8 @@ ob_start();
 pr($this->data['Auditoria']['data']);
 $out = ob_get_clean();
 
-$codigoHtml = $formulario->tag("span", "Detalles (Datos del registro)", array("class"=>"titulo"));
-$codigoHtml .= $formulario->tag("div", $out, array("class"=>"tabla")) ;
-echo $formulario->tag("div", $codigoHtml, array("class"=>"unica"));
+$codigoHtml = $appForm->tag("span", "Detalles (Datos del registro)", array("class"=>"titulo"));
+$codigoHtml .= $appForm->tag("div", $out, array("class"=>"tabla")) ;
+echo $appForm->tag("div", $codigoHtml, array("class"=>"unica"));
 
 ?>

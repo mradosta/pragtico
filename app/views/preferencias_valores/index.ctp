@@ -22,7 +22,7 @@
 $condiciones['Condicion.Preferencia-nombre'] = array("label"=>"Preferencia");
 $condiciones['Condicion.PreferenciasValor-valor'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"valores de la preferencia", 'imagen' => 'preferencias.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"valores de la preferencia", 'imagen' => 'preferencias.gif')));
 
 
 /**

@@ -27,7 +27,7 @@ $condiciones['Condicion.Concepto-codigo'] = array();
 $condiciones['Condicion.Concepto-nombre'] = array();
 $condiciones['Condicion.Concepto-tipo'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Conceptos de los Convenios Colectivos", 'imagen' => 'buscar.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Conceptos de los Convenios Colectivos", 'imagen' => 'buscar.gif')));
 
 
 /**

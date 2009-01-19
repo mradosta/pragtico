@@ -22,7 +22,7 @@
 $condiciones['Condicion.GruposParametro-nombre'] = array();
 $condiciones['Condicion.GruposParametro-valor'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Parametros del Grupo", 'imagen' => 'parametros.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Parametros del Grupo", 'imagen' => 'parametros.gif')));
 
 
 /**

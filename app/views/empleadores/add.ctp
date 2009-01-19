@@ -70,11 +70,11 @@ $fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array(
 * Pinto el element add con todos los fieldsets que he definido.
 */
 $miga = 'Empleador.nombre';
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'empleadores.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'empleadores.gif')));
 echo $this->element('add/add', array('fieldset' => $fieldset, "miga" => $miga));
 
 /*
-echo $formulario->codeBlock('
+echo $appForm->codeBlock('
 	jQuery("#EmpleadorCuit").mask("99-99999999-9");
 ');
 */

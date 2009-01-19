@@ -22,7 +22,7 @@
 $condiciones['Condicion.Empleador-nombre'] = array();
 $condiciones['Condicion.Empleador-cuit'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'empleadores.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'empleadores.gif')));
 
 
 /**
@@ -50,7 +50,7 @@ foreach ($registros as $k=>$v) {
 
 echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo));
 /*
-echo $formulario->codeBlock('
+echo $appForm->codeBlock('
 	jQuery("#CondicionEmpleador-cuit").mask("99-99999999-9");
 ');
 */

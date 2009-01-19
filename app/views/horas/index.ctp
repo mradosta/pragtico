@@ -39,7 +39,7 @@ $condiciones['Condicion.Hora-periodo'] = array('type' => 'periodo');
 
 
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'horas de la relacion laboral', 'imagen' => 'horas.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'horas de la relacion laboral', 'imagen' => 'horas.gif')));
 
 
 /**

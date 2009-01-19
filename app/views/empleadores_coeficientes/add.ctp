@@ -32,7 +32,7 @@ $campos['EmpleadoresCoeficiente.coeficiente_id'] = array(	"lov"=>array("controll
 $campos['EmpleadoresCoeficiente.valor'] = array("aclaracion"=>"Indica el valor a sumar o restar al coeficiente.");
 $campos['EmpleadoresCoeficiente.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"coeficiente del empleador", 'imagen' => 'coeficientes.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"coeficiente del empleador", 'imagen' => 'coeficientes.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

@@ -22,7 +22,7 @@
 $condiciones['Condicion.Sucursal-banco_id'] = array("options"=>"listable", "empty"=>true, "displayField"=>array("Banco.nombre"), "model"=>"Banco");
 $condiciones['Condicion.Sucursal-codigo'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Sucursal", 'imagen' => 'sucursales.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Sucursal", 'imagen' => 'sucursales.gif')));
 
 
 /**

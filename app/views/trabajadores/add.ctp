@@ -94,7 +94,7 @@ $fieldsets[] = array('campos' => $campos, "opciones"=>array("div"=>array("class"
 */
 $miga = array('format' 	=> '%s %s', 
 			  'content' => array('Trabajador.apellido', 'Trabajador.nombre'));
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'trabajadores.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'trabajadores.gif')));
 echo $this->element('add/add', array('fieldset' => $fieldset, "opcionesForm"=>array("enctype"=>"multipart/form-data"), "miga" => $miga));
 
 ?>

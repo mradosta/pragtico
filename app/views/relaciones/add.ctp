@@ -90,12 +90,12 @@ $campos['Relacion.egreso'] = array();
 $campos['Relacion.observacion'] = array();
 $fieldsets[] = array('campos' => $campos, "opciones"=>array("div"=>array("class"=>"subset"), "fieldset"=>array("legend"=>"Desvinculacion", 'imagen' => 'fin_relacion_laboral.gif')));
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Relacion Laboral", 'imagen' => 'relaciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Relacion Laboral", 'imagen' => 'relaciones.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'trabajadores.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'trabajadores.gif')));
 $miga = array('format' 	=> '%s %s (%s)', 
 			  'content' => array('Trabajador.apellido', 'Trabajador.nombre', 'Empleador.nombre'));
 echo $this->element("add/add", array('fieldset' => $fieldset, "miga" => $miga));

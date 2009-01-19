@@ -25,7 +25,7 @@ $campos['ObrasSocial.codigo'] = array();
 $campos['ObrasSocial.nombre'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'obras_sociales.gif', "legend"=>"Obra Social")));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'obras_sociales.gif', "legend"=>"Obra Social")));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

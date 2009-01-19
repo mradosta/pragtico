@@ -45,7 +45,7 @@ $opcionesTabla =  array("tabla"=>
 									
 $url = array('controller' => "acciones", 'action' => 'add', "Accion.controlador_id"=>$this->data['Controlador']['id']);
 echo $this->element('desgloses/agregar', array('url' => $url, 'titulo' => "Acciones", 'cuerpo' => $cuerpo));
-//echo $formulario->bloque($formulario->tabla(am(array('cuerpo' => $cuerpo), $opcionesTabla)), array("div"=>array("class"=>"unica")));
+//echo $appForm->bloque($appForm->tabla(am(array('cuerpo' => $cuerpo), $opcionesTabla)), array("div"=>array("class"=>"unica")));
 
 
 ?>

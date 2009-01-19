@@ -23,7 +23,7 @@ $condiciones['Condicion.Siap-version'] = array("options"=>"listable", "model"=>"
 $condiciones['Condicion.SiapsDetalle-elemento'] = array();
 $condiciones['Condicion.SiapsDetalle-descripcion'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Detalle de Siap", 'imagen' => 'siap_detalle.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Detalle de Siap", 'imagen' => 'siap_detalle.gif')));
 
 
 /**

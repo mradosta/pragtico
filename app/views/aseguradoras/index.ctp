@@ -22,7 +22,7 @@
 $condiciones['Condicion.Aseguradora-codigo'] = array();
 $condiciones['Condicion.Aseguradora-nombre'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'aseguradores.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'aseguradores.gif')));
 
 
 /**

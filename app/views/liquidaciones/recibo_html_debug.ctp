@@ -144,12 +144,12 @@ $opcionesTabla =  array("tabla"=>
 									"omitirMensajeVacio"=>true));
 
 
-$tabla = $formulario->tabla(am(array('cuerpo' => $cuerpo), $opcionesTabla));
+$tabla = $appForm->tabla(am(array('cuerpo' => $cuerpo), $opcionesTabla));
 
 /**
 * Pongo todo dentro de un div (index) y muestro el resultado.
 */
-echo $formulario->bloque($formulario->bloque($tabla), array("div"=>array("id"=>"index", "class"=>"index")));
+echo $appForm->bloque($appForm->bloque($tabla), array("div"=>array("id"=>"index", "class"=>"index")));
 
 
 

@@ -27,7 +27,7 @@ $campos['Coeficiente.valor'] = array();
 $campos['Coeficiente.descripcion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'coeficientes.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'coeficientes.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

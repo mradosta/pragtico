@@ -23,7 +23,7 @@ $campos = null;
 $campos['Hora.periodo'] = array("type"=>"periodo", "aclaracion"=>"Tomara este periodo cuando el registro dentro de la planilla no lo tenga especificado.", "verificarRequerido"=>false);
 $campos['Hora.planilla'] = array("type"=>"file");
 
-$fieldset = $formulario->pintarFieldsets(array(array('campos' => $campos)), array('fieldset' => array("legend"=>"Importar horas desde planilla", 'imagen' => 'excel.gif')));
+$fieldset = $appForm->pintarFieldsets(array(array('campos' => $campos)), array('fieldset' => array("legend"=>"Importar horas desde planilla", 'imagen' => 'excel.gif')));
 
 
 /**
@@ -60,9 +60,9 @@ if(!empty($registros)) {
 	$pie[] = $fila;
 }
 
-$botonesExtra[] = $formulario->button("Cancelar", array("title"=>"Cancelar", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='cancelar';form.submit();"));
-$botonesExtra[] = $formulario->submit("Importar", array("title"=>"Importar la PLanilla", "onclick"=>"document.getElementById('accion').value='importar'"));
-$accionesExtra['opciones'] = array("acciones"=>array("modificar", "eliminar", $formulario->link("Confirmar", null, array("class"=>"link_boton", "id"=>"confirmar", "title"=>"Confirma las horas importadas"))));
+$botonesExtra[] = $appForm->button("Cancelar", array("title"=>"Cancelar", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='cancelar';form.submit();"));
+$botonesExtra[] = $appForm->submit("Importar", array("title"=>"Importar la PLanilla", "onclick"=>"document.getElementById('accion').value='importar'"));
+$accionesExtra['opciones'] = array("acciones"=>array("modificar", "eliminar", $appForm->link("Confirmar", null, array("class"=>"link_boton", "id"=>"confirmar", "title"=>"Confirma las horas importadas"))));
 echo $this->element('index/index', array("accionesExtra"=>$accionesExtra, "botonesExtra"=>array("opciones"=>array("botones"=>$botonesExtra)), "condiciones"=>$fieldset, 'cuerpo' => $cuerpo, "pie"=>$pie, "opcionesForm"=>array("enctype"=>"multipart/form-data", 'action' => "importar_planilla")));
 
 /**
@@ -82,5 +82,5 @@ $js = '
 			}
 		}
 	);';
-$formulario->addScript($js);
+$appForm->addScript($js);
 ?>

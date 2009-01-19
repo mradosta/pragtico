@@ -21,7 +21,7 @@
 */
 $condiciones['Condicion.Rol-nombre'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Roles", 'imagen' => 'roles.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Roles", 'imagen' => 'roles.gif')));
 
 
 /**

@@ -22,7 +22,7 @@
 $condiciones['Condicion.Grupo-nombre'] = array();
 $condiciones['Condicion.Grupo-estado'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'grupos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'grupos.gif')));
 
 
 /**

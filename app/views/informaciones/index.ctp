@@ -22,7 +22,7 @@
 $condiciones['Condicion.Informacion-nombre'] = array();
 $condiciones['Condicion.Informacion-observacion'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'informaciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'informaciones.gif')));
 
 
 /**

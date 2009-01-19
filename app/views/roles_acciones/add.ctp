@@ -30,7 +30,7 @@ $campos['RolesAccion.accion_id'] = array(	"lov"=>array(	"controller"		=>	"accion
 $campos['RolesAccion.estado'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"relacion entre accion y rol", 'imagen' => 'acciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"relacion entre accion y rol", 'imagen' => 'acciones.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

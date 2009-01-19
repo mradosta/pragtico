@@ -36,15 +36,15 @@ if(!empty($patrones)) {
 	$bloque = "Se identificaron los siguientes patrones dentro del Documento:";
 	$lis = array();
 	foreach($patrones as $v) {
-		$lis[] = $formulario->tag("li",  $v);
+		$lis[] = $appForm->tag("li",  $v);
 	}
-	$bloque .= $formulario->tag("ul",  $lis);
-	$bloque .= $formulario->tag("span",  "Presione sobre el boton grabar para confirmar si los patrones encontrados son correctos.<br />En caso de que no lo sean correctos, presione el boton cancelar, modifique el archivo de origen y reintentelo.<br /><br /><br /><br />");
-	$bloque .= $formulario->input("Form.confirmar", array("type"=>"hidden", "value"=>"confirmado"));
-	$bloqueAdicional = $formulario->tag("div", $bloque, array("class"=>"unica"));
+	$bloque .= $appForm->tag("ul",  $lis);
+	$bloque .= $appForm->tag("span",  "Presione sobre el boton grabar para confirmar si los patrones encontrados son correctos.<br />En caso de que no lo sean correctos, presione el boton cancelar, modifique el archivo de origen y reintentelo.<br /><br /><br /><br />");
+	$bloque .= $appForm->input("Form.confirmar", array("type"=>"hidden", "value"=>"confirmado"));
+	$bloqueAdicional = $appForm->tag("div", $bloque, array("class"=>"unica"));
 }
 
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'documentos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'documentos.gif')));
 echo $this->element('add/add', array("bloqueAdicional"=>$bloqueAdicional, "opcionesForm"=>array("enctype"=>"multipart/form-data"), "fieldset"=>$fieldset, "migaEdit" => $this->data[0]['Documento']['nombre']));
 ?>

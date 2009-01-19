@@ -25,7 +25,7 @@ $condiciones['Condicion.Relacion-empleador_id'] = array(	"lov"=>array("controlle
 $condiciones['Condicion.Coeficiente-nombre'] = array();
 $condiciones['Condicion.Coeficiente-tipo'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $formulario->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Coeficientes de los Empleadores", 'imagen' => 'coeficientes.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Coeficientes de los Empleadores", 'imagen' => 'coeficientes.gif')));
 
 
 /**

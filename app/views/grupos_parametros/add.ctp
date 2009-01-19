@@ -29,7 +29,7 @@ $campos['GruposParametro.descripcion'] = array();
 
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $formulario->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Parametro del Grupo", 'imagen' => 'parametros.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Parametro del Grupo", 'imagen' => 'parametros.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
