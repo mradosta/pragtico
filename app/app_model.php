@@ -80,198 +80,21 @@ class AppModel extends Model {
 	}
 
 	
-/**
- * There's no necessary the order by statement when deleting, so force not to use it.
- * TODO: Revisar si no hay una forma de no hacer. Es algo mio, ya que cake no lo agrega.
- *
- * @return void.
- * @access public
-*/
-	function xbeforeDelete($cascade = true) {
-		$this->order = null;	
-		return parent::beforeDelete($cascade);
-	}
-	
-	
-/**
- * Permite eliminar multiples registros de un Model en base a condiciones.
- *
- * @param mixed $conditions Condiciones que se deben cumplir para eliminar los registros.
- * @param boolean $cascade Si es true, elimina los registros que dependen de estos.
- * @param boolean $callbacks Ejecuta callbacks (No se usa de momento).
- * @param boolean $manejarTransaccion Indica si deben manejarse transacciones o no.
- * @return boolean True si se pudieron eliminar todos los registros, False en otro caso.
- * @access public
- */
-	function deleteAll_deprecated($conditions, $cascade = true, $callbacks = false, $manejarTransaccion = true) {
-
-		/**
-		* Evito que por error borre toda la tabla.
-		*/
-		if (empty($conditions)) {
-			return false;
-		}
-	
-		/**
-		* Quito el orden, ya que no lo necesito y solo volveria mas lenta la query.
-		*/
-		$this->order = false;
-		$ids = Set::extract("/" . $this->alias . "/" . $this->primaryKey,
-			$this->find("all", array(	'fields'	=> $this->alias . "." . $this->primaryKey,
-										'recursive' => -1,
-										'conditions'=> $conditions)));
-		
-		if (!empty($ids)) {
-			$commit = true;
-			$c = 0;
-			if ($manejarTransaccion === true) {
-				$this->begin();
-			}
-			foreach ($ids as $id) {
-				if ($this->del($id, $cascade, false)) {
-					$c++;
-				}
-				else {
-					$commit = false;
-					break;
-				}
-			}
-			if (($c == count($ids)) && $commit === true) {
-				if ($manejarTransaccion === true) {
-					$this->commit();
-				}
-				return true;
-			}
-			else {
-				if ($manejarTransaccion === true) {
-					$this->rollback();
-				}
-				return false;
-			}
-		}
-		return false;
-	}
-	
-	
-/**
- * Sobreescribo la function del(),
- * Maneja transacciones por defecto cuando de hay una relacion de tipo hasMany (master/detail).
- * 
- * @param mixed $id El identificador unica de registro (clave primaria).
- * @param boolean $cascade Si es true, elimina los registros que dependen de estos.
- * @param boolean $manejarTransaccion Indica si deben manejarse transacciones o no.
- * @return boolean True si se pudo eliminar el registro, False en otro caso.
- * @access public
- */
-	function del_deprecated($id = null, $cascade = true, $manejarTransaccion = true) {
-		$returnVal = false;
-		/**
-		* Solo borro master/detail cuando es una relacion hasMany.
-		* La politica para el manejo de la seguridad es que para poder borrar el master,
-		* debo necesariamente tener permiso para borrar TODOS los details.
-		*/
-        if (!empty($this->hasMany)) {
-			$this->{$this->primaryKey} = $id;
-			/**
-			* Inicio la transaccion.
-			*/
-			if ($manejarTransaccion === true) {
-  				$this->begin();
-  			}
-			$returnVal = true;
-			foreach ($this->hasMany as $k=>$v) {
-				if ($returnVal === true) {
-					$condiciones = null;
-					$condiciones[$v['className'] . "." . $v['foreignKey']] = $id;
-					$condiciones['checkSecurity'] = "delete";
-					$detalles = $this->{$v['className']}->find("all", array("conditions"=>$condiciones, "fields"=>$this->{$v['className']}->primaryKey, "recursive"=>-1));
-
-					if (!empty($detalles)) {
-						foreach ($detalles as $k1=>$v1) {
-							/**
-							* Obtengo el id de cada detalle relacionado al master.
-							*/
-							$id_detalle = $v1[$v['className']][$this->{$v['className']}->primaryKey];
-
-							/**
-							* No necesito ninguna asociacion porque entro siempre por clave primaria.
-							*/
-							$this->{$v['className']}->recursive = -1;
-							if (!$this->{$v['className']}->del($id_detalle, $cascade, $manejarTransaccion)) {
-								$returnVal = false;
-								break;
-							}
-						}
-					}
-				}
-			}
-			
-			/**
-			* Si ya pude borra sin error todos los details, ahora borro el master.
-			*/
-			if ($returnVal === true) {
-				$condiciones = null;
-				$condiciones[$this->name . "." . $this->primaryKey] = $id;
-				$condiciones['checkSecurity'] = "delete";
-				$puedeBorrar = $this->find("count", array("conditions"=>$condiciones, "recursive"=>-1));
-				if ($puedeBorrar == 1) {
-					if (!parent::del($id)) {
-						$returnVal = false;
-					}
-				}
-				else {
-					$returnVal = false;
-				}
-			}
-			
-			/**
-			* Confirmo la transaccion si no ocurrieron errores.
-			*/
-			if ($returnVal === true) {
-				if ($manejarTransaccion === true) {
-					$this->commit();
-				}
-			}
-			else {
-				if ($manejarTransaccion === true) {
-					$this->rollback();
-				}
-			}
-		}
-		else {
-			$puedeBorrar = $this->find("count", array("conditions"=>array("checkSecurity" => "delete", $this->name . "." . $this->primaryKey=>$id), "recursive"=>-1));
-			if ($puedeBorrar == 1) {
-				$returnVal = parent::del($id, $cascade);
-			}
-		}
-		
-        if ($returnVal === false) {
-        	$this->__buscarError();
-        }
-        return $returnVal;
-	}    
-    
-    
-	function del($id = null, $cascade = true, $transactional = false) {
+	function del($id = null, $cascade = true) {
 		
 		$this->order = null;
-		
 		$this->setSecurityAccess('delete');
+		
 		/**
 		 * Asuming dependent related models, need to be deleted as a transaction.
 		 */
-		if ($transactional === true) {
-			$this->begin();
-		}
+		$this->begin();
+		
 		if (parent::del($id, $cascade)) {
-			if ($transactional === true) {
-				$this->commit();
-			}
+			$this->commit();
 			return true;
 		} else {
-			if ($transactional === true) {
-				$this->rollback();
-			}
+			$this->rollback();
 			return false;
 		}
 	}
@@ -290,171 +113,6 @@ class AppModel extends Model {
 	}
 	
 	
-/**
- * Sobreescribo la function save().
- * Maneja transacciones por defecto cuando de hay una relacion de tipo hasMany (master/detail).
- * 
- * Por una cuestion de implementacion en el model detail, debo definir un array (unique) que contendra el nombre
- * de los campos que componen la Unique del model. Esto usara para buscar y borrar y re-insertar ante un update.
- * 
- * @param array $data El array con los datos a guardar.
- * @param boolean $validate Indica si debo verificar las validaciones antes de guardar o no.
- * @param array $fieldList Lista de campos que estan permitido que sean escritos.
- * @return boolean True si se pudo guardar el registro, False en otro caso.
- * @access public
- */    
-    function save_deprecated($data = null, $validate = true, $fieldList = array(), $manejarTransaccion = true) {
-		/**
-		* Solo guardo master/detail cuando es una relacion hasMany y en el vector vienen componentes
-		* de esta relacion y no otra
-		*/
-		if (!empty($data)) {
-			$r =  array_intersect_key($data, $this->hasMany);
-			if (!empty($this->hasMany) && !empty($r)) {
-			
-				$keys = array_keys($data);
-				/**
-				* El primer elemento del vector de keys debe ser el master en el master/datail.
-				*/
-				if ($keys[0] !== $this->name) {
-					$returnVal = false;
-				}
-				else {
-					$returnVal = true;
-				}
-
-				/**
-				* Quito el primer elemento y me muevo por las keys (foraneas).
-				*/
-				array_shift($keys);
-				
-				/**
-				* Inicio la transaccion.
-				*/
-				if ($manejarTransaccion === true) {
-					$this->begin();
-				}
-				if ($returnValParent = parent::save($data[$this->name], $validate, $fieldList)) {
-					if (!empty($data[$this->name][$this->primaryKey])) {
-						/**
-						* Es un update, tengo el id del anterior.
-						*/
-						$id = $this->id;
-						$accion = "update";
-						$datoExistente = $this->find("first", array("conditions"=>array($this->name . "." . $this->primaryKey=>$id), "contain"=>$keys));
-					}
-					else {
-						/**
-						* Busco el ultimo id que inserte.
-						*/
-						$id = $this->getLastInsertId();
-						$accion = "insert";
-					}
-					
-					foreach ($keys as $key) {
-						/**
-						* Debo identificar si se ha quitado alguno/s, el/los cual/es debo eliminar.
-						* Solo en caso de ser un update. Cuando es un insert, estoy seguro que no existira.
-						*/
-						if ($accion === "update") {
-							$idsDetailAntesModificar = Set::extract("/" . $key . "/" . $this->$key->primaryKey, $datoExistente);
-							$idsDetailDespuesModificar = Set::extract("/" . $this->$key->primaryKey, array_values($data[$key]));
-							$idsDetailEliminados = array_diff($idsDetailAntesModificar, $idsDetailDespuesModificar);
-							if (!empty($idsDetailEliminados)) {
-								$this->$key->deleteAll(array($key . "." . $this->$key->primaryKey=>$idsDetailEliminados));
-							}
-						}
-						$hasMany = $this->hasMany;
-						foreach ($data[$key] as $k=>$v) {
-							if ($returnVal === true) {
-								/**
-								* Asigno el valor del id del master, al arreglo de la foranea (detail).
-								*/
-								$v[$hasMany[$key]['foreignKey']] = $id;
-
-								/**
-								* Debo decidir si es un update o un insert.
-								* Para ello necesito que este seteada la variable $unique en el model.
-								*/
-								$find = array();
-								foreach ($this->$key->unique as $unique) {
-									if (isset($v[$unique])) {
-										$find[$key . "." . $unique] = $this->setDBFieldValue($this->$key, $unique, $v[$unique], true);
-									}
-								}
-
-								$lineaDetalle = $this->$key->find($find, array($this->$key->primaryKey));
-								if (!empty($lineaDetalle)) {
-									/**
-									* El registro ya existe, debo actualizarlo.
-									*/
-									$v[$this->$key->primaryKey] = $lineaDetalle[$key][$this->$key->primaryKey];
-								}
-								else {
-									/**
-									* El registro no existe, debo insertarlo.
-									*/
-									$this->$key->create($v);
-								}
-
-								if ($this->$key->validates()) {
-									if (!$this->$key->save($v, $validate, $fieldList, $manejarTransaccion)) {
-										/**
-										* Vuelvo atras si algo salio mal.
-										*/
-										if ($manejarTransaccion === true) {
-											$this->rollback();
-										}
-										$returnVal = false;
-									}
-								}
-								else {
-									$this->validationErrors[$this->name][$key][$k] = $this->$key->validationErrors;
-									unset($this->$key->validationErrors);
-									$returnVal = false;
-								}
-							}
-						}
-					}
-					/**
-					* Confirmo la transaccion si no ocurrieron errores.
-					*/
-					if ($returnVal === true && $manejarTransaccion === true) {
-						$this->commit();
-					}
-				}
-				else {
-					if ($manejarTransaccion === true) {
-						$this->rollback();
-					}
-					$returnVal = false;
-				}
-			}
-			else {
-				if ($returnValParent = parent::save($data, $validate, $fieldList)) {
-					$returnVal = true;
-				}
-				else {
-					$returnVal = false;				
-				}
-			}
-		}
-		else {
-			return false;
-		}
-
-        if ($returnVal === false) {
-			$this->__buscarError();
-            return false;
-        }
-        else {
-        	$this->__buscarWarning();
-        }
-		$returnValParent[$this->name][$this->primaryKey] = $this->id;
-        return $returnValParent;
-    }
-
-
 /**
  * Retorna la variable $this->dbError con los errores que puedan haber surgido de alguna query.
  *
@@ -538,9 +196,9 @@ class AppModel extends Model {
 
 
 /**
- * Retorna los permisos con los que se guardaran los registros.
+ * Returns permissions used to save records in this model.
  *
- * @return integer $permisos con los que se guardaran los datos.
+ * @return integer Permissions numeric value used to save records for this model.
  * @access public
  */
 	function getPermissions() {
