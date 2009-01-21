@@ -362,6 +362,8 @@ class AppController extends Controller {
 											}
 										}
 									}
+								} elseif (empty($v[$habtmModel][$habtmOptions['associationForeignKey']])) {
+									unset($v[$habtmModel][$habtmOptions['associationForeignKey']]);
 								}
 							}
 						}
@@ -370,7 +372,7 @@ class AppController extends Controller {
 						$db->begin($this->{$this->modelClass});
 						
 						/**
-						* if any detail has been deleted, must delete them so manually.
+						* if any detail has been deleted, must delete them manually.
 						*/
 						$associations = $this->{$this->modelClass}->getAssociated();
 						$errorsDeletingDetails = false;
@@ -477,7 +479,7 @@ class AppController extends Controller {
 			$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
 		}
 			
-		if ($this->{$this->modelClass}->deleteAll(array($this->modelClass . '.' . $this->{$this->modelClass}->primaryKey => $ids))) {
+		if ($this->{$this->modelClass}->deleteAll(array($this->modelClass . '.' . $this->{$this->modelClass}->primaryKey => $ids), true, true)) {
 			$cantidad = count($ids);
 			if ($cantidad === 1) {
 				$mensaje = __('Record deleted', true);
