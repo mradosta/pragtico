@@ -28,7 +28,7 @@ class UsuariosController extends AppController {
 		
 		if (!empty($this->data['GruposUsuario']['grupo_id'])) {
 			foreach ($this->data['GruposUsuario']['grupo_id'] as $v) {
-				$grupos[] = array("grupo_id" => $v);
+				$grupos[] = array('grupo_id' => $v);
 			}
 			$this->data['GruposUsuario'] = $grupos;
 			$this->Usuario->bindModel(
@@ -37,12 +37,12 @@ class UsuariosController extends AppController {
 						'GruposUsuario'=> array('className'    => 'GruposUsuario',
 												'foreignKey'   => 'usuario_id')
 			)));
-			$this->Usuario->GruposUsuario->unique = array("grupo_id", "usuario_id");
+			$this->Usuario->GruposUsuario->unique = array('grupo_id', 'usuario_id');
 		}
 		
 		if (!empty($this->data['RolesUsuario']['rol_id'])) {
 			foreach ($this->data['RolesUsuario']['rol_id'] as $v) {
-				$roles[] = array("rol_id" => $v);
+				$roles[] = array('rol_id' => $v);
 			}
 			$this->data['RolesUsuario'] = $roles;
 			$this->Usuario->bindModel(
@@ -51,11 +51,13 @@ class UsuariosController extends AppController {
 						'RolesUsuario' => array('className'    => 'RolesUsuario',
 												'foreignKey'   => 'usuario_id')
 			)));
-			$this->Usuario->RolesUsuario->unique = array("rol_id", "usuario_id");
+			$this->Usuario->RolesUsuario->unique = array('rol_id', 'usuario_id');
 		}
 		
 		parent::add();
 	}
+	
+	
 /**
  * Muestra via desglose los roles asociados a este Usuario.
  *
@@ -64,7 +66,7 @@ class UsuariosController extends AppController {
  * @access public 
  */
 	function roles($id) {
-		$this->Usuario->contain(array("RolesUsuario", "Rol"));
+		$this->Usuario->contain(array('RolesUsuario', 'Rol'));
 		$this->data = $this->Usuario->read(null, $id);
 	}
 
@@ -82,7 +84,7 @@ class UsuariosController extends AppController {
 		* casos es Grupo, el framework hace un merge del array de resultados, lo cual no es correcto, por lo que
 		* para este caso (mostrar los grupos secundarios del usuario) deseteo los elementos del grupo primario.
 		*/
-		$this->Usuario->contain(array("Grupo"));
+		$this->Usuario->contain(array('Grupo'));
 		$usuario = $this->Usuario->read(null, $id);
 		foreach ($usuario['Grupo'] as $k=>$v) {
 			if (!is_numeric($k)) {
@@ -102,62 +104,41 @@ class UsuariosController extends AppController {
  */
     function login() {
         if (!empty($this->data)) {
-			if ($usuario = $this->Usuario->verificarLogin(array("nombre"=>$this->data['Usuario']['loginNombre'], "clave"=>$this->data['Usuario']['loginClave']))) {
+			if ($usuario = $this->Usuario->verificarLogin(array('nombre'=>$this->data['Usuario']['loginNombre'], 'clave'=>$this->data['Usuario']['loginClave']))) {
 
 				/**
 				* Guardo en la session el usuario.
 				*/
-				$this->Session->write("__Usuario", $usuario);
+				$this->Session->write('__Usuario', $usuario);
 
 				/**
 				* Busco los menus.
 				*/
-				$this->Session->write('__MenuItems', $this->Usuario->traerMenus($usuario));
+				$this->Session->write('__itemsMenu', $this->Usuario->traerMenus($usuario));
+				$this->Session->write('__actualMenu', '0');
 				$this->redirect('../relaciones/index', null, true);
 			}
 			else {
-				$this->Session->setFlash("Usuario o contraseña incorrectos.", "error");
-				$this->redirect("login", null, true);
+				//$this->Session->setFlash('Usuario o contraseña incorrectos.', 'error');
+				$this->Session->setFlash(__('Login failed. Invalid username or password.', true), 'error');
+				$this->redirect('login', null, true);
 			}
         }
         else {
-        	$this->layout = "login";
+        	$this->layout = 'login';
         }
     }
     
 /**
- * Permite salir edl sistema a un usuario de forma segura eliminado datos de la session.
+ * Permite salir del sistema a un usuario de forma segura eliminado datos de la session.
  *
  * @return void
  * @access public 
  */
     function logout() {
-        $this->Session->destroy("Usuario");
-        $this->Session->setFlash("Ha salido exitosamente de la aplicacion.", "ok");
-        $this->redirect("login", null, true);
+        $this->Session->destroy('Usuario');
+        $this->redirect('login', null, true);
     } 
-
-
-	function cambiar_grupo_deprecated() {
-		if (!empty($this->data)) {
-			if ($this->data['Form']['accion'] == "grabar") {
-				$usuario = $this->Session->read("__Usuario");
-			}
-		}
-		$usuario = $this->Session->read("__Usuario");
-		foreach ($usuario['Grupo'] as $grupo) {
-			if ($grupo['tipo'] == "De Grupos") {
-				$grupos[$grupo['id']] = $grupo['nombre'];
-			}
-		}
-		if (empty($grupos)) {
-			$this->Session->setFlash('Usted no tiene otro grupo para realizar el cambio.', 'error');
-		}
-		else {
-			$this->set("grupos", $grupos);
-			$this->set("usuario", $this->Session->read('__Usuario'));			
-		}
-	}
 
 
 /**
@@ -169,20 +150,19 @@ class UsuariosController extends AppController {
  */
     function cambiar_clave($id = null) {
     	if (!empty($id) && is_numeric($id)) {
-    		$this->set("usuario", $this->Usuario->findById($id));
-    		$this->set("noVerificar", false);
-    	}
-    	else if (!empty($this->data)) {
-    		if (!empty($this->data['Form']['accion']) && $this->data['Form']['accion'] === "grabar" && $this->Usuario->validates()) {
+    		$this->set('usuario', $this->Usuario->findById($id));
+    		$this->set('noVerificar', false);
+    	} else if (!empty($this->data)) {
+    		if (!empty($this->data['Form']['accion']) && $this->data['Form']['accion'] === 'grabar' && $this->Usuario->validates()) {
     			unset($this->data['Form']);
     			if ($this->Usuario->save($this->data)) {
-    				$this->Session->setFlash("La clave se cambio correctamente.", "ok");
+    				//$this->Session->setFlash('La clave se cambio correctamente.', 'ok');
+					$this->Session->setFlash('Password successfully updated.', 'ok');
 					$this->History->goBack();
     			}
     		}
-    	}
-    	else {
-			$this->set("usuario", $this->Session->read('__Usuario'));
+    	} else {
+			$this->set('usuario', $this->Session->read('__Usuario'));
 		}
 	}
 

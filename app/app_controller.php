@@ -818,6 +818,14 @@ class AppController extends Controller {
     function beforeFilter() {
 		
 		/**
+		 * Save selected menu (actualMenu) in the session.
+		 */
+		if (isset($this->passedArgs['am'])) {
+			$this->Session->write('__actualMenu', $this->passedArgs['am']);
+		}
+		
+		
+		/**
 		* En accionesWhiteList llevo las acciones que no deben chquearse la seguridad.
 		*/
 		if (!$this->Session->check("__Seguridad.accionesWhiteList")) {

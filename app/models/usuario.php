@@ -106,7 +106,7 @@ class Usuario extends AppModel {
 		*/
 		$MenuItems = array();
 		if ((int)$usuario['Usuario']['roles'] & 1) {
-			$MenuItems = $this->RolesUsuario->Rol->RolesMenu->Menu->findAllThreaded(array('checkSecurity'=>false), null, 'orden');
+			$MenuItems = $this->RolesUsuario->Rol->RolesMenu->Menu->findAllThreaded(array('checkSecurity'=>false), null, 'Menu.orden');
 		}
 		else {
 			$queryData = array(
