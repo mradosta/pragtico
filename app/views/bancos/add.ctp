@@ -23,8 +23,6 @@ $campos = null;
 $campos['Banco.id'] = array();
 $campos['Banco.codigo'] = array();
 $campos['Banco.nombre'] = array();
-$campos['Banco.direccion'] = array();
-$campos['Banco.telefono'] = array();
 $campos['Banco.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 

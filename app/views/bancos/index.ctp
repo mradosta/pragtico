@@ -37,7 +37,6 @@ foreach ($registros as $k=>$v) {
 	$fila[] = array('model' => "Banco", 'field' => "id", 'valor' => $v['Banco']['id'], "write"=>$v['Banco']['write'], "delete"=>$v['Banco']['delete']);
 	$fila[] = array('model' => "Banco", 'field' => "codigo", 'valor' => $v['Banco']['codigo']);
 	$fila[] = array('model' => "Banco", 'field' => "nombre", 'valor' => $v['Banco']['nombre']);
-	$fila[] = array('model' => "Banco", 'field' => "direccion", 'valor' => $v['Banco']['direccion']);
 	$cuerpo[] = $fila;
 }
 
