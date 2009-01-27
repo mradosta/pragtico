@@ -23,14 +23,14 @@ $campos = null;
 $campos['AusenciasMotivo.id'] = array();
 $campos['AusenciasMotivo.motivo'] = array();
 $campos['AusenciasMotivo.tipo'] = array();
-$campos['AusenciasMotivo.situacion_id'] = array(	"aclaracion"=>	"Opcional: Se refiere a la situacion que se informara en SIAP si existe una relacion entre ambas.",
+$campos['AusenciasMotivo.situacion_id'] = array(	'aclaracion' => 	"Opcional: Se refiere a la situacion que se informara en SIAP si existe una relacion entre ambas.",
 											"lov"		=>	array(	"controller"		=> 	"situaciones",
 																	"seleccionMultiple"	=> 	0,
 																		"camposRetorno"	=> 	array(	"Situacion.codigo",
 																									"Situacion.nombre")));
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Motivos de Ausencia", 'imagen' => 'motivos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "Motivos de Ausencia", 'imagen' => 'motivos.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

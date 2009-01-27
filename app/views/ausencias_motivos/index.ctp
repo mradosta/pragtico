@@ -21,7 +21,7 @@
 */
 $condiciones['Condicion.Banco-nombre'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Motivos de las Ausencias", 'imagen' => 'ausencias_motivos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "Motivos de las Ausencias", 'imagen' => 'ausencias_motivos.gif')));
 
 
 /**
@@ -30,10 +30,10 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("leg
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "AusenciasMotivo", 'field' => "id", 'valor' => $v['AusenciasMotivo']['id'], "write"=>$v['AusenciasMotivo']['write'], "delete"=>$v['AusenciasMotivo']['delete']);
-	$fila[] = array('model' => "AusenciasMotivo", 'field' => "motivo", 'valor' => $v['AusenciasMotivo']['motivo']);
-	$fila[] = array('model' => "Situacion", 'field' => "nombre", 'valor' => $v['Situacion']['nombre'], "nombreEncabezado" => "Situacion");
-	$fila[] = array('model' => "AusenciasMotivo", 'field' => "tipo", 'valor' => $v['AusenciasMotivo']['tipo']);
+	$fila[] = array('model' => 'AusenciasMotivo', 'field' => 'id', 'valor' => $v['AusenciasMotivo']['id'], 'write' => $v['AusenciasMotivo']['write'], 'delete' => $v['AusenciasMotivo']['delete']);
+	$fila[] = array('model' => 'AusenciasMotivo', 'field' => 'motivo', 'valor' => $v['AusenciasMotivo']['motivo']);
+	$fila[] = array('model' => 'Situacion', 'field' => 'nombre', 'valor' => $v['Situacion']['nombre'], "nombreEncabezado" => "Situacion");
+	$fila[] = array('model' => 'AusenciasMotivo', 'field' => 'tipo', 'valor' => $v['AusenciasMotivo']['tipo']);
 	$cuerpo[] = $fila;
 }
 

@@ -31,7 +31,7 @@ $campos['RecibosConcepto.concepto_id'] = array(	"lov"=>array("controller"	=>	"co
 																						"Concepto.nombre")));
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Conceptos de un Recibo", 'imagen' => 'conceptos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "Conceptos de un Recibo", 'imagen' => 'conceptos.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

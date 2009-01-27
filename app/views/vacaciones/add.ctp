@@ -32,7 +32,7 @@ $campos['Vacacion.hasta'] = array();
 $campos['Vacacion.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Vacaciones", 'imagen' => 'vacaciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "Vacaciones", 'imagen' => 'vacaciones.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

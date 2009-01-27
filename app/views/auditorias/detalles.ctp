@@ -26,6 +26,6 @@ $out = ob_get_clean();
 
 $codigoHtml = $appForm->tag("span", "Detalles (Datos del registro)", array("class"=>"titulo"));
 $codigoHtml .= $appForm->tag("div", $out, array("class"=>"tabla")) ;
-echo $appForm->tag("div", $codigoHtml, array("class"=>"unica"));
+echo $appForm->tag("div", $codigoHtml, array('class' => 'unica'));
 
 ?>

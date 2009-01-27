@@ -342,21 +342,6 @@ class AppFormHelper extends FormHelper {
 
 
 /**
- * Returns a formatted DIV tag for HTML FORMs.
- *
- * @param string $class CSS class name of the div element.
- * @param string $text String content that will appear inside the div element.
- *			If null, only a start tag will be printed
- * @param array $attributes Additional HTML attributes of the DIV tag
- * @param boolean $escape If true, $text will be HTML-escaped
- * @return string The formatted DIV element
- */
-	function div_deprecated($class = null, $text = null, $attributes = array(), $escape = false) {
-		return $this->Html->div($class, $text, $attributes, $escape);
-	}
-
-
-/**
  * Crea un elemento IMG formateado xhtml.
  *
  * Se encarga de validar que el archivo exista (si no existe, el browser demora buscandolo hasta que salta por timeout).
@@ -377,13 +362,15 @@ class AppFormHelper extends FormHelper {
 		*/
 		if (!file_exists(WWW_ROOT . IMAGES_URL . $path)) {
 			$path = 'noimage.gif';
+			$htmlAttributes['alt'] = 'no_image';
+			$htmlAttributes['title'] = __('Non existing image', true);
 		}
 
 		/**
 		* Me aseguro de que siempre tenga los atributos title y alt cuando tenga uno de ellos por lo menos.
 		*/
 		if (isset($htmlAttributes['alt']) && !isset($htmlAttributes['title'])) {
-			$htmlAttributes['title'] = $htmlAttributes['alt'];
+			$htmlAttributes['title'] = Inflector::humanize($htmlAttributes['alt']);
 		} elseif (isset($htmlAttributes['title']) && !isset($htmlAttributes['alt'])) {
 			$htmlAttributes['alt'] = $htmlAttributes['title'];
 		}
@@ -428,7 +415,7 @@ class AppFormHelper extends FormHelper {
  *			- desglose: datos para generar un desglose.
  *
  * Puedo tambien querer enviar opciones a la fila, en cuyo caso queda asi:
- *  $cuerpo[] = array("contenido"=>$fila, "opciones"=>array("class" => "fila_resaltada", "seleccionMultiple"=>false, "eliminar"=>false, "modificar"=>false, "permisos"=>false));
+ *  $cuerpo[] = array("contenido"=>$fila, 'opciones' => array("class" => "fila_resaltada", "seleccionMultiple"=>false, "eliminar"=>false, "modificar"=>false, "permisos"=>false));
  *
  * Ejemplo de uso de la funcion tabla.
  *
@@ -868,7 +855,7 @@ class AppFormHelper extends FormHelper {
 								/**
 								* Si debo agregarlo, lo agrego al principio de todas las acciones.
 								*/
-								array_unshift($acciones, $this->input("seleccionMultiple.id_" . $id, array("type" => "checkbox", "label"=>false, "div"=>false)));
+								array_unshift($acciones, $this->input("seleccionMultiple.id_" . $id, array("type" => "checkbox", "label"=>false, 'div' => false)));
 							}
 							
 							/**
@@ -1299,6 +1286,7 @@ class AppFormHelper extends FormHelper {
  * @return string
  */
 	function input($tagName, $options = array()) {
+		
 		/**
 		* Pongo un valor por defecto para el after, ya que lo uso para la lov, la fecha, etc...
 		*/
@@ -1986,7 +1974,7 @@ class AppFormHelper extends FormHelper {
 					$idDiv = "div_" . $this->domId($tagName);
 					$cerrar = $this->link("", null, array("title" => "Cerrar", "class" => "jqmCloseEstilo jqmClose"));
 					$target = "target_" . $rnd;
-					$targetDiv = $this->bloque($this->image('cargando.gif', array("alt" => "Cargando...")) . "<h1>Aguarde por favor...</h1>", array("div"=>array("id"=>$target)));
+					$targetDiv = $this->bloque($this->image('cargando.gif', array("alt" => "Cargando...")) . "<h1>Aguarde por favor...</h1>", array('div' => array("id"=>$target)));
 					$divLov = $this->tag('div', $cerrar . $targetDiv, array("class" => "jqmWindow", 'id' => $idDiv));
 
 					
@@ -2078,6 +2066,7 @@ class AppFormHelper extends FormHelper {
  * @param string $fieldName This should be "Modelname.fieldname", "Modelname/fieldname" is deprecated
  * @param string $text Text that will appear in the label field.
  * @return string The formatted LABEL element
+ * TODO: Must deprecated this method and use span tag instead, in vews code
  */
 	function label($fieldName = null, $text = null, $attributes = array()) {
 		$return = parent::label($fieldName, $text, $attributes);
@@ -2104,6 +2093,9 @@ class AppFormHelper extends FormHelper {
 	}
 
 	
+/**
+ * TODO: Change by jquery alternative (http://ui.jquery.com/demos/datepicker)
+ */		   
 	function __inputFecha($tagName, $options = array(), $seleccionarHora=false) {
 		$this->setEntity($tagName);
 		$id = $this->domId(implode('.', array_filter(array($this->model(), $this->field()))));
@@ -2111,104 +2103,14 @@ class AppFormHelper extends FormHelper {
 
 
 		if ($seleccionarHora) {
-			$codigo_html = $this->link($codigo_html, "javascript:NewCal('".$id."','dd/mm/yyyy', true, 24, 'dropdown', true)");
-			//$codigo_html .= $this->codeBlock('
-			//	jQuery("#' . $id . '").mask("99/99/9999 99:99");
-			//');
-		}
-		else {
-			$codigo_html = $this->link($codigo_html, "javascript:NewCal('".$id."','dd/mm/yyyy')", array('id' => $id . "Fecha"));
-			//$codigo_html .= $this->codeBlock('
-			//	jQuery("#' . $id . '").mask("99/99/9999");
-			//');
+			$codigo_html = $this->link($codigo_html, "javascript:NewCal('".$id."', 'dd/mm/yyyy', true, 24, 'dropdown', true)");
+		} else {
+			$codigo_html = $this->link($codigo_html, "javascript:NewCal('".$id."', 'dd/mm/yyyy')", array('id' => $id . "Fecha"));
 		}
 		return $codigo_html;
 	}
 
 
-/**
- * Genera una serie de controles checkBox.
- * TODO: ver "type"=>"select", 'multiple' => 'checkbox'
- *			http://book.cakephp.org/view/193/options-multiple
- *
- * @param string $tagName El nombre del tag de la forma Model.field.
- * @param array $options Las opciones para generar el control.
- * @return string El codigo HTML con los controles checkBox.
- * @access private
- */
-	function __checkboxMultiple_deprecated($tagName, $options) {
-		list($model, $field) = explode(".", $tagName);
-		$opciones['elementosHtmlAttributes'] = array("class" => "checkboxMultiple");
-		$opciones['contenedorHtmlAttributes'] = array("class" => "checkboxMultiple");
-		unset($options['type']);
-		$options = array_merge($opciones, $options);
-        
-        foreach ($options['options'] as $id=>$valor) {
-	        $elementosHtmlAttributes = $options['elementosHtmlAttributes'];
-			$elementosHtmlAttributes['id'] = $model . Inflector::camelize($field) . $id;
-            $elementosHtmlAttributes['value'] = $id;
-			if (!empty($this->data[$model][$field])) {
-				$seleccionados = $this->data[$model][$field];
-			}
-			elseif (!empty($this->data[$model])) {
-				$options['value'] = Set::extract("/" . $model . "/" . $field, $this->data);
-				
-				/**
-				* In case to be a habtm relation.
-				*/
-				if (empty($options['value'])) {
-					$options['value'] = Set::extract("/" . $model . "/id", $this->data);
-				}
-			}
-			if ((is_numeric($id) && !empty($seleccionados) && is_numeric($seleccionados) && ($id & $seleccionados))
-				|| (!empty($options['value']) && is_array($options['value']) && in_array($id, $options['value']))
-				|| (is_string($id) && isset($options['value']) && is_string($options['value']) && $id === $options['value'])) {
-				$checked['checked'] = 'checked';
-				$checkbox[] = "<li>" . sprintf($this->tags['xcheckboxmultiple'], $model, $field, $this->_parseAttributes(array_merge($elementosHtmlAttributes, $checked))) . $this->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
-			}
-			else {
-				$checkbox[] = "<li>" . sprintf($this->tags['xcheckboxmultiple'], $model, $field, $this->_parseAttributes($elementosHtmlAttributes)) . $this->label($elementosHtmlAttributes['id'], $valor) . "</li>\n";
-			}
-        }
-		
-		$id = mt_rand();
-		$seleccion[] = $this->link("T", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("seleccionar");return false;')) . " / ";
-		$seleccion[] = $this->link("N", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("deseleccionar");return false;')) . " / ";
-		$seleccion[] = $this->link("I", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("invertir");return false;'));
-		$seleccionString = $this->tag("div", $seleccion, array("class" => "seleccion"));
-		
-		$lista = "";
-		if (!empty($checkbox)) {
-			$lista = "\n<ul" . $this->_parseAttributes($options['contenedorHtmlAttributes']).">\n" . implode($checkbox) . "</ul>\n";
-		}
-		
-        $control = $this->tag("div", $seleccionString . $lista, array('id' => $id, "class"=>$options['contenedorHtmlAttributes']['class']));
-        if (!empty($options['label'])) {
-        	$label = $this->label($options['label']);
-        }
-        else {
-        	$label = $this->label($tagName);
-        }
-		
-		$aclaracion = "";
-		if (!empty($options['aclaracion'])) {
-			$aclaracion = $this->tag("span", $options['aclaracion'], array("class" => "aclaracion"));
-		}
-        return $this->tag("div", $label . $control . $aclaracion, array("class" => "input"));
-    }
-
-
-/**
- * Returns a formatted error message for given FORM field, NULL if no errors.
- *
- * @param string $field A field name, like "Modelname.fieldname", "Modelname/fieldname" is deprecated
- * @param string $text		Error message
- * @param array $options	Rendering options for <div /> wrapper tag
- * @return string If there are errors this method returns an error message, otherwise null.
- */
-	function error($field, $text = null, $options = array()) {
-		return parent::error($field, $text, $options);
-	}
 
 }
 ?>

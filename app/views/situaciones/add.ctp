@@ -26,10 +26,10 @@ $campos['Situacion.nombre'] = array();
 $campos['Situacion.descripcion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'situaciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('imagen' => 'situaciones.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->element('add/add', array('fieldset' => $fieldset, "migaEdit" => $this->data[0]['Situacion']['nombre']));
+echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => 'Situacion.nombre'));
 ?>

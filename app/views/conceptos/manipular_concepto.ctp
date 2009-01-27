@@ -27,7 +27,7 @@ $campos['Asignar.empleador_comportamiento'] = array("value"=>"incluir", "after"=
 
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>ucfirst($accion) . " el Concepto " . $concepto['Concepto']['nombre'] . " a todos los Trabajadores de:", "imagen"=>"conceptos.gif")));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => ucfirst($accion) . " el Concepto " . $concepto['Concepto']['nombre'] . " a todos los Trabajadores de:", "imagen"=>"conceptos.gif")));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

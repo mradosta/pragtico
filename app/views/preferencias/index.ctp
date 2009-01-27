@@ -36,9 +36,9 @@ foreach ($registros as $k=>$v) {
 	}
 	$fila = null;
 	$id = $v['Preferencia']['id'];
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose1', 'imagen' => array('nombre' => 'preferencias.gif', 'alt' => "Valores"), "url"=>'valores');
-	$fila[] = array('model' => "Preferencia", 'field' => "id", "valor"=>$id, "write"=>$v['Preferencia']['write'], "delete"=>$v['Preferencia']['delete']);
-	$fila[] = array('model' => "Preferencia", 'field' => "nombre", 'valor' => $v['Preferencia']['nombre']);
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose1', 'imagen' => array('nombre' => 'preferencias.gif', 'alt' => "Valores"), 'url' => 'valores');
+	$fila[] = array('model' => 'Preferencia', 'field' => 'id", "valor"=>$id, 'write' => $v['Preferencia']['write'], 'delete' => $v['Preferencia']['delete']);
+	$fila[] = array('model' => 'Preferencia', 'field' => 'nombre', 'valor' => $v['Preferencia']['nombre']);
 	$fila[] = array("tipo"=>"celda", "valor"=>$valorPreedterminado, "nombreEncabezado"=>"Predeterminado", "orden"=>false);
 	$cuerpo[] = $fila;
 }

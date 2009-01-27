@@ -28,7 +28,7 @@ $campos['Ropa.relacion_id'] = array(	"lov"=>array(	"controller"		=>	"relaciones"
 																						"Trabajador.apellido")));
 
 $campos['Ropa.observacion'] = array();
-$fieldsets[] = 	array('campos' => $campos, "opciones"=>array('fieldset' => array("legend"=>"Datos de la Orden", 'imagen' => 'ropas.gif')));
+$fieldsets[] = 	array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => "Datos de la Orden", 'imagen' => 'ropas.gif')));
 
 $campos = null;
 $campos['RopasDetalle.id'] = array();
@@ -37,15 +37,15 @@ $campos['RopasDetalle.tipo'] = array();
 $campos['RopasDetalle.color'] = array();
 $campos['RopasDetalle.modelo'] = array();
 $campos['RopasDetalle.tamano'] = array("label"=>"Tamaño / Numero");
-$fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array("class"=>"detail", "legend"=>"prenda", 'imagen' => 'prendas.gif')));
+$fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array("class"=>"detail", 'legend' => "prenda", 'imagen' => 'prendas.gif')));
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Orden para la entrega de ropa", 'imagen' => 'ropas.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "Orden para la entrega de ropa", 'imagen' => 'ropas.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
 $miga = array('format' 	=> '%s %s (%s)', 
 			  'content' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));
-echo $this->element('add/add', array('fieldset' => $fieldset, "miga" => $miga));
-$this->addScript($ajax->jsPredefinido(array("tipo"=>"detalle", "agregar"=>true, "quitar"=>true)));
+echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => $miga));
+$this->addScript($ajax->jsPredefinido(array('tipo' => 'detalle', 'agregar' => true, 'quitar' => true)));
 ?>

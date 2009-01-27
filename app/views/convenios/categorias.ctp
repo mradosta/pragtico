@@ -23,11 +23,11 @@ $cuerpo = null;
 foreach ($this->data['ConveniosCategoria'] as $k=>$v) {
 	$fila = null;
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['id'], "update"=>"desglose_1", 'imagen' => array('nombre' => 'historicos.gif', 'alt' => "Historicos"), "url"=>"../convenios_categorias/historicos/");
-	$fila[] = array('model' => "ConveniosCategoria", 'field' => "id", 'valor' => $v['id'], "write"=>$v['write'], "delete"=>$v['delete']);
-	$fila[] = array('model' => "ConveniosCategoria", 'field' => "nombre", 'valor' => $v['nombre'], "nombreEncabezado"=>"Categoria");
-	$fila[] = array('model' => "ConveniosCategoria", 'field' => "costo", 'valor' => $v['costo'], "tipoDato"=>"moneda");
-	$fila[] = array('model' => "ConveniosCategoria", 'field' => "jornada", 'valor' => $v['jornada']);
-	$fila[] = array('model' => "ConveniosCategoria", 'field' => "observacion", 'valor' => $v['observacion']);
+	$fila[] = array('model' => 'ConveniosCategoria', 'field' => 'id', 'valor' => $v['id'], 'write' => $v['write'], 'delete' => $v['delete']);
+	$fila[] = array('model' => 'ConveniosCategoria', 'field' => 'nombre', 'valor' => $v['nombre'], "nombreEncabezado"=>"Categoria");
+	$fila[] = array('model' => 'ConveniosCategoria', 'field' => 'costo', 'valor' => $v['costo'], "tipoDato"=>"moneda");
+	$fila[] = array('model' => 'ConveniosCategoria', 'field' => 'jornada', 'valor' => $v['jornada']);
+	$fila[] = array('model' => 'ConveniosCategoria', 'field' => 'observacion', 'valor' => $v['observacion']);
 	$cuerpo[] = $fila;
 }
 

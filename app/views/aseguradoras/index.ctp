@@ -31,10 +31,10 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('ima
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "Aseguradora", 'field' => "id", 'valor' => $v['Aseguradora']['id'], "write"=>$v['Aseguradora']['write'], "delete"=>$v['Aseguradora']['delete']);
-	$fila[] = array('model' => "Aseguradora", 'field' => "codigo", 'valor' => $v['Aseguradora']['codigo']);
-	$fila[] = array('model' => "Aseguradora", 'field' => "nombre", 'valor' => $v['Aseguradora']['nombre']);
-	$fila[] = array('model' => "Aseguradora", 'field' => "observacion", 'valor' => $v['Aseguradora']['observacion']);
+	$fila[] = array('model' => 'Aseguradora', 'field' => 'id', 'valor' => $v['Aseguradora']['id'], 'write' => $v['Aseguradora']['write'], 'delete' => $v['Aseguradora']['delete']);
+	$fila[] = array('model' => 'Aseguradora', 'field' => 'codigo', 'valor' => $v['Aseguradora']['codigo']);
+	$fila[] = array('model' => 'Aseguradora', 'field' => 'nombre', 'valor' => $v['Aseguradora']['nombre']);
+	$fila[] = array('model' => 'Aseguradora', 'field' => 'observacion', 'valor' => $v['Aseguradora']['observacion']);
 	$cuerpo[] = $fila;
 }
 

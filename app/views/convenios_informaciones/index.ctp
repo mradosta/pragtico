@@ -22,10 +22,10 @@
 $condiciones['Condicion.ConveniosInformacion-convenio_id'] = array(	"lov"=>array("controller"	=>"convenios",
 																			"camposRetorno"	=>array(	"Convenio.numero",
 																										"Convenio.nombre")));
-$condiciones['Condicion.ConveniosInformacion-informacion_id'] = array("options"=>"listable", "model"=>"Informacion", "empty"=>true, "displayField"=>array("Informacion.nombre"));
+$condiciones['Condicion.ConveniosInformacion-informacion_id'] = array('options' => 'listable', "model"=>"Informacion", "empty"=>true, "displayField"=>array("Informacion.nombre"));
 $condiciones['Condicion.ConveniosInformacion-valor'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Informacion del Convenio Colectivo", 'imagen' => 'informaciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "Informacion del Convenio Colectivo", 'imagen' => 'informaciones.gif')));
 
 
 /**
@@ -34,10 +34,10 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("leg
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "ConveniosInformacion", 'field' => "id", 'valor' => $v['ConveniosInformacion']['id'], "write"=>$v['ConveniosInformacion']['write'], "delete"=>$v['ConveniosInformacion']['delete']);
-	$fila[] = array('model' => "Convenio", 'field' => "nombre", 'valor' => $v['Convenio']['nombre'], "nombreEncabezado"=>"Convenio");
-	$fila[] = array('model' => "Informacion", 'field' => "nombre", 'valor' => $v['Informacion']['nombre'], "nombreEncabezado"=>"Informacion");
-	$fila[] = array('model' => "ConveniosInformacion", 'field' => "valor", 'valor' => $v['ConveniosInformacion']['valor']);
+	$fila[] = array('model' => 'ConveniosInformacion', 'field' => 'id', 'valor' => $v['ConveniosInformacion']['id'], 'write' => $v['ConveniosInformacion']['write'], 'delete' => $v['ConveniosInformacion']['delete']);
+	$fila[] = array('model' => 'Convenio', 'field' => 'nombre', 'valor' => $v['Convenio']['nombre'], "nombreEncabezado"=>"Convenio");
+	$fila[] = array('model' => 'Informacion', 'field' => 'nombre', 'valor' => $v['Informacion']['nombre'], "nombreEncabezado"=>"Informacion");
+	$fila[] = array('model' => 'ConveniosInformacion', 'field' => 'valor', 'valor' => $v['ConveniosInformacion']['valor']);
 	$cuerpo[] = $fila;
 }
 

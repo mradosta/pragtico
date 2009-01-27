@@ -31,9 +31,9 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('ima
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "Informacion", 'field' => "id", 'valor' => $v['Informacion']['id'], "write"=>$v['Informacion']['write'], "delete"=>$v['Informacion']['delete']);
-	$fila[] = array('model' => "Informacion", 'field' => "nombre", 'valor' => $v['Informacion']['nombre']);
-	$fila[] = array('model' => "Informacion", 'field' => "observacion", 'valor' => $v['Informacion']['observacion']);
+	$fila[] = array('model' => 'Informacion', 'field' => 'id', 'valor' => $v['Informacion']['id'], 'write' => $v['Informacion']['write'], 'delete' => $v['Informacion']['delete']);
+	$fila[] = array('model' => 'Informacion', 'field' => 'nombre', 'valor' => $v['Informacion']['nombre']);
+	$fila[] = array('model' => 'Informacion', 'field' => 'observacion', 'valor' => $v['Informacion']['observacion']);
 	$cuerpo[] = $fila;
 }
 

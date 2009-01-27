@@ -36,13 +36,13 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('ima
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "Area", 'field' => "id", 'valor' => $v['Area']['id'], "write"=>$v['Area']['write'], "delete"=>$v['Area']['delete']);
-	$fila[] = array('model' => "Empleador", 'field' => "nombre", 'valor' => $v['Empleador']['nombre']);
-	$fila[] = array('model' => "Area", 'field' => "identificador", 'valor' => $v['Area']['identificador']);
-	$fila[] = array('model' => "Area", 'field' => "nombre", 'valor' => $v['Area']['nombre']);
-	$fila[] = array('model' => "Area", 'field' => "direccion", 'valor' => $v['Area']['direccion']);
-	$fila[] = array('model' => "Area", 'field' => "telefono", 'valor' => $v['Area']['telefono']);
-	$fila[] = array('model' => "Area", 'field' => "contacto", 'valor' => $v['Area']['contacto']);
+	$fila[] = array('model' => 'Area', 'field' => 'id', 'valor' => $v['Area']['id'], 'write' => $v['Area']['write'], 'delete' => $v['Area']['delete']);
+	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Empleador']['nombre']);
+	$fila[] = array('model' => 'Area', 'field' => 'identificador', 'valor' => $v['Area']['identificador']);
+	$fila[] = array('model' => 'Area', 'field' => 'nombre', 'valor' => $v['Area']['nombre']);
+	$fila[] = array('model' => 'Area', 'field' => 'direccion', 'valor' => $v['Area']['direccion']);
+	$fila[] = array('model' => 'Area', 'field' => 'telefono', 'valor' => $v['Area']['telefono']);
+	$fila[] = array('model' => 'Area', 'field' => 'contacto', 'valor' => $v['Area']['contacto']);
 	$cuerpo[] = $fila;
 }
 

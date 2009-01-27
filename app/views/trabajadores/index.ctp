@@ -35,13 +35,13 @@ $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
 	$id = $v['Trabajador']['id'];
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose1', 'imagen' => array('nombre' => 'empleadores.gif', 'alt' => "Empleadores"), "url"=>'relaciones');
-	$fila[] = array('model' => "Trabajador", 'field' => "id", 'valor' => $v['Trabajador']['id'], "write"=>$v['Trabajador']['write'], "delete"=>$v['Trabajador']['delete']);
-	$fila[] = array('model' => "Trabajador", 'field' => "cuil", 'valor' => $v['Trabajador']['cuil'], "class"=>"centro");
-	$fila[] = array('model' => "Trabajador", 'field' => "apellido", 'valor' => $v['Trabajador']['apellido']);
-	$fila[] = array('model' => "Trabajador", 'field' => "nombre", 'valor' => $v['Trabajador']['nombre']);
-	$fila[] = array('model' => "Trabajador", 'field' => "telefono", 'valor' => $v['Trabajador']['telefono']);
-	$fila[] = array('model' => "Trabajador", 'field' => "direccion", 'valor' => $v['Trabajador']['direccion']);
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose1', 'imagen' => array('nombre' => 'empleadores.gif', 'alt' => "Empleadores"), 'url' => 'relaciones');
+	$fila[] = array('model' => 'Trabajador', 'field' => 'id', 'valor' => $v['Trabajador']['id'], 'write' => $v['Trabajador']['write'], 'delete' => $v['Trabajador']['delete']);
+	$fila[] = array('model' => 'Trabajador', 'field' => 'cuil', 'valor' => $v['Trabajador']['cuil'], "class"=>"centro");
+	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Trabajador']['apellido']);
+	$fila[] = array('model' => 'Trabajador', 'field' => 'nombre', 'valor' => $v['Trabajador']['nombre']);
+	$fila[] = array('model' => 'Trabajador', 'field' => 'telefono', 'valor' => $v['Trabajador']['telefono']);
+	$fila[] = array('model' => 'Trabajador', 'field' => 'direccion', 'valor' => $v['Trabajador']['direccion']);
 	$cuerpo[] = $fila;
 }
 

@@ -24,7 +24,7 @@ $campos['Usuario.id'] = array("value"=>$usuario['Usuario']['id']);
 $campos['Usuario.grupos'] = array('type' => 'select', 'multiple' => 'checkbox', "options"=>$grupos);
 
 $fieldsets[] = array('campos' => $campos);
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Cambio de grupo para " . $usuario['Usuario']['nombre_completo'] . " (" . $usuario['Usuario']['nombre'] . ")", 'imagen' => 'usuarios.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "Cambio de grupo para " . $usuario['Usuario']['nombre_completo'] . " (" . $usuario['Usuario']['nombre'] . ")", 'imagen' => 'usuarios.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

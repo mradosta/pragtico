@@ -27,7 +27,7 @@ $condiciones['Condicion.Concepto-codigo'] = array();
 $condiciones['Condicion.Concepto-nombre'] = array();
 $condiciones['Condicion.Concepto-tipo'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Conceptos de los Convenios Colectivos", 'imagen' => 'buscar.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "Conceptos de los Convenios Colectivos", 'imagen' => 'buscar.gif')));
 
 
 /**
@@ -36,11 +36,11 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"u
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "ConveniosConcepto", 'field' => "id", 'valor' => $v['ConveniosConcepto']['id'], "write"=>$v['ConveniosConcepto']['write'], "delete"=>$v['ConveniosConcepto']['delete']);
-	$fila[] = array('model' => "Convenio", 'field' => "nombre", "nombreEncabezado"=>"Convenio", 'valor' => $v['Convenio']['nombre']);
-	$fila[] = array('model' => "Concepto", 'field' => "codigo", 'valor' => $v['Concepto']['codigo']);
-	$fila[] = array('model' => "Concepto", 'field' => "nombre", "nombreEncabezado"=>"Concepto", 'valor' => $v['Concepto']['nombre']);
-	$fila[] = array('model' => "ConveniosConcepto", 'field' => "formula", 'valor' => $v['ConveniosConcepto']['formula']);
+	$fila[] = array('model' => 'ConveniosConcepto', 'field' => 'id', 'valor' => $v['ConveniosConcepto']['id'], 'write' => $v['ConveniosConcepto']['write'], 'delete' => $v['ConveniosConcepto']['delete']);
+	$fila[] = array('model' => 'Convenio', 'field' => 'nombre", "nombreEncabezado"=>"Convenio', 'valor' => $v['Convenio']['nombre']);
+	$fila[] = array('model' => 'Concepto', 'field' => 'codigo', 'valor' => $v['Concepto']['codigo']);
+	$fila[] = array('model' => 'Concepto', 'field' => 'nombre", "nombreEncabezado"=>"Concepto', 'valor' => $v['Concepto']['nombre']);
+	$fila[] = array('model' => 'ConveniosConcepto', 'field' => 'formula', 'valor' => $v['ConveniosConcepto']['formula']);
 	$cuerpo[] = $fila;
 }
 

@@ -45,7 +45,7 @@ $lov = $this->element("index/lov");
 //$botones = $this->element("index/buscadores", array("cache"=>"+30 day", $this->name=>"name", "botonesExtra"=>$botonesExtra, "opcionesForm"=>$opcionesForm));
 $botones = $this->element("index/buscadores", array("botonesExtra"=>$botonesExtra, "opcionesForm"=>$opcionesForm));
 
-$bloques[] = $appForm->tag('div', am($condiciones, $botones, $lov), array("class"=>"unica"));
+$bloques[] = $appForm->tag('div', am($condiciones, $botones, $lov), array('class' => 'unica'));
 
 
 /**
@@ -110,7 +110,7 @@ else if(!((isset($opcionesTabla['tabla']['omitirMensajeVacio']) && $opcionesTabl
 	$tabla = $appForm->tag("div", $appForm->tabla(array_merge(array('cuerpo' => $cuerpo, "pie"=>$pie), $opcionesTabla)), array("class"=>"tabla"));
 	$bloque_superior = $appForm->tag('div', $acciones . $bloque_paginador_superior, array("class"=>"bloque_superior_index"));
 	$bloque_inferior = $appForm->tag('div', $bloque_paginador_inferior, array("class"=>"bloque_inferior_index"));
-	$bloques[] = $appForm->tag('div', $bloque_superior . $tabla . $bloque_inferior, array("class"=>"unica"));
+	$bloques[] = $appForm->tag('div', $bloque_superior . $tabla . $bloque_inferior, array('class' => 'unica'));
 }
 
 

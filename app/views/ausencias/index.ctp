@@ -50,13 +50,13 @@ $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Ausencia']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'seguimientos.gif', 'alt' => "Seguimiento"), "url"=>"seguimientos");
-	$fila[] = array('model' => "Ausencia", 'field' => "id", 'valor' => $v['Ausencia']['id'], "write"=>$v['Ausencia']['write'], "delete"=>$v['Ausencia']['delete']);
-	$fila[] = array('model' => "Empleador", 'field' => "nombre", 'valor' => $v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
-	$fila[] = array('model' => "Trabajador", 'field' => "numero_documento", 'valor' => $v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
-	$fila[] = array('model' => "Trabajador", 'field' => "apellido", 'valor' => $v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
-	$fila[] = array('model' => "AusenciasMotivo", 'field' => "motivo", 'valor' => $v['AusenciasMotivo']['motivo']);
-	$fila[] = array('model' => "Ausencia", 'field' => "desde", 'valor' => $v['Ausencia']['desde'], "tipoDato"=>"date");
-	$fila[] = array('model' => "Ausencia", 'field' => "dias", 'valor' => $v['Ausencia']['dias'], "tipoDato"=>"decimal");
+	$fila[] = array('model' => 'Ausencia', 'field' => 'id', 'valor' => $v['Ausencia']['id'], 'write' => $v['Ausencia']['write'], 'delete' => $v['Ausencia']['delete']);
+	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
+	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
+	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
+	$fila[] = array('model' => 'AusenciasMotivo', 'field' => 'motivo', 'valor' => $v['AusenciasMotivo']['motivo']);
+	$fila[] = array('model' => 'Ausencia', 'field' => 'desde', 'valor' => $v['Ausencia']['desde'], "tipoDato"=>"date");
+	$fila[] = array('model' => 'Ausencia', 'field' => 'dias', 'valor' => $v['Ausencia']['dias'], "tipoDato"=>"decimal");
 	$cuerpo[] = $fila;
 }
 

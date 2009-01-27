@@ -19,7 +19,7 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-$condiciones['Condicion.Localidad-provincia_id'] = array("options"=>"listable", "model"=>"Provincia", "displayField"=>array("Provincia.nombre"), "empty"=>true);
+$condiciones['Condicion.Localidad-provincia_id'] = array('options' => 'listable', "model"=>"Provincia", "displayField"=>array("Provincia.nombre"), "empty"=>true);
 $condiciones['Condicion.Localidad-codigo'] = array();
 $condiciones['Condicion.Localidad-nombre'] = array("label"=>"Localidad");
 $fieldsets[] = array('campos' => $condiciones);
@@ -32,11 +32,11 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('ima
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "Localidad", 'field' => "id", 'valor' => $v['Localidad']['id'], "write"=>$v['Localidad']['write'], "delete"=>$v['Localidad']['delete']);
-	$fila[] = array('model' => "Provincia", 'field' => "nombre", 'valor' => $v['Provincia']['nombre'], "nombreEncabezado"=>"Provincia");
-	$fila[] = array('model' => "Localidad", 'field' => "codigo", 'valor' => $v['Localidad']['codigo']);
-	$fila[] = array('model' => "Localidad", 'field' => "nombre", 'valor' => $v['Localidad']['nombre'], "nombreEncabezado"=>"Localidad");
-	$fila[] = array('model' => "Localidad", 'field' => "codigo_zona", 'valor' => $v['Localidad']['codigo_zona']);
+	$fila[] = array('model' => 'Localidad', 'field' => 'id', 'valor' => $v['Localidad']['id'], 'write' => $v['Localidad']['write'], 'delete' => $v['Localidad']['delete']);
+	$fila[] = array('model' => 'Provincia', 'field' => 'nombre', 'valor' => $v['Provincia']['nombre'], "nombreEncabezado"=>"Provincia");
+	$fila[] = array('model' => 'Localidad', 'field' => 'codigo', 'valor' => $v['Localidad']['codigo']);
+	$fila[] = array('model' => 'Localidad', 'field' => 'nombre', 'valor' => $v['Localidad']['nombre'], "nombreEncabezado"=>"Localidad");
+	$fila[] = array('model' => 'Localidad', 'field' => 'codigo_zona', 'valor' => $v['Localidad']['codigo_zona']);
 	$cuerpo[] = $fila;
 }
 

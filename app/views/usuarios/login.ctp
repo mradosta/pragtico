@@ -19,15 +19,15 @@
 /**
  * Creo los campos de ingreso de datos.
 $usuario = $appForm->input("Usuario.loginNombre", array("label"=>"Nombre de Usuario"));
-$campos[] = $appForm->bloque($usuario, array("div"=>array("class"=>"izquierda")));
+$campos[] = $appForm->bloque($usuario, array('div' => array("class"=>"izquierda")));
 $clave = $appForm->input("Usuario.loginClave", array("type"=>"password", "label"=>"Clave"));
-$campos[] = $appForm->bloque($clave, array("div"=>array("class"=>"izquierda")));
+$campos[] = $appForm->bloque($clave, array('div' => array("class"=>"izquierda")));
 $ingresar = $appForm->submit("Ingresar");
-$campos[] = $appForm->bloque($ingresar, array("div"=>array("class"=>"derecha")));
-$campos[] = $appForm->bloque("", array("div"=>array("class"=>"clear")));
+$campos[] = $appForm->bloque($ingresar, array('div' => array("class"=>"derecha")));
+$campos[] = $appForm->bloque("", array('div' => array("class"=>"clear")));
 
-$bloques[] = $appForm->bloque($appForm->image('login.gif'), array("div"=>array("class"=>"centro")));
-$bloques[] = $appForm->bloque("&nbsp;", array("div"=>array("class"=>"clear")));
+$bloques[] = $appForm->bloque($appForm->image('login.gif'), array('div' => array("class"=>"centro")));
+$bloques[] = $appForm->bloque("&nbsp;", array('div' => array("class"=>"clear")));
 $bloques[] = $appForm->bloque($campos);
  */
 

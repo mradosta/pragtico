@@ -19,7 +19,7 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-$condiciones['Condicion.Accion-controlador_id'] = array("options"=>"listable", "model"=>"Controlador", "displayField"=>array("Controlador.nombre"), "empty"=>true);
+$condiciones['Condicion.Accion-controlador_id'] = array('options' => 'listable', "model"=>"Controlador", "displayField"=>array("Controlador.nombre"), "empty"=>true);
 $condiciones['Condicion.Accion-nombre'] = array();
 $condiciones['Condicion.Accion-etiqueta'] = array();
 $condiciones['Condicion.Accion-estado'] = array();
@@ -34,15 +34,15 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('ima
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "Accion", 'field' => "id", 'valor' => $v['Accion']['id'], "write"=>$v['Accion']['write'], "delete"=>$v['Accion']['delete']);
-	$fila[] = array('model' => "Controlador", 'field' => "nombre", 'valor' => $v['Controlador']['nombre'], "nombreEncabezado"=>"Controlador");
-	$fila[] = array('model' => "Accion", 'field' => "nombre", 'valor' => $v['Accion']['nombre']);
-	$fila[] = array('model' => "Accion", 'field' => "etiqueta", 'valor' => $v['Accion']['etiqueta']);
-	$fila[] = array('model' => "Accion", 'field' => "estado", 'valor' => $v['Accion']['estado']);
-	$fila[] = array('model' => "Accion", 'field' => "seguridad", 'valor' => $v['Accion']['seguridad']);
+	$fila[] = array('model' => 'Accion', 'field' => 'id', 'valor' => $v['Accion']['id'], 'write' => $v['Accion']['write'], 'delete' => $v['Accion']['delete']);
+	$fila[] = array('model' => 'Controlador', 'field' => 'nombre', 'valor' => $v['Controlador']['nombre'], "nombreEncabezado"=>"Controlador");
+	$fila[] = array('model' => 'Accion', 'field' => 'nombre', 'valor' => $v['Accion']['nombre']);
+	$fila[] = array('model' => 'Accion', 'field' => 'etiqueta', 'valor' => $v['Accion']['etiqueta']);
+	$fila[] = array('model' => 'Accion', 'field' => 'estado', 'valor' => $v['Accion']['estado']);
+	$fila[] = array('model' => 'Accion', 'field' => 'seguridad', 'valor' => $v['Accion']['seguridad']);
 
 	if($v['Accion']['seguridad'] == "No") {
-		$cuerpo[] = array("contenido"=>$fila, "opciones"=>array("title"=>"No se esta controlando la seguridad sobre esta accion.", "class"=>"fila_resaltada"));
+		$cuerpo[] = array("contenido"=>$fila, 'opciones' => array("title"=>"No se esta controlando la seguridad sobre esta accion.", "class"=>"fila_resaltada"));
 	}
 	else {
 		$cuerpo[] = $fila;

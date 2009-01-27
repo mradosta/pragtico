@@ -23,9 +23,9 @@
 $cuerpo = null;
 foreach ($this->data['AusenciasMotivo'] as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "AusenciasMotivo", 'field' => "id", 'valor' => $v['id'], "write"=>$v['write'], "delete"=>$v['delete']);
-	$fila[] = array('model' => "AusenciasMotivo", 'field' => "motivo", 'valor' => $v['motivo']);
-	$fila[] = array('model' => "AusenciasMotivo", 'field' => "tipo", 'valor' => $v['tipo']);
+	$fila[] = array('model' => 'AusenciasMotivo', 'field' => 'id', 'valor' => $v['id'], 'write' => $v['write'], 'delete' => $v['delete']);
+	$fila[] = array('model' => 'AusenciasMotivo', 'field' => 'motivo', 'valor' => $v['motivo']);
+	$fila[] = array('model' => 'AusenciasMotivo', 'field' => 'tipo', 'valor' => $v['tipo']);
 	$cuerpo[] = $fila;
 }
 

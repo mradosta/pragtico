@@ -24,7 +24,7 @@ $campos['Preferencia.id'] = array();
 $campos['Preferencia.nombre'] = array();
 $campos['Preferencia.descripcion'] = array();
 
-$fieldsets[] = 	array('campos' => $campos, "opciones"=>array('fieldset' => array("legend"=>"Datos de la Preferencia", 'imagen' => 'preferencias.gif')));
+$fieldsets[] = 	array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => "Datos de la Preferencia", 'imagen' => 'preferencias.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
@@ -33,15 +33,15 @@ $fieldsets[] = 	array('campos' => $campos, "opciones"=>array('fieldset' => array
 $campos = null;
 $campos['PreferenciasValor.id'] = array("name"=>"data[PreferenciasValor][0][id]");
 $campos['PreferenciasValor.valor'] = array("name"=>"data[PreferenciasValor][0][valor]");
-$campos['PreferenciasValor.predeterminado'] = array("name"=>"data[PreferenciasValor][0][predeterminado]", "aclaracion"=>"Especifica cual sera el valor por defecto para esta preferencia.");
-$fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array("class"=>"detail", "legend"=>"valor de la preferencia", 'imagen' => 'valores.gif')));
+$campos['PreferenciasValor.predeterminado'] = array("name"=>"data[PreferenciasValor][0][predeterminado]", 'aclaracion' => "Especifica cual sera el valor por defecto para esta preferencia.");
+$fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array("class"=>"detail", 'legend' => "valor de la preferencia", 'imagen' => 'valores.gif')));
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Preferencias", 'imagen' => 'preferencias.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "Preferencias", 'imagen' => 'preferencias.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->element('add/add', array('fieldset' => $fieldset, "migaEdit" => $this->data[0]['Preferencia']['nombre']));
+echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => 'Preferencia.nombre'));
 
-$this->addScript($ajax->jsPredefinido(array("tipo"=>"detalle", "agregar"=>true, "quitar"=>true)));
+$this->addScript($ajax->jsPredefinido(array('tipo' => 'detalle', 'agregar' => true, 'quitar' => true)));
 ?>

@@ -35,7 +35,7 @@ $condiciones['Condicion.RelacionesConcepto-concepto_id'] = array(	"lov"=>array("
 																		"camposRetorno"	=>array("Concepto.codigo",
 																								"Concepto.nombre")));
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"concepto de la relacion laboral", 'imagen' => 'conceptos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "concepto de la relacion laboral", 'imagen' => 'conceptos.gif')));
 
 
 /**
@@ -44,11 +44,11 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("leg
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "RelacionesConcepto", 'field' => "id", 'valor' => $v['RelacionesConcepto']['id'], "write"=>$v['RelacionesConcepto']['write'], "delete"=>$v['RelacionesConcepto']['delete']);
-	$fila[] = array('model' => "Empleador", 'field' => "nombre", 'valor' => $v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
-	$fila[] = array('model' => "Trabajador", 'field' => "numero_documento", "class"=>"derecha", 'valor' => $v['Relacion']['Trabajador']['numero_documento'], "nombreEncabezado"=>"Documento");
-	$fila[] = array('model' => "Trabajador", 'field' => "apellido", 'valor' => $v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
-	$fila[] = array('model' => "Concepto", 'field' => "codigo", 'valor' => $v['Concepto']['codigo'], "nombreEncabezado"=>"Concepto");
+	$fila[] = array('model' => 'RelacionesConcepto', 'field' => 'id', 'valor' => $v['RelacionesConcepto']['id'], 'write' => $v['RelacionesConcepto']['write'], 'delete' => $v['RelacionesConcepto']['delete']);
+	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
+	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento", "class"=>"derecha', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], "nombreEncabezado"=>"Documento");
+	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
+	$fila[] = array('model' => 'Concepto', 'field' => 'codigo', 'valor' => $v['Concepto']['codigo'], "nombreEncabezado"=>"Concepto");
 	$cuerpo[] = $fila;
 }
 

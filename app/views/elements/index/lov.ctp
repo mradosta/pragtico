@@ -12,7 +12,7 @@ if(!empty($retornarA) && !empty($camposRetorno)) {
 	$seteos[] = $appForm->input("Formulario.separadorRetorno", array("type"=>"hidden", "id"=>"separadorRetorno", "value"=>$separadorRetorno));
 	$seteos[] = $appForm->input("Formulario.camposRetorno", array("type"=>"hidden", "id"=>"camposRetorno", "value"=>$camposRetorno));
 
-	echo $appForm->bloque($seteos, array("div"=>array("id"=>"botones", "class"=>"botones")));
+	echo $appForm->bloque($seteos, array('div' => array("id"=>"botones", "class"=>"botones")));
 }
 
 ?>

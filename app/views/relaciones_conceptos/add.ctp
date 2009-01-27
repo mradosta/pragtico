@@ -36,12 +36,12 @@ $campos['RelacionesConcepto.formula'] = array();
 $campos['RelacionesConcepto.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"concepto de la relacion laboral", 'imagen' => 'conceptos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "concepto de la relacion laboral", 'imagen' => 'conceptos.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
 $miga = array('format' 	=> '%s %s (%s)', 
 			  'content' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));
-echo $this->element('add/add', array('fieldset' => $fieldset, "miga" => $miga));
+echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => $miga));
 ?>

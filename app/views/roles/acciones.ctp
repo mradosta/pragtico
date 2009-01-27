@@ -23,10 +23,10 @@
 $cuerpo = null;
 foreach ($this->data['Accion'] as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "RolesAccion", 'field' => "id", 'valor' => $v['RolesAccion']['id'], "write"=>$v['RolesAccion']['write'], "delete"=>$v['RolesAccion']['delete']);
-	$fila[] = array('model' => "Controlador", 'field' => "etiqueta", 'valor' => $v['Controlador']['nombre'], "nombreEncabezado"=>"Controlador");
-	$fila[] = array('model' => "Accion", 'field' => "etiqueta", 'valor' => $v['etiqueta'], "nombreEncabezado"=>"Accion");
-	$fila[] = array('model' => "RolesAccion", 'field' => "estado", 'valor' => $v['RolesAccion']['estado']);
+	$fila[] = array('model' => 'RolesAccion', 'field' => 'id', 'valor' => $v['RolesAccion']['id'], 'write' => $v['RolesAccion']['write'], 'delete' => $v['RolesAccion']['delete']);
+	$fila[] = array('model' => 'Controlador', 'field' => 'etiqueta', 'valor' => $v['Controlador']['nombre'], "nombreEncabezado"=>"Controlador");
+	$fila[] = array('model' => 'Accion', 'field' => 'etiqueta', 'valor' => $v['etiqueta'], "nombreEncabezado"=>"Accion");
+	$fila[] = array('model' => 'RolesAccion', 'field' => 'estado', 'valor' => $v['RolesAccion']['estado']);
 	$cuerpo[] = $fila;
 }
 

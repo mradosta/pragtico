@@ -36,7 +36,7 @@ foreach($data as $k=>$v) {
 $campos['Form.tipo'] = array("value"=>"addRapido", "type"=>"hidden");
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Accion", 'imagen' => 'acciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "Accion", 'imagen' => 'acciones.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

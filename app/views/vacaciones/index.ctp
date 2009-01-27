@@ -34,7 +34,7 @@ $condiciones['Condicion.Vacacion-relacion_id'] = array(	"lov"=>array("controller
 $condiciones['Condicion.Vacacion-desde'] = array();
 $condiciones['Condicion.Vacacion-hasta'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Vacaciones", 'imagen' => 'vacaciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "Vacaciones", 'imagen' => 'vacaciones.gif')));
 
 
 /**
@@ -43,13 +43,13 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("leg
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "Vacacion", 'field' => "id", 'valor' => $v['Vacacion']['id'], "write"=>$v['Vacacion']['write'], "delete"=>$v['Vacacion']['delete']);
-	$fila[] = array('model' => "Empleador", 'field' => "nombre", 'valor' => $v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
-	$fila[] = array('model' => "Trabajador", 'field' => "numero_documento", 'valor' => $v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
-	$fila[] = array('model' => "Trabajador", 'field' => "apellido", 'valor' => $v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
-	$fila[] = array('model' => "Vacacion", 'field' => "desde", 'valor' => $v['Vacacion']['desde']);
-	$fila[] = array('model' => "Vacacion", 'field' => "hasta", 'valor' => $v['Vacacion']['hasta']);
-	$fila[] = array('model' => "Vacacion", 'field' => "observacion", 'valor' => $v['Vacacion']['observacion']);
+	$fila[] = array('model' => 'Vacacion', 'field' => 'id', 'valor' => $v['Vacacion']['id'], 'write' => $v['Vacacion']['write'], 'delete' => $v['Vacacion']['delete']);
+	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
+	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
+	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
+	$fila[] = array('model' => 'Vacacion', 'field' => 'desde', 'valor' => $v['Vacacion']['desde']);
+	$fila[] = array('model' => 'Vacacion', 'field' => 'hasta', 'valor' => $v['Vacacion']['hasta']);
+	$fila[] = array('model' => 'Vacacion', 'field' => 'observacion', 'valor' => $v['Vacacion']['observacion']);
 	$cuerpo[] = $fila;
 }
 

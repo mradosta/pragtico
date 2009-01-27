@@ -21,7 +21,7 @@
 */
 $condiciones['Condicion.Rol-nombre'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Roles", 'imagen' => 'roles.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "Roles", 'imagen' => 'roles.gif')));
 
 
 /**
@@ -30,12 +30,12 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("leg
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Rol']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'usuarios.gif', 'alt' => "Usuarios"), "url"=>'usuarios');
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Rol']['id'], 'update' => 'desglose2', 'imagen' => array('nombre' => 'menus.gif', 'alt' => "Menus"), "url"=>'menus');
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Rol']['id'], 'update' => 'desglose3', 'imagen' => array('nombre' => 'acciones.gif', 'alt' => "Acciones"), "url"=>'acciones');
-	$fila[] = array('model' => "Rol", 'field' => "id", 'valor' => $v['Rol']['id'], "write"=>$v['Rol']['write'], "delete"=>$v['Rol']['delete']);
-	$fila[] = array('model' => "Rol", 'field' => "nombre", 'valor' => $v['Rol']['nombre']);
-	$fila[] = array('model' => "Rol", 'field' => "estado", 'valor' => $v['Rol']['estado']);
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Rol']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'usuarios.gif', 'alt' => "Usuarios"), 'url' => 'usuarios');
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Rol']['id'], 'update' => 'desglose2', 'imagen' => array('nombre' => 'menus.gif', 'alt' => "Menus"), 'url' => 'menus');
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Rol']['id'], 'update' => 'desglose3', 'imagen' => array('nombre' => 'acciones.gif', 'alt' => "Acciones"), 'url' => 'acciones');
+	$fila[] = array('model' => 'Rol', 'field' => 'id', 'valor' => $v['Rol']['id'], 'write' => $v['Rol']['write'], 'delete' => $v['Rol']['delete']);
+	$fila[] = array('model' => 'Rol', 'field' => 'nombre', 'valor' => $v['Rol']['nombre']);
+	$fila[] = array('model' => 'Rol', 'field' => 'estado', 'valor' => $v['Rol']['estado']);
 	$cuerpo[] = $fila;
 }
 

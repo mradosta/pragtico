@@ -23,9 +23,9 @@
 $cuerpo = null;
 foreach ($this->data['GruposParametro'] as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "GruposParametro", 'field' => "id", 'valor' => $v['id'], "write"=>$v['write'], "delete"=>$v['delete']);
-	$fila[] = array('model' => "GruposParametro", 'field' => "nombre", 'valor' => $v['nombre']);
-	$fila[] = array('model' => "GruposParametro", 'field' => "valor", 'valor' => $v['valor']);
+	$fila[] = array('model' => 'GruposParametro', 'field' => 'id', 'valor' => $v['id'], 'write' => $v['write'], 'delete' => $v['delete']);
+	$fila[] = array('model' => 'GruposParametro', 'field' => 'nombre', 'valor' => $v['nombre']);
+	$fila[] = array('model' => 'GruposParametro', 'field' => 'valor', 'valor' => $v['valor']);
 	$cuerpo[] = $fila;
 }
 

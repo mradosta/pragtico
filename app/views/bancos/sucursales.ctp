@@ -23,10 +23,10 @@
 $cuerpo = null;
 foreach ($this->data['Sucursal'] as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "Sucursal", 'field' => "id", 'valor' => $v['id'], "write"=>$v['write'], "delete"=>$v['delete']);
-	$fila[] = array('model' => "Sucursal", 'field' => "codigo", 'valor' => $v['codigo']);
-	$fila[] = array('model' => "Sucursal", 'field' => "direccion", 'valor' => $v['direccion']);
-	$fila[] = array('model' => "Sucursal", 'field' => "telefono", 'valor' => $v['telefono']);
+	$fila[] = array('model' => 'Sucursal', 'field' => 'id', 'valor' => $v['id'], 'write' => $v['write'], 'delete' => $v['delete']);
+	$fila[] = array('model' => 'Sucursal', 'field' => 'codigo', 'valor' => $v['codigo']);
+	$fila[] = array('model' => 'Sucursal', 'field' => 'direccion', 'valor' => $v['direccion']);
+	$fila[] = array('model' => 'Sucursal', 'field' => 'telefono', 'valor' => $v['telefono']);
 	$cuerpo[] = $fila;
 }
 

@@ -21,7 +21,7 @@
 */
 $campos = null;
 $campos['RolesAccion.id'] = array();
-$campos['RolesAccion.rol_id'] = array("options"=>"listable", "model"=>"Rol", "displayField"=>array("Rol.nombre"), "empty"=>true);
+$campos['RolesAccion.rol_id'] = array('options' => 'listable', "model"=>"Rol", "displayField"=>array("Rol.nombre"), "empty"=>true);
 
 $campos['RolesAccion.accion_id'] = array(	"lov"=>array(	"controller"		=>	"acciones",
 														"seleccionMultiple"	=> 	0,
@@ -30,7 +30,7 @@ $campos['RolesAccion.accion_id'] = array(	"lov"=>array(	"controller"		=>	"accion
 $campos['RolesAccion.estado'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"relacion entre accion y rol", 'imagen' => 'acciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "relacion entre accion y rol", 'imagen' => 'acciones.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

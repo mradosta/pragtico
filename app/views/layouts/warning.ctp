@@ -20,9 +20,9 @@ $codigo_html = "";
 $mensaje = "<p class='session_titulo_warning'>" . $appForm->image('warnings.gif') . " " . $content_for_layout . "</p>";
 
 $mensaje .= "<p class='session_aceptar'>" . $appForm->link("Aceptar", "#", array("onclick"=>"return ocultarSessionFlash();", "class"=>"link_boton", "title"=>"Aceptar")) . "</p>";
-$mensaje .= $appForm->bloque("", array("div"=>array("class"=>"clear")));
+$mensaje .= $appForm->bloque("", array('div' => array("class"=>"clear")));
 $codigo_html .= $appForm->bloque($mensaje, array("caja_redondeada"=>true));
-$codigo_html = $appForm->bloque($codigo_html, array("div"=>array("id"=>"session_flash", "class"=>"session_flash", "style"=>"display:none;")));
+$codigo_html = $appForm->bloque($codigo_html, array('div' => array("id"=>"session_flash", "class"=>"session_flash", "style"=>"display:none;")));
 $codigo_html .= $javascript->codeBlock("centrarYMostrarSessionFlash();
 function centrarYMostrarSessionFlash(){
 

@@ -33,12 +33,12 @@ $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
 	$id = $v['Controlador']['id'];
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose1', 'imagen' => array('nombre' => 'acciones.gif', 'alt' => "Acciones"), "url"=>'acciones');
-	$fila[] = array('model' => "Controlador", 'field' => "id", "valor"=>$id, "write"=>$v['Controlador']['write'], "delete"=>$v['Controlador']['delete']);
-	$fila[] = array('model' => "Controlador", 'field' => "nombre", 'valor' => $v['Controlador']['nombre']);
-	$fila[] = array('model' => "Controlador", 'field' => "etiqueta", 'valor' => $v['Controlador']['etiqueta']);
-	$fila[] = array('model' => "Controlador", 'field' => "ayuda", 'valor' => $v['Controlador']['ayuda']);
-	$fila[] = array('model' => "Controlador", 'field' => "estado", 'valor' => $v['Controlador']['estado']);
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose1', 'imagen' => array('nombre' => 'acciones.gif', 'alt' => "Acciones"), 'url' => 'acciones');
+	$fila[] = array('model' => 'Controlador', 'field' => 'id", "valor"=>$id, 'write' => $v['Controlador']['write'], 'delete' => $v['Controlador']['delete']);
+	$fila[] = array('model' => 'Controlador', 'field' => 'nombre', 'valor' => $v['Controlador']['nombre']);
+	$fila[] = array('model' => 'Controlador', 'field' => 'etiqueta', 'valor' => $v['Controlador']['etiqueta']);
+	$fila[] = array('model' => 'Controlador', 'field' => 'ayuda', 'valor' => $v['Controlador']['ayuda']);
+	$fila[] = array('model' => 'Controlador', 'field' => 'estado', 'valor' => $v['Controlador']['estado']);
 	$cuerpo[] = $fila;
 }
 

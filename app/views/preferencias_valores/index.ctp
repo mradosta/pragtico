@@ -22,7 +22,7 @@
 $condiciones['Condicion.Preferencia-nombre'] = array("label"=>"Preferencia");
 $condiciones['Condicion.PreferenciasValor-valor'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"valores de la preferencia", 'imagen' => 'preferencias.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "valores de la preferencia", 'imagen' => 'preferencias.gif')));
 
 
 /**
@@ -31,9 +31,9 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"u
 $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "PreferenciasValor", 'field' => "id", 'valor' => $v['PreferenciasValor']['id'], "write"=>$v['PreferenciasValor']['write'], "delete"=>$v['PreferenciasValor']['delete']);
-	$fila[] = array('model' => "Preferencia", 'field' => "nombre", 'valor' => $v['Preferencia']['nombre']);
-	$fila[] = array('model' => "PreferenciasValor", 'field' => "valor", 'valor' => $v['PreferenciasValor']['valor']);
+	$fila[] = array('model' => 'PreferenciasValor', 'field' => 'id', 'valor' => $v['PreferenciasValor']['id'], 'write' => $v['PreferenciasValor']['write'], 'delete' => $v['PreferenciasValor']['delete']);
+	$fila[] = array('model' => 'Preferencia', 'field' => 'nombre', 'valor' => $v['Preferencia']['nombre']);
+	$fila[] = array('model' => 'PreferenciasValor', 'field' => 'valor', 'valor' => $v['PreferenciasValor']['valor']);
 	$cuerpo[] = $fila;
 }
 

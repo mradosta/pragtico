@@ -21,16 +21,16 @@
 */
 $campos = null;
 $campos['Localidad.id'] = array();
-$campos['Localidad.provincia_id'] = array("options"=>"listable", "model"=>"Provincia", "displayField"=>array("Provincia.nombre"));
+$campos['Localidad.provincia_id'] = array('options' => 'listable', "model"=>"Provincia", "displayField"=>array("Provincia.nombre"));
 $campos['Localidad.codigo'] = array();
 $campos['Localidad.nombre'] = array();
-$campos['Localidad.codigo_zona'] = array("aclaracion"=>"Indica el codigo de la zona para AFIP.");
+$campos['Localidad.codigo_zona'] = array('aclaracion' => "Indica el codigo de la zona para AFIP.");
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'localidades.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('imagen' => 'localidades.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->element('add/add', array('fieldset' => $fieldset, , "migaEdit" => $this->data[0]['Localidad']['nombre']));
+echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => 'Localidad.nombre'));
 ?>

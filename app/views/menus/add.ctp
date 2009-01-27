@@ -28,13 +28,13 @@ $campos['Menu.imagen'] = array();
 $campos['Menu.orden'] = array();
 $campos['Menu.controller'] = array();
 $campos['Menu.action'] = array();
-$campos['Menu.parent_id'] = array("options"=>"listable", "displayField"=>array("Menu.etiqueta"), "conditions"=>array("Menu.parent_id is null"), "order"=>array("Menu.nombre"), "empty"=>true, "label"=>"Padre");
+$campos['Menu.parent_id'] = array('options' => 'listable', "displayField"=>array("Menu.etiqueta"), "conditions"=>array("Menu.parent_id is null"), "order"=>array("Menu.nombre"), "empty"=>true, "label"=>"Padre");
 $campos['Menu.estado'] = array();
 $fieldsets[] = array('campos' => $campos);
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'menus.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('imagen' => 'menus.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->element('add/add', array('fieldset' => $fieldset, "migaEdit" => $this->data[0]['Menu']['nombre']));
+echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => 'Menu.nombre'));
 ?>

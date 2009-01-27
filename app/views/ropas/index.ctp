@@ -34,7 +34,7 @@ $condiciones['Condicion.Ropa-relacion_id'] = array(	"lov"=>array("controller"	=>
 
 $condiciones['Condicion.Ropa-fecha'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"ropa entregada a la relacion laboral", 'imagen' => 'ropas.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "ropa entregada a la relacion laboral", 'imagen' => 'ropas.gif')));
 
 
 /**
@@ -47,13 +47,13 @@ foreach ($registros as $k=>$v) {
 	//$accionImprimir = $appForm->link($appForm->image('print.gif', array("class"=>"accion", 'alt' => "Imprimir Orden de Ropa", "title"=>"Imprimir Orden de Ropa")), "imprimirOrden/" . $id, array("target"=>"_blank"));
 	//$fila[] = array("tipo"=>"accion", "valor"=>$accionImprimir);
 	$fila[] = array("tipo"=>"accion", "valor"=>$appForm->link($appForm->image('documentos.gif', array('alt' => "Generar Documento")), "../documentos/generar/model:Ropa/contain:" . str_replace("\"", "**", serialize(array("Relacion.Trabajador", "Relacion.Empleador", "RopasDetalle"))) . "/id:" . $id));
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose1', 'imagen' => array('nombre' => 'prendas.gif', 'alt' => "Prendas Entregadas"), "url"=>'prendas');
-	$fila[] = array('model' => "Ropa", 'field' => "id", 'valor' => $v['Ropa']['id'], "write"=>$v['Ropa']['write'], "delete"=>$v['Ropa']['delete']);
-	$fila[] = array('model' => "Empleador", 'field' => "nombre", 'valor' => $v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
-	$fila[] = array('model' => "Trabajador", 'field' => "numero_documento", "class"=>"derecha", 'valor' => $v['Relacion']['Trabajador']['numero_documento'], "nombreEncabezado"=>"Documento");
-	$fila[] = array('model' => "Trabajador", 'field' => "apellido", 'valor' => $v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
-	$fila[] = array('model' => "Ropa", 'field' => "fecha", 'valor' => $v['Ropa']['fecha']);
-	$fila[] = array('model' => "Ropa", 'field' => "observacion", 'valor' => $v['Ropa']['observacion']);
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose1', 'imagen' => array('nombre' => 'prendas.gif', 'alt' => "Prendas Entregadas"), 'url' => 'prendas');
+	$fila[] = array('model' => 'Ropa', 'field' => 'id', 'valor' => $v['Ropa']['id'], 'write' => $v['Ropa']['write'], 'delete' => $v['Ropa']['delete']);
+	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
+	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento", "class"=>"derecha', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], "nombreEncabezado"=>"Documento");
+	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
+	$fila[] = array('model' => 'Ropa', 'field' => 'fecha', 'valor' => $v['Ropa']['fecha']);
+	$fila[] = array('model' => 'Ropa', 'field' => 'observacion', 'valor' => $v['Ropa']['observacion']);
 	$cuerpo[] = $fila;
 }
 

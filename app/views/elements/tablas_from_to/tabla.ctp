@@ -22,7 +22,7 @@ $opcionesTabla =  array("tabla"=>
 
 $tabla = $appForm->tabla(am(array('cuerpo' => $cuerpo, "encabezado"=>$encabezados), $opcionesTabla));
 //echo $appForm->codeBlock("transformarTabla" . $tablaUbicacion . "();bindearTabla" . $tablaUbicacion . "()");
-echo $appForm->bloque($tabla, array("div"=>array("id"=>$divId)));
+echo $appForm->bloque($tabla, array('div' => array("id"=>$divId)));
 
 /**
 * Si me llega el argumento selectedId, asumo que viene desde un request ajax que hizo un autocomplete, entonces,

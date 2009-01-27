@@ -50,5 +50,5 @@ if(isset($acciones)) {
 	$codigoHtml .= $appForm->tag("span", $acciones, array("class"=>"acciones"));
 }
 $codigoHtml = $appForm->tag("div", $codigoHtml, array("class"=>"cabecera"));
-echo $appForm->tag("div", $codigoHtml . $appForm->tag("div", $appForm->tabla(array_merge(array('cuerpo' => $cuerpo), $opcionesTabla)), array("class"=>"tabla")), array("class"=>"unica"));
+echo $appForm->tag("div", $codigoHtml . $appForm->tag("div", $appForm->tabla(array_merge(array('cuerpo' => $cuerpo), $opcionesTabla)), array("class"=>"tabla")), array('class' => 'unica'));
 ?>

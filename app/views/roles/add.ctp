@@ -26,10 +26,10 @@ $campos['Rol.estado'] = array();
 $campos['Rol.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array("legend"=>"Rol", 'imagen' => 'roles.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "Rol", 'imagen' => 'roles.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->element('add/add', array('fieldset' => $fieldset, "migaEdit" => $this->data[0]['Rol']['nombre']));
+echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => 'Rol.nombre'));
 ?>

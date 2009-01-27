@@ -23,11 +23,11 @@
 $cuerpo = null;
 foreach ($this->data['Usuario'] as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "RolesUsuario", 'field' => "id", 'valor' => $v['RolesUsuario']['id'], "write"=>$v['RolesUsuario']['write'], "delete"=>$v['RolesUsuario']['delete']);
-	$fila[] = array('model' => "Usuario", 'field' => "nombre", 'valor' => $v['nombre']);
-	$fila[] = array('model' => "Usuario", 'field' => "nombre_completo", 'valor' => $v['nombre_completo']);
- 	$fila[] = array('model' => "Usuario", 'field' => "ultimo_ingreso", 'valor' => $v['ultimo_ingreso']);
- 	$fila[] = array('model' => "Usuario", 'field' => "estado", 'valor' => $v['estado']);
+	$fila[] = array('model' => 'RolesUsuario', 'field' => 'id', 'valor' => $v['RolesUsuario']['id'], 'write' => $v['RolesUsuario']['write'], 'delete' => $v['RolesUsuario']['delete']);
+	$fila[] = array('model' => 'Usuario', 'field' => 'nombre', 'valor' => $v['nombre']);
+	$fila[] = array('model' => 'Usuario', 'field' => 'nombre_completo', 'valor' => $v['nombre_completo']);
+ 	$fila[] = array('model' => 'Usuario', 'field' => 'ultimo_ingreso', 'valor' => $v['ultimo_ingreso']);
+ 	$fila[] = array('model' => 'Usuario', 'field' => 'estado', 'valor' => $v['estado']);
 	$cuerpo[] = $fila;
 }
 

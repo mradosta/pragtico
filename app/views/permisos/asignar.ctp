@@ -16,13 +16,13 @@
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
  
-$condiciones['Permisos.usuario_id'] = array("options"=>"listable", "empty"=>true, "model"=>"Usuario", "displayField"=>array("Usuario.nombre"), "order"=>array("Usuario.nombre"), "empty"=>true);
+$condiciones['Permisos.usuario_id'] = array('options' => 'listable', "empty"=>true, "model"=>"Usuario", "displayField"=>array("Usuario.nombre"), "order"=>array("Usuario.nombre"), "empty"=>true);
 $condiciones['Permisos.model_id'] = array("label"=>"Modelo", "options"=>$models);
-$condiciones['Permisos.grupo_id'] = array('type' => 'select', 'multiple' => 'checkbox', "options"=>"listable", "model"=>"Grupo", "displayField"=>array("Grupo.nombre"), "order"=>array("Grupo.nombre"));
-$condiciones['Permisos.rol_id'] = array('type' => 'select', 'multiple' => 'checkbox', "options"=>"listable", "model"=>"Rol", "displayField"=>array("Rol.nombre"), "order"=>array("Rol.nombre"));
+$condiciones['Permisos.grupo_id'] = array('type' => 'select', 'multiple' => 'checkbox', 'options' => 'listable', "model"=>"Grupo", "displayField"=>array("Grupo.nombre"), "order"=>array("Grupo.nombre"));
+$condiciones['Permisos.rol_id'] = array('type' => 'select', 'multiple' => 'checkbox', 'options' => 'listable', "model"=>"Rol", "displayField"=>array("Rol.nombre"), "order"=>array("Rol.nombre"));
 
 $fieldsets[] = array('campos' => $condiciones);
-$condiciones = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array("legend"=>"Cambiar permisos", 'imagen' => 'permisos.gif')));
+$condiciones = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "Cambiar permisos", 'imagen' => 'permisos.gif')));
 
 if(empty($accion)) {
 	$bloque_confirmacion = "";
@@ -49,42 +49,42 @@ $botones = $this->renderElement("index/buscadores", array("botonesExtra"=>$boton
 * Creo la tabla.
 */
 $fila = null;
-$valor = $appForm->input("yy.xx", array("id"=>"dueno", "type"=>"checkbox", "class"=>"checkbox", "label"=>false, "div"=>false));
+$valor = $appForm->input("yy.xx", array("id"=>"dueno", "type"=>"checkbox", "class"=>"checkbox", "label"=>false, 'div' => false));
 $fila[] = array("valor"=>$valor . " Dueño", "class"=>"imitar_th_centro");
-$link = $appForm->input("Permisos.dl", array("type"=>"checkbox", "label"=>false, "div"=>false, "class"=>"checkbox"));
+$link = $appForm->input("Permisos.dl", array("type"=>"checkbox", "label"=>false, 'div' => false, "class"=>"checkbox"));
 $fila[] = array("valor"=>$link, "class"=>"centro");
-$link = $appForm->input("Permisos.de", array("type"=>"checkbox", "label"=>false, "div"=>false, "class"=>"checkbox"));
+$link = $appForm->input("Permisos.de", array("type"=>"checkbox", "label"=>false, 'div' => false, "class"=>"checkbox"));
 $fila[] = array("valor"=>$link, "class"=>"centro");
-$link = $appForm->input("Permisos.dd", array("type"=>"checkbox", "label"=>false, "div"=>false, "class"=>"checkbox"));
+$link = $appForm->input("Permisos.dd", array("type"=>"checkbox", "label"=>false, 'div' => false, "class"=>"checkbox"));
 $fila[] = array("valor"=>$link, "class"=>"centro");
 $cuerpo[] = $fila;
 
 $fila = null;
-$valor = $appForm->input("yy.yy", array("id"=>"grupo", "type"=>"checkbox", "class"=>"checkbox", "label"=>false, "div"=>false));
+$valor = $appForm->input("yy.yy", array("id"=>"grupo", "type"=>"checkbox", "class"=>"checkbox", "label"=>false, 'div' => false));
 $fila[] = array("valor"=>$valor . " Grupo", "class"=>"imitar_th_centro");
-$link = $appForm->input("Permisos.gl", array("type"=>"checkbox", "label"=>false, "div"=>false, "class"=>"checkbox"));
+$link = $appForm->input("Permisos.gl", array("type"=>"checkbox", "label"=>false, 'div' => false, "class"=>"checkbox"));
 $fila[] = array("valor"=>$link, "class"=>"centro");
-$link = $appForm->input("Permisos.ge", array("type"=>"checkbox", "label"=>false, "div"=>false, "class"=>"checkbox"));
+$link = $appForm->input("Permisos.ge", array("type"=>"checkbox", "label"=>false, 'div' => false, "class"=>"checkbox"));
 $fila[] = array("valor"=>$link, "class"=>"centro");
-$link = $appForm->input("Permisos.gd", array("type"=>"checkbox", "label"=>false, "div"=>false, "class"=>"checkbox"));
+$link = $appForm->input("Permisos.gd", array("type"=>"checkbox", "label"=>false, 'div' => false, "class"=>"checkbox"));
 $fila[] = array("valor"=>$link, "class"=>"centro");
 $cuerpo[] = $fila;
 
 $fila = null;
-$valor = $appForm->input("yy.zz", array("id"=>"otros", "type"=>"checkbox", "class"=>"checkbox", "label"=>false, "div"=>false));
+$valor = $appForm->input("yy.zz", array("id"=>"otros", "type"=>"checkbox", "class"=>"checkbox", "label"=>false, 'div' => false));
 $fila[] = array("valor"=>$valor . " Otros", "class"=>"imitar_th_centro");
-$link = $appForm->input("Permisos.ol", array("type"=>"checkbox", "label"=>false, "div"=>false, "class"=>"checkbox"));
+$link = $appForm->input("Permisos.ol", array("type"=>"checkbox", "label"=>false, 'div' => false, "class"=>"checkbox"));
 $fila[] = array("valor"=>$link, "class"=>"centro");
-$link = $appForm->input("Permisos.oe", array("type"=>"checkbox", "label"=>false, "div"=>false, "class"=>"checkbox"));
+$link = $appForm->input("Permisos.oe", array("type"=>"checkbox", "label"=>false, 'div' => false, "class"=>"checkbox"));
 $fila[] = array("valor"=>$link, "class"=>"centro");
-$link = $appForm->input("Permisos.od", array("type"=>"checkbox", "label"=>false, "div"=>false, "class"=>"checkbox"));
+$link = $appForm->input("Permisos.od", array("type"=>"checkbox", "label"=>false, 'div' => false, "class"=>"checkbox"));
 $fila[] = array("valor"=>$link, "class"=>"centro");
 $cuerpo[] = $fila;
 
-$encabezado[] = $appForm->input("xx.vv", array("id"=>"todos", "type"=>"checkbox", "class"=>"checkbox", "label"=>false, "div"=>false));
-$encabezado[] = $appForm->input("xx.xx", array("id"=>"leer", "type"=>"checkbox", "class"=>"checkbox", "label"=>false, "div"=>false)) . " Leer";
-$encabezado[] = $appForm->input("xx.yy", array("id"=>"escribir", "type"=>"checkbox", "class"=>"checkbox", "label"=>false, "div"=>false)) . " Escribir";
-$encabezado[] = $appForm->input("xx.zz", array("id"=>"eliminar", "type"=>"checkbox", "class"=>"checkbox", "label"=>false, "div"=>false)) . " Eliminar";
+$encabezado[] = $appForm->input("xx.vv", array("id"=>"todos", "type"=>"checkbox", "class"=>"checkbox", "label"=>false, 'div' => false));
+$encabezado[] = $appForm->input("xx.xx", array("id"=>"leer", "type"=>"checkbox", "class"=>"checkbox", "label"=>false, 'div' => false)) . " Leer";
+$encabezado[] = $appForm->input("xx.yy", array("id"=>"escribir", "type"=>"checkbox", "class"=>"checkbox", "label"=>false, 'div' => false)) . " Escribir";
+$encabezado[] = $appForm->input("xx.zz", array("id"=>"eliminar", "type"=>"checkbox", "class"=>"checkbox", "label"=>false, 'div' => false)) . " Eliminar";
 
 $opcionesTabla =  array("tabla"=>
 							array(	"eliminar"			=>false,
@@ -100,7 +100,7 @@ $opcionesTabla =  array("tabla"=>
 
 $tabla = $appForm->tag("div", $appForm->tabla(am(array('cuerpo' => $cuerpo, "encabezado"=>$encabezado), $opcionesTabla)), array("class"=>"tabla", "style"=>"margin-left:13px;"));
 
-$bloques[] = $appForm->tag("div", am($condiciones, $tabla, $bloque_confirmacion, $botones), array("class"=>"unica"));
+$bloques[] = $appForm->tag("div", am($condiciones, $tabla, $bloque_confirmacion, $botones), array('class' => 'unica'));
 
 
 

@@ -25,13 +25,13 @@ $condiciones['Condicion.Liquidacion-periodo'] = array("type"=>"periodo");
 $condiciones['Resumen.tipo'] = array("type"=>"radio", "options"=>$tipos);
 
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'buscar.gif', "legend"=>"Resumen")));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('imagen' => 'buscar.gif', 'legend' => "Resumen")));
 
 
 $botonesExtra = $appForm->submit("Generar", array("title"=>"Imprime el Resumen de Facturacion"));
 $accionesExtra['opciones'] = array("acciones"=>array());
 $opcionesTabla =  array("tabla"=>array(	"omitirMensajeVacio"=>true));
 
-echo $this->element('index/index', array("opcionesForm"=>array("action"=>"resumen"), "opcionesTabla"=>$opcionesTabla, "accionesExtra"=>$accionesExtra, "botonesExtra"=>array("opciones"=>array("botones"=>array("limpiar", $botonesExtra))), "condiciones"=>$fieldset));
+echo $this->element('index/index', array("opcionesForm"=>array("action"=>"resumen"), "opcionesTabla"=>$opcionesTabla, "accionesExtra"=>$accionesExtra, "botonesExtra"=>array('opciones' => array("botones"=>array("limpiar", $botonesExtra))), "condiciones"=>$fieldset));
 
 ?>

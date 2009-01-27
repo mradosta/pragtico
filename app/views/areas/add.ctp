@@ -33,10 +33,10 @@ $campos['Area.telefono'] = array();
 $campos['Area.fax'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'areas.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('imagen' => 'areas.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->element('add/add', array('fieldset' => $fieldset, "migaEdit" => $this->data[0]['Area']['nombre']));
+echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => 'Area.nombre'));
 ?>

@@ -112,5 +112,5 @@ $form = $appForm->form($bloques, $opcionesForm);
 /**
 * Pongo todo dentro de un div (add) y muestro el resultado.
 */
-echo $appForm->bloque($form, array("div"=>array("class"=>"add")));
+echo $appForm->bloque($form, array('div' => array("class"=>"add")));
 ?>

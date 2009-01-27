@@ -21,14 +21,14 @@
 */
 $campos = null;
 $campos['Informacion.id'] = array();
-$campos['Informacion.nombre'] = array("aclaracion"=>"Recurde que el nombre especifique aca, sera el que use como una variable en las formulas de conceptos.");
+$campos['Informacion.nombre'] = array('aclaracion' => "Recurde que el nombre especifique aca, sera el que use como una variable en las formulas de conceptos.");
 $campos['Informacion.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'informaciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('imagen' => 'informaciones.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->element('add/add', array('fieldset' => $fieldset, "migaEdit" => $this->data[0]['Informacion']['nombre']));
+echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => 'Informacion.nombre'));
 ?>

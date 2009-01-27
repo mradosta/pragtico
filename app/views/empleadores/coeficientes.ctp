@@ -23,10 +23,10 @@
 $cuerpo = null;
 foreach ($this->data['Coeficiente'] as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "EmpleadoresCoeficiente", 'field' => "id", 'valor' => $v['EmpleadoresCoeficiente']['id'], "write"=>$v['EmpleadoresCoeficiente']['write'], "delete"=>$v['EmpleadoresCoeficiente']['delete']);
-	$fila[] = array('model' => "EmpleadoresCoeficiente", 'field' => "nombre", 'valor' => $v['nombre']);
-	$fila[] = array('model' => "EmpleadoresCoeficiente", 'field' => "tipo", 'valor' => $v['tipo']);
-	$fila[] = array('model' => "EmpleadoresCoeficiente", 'field' => "valor", 'valor' => $v['EmpleadoresCoeficiente']['valor']);
+	$fila[] = array('model' => 'EmpleadoresCoeficiente', 'field' => 'id', 'valor' => $v['EmpleadoresCoeficiente']['id'], 'write' => $v['EmpleadoresCoeficiente']['write'], 'delete' => $v['EmpleadoresCoeficiente']['delete']);
+	$fila[] = array('model' => 'EmpleadoresCoeficiente', 'field' => 'nombre', 'valor' => $v['nombre']);
+	$fila[] = array('model' => 'EmpleadoresCoeficiente', 'field' => 'tipo', 'valor' => $v['tipo']);
+	$fila[] = array('model' => 'EmpleadoresCoeficiente', 'field' => 'valor', 'valor' => $v['EmpleadoresCoeficiente']['valor']);
 	$cuerpo[] = $fila;
 }
 

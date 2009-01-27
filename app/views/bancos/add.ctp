@@ -32,9 +32,9 @@ $campos['Sucursal.codigo'] = array();
 $campos['Sucursal.direccion'] = array();
 $campos['Sucursal.telefono'] = array();
 $campos['Sucursal.observacion'] = array();
-$fieldsets[] = array('campos' => $campos, "opciones"=>array('fieldset' => array("class"=>"detail", "legend"=>"Sucursal", 'imagen' => 'sucursales.gif')));
+$fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array("class"=>"detail", 'legend' => "Sucursal", 'imagen' => 'sucursales.gif')));
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'bancos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('imagen' => 'bancos.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
@@ -42,6 +42,6 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"u
 $miga = array('format' 	=> '(%s) %s', 
 			  'content' => array('Banco.codigo', 'Banco.nombre'));
 
-echo $this->element('add/add', array('fieldset' => $fieldset, "miga" => $miga));
-$this->addScript($ajax->jsPredefinido(array("tipo"=>"detalle", "agregar"=>true, "quitar"=>true)));
+echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => $miga));
+$this->addScript($ajax->jsPredefinido(array('tipo' => 'detalle', 'agregar' => true, 'quitar' => true)));
 ?>

@@ -24,11 +24,11 @@ $campos['Provincia.id'] = array();
 $campos['Provincia.nombre'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array("div"=>array("class"=>"unica"), "fieldset"=>array('imagen' => 'provincias.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('imagen' => 'provincias.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
 $miga = 'Provincia.nombre';
-echo $this->element('add/add', array('fieldset' => $fieldset, "miga" => $miga));
+echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => $miga));
 ?>

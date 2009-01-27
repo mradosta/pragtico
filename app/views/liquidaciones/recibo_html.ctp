@@ -141,7 +141,7 @@ $tabla = $appForm->tabla(am(array('cuerpo' => $cuerpo), $opcionesTabla));
 /**
 * Pongo todo dentro de un div (index) y muestro el resultado.
 */
-echo $appForm->bloque($appForm->bloque($tabla), array("div"=>array("id"=>"liq", "class"=>"index")));
+echo $appForm->bloque($appForm->bloque($tabla), array('div' => array("id"=>"liq", "class"=>"index")));
 
 $url = Router::url("/");
 echo $appForm->codeBlock('

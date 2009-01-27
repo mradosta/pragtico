@@ -33,7 +33,7 @@ if(isset($accionesExtra['opciones']['acciones'])) {
 }
 else {
 	if($this->params['action'] === "add") {
-		$acciones[] = $appForm->tag("div", $appForm->input("Form.volverAInsertar", array("div"=>false, "label"=>"Insertar un nuevo registro despues de grabar", "type"=>"checkbox", "checked"=>"false")), array("class"=>"volver_a_insertar"));
+		$acciones[] = $appForm->tag("div", $appForm->input("Form.volverAInsertar", array('div' => false, "label"=>"Insertar un nuevo registro despues de grabar", "type"=>"checkbox", "checked"=>"false")), array("class"=>"volver_a_insertar"));
 	}
 	$acciones[] = $cancelar;
 	if($this->params['action'] === "edit" && count($this->data) === 1) {
@@ -66,7 +66,7 @@ if($this->params['action'] == "add" && empty($variablesForm['isAjax'])) {
 	if(!empty($this->params['pass'])) {
 		$params[] = $appForm->input("Form.params", array("type"=>"hidden", "value"=>serialize($this->params['pass'])));
 	}
-	$params[] = $appForm->input("Form.volverAInsertar", array("div"=>false, "label"=>"Insertar un nuevo registro despues de grabar", "type"=>"checkbox", "checked"=>"false"));
+	$params[] = $appForm->input("Form.volverAInsertar", array('div' => false, "label"=>"Insertar un nuevo registro despues de grabar", "type"=>"checkbox", "checked"=>"false"));
 }
 echo $appForm->tag("div", $botones, array("class"=>"botones"));
 if(!empty($params)) {

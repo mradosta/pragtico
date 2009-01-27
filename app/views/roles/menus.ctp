@@ -23,12 +23,12 @@
 $cuerpo = null;
 foreach ($this->data['Menu'] as $k=>$v) {
 	$fila = null;
-	$fila[] = array('model' => "RolesMenu", 'field' => "id", 'valor' => $v['RolesMenu']['id'], "write"=>$v['RolesMenu']['write'], "delete"=>$v['RolesMenu']['delete']);
-	$fila[] = array('model' => "Menu", 'field' => "etiqueta", 'valor' => $v['etiqueta']);
-	$fila[] = array('model' => "Menu", 'field' => "orden", 'valor' => $v['orden']);
-	$fila[] = array('model' => "RolesMenu", 'field' => "estado", 'valor' => $v['RolesMenu']['estado']);
- 	$fila[] = array('model' => "Menu", 'field' => "controller", 'valor' => $v['controller']);
- 	$fila[] = array('model' => "Menu", 'field' => "action", 'valor' => $v['action']);
+	$fila[] = array('model' => 'RolesMenu', 'field' => 'id', 'valor' => $v['RolesMenu']['id'], 'write' => $v['RolesMenu']['write'], 'delete' => $v['RolesMenu']['delete']);
+	$fila[] = array('model' => 'Menu', 'field' => 'etiqueta', 'valor' => $v['etiqueta']);
+	$fila[] = array('model' => 'Menu', 'field' => 'orden', 'valor' => $v['orden']);
+	$fila[] = array('model' => 'RolesMenu', 'field' => 'estado', 'valor' => $v['RolesMenu']['estado']);
+ 	$fila[] = array('model' => 'Menu', 'field' => 'controller', 'valor' => $v['controller']);
+ 	$fila[] = array('model' => 'Menu', 'field' => 'action', 'valor' => $v['action']);
 	$cuerpo[] = $fila;
 }
 
