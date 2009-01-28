@@ -280,7 +280,7 @@ class Pago extends AppModel {
 								
 								$rd = null;												
 								$rd[] = 'D';
-								$rd[] = str_pad($cuenta['Cuenta']['identificador'], 5, '0', STR_PAD_LEFT); //Numero de empresa (convenio)
+								$rd[] = str_pad($cuenta['Cuenta']['convenio'], 5, '0', STR_PAD_LEFT); //Numero de empresa (convenio)
 								$rd[] = $tipoCuentaTrabajador; //tipo de cuenta
 								$rd[] = str_pad(substr($pago['Relacion']['Trabajador']['cbu'], 13, 6), 6, '0', STR_PAD_LEFT); //folio (cuenta)
 								$rd[] = substr($pago['Relacion']['Trabajador']['cbu'], 19, 1); //1 digito
@@ -337,7 +337,7 @@ class Pago extends AppModel {
 									$tipoCuentaEmpleador = '9';
 								}
 								$rh[] = 'H';
-								$rh[] = str_pad($cuenta['Cuenta']['identificador'], 5, '0', STR_PAD_LEFT); //Numero de empresa
+								$rh[] = str_pad($cuenta['Cuenta']['convenio'], 5, '0', STR_PAD_LEFT); //Numero de empresa
 								$rh[] = $tipoCuentaEmpleador; //tipo de cuenta
 								$rd[] = str_pad(substr($cuenta['Cuenta']['cbu'], 13, 6), 6, '0', STR_PAD_LEFT); //folio (cuenta)
 								$rd[] = substr($cuenta['Cuenta']['cbu'], 19, 1); //1 digito
@@ -348,7 +348,7 @@ class Pago extends AppModel {
 								$rh[] = str_pad('', 25, ' ', STR_PAD_RIGHT); //libre
 								$rhs = implode('', $rh);                         
 								$rf[] = 'F';
-								$rf[] = str_pad($cuenta['Cuenta']['identificador'], 5, '0', STR_PAD_LEFT); //Numero de empresa
+								$rf[] = str_pad($cuenta['Cuenta']['convenio'], 5, '0', STR_PAD_LEFT); //Numero de empresa
 								$rf[] = str_pad(count($rds), 7, '0', STR_PAD_LEFT); //cantidad registros
 								$rf[] = str_pad('', 52, ' ', STR_PAD_RIGHT); //libre
 								$rfs = implode('', $rf);

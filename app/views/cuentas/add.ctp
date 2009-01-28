@@ -33,9 +33,8 @@ $campos['Cuenta.sucursal_id'] 	= array("label"=>"Banco",
 
 
 $campos['Cuenta.tipo'] = array();
-$campos['Cuenta.numero'] = array();
 $campos['Cuenta.cbu'] = array();
-$campos['Cuenta.identificador'] = array();
+$campos['Cuenta.convenio'] = array();
 $fieldsets[] = array('campos' => $campos);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "cuenta del empleador", 'imagen' => 'cuentas.gif')));
 
