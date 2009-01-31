@@ -16,7 +16,7 @@
  * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 
- require_once(APP . "app_controller.php");
+ require_once(APP . 'app_controller.php');
  
 /**
  * La clase para un para un controlador de prueba generico (fake).
@@ -26,6 +26,21 @@
  */
 class FakeTestController extends AppController {
 
-
+/**
+ * name property
+ *
+ * @var string $name
+ * @access public
+ */
+	var $name = 'FakeTestController';
+	
+/**
+ * uses property
+ *
+ * @var mixed null
+ * @access public
+ */
+	//var $uses = null;
+	
 }
 ?>

@@ -15,10 +15,21 @@
  * @lastmodified    $Date: 2008-10-23 23:14:28 -0300 (Thu, 23 Oct 2008) $
  * @author          Martin Radosta <mradosta@pragmatia.com>
  */
+ 
+ require_once(APP . 'app_model.php');
+ 
+class FakeModel extends AppModel {
+	
+	var $name = 'FakeTestModel';
+	var $useTable = 'fakes';
+	var $useDbConfig = 'test';
+} 
+
+
 /**
  * La clase para un para un caso de prueba generico (fake).
  *
- * @package app.tests
+ * @package app.tests.models
  * @subpackage app.tests.models
  */
 class FakeTest extends CakeTestModel {
@@ -39,6 +50,12 @@ class FakeTest extends CakeTestModel {
  * @access public
  */
 	var $useTable = 'fake_test_fixtures';
+	
+	
+	
+	function startTest() {
+		$this->FakeTest = new FakeTest(); 
+	}
 
 }
 ?>

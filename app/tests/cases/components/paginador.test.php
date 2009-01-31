@@ -19,8 +19,8 @@
 
 App::import('Component', array('Paginador', 'Session', 'Util'));
 
-require_once(APP . "tests" . DS . "cases" . DS . "controllers" . DS . "fake_test_controller.test.php");
-require_once(APP . "tests" . DS . "cases" . DS . "models" . DS . "fake.test.php");
+require_once(APP . 'tests' . DS . 'cases' . DS . 'controllers' . DS . 'fake_test_controller.test.php');
+require_once(APP . 'tests' . DS . 'cases' . DS . 'models' . DS . 'fake.test.php');
 
 
 /**
@@ -66,14 +66,16 @@ class PaginadorComponentTestCase extends CakeTestCase {
     function startTest() {
     	$this->PaginadorComponentTest =& new PaginadorComponent();
     	$this->PaginadorComponentTest->Util = new UtilComponent();
-    	$this->controller = new FakeTestController();
-    	$this->controller->FakeTest = new FakeTest();
-    	$this->controller->Session = &new SessionComponent();
+    	$this->FakeController = new FakeTestController();
+    	$this->FakeController->FakeTestModel = new FakeModel();
+    	$this->FakeController->Session = new SessionComponent();
 
     	/**
     	* Me aseguro que no existan datos en la session.
     	*/
-    	$this->controller->Session->destroy();
+    	$this->FakeController->Session->destroy();
+		
+    	$this->PaginadorComponentTest->startup($this->FakeController);
     }
 
 
@@ -83,46 +85,45 @@ class PaginadorComponentTestCase extends CakeTestCase {
  * @access public
  */
     function testGenerarCondicion() {
-    	$this->controller->data['Condicion']['FakeTest-id'] = "1";
-    	$this->controller->data['Condicion']['FakeTest-campo_string'] = "texto string";
-    	$this->controller->data['Condicion']['FakeTest-campo_text'] = "texto text";
-    	$this->controller->data['Condicion']['FakeTest-campo_integer'] = "145";
-    	$this->controller->data['Condicion']['FakeTest-campo_decimal'] = "145.456";
-    	$this->controller->data['Condicion']['FakeTest-campo_fecha'] = "21/10/2008";
-    	$this->controller->data['Condicion']['FakeTest-campo_fechahora'] = "22/10/2008 18:45:43";
-    	$this->controller->action = "index";
+    	$this->FakeController->data['Condicion']['FakeTestModel-id'] = '1';
+    	$this->FakeController->data['Condicion']['FakeTestModel-string_field'] = 'texto string';
+    	$this->FakeController->data['Condicion']['FakeTestModel-test_field'] = 'texto text';
+    	$this->FakeController->data['Condicion']['FakeTestModel-integer_field'] = '145';
+    	$this->FakeController->data['Condicion']['FakeTestModel-decimal_field'] = '145.456';
+    	$this->FakeController->data['Condicion']['FakeTestModel-date_field'] = '21/10/2008';
+    	$this->FakeController->data['Condicion']['FakeTestModel-date_time_field'] = '22/10/2008 18:45:43';
+    	$this->FakeController->action = 'index';
     	
-    	$this->PaginadorComponentTest->startup(&$this->controller);
 		$expected = array(
-			"FakeTest.id" 						=> "1",
-			"FakeTest.campo_string like" 		=> "%texto string%",
-			"FakeTest.campo_text like" 			=> "%texto text%",
-			"FakeTest.campo_integer" 			=> "145",
-			"FakeTest.campo_decimal" 			=> "145.456",
-			"FakeTest.campo_fecha" 				=> "2008-10-21",
-			"FakeTest.campo_fechahora" 			=> "2008-10-22 18:45:43"
+			'FakeTestModel.id' 						=> '1',
+			'FakeTestModel.string_field like' 		=> '%texto string%',
+			'FakeTestModel.test_field like' 		=> '%texto text%',
+			'FakeTestModel.integer_field' 			=> '145',
+			'FakeTestModel.decimal_field' 			=> '145.456',
+			'FakeTestModel.date_field' 				=> '2008-10-21',
+			'FakeTestModel.date_time_field' 		=> '2008-10-22 18:45:43'
 		);
 		
 		$result = $this->PaginadorComponentTest->generarCondicion();
 		$this->assertEqual($result, $expected);
 
 
-		$result = $this->controller->Session->read("filtros." . $this->controller->name . "." . $this->controller->action);
-		$expected = array("condiciones" => $expected, "valoresLov" => array());
+		$result = $this->FakeController->Session->read('filtros.' . $this->FakeController->name . '.' . $this->FakeController->action);
+		$expected = array('condiciones' => $expected, 'valoresLov' => array());
 		$this->assertEqual($result, $expected);
 
 
 		$expected = array(
-			"FakeTest-id" 						=> "1",
-			"FakeTest-campo_string" 			=> "texto string",
-			"FakeTest-campo_text" 				=> "texto text",
-			"FakeTest-campo_integer" 			=> "145",
-			"FakeTest-campo_decimal" 			=> "145.456",
-			"FakeTest-campo_fecha" 				=> "21/10/2008",
-			"FakeTest-campo_fechahora" 			=> "22/10/2008 18:45:43"
+			'FakeTestModel-id' 						=> '1',
+			'FakeTestModel-string_field' 			=> 'texto string',
+			'FakeTestModel-test_field' 				=> 'texto text',
+			'FakeTestModel-integer_field' 			=> '145',
+			'FakeTestModel-decimal_field' 			=> '145.456',
+			'FakeTestModel-date_field' 				=> '21/10/2008',
+			'FakeTestModel-date_time_field' 		=> '22/10/2008 18:45:43'
 		);
-		$result = $this->controller->data;
-		$this->assertEqual($result, array("Condicion"=>$expected));
+		$result = $this->FakeController->data;
+		$this->assertEqual($result, array('Condicion'=>$expected));
 	}
 	
 
@@ -132,34 +133,33 @@ class PaginadorComponentTestCase extends CakeTestCase {
  * @access public
  */
     function testGenerarCondicionRangoFecha() {
-    	$this->controller->data['Condicion']['FakeTest-id'] = "1";
-    	$this->controller->data['Condicion']['FakeTest-campo_fecha__desde'] = "21/10/2008";
-    	$this->controller->data['Condicion']['FakeTest-campo_fecha__hasta'] = "25/10/2008";
-    	$this->controller->action = "index";
+    	$this->FakeController->data['Condicion']['FakeTestModel-id'] = '1';
+    	$this->FakeController->data['Condicion']['FakeTestModel-date_field__desde'] = '21/10/2008';
+    	$this->FakeController->data['Condicion']['FakeTestModel-date_field__hasta'] = '25/10/2008';
+    	$this->FakeController->action = 'index';
     	
-    	$this->PaginadorComponentTest->startup(&$this->controller);
 		$expected = array(
-			"FakeTest.id" 						=> "1",
-			"FakeTest.campo_fecha >=" 			=> "2008-10-21",
-			"FakeTest.campo_fecha <=" 			=> "2008-10-25"
+			'FakeTestModel.id' 						=> '1',
+			'FakeTestModel.date_field >=' 			=> '2008-10-21',
+			'FakeTestModel.date_field <=' 			=> '2008-10-25'
 		);
 		
 		$result = $this->PaginadorComponentTest->generarCondicion();
 		$this->assertEqual($result, $expected);
 
 		
-		$result = $this->controller->Session->read("filtros." . $this->controller->name . "." . $this->controller->action);
-		$expected = array("condiciones" => $expected, "valoresLov" => array());
+		$result = $this->FakeController->Session->read('filtros.' . $this->FakeController->name . '.' . $this->FakeController->action);
+		$expected = array('condiciones' => $expected, 'valoresLov' => array());
 		$this->assertEqual($result, $expected);
 
 		
 		$expected = array(
-			"FakeTest-id" 								=> "1",
-			"FakeTest-campo_fecha__desde" 			=> "21/10/2008",
-			"FakeTest-campo_fecha__hasta" 			=> "25/10/2008"
+			'FakeTestModel-id' 								=> '1',
+			'FakeTestModel-date_field__desde' 			=> '21/10/2008',
+			'FakeTestModel-date_field__hasta' 			=> '25/10/2008'
 		);
-		$result = $this->controller->data;
-		$this->assertEqual($result, array("Condicion"=>$expected));
+		$result = $this->FakeController->data;
+		$this->assertEqual($result, array('Condicion'=>$expected));
 	}
 
 
@@ -169,30 +169,29 @@ class PaginadorComponentTestCase extends CakeTestCase {
  * @access public
  */
     function testGenerarCondicionRangoFechaHora() {
-    	$this->controller->data['Condicion']['FakeTest-campo_fechahora__desde'] = "21/10/2008 22:34:56";
-    	$this->controller->data['Condicion']['FakeTest-campo_fechahora__hasta'] = "25/10/2008 12:34:56";
-    	$this->controller->action = "index";
+    	$this->FakeController->data['Condicion']['FakeTestModel-date_time_field__desde'] = '21/10/2008 22:34:56';
+    	$this->FakeController->data['Condicion']['FakeTestModel-date_time_field__hasta'] = '25/10/2008 12:34:56';
+    	$this->FakeController->action = 'index';
     	
-    	$this->PaginadorComponentTest->startup(&$this->controller);
 		$expected = array(
-			"FakeTest.campo_fechahora >=" 			=> "2008-10-21 22:34:56",
-			"FakeTest.campo_fechahora <=" 			=> "2008-10-25 12:34:56"
+			'FakeTestModel.date_time_field >=' 			=> '2008-10-21 22:34:56',
+			'FakeTestModel.date_time_field <=' 			=> '2008-10-25 12:34:56'
 		);
 		
 		$result = $this->PaginadorComponentTest->generarCondicion();
 		$this->assertEqual($result, $expected);
 
 
-		$result = $this->controller->Session->read("filtros." . $this->controller->name . "." . $this->controller->action);
-		$expected = array("condiciones" => $expected, "valoresLov" => array());
+		$result = $this->FakeController->Session->read('filtros.' . $this->FakeController->name . '.' . $this->FakeController->action);
+		$expected = array('condiciones' => $expected, 'valoresLov' => array());
 		$this->assertEqual($result, $expected);
 
 		$expected = array(
-			"FakeTest-campo_fechahora__desde" 			=> "21/10/2008 22:34:56",
-			"FakeTest-campo_fechahora__hasta" 			=> "25/10/2008 12:34:56"
+			'FakeTestModel-date_time_field__desde' 	=> '21/10/2008 22:34:56',
+			'FakeTestModel-date_time_field__hasta' 	=> '25/10/2008 12:34:56'
 		);
-		$result = $this->controller->data;
-		$this->assertEqual($result, array("Condicion"=>$expected));
+		$result = $this->FakeController->data;
+		$this->assertEqual($result, array('Condicion'=>$expected));
 	}
 
 
@@ -202,30 +201,29 @@ class PaginadorComponentTestCase extends CakeTestCase {
  * @access public
  */
     function testGenerarCondicionRangoFechaHoraMixto() {
-    	$this->controller->data['Condicion']['FakeTest-campo_fecha__desde'] = "21/10/2008";
-    	$this->controller->data['Condicion']['FakeTest-campo_fechahora__hasta'] = "25/10/2008 12:34:56";
-    	$this->controller->action = "index";
+    	$this->FakeController->data['Condicion']['FakeTestModel-date_field__desde'] = '21/10/2008';
+    	$this->FakeController->data['Condicion']['FakeTestModel-date_time_field__hasta'] = '25/10/2008 12:34:56';
+    	$this->FakeController->action = 'index';
     	
-    	$this->PaginadorComponentTest->startup(&$this->controller);
 		$expected = array(
-			"FakeTest.campo_fecha >=" 			=> "2008-10-21",
-			"FakeTest.campo_fechahora <=" 			=> "2008-10-25 12:34:56"
+			'FakeTestModel.date_field >=' 			=> '2008-10-21',
+			'FakeTestModel.date_time_field <=' 		=> '2008-10-25 12:34:56'
 		);
 		
 		$result = $this->PaginadorComponentTest->generarCondicion();
 		$this->assertEqual($result, $expected);
 
 
-		$result = $this->controller->Session->read("filtros." . $this->controller->name . "." . $this->controller->action);
-		$expected = array("condiciones" => $expected, "valoresLov" => array());
+		$result = $this->FakeController->Session->read('filtros.' . $this->FakeController->name . '.' . $this->FakeController->action);
+		$expected = array('condiciones' => $expected, 'valoresLov' => array());
 		$this->assertEqual($result, $expected);
 
 		$expected = array(
-			"FakeTest-campo_fecha__desde" 				=> "21/10/2008",
-			"FakeTest-campo_fechahora__hasta" 			=> "25/10/2008 12:34:56"
+			'FakeTestModel-date_field__desde' 		=> '21/10/2008',
+			'FakeTestModel-date_time_field__hasta' 	=> '25/10/2008 12:34:56'
 		);
-		$result = $this->controller->data;
-		$this->assertEqual($result, array("Condicion"=>$expected));
+		$result = $this->FakeController->data;
+		$this->assertEqual($result, array('Condicion'=>$expected));
 	}
 
 
@@ -235,7 +233,7 @@ class PaginadorComponentTestCase extends CakeTestCase {
  * @access public
  */
 	function endTest() {
-		unset($this->controller);
+		unset($this->FakeController);
 		ClassRegistry::flush();
 	}
 	
