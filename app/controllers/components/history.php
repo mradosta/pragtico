@@ -102,8 +102,10 @@ class HistoryComponent extends Object {
 			//d($pos);
 	        
         	if (isset($this->__historia[$pos])){
-				//file_put_contents("/tmp/historia.txt", "\n\n=========================", FILE_APPEND);
-				//file_put_contents("/tmp/historia.txt", "\nBACK A: " . $this->__historia[$pos] . "(" . $pos . ")\n\n", FILE_APPEND);
+				/*
+				file_put_contents("/tmp/historia.txt", "\n\n=========================", FILE_APPEND);
+				file_put_contents("/tmp/historia.txt", "\nBACK A: " . $this->__historia[$pos] . "(" . $pos . ")\n\n", FILE_APPEND);
+				*/
         		$this->controller->redirect($this->__historia[$pos], true);
         	}
         }
@@ -158,11 +160,11 @@ class HistoryComponent extends Object {
 			|| (!empty($this->controller->params['named']['layout']) && $this->controller->params['named']['layout'] === "lov")
 			|| (!empty($this->controller->data['Formulario']['layout']) && $this->controller->data['Formulario']['layout'] === "lov")
 			|| (!empty($this->controller->data['Formulario']['layout']) && $this->controller->data['Formulario']['layout'] === "lov")
-			|| (!empty($this->controller->params['action']) && ($this->controller->params['action'] === "listable" || $this->controller->params['action'] === "descargar"))
+			|| (in_array($this->controller->action, array('save', 'listable', 'descargar')))
 			|| (!empty($this->controller->params['isAjax']))) {
 			return;
 		}
-		
+
 		/**
 		* Prevengo que se inserte en la history dos veces el mismo.
 		* Por ejemplo, cuando un validate no valida, etc.
@@ -176,6 +178,14 @@ class HistoryComponent extends Object {
 		else {
 			return;
 		}
+		
+		/*
+		file_put_contents("/tmp/historia.txt", "\n\n=========================", FILE_APPEND);
+		foreach ($this->__historia as $pos => $v) {
+			file_put_contents("/tmp/historia.txt", "\nESTADO DE HISTORY: " . $this->__historia[$pos] . "(" . $pos . ")", FILE_APPEND);
+		}
+		file_put_contents("/tmp/historia.txt", "\n\n", FILE_APPEND);
+		*/
 		
 		$this->controller->Session->write('historia', $this->__historia);
     }
