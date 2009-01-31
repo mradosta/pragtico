@@ -45,7 +45,7 @@ class UtilBehavior extends ContainableBehavior {
 	}
 
 	
-    function beforeFind(&$model, $query) {
+    function beforeFind_deprecated(&$model, $query) {
 		
         if (!empty($query['order'][0])) {
         	$schema = $model->schema();
