@@ -262,9 +262,9 @@ class AppController extends Controller {
 	function save() {
 		if (isset($this->data['Form']['volverAInsertar'])) {
 			$this->action = 'add';
-			$back = 2;
+			$back = 1;
 			if (!empty($this->data['Form']['volverAInsertar'])) {
-				$back = 1;
+				$back = 2;
 			}
 		} else {
 			$this->action = 'edit';
@@ -320,11 +320,14 @@ class AppController extends Controller {
 						* Debo buscar los datos que tenia originalmente, para luego verificar si
 						* se han eliminado alguno de los detalles.
 						*/
+						$find = array();
 						$tmp = $v;
 						unset($tmp[$this->modelClass]);
-						$findBy = "findBy" . $this->{$this->modelClass}->primaryKey;
-						$this->{$this->modelClass}->contain(array_keys($tmp));
-						$find = $this->{$this->modelClass}->{$findBy}($v[$this->modelClass][$this->{$this->modelClass}->primaryKey]);
+						if (!empty($v[$this->modelClass][$this->{$this->modelClass}->primaryKey])) {
+							$findBy = "findBy" . $this->{$this->modelClass}->primaryKey;
+							$this->{$this->modelClass}->contain(array_keys($tmp));
+							$find = $this->{$this->modelClass}->{$findBy}($v[$this->modelClass][$this->{$this->modelClass}->primaryKey]);
+						}
 						
 						/**
 						 * Must take care of habtm relations when saving.
@@ -332,7 +335,7 @@ class AppController extends Controller {
 						if (!empty($this->{$this->modelClass}->hasAndBelongsToMany)) {
 							foreach($this->{$this->modelClass}->hasAndBelongsToMany as $habtmModel => $habtmOptions) {
 								if (!empty($v[$habtmModel][$habtmOptions['associationForeignKey']]) && $this->{$this->modelClass}->{$habtmModel}->Behaviors->trigger($this->{$this->modelClass}->{$habtmModel}, 'beforeSave') === true) {
-									$news = null;
+									$newsHabtm = null;
 									
 									$v[$habtmModel] = array_merge($v[$habtmModel], $this->{$this->modelClass}->{$habtmModel}->data[$habtmOptions['className']]);
 									$this->{$this->modelClass}->{$habtmModel}->data = array();
@@ -344,19 +347,19 @@ class AppController extends Controller {
 									}
 									
 									if (isset($v[$habtmModel][$habtmOptions['associationForeignKey']]) && is_array($v[$habtmModel][$habtmOptions['associationForeignKey']])) {
-										$new = $v[$habtmModel];
+										$newHabtm = $v[$habtmModel];
 										foreach ($v[$habtmModel][$habtmOptions['associationForeignKey']] as $associationForeignKeyValue) {
-											$new[$habtmOptions['associationForeignKey']] = null;
-											$new[$habtmOptions['associationForeignKey']] = $associationForeignKeyValue;
-											$new[$this->{$this->modelClass}->{$habtmOptions['with']}->primaryKey] = null;
-											$news[] = $new;
+											$newHabtm[$habtmOptions['associationForeignKey']] = null;
+											$newHabtm[$habtmOptions['associationForeignKey']] = $associationForeignKeyValue;
+											$newHabtm[$this->{$this->modelClass}->{$habtmOptions['with']}->primaryKey] = null;
+											$newsHabtm[] = $newHabtm;
 										}
-										$v[$habtmModel] = $news;
+										$v[$habtmModel] = $newsHabtm;
 									}
 									
 									if (!empty($v[$habtmModel])) {
 										foreach ($v[$habtmModel] as $kHabtmData => $vHabtmData) {
-											$exits = Set::extract($find, '/' . $habtmModel . '[' . $this->{$this->modelClass}->{$habtmModel}->primaryKey . '=' . $vHabtmData[$habtmOptions['associationForeignKey']] . ']/' . $habtmOptions['with'] . '/' . $this->{$this->modelClass}->{$habtmModel}->primaryKey);
+											$exits = Set::extract('/' . $habtmModel . '[' . $this->{$this->modelClass}->{$habtmModel}->primaryKey . '=' . $vHabtmData[$habtmOptions['associationForeignKey']] . ']/' . $habtmOptions['with'] . '/' . $this->{$this->modelClass}->{$habtmModel}->primaryKey, $find);
 											if (isset($exits[0])) {
 												$v[$habtmModel][$kHabtmData][$this->{$this->modelClass}->{$habtmModel}->primaryKey] = $exits[0];
 											}
@@ -366,7 +369,31 @@ class AppController extends Controller {
 									unset($v[$habtmModel][$habtmOptions['associationForeignKey']]);
 								}
 							}
+						} 
+						
+						/**
+						 * Must take care of hasMany relations when saving if comming from checkbox.
+						 */
+						if (!empty($this->{$this->modelClass}->hasMany)) {
+							foreach($this->{$this->modelClass}->hasMany as $hasManyModel => $hasManyOptions) {
+								$newHasMany = null;
+								if (!empty($v[$hasManyModel])) {
+									foreach ($v[$hasManyModel] as $hasManyField => $hasManyValues) {
+										if (!empty($hasManyValues)) {
+											foreach ($hasManyValues as $hasManyValue) {
+												$newHasMany[][$hasManyField] = $hasManyValue;
+											} 
+										}
+									}
+									if (!empty($newHasMany)) {
+										$v[$hasManyModel] = $newHasMany;
+									} else {
+										unset($v[$hasManyModel][$hasManyField]);
+									}
+								}
+							}
 						}
+						
 						
 						$db = ConnectionManager::getDataSource($this->{$this->modelClass}->useDbConfig);
 						$db->begin($this->{$this->modelClass});
@@ -374,29 +401,40 @@ class AppController extends Controller {
 						/**
 						* if any detail has been deleted, must delete them manually.
 						*/
-						$associations = $this->{$this->modelClass}->getAssociated();
 						$errorsDeletingDetails = false;
-						foreach ($tmp as $detailKey => $detailValue) {
-							if ($associations[$detailKey] !== 'hasAndBelongsToMany') {
-								$originalDetailsId = Set::extract("/" . $this->{$this->modelClass}->{$detailKey}->primaryKey, $find[$detailKey]);
+						if ($this->action !== 'add') {
+							$associations = $this->{$this->modelClass}->getAssociated();
+							foreach ($tmp as $detailKey => $detailValue) {
 								
-								$postedDetailsId = array();
-								foreach ($v[$detailKey] as $tv) {
-									if (!empty($tv[$this->{$this->modelClass}->{$detailKey}->primaryKey])) {
-										$postedDetailsId[] = $tv[$this->{$this->modelClass}->{$detailKey}->primaryKey];
+								if ($associations[$detailKey] !== 'hasAndBelongsToMany') {
+									$originalDetailsId = Set::extract("/" . $this->{$this->modelClass}->{$detailKey}->primaryKey, $find[$detailKey]);
+									
+									$postedDetailsId = array();
+									foreach ($v[$detailKey] as $tv) {
+										if (!empty($tv[$this->{$this->modelClass}->{$detailKey}->primaryKey])) {
+											$postedDetailsId[] = $tv[$this->{$this->modelClass}->{$detailKey}->primaryKey];
+										}
+									}
+									
+									foreach (array_diff($originalDetailsId, $postedDetailsId) as $id) {
+										if (!$this->{$this->modelClass}->{$detailKey}->del($id)) {
+											$errorsDeletingDetails = true;
+										}
 									}
 								}
 								
-								foreach (array_diff($originalDetailsId, $postedDetailsId) as $id) {
-									if (!$this->{$this->modelClass}->{$detailKey}->del($id)) {
-										$errorsDeletingDetails = true;
-									}
+								if (empty($v[$detailKey])) {
+									unset($v[$detailKey]);
 								}
 							}
 						}
 						
 						if ($errorsDeletingDetails === false) {
-							$this->{$this->modelClass}->create();
+							$this->{$this->modelClass}->create($v);
+							//d($v);
+							//debug($this->{$this->modelClass}->saveAll($v, array('validate' => 'first')));
+							//d($this->{$this->modelClass}->validationErrors);
+							//$this->{$this->modelClass}->set($v);
 							if ($this->{$this->modelClass}->saveAll($v, array('validate' => 'first'))) {
 								$c++;
 							} elseif (!empty($this->{$this->modelClass}->validationErrors)) {
@@ -461,7 +499,7 @@ class AppController extends Controller {
 				$this->History->goBack();
 			}
 		}
-		$this->render("add");
+		$this->render('add');
 	}
 
 
