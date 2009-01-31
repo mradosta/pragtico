@@ -26,10 +26,10 @@ class Cuenta extends AppModel {
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array(	'index'=>array('contain'=>array(	'Empleador',
-																'Sucursal.Banco')),
-								'edit'=>array('contain'=>array(	'Empleador',
-																'Sucursal.Banco')));
+	var $modificadores = array(	'index'	=> array('contain' => array('Empleador',
+																	'Sucursal.Banco')),
+								'edit'	=> array('contain' => array('Empleador',
+																	'Sucursal.Banco')));
 	
 	
 	var $validate = array(
@@ -37,14 +37,14 @@ class Cuenta extends AppModel {
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe seleccionar el empleador.')
-        )        
+        ),
+        'cbu' => array(
+			array(
+				'rule'		=> 'validCbu',
+				'message'	=> 'El Cbu ingresado no es valido.')
+        )
 	);
 
-	var $belongsTo = array(	'Empleador' =>
-                        array('className'    => 'Empleador',
-                              'foreignKey'   => 'empleador_id'),
-							'Sucursal' =>
-                        array('className'    => 'Sucursal',
-                              'foreignKey'   => 'sucursal_id'));
+	var $belongsTo = array('Empleador', 'Sucursal');
 }
 ?>
