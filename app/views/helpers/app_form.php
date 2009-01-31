@@ -361,7 +361,7 @@ class AppFormHelper extends FormHelper {
 		* Me aseguro que el archivo de la imagen exista, sino pongo una por defecto.
 		*/
 		if (!file_exists(WWW_ROOT . IMAGES_URL . $path)) {
-			$path = 'noimage.gif';
+			$path = 'no_image.gif';
 			$htmlAttributes['alt'] = 'no_image';
 			$htmlAttributes['title'] = __('Non existing image', true);
 		}
@@ -372,7 +372,7 @@ class AppFormHelper extends FormHelper {
 		if (isset($htmlAttributes['alt']) && !isset($htmlAttributes['title'])) {
 			$htmlAttributes['title'] = Inflector::humanize($htmlAttributes['alt']);
 		} elseif (isset($htmlAttributes['title']) && !isset($htmlAttributes['alt'])) {
-			$htmlAttributes['alt'] = $htmlAttributes['title'];
+			$htmlAttributes['alt'] = Inflector::classify($htmlAttributes['title']);
 		}
 
 		return $this->Html->image($path, $htmlAttributes);
@@ -1887,6 +1887,8 @@ class AppFormHelper extends FormHelper {
 							$modelClass =& ClassRegistry::getObject($model);
 							if (!empty($modelClass->hasAndBelongsToMany[$parent]['with'])) {
 								$options['value'] = Set::extract('/' . $modelClass->hasAndBelongsToMany[$parent]['with'] . '/' . $field, $this->data[$model]);
+							} elseif (!empty($this->data[$model])) {
+								$options['value'] = Set::extract('/' . $field, $this->data[$model]);
 							}
 						}
 					}
@@ -1952,15 +1954,15 @@ class AppFormHelper extends FormHelper {
 				* Si permite seleccion multiple, pongo un textarea, sino un text comun.
 				*/
 				if (isset($options['lov']['seleccionMultiple']) && $options['lov']['seleccionMultiple'] == 0) {
-					$type = "text";
+					$type = 'text';
 				}
 				else {
-					$type = "textarea";
+					$type = 'textarea';
 				}
 
-				$lupa = $this->image('buscar.gif', array(	"alt" 	=>"Seleccione una opcion",
-															"class" =>"lupa_lov",
-															"id"	=>"lupa_" . $rnd));
+				$lupa = $this->image('search.gif', array(	'alt' 	=> __('Search', true),
+															'class' => 'lupa_lov',
+															'id'	=> 'lupa_' . $rnd));
 
 				/**
 				* El control lov se abre en un popup o en un div, de acuerdo a las preferencias.
@@ -2099,13 +2101,13 @@ class AppFormHelper extends FormHelper {
 	function __inputFecha($tagName, $options = array(), $seleccionarHora=false) {
 		$this->setEntity($tagName);
 		$id = $this->domId(implode('.', array_filter(array($this->model(), $this->field()))));
-		$codigo_html = $this->image('calendario.gif', array("class"	=>"fecha", "alt" => "Seleccione una fecha"));
+		$codigo_html = $this->image('calendar.gif', array('class'	=>'fecha', 'title' => __('Pick date', true)));
 
 
 		if ($seleccionarHora) {
-			$codigo_html = $this->link($codigo_html, "javascript:NewCal('".$id."', 'dd/mm/yyyy', true, 24, 'dropdown', true)");
+			$codigo_html = $this->link($codigo_html, "javascript:NewCal('".$id."', 'dd/mm/yyyy', true, 24, 'dropdown', true)", array('id' => $id));
 		} else {
-			$codigo_html = $this->link($codigo_html, "javascript:NewCal('".$id."', 'dd/mm/yyyy')", array('id' => $id . "Fecha"));
+			$codigo_html = $this->link($codigo_html, "javascript:NewCal('".$id."', 'dd/mm/yyyy')", array('id' => $id));
 		}
 		return $codigo_html;
 	}
