@@ -339,10 +339,10 @@ class Pago extends AppModel {
 								$rh[] = 'H';
 								$rh[] = str_pad($cuenta['Cuenta']['convenio'], 5, '0', STR_PAD_LEFT); //Numero de empresa
 								$rh[] = $tipoCuentaEmpleador; //tipo de cuenta
-								$rd[] = str_pad(substr($cuenta['Cuenta']['cbu'], 13, 6), 6, '0', STR_PAD_LEFT); //folio (cuenta)
-								$rd[] = substr($cuenta['Cuenta']['cbu'], 19, 1); //1 digito
-								$rd[] = str_pad(substr($cuenta['Cuenta']['cbu'], 4, 3), 3, '0', STR_PAD_LEFT); //sucursal
-								$rd[] = substr($cuenta['Cuenta']['cbu'], -2, 1); //2 digito
+								$rh[] = str_pad(substr($cuenta['Cuenta']['cbu'], 13, 6), 6, '0', STR_PAD_LEFT); //folio (cuenta)
+								$rh[] = substr($cuenta['Cuenta']['cbu'], 19, 1); //1 digito
+								$rh[] = str_pad(substr($cuenta['Cuenta']['cbu'], 4, 3), 3, '0', STR_PAD_LEFT); //sucursal
+								$rh[] = substr($cuenta['Cuenta']['cbu'], -2, 1); //2 digito
 								$rh[] = str_pad(number_format($total, 2, '', ''), 14, '0', STR_PAD_LEFT); //importe total
 								$rh[] = str_pad($fechaAcreditacion, 8, ' ', STR_PAD_RIGHT); //fecha acreditacion
 								$rh[] = str_pad('', 25, ' ', STR_PAD_RIGHT); //libre
