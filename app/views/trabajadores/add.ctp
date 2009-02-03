@@ -53,6 +53,7 @@ $campos['Trabajador.email'] = array();
 $fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array("class"=>"subset"), 'fieldset' => array('legend' => "Contacto", 'imagen' => 'contacto.gif')));
 
 $campos = null;
+$campos['Trabajador.solicitar_tarjeta_debito'] = array();
 $campos['Trabajador.tipo_cuenta'] = array("label"=>"Tipo");
 $campos['Trabajador.cbu'] = array('aclaracion' => "Ingrese sin guiones ni barras.");
 if($this->action === "edit") {
