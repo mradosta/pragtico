@@ -33,10 +33,10 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('ima
 * Creo el cuerpo de la tabla.
 */
 $cuerpo = null;
-foreach ($registros as $k=>$v) {
+foreach ($registros as $k => $v) {
 	$fila = null;
 	$fila[] = array('model' => 'Auditoria', 'field' => 'id', 'valor' => $v['Auditoria']['id'], 'write'=>$v['Auditoria']['write'], 'delete'=>$v['Auditoria']['delete']);
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Auditoria']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'detalles.gif', 'alt' => 'Detalles'), 'url' => 'detalles');
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Auditoria']['id'], 'imagen' => array('nombre' => 'detalles.gif', 'alt' => 'Detalles'), 'url' => 'detalles');
 	$fila[] = array('model' => 'Auditoria', 'field' => 'tipo', 'valor' => $v['Auditoria']['tipo']);
 	$fila[] = array('model' => 'Auditoria', 'field' => 'usuario', 'valor' => $v['Auditoria']['usuario']);
 	$fila[] = array('model' => 'Auditoria', 'field' => 'created', 'valor' => $v['Auditoria']['created'], 'nombreEncabezado' => 'Fecha');

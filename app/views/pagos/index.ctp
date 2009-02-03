@@ -45,10 +45,10 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset'=>array('image
 * Creo el cuerpo de la tabla.
 */
 $cuerpo = null;
-foreach ($registros as $k=>$v) {
+foreach ($registros as $k => $v) {
 	$fila = null;
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Pago']['liquidacion_id'], 'update' => 'desglose1', 'imagen'=>array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidacion'), 'url'=>'../liquidaciones/recibo_html');
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Pago']['id'], 'update' => 'desglose2', 'imagen'=>array('nombre' => 'pagos_formas.gif', 'alt' => 'Formas de Pago'), 'url'=>'formas');
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Pago']['liquidacion_id'], 'imagen'=>array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidacion'), 'url'=>'../liquidaciones/recibo_html');
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Pago']['id'], 'imagen'=>array('nombre' => 'pagos_formas.gif', 'alt' => 'Formas de Pago'), 'url'=>'formas');
 	if ($v['Pago']['estado'] === 'Pendiente' && $v['Pago']['moneda'] === 'Pesos') {
 		$fila[] = array('tipo' => 'accion', 'valor' => 
 				$appForm->link($appForm->image('cheques.gif'), 

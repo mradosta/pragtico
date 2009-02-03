@@ -896,26 +896,6 @@ class AppController extends Controller {
 
 
 /**
- * afterFilter.
- *
- * @return void.
- * @access public 
- */
-	function afterFilter() {
-		/**
-		* Si es un request ajax, posiblemente sea un desglose.
-		* Guardo en la session los desgloses que estan abiertos.
-		*/
-		if (isset($this->params['isAjax']) && isset($this->params['pass'][0]) && is_numeric($this->params['pass'][0])) {
-			$desgloses = $this->Session->read("desgloses");
-			$id = strtolower($this->name) . "-" . $this->action . "-" . $this->params['pass'][0];
-			$desgloses[$id] = true;
-			$this->Session->write("desgloses", $desgloses);
-		}
-	}
-
-
-/**
  * Mediante un request ajax desde javascript borro de la session TODOS los filtros que esten seteados.
  * Luego, con el mismo js recargo la pagina y dara el efecto de limpiar las busquedas.
  * 
@@ -926,40 +906,7 @@ class AppController extends Controller {
 		$this->Session->del("filtros");
 		$this->autoRender = false;
 	}
-
-
-/**
- * Mediante un request ajax desde javascript borro de la session TODOS los desgloses que esten abiertos.
- * Luego, con el mismo js recargo la pagina y dara el efecto de cerrar desgloses.
- * 
- * @return void
- * @access public 
- */
-	function cerrar_desgloses() {
-		$this->Session->del("desgloses");
-		$this->autoRender = false;
-	}
-
-
-/**
- * quitarDesglose.
- * Saca de la session los desgloses que han sido cerrados.
- *
- * @param string $nombreDesglose El nombre que se le dio al desglose cerrado.
- * @return void.
- * @access public 
- */
-	function quitarDesglose($nombreDesglose) {
-		/**
-		* Saco de la session los desgloses que han sido cerrados.
-		*/
-		if ($this->Session->check("desgloses")) {
-			$desgloses = $this->Session->read("desgloses");
-			unset($desgloses[$nombreDesglose]);
-			$this->Session->write("desgloses", $desgloses);
-		}
-		$this->autoRender = false;
-		//exit();
-	}
+	
+	
 }
 ?>

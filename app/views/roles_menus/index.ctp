@@ -29,11 +29,10 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' =
 * Creo el cuerpo de la tabla.
 */
 $cuerpo = null;
-foreach ($registros as $k=>$v) {
+foreach ($registros as $k => $v) {
 	$fila = null;
-	$id = $v['RolesMenu']['id'];
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose1', 'imagen' => array('nombre' => 'usuarios.gif', 'alt' => "Usuarios"), 'url' => 'usuarios');
-	$fila[] = array('model' => 'Rol', 'field' => 'id", "valor"=>$id, 'write' => $v['RolesMenu']['write'], 'delete' => $v['RolesMenu']['delete']);
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['RolesMenu']['id'], 'imagen' => array('nombre' => 'usuarios.gif', 'alt' => 'Usuarios'), 'url' => 'usuarios');
+	$fila[] = array('model' => 'Rol', 'field' => 'id', 'valor' => $v['RolesMenu']['id'], 'write' => $v['RolesMenu']['write'], 'delete' => $v['RolesMenu']['delete']);
 	$fila[] = array('model' => 'Rol', 'field' => 'nombre', 'valor' => $v['Rol']['nombre']);
 	$fila[] = array('model' => 'RolesMenu', 'field' => 'estado', 'valor' => $v['RolesMenu']['estado']);
 	$cuerpo[] = $fila;

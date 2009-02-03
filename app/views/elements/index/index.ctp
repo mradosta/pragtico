@@ -79,10 +79,10 @@ if(!empty($this->params['named']['retornarA']) && !empty($this->params['named'][
 										"mostrarEncabezados"=> true,
 										"zebra"				=> true,
 										"mostrarIds"		=> false));
+} 
+else {
+	$opcionesTabla =  array("tabla"=> array("class" => "index"));
 }
-//else {
-//	$opcionesTabla =  array("tabla"=> array("permisos" => true));
-//}
 
 /**
  * Creo un bloque con el paginador superior e inferior.

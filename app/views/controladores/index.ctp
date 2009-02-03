@@ -30,11 +30,10 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('ima
 * Creo el cuerpo de la tabla.
 */
 $cuerpo = null;
-foreach ($registros as $k=>$v) {
+foreach ($registros as $k => $v) {
 	$fila = null;
-	$id = $v['Controlador']['id'];
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose1', 'imagen' => array('nombre' => 'acciones.gif', 'alt' => "Acciones"), 'url' => 'acciones');
-	$fila[] = array('model' => 'Controlador', 'field' => 'id", "valor"=>$id, 'write' => $v['Controlador']['write'], 'delete' => $v['Controlador']['delete']);
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Controlador']['id'], 'imagen' => array('nombre' => 'acciones.gif', 'alt' => 'Acciones'), 'url' => 'acciones');
+	$fila[] = array('model' => 'Controlador', 'field' => 'id', 'valor' => $v['Controlador']['id'], 'write' => $v['Controlador']['write'], 'delete' => $v['Controlador']['delete']);
 	$fila[] = array('model' => 'Controlador', 'field' => 'nombre', 'valor' => $v['Controlador']['nombre']);
 	$fila[] = array('model' => 'Controlador', 'field' => 'etiqueta', 'valor' => $v['Controlador']['etiqueta']);
 	$fila[] = array('model' => 'Controlador', 'field' => 'ayuda', 'valor' => $v['Controlador']['ayuda']);
@@ -42,7 +41,7 @@ foreach ($registros as $k=>$v) {
 	$cuerpo[] = $fila;
 }
 
-$accionesExtra = $appForm->bloque($appForm->link("Act. Masiva", "actualizar_controladores", array("class"=>"link_boton", "title"=>"Actualiza automaticamente todos controladores y sus acciones")));
-echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, "accionesExtra"=>$accionesExtra));
+$accionesExtra = $appForm->bloque($appForm->link('Act. Masiva', 'actualizar_controladores', array('class'=>'link_boton', 'title'=>'Actualiza automaticamente todos controladores y sus acciones')));
+echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, 'accionesExtra'=>$accionesExtra));
 
 ?>

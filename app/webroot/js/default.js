@@ -1,6 +1,28 @@
 //defino la variable para que este accesible desde todos lados (como una global)
 var timer;
 
+var desglose = function (tr, url) {
+	var selector = "#" + tr;
+	
+	var tr = jQuery("<tr></tr>"); 
+	var td = jQuery("<td></td>").attr("colspan", "10").html("aaaaaaaaaaaaaaa"); 
+	tr.append(td);
+	jQuery("table tr").next().append(tr);
+	jQuery("table tr").next().append(tr);
+	jQuery("table tr").next().append(tr);
+	
+	
+	//table [x]
+	if (!jQuery(selector).is(":visible")) {
+		var td = jQuery("<td></td>").attr("colspan", "10"); 
+		td.append(jQuery("<div></div>").attr("class", "desglose").load(url));
+		jQuery(selector).append(td);
+	}
+	
+	jQuery(selector).toggle();
+}
+
+
 var vOcultar = function() {
 	jQuery('.session_flash').fadeOut('slow',
 		function() {
@@ -220,50 +242,6 @@ function soloNumeros_deprecated(campo, evento, decimal)
 	}
 }
 
-/**
- * Limpia el texto que hubiere dentro de los imput text (cajas de texto) 
- * y selecciona el primer elemento de los selects (combos)
- * @param string contenedor id del div que actua como contenedor de los elementos
- * @return boolean true si encuentra el contenedor, false si no lo encuentra
- */
-
-function limpiarBusqueda_deprecated( contenedor ) {
-	var divContenedor;
-	var objetos;
-	var i;
-
-    divContenedor = document.getElementById( contenedor );
-	if (divContenedor != null)
-	{
-		//busco los inputs
-		objetos = divContenedor.getElementsByTagName('input');
-		if (objetos != null)
-		{
-			for ( i = 0; i < objetos.length; i++ ) 
-			{
-				if (objetos[i].type=='text')
-				{
-					objetos[i].value = "";
-				}
-			}
-		}
-
-		//busco los selects
-		objetos = divContenedor.getElementsByTagName('select');
-		if (objetos != null)
-		{
-			for ( i = 0; i < objetos.length; i++ ) 
-			{
-				objetos[i].options[0].selected = true;
-			}
-		}
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
 
 /**
  * Al hacer click sobre el boton aceptar oculta el div del session flash

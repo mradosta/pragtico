@@ -29,14 +29,14 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('ima
 * Creo el cuerpo de la tabla.
 */
 $cuerpo = null;
-foreach ($registros as $k=>$v) {
+foreach ($registros as $k => $v) {
 	$fila = null;
 	$id = $v['Empleador']['id'];
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose1', 'imagen' => array('nombre' => 'trabajadores.gif', 'alt' => "Trabajadores"), 'url' => 'relaciones');
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose2', 'imagen' => array('nombre' => 'conceptos.gif', 'alt' => "Conceptos"), 'url' => 'conceptos');
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose3', 'imagen' => array('nombre' => 'coeficientes.gif', 'alt' => "Coeficientes"), 'url' => 'coeficientes');
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose4', 'imagen' => array('nombre' => 'areas.gif', 'alt' => "Areas"), 'url' => 'areas');
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose5', 'imagen' => array('nombre' => 'recibos.gif', 'alt' => "Recibos"), 'url' => 'recibos');
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'trabajadores.gif', 'alt' => "Trabajadores"), 'url' => 'relaciones');
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'conceptos.gif', 'alt' => "Conceptos"), 'url' => 'conceptos');
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'coeficientes.gif', 'alt' => "Coeficientes"), 'url' => 'coeficientes');
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'areas.gif', 'alt' => "Areas"), 'url' => 'areas');
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'recibos.gif', 'alt' => "Recibos"), 'url' => 'recibos');
 	$fila[] = array('tipo' => 'desglose', 'id' => $id, "update"=>"desglose6", 'imagen' => array('nombre' => 'rubros.gif', 'alt' => "Rubros"), 'url' => 'rubros');
 	$fila[] = array('tipo' => 'desglose', 'id' => $id, "update"=>"desglose7", 'imagen' => array('nombre' => 'cuentas.gif', 'alt' => "Cuentas"), 'url' => 'cuentas');
 	$fila[] = array('tipo' => 'desglose', 'id' => $id, "update"=>"desglose8", 'imagen' => array('nombre' => 'suss.gif', 'alt' => "Suss"), 'url' => 'suss');

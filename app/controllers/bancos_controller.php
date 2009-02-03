@@ -25,6 +25,8 @@
  */
 class BancosController extends AppController {
 
+	function test() {
+	}
 /**
  * sucursales.
  * Muestra via desglose las sucursales del banco.

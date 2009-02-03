@@ -439,10 +439,9 @@ class AppFormHelper extends FormHelper {
  * @return string
  */
 	function tabla($datos = array()) {
-		$tabla = "";
 		/**
-		* Especifico las opciones por defecto.
-		*/
+		 * Default options.
+		 */
 		$opciones = array(	'seleccionLov'		=> false,
 							'seleccionMultiple'	=> true,
 							'permisos'			=> true,
@@ -455,6 +454,8 @@ class AppFormHelper extends FormHelper {
 							'zebra'				=> true,
 							'simple'			=> false);
 
+		$tabla = "";
+		
 		if (!empty($datos['tabla'])) {
 			$opciones = array_merge($opciones, $datos['tabla']);
 		}
@@ -619,55 +620,25 @@ class AppFormHelper extends FormHelper {
 						continue;
 					}
 					elseif ($tipoCelda === "desglose") {
-						$sId = $campo['id'];
-						$image = $campo['url'];
 						if (isset($campo['imagen']['nombre'])) {
 							$nombre = $campo['imagen']['nombre'];
 							unset($campo['imagen']['nombre']);
-							$image = $this->image($nombre, $campo['imagen']);
 						}
 						
-						//$classController = Inflector::pluralize(Inflector::classify($this->params['controller']));
-						//d($classController);
-						//d($this->params['controller']);
-
-						/**
-						* Puede que la url venga de la forma ../controller/action
-						* En este caso, solo me interesa la action.
-						$action = $campo['url'];
-						if (strstr($campo['url'], "/")) {
-							$action = array_pop(explode("/", $campo['url']));
-						}
-						*/
 						$url = null;
 						if (is_string($campo['url'])) {
 							$url['controller'] = $this->params['controller'];
 							$url['action'] = $campo['url'];
-						}
-						else {
+						} else {
 							$url = $campo['url'];
 						}
-						$url[] = $sId;
+						$url[] = $campo['id'];
+						$sUrl = Router::url($url);
 						
-						$acciones[] = $this->link($image, $url,
-							array(	"tipo"		=> "ajax",
-									"update"	=> $campo['update'] . "_" . $sId,
-									"onclick"	=> "mostrarOcultarDivYTr(this, '" . $campo['update'] . "_" . $sId . "', 'tr_" . $campo['update'] . "_" . $sId . "', '" . Router::url("/") . $this->params['controller'] . "');"));
-									
-						/**
-						* Si esta seteada la session de este desglose, pinto este desglose.
-						*/
-						if ($this->Session->check("desgloses")) {
-							$desgloses = $this->Session->read("desgloses");
-						 	if (isset($desgloses[$this->params['controller'] . "-" . $url['action'] . "-" . $sId])) {
-								$jsDesglose[] = "jQuery('." . $this->params['controller'] . "-" . $url['action'] . "-" . $sId . "').trigger('click');";
-							}
-						}
+						$acciones[] = $this->image($nombre, array_merge($campo['imagen'], array(
+								'class'		=> 'breakdown_icon',
+								'longdesc'	=> $sUrl)));
 						
-						//$contenido = $this->Html->div(null, null, array("id"=>$campo['update'] . "_" . $sId, "class" => "div_desglose"));
-						$contenido = $this->tag("div", "", array("id"=>$campo['update'] . "_" . $sId, "class" => "desglose"));
-						$atributosFila = array("id" => "tr_" . $campo['update'] . "_" . $sId, "class" => "desglose");
-						$outDesgloses[] = array($contenido, array("colspan"=>10), $atributosFila);
 						continue;
 					}
 					
@@ -691,9 +662,8 @@ class AppFormHelper extends FormHelper {
 							$params['model'] = $modelKey;
 
 							if (isset($campo['nombreEncabezado'])) {
-								$nombre = inflector::humanize($campo['nombreEncabezado']);
-							}
-							else {
+								$nombre = $campo['nombreEncabezado'];
+							} else {
 								$nombre = inflector::humanize($nombreCampo);
 							}
 							
@@ -902,7 +872,6 @@ class AppFormHelper extends FormHelper {
 
 				/**
 				* Si tengo desgloses, los agrego.
-				*/
 				if (!empty($outDesgloses)) {
 					foreach ($outDesgloses as $outDesglose) {
 						if (!empty($outDesglose['2'])) {
@@ -912,6 +881,7 @@ class AppFormHelper extends FormHelper {
 						$rowsOut[] = $this->_fila(array($outDesglose), $atributosFila);
 					}
 				}
+				*/
 			}
 		}
 		
@@ -1065,6 +1035,7 @@ class AppFormHelper extends FormHelper {
 		$jsZebra = "";
 		$jsTabla = "";
 		if (($opciones['zebra'] || $opciones['seleccionMultiple'] || !empty($jsDesglose)) && !empty($tabla)) {
+			//d($jsDesglose);
 			if (!empty($jsDesglose)) {
 				$jsTabla .= implode("\n", $jsDesglose);
 			}
@@ -1142,7 +1113,8 @@ class AppFormHelper extends FormHelper {
 		/**
 		* Las filas de desglose y las resaltadas, no las cuento para la zebra.
 		*/
-		if (!in_array($trOptions['class'], array("desglose", "fila_resaltada"))) {
+		//if (!in_array($trOptions['class'], array("desglose", "fila_resaltada"))) {
+		if ($trOptions['class'] !== "fila_resaltada") {
 			if ($count % 2) {
 				if (!empty($trOptions['class'])) {
 					$trOptions['class'] .= " alternativo";

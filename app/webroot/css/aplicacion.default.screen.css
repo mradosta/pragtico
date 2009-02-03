@@ -794,12 +794,8 @@ div.tablasFromTo tbody td.quitar {
 /*
  * DESGLOSES
  */
-tr.desglose {
-	display: none;
-}
-
 div.desglose {
-	width: 770px;
+	1width: 770px;
 }
 
 div.desglose div.tabla {
@@ -816,6 +812,10 @@ div.desglose legend span {
 
 div.desglose div.cabecera {
 	height: 20px;
+}
+
+img.breakdown_icon {
+	cursor: pointer;
 }
 
 div.desglose span.titulo {

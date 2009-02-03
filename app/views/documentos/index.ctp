@@ -28,7 +28,7 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('ima
 * Creo el cuerpo de la tabla.
 */
 $cuerpo = null;
-foreach ($registros as $k=>$v) {
+foreach ($registros as $k => $v) {
 	$fila = null;
 	$fila[] = array('model' => 'Documento', 'field' => 'id', 'valor' => $v['Documento']['id'], 'write' => $v['Documento']['write'], 'delete' => $v['Documento']['delete']);
 	$fila[] = array("tipo"=>"accion", "valor"=>$appForm->link($appForm->image('archivo.gif', array('alt' => "Descargar")), "descargar/" . $v['Documento']['id']));	

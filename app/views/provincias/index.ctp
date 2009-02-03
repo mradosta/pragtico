@@ -28,9 +28,9 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('ima
 * Creo el cuerpo de la tabla.
 */
 $cuerpo = null;
-foreach ($registros as $k=>$v) {
+foreach ($registros as $k => $v) {
 	$fila = null;
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Provincia']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'localidades.gif', 'alt' => "Localidades"), 'url' => 'localidades');
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Provincia']['id'], 'imagen' => array('nombre' => 'localidades.gif', 'alt' => "Localidades"), 'url' => 'localidades');
 	$fila[] = array('model' => 'Provincia', 'field' => 'id', 'valor' => $v['Provincia']['id'], 'write' => $v['Provincia']['write'], 'delete' => $v['Provincia']['delete']);
 	$fila[] = array('model' => 'Provincia', 'field' => 'nombre', 'valor' => $v['Provincia']['nombre']);
 	$cuerpo[] = $fila;

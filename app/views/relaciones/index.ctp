@@ -37,16 +37,16 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('ima
 * Creo el cuerpo de la tabla.
 */
 $cuerpo = null;
-foreach ($registros as $k=>$v) {
+foreach ($registros as $k => $v) {
 	$fila = null;
 	$id = $v['Relacion']['id'];
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose1', 'imagen' => array('nombre' => 'ausencias.gif', 'alt' => 'Ausencias'), 'url' => 'ausencias');
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose2', 'imagen' => array('nombre' => 'conceptos.gif', 'alt' => 'Conceptos'), 'url' => 'conceptos');
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose3', 'imagen' => array('nombre' => 'ropas.gif', 'alt' => 'Ropa'), 'url' => 'ropas');
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose4', 'imagen' => array('nombre' => 'horas.gif', 'alt' => 'Horas'), 'url' => 'horas');
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose5', 'imagen' => array('nombre' => 'descuentos.gif', 'alt' => 'Descuentos y Anticipos'), 'url' => 'descuentos');
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update'=>'desglose6', 'imagen' => array('nombre' => 'vacaciones.gif', 'alt' => 'Vacaciones'), 'url' => 'vacaciones');
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update'=>'desglose7', 'imagen' => array('nombre' => 'pagos.gif', 'alt' => 'Pagos'), 'url' => 'pagos');
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'ausencias.gif', 'alt' => 'Ausencias'), 'url' => 'ausencias');
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'conceptos.gif', 'alt' => 'Conceptos'), 'url' => 'conceptos');
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'ropas.gif', 'alt' => 'Ropa'), 'url' => 'ropas');
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'horas.gif', 'alt' => 'Horas'), 'url' => 'horas');
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'descuentos.gif', 'alt' => 'Descuentos y Anticipos'), 'url' => 'descuentos');
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'vacaciones.gif', 'alt' => 'Vacaciones'), 'url' => 'vacaciones');
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'pagos.gif', 'alt' => 'Pagos'), 'url' => 'pagos');
 	//$fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('acciones/bloquear.gif', array('alt' => 'Pasar a historico', 'title'=>'Pasar a historico')), 'pasarAHistorico/' . $id, array(), 'Desea pasar la relacion laboral al historico?'));
 	$fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('documentos.gif', array('alt' => 'Generar Documento')), 'documentos/generar/model:Relacion/id:' . $id));
 	//$fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('documentos.gif', array('alt' => 'Generar Documento')), array('controller' => 'documentos', 'action' => 'generar', 'model' => 'Relacion', 'id' => $id)));
@@ -61,7 +61,6 @@ foreach ($registros as $k=>$v) {
 	$cuerpo[] = $fila;
 }
 
-$opcionesTabla =  array('tabla' => array('eliminar' => false));
-										
+$opcionesTabla =  array('tabla' => array('eliminar' => false));									
 echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, 'opcionesTabla'=>$opcionesTabla));
 ?>

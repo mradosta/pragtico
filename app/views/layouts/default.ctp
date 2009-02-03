@@ -65,8 +65,13 @@ $codigo_html .= '\n
 $css[] = "aplicacion.default.screen";
 $css[] = "jquery.autocomplete";
 */
+//$css[] = "basic";
 $css[] = "aplicacion.default.screen";
-
+//$css[] = "theme/ui.all";
+//$css[] = "theme/ui.base";
+$css[] = "theme/ui.core";
+$css[] = "theme/ui.theme";
+$css[] = "theme/ui.dialog";
 //if($appForm->traerPreferencia("lov_apertura") != "popup") {
 //	$css[] = "jquery.jqmodal";
 //}
@@ -76,13 +81,113 @@ $appForm->addScript("default", "links");
 $appForm->addScript("datetimepicker", "links");
 $appForm->addScript("jquery", "links");
 $appForm->addScript("jquery.autocomplete", "links");
-$appForm->addScript("jquery.jqmodal", "links");
-$appForm->addScript("jquery.jeditable", "links");
+//$appForm->addScript("jquery.jqmodal", "links");
+//$appForm->addScript("jquery.simplemodal", "links");
+$appForm->addScript("jquery-ui-personalized-1.5.3", "links");
+//$appForm->addScript("basic", "links");
+//$appForm->addScript("jquery.jeditable", "links");
 $appForm->addScript("jquery.form", "links");
 $appForm->addScript("jquery.flydom", "links");
 $appForm->addScript("jquery.maskedinput", "links");
 $appForm->addScript("jquery.accordion", "links");
 $appForm->addScript("jquery.checkbox", "links");
+$appForm->addScript("jquery.cookie", "links");
+
+//d(Router::url());
+$appForm->addScript('
+		
+	/**
+	 * Rebuild table tbody adding breakDowns rows.
+	 */
+	var buildTable = function(clickedRowId, url) {
+		var breakDownRowId = "breakdown_row" + url.replace(/\//g, "_");
+		var newTbody = jQuery("<tbody/>");
+		
+		jQuery("table.index > tbody > tr").each(
+			function() {
+				newTbody.append(this);
+				
+				if (clickedRowId == jQuery(this).attr("charoff")) {
+					var td = jQuery("<td/>").attr("colspan", "10");
+					td.append(jQuery("<div/>").attr("class", "desglose").load(url));
+					var tr = jQuery("<tr/>").addClass(breakDownRowId).addClass("breakdown_row").append(td);
+					newTbody.append(tr);
+				}
+			}
+		);
+		jQuery("table.index > tbody").remove();
+		jQuery("table.index").append(newTbody);
+		return false;
+	}
+	
+	
+	/**
+	 * Deletes cookie and hide all breakdown rows.
+	 */
+	var closeAllBreakdowns = function() {
+		jQuery.cookie("breakDowns", null);
+		console.log(jQuery.cookie("breakDowns"));
+		jQuery(".breakdown_row").hide();
+		return false;
+	}
+	jQuery("#closeAllBreakdowns").click(closeAllBreakdowns);
+	
+	
+	/**
+	 * If in cookie, must re-open breakdown.
+	 */
+	var breakDownsCookie = jQuery.cookie("breakDowns");
+	if (breakDownsCookie != null) {
+		breakDowns = breakDownsCookie.split("|");
+		jQuery("img.breakdown_icon").each(
+			function() {
+				if (jQuery.inArray(this.getAttribute("longdesc"), breakDowns) >= 0) {
+					clickedRowId = this.getAttribute("longdesc").split("/").pop();
+					buildTable(clickedRowId, this.getAttribute("longdesc"));
+				}
+			}
+		);
+	}	
+	
+	
+	/**
+	 * Binds click event to breakdown icons.
+	 */
+	jQuery("img.breakdown_icon").bind("click", 
+		function() {
+
+			var clickedRowId = jQuery(this).parent().parent().attr("charoff");
+			var url = this.getAttribute("longdesc");
+			
+			var breakDownsCookie = jQuery.cookie("breakDowns");
+			if (breakDownsCookie != null) {
+				breakDowns = breakDownsCookie.split("|");
+			} else {
+				breakDowns = Array();
+			}
+			
+			var breakDownRowId = "breakdown_row" + url.replace(/\//g, "_");
+			if (jQuery("." + breakDownRowId).length) {
+				jQuery("." + breakDownRowId).toggle();
+	
+				if (!jQuery("." + breakDownRowId).is(":visible")) {
+					delete breakDowns[jQuery.inArray(url, breakDowns)];
+					jQuery.cookie("breakDowns", breakDowns.join("|"));
+				}
+				
+			} else {
+	
+				breakDowns.push(url);
+				jQuery.cookie("breakDowns", breakDowns.join("|"));
+	
+				buildTable(clickedRowId, url);
+			}
+		}
+	);
+	
+	
+
+');
 /*
 $javascript->link(array(	"default",
 							"datetimepicker",

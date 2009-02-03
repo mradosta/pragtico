@@ -32,7 +32,7 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('ima
 * Creo el cuerpo de la tabla.
 */
 $cuerpo = null;
-foreach ($registros as $k=>$v) {
+foreach ($registros as $k => $v) {
 	$fila = null;
 	$fila[] = array('model' => 'Accion', 'field' => 'id', 'valor' => $v['Accion']['id'], 'write' => $v['Accion']['write'], 'delete' => $v['Accion']['delete']);
 	$fila[] = array('model' => 'Controlador', 'field' => 'nombre', 'valor' => $v['Controlador']['nombre'], "nombreEncabezado"=>"Controlador");

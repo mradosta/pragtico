@@ -31,9 +31,9 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('ima
 * Creo el cuerpo de la tabla.
 */
 $cuerpo = null;
-foreach ($registros as $k=>$v) {
+foreach ($registros as $k => $v) {
 	$fila = null;
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Banco']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'sucursales.gif', 'alt' => "Sucursales"), 'url' => 'sucursales');
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Banco']['id'], 'imagen' => array('nombre' => 'sucursales.gif', 'alt' => "Sucursales"), 'url' => 'sucursales');
 	$fila[] = array('model' => 'Banco', 'field' => 'id', 'valor' => $v['Banco']['id'], 'write' => $v['Banco']['write'], 'delete' => $v['Banco']['delete']);
 	$fila[] = array('model' => 'Banco', 'field' => 'codigo', 'valor' => $v['Banco']['codigo']);
 	$fila[] = array('model' => 'Banco', 'field' => 'nombre', 'valor' => $v['Banco']['nombre']);
@@ -41,4 +41,5 @@ foreach ($registros as $k=>$v) {
 }
 
 echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo));
+$appForm->addScript('$("#form").ajaxForm();');
 ?>
