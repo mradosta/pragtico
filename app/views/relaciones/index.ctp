@@ -15,7 +15,7 @@
  * @lastmodified	$Date$
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
- 
+
 /**
 * Especifico los campos para ingresar las condiciones.
 */
@@ -28,10 +28,9 @@ $condiciones['Condicion.Relacion-trabajador_id'] = array(	'lov'=>array('controll
 																									'Trabajador.nombre')));
 $condiciones['Condicion.Trabajador-numero_documento'] = array('label'=>'Documento');
 $condiciones['Condicion.Trabajador-apellido'] = array('label'=>'Apellido');
-$condiciones['Condicion.Relacion-estado'] = array();																								
+$condiciones['Condicion.Relacion-estado'] = array();
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'relaciones.gif')));
-
 
 /**
 * Creo el cuerpo de la tabla.
@@ -56,11 +55,11 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Trabajador']['apellido'] . ' ' . $v['Trabajador']['nombre'], 'nombreEncabezado'=>'Trabajador');
 	$fila[] = array('model' => 'Relacion', 'field' => 'ingreso', 'valor' => $v['Relacion']['ingreso']);
 	$fila[] = array('model' => 'Relacion', 'field' => 'horas', 'valor' => $v['Relacion']['horas']);
-	$fila[] = array('model' => 'Relacion', 'field' => 'basico', 'valor'=>$formato->format($v['Relacion']['basico'], array('before'=>'$ ', 'places'=>2)));
+	$fila[] = array('model' => 'Relacion', 'field' => 'basico', 'valor'=>$v['Relacion']['basico'], 'tipoDato' => 'moneda');
 	$fila[] = array('model' => 'Relacion', 'field' => 'estado', 'valor' => $v['Relacion']['estado']);
 	$cuerpo[] = $fila;
 }
 
-$opcionesTabla =  array('tabla' => array('eliminar' => false));									
+$opcionesTabla =  array('tabla' => array('eliminar' => false));
 echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, 'opcionesTabla'=>$opcionesTabla));
 ?>
