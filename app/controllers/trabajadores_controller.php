@@ -25,6 +25,7 @@ class TrabajadoresController extends AppController {
 
 
 	var $helpers = array("Documento");
+	
 	function imprimir() {
 		$this->set("registros", $this->Trabajador->find('all'));
 		$this->layout = "ajax";
@@ -32,6 +33,40 @@ class TrabajadoresController extends AppController {
 		//$this->render("index");
 	}
 
+	/*
+	function solicitar_tarjetas_debito() {
+		$columns = array(	'cuil' 		=> 'Trabajador.cuil', 
+							'tipo_doc'	=> 'Trabajador.tipo_documento', 
+	   						'documento'	=> 'Trabajador.numero_documento',
+		   					'apellido'	=> 'Trabajador.apellido',
+							'nombre'	=> 'Trabajador.nombre', 
+	   						'calle'		=> 'Trabajador.direccion',
+		   					'numero'	=> '',
+		  					'piso'		=> '',
+		 					'depto'		=> '',
+							'barrio'	=> 'Trabajador.barrio',
+	   						'localidad'	=>
+							'provincia' =>
+							'cod'		=>
+							'telefono'	=>
+							'sexo'		=> 
+							'estado'	=>
+							'fecing'	=>
+							'fecnac'	=>
+							'empresa'	=>
+							'suc'		=>
+							'cp'		=>
+							'cod dist'	=>
+							'cod prov');
+		d($columns);
+
+		d(strtolower("'CUIL', 'TIPO_DOC', 'DOCUMENTO', 'APELLIDO', 'NOMBRE', 'CALLE', 'NUMERO', 'PISO', 'DEPTO', 'BARRIO', 'LOCALIDAD', 'PROVINCIA', 'COD', 'TELEFONO', 'SEXO', 'ESTADO', 'FECING', 'FECNAC', 'EMPRESA', 'SUC', 'CP', 'COD DIST', 'COD PROV'"));
+		$conditions = array('Trabajador.cbu' => '', 'Trabajador.solicitar_tarjeta_debito' => 'Si');
+		$data = $this->Trabajador->find('all', array('conditions' => $conditions, 'recursive' => -1, 'limit' => 5));
+		d($data);
+	}
+	*/
+	
 
 /**
  * Permite descargar y/o mostrar la foto del trabajador.
