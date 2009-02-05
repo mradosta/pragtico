@@ -1,0 +1,191 @@
+<html>
+<head>
+<title>File Source for Error.php</title>
+<link rel="stylesheet" type="text/css" href="../media/style.css">
+</head>
+<body>
+
+<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
+  <tr>
+    <td class="header_top">JAMA</td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+  <tr>
+    <td class="header_menu">
+        
+                                                        
+                                                                                                                                                                                                                                                                                                                                                              		  [ <a href="../classtrees_JAMA.html" class="menu">class tree: JAMA</a> ]
+		  [ <a href="../elementindex_JAMA.html" class="menu">index: JAMA</a> ]
+		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
+    </td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="200" class="menu">
+	<div id="todolist">
+			<p><a href="../todolist.html">Todo List</a></p>
+	</div>
+      <b>Packages:</b><br />
+              <a href="../li_default.html">default</a><br />
+              <a href="../li_JAMA.html">JAMA</a><br />
+              <a href="../li_Math_Stats.html">Math_Stats</a><br />
+              <a href="../li_PHPExcel.html">PHPExcel</a><br />
+              <a href="../li_PHPExcel_Calculation.html">PHPExcel_Calculation</a><br />
+              <a href="../li_PHPExcel_Cell.html">PHPExcel_Cell</a><br />
+              <a href="../li_PHPExcel_Reader.html">PHPExcel_Reader</a><br />
+              <a href="../li_PHPExcel_Reader_Excel5.html">PHPExcel_Reader_Excel5</a><br />
+              <a href="../li_PHPExcel_RichText.html">PHPExcel_RichText</a><br />
+              <a href="../li_PHPExcel_Shared.html">PHPExcel_Shared</a><br />
+              <a href="../li_PHPExcel_Shared_Escher.html">PHPExcel_Shared_Escher</a><br />
+              <a href="../li_PHPExcel_Shared_OLE.html">PHPExcel_Shared_OLE</a><br />
+              <a href="../li_PHPExcel_Style.html">PHPExcel_Style</a><br />
+              <a href="../li_PHPExcel_Worksheet.html">PHPExcel_Worksheet</a><br />
+              <a href="../li_PHPExcel_Worksheet_Drawing.html">PHPExcel_Worksheet_Drawing</a><br />
+              <a href="../li_PHPExcel_Writer.html">PHPExcel_Writer</a><br />
+              <a href="../li_PHPExcel_Writer_Excel5.html">PHPExcel_Writer_Excel5</a><br />
+              <a href="../li_PHPExcel_Writer_Excel2007.html">PHPExcel_Writer_Excel2007</a><br />
+            <br /><br />
+                  
+      
+                </td>
+    <td>
+      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
+
+<h1 align="center">Source for file Error.php</h1>
+<p>Documentation is available at <a href="../JAMA/_PHPExcel---Shared---JAMA---utils---Error.php.html">Error.php</a></p>
+<div class="src-code">
+<ol><li><div class="src-line"><a name="a1"></a><span class="src-php">&lt;?php</span></div></li>
+<li><div class="src-line"><a name="a2"></a><span class="src-doc">/**</span></div></li>
+<li><div class="src-line"><a name="a3"></a><span class="src-doc">*&nbsp;</span><span class="src-doc-coretag">@package</span><span class="src-doc">&nbsp;JAMA</span></div></li>
+<li><div class="src-line"><a name="a4"></a><span class="src-doc">*&nbsp;</span></div></li>
+<li><div class="src-line"><a name="a5"></a><span class="src-doc">*&nbsp;&nbsp;Error&nbsp;handling</span></div></li>
+<li><div class="src-line"><a name="a6"></a><span class="src-doc">*&nbsp;</span><span class="src-doc-coretag">@author</span><span class="src-doc">&nbsp;Michael&nbsp;Bommarito</span></div></li>
+<li><div class="src-line"><a name="a7"></a><span class="src-doc">*&nbsp;</span><span class="src-doc-coretag">@version</span><span class="src-doc">&nbsp;01292005</span></div></li>
+<li><div class="src-line"><a name="a8"></a><span class="src-doc">*/</span></div></li>
+<li><div class="src-line"><a name="a9"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a10"></a><span class="src-comm">//Language&nbsp;constant</span></div></li>
+<li><div class="src-line"><a name="a11"></a><a href="http://www.php.net/define">define</a><span class="src-sym">(</span><span class="src-str">'LANG'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'EN'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a12"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a13"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a14"></a><span class="src-comm">//Error&nbsp;type&nbsp;constants</span></div></li>
+<li><div class="src-line"><a name="a15"></a><a href="http://www.php.net/define">define</a><span class="src-sym">(</span><span class="src-str">'ERROR'</span><span class="src-sym">,&nbsp;</span><span class="src-id">E_USER_ERROR</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a16"></a><a href="http://www.php.net/define">define</a><span class="src-sym">(</span><span class="src-str">'WARNING'</span><span class="src-sym">,&nbsp;</span><span class="src-id">E_USER_WARNING</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a17"></a><a href="http://www.php.net/define">define</a><span class="src-sym">(</span><span class="src-str">'NOTICE'</span><span class="src-sym">,&nbsp;</span><span class="src-id">E_USER_NOTICE</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a18"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a19"></a><span class="src-comm">//All&nbsp;errors&nbsp;may&nbsp;be&nbsp;defined&nbsp;by&nbsp;the&nbsp;following&nbsp;format:</span></div></li>
+<li><div class="src-line"><a name="a20"></a><span class="src-comm">//define('ExceptionName',&nbsp;N);</span></div></li>
+<li><div class="src-line"><a name="a21"></a><span class="src-comm">//$error['lang'][N]&nbsp;=&nbsp;'Error&nbsp;message';</span></div></li>
+<li><div class="src-line"><a name="a22"></a><span class="src-var">$error&nbsp;</span>=&nbsp;<span class="src-key">array</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a23"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a24"></a><span class="src-comm">/*</span></div></li>
+<li><div class="src-line"><a name="a25"></a><span class="src-comm">I've&nbsp;used&nbsp;Babelfish&nbsp;and&nbsp;a&nbsp;little&nbsp;poor&nbsp;knowledge&nbsp;of&nbsp;Romance/Germanic&nbsp;languages&nbsp;for&nbsp;the&nbsp;translations</span></div></li>
+<li><div class="src-line"><a name="a26"></a><span class="src-comm">here.&nbsp;&nbsp;Feel&nbsp;free&nbsp;to&nbsp;correct&nbsp;anything&nbsp;that&nbsp;looks&nbsp;amiss&nbsp;to&nbsp;you.</span></div></li>
+<li><div class="src-line"><a name="a27"></a><span class="src-comm">*/</span></div></li>
+<li><div class="src-line"><a name="a28"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a29"></a><a href="http://www.php.net/define">define</a><span class="src-sym">(</span><span class="src-str">'PolymorphicArgumentException'</span><span class="src-sym">,&nbsp;</span>-<span class="src-num">1</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a30"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'EN'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">1</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Invalid&nbsp;argument&nbsp;pattern&nbsp;for&nbsp;polymorphic&nbsp;function.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a31"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'FR'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">1</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Modèle&nbsp;inadmissible&nbsp;d'argument&nbsp;pour&nbsp;la&nbsp;fonction&nbsp;polymorphe.&quot;</span>.</div></li>
+<li><div class="src-line"><a name="a32"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'DE'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">1</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Unzulässiges&nbsp;Argumentmuster&nbsp;für&nbsp;polymorphe&nbsp;Funktion.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a33"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a34"></a><a href="http://www.php.net/define">define</a><span class="src-sym">(</span><span class="src-str">'ArgumentTypeException'</span><span class="src-sym">,&nbsp;</span>-<span class="src-num">2</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a35"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'EN'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">2</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Invalid&nbsp;argument&nbsp;type.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a36"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'FR'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">2</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Type&nbsp;inadmissible&nbsp;d'argument.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a37"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'DE'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">2</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Unzulässige&nbsp;Argumentart.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a38"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a39"></a><a href="http://www.php.net/define">define</a><span class="src-sym">(</span><span class="src-str">'ArgumentBoundsException'</span><span class="src-sym">,&nbsp;</span>-<span class="src-num">3</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a40"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'EN'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">3</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Invalid&nbsp;argument&nbsp;range.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a41"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'FR'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">3</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Gamme&nbsp;inadmissible&nbsp;d'argument.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a42"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'DE'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">3</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Unzulässige&nbsp;Argumentstrecke.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a43"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a44"></a><a href="http://www.php.net/define">define</a><span class="src-sym">(</span><span class="src-str">'MatrixDimensionException'</span><span class="src-sym">,&nbsp;</span>-<span class="src-num">4</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a45"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'EN'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">4</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Matrix&nbsp;dimensions&nbsp;are&nbsp;not&nbsp;equal.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a46"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'FR'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">4</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Les&nbsp;dimensions&nbsp;de&nbsp;Matrix&nbsp;ne&nbsp;sont&nbsp;pas&nbsp;égales.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a47"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'DE'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">4</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Matrixmaße&nbsp;sind&nbsp;nicht&nbsp;gleich.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a48"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a49"></a><a href="http://www.php.net/define">define</a><span class="src-sym">(</span><span class="src-str">'PrecisionLossException'</span><span class="src-sym">,&nbsp;</span>-<span class="src-num">5</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a50"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'EN'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">5</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Significant&nbsp;precision&nbsp;loss&nbsp;detected.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a51"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'FR'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">5</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Perte&nbsp;significative&nbsp;de&nbsp;précision&nbsp;détectée.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a52"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'DE'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">5</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Bedeutender&nbsp;Präzision&nbsp;Verlust&nbsp;ermittelte.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a53"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a54"></a><a href="http://www.php.net/define">define</a><span class="src-sym">(</span><span class="src-str">'MatrixSPDException'</span><span class="src-sym">,&nbsp;</span>-<span class="src-num">6</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a55"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'EN'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">6</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Can&nbsp;only&nbsp;perform&nbsp;operation&nbsp;on&nbsp;symmetric&nbsp;positive&nbsp;definite&nbsp;matrix.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a56"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'FR'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">6</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Perte&nbsp;significative&nbsp;de&nbsp;précision&nbsp;détectée.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a57"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'DE'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">6</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Bedeutender&nbsp;Präzision&nbsp;Verlust&nbsp;ermittelte.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a58"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a59"></a><a href="http://www.php.net/define">define</a><span class="src-sym">(</span><span class="src-str">'MatrixSingularException'</span><span class="src-sym">,&nbsp;</span>-<span class="src-num">7</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a60"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'EN'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">7</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Can&nbsp;only&nbsp;perform&nbsp;operation&nbsp;on&nbsp;singular&nbsp;matrix.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a61"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a62"></a><a href="http://www.php.net/define">define</a><span class="src-sym">(</span><span class="src-str">'MatrixRankException'</span><span class="src-sym">,&nbsp;</span>-<span class="src-num">8</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a63"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'EN'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">8</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Can&nbsp;only&nbsp;perform&nbsp;operation&nbsp;on&nbsp;full-rank&nbsp;matrix.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a64"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a65"></a><a href="http://www.php.net/define">define</a><span class="src-sym">(</span><span class="src-str">'ArrayLengthException'</span><span class="src-sym">,&nbsp;</span>-<span class="src-num">9</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a66"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'EN'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">9</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;Array&nbsp;length&nbsp;must&nbsp;be&nbsp;a&nbsp;multiple&nbsp;of&nbsp;m.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a67"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a68"></a><a href="http://www.php.net/define">define</a><span class="src-sym">(</span><span class="src-str">'RowLengthException'</span><span class="src-sym">,&nbsp;</span>-<span class="src-num">10</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a69"></a><span class="src-var">$error</span><span class="src-sym">[</span><span class="src-str">'EN'</span><span class="src-sym">]</span><span class="src-sym">[</span>-<span class="src-num">10</span><span class="src-sym">]&nbsp;</span>=&nbsp;<span class="src-str">&quot;All&nbsp;rows&nbsp;must&nbsp;have&nbsp;the&nbsp;same&nbsp;length.&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a70"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a71"></a><span class="src-doc">/**</span></div></li>
+<li><div class="src-line"><a name="a72"></a><span class="src-doc">*&nbsp;Custom&nbsp;error&nbsp;handler</span></div></li>
+<li><div class="src-line"><a name="a73"></a><span class="src-doc">*&nbsp;</span><span class="src-doc-coretag">@param&nbsp;</span><span class="src-doc-type">int&nbsp;</span><span class="src-doc-var">$type&nbsp;</span><span class="src-doc">Error&nbsp;type:&nbsp;{ERROR,&nbsp;WARNING,&nbsp;NOTICE}</span></div></li>
+<li><div class="src-line"><a name="a74"></a><span class="src-doc">*&nbsp;</span><span class="src-doc-coretag">@param&nbsp;</span><span class="src-doc-type">int&nbsp;</span><span class="src-doc-var">$num&nbsp;</span><span class="src-doc">Error&nbsp;number</span></div></li>
+<li><div class="src-line"><a name="a75"></a><span class="src-doc">*&nbsp;</span><span class="src-doc-coretag">@param&nbsp;</span><span class="src-doc-type">string&nbsp;</span><span class="src-doc-var">$file&nbsp;</span><span class="src-doc">File&nbsp;in&nbsp;which&nbsp;the&nbsp;error&nbsp;occured</span></div></li>
+<li><div class="src-line"><a name="a76"></a><span class="src-doc">*&nbsp;</span><span class="src-doc-coretag">@param&nbsp;</span><span class="src-doc-type">int&nbsp;</span><span class="src-doc-var">$line&nbsp;</span><span class="src-doc">Line&nbsp;on&nbsp;which&nbsp;the&nbsp;error&nbsp;occured</span></div></li>
+<li><div class="src-line"><a name="a77"></a><span class="src-doc">*/</span></div></li>
+<li><div class="src-line"><a name="a78"></a><span class="src-key">function&nbsp;</span><a href="../JAMA/_PHPExcel---Shared---JAMA---utils---Error.php.html#functionJAMAError">JAMAError</a><span class="src-sym">(&nbsp;</span><span class="src-var">$type&nbsp;</span>=&nbsp;<span class="src-id">null</span><span class="src-sym">,&nbsp;</span><span class="src-var">$num&nbsp;</span>=&nbsp;<span class="src-id">null</span><span class="src-sym">,&nbsp;</span><span class="src-var">$file&nbsp;</span>=&nbsp;<span class="src-id">null</span><span class="src-sym">,&nbsp;</span><span class="src-var">$line&nbsp;</span>=&nbsp;<span class="src-id">null</span><span class="src-sym">,&nbsp;</span><span class="src-var">$context&nbsp;</span>=&nbsp;<span class="src-id">null&nbsp;</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line"><a name="a79"></a>&nbsp;&nbsp;<span class="src-key">global&nbsp;</span><span class="src-var">$error</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a80"></a>&nbsp;&nbsp;</div></li>
+<li><div class="src-line"><a name="a81"></a>&nbsp;&nbsp;<span class="src-var">$lang&nbsp;</span>=&nbsp;<span class="src-id"><a href="../JAMA/_PHPExcel---Shared---JAMA---utils---Error.php.html#defineLANG">LANG</a></span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a82"></a>&nbsp;&nbsp;<span class="src-key">if</span><span class="src-sym">(&nbsp;</span>isset<span class="src-sym">(</span><span class="src-var">$type</span><span class="src-sym">)&nbsp;</span>&amp;&amp;&nbsp;isset<span class="src-sym">(</span><span class="src-var">$num</span><span class="src-sym">)&nbsp;</span>&amp;&amp;&nbsp;isset<span class="src-sym">(</span><span class="src-var">$file</span><span class="src-sym">)&nbsp;</span>&amp;&amp;&nbsp;isset<span class="src-sym">(</span><span class="src-var">$line</span><span class="src-sym">)&nbsp;)&nbsp;&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line"><a name="a83"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">switch</span><span class="src-sym">(&nbsp;</span><span class="src-var">$type&nbsp;</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line"><a name="a84"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">case&nbsp;</span><span class="src-id"><a href="../JAMA/_PHPExcel---Shared---JAMA---utils---Error.php.html#defineERROR">ERROR</a></span>:</div></li>
+<li><div class="src-line"><a name="a85"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;<span class="src-str">'&lt;div&nbsp;class=&quot;errror&quot;&gt;&lt;b&gt;Error:&lt;/b&gt;&nbsp;'&nbsp;</span>.&nbsp;<span class="src-var">$error</span><span class="src-sym">[</span><span class="src-var">$lang</span><span class="src-sym">]</span><span class="src-sym">[</span><span class="src-var">$num</span><span class="src-sym">]&nbsp;</span>.&nbsp;<span class="src-str">'&lt;br&nbsp;/&gt;'&nbsp;</span>.&nbsp;<span class="src-var">$file&nbsp;</span>.&nbsp;<span class="src-str">'&nbsp;@&nbsp;L'&nbsp;</span>.&nbsp;<span class="src-var">$line&nbsp;</span>.&nbsp;<span class="src-str">'&lt;/div&gt;'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a86"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">die</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a87"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">break</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a88"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></li>
+<li><div class="src-line"><a name="a89"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">case&nbsp;</span><span class="src-id"><a href="../JAMA/_PHPExcel---Shared---JAMA---utils---Error.php.html#defineWARNING">WARNING</a></span>:</div></li>
+<li><div class="src-line"><a name="a90"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;<span class="src-str">'&lt;div&nbsp;class=&quot;warning&quot;&gt;&lt;b&gt;Warning:&lt;/b&gt;&nbsp;'&nbsp;</span>.&nbsp;<span class="src-var">$error</span><span class="src-sym">[</span><span class="src-var">$lang</span><span class="src-sym">]</span><span class="src-sym">[</span><span class="src-var">$num</span><span class="src-sym">]&nbsp;</span>.&nbsp;<span class="src-str">'&lt;br&nbsp;/&gt;'&nbsp;</span>.&nbsp;<span class="src-var">$file&nbsp;</span>.&nbsp;<span class="src-str">'&nbsp;@&nbsp;L'&nbsp;</span>.&nbsp;<span class="src-var">$line&nbsp;</span>.&nbsp;<span class="src-str">'&lt;/div&gt;'</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a91"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">break</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a92"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></li>
+<li><div class="src-line"><a name="a93"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">case&nbsp;</span><span class="src-id"><a href="../JAMA/_PHPExcel---Shared---JAMA---utils---Error.php.html#defineNOTICE">NOTICE</a></span>:</div></li>
+<li><div class="src-line"><a name="a94"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//echo&nbsp;'&lt;div&nbsp;class=&quot;notice&quot;&gt;&lt;b&gt;Notice:&lt;/b&gt;&nbsp;'&nbsp;.&nbsp;$error[$lang][$num]&nbsp;.&nbsp;'&lt;br&nbsp;/&gt;'&nbsp;.&nbsp;$file&nbsp;.&nbsp;'&nbsp;@&nbsp;L'&nbsp;.&nbsp;$line&nbsp;.&nbsp;'&lt;/div&gt;';</span></div></li>
+<li><div class="src-line"><a name="a95"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">break</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a96"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a97"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">case&nbsp;</span><span class="src-id">E_NOTICE</span>:</div></li>
+<li><div class="src-line"><a name="a98"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//echo&nbsp;'&lt;div&nbsp;class=&quot;errror&quot;&gt;&lt;b&gt;Notice:&lt;/b&gt;&nbsp;'&nbsp;.&nbsp;$error[$lang][$num]&nbsp;.&nbsp;'&lt;br&nbsp;/&gt;'&nbsp;.&nbsp;$file&nbsp;.&nbsp;'&nbsp;@&nbsp;L'&nbsp;.&nbsp;$line&nbsp;.&nbsp;'&lt;/div&gt;';</span></div></li>
+<li><div class="src-line"><a name="a99"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">break</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a100"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a101"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">case&nbsp;</span><span class="src-id">E_STRICT</span>:</div></li>
+<li><div class="src-line"><a name="a102"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">break</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a103"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div></li>
+<li><div class="src-line"><a name="a104"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">case&nbsp;</span><span class="src-id">E_WARNING</span>:</div></li>
+<li><div class="src-line"><a name="a105"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">break</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a106"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a107"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">default</span>:</div></li>
+<li><div class="src-line"><a name="a108"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;<span class="src-str">&quot;</span><span class="src-str">&lt;div&nbsp;class=\&quot;error\&quot;&gt;&lt;b&gt;Unknown&nbsp;Error&nbsp;Type:&lt;/b&gt;&nbsp;<span class="src-var">$type</span>&nbsp;-&nbsp;<span class="src-var">$file</span>&nbsp;@&nbsp;L{<span class="src-var">$line</span><span class="src-sym">}</span>&lt;/div&gt;</span><span class="src-str">&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a109"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">die</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a110"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">break</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a111"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line"><a name="a112"></a>&nbsp;&nbsp;<span class="src-sym">}&nbsp;</span><span class="src-key">else&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line"><a name="a113"></a>&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">die</span><span class="src-sym">(&nbsp;</span><span class="src-str">&quot;Invalid&nbsp;arguments&nbsp;to&nbsp;JAMAError()&quot;&nbsp;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a114"></a>&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line"><a name="a115"></a><span class="src-sym">}</span></div></li>
+<li><div class="src-line"><a name="a116"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a117"></a><a href="http://www.php.net/set_error_handler">set_error_handler</a><span class="src-sym">(</span><span class="src-str">'JAMAError'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a118"></a><a href="http://www.php.net/error_reporting">error_reporting</a><span class="src-sym">(</span><span class="src-id"><a href="../JAMA/_PHPExcel---Shared---JAMA---utils---Error.php.html#defineERROR">ERROR</a>&nbsp;</span>|&nbsp;<span class="src-id"><a href="../JAMA/_PHPExcel---Shared---JAMA---utils---Error.php.html#defineWARNING">WARNING</a></span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a119"></a><span class="src-php">?&gt;</span></div></li>
+</ol>
+</div>
+        <div class="credit">
+		    <hr />
+		    Documentation generated on Mon, 05 Jan 2009 20:36:53 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
+	      </div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

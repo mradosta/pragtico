@@ -1,0 +1,490 @@
+<html>
+<head>
+<title>phpDocumentor Parser Errors and Warnings</title>
+<link rel="stylesheet" type="text/css" href="media/style.css">
+</head>
+<body>
+
+<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
+  <tr>
+    <td class="header_top">PHPExcel_Shared</td>
+  </tr>
+  <tr><td class="header_line"><img src="media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+  <tr>
+    <td class="header_menu">
+        
+                                                                                                                                                                                                                        
+                                                                                                                                                                                              		  [ <a href="classtrees_PHPExcel_Shared.html" class="menu">class tree: PHPExcel_Shared</a> ]
+		  [ <a href="elementindex_PHPExcel_Shared.html" class="menu">index: PHPExcel_Shared</a> ]
+		  	    [ <a href="elementindex.html" class="menu">all elements</a> ]
+    </td>
+  </tr>
+  <tr><td class="header_line"><img src="media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="200" class="menu">
+	<div id="todolist">
+			<p><a href="todolist.html">Todo List</a></p>
+	</div>
+      <b>Packages:</b><br />
+              <a href="li_default.html">default</a><br />
+              <a href="li_JAMA.html">JAMA</a><br />
+              <a href="li_Math_Stats.html">Math_Stats</a><br />
+              <a href="li_PHPExcel.html">PHPExcel</a><br />
+              <a href="li_PHPExcel_Calculation.html">PHPExcel_Calculation</a><br />
+              <a href="li_PHPExcel_Cell.html">PHPExcel_Cell</a><br />
+              <a href="li_PHPExcel_Reader.html">PHPExcel_Reader</a><br />
+              <a href="li_PHPExcel_Reader_Excel5.html">PHPExcel_Reader_Excel5</a><br />
+              <a href="li_PHPExcel_RichText.html">PHPExcel_RichText</a><br />
+              <a href="li_PHPExcel_Shared.html">PHPExcel_Shared</a><br />
+              <a href="li_PHPExcel_Shared_Escher.html">PHPExcel_Shared_Escher</a><br />
+              <a href="li_PHPExcel_Shared_OLE.html">PHPExcel_Shared_OLE</a><br />
+              <a href="li_PHPExcel_Style.html">PHPExcel_Style</a><br />
+              <a href="li_PHPExcel_Worksheet.html">PHPExcel_Worksheet</a><br />
+              <a href="li_PHPExcel_Worksheet_Drawing.html">PHPExcel_Worksheet_Drawing</a><br />
+              <a href="li_PHPExcel_Writer.html">PHPExcel_Writer</a><br />
+              <a href="li_PHPExcel_Writer_Excel5.html">PHPExcel_Writer_Excel5</a><br />
+              <a href="li_PHPExcel_Writer_Excel2007.html">PHPExcel_Writer_Excel2007</a><br />
+            <br /><br />
+                </td>
+    <td>
+      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
+
+<a href="#Post-parsing">Post-parsing</a><br>
+<a href="#benchmark.php">benchmark.php</a><br>
+<a href="#BIFFwriter.php">BIFFwriter.php</a><br>
+<a href="#ChainedBlockStream.php">ChainedBlockStream.php</a><br>
+<a href="#CholeskyDecomposition.php">CholeskyDecomposition.php</a><br>
+<a href="#courier.php">courier.php</a><br>
+<a href="#credits.php">credits.php</a><br>
+<a href="#docs.php">docs.php</a><br>
+<a href="#download.php">download.php</a><br>
+<a href="#EigenvalueDecomposition.php">EigenvalueDecomposition.php</a><br>
+<a href="#Error.php">Error.php</a><br>
+<a href="#example.php">example.php</a><br>
+<a href="#footer.php">footer.php</a><br>
+<a href="#Format.php">Format.php</a><br>
+<a href="#fpdf.php">fpdf.php</a><br>
+<a href="#Functions.php">Functions.php</a><br>
+<a href="#header.php">header.php</a><br>
+<a href="#HeaderFooter.php">HeaderFooter.php</a><br>
+<a href="#HeaderFooterDrawing.php">HeaderFooterDrawing.php</a><br>
+<a href="#helvetica.php">helvetica.php</a><br>
+<a href="#helveticab.php">helveticab.php</a><br>
+<a href="#helveticabi.php">helveticabi.php</a><br>
+<a href="#helveticai.php">helveticai.php</a><br>
+<a href="#index.php">index.php</a><br>
+<a href="#LagrangeInterpolation.php">LagrangeInterpolation.php</a><br>
+<a href="#LagrangeInterpolation2.php">LagrangeInterpolation2.php</a><br>
+<a href="#LevenbergMarquardt.php">LevenbergMarquardt.php</a><br>
+<a href="#LMQuadTest.php">LMQuadTest.php</a><br>
+<a href="#LUDecomposition.php">LUDecomposition.php</a><br>
+<a href="#MagicSquareExample.php">MagicSquareExample.php</a><br>
+<a href="#Maths.php">Maths.php</a><br>
+<a href="#Matrix.php">Matrix.php</a><br>
+<a href="#navbar.php">navbar.php</a><br>
+<a href="#OLE.php">OLE.php</a><br>
+<a href="#OLERead.php">OLERead.php</a><br>
+<a href="#OLE_File.php">OLE_File.php</a><br>
+<a href="#OLE_PPS.php">OLE_PPS.php</a><br>
+<a href="#OLE_Root.php">OLE_Root.php</a><br>
+<a href="#package.php">package.php</a><br>
+<a href="#PageSetup.php">PageSetup.php</a><br>
+<a href="#Parser.php">Parser.php</a><br>
+<a href="#polyfit.php">polyfit.php</a><br>
+<a href="#QRDecomposition.php">QRDecomposition.php</a><br>
+<a href="#SingularValueDecomposition.php">SingularValueDecomposition.php</a><br>
+<a href="#Stats.php">Stats.php</a><br>
+<a href="#symbol.php">symbol.php</a><br>
+<a href="#test.php">test.php</a><br>
+<a href="#TestMatrix.php">TestMatrix.php</a><br>
+<a href="#tile.php">tile.php</a><br>
+<a href="#times.php">times.php</a><br>
+<a href="#timesb.php">timesb.php</a><br>
+<a href="#timesbi.php">timesbi.php</a><br>
+<a href="#timesi.php">timesi.php</a><br>
+<a href="#Workbook.php">Workbook.php</a><br>
+<a href="#Worksheet.php">Worksheet.php</a><br>
+<a href="#XMLWriter.php">XMLWriter.php</a><br>
+<a href="#zapfdingbats.php">zapfdingbats.php</a><br>
+<a name="Post-parsing"></a>
+<h1>Post-parsing</h1>
+<h2>Warnings:</h2><br>
+<b>Warning</b> - 
+duplicate class element "LagrangeInterpolation" in file C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\examples\LagrangeInterpolation2.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<a name="BaseDrawing.php"></a>
+<h1>BaseDrawing.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 360</b> - example file "$objDrawing->setResizeProportional(true);" does not exist<br>
+<b>Warning on line 360</b> - example file "$objDrawing->setWidthAndHeight(160,120);" does not exist<br>
+<a name="benchmark.php"></a>
+<h1>benchmark.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 5</b> - Page-level DocBlock precedes "require_once "../Matrix.php"", use another DocBlock to document the source element<br>
+<b>Warning on line 11</b> - no @package tag was used in a DocBlock for class Benchmark<br>
+<a name="BIFFwriter.php"></a>
+<h1>BIFFwriter.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 52</b> - DocBlock would be page-level, but precedes class "PHPExcel_Writer_Excel5_BIFFwriter", use another DocBlock to document the file<br>
+<b>Warning on line 57</b> - class variable "PHPExcel_Writer_Excel5_BIFFwriter::$_BIFF_version" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 63</b> - class variable "PHPExcel_Writer_Excel5_BIFFwriter::$_byte_order" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 69</b> - class variable "PHPExcel_Writer_Excel5_BIFFwriter::$_data" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 75</b> - class variable "PHPExcel_Writer_Excel5_BIFFwriter::$_datasize" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 82</b> - class variable "PHPExcel_Writer_Excel5_BIFFwriter::$_limit" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<a name="ChainedBlockStream.php"></a>
+<h1>ChainedBlockStream.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 27</b> - Page-level DocBlock precedes "require_once 'PHPExcel/Shared/OLE.php'", use another DocBlock to document the source element<br>
+<a name="CholeskyDecomposition.php"></a>
+<h1>CholeskyDecomposition.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 17</b> - DocBlock would be page-level, but precedes class "CholeskyDecomposition", use another DocBlock to document the file<br>
+<a name="courier.php"></a>
+<h1>courier.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 6</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\PDF\font\courier.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="credits.php"></a>
+<h1>credits.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 13</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\docs\includes\credits.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="docs.php"></a>
+<h1>docs.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 5</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\docs\docs.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="download.php"></a>
+<h1>download.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 15</b> - Unknown tag "@modified" used<br>
+<b>Warning on line 64</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\docs\download.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="EigenvalueDecomposition.php"></a>
+<h1>EigenvalueDecomposition.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 23</b> - DocBlock would be page-level, but precedes class "EigenvalueDecomposition", use another DocBlock to document the file<br>
+<a name="Error.php"></a>
+<h1>Error.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 10</b> - Page-level DocBlock precedes "define LANG", use another DocBlock to document the source element<br>
+<a name="example.php"></a>
+<h1>example.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 165</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\docs\example.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="footer.php"></a>
+<h1>footer.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\docs\includes\footer.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="Format.php"></a>
+<h1>Format.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 43</b> - DocBlock would be page-level, but precedes class "PHPExcel_Writer_Excel5_Format", use another DocBlock to document the file<br>
+<b>Warning on line 48</b> - class variable "PHPExcel_Writer_Excel5_Format::$_xf_index" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 60</b> - class variable "PHPExcel_Writer_Excel5_Format::$_font_name" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 66</b> - class variable "PHPExcel_Writer_Excel5_Format::$_size" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 72</b> - class variable "PHPExcel_Writer_Excel5_Format::$_bold" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 78</b> - class variable "PHPExcel_Writer_Excel5_Format::$_italic" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 84</b> - class variable "PHPExcel_Writer_Excel5_Format::$_color" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 90</b> - class variable "PHPExcel_Writer_Excel5_Format::$_underline" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 96</b> - class variable "PHPExcel_Writer_Excel5_Format::$_font_strikeout" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 102</b> - class variable "PHPExcel_Writer_Excel5_Format::$_font_outline" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 108</b> - class variable "PHPExcel_Writer_Excel5_Format::$_font_shadow" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 114</b> - class variable "PHPExcel_Writer_Excel5_Format::$_font_script" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 120</b> - class variable "PHPExcel_Writer_Excel5_Format::$_font_family" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 126</b> - class variable "PHPExcel_Writer_Excel5_Format::$_font_charset" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 132</b> - class variable "PHPExcel_Writer_Excel5_Format::$_num_format" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 138</b> - class variable "PHPExcel_Writer_Excel5_Format::$_hidden" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 144</b> - class variable "PHPExcel_Writer_Excel5_Format::$_locked" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 150</b> - class variable "PHPExcel_Writer_Excel5_Format::$_text_h_align" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 156</b> - class variable "PHPExcel_Writer_Excel5_Format::$_text_wrap" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 162</b> - class variable "PHPExcel_Writer_Excel5_Format::$_indent" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 168</b> - class variable "PHPExcel_Writer_Excel5_Format::$_shrink_to_fit" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 174</b> - class variable "PHPExcel_Writer_Excel5_Format::$_text_v_align" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 180</b> - class variable "PHPExcel_Writer_Excel5_Format::$_text_justlast" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 186</b> - class variable "PHPExcel_Writer_Excel5_Format::$_rotation" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 192</b> - class variable "PHPExcel_Writer_Excel5_Format::$_fg_color" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 198</b> - class variable "PHPExcel_Writer_Excel5_Format::$_bg_color" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 204</b> - class variable "PHPExcel_Writer_Excel5_Format::$_pattern" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 210</b> - class variable "PHPExcel_Writer_Excel5_Format::$_bottom" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 216</b> - class variable "PHPExcel_Writer_Excel5_Format::$_bottom_color" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 222</b> - class variable "PHPExcel_Writer_Excel5_Format::$_top" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 228</b> - class variable "PHPExcel_Writer_Excel5_Format::$_top_color" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 234</b> - class variable "PHPExcel_Writer_Excel5_Format::$_left" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 240</b> - class variable "PHPExcel_Writer_Excel5_Format::$_left_color" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 246</b> - class variable "PHPExcel_Writer_Excel5_Format::$_right" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 252</b> - class variable "PHPExcel_Writer_Excel5_Format::$_right_color" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<h2>Errors:</h2><br>
+<b>Error on line 168</b> - "@var" tag was used without any parameters, illegal<br>
+<a name="fpdf.php"></a>
+<h1>fpdf.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 16</b> - no @package tag was used in a DocBlock for class FPDF<br>
+<b>Warning on line 1099</b> - method "FPDF::_dochecks()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1106</b> - method "FPDF::_getfontpath()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1177</b> - method "FPDF::_putpages()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1294</b> - method "FPDF::_putfonts()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1343</b> - method "FPDF::_putimages()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1349</b> - method "FPDF::_putxobjectdict()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1361</b> - method "FPDF::_putresourcedict()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1374</b> - method "FPDF::_putresources()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1390</b> - method "FPDF::_putinfo()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1410</b> - method "FPDF::_putcatalog()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1415</b> - method "FPDF::_putheader()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1422</b> - method "FPDF::_puttrailer()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1457</b> - method "FPDF::_enddoc()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1496</b> - method "FPDF::_beginpage()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1502</b> - method "FPDF::_endpage()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1510</b> - method "FPDF::_newobj()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1519</b> - method "FPDF::_dounderline()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1543</b> - method "FPDF::_parsejpg()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1626</b> - method "FPDF::_parsepng()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1633</b> - method "FPDF::_freadint()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1639</b> - method "FPDF::_textstring()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1645</b> - method "FPDF::_escape()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1652</b> - method "FPDF::_putstream()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1661</b> - method "FPDF::_out()" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1672</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\PDF\fpdf.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="Functions.php"></a>
+<h1>Functions.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 29</b> - Page-level DocBlock precedes "define EPS", use another DocBlock to document the source element<br>
+<a name="header.php"></a>
+<h1>header.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 10</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\docs\includes\header.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="HeaderFooterDrawing.php"></a>
+<h1>HeaderFooterDrawing.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 226</b> - example file "$objDrawing->setWidthAndHeight(160,120);" does not exist<br>
+<b>Warning on line 226</b> - example file "$objDrawing->setResizeProportional(true);" does not exist<br>
+<a name="helvetica.php"></a>
+<h1>helvetica.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 14</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\PDF\font\helvetica.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="helveticab.php"></a>
+<h1>helveticab.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 14</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\PDF\font\helveticab.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="helveticabi.php"></a>
+<h1>helveticabi.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 14</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\PDF\font\helveticabi.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="helveticai.php"></a>
+<h1>helveticai.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 14</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\PDF\font\helveticai.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="index.php"></a>
+<h1>index.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 29</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\docs\index.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="LagrangeInterpolation.php"></a>
+<h1>LagrangeInterpolation.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 20</b> - no @package tag was used in a DocBlock for class LagrangeInterpolation<br>
+<b>Warning on line 61</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\examples\LagrangeInterpolation.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="LagrangeInterpolation2.php"></a>
+<h1>LagrangeInterpolation2.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 21</b> - no @package tag was used in a DocBlock for class LagrangeInterpolation<br>
+<b>Warning on line 62</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\examples\LagrangeInterpolation2.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="LevenbergMarquardt.php"></a>
+<h1>LevenbergMarquardt.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 6</b> - no @package tag was used in a DocBlock for class LevenbergMarquardt<br>
+<b>Warning on line 190</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\examples\LevenbergMarquardt.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="LMQuadTest.php"></a>
+<h1>LMQuadTest.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 6</b> - no @package tag was used in a DocBlock for class LMQuadTest<br>
+<b>Warning on line 119</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\examples\LMQuadTest.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="LUDecomposition.php"></a>
+<h1>LUDecomposition.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 20</b> - DocBlock would be page-level, but precedes class "LUDecomposition", use another DocBlock to document the file<br>
+<a name="MagicSquareExample.php"></a>
+<h1>MagicSquareExample.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 5</b> - Page-level DocBlock precedes "require_once "../Matrix.php"", use another DocBlock to document the source element<br>
+<b>Warning on line 10</b> - no @package tag was used in a DocBlock for class MagicSquareExample<br>
+<a name="Maths.php"></a>
+<h1>Maths.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 23</b> - Page-level DocBlock precedes "function hypo", use another DocBlock to document the source element<br>
+<a name="Matrix.php"></a>
+<h1>Matrix.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 5</b> - Page-level DocBlock precedes "define RAND_MAX", use another DocBlock to document the source element<br>
+<b>Warning on line 26</b> - no @package tag was used in a DocBlock for class Matrix<br>
+<h2>Errors:</h2><br>
+<b>Error on line 53</b> - "@return" tag was used without any parameters, illegal<br>
+<a name="navbar.php"></a>
+<h1>navbar.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 4</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\docs\includes\navbar.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="OLE.php"></a>
+<h1>OLE.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 100</b> - Unknown tag "@acces" used<br>
+<b>Warning on line 546</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\OLE.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="OLERead.php"></a>
+<h1>OLERead.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 27</b> - Page-level DocBlock precedes "define IDENTIFIER_OLE", use another DocBlock to document the source element<br>
+<b>Warning on line 35</b> - no @package tag was used in a DocBlock for class PHPExcel_Shared_OLERead<br>
+<a name="OLE_File.php"></a>
+<h1>OLE_File.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 121</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\OLE\OLE_File.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="OLE_PPS.php"></a>
+<h1>OLE_PPS.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 219</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\OLE\OLE_PPS.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="OLE_Root.php"></a>
+<h1>OLE_Root.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 480</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\OLE\OLE_Root.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="package.php"></a>
+<h1>package.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 35</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\docs\package.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="Parser.php"></a>
+<h1>Parser.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 40</b> - class variable "PHPExcel_Writer_Excel5_Parser::$_current_char" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 46</b> - class variable "PHPExcel_Writer_Excel5_Parser::$_current_token" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 52</b> - class variable "PHPExcel_Writer_Excel5_Parser::$_formula" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 58</b> - class variable "PHPExcel_Writer_Excel5_Parser::$_lookahead" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 64</b> - class variable "PHPExcel_Writer_Excel5_Parser::$_parse_tree" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 70</b> - class variable "PHPExcel_Writer_Excel5_Parser::$_byte_order" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 76</b> - class variable "PHPExcel_Writer_Excel5_Parser::$_ext_sheets" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 82</b> - class variable "PHPExcel_Writer_Excel5_Parser::$_references" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 88</b> - class variable "PHPExcel_Writer_Excel5_Parser::$_BIFF_version" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1540</b> - File "C:\PHPExcel\Classes\PHPExcel\Writer\Excel5\Parser.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="polyfit.php"></a>
+<h1>polyfit.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 72</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\examples\polyfit.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="QRDecomposition.php"></a>
+<h1>QRDecomposition.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 18</b> - DocBlock would be page-level, but precedes class "QRDecomposition", use another DocBlock to document the file<br>
+<a name="SingularValueDecomposition.php"></a>
+<h1>SingularValueDecomposition.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 19</b> - DocBlock would be page-level, but precedes class "SingularValueDecomposition", use another DocBlock to document the file<br>
+<a name="Stats.php"></a>
+<h1>Stats.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1604</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\examples\Stats.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="symbol.php"></a>
+<h1>symbol.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 14</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\PDF\font\symbol.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="test.php"></a>
+<h1>test.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 27</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\docs\test.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="TestMatrix.php"></a>
+<h1>TestMatrix.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 4</b> - no @package tag was used in a DocBlock for class TestMatrix<br>
+<b>Warning on line 414</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\tests\TestMatrix.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="tile.php"></a>
+<h1>tile.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 77</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\JAMA\examples\tile.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="times.php"></a>
+<h1>times.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 14</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\PDF\font\times.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="timesb.php"></a>
+<h1>timesb.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 14</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\PDF\font\timesb.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="timesbi.php"></a>
+<h1>timesbi.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 14</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\PDF\font\timesbi.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="timesi.php"></a>
+<h1>timesi.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 14</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\PDF\font\timesi.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="Workbook.php"></a>
+<h1>Workbook.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 57</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_filename" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 63</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_parser" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 69</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_activesheet" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 75</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_firstsheet" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 81</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_selected" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 87</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_xf_index" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 94</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_fileclosed" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 101</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_biffsize" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 107</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_sheetname" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 113</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_tmp_format" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 119</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_worksheets" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 125</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_sheetnames" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 131</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_formats" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 137</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_palette" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 143</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_url_format" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 149</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_codepage" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 155</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_country_code" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 161</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_tmp_dir" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 167</b> - class variable "PHPExcel_Writer_Excel5_Workbook::$_string_sizeinfo_size" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 1733</b> - File "C:\PHPExcel\Classes\PHPExcel\Writer\Excel5\Workbook.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="Worksheet.php"></a>
+<h1>Worksheet.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 64</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_url_format" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 70</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_parser" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 76</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_filehandle" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 82</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_using_tmpfile" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 88</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_xls_rowmax" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 94</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_xls_colmax" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 100</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_xls_strmax" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 107</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_dim_rowmin" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 114</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_dim_rowmax" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 121</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_dim_colmin" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 128</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_dim_colmax" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 134</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_colinfo" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 140</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_selection" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 146</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_active_pane" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 158</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_outline_on" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 164</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_outline_style" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 170</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_outline_below" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 176</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_outline_right" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 182</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_outline_row_level" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 188</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_str_total" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 194</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_str_unique" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 200</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_str_table" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 206</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_tmp_dir" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 212</b> - class variable "PHPExcel_Writer_Excel5_Worksheet::$_tempFilesCreated" is assumed to be @access private because its name starts with _, but has no @access tag<br>
+<b>Warning on line 2598</b> - Unknown tag "@note" used<br>
+<b>Warning on line 2962</b> - File "C:\PHPExcel\Classes\PHPExcel\Writer\Excel5\Worksheet.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="XMLWriter.php"></a>
+<h1>XMLWriter.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 28</b> - Page-level DocBlock precedes "define DATE_W3C", use another DocBlock to document the source element<br>
+<a name="zapfdingbats.php"></a>
+<h1>zapfdingbats.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 14</b> - File "C:\PHPExcel\Classes\PHPExcel\Shared\PDF\font\zapfdingbats.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="HeaderFooter.php"></a>
+<h1>HeaderFooter.php</h1>
+<h2>Errors:</h2><br>
+<b>Error on line 99</b> - Unclosed code tag in DocBlock, parsing will be incorrect<br>
+<a name="PageSetup.php"></a>
+<h1>PageSetup.php</h1>
+<h2>Errors:</h2><br>
+<b>Error on line 106</b> - Unclosed code tag in DocBlock, parsing will be incorrect<br>
+        <div class="credit">
+		    <hr />
+		    Documentation generated on Mon, 05 Jan 2009 20:39:02 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
+	      </div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
