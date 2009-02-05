@@ -99,24 +99,32 @@ $appForm->addScript('
 	/**
 	 * Rebuild table tbody adding breakDowns rows.
 	 */
-	var buildTable = function(clickedRowId, url) {
+	var buildTable = function(clickedRowId, url, table) {
 		var breakDownRowId = "breakdown_row" + url.replace(/\//g, "_");
 		var newTbody = jQuery("<tbody/>");
 		
-		jQuery("table.index > tbody > tr").each(
+		if (table == undefined) {
+			table = "table.index";
+		}
+		jQuery(table).find("tbody").find("tr").each(
+
 			function() {
 				newTbody.append(this);
 				
 				if (clickedRowId == jQuery(this).attr("charoff")) {
 					var td = jQuery("<td/>").attr("colspan", "10");
-					td.append(jQuery("<div/>").attr("class", "desglose").load(url));
+					td.append(jQuery("<div/>").attr("class", "desglose").load(url, 
+	 					function() {
+							jQuery("img.breakdown_icon", this).bind("click", breakdown);
+						}
+				  	));
 					var tr = jQuery("<tr/>").addClass(breakDownRowId).addClass("breakdown_row").append(td);
 					newTbody.append(tr);
 				}
 			}
 		);
-		jQuery("table.index > tbody").remove();
-		jQuery("table.index").append(newTbody);
+		jQuery(table).find("tbody").remove();
+		jQuery(table).append(newTbody);
 		return false;
 	}
 	
@@ -126,7 +134,6 @@ $appForm->addScript('
 	 */
 	var closeAllBreakdowns = function() {
 		jQuery.cookie("breakDowns", null);
-		console.log(jQuery.cookie("breakDowns"));
 		jQuery(".breakdown_row").hide();
 		return false;
 	}
@@ -153,37 +160,39 @@ $appForm->addScript('
 	/**
 	 * Binds click event to breakdown icons.
 	 */
-	jQuery("img.breakdown_icon").bind("click", 
-		function() {
+ 	var breakdown = function() {
 
-			var clickedRowId = jQuery(this).parent().parent().attr("charoff");
-			var url = this.getAttribute("longdesc");
-			
-			var breakDownsCookie = jQuery.cookie("breakDowns");
-			if (breakDownsCookie != null) {
-				breakDowns = breakDownsCookie.split("|");
-			} else {
-				breakDowns = Array();
-			}
-			
-			var breakDownRowId = "breakdown_row" + url.replace(/\//g, "_");
-			if (jQuery("." + breakDownRowId).length) {
-				jQuery("." + breakDownRowId).toggle();
-	
-				if (!jQuery("." + breakDownRowId).is(":visible")) {
-					delete breakDowns[jQuery.inArray(url, breakDowns)];
-					jQuery.cookie("breakDowns", breakDowns.join("|"));
-				}
-				
-			} else {
-	
-				breakDowns.push(url);
-				jQuery.cookie("breakDowns", breakDowns.join("|"));
-	
-				buildTable(clickedRowId, url);
-			}
+		jQuery("div.banda_izquierda > p").text(jQuery("div.banda_izquierda > p").text() + " >> " + jQuery(this).attr("alt"));
+
+		var clickedRowId = jQuery(this).parent().parent().attr("charoff");
+		var url = this.getAttribute("longdesc");
+		
+		var breakDownsCookie = jQuery.cookie("breakDowns");
+		if (breakDownsCookie != null) {
+			breakDowns = breakDownsCookie.split("|");
+		} else {
+			breakDowns = Array();
 		}
-	);
+		
+		var breakDownRowId = "breakdown_row" + url.replace(/\//g, "_");
+		if (jQuery("." + breakDownRowId).length) {
+			jQuery("." + breakDownRowId).toggle();
+
+			if (!jQuery("." + breakDownRowId).is(":visible")) {
+				delete breakDowns[jQuery.inArray(url, breakDowns)];
+				jQuery.cookie("breakDowns", breakDowns.join("|"));
+			}
+			
+		} else {
+
+			breakDowns.push(url);
+			jQuery.cookie("breakDowns", breakDowns.join("|"));
+			var table = jQuery(this).parent().parent().parent().parent();
+			
+			buildTable(clickedRowId, url, table);
+		}
+	}
+	jQuery("img.breakdown_icon").bind("click", breakdown);
 	
 	
 
