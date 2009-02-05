@@ -9,52 +9,13 @@ $appForm->addCrumb($this->name,
 
 if ($this->action === 'add') {
 	$appForm->addCrumb(__('New', true));
-}
-else {
+} else {
 	$appForm->addCrumb(__('Edit', true));
-	if (!empty($miga)) {
-		
-		if (is_string($miga)) {
-			$tmp = $miga;
-			$miga = null;
-			$miga['content'][] = $tmp;
-		}
-		
-		if (isset($this->data[0])) {
-			$data = $this->data[0];
-		} elseif (isset($this->data)) {
-			$data = $this->data;
-		}
-		
-		if (!empty($data)) {
-			foreach ($miga['content'] as $contents) {
-				
-				$c = explode('.', $contents);
-				if (count($c) === 3) {
-					$text = $data[$c[0]][$c[1]][$c[2]];
-				}
-				elseif (count($c) === 2) {
-					$text = $data[$c[0]][$c[1]];
-				}
-				elseif (count($c) === 1) {
-					$text = $data[$c[0]];
-				}
-				$texts[] = $text;
-			}
-			if (!empty($miga['format'])) {
-				$breadCrumbText = vsprintf($miga['format'], $texts);
-			} else {
-				$breadCrumbText = implode(' ', $texts);
-			}
-			
-			$count = count($this->data);
-			if($count === 1) {
-				$appForm->addCrumb("<h5>" . $breadCrumbText . "</h5>");
-			}
-			else {
-				$appForm->addCrumb(sprintf(__('%s Records', true), $count));
-			}
-		}
+	$count = count($this->data);
+	if($count === 1) {
+		$appForm->addCrumb("<h5>" . $this->data[0][Inflector::classify($this->params['controller'])]['bread_crumb_text'] . "</h5>");
+	} else {
+		$appForm->addCrumb(sprintf(__('%s Records', true), $count));
 	}
 }
 

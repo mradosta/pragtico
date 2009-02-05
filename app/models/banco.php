@@ -25,6 +25,9 @@ class Banco extends AppModel {
 
 	var $order = array('Banco.nombre' => 'asc');
 
+	var $modificadores = array('index'	=> array('contain' => array()),
+								'edit'	=> array('contain' => array('Sucursal')));
+	
 	var $validate = array(
         'nombre' => array(
 			array(
@@ -38,6 +41,9 @@ class Banco extends AppModel {
         )
 	);
 
+	var $breadCrumb = array('format' => '(%s) %s', 
+							'fields' => array('Banco.codigo', 'Banco.nombre'));
+	
 	var $hasMany = array(	'Sucursal' =>
                         array('className'    => 'Sucursal',
 							  'dependent'	 => true));
