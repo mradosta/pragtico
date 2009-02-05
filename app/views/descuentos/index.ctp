@@ -47,7 +47,7 @@ $cuerpo = null;
 foreach ($registros as $k => $v) {
 	$fila = null;
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Descuento']['id'], 'imagen' => array('nombre' => 'detalles.gif', 'alt' => 'Detalles'), 'url' => 'detalles');
-	$fila[] = array('model' => 'Descuento', 'field' => 'id', 'valor'=>$id, 'write' => $v['Descuento']['write'], 'delete' => $v['Descuento']['delete']);
+	$fila[] = array('model' => 'Descuento', 'field' => 'id', 'valor' => $v['Descuento']['id'], 'write' => $v['Descuento']['write'], 'delete' => $v['Descuento']['delete']);
 	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], 'nombreEncabezado'=>'Empleador');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], 'class'=>'derecha', 'nombreEncabezado'=>'Documento');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . ' ' . $v['Relacion']['Trabajador']['nombre'], 'nombreEncabezado'=>'Trabajador');
