@@ -62,7 +62,7 @@ class FormuladorComponentTestCase extends CakeTestCase {
 
 	function testResolverNombreFormulas() {
 		
-		$formula = "=if ('mensual'       ='mensual1', 'Basico',         'Horas')";
+		$formula = "=if 	('mensual'       ='mensual1', 'Basico',         'Horas')";
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = 'Horas';
 		$this->assertEqual($expected, $result);
@@ -124,6 +124,11 @@ class FormuladorComponentTestCase extends CakeTestCase {
 
 	
     function testResolverAlgebraica() {
+		
+		$formula = "=if     ('ax'='ak', if ('j'='j', 3, 4), min(6,3)) + if    (  	5 >    4, 1, 2)";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '4';
+		$this->assertEqual($expected, $result);
     
 		$formula = "=if ('ax'='ak', if ('j'='j', 3, 4), min(6,3)) + if ('uz'='uz', 1, 2)";
 		$result = $this->FormuladorComponentTest->resolver($formula);

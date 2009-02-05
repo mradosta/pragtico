@@ -77,7 +77,7 @@ class FormuladorComponent extends Object {
 		*/
 		$formula = preg_replace('/\s*=\s*/', '=', $formula);
 		$formula = preg_replace('/\s*,\s*/', ',', $formula);
-		$formula = str_replace("if (", "if(", $formula);
+		$formula = preg_replace('/if\s*\(/', 'if(', $formula);
 		
 		
 		/**
