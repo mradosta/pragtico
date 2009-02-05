@@ -550,7 +550,6 @@ class AppFormHelper extends FormHelper {
 								$registroPermisos = array(
 									"tipo"		=> "desglose",
 									"id"		=> $vv1['valor'],
-									"update"	=> "desglose_permisos_" . $vv1['model'],
 									"imagen"	=> array('nombre'	=> 'permisos.gif',
 									"alt"		=> "Permisos"),
 									"url"		=> array(	'controller' 	=> strtolower(Inflector::pluralize(Inflector::underscore($vv1['model']))), 
@@ -566,6 +565,7 @@ class AppFormHelper extends FormHelper {
 					}
 				}
 			}
+			
 			foreach ($datos['cuerpo'] as $k=>$v) {
 				/**
 				* El contenido de la fila puede venir como un array puro o dentro del elemento contenido.
@@ -620,6 +620,7 @@ class AppFormHelper extends FormHelper {
 						continue;
 					}
 					elseif ($tipoCelda === "desglose") {
+
 						if (isset($campo['imagen']['nombre'])) {
 							$nombre = $campo['imagen']['nombre'];
 							unset($campo['imagen']['nombre']);
@@ -633,11 +634,15 @@ class AppFormHelper extends FormHelper {
 							$url = $campo['url'];
 						}
 						$url[] = $campo['id'];
-						$sUrl = Router::url($url);
 						
+						if (!isset($campo['bread_crumb'])) {
+							$campo['bread_crumb'] = '';
+						}
 						$acciones[] = $this->image($nombre, array_merge($campo['imagen'], array(
+								'title'		=> sprintf(__('Show %s of %s', true), $campo['imagen']['alt'], $campo['bread_crumb']),
+								'alt'		=> $campo['bread_crumb'],
 								'class'		=> 'breakdown_icon',
-								'longdesc'	=> $sUrl)));
+								'longdesc'	=> Router::url($url))));
 						
 						continue;
 					}
@@ -955,19 +960,19 @@ class AppFormHelper extends FormHelper {
 		$jsSeleccionMultiple = '
 			jQuery("table .seleccionarTodos").click(
 				function() {
-					jQuery(".tabla input[@type=\'checkbox\']").checkbox("seleccionar");
+					jQuery(".tabla :checkbox").checkbox("seleccionar");
 					return false;
 				}
 			);
 			jQuery("table .deseleccionarTodos").click(
 				function() {
-					jQuery(".tabla input[@type=\'checkbox\']").checkbox("deseleccionar");
+					jQuery(".tabla :checkbox").checkbox("deseleccionar");
 					return false;
 				}
 			);
 			jQuery("table .invertir").click(
 				function() {
-					jQuery(".tabla input[@type=\'checkbox\']").checkbox("invertir");
+					jQuery(".tabla :checkbox").checkbox("invertir");
 					return false;
 				}
 			);
@@ -975,7 +980,7 @@ class AppFormHelper extends FormHelper {
 			
 			jQuery("#modificar").click(
 				function() {
-					var c = jQuery(".tabla input[@type=\'checkbox\']").checkbox("contar");
+					var c = jQuery(".tabla :checkbox").checkbox("contar");
 					if (c>0) {
 						var action = "' . $this->Html->url("/") . $this->params['controller'] . '/edit";
 						jQuery("#form")[0].action = action;
@@ -990,7 +995,7 @@ class AppFormHelper extends FormHelper {
 			
 			jQuery("#eliminar").click(
 				function() {
-					var c = jQuery(".tabla input[@type=\'checkbox\']").checkbox("contar");
+					var c = jQuery(".tabla :checkbox").checkbox("contar");
 					if (c>0) {
 						var mensaje = "Esta seguro que desea eliminar " + c;
 						if (c==1) {
