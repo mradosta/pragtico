@@ -67,6 +67,7 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], 'nombreEncabezado' => 'Empleador');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], 'class' => 'derecha', 'nombreEncabezado' => 'Documento');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . ' ' . $v['Relacion']['Trabajador']['nombre'], 'nombreEncabezado' => 'Trabajador');
+	$fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => sprintf('%s - %s%s%s', $v['Liquidacion']['tipo'], $v['Liquidacion']['ano'], $v['Liquidacion']['mes'], $v['Liquidacion']['periodo']), 'nombreEncabezado' => 'Liquidacion');
 	$fila[] = array('model' => 'Pago', 'field' => 'fecha', 'valor' => $v['Pago']['fecha']);
 	$fila[] = array('model' => 'Pago', 'field' => 'moneda', 'valor' => $v['Pago']['moneda']);
 	$fila[] = array('model' => 'Pago', 'field' => 'monto', 'valor' => $v['Pago']['monto'], 'tipoDato' => 'moneda');
@@ -119,49 +120,49 @@ echo $this->element('index/index', array(
 /**
 * Agrego el evento click asociado al detalle de cambio.
 */
-$js = "
+$js = '
 	function enviar(action, chequearCantidad) {
 		if(chequearCantidad) {
-			var c = jQuery('.tabla input[@type=\'checkbox\']').checkbox('contar');
+			var c = jQuery(".tabla :checkbox").checkbox("contar");
 			if (c == 0) {
-				alert('Debe seleccionar al menos un pago a imputar.');
+				alert("Debe seleccionar al menos un pago a imputar.");
 				return false;
 			}
 		}
-		jQuery('#form')[0].action = '" . Router::url('/') . $this->params['controller'] . "' + action;
-		jQuery('#form')[0].submit();
+		jQuery("#form")[0].action = "' . Router::url('/') . $this->params['controller'] . '" + action;
+		jQuery("#form")[0].submit();
 	}
 
-	jQuery('#detalle_cambio').click(
+	jQuery("#detalle_cambio").click(
 		function() {
-			enviar('/detalle_cambio', false);
+			enviar("/detalle_cambio", false);
 		}
 	);
 	
-	jQuery('#pago_beneficios').click(
+	jQuery("#pago_beneficios").click(
 		function() {
-			enviar('/registrar_pago_masivo/beneficios', true);
+			enviar("/registrar_pago_masivo/beneficios", true);
 		}
 	);
 
-	jQuery('#pago_deposito').click(
+	jQuery("#pago_deposito").click(
 		function() {
-			enviar('/registrar_pago_masivo/deposito', true);
+			enviar("/registrar_pago_masivo/deposito", true);
 		}
 	);
 
-	jQuery('#pago_efectivo').click(
+	jQuery("#pago_efectivo").click(
 		function() {
-			enviar('/registrar_pago_masivo/efectivo', true);
+			enviar("/registrar_pago_masivo/efectivo", true);
 		}
 	);
 	
-	jQuery('#generar_soporte_magnetico').click(
+	jQuery("#generar_soporte_magnetico").click(
 		function() {
-			enviar('/generar_soporte_magnetico', true);
+			enviar("/generar_soporte_magnetico", true);
 		}
 	);
-";
+';
 $appForm->addScript($js);
 
 ?>
