@@ -75,9 +75,9 @@ class FormuladorComponent extends Object {
 		/**
 		* reemplazo los espacios entre las comas o los iguales, para unificar criterios.
 		*/
-		$formula = str_replace(", ", ",", $formula);
-		$formula = str_replace(" ,", ",", $formula);
-		$formula = str_replace(" = ", "=", $formula);
+		$formula = preg_replace('/\s*=\s*/', '=', $formula);
+		$formula = preg_replace('/\s*,\s*/', ',', $formula);
+		$formula = str_replace("if (", "if(", $formula);
 		
 		
 		/**
