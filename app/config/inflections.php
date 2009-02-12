@@ -52,6 +52,7 @@
  *  $irregularPlural = array('atlas' => 'atlases', 'beef' => 'beefs', 'brother' => 'brothers')
  */
 	$irregularPlural = array(
+                                'zone'                      => 'zones',
 								'actividad'					=> 'actividades',
 								'novedad'					=> 'novedades',
 								'empleador'					=> 'empleadores',
