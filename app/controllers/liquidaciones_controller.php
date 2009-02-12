@@ -46,10 +46,13 @@ class LiquidacionesController extends AppController {
 		$this->paginate = array_merge($this->paginate, array('conditions' => array("Liquidacion.estado" => "Sin Confirmar")));
 
 		if ($this->data['Formulario']['accion'] === "generar") {
+			
+			$tipoLiquidacion = $this->data['Condicion']['Liquidacion-tipo'];
+			
 			/**
 			* Realizo las validaciones basicas para poder preliquidar.
 			*/
-			if (empty($this->data['Condicion']['Liquidacion-periodo'])) {
+			if (empty($this->data['Condicion']['Liquidacion-periodo']) && $tipoLiquidacion === 'Normal') {
 				$this->Session->setFlash("Debe especificar un periodo.", "error");
 			}
 			else {
@@ -67,11 +70,11 @@ class LiquidacionesController extends AppController {
 							$this->Session->setFlash("Debe seleccionar un empleador, un trabajador o una relacion laboral.", "error");
 				}
 				else {
-					
+
+
 					/**
 					* Busco las relaciones que debo liquidar de acuerdo a los criterios ingresados.
 					*/
-					$tipoLiquidacion = $this->data['Condicion']['Liquidacion-tipo'];
 					unset($this->data['Condicion']['Liquidacion-tipo']);
 					unset($this->data['Condicion']['Liquidacion-periodo']);
 					$condiciones = $this->Paginador->generarCondicion($this->data);
@@ -95,7 +98,7 @@ class LiquidacionesController extends AppController {
 					$usuario = $this->Session->read("__Usuario");
 					$delete = array("Liquidacion.user_id"=>$usuario['Usuario']['id'], "Liquidacion.estado"=>'Sin Confirmar');
 					if (!$this->Liquidacion->deleteAll($delete)) {
-						d("ERROR al borrare");
+						d("ERROR al borrar");
 					}
 					
 					/**
@@ -145,6 +148,10 @@ class LiquidacionesController extends AppController {
 					$ids = null;
 					$opciones['variables'] = $variables;
 					$opciones['informaciones'] = $informaciones;
+                    //foreach ($relaciones as $k=>$relacion) {
+                    //$this->Liquidacion->getReceipt($tipoLiquidacion, $relaciones, array('period' => $this->__periodo));
+                    $this->Liquidacion->getReceipt($tipoLiquidacion, $relaciones, array('period' => 'first_half', 'year' => 2009));
+                    //}
 					foreach ($relaciones as $k=>$relacion) {
 						if (!in_array($relacion['Relacion']['id'], $confirmadas)) {
 							$ids[] = $this->__getLiquidacion($relacion, $opciones);
@@ -1187,6 +1194,7 @@ class LiquidacionesController extends AppController {
 		//$this->params['form'] = unserialize('a:4:{s:5:"valor";s:5:"6.001";s:2:"id";s:0:"";s:13:"liquidacionId";s:2:"36";s:14:"conceptoCodigo";s:14:"horas_extra_50";}');
 		if (!empty($id)) {
 			$this->data = $this->Liquidacion->read(null, $id);
+			d($this->data);
 		}
 		elseif (!empty($this->params['form']['valor']) && !empty($this->params['form']['conceptoCodigo']) && !empty($this->params['form']['liquidacionId'])) {
 			//$valor = $this->params['form']['valor'];
@@ -1655,11 +1663,13 @@ class LiquidacionesController extends AppController {
  * recibo_excel.
  * Genera un archivo excel con el recibo.
  */
-	function recibo_excel($id) {
-		$this->Liquidacion->contain(array("LiquidacionesDetalle"));
-		$this->data = $this->Liquidacion->read(null, $id);
+	function receipt() {
+		$this->Liquidacion->contain(array('LiquidacionesDetalle'));
+		$this->data = $this->Liquidacion->read(null, $this->params['named']['receipt']);
 		$this->layout = "excel";
-		//d($this->data);
+        d($this->data);
+        d($this->params['named']['type']);
+		
 	}
 	
 }
