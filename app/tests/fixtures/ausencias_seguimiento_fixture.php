@@ -42,8 +42,6 @@ class AusenciasSeguimientoFixture extends CakeTestFixture {
     var $fields = array(
         'id' => array('type' => 'integer', 'null' => false, 'default' => '', 'length' => '11', 'key' => 'primary'),
         'ausencia_id' => array('type' => 'integer', 'null' => false, 'default' => '', 'length' => '11', 'key' => 'index'),
-        'desde' => array('type' => 'date', 'null' => false, 'default' => '0000-00-00'),
-        'hasta' => array('type' => 'date', 'null' => false, 'default' => '0000-00-00'),
         'dias' => array('type' => 'float', 'null' => false, 'default' => '', 'length' => '2,1'),
         'comprobante' => array('type' => 'string', 'null' => false, 'default' => 'No', 'length' => '2'),
         'file_size' => array('type' => 'integer', 'null' => false, 'default' => '', 'length' => '11'),
@@ -70,8 +68,6 @@ class AusenciasSeguimientoFixture extends CakeTestFixture {
         array(
             'id' => '1',
             'ausencia_id' => '2',
-            'desde' => '2008-09-02',
-            'hasta' => '0000-00-00',
             'dias' => '2.0',
             'comprobante' => 'No',
             'file_size' => '0',
@@ -89,8 +85,6 @@ class AusenciasSeguimientoFixture extends CakeTestFixture {
         array(
             'id' => '2',
             'ausencia_id' => '2',
-            'desde' => '2008-09-05',
-            'hasta' => '2008-09-05',
             'dias' => '2.0',
             'comprobante' => 'No',
             'file_size' => '0',
@@ -108,8 +102,6 @@ class AusenciasSeguimientoFixture extends CakeTestFixture {
         array(
             'id' => '3',
             'ausencia_id' => '2',
-            'desde' => '2008-09-09',
-            'hasta' => '2008-09-11',
             'dias' => '2.0',
             'comprobante' => 'No',
             'file_size' => '0',
@@ -127,8 +119,6 @@ class AusenciasSeguimientoFixture extends CakeTestFixture {
         array(
             'id' => '4',
             'ausencia_id' => '3',
-            'desde' => '2008-09-14',
-            'hasta' => '2008-09-15',
             'dias' => '2.0',
             'comprobante' => 'No',
             'file_size' => '0',

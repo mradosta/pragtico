@@ -25,6 +25,7 @@
 class RelacionesController extends AppController {
 
 
+	
 /**
  * Set default search condition to active relations.
  */

@@ -27,13 +27,38 @@
 class FormatoHelper extends AppHelper {
 
 /**
- * Los helpers que utilizare.
+ * Helpers I'll need.
  *
- * @var arraya
+ * @var array
  * @access public.
  */
 	var $helpers = array('Number', 'Time');
 
+	
+/**
+ * Count iterations loops (used in replacement .{n}.).
+ *
+ * @var array
+ * @access private.
+ */
+	var $__count = 0;
+	
+	
+/**
+ * Sets count var.
+ */		
+	function setCount($value) {
+		$this->__count = $value;
+	}
+	
+	
+/**
+ * Gets count var.
+ */		
+	function getCount() {
+		return $this->__count;
+	}
+	
 	
 /**
  * Gets patterns out of text.
@@ -71,13 +96,13 @@ class FormatoHelper extends AppHelper {
 	
 	
 /**
- * Search for patterns and replace by replaces into text.
+ * Search for patterns and replace by replaces into texts (string or text's array).
  *
  * @param array $patterns Patterns I'm searching for.
  *	if null, it'll be extracted from text with default options @see getPatterns.
  * @param array $replaces Replacements I'll made.
  *	if null, $patterns should be array(Pattern => Replacement).
- * @param string $text The text where to make replacements.
+ * @param mixed $texts The text (string o array) where to make replacements.
  * 
  * There can be expressed formats for replaced values:
  * 				Model[.SubModel1.][.SubModel2.].field:date
@@ -93,10 +118,23 @@ class FormatoHelper extends AppHelper {
  * 				Model.{n}.field
  *				Model[.SubModel1.].{n}.field
  *
- * @return string The replaced text.
+ * @return mixed Replaced text String or replaced array elements.
  * @access public.
  */
-	function replace($patterns = null, $replaces = null, $text = '') {
+	function replace($patterns = null, $replaces = null, $texts = null) {
+		
+		if (empty($texts)) {
+			return false;
+		}
+		
+		if (is_string($texts)) {
+			$text = $texts;
+		} else {
+			foreach ($texts as $key => $text) {
+				$return[$key] = $this->replace($patterns, $replaces, $text);
+			}
+			return $return;
+		}
 		
 		if (empty($patterns)) {
 			if (!($patterns = $this->getPatterns($text))) {
@@ -121,13 +159,13 @@ class FormatoHelper extends AppHelper {
 			$patterns = array_keys($patterns);
 		}
 		
-		
 		foreach ($patterns as $pattern) {
 			$key = null;
 			$iterate = false;
 			
 			if (preg_match('/^([0-9]+)\:(.+)$/', $pattern, $matches)) {
 				$toReplace['#*' . $matches[1] . '*#'] = $matches[2];
+				$toReplace['#*' . $pattern . '*#'] = '';
 				$pattern = $matches[2];
 				$key = $matches[1];
 			} 
@@ -138,6 +176,7 @@ class FormatoHelper extends AppHelper {
 			$firstTmp = explode('|', $pattern);
 			$formato = null;
 			if (!empty($firstTmp[1])) {
+                $text = str_replace($pattern, $firstTmp[0], $text);
 				$tmpFormatos = explode(':', $firstTmp[1]);
 				$formato['type'] = $tmpFormatos[0];
 				if (isset($tmpFormatos[0]) && isset($tmpFormatos[1])) {
@@ -162,24 +201,23 @@ class FormatoHelper extends AppHelper {
 			$cantidad = count($tmp);
 			
 			if (strpos($pattern, '{n}') !== false) {
-				$count = 0;
 				$l = strlen($text);
 				while ($pos = strpos($text, $key)) {
-					$numericKey = str_replace('{n}', $count, $firstTmp[0]);
+					$numericKey = str_replace('{n}', $this->getCount(), $firstTmp[0]);
 					$keyLength = strlen($key);
 					
 					$text = substr($text, 0, $pos) . $numericKey . substr($text, $pos + $keyLength);
 					
 					$tmp = explode('.', $numericKey);
-					$count++;
+					$this->setCount($this->getCount() + 1);
 					
-					if ($cantidad === 2) {
+					if ($cantidad === 2 && isset($replaces[$tmp[0]][$tmp[1]])) {
 						$toReplace['#*' . $numericKey . '*#'] = $replaces[$tmp[0]][$tmp[1]];
-					} elseif ($cantidad === 3) {
+					} elseif ($cantidad === 3 && isset($replaces[$tmp[0]][$tmp[1]][$tmp[2]])) {
 						$toReplace['#*' . $numericKey . '*#'] = $replaces[$tmp[0]][$tmp[1]][$tmp[2]];
-					} elseif ($cantidad === 4) {
+					} elseif ($cantidad === 4 && isset($replaces[$tmp[0]][$tmp[1]][$tmp[2]][$tmp[3]])) {
 						$toReplace['#*' . $numericKey . '*#'] = $replaces[$tmp[0]][$tmp[1]][$tmp[2]][$tmp[3]];
-					} elseif ($cantidad === 5) {
+					} elseif ($cantidad === 5 && isset($replaces[$tmp[0]][$tmp[1]][$tmp[2]][$tmp[3]][$tmp[4]])) {
 						$toReplace['#*' . $numericKey . '*#'] = $replaces[$tmp[0]][$tmp[1]][$tmp[2]][$tmp[3]][$tmp[4]];
 					} else {
 						$toReplace['#*' . $numericKey . '*#'] = '';
@@ -286,14 +324,12 @@ class FormatoHelper extends AppHelper {
 					if (preg_match(VALID_DATE, $fecha, $matches)) {
 						$options['format'] = 'Y-m-d';
 						$return = $matches[3] . '-' . $matches[2] . '-' . $matches[1];
-					}
-					elseif (preg_match(VALID_DATE_MYSQL, $fecha, $matches)) {
+					} elseif (preg_match(VALID_DATE_MYSQL, $fecha, $matches)) {
 						if (!isset($options['format'])) {
 							$options['format'] = 'd/m/Y';
 						}
 						$return = $this->Time->format($options['format'], $fecha);
-					}
-					elseif ($fecha == '0000-00-00') {
+					} elseif ($fecha === '0000-00-00') {
 						$return = '';
 					}
 				}
@@ -310,8 +346,7 @@ class FormatoHelper extends AppHelper {
 				$hora = substr($valor, 10);
 				if (empty($hora) && empty($return) && $options['default'] === false) {
 					$return = '';
-				}
-				else {
+				} else {
 					if (empty($hora)) {
 						$hora = '00:00:00';
 					}
@@ -333,15 +368,12 @@ class FormatoHelper extends AppHelper {
 				$valor = $this->format($valor, array_merge(array('type' => 'date', 'format' => 'Y-m-d'), $options));
 				if (empty($valor)) {
 					$return = $valor;
-				}
-				else {
+				} else {
 					if ($type === 'dia') {
 						$return = $this->Time->format('d', $valor);
-					}
-					elseif ($type === 'mes') {
+					} elseif ($type === 'mes') {
 						$return = $this->Time->format('m', $valor);
-					}
-					elseif ($type === 'ano') {
+					} elseif ($type === 'ano') {
 						$return = $this->Time->format('Y', $valor);
 					}
 				}
@@ -363,12 +395,10 @@ class FormatoHelper extends AppHelper {
 					$mes = $this->format($valor, array('type' => 'mesAnterior'));
 					if ($mes == 12) {
 						$ano = $this->format($valor, array('type' => 'anoAnterior'));
-					}
-					else {
+					} else {
 						$ano = $this->format($valor, array('type' => 'ano'));
 					}
-				}
-				else {
+				} else {
 					$mes = $this->format($valor, array('type' => 'mes'));
 					$ano = $this->format($valor, array('type' => 'ano'));
 				}
@@ -378,8 +408,7 @@ class FormatoHelper extends AppHelper {
 				$mes = $this->format($valor, array('type' => 'mesAnterior'));
 				if ($mes == 12) {
 					$ano = $this->format($valor, array('type' => 'anoAnterior'));
-				}
-				else {
+				} else {
 					$ano = $this->format($valor, array('type' => 'ano'));
 				}
 				$return = $ano . $mes . '2Q';
@@ -388,8 +417,7 @@ class FormatoHelper extends AppHelper {
 				$mes = $this->format($valor, array('type' => 'mesAnterior'));
 				if ($mes == 12) {
 					$ano = $this->format($valor, array('type' => 'anoAnterior'));
-				}
-				else {
+				} else {
 					$ano = $this->format($valor, array('type' => 'ano'));
 				}
 				$return = $ano . $mes . 'M';
@@ -399,14 +427,12 @@ class FormatoHelper extends AppHelper {
 					$before = '';
 					if (substr($matches[3], 0, 1) == '1') {
 						$before = 'Primera quincena de ';
-					}
-					elseif (substr($matches[3], 0, 1) == '2') {
+					} elseif (substr($matches[3], 0, 1) == '2') {
 						$before = 'Segunda quincena de ';
 					}
 					$mes = $matches[2];
 					$ano = $matches[1];
-				}
-				elseif (strlen($valor) === 6 || strlen($valor) === 5) {
+				} elseif (strlen($valor) === 6 || strlen($valor) === 5) {
 					$options = array_merge(array('case' => 'lower'), $options);
 					$before = '';
 					$ano = substr($valor, 0, 4);
@@ -420,12 +446,11 @@ class FormatoHelper extends AppHelper {
 				$meses = $this->__getMeses();
 				if (strtolower($valor) === 'all') {
 					$tmp = null;
-					foreach ($meses as $k=>$mes) {
+					foreach ($meses as $k => $mes) {
 						$tmp[$k] = $this->__case($mes, $options['case']);
 					}
 					$return = $tmp;
-				}
-				else {
+				} else {
 					$mes = (int)$this->format($valor, array('type' => 'mes'));
 					$return = $this->__case($meses[$mes], $options['case']);
 				}
@@ -440,8 +465,7 @@ class FormatoHelper extends AppHelper {
 				$nw = new Numbers_Words();
 				if ($options['option'] == 'moneda') {
 					$return = $nw->toCurrency($valor, 'es_AR');
-				}
-				else if ($options['option'] == 'palabras') {
+				} else if ($options['option'] == 'palabras') {
 					$return = $nw->toWords($valor, 'es_AR');
 				}
 				if ($options['ceroCents'] === false) {
@@ -476,18 +500,16 @@ class FormatoHelper extends AppHelper {
 			$data = array($data);
 			$esString = true;
 		}
-		if ($case == 'upper') {
-			foreach ($data as $k=>$v) {
+		if ($case === 'upper') {
+			foreach ($data as $k => $v) {
 				$data[$k] = strtoupper($v);
 			}
-		}
-		elseif ($case == 'lower') {
-			foreach ($data as $k=>$v) {
+		} elseif ($case === 'lower') {
+			foreach ($data as $k => $v) {
 				$data[$k] = strtolower($v);
 			}
-		}
-		elseif ($case == 'ucfirst') {
-			foreach ($data as $k=>$v) {
+		} elseif ($case === 'ucfirst') {
+			foreach ($data as $k => $v) {
 				$data[$k] = ucfirst($v);
 			}
 		}
@@ -523,8 +545,7 @@ class FormatoHelper extends AppHelper {
 		if (is_numeric($mes)) {
 			if (isset($meses[$mes])) {
 				return $meses[$mes];
-			}
-			else {
+			} else {
 				return '';
 			}
 		}

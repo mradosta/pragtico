@@ -26,6 +26,9 @@ $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'bancos.gif')));
 
 
+$miga = array('format' 	=> '(%s) %s', 
+			  'content' => array('Banco.codigo', 'Banco.nombre'));
+
 
 /**
 * Creo el cuerpo de la tabla.
@@ -33,7 +36,7 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('ima
 $cuerpo = null;
 foreach ($registros as $k => $v) {
 	$fila = null;
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Banco']['id'], 'imagen' => array('nombre' => 'sucursales.gif', 'alt' => "Sucursales"), 'url' => 'sucursales');
+	$fila[] = array('bread_crumb' => $v['Banco']['bread_crumb_text'], 'tipo' => 'desglose', 'id' => $v['Banco']['id'], 'imagen' => array('nombre' => 'sucursales.gif', 'alt' => "Sucursales"), 'url' => 'sucursales');
 	$fila[] = array('model' => 'Banco', 'field' => 'id', 'valor' => $v['Banco']['id'], 'write' => $v['Banco']['write'], 'delete' => $v['Banco']['delete']);
 	$fila[] = array('model' => 'Banco', 'field' => 'codigo', 'valor' => $v['Banco']['codigo']);
 	$fila[] = array('model' => 'Banco', 'field' => 'nombre', 'valor' => $v['Banco']['nombre']);
@@ -41,5 +44,6 @@ foreach ($registros as $k => $v) {
 }
 
 echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo));
-$appForm->addScript('$("#form").ajaxForm();');
+
+//$appForm->addScript('jQuery("#form").ajaxForm();');
 ?>

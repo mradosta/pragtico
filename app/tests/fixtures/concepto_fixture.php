@@ -286,7 +286,7 @@ class ConceptoFixture extends CakeTestFixture {
             'imprimir' => 'Si',
             'antiguedad' => 'No',
             'plus_vacacional' => 'Si',
-            'formula' => '=if (#ausencias_injustificadas <= #presentismo_dias_tolerancia, if (#presentismo_porcentaje > 0, @sueldo_basico * #presentismo_porcentaje / 100, #presentismo_importe))',
+            'formula' => '=@sueldo_basico * 0.0833',
             'desde' => '0000-00-00',
             'hasta' => '0000-00-00',
             'cantidad' => '',

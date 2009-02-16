@@ -23,10 +23,10 @@
 $cuerpo = null;
 foreach ($this->data['DescuentosDetalle'] as $k=>$v) {
 	$fila = null;
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['liquidacion_id'], "update"=>"desglose_1", 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => "Liquidacion"), 'url' => '../liquidaciones/recibo_html');
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['liquidacion_id'], 'update'=>'desglose_1', 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'Liquidacion'), 'url' => '../liquidaciones/recibo_html');
 	$fila[] = array('model' => 'DescuentosDetalle', 'field' => 'id', 'valor' => $v['id'], 'write' => $v['write'], 'delete' => $v['delete']);
 	$fila[] = array('model' => 'DescuentosDetalle', 'field' => 'fecha', 'valor' => $v['fecha']);
-	$fila[] = array('model' => 'DescuentosDetalle', 'field' => 'monto", "valor"=>"$ " . $v['monto']);
+	$fila[] = array('model' => 'DescuentosDetalle', 'field' => 'monto', 'valor'=>'$ ' . $v['monto']);
  	$fila[] = array('model' => 'DescuentosDetalle', 'field' => 'observacion', 'valor' => $v['observacion']);
 	$cuerpo[] = $fila;
 }
@@ -35,12 +35,12 @@ foreach ($this->data['DescuentosDetalle'] as $k=>$v) {
 /**
 * Creo las opciones de la tabla.
 */
-$opcionesTabla =  array("tabla"=>
-							array(	"eliminar"			=> false,
-									"ordenEnEncabezados"=> false,
-									"modificar"			=> false,
-									"seleccionMultiple"	=> false));
+$opcionesTabla =  array('tabla'=>
+							array(	'eliminar'			=> false,
+									'ordenEnEncabezados'=> false,
+									'modificar'			=> false,
+									'seleccionMultiple'	=> false));
 
-echo $this->element('desgloses/agregar', array("opcionesTabla"=>$opcionesTabla, 'titulo' => "Detalles", 'cuerpo' => $cuerpo));
+echo $this->element('desgloses/agregar', array('opcionesTabla'=>$opcionesTabla, 'titulo' => 'Detalles', 'cuerpo' => $cuerpo));
 
 ?>

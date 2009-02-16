@@ -150,7 +150,7 @@ class LiquidacionesController extends AppController {
 					$opciones['informaciones'] = $informaciones;
                     //foreach ($relaciones as $k=>$relacion) {
                     //$this->Liquidacion->getReceipt($tipoLiquidacion, $relaciones, array('period' => $this->__periodo));
-                    $this->Liquidacion->getReceipt($tipoLiquidacion, $relaciones, array('period' => 'first_half', 'year' => 2009));
+                    //$this->Liquidacion->getReceipt($tipoLiquidacion, $relaciones, array('period' => 'first_half', 'year' => 2009));
                     //}
 					foreach ($relaciones as $k=>$relacion) {
 						if (!in_array($relacion['Relacion']['id'], $confirmadas)) {

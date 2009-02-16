@@ -31,7 +31,7 @@ class UtilComponentTestCase extends CakeTestCase {
  *
  * @var array
  * @access private
- */    
+ */
     var $UtilComponentTest;
 
 
@@ -43,6 +43,39 @@ class UtilComponentTestCase extends CakeTestCase {
  */
     function __construct() {
     	$this->UtilComponentTest =& new UtilComponent();
+    }
+
+
+    function testDateDiff() {
+		
+        $result = $this->UtilComponentTest->dateDiff('2007-01-01', '2007-12-31');
+        $expected = array('dias' => 365, 'horas' => 0, 'minutos' => 0, 'segundos' => 0);
+        $this->assertEqual($expected, $result);
+		
+        $result = $this->UtilComponentTest->dateDiff('2007-01-01', '2007-01-02');
+        $expected = array('dias' => 2, 'horas' => 0, 'minutos' => 0, 'segundos' => 0);
+        $this->assertEqual($expected, $result);
+		
+        $result = $this->UtilComponentTest->dateDiff('2007-12-01', '2008-01-02');
+        $expected = array('dias' => 33, 'horas' => 0, 'minutos' => 0, 'segundos' => 0);
+        $this->assertEqual($expected, $result);
+
+        $result = $this->UtilComponentTest->dateDiff('2008-12-01', '2009-01-02');
+        $expected = array('dias' => 33, 'horas' => 0, 'minutos' => 0, 'segundos' => 0);
+        $this->assertEqual($expected, $result);
+		
+        $result = $this->UtilComponentTest->dateDiff('2007-01-01', '2007-12-30');
+        $expected = array('dias' => 364, 'horas' => 0, 'minutos' => 0, 'segundos' => 0);
+        $this->assertEqual($expected, $result);
+		
+        $result = $this->UtilComponentTest->dateDiff('2009-01-01', '2009-12-31');
+		$expected = array('dias' => 365, 'horas' => 0, 'minutos' => 0, 'segundos' => 0);
+        $this->assertEqual($expected, $result);
+
+        $result = $this->UtilComponentTest->dateDiff('2008-01-01', '2008-12-31');
+        $expected = array('dias' => 366, 'horas' => 0, 'minutos' => 0, 'segundos' => 0);
+        $this->assertEqual($expected, $result);
+
     }
 
 
@@ -83,7 +116,7 @@ class UtilComponentTestCase extends CakeTestCase {
  *
  * @return void.
  * @access public.
- */	
+ */
     function testExtraerIds() {
     	$expected = array(1, 2, 6, 8, 9);
     	$data = array(	"id_1"	=>	1,

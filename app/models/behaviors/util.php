@@ -25,7 +25,15 @@
 //class UtilBehavior extends ModelBehavior {
 App::import('Behavior', 'Containable');
 class UtilBehavior extends ContainableBehavior {	
+
+
+	function resolver(&$model, $formula) {
+		App::import('Vendor', 'formulas', 'pragmatia');
+		$formulas = new Formulas();
+		return $formulas->resolver($formula);
+	}
 	
+
 	function xafterFind(&$model, $results, $primary = false) {
 		
 		if (!isset($results[0][0]) && !empty($this->backUpRelations)) {
@@ -421,7 +429,7 @@ class UtilBehavior extends ContainableBehavior {
 			"joins"		=> array(),
 			"group" 	=> null);
 
-		$queryData = am($default, $data);
+		$queryData = array_merge($default, $data);
 		$queryData['alias'] = $db->name(Inflector::classify($queryData['table']));
 		
 		if (empty($queryData['fields'])) {

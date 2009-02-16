@@ -344,6 +344,32 @@ class ValidacionesBehavior extends ModelBehavior {
 
 
 /**
+* Custom validation rule for uploaded files.
+*
+*  @param Array $data CakePHP File info.
+*  @param Boolean $required Is this field required?
+*  @return Boolean
+*/
+    function validateUploadedFile($data, $required = false) {
+            // Remove first level of Array ($data['Artwork']['size'] becomes $data['size'])
+            $upload_info = array_shift($data);
+
+            // No file uploaded.
+            if ($required && $upload_info[’size’] == 0) {
+                    return false;
+            }
+
+            // Check for Basic PHP file errors.
+            if ($upload_info[‘error’] !== 0) {
+                    return false;
+            }
+
+            // Finally, use PHP’s own file validation method.
+            return is_uploaded_file($upload_info[‘tmp_name’]);
+    }
+
+    
+/**
  * Retorna el valor ingresado por el usuario.
  *
  * @param array $rule Un regla de validacion.

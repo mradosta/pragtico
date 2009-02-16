@@ -48,13 +48,87 @@ class FormatoTest extends CakeTestCase {
 	}
 
 
+	
 /**
- * Testing text replacements.
+ * Testing text replacements in Clear Text.
  * 
  * @access public
  * @return void
  */
-	function testReplace() {
+	function testReplaceInArray() {
+		
+		/**
+		* Iterations.
+		*/
+		$texto = null;
+		$texto[] = 'My name is #*1*#';
+		$texto[] = 'my first address was #*TrabajadoresDireccion.{n}.calle*#.';
+		$texto[] = 'My second address was #*TrabajadoresDireccion.{n}.calle*#';
+		$patrones = array('1:Trabajador.nombre', 'TrabajadoresDireccion.{n}.calle');
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin'), 'TrabajadoresDireccion' => array(array('calle' => 'O. Mercadillo'), array('calle' => 'O. Oro')));
+		$this->formato->setCount(0);
+		$result = $this->formato->replace($patrones, $reemplazos, $texto);
+		$expected = null;
+		$expected[] = 'My name is Martin';
+		$expected[] = 'my first address was O. Mercadillo.';
+		$expected[] = 'My second address was O. Oro';
+		$this->assertEqual($expected, $result);
+		
+		
+		$texto = null;
+		$texto[] = 'My name is #*1*##*1:Trabajador.nombre*#';
+  		$texto[] = 'I work in #*2*#.#*2:Trabajador.pais*#';
+		$texto[] = 'I work at #*Trabajador.work*#.';
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina', 'work' => 'Pragmatia'));
+		$result = $this->formato->replace(null, $reemplazos, $texto);
+		$expected = null;
+		$expected[] = 'My name is Martin';
+		$expected[] = 'I work in Argentina.';
+		$expected[] = 'I work at Pragmatia.';
+		$this->assertEqual($expected, $result);
+		
+		
+		$texto = null;
+		$texto['A'] = 'My name is #*Trabajador.nombre*#';
+		$texto['B'] = 'I work in #*Trabajador.pais*#. How are you?';
+		$patrones = array('Trabajador.nombre', 'Trabajador.pais');
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina'));
+		$result = $this->formato->replace($patrones, $reemplazos, $texto);
+		$expected = null;
+		$expected['A'] = 'My name is Martin';
+		$expected['B'] = 'I work in Argentina. How are you?';
+		$this->assertEqual($expected, $result);
+		
+		
+		$texto = null;
+		$texto[] = 'My name is #*Trabajador.nombre*#';
+		$texto[] = 'I work in #*Trabajador.pais*#. How are you?';
+		$patrones = array('Trabajador.nombre', 'Trabajador.pais');
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina'));
+		$result = $this->formato->replace($patrones, $reemplazos, $texto);
+		$expected = null;
+		$expected[] = 'My name is Martin';
+		$expected[] = 'I work in Argentina. How are you?';
+		$this->assertEqual($expected, $result);
+	}	
+
+
+/**
+ * Testing text replacements in Clear Text.
+ * 
+ * @access public
+ * @return void
+ */
+	function testReplaceInClearText() {
+		
+		/**
+		* Mix of numeric patterns and common patterns within the text.
+		*/
+		$texto = 'My name is #*1*#, I work in #*2*#. I work at #*Trabajador.work*#.#*1:Trabajador.nombre*##*2:Trabajador.pais*#';
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina', 'work' => 'Pragmatia'));
+		$result = $this->formato->replace(null, $reemplazos, $texto);
+		$expected = 'My name is Martin, I work in Argentina. I work at Pragmatia.';
+		$this->assertEqual($expected, $result);
 		
 		/**
 		* Iterations with numeric patterns.
@@ -62,6 +136,7 @@ class FormatoTest extends CakeTestCase {
 		$texto = 'My name is #*1*#, my first address was #*2*#. My second address was #*2*#';
 		$patrones = array('1:Trabajador.nombre', '2:TrabajadoresDireccion.{n}.calle');
 		$reemplazos = array('Trabajador' => array('nombre' => 'Martin'), 'TrabajadoresDireccion' => array(array('calle' => 'O. Mercadillo'), array('calle' => 'O. Oro')));
+		$this->formato->setCount(0);
 		$result = $this->formato->replace($patrones, $reemplazos, $texto);
 		$expected = 'My name is Martin, my first address was O. Mercadillo. My second address was O. Oro';
 		$this->assertEqual($expected, $result);
@@ -72,6 +147,7 @@ class FormatoTest extends CakeTestCase {
 		$texto = 'My name is #*1*#, my first address was #*TrabajadoresDireccion.{n}.calle*#. My second address was #*TrabajadoresDireccion.{n}.calle*#';
 		$patrones = array('1:Trabajador.nombre', 'TrabajadoresDireccion.{n}.calle');
 		$reemplazos = array('Trabajador' => array('nombre' => 'Martin'), 'TrabajadoresDireccion' => array(array('calle' => 'O. Mercadillo'), array('calle' => 'O. Oro')));
+		$this->formato->setCount(0);
 		$result = $this->formato->replace($patrones, $reemplazos, $texto);
 		$expected = 'My name is Martin, my first address was O. Mercadillo. My second address was O. Oro';
 		$this->assertEqual($expected, $result);
@@ -87,6 +163,15 @@ class FormatoTest extends CakeTestCase {
 		$this->assertEqual($expected, $result);
 		
 		/**
+		* Numeric patterns within the text.
+		*/
+		$texto = 'My name is #*1*#, I work in #*2*#.#*1:Trabajador.nombre*##*2:Trabajador.pais*#';
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina'));
+		$result = $this->formato->replace(null, $reemplazos, $texto);
+		$expected = 'My name is Martin, I work in Argentina.';
+		$this->assertEqual($expected, $result);
+		
+		/**
 		* Numeric patterns.
 		*/
 		$texto = 'My name is #*1*#, I work in #*2*#.';
@@ -99,6 +184,13 @@ class FormatoTest extends CakeTestCase {
 		/**
 		* Add format with options.
 		*/
+        $texto = 'My name is #*Trabajador.nombre*#, I work in #*Trabajador.pais*#. My first working day was #*Trabajador.ingreso|date:default=>true;format=>d/m/Y*#';
+        $patrones = null;
+        $reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina', 'ingreso' => ''));
+        $result = $this->formato->replace($patrones, $reemplazos, $texto);
+        $expected = 'My name is Martin, I work in Argentina. My first working day was ' . date('d/m/Y');
+        $this->assertEqual($expected, $result);
+        
 		$texto = 'My name is #*Trabajador.nombre*#, I work in #*Trabajador.pais*#. My first working day was #*Trabajador.ingreso*#';
 		$patrones = array('Trabajador.nombre', 'Trabajador.pais', 'Trabajador.ingreso|date:default=>true;format=>d/m/Y');
 		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina', 'ingreso' => ''));
@@ -139,13 +231,6 @@ class FormatoTest extends CakeTestCase {
 		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina'));
 		$result = $this->formato->replace($patrones, $reemplazos, $texto);
 		$expected = 'My name is Martin, I work in Argentina. How are you?';
-		$this->assertEqual($expected, $result);
-		
-		$texto = 'My name is #*Trabajador.nombre*#*#. How are you?';
-		$patrones = array('Trabajador.nombre');
-		$reemplazos = array('Trabajador' => array('nombre' => 'Martin'));
-		$result = $this->formato->replace($patrones, $reemplazos, $texto);
-		$expected = 'My name is Martin*#. How are you?';
 		$this->assertEqual($expected, $result);
 		
 		$texto = 'My name is #*Trabajador.nombre*#. How are you?';

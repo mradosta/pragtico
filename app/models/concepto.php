@@ -111,7 +111,7 @@ class Concepto extends AppModel {
 						Convenio Colectivo,
 						Concepto.
  */
-	function findConceptos($tipo = "Relacion", $opciones = array()) {
+	function findConceptos($tipo = 'Relacion', $opciones = array()) {
 		
 		$default['hasta'] = "2000-01-01";
 		$default['desde'] = "2050-12-31";
@@ -472,7 +472,7 @@ class Concepto extends AppModel {
 				$conceptos[$v['Concepto']['codigo']]['id'] = $v['ConveniosConcepto']['id'];
 			}
 		}
-		
+
 		return $conceptos;
 	}
 

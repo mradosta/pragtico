@@ -1,6 +1,6 @@
 <?php
 /**
- * Este archivo contiene la logica para operaciones con fechas.
+ * Date operations.
  *
  * PHP versions 5
  *
@@ -8,7 +8,7 @@
  * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
  * @link			http://www.pragmatia.com
  * @package			pragtico
- * @subpackage		vendors.pragmatia
+ * @subpackage		app.vendors.pragmatia
  * @since			Pragtico v 1.0.0
  * @version			$Revision: 54 $
  * @modifiedby		$LastChangedBy: mradosta $
@@ -16,10 +16,10 @@
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
 /**
- * Clase para el manejo de fechas.
+ * Date operations Class.
  *
  * @package pragtico
- * @subpackage vendors.pragmatia
+ * @subpackage app.vendors.pragmatia
  */
 class Dates {
 
@@ -40,6 +40,12 @@ class Dates {
 	}
 
 	
+
+	function daysInMonth($year, $month) {
+		return( date( "t", mktime( 0, 0, 0, $month, 1, $year) ) );
+	}
+
+	
 /**
  * Calcula la diferencia entre dos fechas.
  *
@@ -47,33 +53,75 @@ class Dates {
  *
  * @param string $fechaDesde La fecha desde la cual se tomara la diferencia.
  * @param string $fechaHasta La fecha hasta la cual se tomara la diferencia. Si no se pasa la fecha hasta,
+ * @param array $options
  * se tomara la fecha actual como segunda fecha.
  *
  * @return mixed 	array con dias, horas, minutos y segundos en caso de que las fechas sean validas.
  * 					False en caso de que las fechas sean invalidas.
  * @access public
  */
-	function dateDiff($fechaDesde, $fechaHasta = null) {
-		if($fechaDesde = $this->__getValidDateTime($fechaDesde)) {
+	function dateDiff($fechaDesde, $fechaHasta = null, $options = array()) {
+
+		$defaults = array(	'fromInclusive' => true,
+						 	'toInclusive' 	=> true,
+						 	'2007Bug' 		=> false);
+		$options = array_merge($defaults, $options);
+
+		/** http://www.usenet-forums.com/php-language/373199-last-day-year-date-bug-2.html */
+		if (substr($fechaDesde, 0, 10) <= '2007-12-31' && substr($fechaHasta, 0, 10) >= '2007-12-31') {
+			$options['2007Bug'] = true;
+		}
+		
+		if ($fechaDesde = $this->__getValidDateTime($fechaDesde)) {
 			$fechaDesde = strtotime($fechaDesde);
 		} else {
 			return false;
 		}
 		
-		if($fechaHasta = $this->__getValidDateTime($fechaHasta)) {
+		if ($fechaHasta = $this->__getValidDateTime($fechaHasta)) {
 			$fechaHasta = strtotime($fechaHasta);
 		} else {
 			return false;
 		}
+
+		if ($options['fromInclusive'] === true && $options['toInclusive'] === true) {
+			$fechaHasta += 86400;
+		}
+
+		/** Don't know why this
 		
-		/**
-		* Corrijo con un dia, para que desde hoy hasta hoy haya 0 dias.
 		*/
-		$diff = abs($fechaDesde-$fechaHasta);
+		if ($options['2007Bug'] === true) {
+			$fechaHasta += 3600;
+			//SELECT UNIX_TIMESTAMP( '2007-12-31' ) ;
+			//1199066400
+			//SELECT UNIX_TIMESTAMP('2007-12-31 00:00:00');
+			//1199066400
+			//mktime(0,0,0,12,31,2007)
+			//1199066400
+
+			//SELECT UNIX_TIMESTAMP('2007-12-31 23:59:59');
+			//1199152799
+			//SELECT UNIX_TIMESTAMP('2007-12-31 00:00:00');
+			//0
+			//mktime(23,59,59,12,31,2007)
+			//1199152799
+
+			//SELECT UNIX_TIMESTAMP( '2007-01-01' ) ;
+			//1167620400
+			//mktime(0,0,0,1,1,2007)
+			//1167620400
+
+			//SELECT UNIX_TIMESTAMP('2007-01-01 00:00:00');
+			//1167620400
+		}
+
+
+		$diff = $fechaHasta-$fechaDesde;
 		$daysDiff = floor($diff/60/60/24);
-		$diff -= $daysDiff*60*60*24;
+		$diff -= $daysDiff*86400;
 		$hrsDiff = floor($diff/60/60);
-		$diff -= $hrsDiff*60*60;
+		$diff -= $hrsDiff*3600;
 		$minsDiff = floor($diff/60);
 		$diff -= $minsDiff*60;
 		$secsDiff = $diff;

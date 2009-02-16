@@ -230,6 +230,8 @@ class AppController extends Controller {
  * @access public
  */
 	function edit($id=null) {
+        $this->{$this->modelClass}->Behaviors->attach('Crumbable');
+                
 		if (!empty($id)) {
 			$ids[] = $id;
 		} else {
@@ -250,6 +252,88 @@ class AppController extends Controller {
 	}
 
 
+    function save() {
+        if (isset($this->data['Form']['volverAInsertar'])) {
+            $this->action = 'add';
+            $back = 1;
+            if (!empty($this->data['Form']['volverAInsertar'])) {
+                $back = 2;
+            }
+        } else {
+            $this->action = 'edit';
+            $back = 2;
+        }
+        
+        if (!empty($this->data['Form']['accion'])) {
+            if ($this->data['Form']['accion'] === 'duplicar') {
+                unset($this->data[$this->modelClass][$this->{$this->modelClass}->primaryKey]);
+                $this->data['Form']['accion'] = 'grabar';
+            }
+            
+            if ($this->data['Form']['accion'] === 'grabar') {
+                $c = 0;
+                /**
+                * Saco lo que no tengo que grabar.
+                * En form, tengo informacion que mande desde la vista.
+                * En Bar es informacion temporal que necesita el control relacionado.
+                */
+                unset($this->data['Form']);
+                unset($this->data['Bar']);
+
+
+                /**
+                * En base al/los errores que pueden haber determino que mensaje mostrar.
+                */
+                if ($this->{$this->modelClass}->appSave($this->data)) {
+                    if ($this->{$this->modelClass}->savedDataLog['totalRecordsSaved'] === 1) {
+                        $message = __('The record has been saved', true);
+                    } else {
+                        $message = sprintf(__('%s of %s records have been saved', true), $this->{$this->modelClass}->savedDataLog['totalRecordsSaved'], $this->{$this->modelClass}->savedDataLog['totalRecords']);
+                    }
+                    $this->Session->setFlash($message, "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
+                    $this->History->goBack($back);
+                } else {
+
+                    /**
+                     * Debo recuperar nuevamente los datos porque los necesito en los controler relacionados (Lov, relacionado).
+                     * Los que ya tengo, los dejo como estaban, porque se debe a que no validaron.
+                     */
+                    $ids = Set::extract('/' . $this->modelClass . '/' . $this->{$this->modelClass}->primaryKey, $this->data);
+                    if (!empty($ids)) {
+                        $data = $this->data;
+                        
+                        /**
+                         * Puede haber un modificador al comportamiento estandar setaeado en el model.
+                         */
+                        if (isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
+                            $this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
+                        }
+                        
+                        $this->data = $this->{$this->modelClass}->find('all', 
+                                array(  'acceso'    => 'write', 
+                                        'conditions'=> array($this->modelClass . '.' . $this->{$this->modelClass}->primaryKey => $ids)));
+                        foreach ($data as $k => $v) {
+                            foreach ($v as $model=>$datos) {
+                                $this->data[$k][$model] = $datos;
+                            }
+                        }
+                        $this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error", array("errores"=>$dbError));
+                    } else {
+                        $this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error", array("errores"=>$dbError));
+                    }
+                    
+                    /**
+                     * Cargo la variable validationErrors con los errores que surgieron de la validacion.
+                     */
+                    $this->{$this->modelClass}->validationErrors = $invalidFields;
+                }
+            } elseif ($this->data['Form']['accion'] === 'cancelar') {
+                $this->History->goBack();
+            }
+        }
+        $this->render('add');
+    }
+    
 /**
  * save.
  * Se encarga ed guardar datos editados.
@@ -259,7 +343,7 @@ class AppController extends Controller {
  * @return void.
  * @access public
  */
-	function save() {
+	function xsave() {
 		if (isset($this->data['Form']['volverAInsertar'])) {
 			$this->action = 'add';
 			$back = 1;
@@ -432,8 +516,8 @@ class AppController extends Controller {
 						if ($errorsDeletingDetails === false) {
 							$this->{$this->modelClass}->create($v);
 							//d($v);
-							//debug($this->{$this->modelClass}->saveAll($v, array('validate' => 'first')));
-							//d($this->{$this->modelClass}->validationErrors);
+							debug($this->{$this->modelClass}->saveAll($v, array('validate' => 'first')));
+							d($this->{$this->modelClass}->validationErrors);
 							//$this->{$this->modelClass}->set($v);
 							if ($this->{$this->modelClass}->saveAll($v, array('validate' => 'first'))) {
 								$c++;
@@ -854,7 +938,6 @@ class AppController extends Controller {
  * Utiliazr el auth component de cakePHP
  */
     function beforeFilter() {
-		
 		/**
 		 * Save selected menu (actualMenu) in the session.
 		 */
