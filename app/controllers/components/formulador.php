@@ -71,35 +71,38 @@ class FormuladorComponent extends Object {
  */
 	function resolver($formula) {
 		$cellId = 0;
-		
+
 		/**
 		* reemplazo los espacios entre las comas o los iguales, para unificar criterios.
 		*/
 		$formula = preg_replace('/\s*=\s*/', '=', $formula);
 		$formula = preg_replace('/\s*,\s*/', ',', $formula);
-		$formula = preg_replace('/if\s*\(/', 'if(', $formula);
-		
+		$formula = preg_replace('/\s*\(\s*/', '(', $formula);
+		$formula = preg_replace('/\s*\)\s*/', ')', $formula);
 		
 		/**
 		* En el formulador, si hay una comparacion de strings se equivoca.
 		* Lo verifico en php, y pongo en en la celda un valor booleano.
 		*/
 		if (preg_match_all("/\((\'[\w\s\/]+\'=\'[\w\s\/]+\')/", $formula, $strings)) {
-			foreach ($strings[1] as $k=>$string) {
+			foreach (array_unique($strings[1]) as $k => $string) {
 				$cellId++;
-				$partes = explode("=", str_replace(" ", "", str_replace("'", "", $string)));
-				if ($partes[0] == $partes[1]) {
-					$this->__objPHPExcel->getActiveSheet()->setCellValue("A" . $cellId, true);
-				}
-				else {
-					$this->__objPHPExcel->getActiveSheet()->setCellValue("A" . $cellId, false);
+				$partes = explode('=', $string);
+				if ($partes[0] === $partes[1]) {
+					$this->__objPHPExcel->getActiveSheet()->setCellValue('A' . $cellId, true);
+				} else {
+					$this->__objPHPExcel->getActiveSheet()->setCellValue('A' . $cellId, false);
 				}
 				
 				/**
-				* Debo escapar en caso de tener una barra invertida antes de reemplazar.
-				*/
-				$string = str_replace("/", "\/", $string);
-				$formula = preg_replace("/" . $string . "/", "A" . $cellId, $formula, 1);
+				 * Debo escapar en caso de tener una barra invertida antes de reemplazar.
+				 */
+				$string = str_replace('/', '\/', $string);
+				$formula = preg_replace('/' . $string . '/', 'A' . $cellId, $formula, 1);
+			}
+		} elseif (preg_match_all("/date\('(\d\d\d\d)-(\d\d)-(\d\d)'\)/", $formula, $strings)) {
+			foreach (array_unique($strings[0]) as $k => $string) {
+				$formula = str_replace($string, sprintf('date(%s, %s, %d)', $strings[1][$k], $strings[2][$k], $strings[3][$k]), $formula);
 			}
 		}
 		
@@ -109,11 +112,11 @@ class FormuladorComponent extends Object {
 		*/
 		if (preg_match_all("/\([A-Z]+\d\,\'([\w\s]+)\'\,\'([\w\s]+)\'\)/", $formula, $strings)) {
 			$cellId++;
-			$this->__objPHPExcel->getActiveSheet()->setCellValue("A" . $cellId, $strings[1][0]);
-			$formula = preg_replace("/\'" . $strings[1][0] . "\'/", "A" . $cellId, $formula, 1);
+			$this->__objPHPExcel->getActiveSheet()->setCellValue('A' . $cellId, $strings[1][0]);
+			$formula = preg_replace("/\'" . $strings[1][0] . "\'/", 'A' . $cellId, $formula, 1);
 			$cellId++;
 			$this->__objPHPExcel->getActiveSheet()->setCellValue("A" . $cellId, $strings[2][0]);
-			$formula = preg_replace("/\'" . $strings[2][0] . "\'/", "A" . $cellId, $formula, 1);
+			$formula = preg_replace("/\'" . $strings[2][0] . "\'/", 'A' . $cellId, $formula, 1);
 		}
 
 		
@@ -124,24 +127,24 @@ class FormuladorComponent extends Object {
 		if (preg_match_all("/(.*)([min|max|sum|average]+)\(([[0-9]\,]+)\)/Ui", $formula, $partes)) {
 			if (!empty($partes[3])) {
 				$formulaParcialRecontruida = null;
-				foreach ($partes[3] as $k=>$valores) {
-					$tmpValores = explode(",", $valores);
-					$rangoInferior = "A" . ($cellId + 1);
+				foreach ($partes[3] as $k => $valores) {
+					$tmpValores = explode(',', $valores);
+					$rangoInferior = 'A' . ($cellId + 1);
 					foreach ($tmpValores as $valor) {
 						$cellId++;
-						$this->__objPHPExcel->getActiveSheet()->setCellValue("A" . $cellId, (int)$valor);
+						$this->__objPHPExcel->getActiveSheet()->setCellValue('A' . $cellId, (int)$valor);
 					}
-					$rangoSuperior = "A" . $cellId;
-					$tmpPartes[] = $partes[1][$k] . $partes[2][$k] . "(" . $rangoInferior . ":" . $rangoSuperior . ")";
+					$rangoSuperior = 'A' . $cellId;
+					$tmpPartes[] = $partes[1][$k] . $partes[2][$k] . '(' . $rangoInferior . ':' . $rangoSuperior . ')';
 				}
-				$formula = str_replace(implode("", $partes[0]), implode("", $tmpPartes), $formula);
-				$formula = str_replace("/" . implode("", $partes[0]) . "/", implode("", $tmpPartes), $formula);
+				$formula = str_replace(implode('', $partes[0]), implode('', $tmpPartes), $formula);
+				$formula = str_replace('/' . implode('', $partes[0]) . '/', implode('', $tmpPartes), $formula);
 			}
 		}
 		
 		$this->__cellId++;
-		$this->__objPHPExcel->getActiveSheet()->setCellValue("Z" . $this->__cellId, $formula);
-		return $this->__objPHPExcel->getActiveSheet()->getCell("Z" . $this->__cellId)->getCalculatedValue();
+		$this->__objPHPExcel->getActiveSheet()->setCellValue("ZZ" . $this->__cellId, $formula);
+		return $this->__objPHPExcel->getActiveSheet()->getCell("ZZ" . $this->__cellId)->getCalculatedValue();
 	}
 
-}    
+}

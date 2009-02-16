@@ -49,19 +49,19 @@ class FormuladorComponentTestCase extends CakeTestCase {
 	
 	
 /**
- * El constructor de la clase.
+ * startCase method.
  *
  * @access public
  */
-	function __construct() {
+	function startCase() {
     	$this->FormuladorComponentTest =& new FormuladorComponent();
     	$this->controller = new FakeTestController();
 		$this->FormuladorComponentTest->startup(&$this->controller);
     }
 
-
+	
 	function testResolverNombreFormulas() {
-		
+
 		$formula = "=if 	('mensual'       ='mensual1', 'Basico',         'Horas')";
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = 'Horas';
@@ -101,6 +101,16 @@ class FormuladorComponentTestCase extends CakeTestCase {
 	
     function testResolverFechas() {
 
+		$formula = "=IF(AND(MONTH(date('2008-07-07'))>6,YEAR(date('2008-07-07'))=YEAR(date('2008-12-31');DAY(A2)>1)),INT(NETWORKDAYS(date('2008-07-07'),date('2008-12-31'))/20),IF(AND(MONTH(date('2008-07-07'))<6,YEAR(date('2008-07-07'))=YEAR(date('2008-12-31'))),14,IF((YEAR(date('2008-12-31'))-YEAR(date('2008-07-07')))<=5,14,IF((YEAR(date('2008-12-31'))-YEAR(date('2008-07-07')))<=10,21,IF((YEAR(date('2008-12-31'))-YEAR(date('2008-07-07')))<=15,28,35)))))";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '14';
+		$this->assertEqual($expected, $result);
+		
+		$formula = "=date ( '2008-11-01')";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '1225497600';
+		$this->assertEqual($expected, $result);
+		
 		$formula = '=if (month(date(2008, 11, 01)) = 11, 1, 0)';
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '1';
@@ -269,7 +279,7 @@ class FormuladorComponentTestCase extends CakeTestCase {
 
 	function testResolverFuncionesDeGrupo() {
 
-		$formula = "=max(2, 4, 6)";
+		$formula = '=max(2, 4, 6)';
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '6';
 		$this->assertEqual($expected, $result);
