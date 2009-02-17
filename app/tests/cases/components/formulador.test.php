@@ -66,7 +66,7 @@ class FormuladorComponentTestCase extends CakeTestCase {
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = 'Horas';
 		$this->assertEqual($expected, $result);
-		
+
 		$formula = "=if('mensual'= 'mensual', 'Basico', 'Horas')";
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = 'Basico';

@@ -47,7 +47,6 @@ class FormuladorComponent extends Object {
  */
     function startup(&$controller) {
 		App::import('Vendor', 'formulas', 'pragmatia');
-		$this->FormuladorComponentTest = new Formulas();
 		$this->__formulas = new Formulas();
 	}
 

@@ -626,8 +626,8 @@ function afterFind($results, $primary = false) {
 						* Busco los conceptos que puedan estar faltandome.
 						* Los agrego al array de conceptos identificandolos y poniendoles el estado a no imprimir.
 						*/
-						$conceptoParaCalculoTmp = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array_merge(array('relacion' => $this->getRelationship(), 'codigoConcepto' => $match)));
-						if (empty($conceptoParaCalculoTmp)) {
+						$conceptoParaCalculo = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $this->getRelationship(), 'codigoConcepto' => $match));
+						if (empty($conceptoParaCalculo)) {
 							$this->__setError(array(	"tipo"					=> "Concepto Inexistente",
 														"gravedad"				=> "Alta",
 														"concepto"				=> $match,
@@ -637,9 +637,8 @@ function afterFind($results, $primary = false) {
 														"recomendacion"			=> "Verifique la formula y que todos los conceptos que esta utiliza existan.",
 														"descripcion_adicional"	=> "verifique: " . $concepto['codigo']));
 						} else {
-							$conceptoParaCalculo = array_pop($conceptoParaCalculoTmp);
-							$conceptoParaCalculo['imprimir'] = "No";
-							$this->__conceptos[$match] = $conceptoParaCalculo;
+							$conceptoParaCalculo[$match]['imprimir'] = 'No';
+							$this->setConcept($conceptoParaCalculo);
 						}
 					}
 					
@@ -680,9 +679,7 @@ function afterFind($results, $primary = false) {
 				}
 			}
 
-			/**
-			* Resuelvo la formula.
-			*/
+			/** Resolv formula */
 			$valor = $this->resolver($formula);
 		} elseif (empty($formula)) {
 			$this->__setError(array(	"tipo"					=> "Formula de Concepto Inexistente",

@@ -23,14 +23,16 @@
  * @subpackage  app.models.behaviors
  */
 //class UtilBehavior extends ModelBehavior {
-App::import('Behavior', 'Containable');
+//App::import('Behavior', 'Containable');
 class UtilBehavior extends ContainableBehavior {	
 
-
+	private $__formulas = null;
+	
 	function resolver(&$model, $formula) {
-		App::import('Vendor', 'formulas', 'pragmatia');
-		$formulas = new Formulas();
-		return $formulas->resolver($formula);
+		if (is_null($this->__formulas)) {
+			$this->__formulas = new Formulas();
+		}
+		return $this->__formulas->resolver($formula);
 	}
 	
 

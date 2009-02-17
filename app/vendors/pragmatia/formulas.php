@@ -44,7 +44,7 @@ class Formulas {
  */	
 	private $__cellId = 0;
 
-	
+
 /**
  * Instance PHPExcel's object.
  *
