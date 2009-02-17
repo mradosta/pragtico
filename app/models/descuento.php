@@ -130,7 +130,7 @@ class Descuento extends AppModel {
 				  	'checkSecurity'	=> false,
 					'conditions' 	=> array(
 				'Descuento.relacion_id' 						=> $relacion['Relacion']['id'],
-				'Descuento.desde >=' 							=> $opciones['desde'],
+				'Descuento.desde <=' 							=> $opciones['desde'],
  				'(Descuento.descontar & ' . $descontar . ') >' 	=> 0,
  				'Descuento.estado' 								=> 'Activo')
 		));
@@ -223,14 +223,14 @@ class Descuento extends AppModel {
 
 
 /**
- * Como el campo descontar es un bitwise, debo gardar la suma de todos los valores y no un valor puntual.
+ * descontar field is bitwise, must sum values then.
  */
-	function beforeSave() {
+	function beforeSave($options = array()) {
 		$this->data['Descuento']['descontar'] = array_sum($this->data['Descuento']['descontar']);
 		if ($this->data['Descuento']['tipo'] === 'Vale') {
 			$this->data['Descuento']['cuotas'] = 1;
 		}
-		return parent::beforeSave();
+		return parent::beforeSave($options);
 	}
 
 	
