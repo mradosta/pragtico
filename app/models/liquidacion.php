@@ -28,7 +28,6 @@ class Liquidacion extends AppModel {
 	*/
 	var $opciones = array('tipo' => array(
 						  		'normal'			=> 'Normal',
-			   					'discounts'			=> 'Descuentos',
 			   					'sac'				=> 'Sac',
 		   						'vacation'			=> 'Vacaciones',
 		   						'final_receipt'		=> 'Liquidacion Final',
