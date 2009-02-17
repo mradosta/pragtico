@@ -82,7 +82,7 @@ class AppModel extends Model {
  * not be saved, even thought it saves validad records.
  * TODO: ver $dbError = $this->{$this->modelClass}->getError();    
  */
-    function appSave($data = null, $options = array()) {
+    function appSave($data = array(), $options = array()) {
 
         //$options = array_merge(array('validate' => 'first', 'atomic' => false), $options);
 		$options = array_merge(array('validate' => 'first'), $options);
@@ -101,9 +101,12 @@ class AppModel extends Model {
             $dataCount++;
             $this->data = $v;
 
-            if (!$this->beforeSave()) {
-                continue;
-            }
+            //if (!$this->beforeSave()) {
+            //    continue;
+            //}
+			//if (!empty($this->data)) {
+			//	$data = array_merge($data, $this->data);
+			//}
             
             /**
              * Must verify if all elements in the array belongs to the same model.
