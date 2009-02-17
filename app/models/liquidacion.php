@@ -29,7 +29,7 @@ class Liquidacion extends AppModel {
 	var $opciones = array('tipo' => array(
 						  		'normal'			=> 'Normal',
 			   					'sac'				=> 'Sac',
-		   						'vacation'			=> 'Vacaciones',
+		   						'holliday'			=> 'Vacaciones',
 		   						'final_receipt'		=> 'Liquidacion Final',
 		   						'special'			=> 'Especial'));
 	
@@ -115,8 +115,10 @@ class Liquidacion extends AppModel {
 	
 
 /**
- * Generates a receipt.
+ * Generates a liquidation.
  *
+ * @param array $relationship. The complete relationship array.
+ * @param array $period. The period (extended array style).
  * @param string $type. The type of recipt you want to generate.
  *      - normal
  *      - sac
@@ -129,14 +131,47 @@ class Liquidacion extends AppModel {
  * @return array. A receipt ready to be saved.
  * @access public
  */
-    function getReceipt($relationships = null, $type = 'normal', $options = array()) {
+    function getReceipt($relationship, $period, $type = 'normal', $options = array()) {
 
-        
-        $relationshipsIds = Set::extract('/Relacion/id', $relationships);
+		$this->setPeriod($period);
+		$this->setRelationship($relationship);
+		
 		if ($type === 'normal') {
+			$this->setVar($options['variables']);
+			if (!empty($options['informaciones'][$relationship['ConveniosCategoria']['convenio_id']])) {
+				$this->setVar($options['informaciones'][$relationship['ConveniosCategoria']['convenio_id']]);
+			}
+
+			$opcionesFindConcepto = null;
+			$this->setConcept(
+				$this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
+					array(		'relacion' 	=> $relationship,
+								'desde' 	=> $this->getVarValue('#fecha_desde_liquidacion'),
+								'hasta' 	=> $this->getVarValue('#fecha_hasta_liquidacion'))));
+
 			
-		}
-        elseif ($type === 'sac') {
+			
+			/**
+			* Verifico si debo hacerle algun descuento.
+			$opcionesDescuentos = null;
+			$opcionesDescuentos['desde'] = $this->getVarValue("#fecha_desde_liquidacion");
+			$opcionesDescuentos['hasta'] = $this->getVarValue("#fecha_hasta_liquidacion");
+			$opcionesDescuentos['tipo'] = $this->getVarValue("#tipo_liquidacion");
+			$opcionesDescuentos['periodo'] = $this->getVarValue("#periodo_liquidacion");
+			//$condicionesDescuentos['smvm'] = $this->getVarValue("#smvm");
+			$descuentos = $this->Liquidacion->Relacion->Descuento->getDescuentos($relacion, $opcionesDescuentos);
+
+			$this->__setConcepto($descuentos['concepto'], "SinCalcular");
+			$this->__setAuxiliar($descuentos['auxiliar']);
+			*/
+			
+			/** Resolv */
+			foreach ($this->getConcept() as $cCod => $concepto) {
+				$this->__conceptos[$cCod] = array_merge($this->__conceptos[$cCod],
+						$this->__getConceptValue($concepto));
+			}
+			return $this->__getSaveArray();
+		} elseif ($type === 'sac') {
 
             $defaults['january'] = 0;
             $defaults['february'] = 0;
@@ -152,7 +187,7 @@ class Liquidacion extends AppModel {
             $defaults['december'] = 0;
             $options = array_merge($defaults, $options);
             
-            $condtions['Liquidacion.relacion_id'] = $relationshipsIds;
+            $condtions['Liquidacion.relacion_id'] = $relationships['Relacion']['id'];
             $condtions['Liquidacion.ano'] = $options['year'];
             if ($options['period'] == '1') {
                 $condtions['mes'] = array('AND' => array(
@@ -166,11 +201,9 @@ class Liquidacion extends AppModel {
                 return array('error' => sprintf('Wrong period (%s). Only "1" for the first_half or "2" for the second_half allowed for type %s.', $options['period'], $type));
             }
 
-            foreach ($relationships as $relationship) {
-                $options['relation'] = array_pop(Set::combine(array($relationship), '{n}.Relacion.id', array('{2}, {1} ({0})', '{n}.Empleador.nombre', '{n}.Trabajador.nombre', '{n}.Trabajador.apellido')));
-                $options['start'] = strtotime($relationship['Relacion']['ingreso'] . ' 00:00:00 UTC');
-                $options['end'] = strtotime($relationship['Relacion']['egreso'] . ' 00:00:00 UTC');
-            }
+			$options['relation'] = array_pop(Set::combine(array($relationship), '{n}.Relacion.id', array('{2}, {1} ({0})', '{n}.Empleador.nombre', '{n}.Trabajador.nombre', '{n}.Trabajador.apellido')));
+			$options['start'] = strtotime($relationship['Relacion']['ingreso'] . ' 00:00:00 UTC');
+			$options['end'] = strtotime($relationship['Relacion']['egreso'] . ' 00:00:00 UTC');
 
             /** Use PHPExcel to get complex calculations done */
             set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes');
@@ -221,6 +254,189 @@ class Liquidacion extends AppModel {
     }
     
 
+
+
+	function __getSaveArray() {
+		/**
+		* Preparo el array para guardar la pre-liquidacion.
+		* Lo guardo como una liquidacion con estado "Sin Confirmar".
+		* Cuando se confirma, solo cambio el estado, sino, a la siguiente pasada del preliquidador, la elimino.
+		*/
+		$liquidacion = null;
+		$liquidacion['fecha'] = date('Y-m-d');
+		$liquidacion['ano'] = $this->getVarValue('#ano_liquidacion');
+		$liquidacion['mes'] = $this->getVarValue('#mes_liquidacion');
+		$liquidacion['periodo'] = $this->getVarValue('#periodo_liquidacion');
+		$liquidacion['tipo'] = $this->getVarValue('#tipo_liquidacion');
+		$liquidacion['estado'] = 'Sin Confirmar';
+		$liquidacion['relacion_id'] = $this->getRelationship('Relacion', 'id');
+		$liquidacion['relacion_ingreso'] = $this->getRelationship('Relacion', 'ingreso');
+		$liquidacion['relacion_horas'] = $this->getRelationship('Relacion', 'horas');
+		$liquidacion['relacion_basico'] = $this->getRelationship('Relacion', 'basico');
+		$liquidacion['relacion_area_id'] = $this->getRelationship('Relacion', 'area_id');
+		$liquidacion['trabajador_id'] = $this->getRelationship('Trabajador', 'id');
+		$liquidacion['trabajador_cuil'] = $this->getRelationship('Trabajador', 'cuil');
+		$liquidacion['trabajador_nombre'] = $this->getRelationship('Trabajador', 'nombre');
+		$liquidacion['trabajador_apellido'] = $this->getRelationship('Trabajador', 'apellido');
+		$liquidacion['empleador_id'] = $this->getRelationship('Empleador', 'id');
+		$liquidacion['empleador_cuit'] = $this->getRelationship('Empleador', 'cuit');
+		$liquidacion['empleador_nombre'] = $this->getRelationship('Empleador', 'nombre');
+		$liquidacion['empleador_direccion'] = $this->getRelationship('Empleador', 'direccion');
+		$liquidacion['convenio_categoria_convenio_id'] = $this->getRelationship('ConveniosCategoria', 'convenio_id');
+		$liquidacion['convenio_categoria_nombre'] = $this->getRelationship('ConveniosCategoria', 'nombre');
+		$liquidacion['convenio_categoria_costo'] = $this->getRelationship('ConveniosCategoria', 'costo');
+		$liquidacion['convenio_categoria_jornada'] = $this->getRelationship('ConveniosCategoria', 'jornada');
+
+		$totales['remunerativo'] = 0;
+		$totales['no_remunerativo'] = 0;
+		$totales['deduccion'] = 0;
+		$totales['total_beneficios'] = 0;
+		$totales['total_pesos'] = 0;
+		$detalle = null;
+		foreach ($this->__conceptos as $detalleLiquidacion) {
+			$v = $this->__agregarDetalle($detalleLiquidacion);
+			if (!empty($v)) {
+				$detalle[] = $this->__agregarDetalle($detalleLiquidacion);
+			}
+
+
+			if ($detalleLiquidacion['imprimir'] === "Si" || $detalleLiquidacion['imprimir'] === "Solo con valor") {
+
+				$pago = "total_" . strtolower($detalleLiquidacion['pago']);
+				switch ($detalleLiquidacion['tipo']) {
+					case "Remunerativo":
+						$totales[$pago] += $detalleLiquidacion['valor'];
+						$totales['remunerativo'] += $detalleLiquidacion['valor'];
+						break;
+					case "No Remunerativo":
+						$totales[$pago] += $detalleLiquidacion['valor'];
+						$totales['no_remunerativo'] += $detalleLiquidacion['valor'];
+						break;
+					case "Deduccion":
+						$totales[$pago] -= $detalleLiquidacion['valor'];
+						$totales['deduccion'] += $detalleLiquidacion['valor'];
+						break;
+				}
+			}
+		}
+		$totales['no_remunerativo'] -= $totales['total_beneficios'] ;
+		$totales['total'] = $totales['remunerativo'] + $totales['no_remunerativo'] - $totales['deduccion'];
+
+		/**
+		 * Si a este empleador hay que aplicarle redondeo, lo hago y lo dejo expresado
+		 * con el concepto redondeo en el detalle de la liquidacion.
+		 */
+		if ($this->getRelationship('Empleador', 'redondear') === 'Si') {
+			$redondeo = round($totales['total']) - $totales['total'];
+			if ($redondeo !== 0) {
+				$opcionesFindConcepto['codigoConcepto'] = "redondeo";
+				$conceptoRedondeo = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
+						array(	'relacion' 			=> $this->getRelationship(),
+								'codigoConcepto' 	=> 'redondeo'));
+				$conceptoRedondeo['redondeo']['debug'] = "=" . round($totales['total']) . " - " . $totales['total'];
+				$conceptoRedondeo['redondeo']['valor_cantidad'] = "0";
+
+				/** Modify total */
+				$totales['total'] += $redondeo;
+				$totales['total_pesos'] += $redondeo;
+
+				/**
+				* Dependiendo del signo, lo meto como un concepto Remunerativo o una Deduccion.
+				*/
+				if ($redondeo > 0) {
+					$totales['remunerativo'] += $redondeo;
+					$conceptoRedondeo['redondeo']['tipo'] = 'No Remunerativo';
+					$conceptoRedondeo['redondeo']['valor'] = $redondeo;
+				} else {
+					$totales['deduccion'] += $redondeo;
+					$conceptoRedondeo['redondeo']['tipo'] = 'Deduccion';
+					$conceptoRedondeo['redondeo']['valor'] = ($redondeo * -1);
+				}
+				$detalle[] = $this->__agregarDetalle($conceptoRedondeo['redondeo']);
+			}
+		}
+
+		foreach (array('remunerativo', 'no_remunerativo', 'deduccion', 'total_pesos', 'total_beneficios', 'total') as $total) {
+			$totales[$total] = number_format($totales[$total], 3, '.', '');
+		}
+		
+		/**
+		* Genero los pagos pendientes.
+		* Diferencio en los diferentes tipos (beneficios o pesos).
+		*/
+		$auxiliar = null;
+		$auxiliar['estado'] = "Pendiente";
+		$auxiliar['fecha'] = "##MACRO:fecha_liquidacion##";
+		$auxiliar['liquidacion_id'] = "##MACRO:liquidacion_id##";
+		$auxiliar['relacion_id'] = $liquidacion['relacion_id'];
+		
+		$auxiliar['monto'] = $totales['total_pesos'];
+		$auxiliar['moneda'] = "Pesos";
+		$this->__setAuxiliar(array("save"=>serialize($auxiliar), "model" => "Pago"));
+		
+		$auxiliar['monto'] = $totales['total_beneficios'];
+		$auxiliar['moneda'] = "Beneficios";
+		$this->__setAuxiliar(array("save"=>serialize($auxiliar), "model" => "Pago"));
+		
+		$save['Liquidacion']			= array_merge($liquidacion, $totales);
+		$save['LiquidacionesDetalle']	= $detalle;
+		
+		$auxiliar = null;
+		$auxiliar = $this->__getAuxiliar();
+		if (!empty($auxiliar)) {
+			$save['LiquidacionesAuxiliar'] = $auxiliar;
+		}
+		
+		$error = null;
+		$error = $this->__getError();
+		if (!empty($error)) {
+			$save['LiquidacionesError'] = $error;
+		}
+		
+		$save['Liquidacion']			= array_merge($liquidacion, $totales);
+		$save['LiquidacionesDetalle']	= $detalle;
+		$this->create();
+		return $this->saveAll($save);
+		/*
+		if ($this->saveAll($save)) {
+			return $this->id;
+		} else {
+			return false;
+		}
+		*/
+	}
+
+/**
+* Esta funcion realiza el mapeo entre lo que tengo en el array de conceptos,
+* y los datos que necesito para guardarlo en el detalle de la liquidacion.
+*/
+	function __agregarDetalle($detalleLiquidacion) {
+		//debug($detalleLiquidacion);
+		$detalle = null;
+		if (!empty($detalleLiquidacion['concepto_id'])) {
+			$detalle['concepto_id'] = $detalleLiquidacion['concepto_id'];
+			$detalle['concepto_codigo'] = $detalleLiquidacion['codigo'];
+			$detalle['concepto_nombre'] = $detalleLiquidacion['nombre'];
+			$detalle['concepto_tipo'] = $detalleLiquidacion['tipo'];
+			$detalle['concepto_periodo'] = $detalleLiquidacion['periodo'];
+			$detalle['concepto_sac'] = $detalleLiquidacion['sac'];
+			$detalle['concepto_imprimir'] = $detalleLiquidacion['imprimir'];
+			$detalle['concepto_antiguedad'] = $detalleLiquidacion['antiguedad'];
+			//$detalle['concepto_remuneracion'] = $detalleLiquidacion['remuneracion'];
+			$detalle['concepto_formula'] = $detalleLiquidacion['formula'];
+			$detalle['concepto_cantidad'] = $detalleLiquidacion['cantidad'];
+			$detalle['concepto_orden'] = $detalleLiquidacion['orden'];
+			$detalle['coeficiente_id'] = $detalleLiquidacion['coeficiente_id'];
+			$detalle['coeficiente_nombre'] = $detalleLiquidacion['coeficiente_nombre'];
+			$detalle['coeficiente_tipo'] = $detalleLiquidacion['coeficiente_tipo'];
+			$detalle['coeficiente_valor'] = $detalleLiquidacion['coeficiente_valor'];
+			$detalle['debug'] = $detalleLiquidacion['debug'];
+			$detalle['valor'] = $detalleLiquidacion['valor'];
+			$detalle['valor_cantidad'] = $detalleLiquidacion['valor_cantidad'];
+		}
+		return $detalle;
+	}
+	
 function afterFind($results, $primary = false) {
     //array_walk($results, create_function(’&$v’, ‘$v['Photo']['rownum'] = $v[0]['rownum']; unset($v[0]);’));
     if ($primary == true) {
@@ -266,7 +482,7 @@ function afterFind($results, $primary = false) {
 /**
 * Dado un concepto, resuelve la formula.
 */
-	function __getConceptValue($concepto, $opciones = array()) {
+	function __getConceptValue($concepto) {
 		$valor = null;
 		$errores = array();
 		$formula = $concepto['formula'];
@@ -381,7 +597,7 @@ function afterFind($results, $primary = false) {
 			foreach ($this->__conceptos as $conceptoTmp) {
 				if (!in_array($conceptoTmp['codigo'], $conceptosNot) && $conceptoTmp['tipo'] == $matches[1] && ($conceptoTmp['imprimir'] === "Si" || $conceptoTmp['imprimir'] === "Solo con valor")) {
 					if (empty($conceptoTmp['valor'])) {
-						$resolucionCalculo = $this->__getConceptValue($conceptoTmp, $opciones);
+						$resolucionCalculo = $this->__getConceptValue($conceptoTmp);
 						$this->__conceptos[$conceptoTmp['codigo']] = am($resolucionCalculo, $this->__conceptos[$conceptoTmp['codigo']]);
 						$conceptoTmp['valor'] = $resolucionCalculo['valor'];
 					}
@@ -404,15 +620,13 @@ function afterFind($results, $primary = false) {
 				foreach ($matches[1] as $match) {
 					$match = substr($match, 1);
 					
-					/**
-					* Si no esta, lo busco.
-					*/
+					/** Si no esta, lo busco */
 					if (!isset($this->__conceptos[$match])) {
 						/**
 						* Busco los conceptos que puedan estar faltandome.
 						* Los agrego al array de conceptos identificandolos y poniendoles el estado a no imprimir.
 						*/
-						$conceptoParaCalculoTmp = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array_merge(array('relacion' => $this->getRelationship(), 'codigoConcepto' => $match), $opciones));
+						$conceptoParaCalculoTmp = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array_merge(array('relacion' => $this->getRelationship(), 'codigoConcepto' => $match)));
 						if (empty($conceptoParaCalculoTmp)) {
 							$this->__setError(array(	"tipo"					=> "Concepto Inexistente",
 														"gravedad"				=> "Alta",
@@ -429,15 +643,12 @@ function afterFind($results, $primary = false) {
 						}
 					}
 					
-					/**
-					* Si no tiene valor, lo calculo.
-					*/
+					/** Si no tiene valor, lo calculo */
 					if (!isset($this->__conceptos[$match]['valor'])) {
 						if (isset($this->__conceptos[$match])) {
-							$resolucionCalculo = $this->__getConceptValue($this->__conceptos[$match], $opciones);
+							$resolucionCalculo = $this->__getConceptValue($this->__conceptos[$match]);
 							$this->__conceptos[$match] = array_merge($resolucionCalculo, $this->__conceptos[$match]);
-						}
-						else {
+						} else {
 							$this->__setError(array(	"tipo"					=> "Concepto Inexistente",
 														"gravedad"				=> "Alta",
 														"concepto"				=> $match,
@@ -725,7 +936,7 @@ function afterFind($results, $primary = false) {
                         $this->setVar($horaTipo, $horaValor);
                     }
                     $this->__setAuxiliar($horas['auxiliar']);
-                    $this->__setConcepto($horas['conceptos'], 'SinCalcular');
+                    $this->setConcept($horas['conceptos']);
                 break;
                 case '#ausencias_justificadas':
                 case '#ausencias_injustificadas':
@@ -758,12 +969,14 @@ function afterFind($results, $primary = false) {
     }
 
     function setPeriod($period) {
-        /** Guess is setting just the year */
+        /** Guess if setting just the year */
         if (is_numeric($period) && strlen($period) === 4) {
             $this->__period['ano'] = $period;
-        } else {
+        } elseif (is_string($period)) {
             $this->__period = $this->format($period, 'periodo');
-        }
+        } else {
+			$this->__period = $period;
+		}
     }
     
     function getPeriod($option = '') {
@@ -778,14 +991,15 @@ function afterFind($results, $primary = false) {
         $this->__relationship = $relationship;
     }
 
-    function getRelationship($model = null) {
-		if (!empty($model)) {
+    function getRelationship($model = null, $field = null) {
+		if (!is_null($model) && !is_null($field)) {
+        	return $this->__relationship[$model][$field];
+		} elseif (!is_null($model)) {
         	return $this->__relationship[$model];
 		} else {
 			return $this->__relationship;
 		}
     }
-    
     
     function setVar($var, $value = null) {
         if (is_string($var) && !is_null($value)) {
@@ -838,16 +1052,16 @@ function afterFind($results, $primary = false) {
  * @return void.
  * @access private.
  */
-    function __setConcepto($conceptos, $tipo = 'SinCalcular') {
-        if ($tipo === 'SinCalcular') {
-            if (empty($this->__conceptos)) {
-                $this->__conceptos = $conceptos;
-            }
-            else {
-                $this->__conceptos = array_merge($this->__conceptos, $conceptos);
-            }
-        }
+    function setConcept($conceptos) {
+		if (empty($this->__conceptos)) {
+			$this->__conceptos = $conceptos;
+		} else {
+			$this->__conceptos = array_merge($this->__conceptos, $conceptos);
+		}
     }
-    
+
+	function getConcept() {
+		return $this->__conceptos;
+	}
 }
 ?>

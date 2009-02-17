@@ -317,15 +317,12 @@ class AppController extends Controller {
                                 $this->data[$k][$model] = $datos;
                             }
                         }
-                        $this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error", array("errores"=>$dbError));
+                        //$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error", array("errores"=>$dbError));
+						$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error");
                     } else {
-                        $this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error", array("errores"=>$dbError));
+                        //$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error", array("errores"=>$dbError));
+						$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error");
                     }
-                    
-                    /**
-                     * Cargo la variable validationErrors con los errores que surgieron de la validacion.
-                     */
-                    $this->{$this->modelClass}->validationErrors = $invalidFields;
                 }
             } elseif ($this->data['Form']['accion'] === 'cancelar') {
                 $this->History->goBack();

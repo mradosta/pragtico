@@ -42,133 +42,125 @@ class LiquidacionesController extends AppController {
  */
 	function preliquidar() {
 
-		$this->__filasPorPagina();
-		$this->paginate = array_merge($this->paginate, array('conditions' => array('Liquidacion.estado' => 'Sin Confirmar')));
-
-		if ($this->data['Formulario']['accion'] === 'generar') {
+		/**$this->__filasPorPagina();
+		$this->paginate = array_merge($this->paginate,
+				array('conditions' => array('Liquidacion.estado' => 'Sin Confirmar')));
+		*/
+		if (($this->data['Formulario']['accion'] === 'generar')) {
 			
-			$tipoLiquidacion = $this->data['Condicion']['Liquidacion-tipo'];
+			$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
+			if ($periodo !== false) {
+				$message = null;
+				if ($this->data['Condicion']['Liquidacion-tipo'] === 'normal' &&
+						!in_array($periodo['periodo'], array('1Q', '2Q', 'M'))) {
+					$message = __('Normal liquidation period should be of the form "YYYYMM[1Q|2Q|M]"', true);
+				}
+				elseif ($this->data['Condicion']['Liquidacion-tipo'] === 'holliday' &&
+						$periodo['periodo'] !== 'A') {
+					$message = __('Holliday liquidation period should be an Year', true);
+				}
+				elseif ($this->data['Condicion']['Liquidacion-tipo'] === 'sac' &&
+						!in_array($periodo['periodo'], array('1S', '2S'))) {
+					$message = __('Sac liquidation period should be of the form "YYYY[12]S"', true);
+				}
+			} else {
+				$message = __('Invalid Period', true);
+			}
+
+			if (empty($this->data['Condicion']['Relacion-empleador_id']) &&
+					empty($this->data['Condicion']['Relacion-trabajador_id']) &&
+					empty($this->data['Condicion']['Relacion-id'])) {
+						$message = "Debe seleccionar un empleador, un trabajador o una relacion laboral.";
+			}
+
+			if (!is_null($message)) {
+				$this->Session->setFlash($message, 'error');
+				$this->redirect(array('action' => 'preliquidar'));
+			}
+
 			
 			/**
-			* Realizo las validaciones basicas para poder preliquidar.
-			*/
-			if (empty($this->data['Condicion']['Liquidacion-periodo']) && $tipoLiquidacion === 'Normal') {
-				$this->Session->setFlash("Debe especificar un periodo.", "error");
+			 * De las liquidaciones que he seleccionado para pre-liquidar, verifico que no sean
+			 * liquidaciones ya confirmadas para el mismo periodo del mismo tipo.
+			 */
+			$condicionesLiquidacion['Liquidacion.mes'] = $periodo['mes'];
+			$condicionesLiquidacion['Liquidacion.ano'] = $periodo['ano'];
+			$condicionesLiquidacion['Liquidacion.periodo'] = $periodo['periodo'];
+			$condicionesLiquidacion['Liquidacion.tipo'] = $this->data['Condicion']['Liquidacion-tipo'];
+			$condicionesLiquidacion['Liquidacion.estado'] = 'Confirmada';
+			$liquidaciones = $this->Liquidacion->Relacion->Liquidacion->find('all', array(
+					'recursive'		=> -1,
+					'fields'		=> 'relacion_id',
+					'conditions'	=> $condicionesLiquidacion));
+			$confirmadas = Set::extract('/Liquidacion/relacion_id', $liquidaciones);
+			
+			
+			/** Search for the relations */
+			$condiciones = null;
+			if (!empty($this->data['Condicion']['Relacion-id'])) {
+				$condiciones['Relacion.id'] = $this->data['Condicion']['Relacion-id'];
 			}
-			else {
-				/**
-				* Obtengo el periodo separado por ano, mes y periodo propiamente dicho.
-				*/
-				$this->__periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], "periodo");
-				if ($this->__periodo === false) {
-					$this->Session->setFlash("Debe especificar un periodo valido de la forma AAAAMM[1Q|2Q|M].", "error");
-					//redirect
-				}
-				else if (empty($this->data['Condicion']['Relacion-empleador_id'])
-						&& empty($this->data['Condicion']['Relacion-trabajador_id'])
-							&& empty($this->data['Condicion']['Relacion-id'])) {
-							$this->Session->setFlash("Debe seleccionar un empleador, un trabajador o una relacion laboral.", "error");
-				}
-				else {
+			if (!empty($this->data['Condicion']['Trabajador-id'])) {
+				$condiciones['Trabajador.id'] = $this->data['Condicion']['Trabajador-id'];
+			}
+			if (!empty($this->data['Condicion']['Empleador-id'])) {
+				$condiciones['Empleador.id'] = $this->data['Condicion']['Empleador-id'];
+			}
+			$condiciones['Relacion.ingreso <='] = $periodo['hasta'];
+			$condiciones['Relacion.estado'] = 'Activa';
+			$condiciones['NOT'] = array('Relacion.id' =>$confirmadas);
+			$relaciones = $this->Liquidacion->Relacion->find('all',
+					array(	'contain'		=> array(	'ConveniosCategoria.ConveniosCategoriasHistorico',
+														'Trabajador.ObrasSocial',
+														'Empleador'),
+							'conditions'	=> $condiciones));
+			
+			if (empty($relaciones)) {
+				$this->Session->setFlash('No se encontraron relacion para liquidar. Verifique si no se han liquidado y confirmado previamente o los criterios de busqueda no son correctos.', 'error');
+				$this->redirect(array('action' => 'preliquidar'));
+			}
+			
+			/** Delete user's unconfirmed liquidations */
+			$usuario = $this->Session->read('__Usuario');
+			$delete = array('Liquidacion.user_id' => $usuario['Usuario']['id'], 'Liquidacion.estado' => 'Sin Confirmar');
+			if (!$this->Liquidacion->deleteAll($delete)) {
+				$this->Session->setFlash(__('Can\'t delete previous liquidations. Call Administrator', true), 'error');
+				$this->redirect(array('action' => 'preliquidar'));
+			}
 
+			/**
+			 * Busco las informaciones de los convenios que pueden necesitarse en las formulas.
+			 * Lo hago de esta forma, ya que busco todo junto y no uno por uno en cada relacion por una cuestion de performance,
+			 * ya que seguramente las relaciones liquidadas tengas los mismos convenios.
+			 */
+			$informaciones = $this->Liquidacion->Relacion->ConveniosCategoria->Convenio->getInformacion(Set::extract("/ConveniosCategoria/convenio_id", $relaciones));
 
-					/**
-					* Busco las relaciones que debo liquidar de acuerdo a los criterios ingresados.
-					*/
-					unset($this->data['Condicion']['Liquidacion-tipo']);
-					unset($this->data['Condicion']['Liquidacion-periodo']);
-					$condiciones = $this->Paginador->generarCondicion($this->data);
-					$condiciones['Relacion.ingreso <='] = $this->__periodo['hasta'];
-					$condiciones['Relacion.estado'] = "Activa";
-					$this->Liquidacion->Relacion->recursive = -1;
-					$relaciones = $this->Liquidacion->Relacion->find("all", array(	"contain"		=> array(	"ConveniosCategoria.ConveniosCategoriasHistorico",
-																									"Trabajador.ObrasSocial",
-																									"Empleador"),
-																		"conditions"	=> $condiciones));
-					/**
-					* Busco las informaciones de los conveniso que pueden necesitarse en las formulas.
-					* Lo hago de esta forma, ya que busco todo junto y no uno por uno en cada relacion por una cuestion de performance,
-					* ya que seguramente las relaciones liquidadas tengas los mismos convenios.
-					*/
-					$informaciones = $this->Liquidacion->Relacion->ConveniosCategoria->Convenio->getInformacion(Set::extract("/ConveniosCategoria/convenio_id", $relaciones));
-					
-					/**
-					* Borro TODAS las liquidaciones no confirmadas del usuario.
-					*/
-					$usuario = $this->Session->read("__Usuario");
-					$delete = array("Liquidacion.user_id"=>$usuario['Usuario']['id'], "Liquidacion.estado"=>'Sin Confirmar');
-					if (!$this->Liquidacion->deleteAll($delete)) {
-						d("ERROR al borrar");
-					}
-					
-					/**
-					* Obtengo el listado completo de variables y las inicializo sin valor.
-					*/
-					$Variable = ClassRegistry::init("Variable");
-					$variablesTmp = $Variable->find("all", array("order"=>false));
-					foreach ($variablesTmp as $v) {
-						$variables[$v['Variable']['nombre']] = $v['Variable'];
-					}
-					$variables['#tipo_liquidacion']['valor'] = $tipoLiquidacion;
-					//$variables['#tipo_liquidacion']['valor'] = $this->data['Condicion']['Liquidacion-tipo'];
-					//$variables['#tipo_liquidacion']['valor'] = "normal";
-					//d($this->__getVariableValor("#tipo_liquidacion"));
-					/**
-					* Resuelvo las variables que vienen por parametros.
-					$variables['#mes_liquidacion']['valor'] = $periodo['mes'];
-					$variables['#ano_liquidacion']['valor'] = $periodo['ano'];
-					$variables['#periodo_liquidacion']['valor'] = $periodo['periodo'];
-					$variables['#periodo_liquidacion_completo']['valor'] = $periodo['periodoCompleto'];
-					$variables['#fecha_desde_liquidacion']['valor'] = $periodo['desde'];
-					$variables['#fecha_hasta_liquidacion']['valor'] = $periodo['hasta'];
-					$variables['#tipo_liquidacion']['valor'] = $this->data['Extras']['Liquidacion-tipo'];
-					*/
-					
+			/** Find all vars */
+			$Variable = ClassRegistry::init('Variable');
+			$variables = Set::combine($Variable->find('all', array('recursive' => -1, 'order' => false)),
+					'{n}.Variable.nombre', '{n}.Variable');
+			$variables['#tipo_liquidacion']['valor'] = $this->data['Condicion']['Liquidacion-tipo'];
+			
 
-					/**
-					* De las liquidaciones que he seleccionado para pre-liquidar, verifico que no sean
-					* liquidaciones ya confirmadas para el mismo periodo del mismo tipo.
-					*/
-					$condicionesLiquidacion['Liquidacion.mes'] = $this->__periodo['mes'];
-					$condicionesLiquidacion['Liquidacion.ano'] = $this->__periodo['ano'];
-					$condicionesLiquidacion['Liquidacion.periodo'] = $this->__periodo['periodo'];
-					$condicionesLiquidacion['Liquidacion.tipo'] = $variables['#tipo_liquidacion']['valor'];
-					$condicionesLiquidacion['Liquidacion.estado'] = "Confirmada";
-					$condicionesLiquidacion['Liquidacion.relacion_id'] = Set::extract("/Relacion/id", $relaciones);
-					$liquidaciones = $this->Liquidacion->Relacion->Liquidacion->find("all", array(	
-																						"recursive"	=> -1,
-																						"fields"	=> "relacion_id",
-																						"conditions"=> $condicionesLiquidacion));
-					
-					$confirmadas = Set::extract("/Liquidacion/relacion_id", $liquidaciones);
-
-					/**
-					* Recorro cada relacion de las seleccionadas y trato de liquidarle si aun no la he liquidado.
-					*/
-					$ids = null;
-					$opciones['variables'] = $variables;
-					$opciones['informaciones'] = $informaciones;
-                    //foreach ($relaciones as $k=>$relacion) {
-                    //$this->Liquidacion->getReceipt($tipoLiquidacion, $relaciones, array('period' => $this->__periodo));
-                    //$this->Liquidacion->getReceipt($tipoLiquidacion, $relaciones, array('period' => 'first_half', 'year' => 2009));
-                    //}
-					foreach ($relaciones as $k=>$relacion) {
-						if (!in_array($relacion['Relacion']['id'], $confirmadas)) {
-							$ids[] = $this->__getLiquidacion($relacion, $opciones);
-						}
-					}
-					
-					$condicionesLiquidacion['Liquidacion.estado'] = array("Sin Confirmar", "Confirmada");
-					$this->Liquidacion->contain(array("Relacion.Trabajador", "Relacion.Empleador", "LiquidacionesError"));
-					$resultados = $this->Paginador->paginar($condicionesLiquidacion);
-				}
+			/** Make the liquidations if not done. */
+			$ids = null;
+			$opciones['variables'] = $variables;
+			$opciones['informaciones'] = $informaciones;
+			foreach ($relaciones as $relacion) {
+				$this->Liquidacion->getReceipt($relacion, $periodo, $variables['#tipo_liquidacion']['valor'], $opciones);
 			}
 		}
 
-		if (empty($resultados)) {
-			$this->Liquidacion->contain(array("Relacion.Trabajador", "Relacion.Empleador", "LiquidacionesError"));
-			$resultados = $this->Paginador->paginar();
-		}
+		$this->Liquidacion->contain(array(
+				'Relacion.Trabajador',
+				'Relacion.Empleador',
+	 			'LiquidacionesError'));
+		//d($this->Session->read("filtros." . $this->name . "." . $this->action));
+		//d($this->data);
+		$tmpPeriod = $this->data['Condicion']['Liquidacion-periodo_largo'];
+		unset($this->data['Condicion']['Liquidacion-periodo_largo']);
+		$resultados = $this->Paginador->paginar();
+		$this->data['Condicion']['Liquidacion-periodo_largo'] = $tmpPeriod;
 		$this->set("registros", $resultados['registros']);
 	}
 
@@ -286,10 +278,6 @@ class LiquidacionesController extends AppController {
 					$ids = null;
 					$opciones['variables'] = $variables;
 					$opciones['informaciones'] = $informaciones;
-                    //foreach ($relaciones as $k=>$relacion) {
-                    //$this->Liquidacion->getReceipt($tipoLiquidacion, $relaciones, array('period' => $this->__periodo));
-                    //$this->Liquidacion->getReceipt($tipoLiquidacion, $relaciones, array('period' => 'first_half', 'year' => 2009));
-                    //}
 					foreach ($relaciones as $k=>$relacion) {
 						if (!in_array($relacion['Relacion']['id'], $confirmadas)) {
 							$ids[] = $this->__getLiquidacion($relacion, $opciones);
@@ -1324,16 +1312,14 @@ class LiquidacionesController extends AppController {
  * Muestra via desglose el recibo (detalle) de la preliquidacion.
  */
 	function recibo_html($id = null) {
-		$this->Liquidacion->contain(array("LiquidacionesDetalle"));
+		$this->Liquidacion->contain('LiquidacionesDetalle');
 
 		//test - borrar
 		//$id = null;
 		//$this->params['form'] = unserialize('a:4:{s:5:"valor";s:5:"6.001";s:2:"id";s:0:"";s:13:"liquidacionId";s:2:"36";s:14:"conceptoCodigo";s:14:"horas_extra_50";}');
 		if (!empty($id)) {
 			$this->data = $this->Liquidacion->read(null, $id);
-			d($this->data);
-		}
-		elseif (!empty($this->params['form']['valor']) && !empty($this->params['form']['conceptoCodigo']) && !empty($this->params['form']['liquidacionId'])) {
+		} elseif (!empty($this->params['form']['valor']) && !empty($this->params['form']['conceptoCodigo']) && !empty($this->params['form']['liquidacionId'])) {
 			//$valor = $this->params['form']['valor'];
 			//$conceptoCodigo = $this->params['form']['conceptoCodigo'];
 			//$liquidacionId = $this->params['form']['liquidacionId'];

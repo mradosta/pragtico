@@ -43,7 +43,7 @@ $condiciones['Condicion.Relacion-id'] = array(	'label' => 'Relacion',
 //$condiciones['Condicion.Liquidacion-ano'] = array('class'=>'derecha');
 //$condiciones['Condicion.Liquidacion-periodo'] = array('options'=>$periodos);
 $condiciones['Condicion.Liquidacion-tipo'] = array('label'=>'Tipo', 'type' => 'select');
-$condiciones['Condicion.Liquidacion-periodo'] = array('label'=>'Periodo', 'type'=>'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A'));
+$condiciones['Condicion.Liquidacion-periodo_largo'] = array('label'=>'Periodo', 'type'=>'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A'));
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Preliquidar','imagen' => 'preliquidar.gif')));
 
@@ -98,7 +98,22 @@ echo $this->element('index/index', array('botonesExtra'=>array('opciones' => arr
 * Agrego el evento click asociado al boton confirmar.
 */
 $appForm->addScript('
-		
+
+	/** Prevent from submit without entering a period */
+	jQuery(":submit").click(
+ 		function() {
+			if (jQuery("input.periodo").parent().is(":visible")) {
+				if (jQuery("input.periodo").val() == "") {
+					jQuery("div.error-message", jQuery("input.periodo").parent()).remove();
+					var div = jQuery("<div/>").attr("class", "error-message").html("Debe ingresar un periodo valido");
+					jQuery("input.periodo").parent().append(div);
+					return false;
+				}
+			}
+		}
+	);
+
+	/** Shows / Hides period options, depending receipt type */
 	function period(type) {
 	
 		jQuery(".1q").hide();
@@ -116,7 +131,7 @@ $appForm->addScript('
 		} else if (type === "sac") {
 			jQuery(".1s").show();
 			jQuery(".2s").show();
-		} else if (type === "vacation") {
+		} else if (type === "holliday") {
 			jQuery(".a").show();
 		} else if (type === "special") {
 			jQuery(".1q").show();
@@ -133,9 +148,11 @@ $appForm->addScript('
 
 	jQuery("#CondicionLiquidacion-tipo").change(
  		function() {
+			jQuery("input.periodo").val("");
 			period(jQuery(this).find(":selected").val());
 		}
 	);
+	
 	
 	jQuery("#confirmar").click(
 		function() {
