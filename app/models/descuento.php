@@ -40,7 +40,8 @@ class Descuento extends AppModel {
 												'4'=>	'Segunda Quincena',
 												'8'=>	'Sac',
 												'16'=>	'Vacaciones',
-												'32'=>	'Liquidacion Final'));
+												'32'=>	'Liquidacion Final',
+											 	'64'=>	'Especial'));
 							
 	var $validate = array(
         'alta' => array(
@@ -105,8 +106,7 @@ class Descuento extends AppModel {
 			case 'normal':
 				if ($opciones['periodo'] === '1Q') {
 					$descontar = 3;
-				}
-				elseif ($opciones['periodo'] === '2Q' || $opciones['periodo'] === 'M') {
+				} elseif ($opciones['periodo'] === '2Q' || $opciones['periodo'] === 'M') {
 					$descontar = 5;
 				}
 				break;
