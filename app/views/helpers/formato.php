@@ -413,6 +413,21 @@ class FormatoHelper extends AppHelper {
 				}
 				$return = $ano . $mes . '2Q';
 				break;
+			case '1SAnterior':
+				if ($this->format($valor, 'mes') >= 7) {
+					$return = $this->format($valor, 'ano') . '1S';
+				} else {
+					$return = $this->format($valor, array('type' => 'anoAnterior')) . '1S';
+				}
+				break;
+			case '2SAnterior':
+				if ($this->format($valor, 'mes') >= 7) {
+					$return = $this->format($valor, 'ano') . '1S';
+				} else {
+					$return = $this->format($valor, array('type' => 'anoAnterior')) . '2S';
+				}
+				break;
+				break;
 			case 'mensualAnterior':
 				$mes = $this->format($valor, array('type' => 'mesAnterior'));
 				if ($mes == 12) {
