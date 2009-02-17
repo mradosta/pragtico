@@ -542,6 +542,39 @@ class FormatoTest extends CakeTestCase {
 			'12' => 'DICIEMBRE');
 		$this->assertEqual($expected, $result);
 
+		$valor = '2008A';
+		$result = $this->formato->format($valor, array('type' => 'periodo'));
+		$expected = Array (
+			'periodoCompleto' => '2008A',
+			'ano' => '2008',
+			'mes' => '00',
+			'periodo' => 'A',
+			'desde' => '2008-01-01',
+			'hasta' => '2008-12-31');
+		$this->assertEqual($expected, $result);
+		
+		$valor = '20081S';
+		$result = $this->formato->format($valor, array('type' => 'periodo'));
+		$expected = Array (
+			'periodoCompleto' => '20081S',
+			'ano' => '2008',
+			'mes' => '00',
+			'periodo' => '1S',
+			'desde' => '2008-01-01',
+			'hasta' => '2008-06-30');
+		$this->assertEqual($expected, $result);
+		
+		$valor = '20082S';
+		$result = $this->formato->format($valor, array('type' => 'periodo'));
+		$expected = Array (
+			'periodoCompleto' => '20082S',
+			'ano' => '2008',
+			'mes' => '00',
+			'periodo' => '2S',
+			'desde' => '2008-07-01',
+			'hasta' => '2008-12-31');
+		$this->assertEqual($expected, $result);
+		
 		$valor = '200808';
 		$result = $this->formato->format($valor, array('type' => 'periodo'));
 		$expected = Array (
