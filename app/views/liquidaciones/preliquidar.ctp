@@ -43,7 +43,7 @@ $condiciones['Condicion.Relacion-id'] = array(	'label' => 'Relacion',
 //$condiciones['Condicion.Liquidacion-ano'] = array('class'=>'derecha');
 //$condiciones['Condicion.Liquidacion-periodo'] = array('options'=>$periodos);
 $condiciones['Condicion.Liquidacion-tipo'] = array('label'=>'Tipo', 'type' => 'select');
-$condiciones['Condicion.Liquidacion-periodo'] = array('label'=>'Periodo', 'type'=>'periodo');
+$condiciones['Condicion.Liquidacion-periodo'] = array('label'=>'Periodo', 'type'=>'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A'));
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Preliquidar','imagen' => 'preliquidar.gif')));
 
@@ -98,6 +98,45 @@ echo $this->element('index/index', array('botonesExtra'=>array('opciones' => arr
 * Agrego el evento click asociado al boton confirmar.
 */
 $appForm->addScript('
+		
+	function period(type) {
+	
+		jQuery(".1q").hide();
+		jQuery(".2q").hide();
+		jQuery(".m").hide();
+		jQuery(".1s").hide();
+		jQuery(".2s").hide();
+		jQuery(".a").hide();
+		jQuery("input.periodo").parent().show();
+		
+		if (type === "normal") {
+			jQuery(".1q").show();
+			jQuery(".2q").show();
+			jQuery(".m").show();
+		} else if (type === "sac") {
+			jQuery(".1s").show();
+			jQuery(".2s").show();
+		} else if (type === "vacation") {
+			jQuery(".a").show();
+		} else if (type === "special") {
+			jQuery(".1q").show();
+			jQuery(".2q").show();
+			jQuery(".m").show();
+			jQuery(".1s").show();
+			jQuery(".2s").show();
+			jQuery(".a").show();
+		} else if (type === "final_receipt") {
+			jQuery("input.periodo").parent().hide();
+		}
+	}
+	period("normal");
+
+	jQuery("#CondicionLiquidacion-tipo").change(
+ 		function() {
+			period(jQuery(this).find(":selected").val());
+		}
+	);
+	
 	jQuery("#confirmar").click(
 		function() {
 			var c = jQuery(".tabla :checkbox").checkbox("contar");

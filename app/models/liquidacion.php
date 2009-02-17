@@ -28,11 +28,11 @@ class Liquidacion extends AppModel {
 	*/
 	var $opciones = array('tipo' => array(
 						  		'normal'			=> 'Normal',
-			   					'descuentos'		=> 'Descuentos',
+			   					'discounts'			=> 'Descuentos',
 			   					'sac'				=> 'Sac',
-		   						'vacaciones'		=> 'Vacaciones',
-		   						'liquidacion_final'	=> 'Liquidacion Final',
-		   						'especial'			=> 'Especial'));
+		   						'vacation'			=> 'Vacaciones',
+		   						'final_receipt'		=> 'Liquidacion Final',
+		   						'special'			=> 'Especial'));
 	
 	var $hasMany = array(	'LiquidacionesDetalle' =>
                         array('className'   => 'LiquidacionesDetalle',
