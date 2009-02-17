@@ -1675,13 +1675,13 @@ class AppFormHelper extends FormHelper {
 			*/
 			elseif ($tipoCampo === "periodo") {
 				$rnd = intval(rand());
-				$options['type'] = "text";
-				$options['class'] = "periodo";
+				$options['type'] = 'text';
+				$options['class'] = 'periodo';
 				$options['id'] = $rnd;
-				$after = "";
-				$q1 = $this->link($this->image('1q.gif', array("class" => "periodo")), null, array("title" => "Primera Quincena", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array("type" => "1QAnterior")) . "');"));
-				$q2 = $this->link($this->image('2q.gif', array("class" => "periodo")), null, array("title" => "Segunda Quincena", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array("type" => "2QAnterior")) . "');"));
-				$m = $this->link($this->image('m.gif', array("class" => "periodo")), null, array("title" => "Mensual", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array("type" => "mensualAnterior")) . "');"));
+				$after = '';
+				$q1 = $this->link($this->image('1q.gif', array('class' => 'periodo 2q')), null, array("title" => "Primera Quincena", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array('type' => '1QAnterior')) . "');"));
+				$q2 = $this->link($this->image('2q.gif', array('class' => 'periodo 1q')), null, array("title" => "Segunda Quincena", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array('type' => '2QAnterior')) . "');"));
+				$m = $this->link($this->image('m.gif', array('class' => 'periodo m')), null, array("title" => "Mensual", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array('type' => 'mensualAnterior')) . "');"));
 				if (empty($options['periodo'])) {
 					$after .= $q1 . $q2 . $m;
 				} else {
@@ -1692,6 +1692,15 @@ class AppFormHelper extends FormHelper {
 								break;
 							case "2Q":
 								$after .= $q2;
+								break;
+							case "1S":
+								$after .= $this->link($this->image('1q.gif', array('class' => 'periodo 1s')), null, array("title" => "Primer Semestre", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array("type" => "1SAnterior")) . "');"));
+								break;
+							case "2S":
+								$after .= $this->link($this->image('2q.gif', array('class' => 'periodo 2s')), null, array("title" => "Segundo Semestre", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array("type" => "2SAnterior")) . "');"));
+								break;
+							case "A":
+								$after .= $this->link($this->image('a.gif', array('class' => 'periodo a')), null, array("title" => "Año Anterior", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array("type" => "anoAnterior")) . "');"));
 								break;
 							case "M":
 								$after .= $m;
