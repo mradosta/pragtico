@@ -139,7 +139,7 @@ class Hora extends AppModel {
 		}
 		$conceptos = $auxiliares = array();
 		if (!empty($r)) {
-			$modelConcepto = new Concepto();
+			$Concepto = ClassRegistry::init('Concepto');
 			foreach ($r as $hora) {
 				if ($relacion['ConveniosCategoria']['jornada'] === 'Mensual' && ($hora['Hora']['tipo'] === 'Normal')) {
 					continue;
@@ -151,7 +151,7 @@ class Hora extends AppModel {
 				* Busco el concepto.
 				*/
 				$codigoConcepto = str_replace('#', '', $tipo);
-				$conceptos = array_merge($conceptos, $modelConcepto->findConceptos('ConceptoPuntual', array('relacion'=>$relacion, 'codigoConcepto'=>$codigoConcepto)));
+				$conceptos = array_merge($conceptos, $Concepto->findConceptos('ConceptoPuntual', array('relacion'=>$relacion, 'codigoConcepto'=>$codigoConcepto)));
 			}
 			
 			/**
@@ -174,7 +174,7 @@ class Hora extends AppModel {
 				$auxiliares[] = array('save'=>serialize($auxiliar), 'model' => 'Hora');
 			}
 		}
-		return array('conceptos'=>$conceptos, 'variables'=>$horas, 'auxiliar'=>$auxiliares);
+		return array('conceptos' => $conceptos, 'variables' => $horas, 'auxiliar' => $auxiliares);
 	}
 
 
