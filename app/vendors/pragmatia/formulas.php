@@ -85,6 +85,10 @@ class Formulas {
 		$cellId = 0;
 
 		$formula = $this->__cleanUp($formula);
+		/** Invalidate division by zero */
+		if (preg_match('/.*\/\s*0.*/', $formula)) {
+			return '#N/A';
+		}
 		
 		/** PHPExcel mistakes when comparing string, so verify it in PHP and send PHPExcel calculated boolean value.*/
 		if (preg_match_all("/\((\'[\w\s\/]+\'=\'[\w\s\/]+\')/", $formula, $strings)) {
