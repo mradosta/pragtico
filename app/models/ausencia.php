@@ -84,16 +84,14 @@ class Ausencia extends AppModel {
  */	
 	function afterFind($results, $primary = false) {
 		if ($primary) {
-			foreach ($results as $k=>$ausencia) {
+			foreach ($results as $k => $ausencia) {
 				if (isset($ausencia['Ausencia']['id'])) {
 					if (isset($ausencia['AusenciasSeguimiento'])) {
-						
-						$results[$k]['Ausencia']['dias'] = array_sum(Set::extract('/AusenciasSeguimiento[estado=Confirmado]/dias', $ausencia));
+						$results[$k]['Ausencia']['dias'] = array_sum(Set::extract('/AusenciasSeguimiento[estado!=Pendiente]/dias', $ausencia));
 					}
 				}
 			}
-		}
-		else {
+		} else {
 			if (!empty($results[0]['Ausencia'][0])) {
 				foreach ($results as $k => $v) {
 					foreach ($v as $k1 => $v1) {
@@ -103,7 +101,7 @@ class Ausencia extends AppModel {
 																array(	'recursive'	=> -1, 
 																		'conditions'=> 
 																				array(	'AusenciasSeguimiento.ausencia_id'	=> $ausencia['id'],
-																						'AusenciasSeguimiento.estado'		=> 'Confirmado')));
+																						'AusenciasSeguimiento.estado'		=> array('Confirmado', 'Liquidado'))));
 							}
 							$results[$k]['Ausencia'][$k2]['dias'] = array_sum(Set::extract('/AusenciasSeguimiento/dias', $ausenciasSeguimiento));
 						}
