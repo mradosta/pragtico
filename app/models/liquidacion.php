@@ -137,6 +137,8 @@ class Liquidacion extends AppModel {
 		$this->setRelationship($relationship);
 		
 		if ($type === 'normal') {
+			
+			/** Initial set of vars and concepts */
 			$this->setVar($options['variables']);
 			if (!empty($options['informaciones'][$relationship['ConveniosCategoria']['convenio_id']])) {
 				$this->setVar($options['informaciones'][$relationship['ConveniosCategoria']['convenio_id']]);
@@ -148,9 +150,24 @@ class Liquidacion extends AppModel {
 					array(		'relacion' 	=> $relationship,
 								'desde' 	=> $this->getVarValue('#fecha_desde_liquidacion'),
 								'hasta' 	=> $this->getVarValue('#fecha_hasta_liquidacion'))));
+			
+			
+			/** Get hours */
+			$horas = $this->Relacion->Hora->getHoras($this->getRelationship(), $this->getPeriod());
+			foreach ($horas['variables'] as $horaTipo => $horaValor) {
+				$this->setVar($horaTipo, $horaValor);
+			}
+			$this->__setAuxiliar($horas['auxiliar']);
+			$this->setConcept($horas['conceptos']);
 
-			
-			
+			/** Get absences */
+			$ausencias = $this->Relacion->Ausencia->getAusencias($this->getRelationship(), $this->getPeriod());
+			foreach ($ausencias['variables'] as $ausenciaTipo => $ausenciaValor) {
+				$this->setVar($ausenciaTipo, $ausenciaValor);
+			}
+			$this->__setAuxiliar($ausencias['auxiliar']);
+			$this->setConcept($ausencias['conceptos']);
+
 			/**
 			* Verifico si debo hacerle algun descuento.
 			$opcionesDescuentos = null;
@@ -503,19 +520,17 @@ function afterFind($results, $primary = false) {
 			}
 		}
 
-		/**
-		* TODO. ver esta variable
-		*/
-		$conceptoCantidad = 0;
+		
 		/**
 		* Si en la cantidad hay una variable, la reemplazo.
+		*/
 		$conceptoCantidad = 0;
 		if (!empty($concepto['cantidad'])) {
 			if (isset($this->__variables[$concepto['cantidad']])) {
-				if ($this->__variables[$concepto['cantidad']] !== "#N/A") {
-					$conceptoCantidad = $this->__variables[$concepto['cantidad']]['valor'];
-				}
-				else {
+				$varValue = $this->getVarValue($concepto['cantidad']);
+				if ($varValue !== '#N/A') {
+					$conceptoCantidad = $varValue;
+				} else {
 					$errores[] = array(	"tipo"					=>"Variable No Resuelta",
           								"gravedad"				=>"Media",
 										"concepto"				=>$concepto['codigo'],
@@ -523,10 +538,9 @@ function afterFind($results, $primary = false) {
 										"formula"				=>$concepto['formula'],
 										"descripcion"			=>"La cantidad intenta usar una variable que no ha podido ser resuelta.",
 										"recomendacion"			=>"Verifique que los datos hayan sido correctamente ingresados.",
-										"descripcion_adicional"	=>$this->__variables[$v]['formula']);
+										"descripcion_adicional"	=>$this->__variables[$concepto['cantidad']]['formula']);
 				}
-			}
-			else {
+			} else {
 				$errores[] = array(	"tipo"					=>"Variable Inexistente",
          							"gravedad"				=>"Media",
 									"concepto"				=>$concepto['codigo'],
@@ -537,7 +551,6 @@ function afterFind($results, $primary = false) {
 									"descripcion_adicional"	=>"");
 			}
 		}
-		*/
 
 
 		/**
@@ -913,6 +926,7 @@ function afterFind($results, $primary = false) {
 						$this->setVar($variable, 35);
 					}
                     break;
+				/*
                 case '#horas':
                 case '#horas_ajuste':
                 case '#horas_ajuste_extra_100':
@@ -925,9 +939,7 @@ function afterFind($results, $primary = false) {
                 case '#horas_extra_nocturna_100':
                 case '#horas_extra_nocturna_50':
                 case '#horas_nocturna':
-                    /**
-                    * Busco las horas trabajadas en el periodo y las cargo al array variables.
-                    */
+                    //Busco las horas trabajadas en el periodo y las cargo al array variables.
                     $horas = $this->Relacion->Hora->getHoras($this->getRelationship(), $this->getPeriod());
                     foreach ($horas['variables'] as $horaTipo=>$horaValor) {
                         $this->setVar($horaTipo, $horaValor);
@@ -941,6 +953,7 @@ function afterFind($results, $primary = false) {
                     $this->setVar('#ausencias_justificadas', $ausencias['Justificada']);
                     $this->setVar('#ausencias_injustificadas', $ausencias['Injustificada']);
                 break;
+				*/
             }
             /*
                     $this->__setError(array(    'tipo'                  => 'Variable No Resuelta',
@@ -951,7 +964,7 @@ function afterFind($results, $primary = false) {
                                                 'descripcion'           => 'La formula intenta usar una variable que no es posible resolverla con los datos de la relacion.',
                                                 'recomendacion'         => 'Verifique que la relacion tenga cargados todos los datos necesarios.',
                                                 'descripcion_adicional' => ''));
-            */      
+            */
             return $this->getVarValue($variable);
         }
     }
@@ -1050,10 +1063,22 @@ function afterFind($results, $primary = false) {
  * @access private.
  */
     function setConcept($conceptos) {
-		if (empty($this->__conceptos)) {
-			$this->__conceptos = $conceptos;
-		} else {
-			$this->__conceptos = array_merge($this->__conceptos, $conceptos);
+		if (!empty($conceptos)) {
+			if (isset($conceptos[0])) {
+				foreach ($conceptos as $concepto) {
+					if (empty($this->__conceptos)) {
+						$this->__conceptos = $concepto;
+					} else {
+						$this->__conceptos = array_merge($this->__conceptos, $concepto);
+					}
+				}
+			} else {
+				if (empty($this->__conceptos)) {
+					$this->__conceptos = $conceptos;
+				} else {
+					$this->__conceptos = array_merge($this->__conceptos, $conceptos);
+				}
+			}
 		}
     }
 

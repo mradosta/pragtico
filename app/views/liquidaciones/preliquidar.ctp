@@ -55,10 +55,9 @@ $cuerpo = null;
 foreach ($registros as $k=>$v) {
 	$fila = null;
 	//d($v['Liquidacion']);
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidaciones'), 'url'=>'recibo_html');
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'update' => 'desglose2', 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidaciones (debug)'), 'url'=>'recibo_html_debug');
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'update' => 'desglose3', 'imagen' => array('nombre' => 'observaciones.gif', 'alt' => 'Agregar Observacion'), 'url' => 'agregar_observacion');
-	//$fila[] = array('tipo' => 'desglose', 'id' => $id, 'update' => 'desglose3', 'imagen' => array('nombre' => 'observaciones.gif', 'alt' => 'Agregar Observacion'), 'url'=>'add');
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidaciones'), 'url'=>'recibo_html');
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidaciones (debug)'), 'url'=>'recibo_html_debug');
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'observaciones.gif', 'alt' => 'Agregar Observacion'), 'url' => 'agregar_observacion');
 	$fila[] = array('tipo'=>'accion', 'valor'=>$appForm->link($appForm->image('excel.gif', array('alt' => 'Generar recibo excel', 'title'=>'Generar recibo excel')), 'recibo_excel/' . $v['Liquidacion']['id']));
 
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'id', 'valor' => $v['Liquidacion']['id'], 'write' => $v['Liquidacion']['write'], 'delete' => $v['Liquidacion']['delete']);

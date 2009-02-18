@@ -126,27 +126,73 @@ class Ausencia extends AppModel {
  */
 	function getAusencias($relacion, $periodo) {
 
-		$r = $this->find('all',
-			array('contain'		=> array(	'AusenciasMotivo',
-											'AusenciasSeguimiento'	=> array('conditions' => 
-															array(	'AusenciasSeguimiento.estado'	=> 'Confirmado'))),
-			'conditions'		=> array(	'Ausencia.relacion_id' 	=> $relacion['Relacion']['id'],
-											array('AND' => array('Ausencia.desde >='		=> $periodo['desde'],
-																 'Ausencia.desde <='		=> $periodo['hasta'])))));
+		$r = $this->find('all', array(
+				'contain'			=> array(	'AusenciasMotivo',
+												'AusenciasSeguimiento'	=> array(
+														'conditions' => array(	'AusenciasSeguimiento.estado'	=> 'Confirmado'))),
+				'conditions'		=> array(	'Ausencia.relacion_id' 	=> $relacion['Relacion']['id'],
+												array('AND' => array('Ausencia.desde >='	=> $periodo['desde'],
+																	'Ausencia.desde <='		=> $periodo['hasta'])))));
 		
-		$return['Justificada'] = 0;
-		$return['Injustificada'] = 0;
+		$ausencias['Justificada'] = 0;
+		$ausencias['Injustificada'] = 0;
+		$conceptos = $auxiliares = array();
 
-		foreach ($r as $k => $ausencia) {
-			$diff = $this->dateDiff($ausencia['Ausencia']['desde'], $periodo['hasta']);
-			if ($ausencia['Ausencia']['dias'] > ($diff['dias'])) {
-				$dias = $diff['dias'];
-			} else {
-				$dias = $ausencia['Ausencia']['dias'];
+		if (!empty($r)) {
+			$Concepto = ClassRegistry::init('Concepto');
+			
+			foreach ($r as $k => $ausencia) {
+				$diff = $this->dateDiff($ausencia['Ausencia']['desde'], $periodo['hasta']);
+
+				foreach ($ausencia['AusenciasSeguimiento'] as $seguimiento) {
+					if ($seguimiento['estado'] === 'Confirmado') {
+
+						if ($seguimiento['dias'] > $diff['dias']) {
+
+							$ausencias[$ausencia['AusenciasMotivo']['tipo']] += $diff['dias'];
+							
+							$auxiliar = null;
+							$auxiliar['id'] = $seguimiento['id'];
+							$auxiliar['estado'] = 'Liquidado';
+							$auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
+							$auxiliar['dias'] = $diff['dias'];
+							$auxiliares[] = array(	'save' 	=> serialize($auxiliar),
+													'model' => 'AusenciasSeguimiento');
+
+							/** Debo desdoblar el seguimiento en dos partes:
+							*  una ya liquidada (esta) y genero una nueva exactamente igual
+							* con los dias que queron pendientes de este */
+							$seguimiento['id'] = null;
+							$seguimiento['dias'] = $seguimiento['dias'] - $diff['dias'];
+							$auxiliares[] = array(	'save' 	=> serialize($seguimiento),
+													'model' => 'AusenciasSeguimiento');
+							break;
+						} else {
+							$ausencias[$ausencia['AusenciasMotivo']['tipo']] += $seguimiento['dias'];
+							
+							$auxiliar = null;
+							$auxiliar['id'] = $seguimiento['id'];
+							$auxiliar['estado'] = 'Liquidado';
+							$auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
+							$auxiliares[] = array(	'save' 	=> serialize($auxiliar),
+													'model' => 'AusenciasSeguimiento');
+						}
+					}
+				}
 			}
-			$return[$ausencia['AusenciasMotivo']['tipo']] += $dias;
+			foreach (array_unique(Set::extract('/AusenciasMotivo/tipo', $r)) as $type) {
+				$conceptos[] = $Concepto->findConceptos('ConceptoPuntual',
+						array(	'relacion' 			=> $relacion,
+								'codigoConcepto'	=> 'ausencia_' . strtolower($type)));
+			}
 		}
-		return $return;
+				$ausencias['#ausencias_justificadas'] = 0;
+		$ausencias['#ausencias_justificadas'] = 0;
+
+		return array('conceptos' 	=> $conceptos,
+					 'variables' 	=> array('#ausencias_justificadas' 		=> $ausencias['Justificada'],
+										  	 '#ausencias_injustificadas' 	=> $ausencias['Injustificada']),
+					 'auxiliar' 	=> $auxiliares);
 	}
 	
 
