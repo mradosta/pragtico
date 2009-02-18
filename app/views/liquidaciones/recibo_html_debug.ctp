@@ -64,9 +64,9 @@ $fila = null;
 $fila[] = array("valor"=>"Codigo", "class"=>"imitar_th_izquierda");
 $fila[] = array("valor"=>"Concepto", "class"=>"imitar_th_izquierda");
 $fila[] = array("valor"=>"Coeficiente", "class"=>"imitar_th_izquierda");
-$fila[] = array("valor"=>"Imprime", "class"=>"imitar_th_izquierda");
 $fila[] = array("valor"=>"Formula", "class"=>"imitar_th_izquierda");
 $fila[] = array("valor"=>"Resolucion", "class"=>"imitar_th_izquierda");
+$fila[] = array("valor"=>"Imprime", "class"=>"imitar_th_izquierda");
 $fila[] = array("valor"=>"Cantidad", "class"=>"imitar_th_izquierda");
 $fila[] = array("valor"=>"Remunarativo", "class"=>"imitar_th_izquierda");
 $fila[] = array("valor"=>"Deduccion", "class"=>"imitar_th_izquierda");
@@ -79,16 +79,16 @@ foreach($this->data['LiquidacionesDetalle'] as $concepto) {
 		$fila[] = array("valor"=>$concepto['concepto_codigo']);
 		$fila[] = array("valor"=>$concepto['concepto_nombre']);
 		$fila[] = array("valor"=>$concepto['coeficiente_nombre'] . "-" . $concepto['coeficiente_valor']);
-		$fila[] = array("valor"=>$concepto['concepto_imprimir']);
 		$fila[] = array("valor"=>$concepto['concepto_formula']);
 		$fila[] = array("valor"=>$concepto['debug']);
+		$fila[] = array("valor"=>$concepto['concepto_imprimir']);
 		if($concepto['valor_cantidad'] > 0) {
 			$fila[] = array("valor"=>$concepto['valor_cantidad'], "class"=>"derecha");
 		}
 		else {
 			$fila[] = array("valor"=>"");
 		}
-
+		
 		$valor = $formato->format($concepto['valor'], "moneda");
 		if($concepto['concepto_tipo'] == "Remunerativo") {
 			$fila[] = array("valor"=>$valor, "class"=>"derecha");
