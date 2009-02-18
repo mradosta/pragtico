@@ -425,21 +425,17 @@ class ValidacionesBehavior extends ModelBehavior {
 		if (isset($fieldDescriptor['null']) && !$fieldDescriptor['null']) {
 			if (!empty($fieldDescriptor['default']) && empty($value)) {
 				return $fieldDescriptor['default'];
-			}
-			elseif (in_array($fieldDescriptor['type'], array('datetime', 'date'))) {
+			} elseif (in_array($fieldDescriptor['type'], array('datetime', 'date'))) {
 				if (empty($value)) {
 					return '0000-00-00';
 				}
 				return $this->__getMySqlDate($value);
-			}
-			elseif (in_array($fieldDescriptor['type'], array('float', 'integer', 'binary')) && empty($value)) {
+			} elseif (in_array($fieldDescriptor['type'], array('float', 'integer', 'binary')) && empty($value)) {
 				return 0;
-			}
-			elseif (in_array($fieldDescriptor['type'], array('string', 'text')) && empty($value)) {
+			} elseif (in_array($fieldDescriptor['type'], array('string', 'text')) && strlen($value) === 0) {
 				return '';
 			}
-		}
-		else {
+		} else {
 			if (empty($value)) {
 				return null;
 			}
@@ -475,13 +471,11 @@ class ValidacionesBehavior extends ModelBehavior {
 						}
 						if (empty($model->data[$model->name][$model->primaryKey])) {
 							$model->data[$model->name][$field] = $this->__setDBFieldValue($fieldDescriptor, $value);
-						}
-						elseif (!is_null($value)){
+						} elseif (!is_null($value)){
 							$model->data[$model->name][$field] = $this->__setDBFieldValue($fieldDescriptor, $value);
 						}
 					}
-				}
-				else {
+				} else {
 					foreach ($model->data[$k] as $kDetail=>$vDetail) {
 						foreach ($vDetail as $field=>$v) {
 							if (in_array($field, array('created', 'modified', 'user_id', 'group_id', 'rol_id', 'permissions'))) {
@@ -491,11 +485,9 @@ class ValidacionesBehavior extends ModelBehavior {
 							$value = null;
 							if (isset($model->data[$k][$kDetail][$field])) {
 								$value = $model->data[$k][$kDetail][$field];
-							}
-							if (empty($model->data[$k][$kDetail]['id'])) {
+							} if (empty($model->data[$k][$kDetail]['id'])) {
 								$model->data[$k][$kDetail][$field] = $this->__setDBFieldValue($model->{$k}->schema($field), $value);
-							}
-							elseif (!is_null($value)){
+							} elseif (!is_null($value)){
 								$model->data[$k][$kDetail][$field] = $this->__setDBFieldValue($model->{$k}->schema($field), $value);
 							}
 						}
