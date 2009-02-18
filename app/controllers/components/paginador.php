@@ -31,7 +31,7 @@ class PaginadorComponent extends Object {
  * @var array
  * @access public
  */
-	var $components = array("Util");
+	var $components = array('Util');
 
 /**
  * El Controller que instancio el component.
@@ -41,7 +41,7 @@ class PaginadorComponent extends Object {
  */
     var $controller;
 
-    
+
 /**
  * Inicializa el Component para usar en el controller.
  *
@@ -63,93 +63,87 @@ class PaginadorComponent extends Object {
  * @access public
  */
     function generarCondicion() {
-    	$condiciones = $valoresLov = array();
-		if (isset($this->controller->data['Formulario']['accion']) && $this->controller->data['Formulario']['accion'] == "limpiar") {
-			$this->controller->Session->del("filtros." . $this->controller->name . "." . $this->controller->action);
+		if (isset($this->controller->data['Formulario']['accion']) && $this->controller->data['Formulario']['accion'] == 'limpiar') {
+			$this->controller->Session->del('filtros.' . $this->controller->name . '.' . $this->controller->action);
 			unset($this->controller->data['Condicion']);
-			return $condiciones;
+			return array();
 		}
+
+		$filter = $this->controller->Session->read('filtros.' . $this->controller->name . '.' . $this->controller->action);
+		if (!empty($filter)) {
+			$condiciones = $filter['condiciones'];
+			$valoresLov = $filter['valoresLov'];
+		} else {
+    		$condiciones = $valoresLov = array();
+		}
+		
 		if (!empty($this->controller->data['Condicion']) && is_array($this->controller->data['Condicion'])) {
 			foreach ($this->controller->data['Condicion'] as $k => $v) {
 				if (empty($v)) {
 					unset($this->controller->data['Condicion'][$k]);
+				} elseif (is_array($v)) {
+					$v = implode('**||**', $v);
 				}
-				elseif (is_array($v)) {
-					$v = implode("**||**", $v);
-				}
-				
-				if (strpos($k, "-") && is_string($v) && strlen($v) > 0) {
-					$t = explode("-", $k);
+
+				if (strpos($k, '-') && is_string($v) && strlen($v) > 0) {
+					$t = explode('-', $k);
 					if (count($t) == 2) {
-						if (substr($t[1], -2) != "__") {
+						if (substr($t[1], -2) !== '__') {
 							/**
 							* La seleccion multiple desde una lov o desde un checkMultiple viene separada
 							* por **||**. En este caso, debo armar un IN
 							*/
-							if (strpos($v, "**||**") > 0) {
-								$condiciones[$t[0] . "." . $t[1]] = explode("**||**", $v);
+							if (strpos($v, '**||**') > 0) {
+								$condiciones[$t[0] . '.' . $t[1]] = explode('**||**', $v);
+							} else {
+								$condiciones[$t[0] . '.' . $t[1]] = $v;
 							}
-							else {
-								$condiciones[$t[0] . "." . $t[1]] = $v;
-							}
-						}
+						} else {
 						/**
-						* Si termina con __ significa que son los valores de una lov que "se ven".
+						* Si termina con __ significa que son los valores de una lov que 'se ven'.
 						* Los guardo por separado, porque debo restaurarlos para mostrar la busqueda, aunque
 						* no seran parte del where de busqueda en la query.
 						*/
-						else {
-							$valoresLov[$t[0] . "-" . $t[1]] = $v;
+							$valoresLov[$t[0] . '-' . $t[1]] = $v;
 						}
 					}
 				}
 			}
 			/**
 			* Vuelvo a recorrer el array para ver que no existan los desde y hasta como campos separados,
-			* de manera de unificarlos si los hay en un unico array del tipo "and"=>array(...
+			* de manera de unificarlos si los hay en un unico array del tipo 'and'=>array(...
 			*/
 			foreach ($condiciones as $campo => $valor) {
-				if (substr($campo, strlen($campo) - 7) == "__desde") {
-					$nuevoCampo = str_replace("__desde", "", $campo);
+				if (substr($campo, strlen($campo) - 7) === '__desde') {
+					$nuevoCampo = str_replace('__desde', '', $campo);
 					if (!isset($condiciones[$nuevoCampo])) {
 						$r = $this->__reemplazos($campo, $valor);
 						unset($condiciones[$campo]);
 						$condiciones[$r['key']] = $r['value'];
 					}
-				}
-				elseif (substr($campo, strlen($campo) - 7) == "__hasta") {
-					$nuevoCampo = str_replace("__hasta", "", $campo);
+				} elseif (substr($campo, strlen($campo) - 7) === '__hasta') {
+					$nuevoCampo = str_replace('__hasta', '', $campo);
 					if (!isset($condiciones[$nuevoCampo])) {
 						$r = $this->__reemplazos($campo, $valor);
 						unset($condiciones[$campo]);
 						$condiciones[$r['key']] = $r['value'];
 					}
-				}
-				else {
+				} else {
 					$r = $this->__reemplazos($campo, $valor);
 					unset($condiciones[$campo]);
 					$condiciones[$r['key']] = $r['value'];
 				}
 			}
-		}
-		else {
+			
 			/**
-			* Siempre quedan los filtros hasta que efectivamente limpie
+			* Grabo en la session las condiciones mas los valores de la lov, que si bien no se usaran en las busquedas,
+			* me sirven para recargar el control con el valor seleccionado.
 			*/
-			if ($this->controller->Session->check("filtros." . $this->controller->name . "." . $this->controller->action)) {
-				$tmp = $this->controller->Session->read("filtros." . $this->controller->name . "." . $this->controller->action);
-				$condiciones = $tmp['condiciones'];
-				$valoresLov = $tmp['valoresLov'];
+			if (!empty($condiciones)) {
+				$this->controller->Session->write('filtros.' . $this->controller->name . '.' . $this->controller->action, array('condiciones' => $condiciones, 'valoresLov' => $valoresLov));
 			}
 		}
 
-		/**
-		* Grabo en la session las condiciones mas los valores de la lov, que si bien no se usaran en las busquedas,
-		* me sirven para recargar el control con el valor seleccionado.
-		*/
-		if (!empty($condiciones)) {
-			$this->controller->Session->write("filtros." . $this->controller->name . "." . $this->controller->action, array("condiciones"=>$condiciones, "valoresLov"=>$valoresLov));
-		}
 		return $condiciones;
     }
 
@@ -162,10 +156,10 @@ class PaginadorComponent extends Object {
  * @return void
  */
     function generarData() {
-		if ($this->controller->Session->check("filtros." . $this->controller->name . "." . $this->controller->action)) {
-			$condiciones = $this->controller->Session->read("filtros." . $this->controller->name . "." . $this->controller->action);
+		$condiciones = $this->controller->Session->read('filtros.' . $this->controller->name . '.' . $this->controller->action);
+		if (!empty($condiciones)) {
         	/**
-        	* Restauro los valores "que se ven de una lov, para no perderlos.
+        	* Restauro los valores 'que se ven de una lov, para no perderlos.
         	* Estos no estan con las condiciones porque no se usaron en los filtros, aunque si deben mostrarse
         	* en el control lov.
         	*/
@@ -180,50 +174,15 @@ class PaginadorComponent extends Object {
 			*/
 			foreach ($condiciones['condiciones'] as $k => $v) {
 				$condicionMultiple = null;
-				/**
-				* Puede que sea un array, por ejemplo, "and" => array(...
-				*/
-				/*
-				if (is_array($v)) {
-					foreach ($v as $v1) {
-						if (is_array($v1)) {
-							$k1 = key($v1);
-							$v2 = current($v1);
-							if (substr($v2, 0, 2) == ">=") {
-								$this->controller->data['Condicion'][str_replace(".", "-", $k1) . "__desde"] =  $this->__removerReemplazos($v2);
-							}
-							elseif (substr($v2, 0, 2) == "<=") {
-								$this->controller->data['Condicion'][str_replace(".", "-", $k1) . "__hasta"] =  $this->__removerReemplazos($v2);
-							}
-							else {
-								$this->controller->data['Condicion'][str_replace(".", "-", $k1)] =  $this->__removerReemplazos($v2);
-							}
-						}
-						// Para el caso de un IN por ejemplo, donde es un array sin KEY.
-						else {
-							$condicionMultiple[] = $v1;
-						}
-					}
-					if (!empty($condicionMultiple)) {
-						$this->controller->data['Condicion'][str_replace(".", "-", $k)] =  $this->__removerReemplazos(implode("**||**", $condicionMultiple));
-					}
-					
+				$sufix = substr(trim($k), -2);
+				$k = str_replace('.', '-', $this->__removerReemplazos($k));
+				if ($sufix == '>=') {
+					$this->controller->data['Condicion'][$k . '__desde'] = $this->Util->format($this->__removerReemplazos($v), array('type' => 'datetime'));
+				} elseif ($sufix == '<=') {
+					$this->controller->data['Condicion'][$k . '__hasta'] = $this->Util->format($this->__removerReemplazos($v), array('type' => 'datetime'));
+				} else {
+					$this->controller->data['Condicion'][$k] = $this->__removerReemplazos($v);
 				}
-				else {
-				*/
-					$sufix = substr(trim($k), -2);
-					//debug($k);
-					$k = str_replace(".", "-", $this->__removerReemplazos($k));
-					if ($sufix == ">=") {
-						$this->controller->data['Condicion'][$k . "__desde"] = $this->Util->format($this->__removerReemplazos($v), array("type" => "datetime"));
-					}
-					elseif ($sufix == "<=") {
-						$this->controller->data['Condicion'][$k . "__hasta"] = $this->Util->format($this->__removerReemplazos($v), array("type" => "datetime"));
-					}
-					else {
-						$this->controller->data['Condicion'][$k] = $this->__removerReemplazos($v);
-					}
-				//}
 			}
         }
 	}
@@ -241,7 +200,7 @@ class PaginadorComponent extends Object {
 		if (!empty($this->controller->paginate['conditions'])) {
 			$condiciones = array_merge($this->controller->paginate['conditions'], $condiciones);
 		}
-		
+
 		$this->controller->paginate['conditions'] = $condiciones;
 		$model = Inflector::classify($this->controller->name);
 
@@ -253,16 +212,16 @@ class PaginadorComponent extends Object {
 			if (isset($this->controller->{$model}->Behaviors->Containable->runtime[$model])) {
 				$contain = $this->controller->{$model}->Behaviors->Containable->runtime[$model];
 			}
-			
-			foreach ($this->controller->{$model}->totalizar as $operacion=>$campos) {
+
+			foreach ($this->controller->{$model}->totalizar as $operacion => $campos) {
 				foreach ($campos as $campo) {
-					$r = $this->controller->{$model}->find("first", array(
-												"conditions"	=> $condiciones, 
-												"fields"		=> "SUM(" . $model . "." . $campo . ") as total"));
+					$r = $this->controller->{$model}->find('first', array(
+												'conditions'	=> $condiciones,
+												'fields'		=> 'SUM(' . $model . '.' . $campo . ') as total'));
 					$resultado[$campo] = $r[0]['total'];
 				}
 			}
-			
+
 			/**
 			* Restauro contain si lo tenia seteado.
 			*/
@@ -277,18 +236,17 @@ class PaginadorComponent extends Object {
 		if (isset($this->controller->{$model}->Behaviors->Containable->runtime[$model])) {
 			if (!empty($this->controller->{$model}->Behaviors->Containable->runtime[$model]['contain'])) {
 				$this->controller->paginate = array($model=>array_merge($this->controller->paginate, array('contain'=>$this->controller->{$model}->Behaviors->Containable->runtime[$model]['contain'])));
-			}
-			else {
+			} else {
 				$this->controller->paginate = array($model=>array_merge($this->controller->paginate, array('contain'=>false)));
-			}	
+			}
 		}
 
 		$this->generarData();
 		$registros = $this->controller->paginate();
-		return array("registros"=>$registros, "totales"=>$resultado);
+		return array('registros'=>$registros, 'totales'=>$resultado);
 	}
-	
-	
+
+
 /**
  * Realiza los reemplazos necesarios en funcion del tipo de campo para ser entendidos por un query SQL.
  *
@@ -299,20 +257,19 @@ class PaginadorComponent extends Object {
  */
 	function __reemplazos($modelCampo, $v) {
  		$valor = $v;
- 		if (strpos($modelCampo, ".")) {
-			$t = explode(".", $modelCampo);
+ 		if (strpos($modelCampo, '.')) {
+			$t = explode('.', $modelCampo);
 			$model = $t[0];
 			$campo = $t[1];
 
-			if (substr($campo, strlen($campo) - 7) == "__desde") {
-				$campo = str_replace("__desde", "", $campo);
-				$extra = "desde";
+			if (substr($campo, strlen($campo) - 7) == '__desde') {
+				$campo = str_replace('__desde', '', $campo);
+				$extra = 'desde';
+			} elseif (substr($campo, strlen($campo) - 7) == '__hasta') {
+				$campo = str_replace('__hasta', '', $campo);
+				$extra = 'hasta';
 			}
-			elseif (substr($campo, strlen($campo) - 7) == "__hasta") {
-				$campo = str_replace("__hasta", "", $campo);
-				$extra = "hasta";
-			}
-			
+
 			if (isset($this->controller->$model) && is_object($this->controller->$model)) {
 				$tipoDato = $this->controller->$model->getColumnType($campo);
 			}
@@ -323,34 +280,31 @@ class PaginadorComponent extends Object {
 				$tipoDato = $this->controller->{$this->controller->modelClass}->$model->getColumnType($campo);
 			}
 
-			$key = $model . "." . $campo;
+			$key = $model . '.' . $campo;
 			if (!empty($tipoDato)) {
 				switch($tipoDato) {
-					case "text":
-					case "string":
- 						$valor = "%" . $v . "%";
- 						$key .= " like";
+					case 'text':
+					case 'string':
+ 						$valor = '%' . $v . '%';
+ 						$key .= ' like';
 						break;
-					case "date":
-					case "datetime":
-						if ($tipoDato === "datetime") {
-							$v = $this->Util->format($v, array("type" => "datetime"));
+					case 'date':
+					case 'datetime':
+						if ($tipoDato === 'datetime') {
+							$v = $this->Util->format($v, array('type' => 'datetime'));
+						} else {
+							$v = $this->Util->format($v, array('type' => 'date'));
 						}
-						else {
-							$v = $this->Util->format($v, array("type" => "date"));
-						}
-						
+
 						if (isset($extra)) {
-							if ($extra == "desde") {
+							if ($extra == 'desde') {
 								$valor = $v;
-								$key .= " >=";
-							}
-							elseif ($extra == "hasta") {
+								$key .= ' >=';
+							} elseif ($extra == 'hasta') {
 								$valor = $v;
-								$key .= " <=";
+								$key .= ' <=';
 							}
-						}
-						else {
+						} else {
 							$valor = $v;
 						}
 						break;
@@ -359,12 +313,12 @@ class PaginadorComponent extends Object {
 				}
 			}
 		}
-		return array("key"=>$key, "value"=>$valor);
+		return array('key'=>$key, 'value'=>$valor);
 	}
 
 
 /**
- * Quita los reemplazos realizados por el metodo "__reemplazos" de manera de volver el valor del campo a su estado
+ * Quita los reemplazos realizados por el metodo '__reemplazos' de manera de volver el valor del campo a su estado
  * original.
  *
  * @param string $valor Un valor con caracteres agregados por el metodo reemplazos.
@@ -373,13 +327,8 @@ class PaginadorComponent extends Object {
  */
 	function __removerReemplazos($valor) {
 		if (is_string($valor)) {
-			$valor = str_replace("like","",$valor);
-			$valor = str_replace("%","",$valor);
-			$valor = str_replace(">=","",$valor);
-			$valor = str_replace("<=","",$valor);
-			return trim($valor);
-		}
-		else {
+			return trim(str_replace(array('like', '%', '>=', '<='), '', $valor));
+		} else {
 			return $valor;
 		}
 	}
