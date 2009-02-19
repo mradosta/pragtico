@@ -34,7 +34,7 @@ class Sucursal extends AppModel {
 	    )
 	);
 
-	var $belongsTo = array('Banco');
+	var $belongsTo = array('Banco', 'Provincia');
 
 }
 ?>

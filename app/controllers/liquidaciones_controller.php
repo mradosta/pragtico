@@ -155,13 +155,11 @@ class LiquidacionesController extends AppController {
 				'Relacion.Trabajador',
 				'Relacion.Empleador',
 	 			'LiquidacionesError'));
-		//d($this->Session->read("filtros." . $this->name . "." . $this->action));
-		//d($this->data);
-		$tmpPeriod = $this->data['Condicion']['Liquidacion-periodo_largo'];
-		unset($this->data['Condicion']['Liquidacion-periodo_largo']);
-		$resultados = $this->Paginador->paginar();
-		$this->data['Condicion']['Liquidacion-periodo_largo'] = $tmpPeriod;
-		$this->set("registros", $resultados['registros']);
+
+		$resultados = $this->Paginador->paginar(
+				array('Liquidacion.estado' => 'Sin Confirmar'),
+				array('Liquidacion.periodo_largo'));
+		$this->set('registros', $resultados['registros']);
 	}
 
 

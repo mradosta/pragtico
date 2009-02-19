@@ -30,9 +30,12 @@ $campos = null;
 $campos['Sucursal.id'] = array();
 $campos['Sucursal.codigo'] = array();
 $campos['Sucursal.direccion'] = array();
+$campos['Sucursal.barrio'] = array();
+$campos['Sucursal.localidad'] = array();
+$campos['Sucursal.provincia_id'] = array('options' => 'listable', 'model' => 'Provincia', 'displayField' => array('Provincia.nombre'));
 $campos['Sucursal.telefono'] = array();
 $campos['Sucursal.observacion'] = array();
-$fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array("class"=>"detail", 'legend' => "Sucursal", 'imagen' => 'sucursales.gif')));
+$fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array('class'=>'detail', 'legend' => 'Sucursal', 'imagen' => 'sucursales.gif')));
 
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('imagen' => 'bancos.gif')));
 
