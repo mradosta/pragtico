@@ -168,6 +168,14 @@ class Liquidacion extends AppModel {
 			$this->__setAuxiliar($ausencias['auxiliar']);
 			$this->setConcept($ausencias['conceptos']);
 
+			/** Get discounts */
+			$discounts = $this->Relacion->Descuento->getDescuentos($this->getRelationship(),
+					array(	'periodo' 	=> $this->getPeriod(),
+							'tipo'		=> $type));
+			$this->__setAuxiliar($discounts['auxiliar']);
+			$this->setConcept($discounts['conceptos']);
+			
+
 			/**
 			* Verifico si debo hacerle algun descuento.
 			$opcionesDescuentos = null;
