@@ -227,9 +227,11 @@ class Descuento extends AppModel {
  * descontar field is bitwise, must sum values then.
  */
 	function beforeSave($options = array()) {
-		$this->data['Descuento']['descontar'] = array_sum($this->data['Descuento']['descontar']);
-		if ($this->data['Descuento']['tipo'] === 'Vale') {
-			$this->data['Descuento']['cuotas'] = 1;
+		if (isset($this->data['Descuento']['descontar'])) {
+			$this->data['Descuento']['descontar'] = array_sum($this->data['Descuento']['descontar']);
+			if ($this->data['Descuento']['tipo'] === 'Vale') {
+				$this->data['Descuento']['cuotas'] = 1;
+			}
 		}
 		return parent::beforeSave($options);
 	}
