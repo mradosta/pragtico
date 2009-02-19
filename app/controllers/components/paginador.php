@@ -192,16 +192,19 @@ class PaginadorComponent extends Object {
  * Establece las condiciones, realiza las consultas a la base y deja el array $this->data['Condicion']
  * de manera que el helper pueda cargar los valores de las busquedas.
  *
+ * @param array $condicion Condiciones que se sumaran a las que hay en la sesion.
+ * @param array $whiteList Campos que no deben ser inlcuidos en los filtros pero si guardados en la session.
+ *
  * @return array Resultados de la paginacion.
  * @access public
  */
-	function paginar($condicion = array()) {
+	function paginar($condicion = array(), $whiteList = array()) {
 		$condiciones = array_merge($this->generarCondicion(), $condicion);
 		if (!empty($this->controller->paginate['conditions'])) {
 			$condiciones = array_merge($this->controller->paginate['conditions'], $condiciones);
 		}
+		$this->controller->paginate['conditions'] = array_diff_key($condiciones, array_flip($whiteList));
 
-		$this->controller->paginate['conditions'] = $condiciones;
 		$model = Inflector::classify($this->controller->name);
 
 		$resultado = array();
@@ -243,7 +246,7 @@ class PaginadorComponent extends Object {
 
 		$this->generarData();
 		$registros = $this->controller->paginate();
-		return array('registros'=>$registros, 'totales'=>$resultado);
+		return array('registros' => $registros, 'totales' => $resultado);
 	}
 
 
