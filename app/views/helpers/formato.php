@@ -474,13 +474,13 @@ class FormatoHelper extends AppHelper {
 					$before = '';
 					$ano = substr($valor, 0, 4);
 				}
-				$mes = $this->__getMeses((int)substr($valor, 4, 2));
+				$mes = $this->__getMonths((int)substr($valor, 4, 2));
 				$return = $before . $mes . ' de ' . $ano;
 				$return = $this->__case($return, $options['case']);
 				break;
 			case 'mesEnLetras':
-				$options = array_merge(array('case' => 'lower'), $options);
-				$meses = $this->__getMeses();
+				$options = array_merge(array('case' => 'lower', 'keyStart' => 1), $options);
+				$meses = $this->__getMonths(null, $options['keyStart']);
 				if (strtolower($valor) === 'all') {
 					$tmp = null;
 					foreach ($meses as $k => $mes) {
@@ -566,7 +566,22 @@ class FormatoHelper extends AppHelper {
  *					string El nombre del mes solicitado.
  * @access private.
  */
-	function __getMeses($mes = null) {
+	function __getMonths($mes = null, $keyStart = 1) {
+		
+		$meses[$keyStart++] = __('january', true);
+		$meses[$keyStart++] = __('february', true);
+		$meses[$keyStart++] = __('march', true);
+		$meses[$keyStart++] = __('april', true);
+		$meses[$keyStart++] = __('may', true);
+		$meses[$keyStart++] = __('june', true);
+		$meses[$keyStart++] = __('july', true);
+		$meses[$keyStart++] = __('august', true);
+		$meses[$keyStart++] = __('september', true);
+		$meses[$keyStart++] = __('october', true);
+		$meses[$keyStart++] = __('november', true);
+		$meses[$keyStart] = __('december', true);
+
+		/*
 		$meses['1'] = 'enero';
 		$meses['2'] = 'febrero';
 		$meses['3'] = 'marzo';
@@ -579,6 +594,7 @@ class FormatoHelper extends AppHelper {
 		$meses['10'] = 'octubre';
 		$meses['11'] = 'noviembre';
 		$meses['12'] = 'diciembre';
+		*/
 		if (is_numeric($mes)) {
 			if (isset($meses[$mes])) {
 				return $meses[$mes];
