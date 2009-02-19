@@ -219,15 +219,10 @@ class Pago extends AppModel {
 		
 		if (!empty($opciones['cuenta_id']) && !empty($opciones['pago_id']) && !empty($opciones['empleador_id'])) {
 
-			//$this->Relacion->Empleador->Cuenta->recursive = 2;
 			$this->Relacion->Empleador->Cuenta->contain(array('Empleador', 'Sucursal.Banco'));
 			$cuenta = $this->Relacion->Empleador->Cuenta->findById($opciones['cuenta_id']);
 			$banco = $cuenta['Sucursal']['Banco']['codigo'];
-			$banco = 'Galicia';
 			
-//BANCO DE GALICIA y BS. AS. S.A.                              007
-
-//BANCO DE LA NACION ARGENTINA                         011 			
 			$conditions = array(
 					'Pago.estado'		=> 'Pendiente',
 	 				'Pago.id'			=> $opciones['pago_id'],
@@ -236,22 +231,17 @@ class Pago extends AppModel {
 			$pagos =  $this->find('all', 
 			  		array(	'contain'		=> array('Relacion.Trabajador'),
 						  	'conditions' 	=> $conditions));
-			//$pagos = $this->query($sql);
-			//$pagos = $this->find('all', array('conditions'=>array('Pago.estado' => 'Pendiente', 'Pago.id'=>$opciones['pago_id'])));
-			//d($pagos);
 			
 			if (!empty($pagos)) {
-			
-				//$empleador = $this->Relacion->Empleador->findById($opciones['Empleador.id']);
 				$total = 0;
+				
 				foreach ($pagos as $pago) {
-
 					preg_match('/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d$/', $pago['Relacion']['Trabajador']['cbu'], $matches);
 					if (!empty($matches[2]) && !empty($matches[3])) {
 					
 						$total += number_format($pago['Pago']['monto'], 2, '.', '');					
 						switch ($banco) {
-							case 'Santander-Rio':
+							case '72':
 								if ($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Cta. Cte.') {
 									$tipoCuentaTrabajador = '2';
 								} elseif ($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Caja de Ahorro') {
@@ -267,15 +257,12 @@ class Pago extends AppModel {
 								$c[] = str_pad(number_format($pago['Pago']['monto'], 2, '', ''), 15, '0', STR_PAD_LEFT); // importe
 								$rds[] = implode(';', $c);
 								break;
-							case 'Galicia':
+							case '7':
 								if ($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Cta. Cte.') {
 									$tipoCuentaTrabajador = '0';
-								}
-								elseif ($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Caja de Ahorro') {
+								} elseif ($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Caja de Ahorro') {
 									$tipoCuentaTrabajador = '4';
 								}
-								//$pago['Relacion']['Trabajador']['cbu'] = '0070278430004005944782';
-								//$pago['Relacion']['Trabajador']['cbu'] = '0070278430004005945518';
 								$pago['Relacion']['Trabajador']['cbu'] = '0070278430004005946351';
 								
 								$rd = null;												
@@ -292,7 +279,7 @@ class Pago extends AppModel {
 								$rd[] = str_pad('', 11, ' ', STR_PAD_RIGHT); //libre
 								$rds[] = implode('', $rd);
 								break;
-							case 'Nacion':
+							case '11':
 								$fechaAcreditacion = date('Ymd');
 								if (!empty($opciones['fecha_acreditacion'])) {
 									preg_match('/(\d\d)\/(\d\d)\/\d\d(\d\d)$/', $opciones['fecha_acreditacion'], $matches);
@@ -319,50 +306,48 @@ class Pago extends AppModel {
 				
 				if (!empty($rds)) {
 					switch ($banco) {
-						case 'Santander-Rio':
-						case 'Nacion':
+						case '72':
+						case '11':
 							$contenido = implode("\r\n", $rds);
 							break;
-						case 'Galicia':
-								$fechaAcreditacion = date('Ymd');
-								if (!empty($opciones['fecha_acreditacion'])) {
-									preg_match('/(\d\d)\/(\d\d)\/(\d\d\d\d)$/', $opciones['fecha_acreditacion'], $matches);
-									if (!empty($matches[1]) && !empty($matches[2]) && !empty($matches[3])) {
-										$fechaAcreditacion = $matches[3] . $matches[2] . $matches[1];
-									}
+						case '7':
+							$fechaAcreditacion = date('Ymd');
+							if (!empty($opciones['fecha_acreditacion'])) {
+								preg_match('/(\d\d)\/(\d\d)\/(\d\d\d\d)$/', $opciones['fecha_acreditacion'], $matches);
+								if (!empty($matches[1]) && !empty($matches[2]) && !empty($matches[3])) {
+									$fechaAcreditacion = $matches[3] . $matches[2] . $matches[1];
 								}
-								if ($cuenta['Cuenta']['tipo'] == 'Cta. Cte.') {
-									$tipoCuentaEmpleador = '0';
-								} elseif ($cuenta['Cuenta']['tipo'] == 'Caja de Ahorro') {
-									$tipoCuentaEmpleador = '9';
-								}
-								$rh[] = 'H';
-								$rh[] = str_pad($cuenta['Cuenta']['convenio'], 5, '0', STR_PAD_LEFT); //Numero de empresa
-								$rh[] = $tipoCuentaEmpleador; //tipo de cuenta
-								$rh[] = str_pad(substr($cuenta['Cuenta']['cbu'], 13, 6), 6, '0', STR_PAD_LEFT); //folio (cuenta)
-								$rh[] = substr($cuenta['Cuenta']['cbu'], 19, 1); //1 digito
-								$rh[] = str_pad(substr($cuenta['Cuenta']['cbu'], 4, 3), 3, '0', STR_PAD_LEFT); //sucursal
-								$rh[] = substr($cuenta['Cuenta']['cbu'], -2, 1); //2 digito
-								$rh[] = str_pad(number_format($total, 2, '', ''), 14, '0', STR_PAD_LEFT); //importe total
-								$rh[] = str_pad($fechaAcreditacion, 8, ' ', STR_PAD_RIGHT); //fecha acreditacion
-								$rh[] = str_pad('', 25, ' ', STR_PAD_RIGHT); //libre
-								$rhs = implode('', $rh);                         
-								$rf[] = 'F';
-								$rf[] = str_pad($cuenta['Cuenta']['convenio'], 5, '0', STR_PAD_LEFT); //Numero de empresa
-								$rf[] = str_pad(count($rds), 7, '0', STR_PAD_LEFT); //cantidad registros
-								$rf[] = str_pad('', 52, ' ', STR_PAD_RIGHT); //libre
-								$rfs = implode('', $rf);
-
-								$contenido = $rhs . "\r\n" . implode("\r\n", $rds) . "\r\n" . $rfs;
+							}
+							if ($cuenta['Cuenta']['tipo'] == 'Cta. Cte.') {
+								$tipoCuentaEmpleador = '0';
+							} elseif ($cuenta['Cuenta']['tipo'] == 'Caja de Ahorro') {
+								$tipoCuentaEmpleador = '9';
+							}
+							$rh[] = 'H';
+							$rh[] = str_pad($cuenta['Cuenta']['convenio'], 5, '0', STR_PAD_LEFT); //Numero de empresa
+							$rh[] = $tipoCuentaEmpleador; //tipo de cuenta
+							$rh[] = str_pad(substr($cuenta['Cuenta']['cbu'], 13, 6), 6, '0', STR_PAD_LEFT); //folio (cuenta)
+							$rh[] = substr($cuenta['Cuenta']['cbu'], 19, 1); //1 digito
+							$rh[] = str_pad(substr($cuenta['Cuenta']['cbu'], 4, 3), 3, '0', STR_PAD_LEFT); //sucursal
+							$rh[] = substr($cuenta['Cuenta']['cbu'], -2, 1); //2 digito
+							$rh[] = str_pad(number_format($total, 2, '', ''), 14, '0', STR_PAD_LEFT); //importe total
+							$rh[] = str_pad($fechaAcreditacion, 8, ' ', STR_PAD_RIGHT); //fecha acreditacion
+							$rh[] = str_pad('', 25, ' ', STR_PAD_RIGHT); //libre
+							$rhs = implode('', $rh);
+							$rf[] = 'F';
+							$rf[] = str_pad($cuenta['Cuenta']['convenio'], 5, '0', STR_PAD_LEFT); //Numero de empresa
+							$rf[] = str_pad(count($rds), 7, '0', STR_PAD_LEFT); //cantidad registros
+							$rf[] = str_pad('', 52, ' ', STR_PAD_RIGHT); //libre
+							$rfs = implode('', $rf);
+							$contenido = $rhs . "\r\n" . implode("\r\n", $rds) . "\r\n" . $rfs;
 							break;
 					}
 				}
-			}
-			else {
+			} else {
 				return false;
 			}
 		}
-		return array('contenido'=>$contenido, 'banco'=>$banco);
+		return array('contenido' => $contenido, 'banco' => $banco);
 	}
 
 }
