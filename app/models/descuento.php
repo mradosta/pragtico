@@ -101,12 +101,12 @@ class Descuento extends AppModel {
  * @return array vacio si no hay nada que descontar.
  */
 	function getDescuentos($relacion, $opciones) {
-
-		switch($opciones['tipo']) {
+		
+	   switch($opciones['tipo']) {
 			case 'normal':
-				if ($opciones['periodo'] === '1Q') {
+				if ($opciones['periodo']['periodo'] === '1Q') {
 					$descontar = 3;
-				} elseif ($opciones['periodo'] === '2Q' || $opciones['periodo'] === 'M') {
+				} elseif ($opciones['periodo']['periodo'] === '2Q' || $opciones['periodo']['periodo'] === 'M') {
 					$descontar = 5;
 				}
 				break;
@@ -119,29 +119,29 @@ class Descuento extends AppModel {
 			case 'liquidacion_final':
 				$descontar = 33;
 			break;
-			case 'descuentos':
+			case 'especial':
 				$descontar = 1;
 			break;
 		}
 		
-		$r = $this->find('all', 
+		$r = $this->find('all',
 			array(
 				  	'contain'		=> 'DescuentosDetalle',
 				  	'checkSecurity'	=> false,
 					'conditions' 	=> array(
 				'Descuento.relacion_id' 						=> $relacion['Relacion']['id'],
-				'Descuento.desde <=' 							=> $opciones['desde'],
+				'Descuento.desde >=' 							=> $opciones['periodo']['desde'],
  				'(Descuento.descontar & ' . $descontar . ') >' 	=> 0,
  				'Descuento.estado' 								=> 'Activo')
 		));
 		
 		$concepto = $auxiliares = array();
 		if (!empty($r)) {
-			foreach ($r as $k=>$v) {
+			foreach ($r as $k => $v) {
 				$cuotaDescontadas = count($v['DescuentosDetalle']);
 				$totalDescontado = array_sum(Set::extract('/monto', $v['DescuentosDetalle']));
 				$cuotaActual = $cuotaDescontadas + 1;
-				switch($v['Descuento']['tipo']) {
+				switch ($v['Descuento']['tipo']) {
 					case 'Prestamo':
 					case 'Vale':
 						$valorCuota = $v['Descuento']['monto'] / $v['Descuento']['cuotas'];
@@ -218,7 +218,8 @@ class Descuento extends AppModel {
 				}
 			}
 		}
-		return array('concepto'=>$concepto, 'auxiliar'=>$auxiliares);
+		//d(array('concepto' => $concepto, 'auxiliar' => $auxiliares));
+		return array('conceptos' => $concepto, 'auxiliar' => $auxiliares);
 	}
 
 
