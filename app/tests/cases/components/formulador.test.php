@@ -120,6 +120,16 @@ class FormuladorComponentTestCase extends CakeTestCase {
 	
 	
     function testResolverFechas() {
+		
+		$formula = "=datedif(if('2008-02-10' > '2008-02-01', '2008-02-10'), if('2010-02-28' < '2008-02-29', '2010-02-29', '2008-02-29'))";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '19';
+		$this->assertEqual($expected, $result);
+
+		$formula = "=datedif(if('2009-02-10' > '2009-02-01', '2009-02-10'), if('2010-02-28' < '2009-02-28', '2010-02-28', '2009-02-28'))";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '18';
+		$this->assertEqual($expected, $result);
 
 		$formula = "=IF(AND(MONTH(date('2008-07-07'))>6,YEAR(date('2008-07-07'))=YEAR(date('2008-12-31');DAY(A2)>1)),INT(NETWORKDAYS(date('2008-07-07'),date('2008-12-31'))/20),IF(AND(MONTH(date('2008-07-07'))<6,YEAR(date('2008-07-07'))=YEAR(date('2008-12-31'))),14,IF((YEAR(date('2008-12-31'))-YEAR(date('2008-07-07')))<=5,14,IF((YEAR(date('2008-12-31'))-YEAR(date('2008-07-07')))<=10,21,IF((YEAR(date('2008-12-31'))-YEAR(date('2008-07-07')))<=15,28,35)))))";
 		$result = $this->FormuladorComponentTest->resolver($formula);

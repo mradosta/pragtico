@@ -105,8 +105,15 @@ class Formulas {
 				$string = str_replace('/', '\/', $string);
 				$formula = preg_replace('/' . $string . '/', 'A' . $cellId, $formula, 1);
 			}
+		}
+
 		/** Replace Mysql dates to PHPExcel dates */
-		} elseif (preg_match_all("/date\('(\d\d\d\d)-(\d\d)-(\d\d)'\)/", $formula, $strings)) {
+		if (preg_match_all("/date\('(\d\d\d\d)-(\d\d)-(\d\d)'\)/", $formula, $strings)) {
+			foreach (array_unique($strings[0]) as $k => $string) {
+				$formula = str_replace($string, sprintf('date(%s, %s, %d)', $strings[1][$k], $strings[2][$k], $strings[3][$k]), $formula);
+			}
+		}
+		if (preg_match_all("/'(\d\d\d\d)-(\d\d)-(\d\d)'/", $formula, $strings)) {
 			foreach (array_unique($strings[0]) as $k => $string) {
 				$formula = str_replace($string, sprintf('date(%s, %s, %d)', $strings[1][$k], $strings[2][$k], $strings[3][$k]), $formula);
 			}
