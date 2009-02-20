@@ -133,16 +133,17 @@ class Liquidacion extends AppModel {
  */
     function getReceipt($relationship, $period, $type = 'normal', $options = array()) {
 
+		/** Initial set of vars and concepts */
+		$this->setVar($options['variables']);
+		if (!empty($options['informaciones'][$relationship['ConveniosCategoria']['convenio_id']])) {
+			$this->setVar($options['informaciones'][$relationship['ConveniosCategoria']['convenio_id']]);
+		}
+		$this->setVar('#tipo_liquidacion', $type);
 		$this->setPeriod($period);
 		$this->setRelationship($relationship);
 		
 		if ($type === 'normal') {
 			
-			/** Initial set of vars and concepts */
-			$this->setVar($options['variables']);
-			if (!empty($options['informaciones'][$relationship['ConveniosCategoria']['convenio_id']])) {
-				$this->setVar($options['informaciones'][$relationship['ConveniosCategoria']['convenio_id']]);
-			}
 
 			$opcionesFindConcepto = null;
 			$this->setConcept(
@@ -176,20 +177,6 @@ class Liquidacion extends AppModel {
 			$this->setConcept($discounts['conceptos']);
 			
 
-			/**
-			* Verifico si debo hacerle algun descuento.
-			$opcionesDescuentos = null;
-			$opcionesDescuentos['desde'] = $this->getVarValue("#fecha_desde_liquidacion");
-			$opcionesDescuentos['hasta'] = $this->getVarValue("#fecha_hasta_liquidacion");
-			$opcionesDescuentos['tipo'] = $this->getVarValue("#tipo_liquidacion");
-			$opcionesDescuentos['periodo'] = $this->getVarValue("#periodo_liquidacion");
-			//$condicionesDescuentos['smvm'] = $this->getVarValue("#smvm");
-			$descuentos = $this->Liquidacion->Relacion->Descuento->getDescuentos($relacion, $opcionesDescuentos);
-
-			$this->__setConcepto($descuentos['concepto'], "SinCalcular");
-			$this->__setAuxiliar($descuentos['auxiliar']);
-			*/
-			
 			/** Resolv */
 			foreach ($this->getConcept() as $cCod => $concepto) {
 				$this->__conceptos[$cCod] = array_merge($this->__conceptos[$cCod],
@@ -198,27 +185,18 @@ class Liquidacion extends AppModel {
 			return $this->__getSaveArray();
 		} elseif ($type === 'sac') {
 
-            $defaults['january'] = 0;
-            $defaults['february'] = 0;
-            $defaults['march'] = 0;
-            $defaults['april'] = 0;
-            $defaults['may'] = 0;
-            $defaults['june'] = 0;
-            $defaults['july'] = 0;
-            $defaults['august'] = 0;
-            $defaults['september'] = 0;
-            $defaults['october'] = 0;
-            $defaults['november'] = 0;
-            $defaults['december'] = 0;
-            $options = array_merge($defaults, $options);
-            
-            $condtions['Liquidacion.relacion_id'] = $relationships['Relacion']['id'];
-            $condtions['Liquidacion.ano'] = $options['year'];
-            if ($options['period'] == '1') {
+			unset($options['variables']);
+			unset($options['informaciones']);
+
+            $condtions['Liquidacion.relacion_id'] = $relationship['Relacion']['id'];
+            $options['year'] = $condtions['Liquidacion.ano'] = $period['ano'];
+            if ($period['periodo'] == '1S') {
+				$options['period'] = 1;
                 $condtions['mes'] = array('AND' => array(
                         'Liquidacion.mes >=' => 1,
                         'Liquidacion.mes <=' => 6));
-            } elseif ($options['period'] == '2') {
+            } elseif ($period['periodo'] == '2S') {
+				$options['period'] = 2;
                 $condtions['mes'] = array('AND' => array(
                         'Liquidacion.mes >=' => 6,
                         'Liquidacion.mes <=' => 12));
@@ -226,10 +204,30 @@ class Liquidacion extends AppModel {
                 return array('error' => sprintf('Wrong period (%s). Only "1" for the first_half or "2" for the second_half allowed for type %s.', $options['period'], $type));
             }
 
+
+            $fields = array('Liquidacion.mes', 'SUM(remunerativo) AS total_remunerativo');
+            $groupBy = array('Liquidacion.mes');
+			
+            $r = $this->find('all', array(
+                    'recursive' => -1,
+                    'fields'    => $fields,
+                    'condtions' => $condtions,
+                    'group'     => $groupBy));
+
+
+			$months = $this->format('all', array('type' => 'mesEnLetras', 'keyStart' => 0));
+			foreach ($r as $total) {
+				$options[$months[$total['Liquidacion']['mes']]] = (float)$total['Liquidacion']['total_remunerativo'];
+			}
+
+			
+			
 			$options['relation'] = array_pop(Set::combine(array($relationship), '{n}.Relacion.id', array('{2}, {1} ({0})', '{n}.Empleador.nombre', '{n}.Trabajador.nombre', '{n}.Trabajador.apellido')));
 			$options['start'] = strtotime($relationship['Relacion']['ingreso'] . ' 00:00:00 UTC');
-			$options['end'] = strtotime($relationship['Relacion']['egreso'] . ' 00:00:00 UTC');
-
+			if ($relationship['Relacion']['egreso'] !== '0000-00-00') {
+				$options['end'] = strtotime($relationship['Relacion']['egreso'] . ' 00:00:00 UTC');
+			}
+			$options['end'] = strtotime('2010-01-08 00:00:00 UTC');
             /** Use PHPExcel to get complex calculations done */
             set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes');
             App::import('Vendor', 'IOFactory', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'IOFactory.php');
@@ -251,30 +249,23 @@ class Liquidacion extends AppModel {
             $objPHPExcelSheet = $objPHPExcel->getActiveSheet();
 
             foreach ($options as $cellName => $data) {
-                $objPHPExcelSheet->setCellValue(ucfirst($cellName), $data);
+				if (!empty($data)) {
+					$cellName = ucfirst($cellName);
+                	$objPHPExcelSheet->setCellValue($cellName, $data);
+				}
             }
 
             //$objPHPExcelWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-            //$objPHPExcelWriter->save('/tmp/sac-generated.xlsx');
-            return sprintf('%01.2f', $objPHPExcelSheet->getCell('TOTAL_PRAGTICO')->getCalculatedValue());
-            
-            //$objPHPExcelWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-            //$objPHPExcelWriter->save('/tmp/sac-generated.xls');
-            $objPHPExcelWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-            $objPHPExcelWriter->save('/tmp/sac-generated2.xlsx');
-            
-            $fields = array('Liquidacion.relacion_id', 'SUM(remunerativo) AS total_remunerativo');
-            $groupBy = array('Liquidacion.relacion_id', 'Liquidacion.mes');
-
-            $r = $this->find('all', array(
-                    'recursive' => -1,
-                    'fields'    => $fields,
-                    'condtions' => $condtions,
-                    'group'     => $groupBy));
-            //d($r);
+            //$objPHPExcelWriter->save('/tmp/sac-generated2.xlsx');
+            //return sprintf('%01.2f', $objPHPExcelSheet->getCell('TOTAL_PRAGTICO')->getCalculatedValue());
 
 
-            
+			$this->setConcept($this->LiquidacionesDetalle->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $relationship, 'codigoConcepto' => 'sac')));
+			$this->__conceptos['sac']['valor'] = $objPHPExcelSheet->getCell('TOTAL_PRAGTICO')->getCalculatedValue();
+			$this->__conceptos['sac']['debug'] = '';
+			$this->__conceptos['sac']['valor_cantidad'] = 0;
+			$this->__conceptos['sac']['errores'] = array();
+			return $this->__getSaveArray();
         }
     }
     
@@ -461,21 +452,8 @@ class Liquidacion extends AppModel {
 		}
 		return $detalle;
 	}
-	
-function afterFind($results, $primary = false) {
-    //array_walk($results, create_function(’&$v’, ‘$v['Photo']['rownum'] = $v[0]['rownum']; unset($v[0]);’));
-    if ($primary == true) {
-        if (Set::check($results, '0.0')) {
-            $fieldName = key($results[0][0]);
-            foreach ($results as $key=>$value) {
-                $results[$key][$this->alias][$fieldName] = $value[0][$fieldName];
-                unset($results[$key][0]);
-            }
-        }
-    }
-    return $results;
-}
 
+	
 	function addEditDetalle($opciones) {
 		/**
 		* Se refiere a los conceptos que deben tratarse de forma especial, ya que modifican data en table, u otra cosa.
@@ -983,7 +961,8 @@ function afterFind($results, $primary = false) {
     }
     
     function __getError() {
-        return $this->__saveError;
+        //return $this->__saveError;
+		return;
     }
 
     function setPeriod($period) {
