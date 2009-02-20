@@ -68,11 +68,26 @@ class Formulas {
 	function __cleanUp($formula) {
 		/** Replace spaces in formulas to unify criterias.*/
 		$formula = preg_replace('/\s*([=|,|\(|\)])\s*/', '$1', $formula);
+		$formula = preg_replace('/[^[:print:]]/', '', $formula);
 		if (substr($formula, 0, 1) !== '=') {
 			$formula = '=' . $formula;
 		}
+
 		return $formula;
 	}
+
+	
+	function __cleanUpDate($strings, $formula) {
+		foreach (array_unique($strings[0]) as $k => $string) {
+			if ($strings[1][$k] + $strings[2][$k] + $strings[3][$k] === 0) {
+				$formula = str_replace($string, '', $formula);
+			} else {
+				$formula = str_replace($string, sprintf('date(%d, %d, %d)', $strings[1][$k], $strings[2][$k], $strings[3][$k]), $formula);
+			}
+		}
+		return $formula;
+	}
+	
 
 /**
  * Resolv the formula.
@@ -109,16 +124,15 @@ class Formulas {
 
 		/** Replace Mysql dates to PHPExcel dates */
 		if (preg_match_all("/date\('(\d\d\d\d)-(\d\d)-(\d\d)'\)/", $formula, $strings)) {
-			foreach (array_unique($strings[0]) as $k => $string) {
-				$formula = str_replace($string, sprintf('date(%s, %s, %d)', $strings[1][$k], $strings[2][$k], $strings[3][$k]), $formula);
-			}
+			$formula = $this->__cleanUpDate($strings, $formula);
 		}
 		if (preg_match_all("/'(\d\d\d\d)-(\d\d)-(\d\d)'/", $formula, $strings)) {
-			foreach (array_unique($strings[0]) as $k => $string) {
-				$formula = str_replace($string, sprintf('date(%s, %s, %d)', $strings[1][$k], $strings[2][$k], $strings[3][$k]), $formula);
-			}
+			$formula = $this->__cleanUpDate($strings, $formula);
 		}
-		
+		if (preg_match_all("/(\d\d\d\d)-(\d\d)-(\d\d)/", $formula, $strings)) {
+			$formula = $this->__cleanUpDate($strings, $formula);
+		}
+
 		
 		/** Maybe values for an if statment are string, so must put then in separated cells */
 		if (preg_match_all("/\([A-Z]+\d\,\'([\w\s]+)\'\,\'([\w\s]+)\'\)/", $formula, $strings)) {

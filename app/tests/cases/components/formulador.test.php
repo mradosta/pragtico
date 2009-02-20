@@ -60,7 +60,17 @@ class FormuladorComponentTestCase extends CakeTestCase {
     }
 
 	function testInformationFuncions() {
+
+		$formula = "=if(isblank(0000-00-00), 1, 2)";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '1';
+		$this->assertEqual($expected, $result);
 		
+		$formula = "=if(isblank('0000-00-00'), 1, 2)";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '1';
+		$this->assertEqual($expected, $result);
+
 		$formula = "=if(isblank(H23), 1, 2)";
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '1';
@@ -151,7 +161,7 @@ class FormuladorComponentTestCase extends CakeTestCase {
 		$expected = '1198195200';
 		$this->assertEqual($expected, $result);
 
-		$formula = '=datedif ("2007-12-18", "2007-12-22", "D")';
+		$formula = "=datedif ('2007-12-18', '2007-12-22')";
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '4';
 		$this->assertEqual($expected, $result);
