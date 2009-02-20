@@ -59,6 +59,14 @@ class FormuladorComponentTestCase extends CakeTestCase {
 		$this->FormuladorComponentTest->startup(&$this->controller);
     }
 
+	function testInformationFuncions() {
+		
+		$formula = "=if(isblank(H23), 1, 2)";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '1';
+		$this->assertEqual($expected, $result);
+	}
+
 	function testDivisionByZero() {
 		
 		$formula = "=if('mensual' = 'mensual', (1319.56 / 0), 1319.56)";
