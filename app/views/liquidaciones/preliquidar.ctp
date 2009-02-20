@@ -19,22 +19,22 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-$condiciones['Condicion.Relacion-empleador_id'] = array(	'lov'=>array('controller'	=>	'empleadores',
-																		'camposRetorno'	=>array('Empleador.cuit',
-																								'Empleador.nombre')));
+$condiciones['Condicion.Relacion-empleador_id'] = array(
+		'lov'	=> array('controller'	=> 'empleadores',
+						'camposRetorno'	=> array('Empleador.cuit', 'Empleador.nombre')));
 
-$condiciones['Condicion.Relacion-trabajador_id'] = array(	'lov'=>array('controller'	=>	'trabajadores',
-																		'camposRetorno'	=>array('Trabajador.cuil',
-																								'Trabajador.nombre',
-																								'Trabajador.apellido')));
+$condiciones['Condicion.Relacion-trabajador_id'] = array(
+		'lov'	=> array('controller'	=> 'trabajadores',
+					 	'camposRetorno'	=> array('Trabajador.cuil', 'Trabajador.nombre', 'Trabajador.apellido')));
 
-$condiciones['Condicion.Relacion-id'] = array(	'label' => 'Relacion',
-												'lov'=>array('controller'	=>	'relaciones',
-																		'camposRetorno'	=>array('Empleador.cuit',
-																								'Empleador.nombre',
-																								'Trabajador.cuil',
-																								'Trabajador.nombre',
-																								'Trabajador.apellido')));
+$condiciones['Condicion.Relacion-id'] = array(
+		'label' => 'Relacion',
+		'lov'	=> array('controller'	=> 'relaciones',
+						'camposRetorno'	=> array(	'Empleador.cuit',
+													'Empleador.nombre',
+			 										'Trabajador.cuil',
+			  										'Trabajador.nombre',
+			   										'Trabajador.apellido')));
 
 //$condiciones['Condicion.ConveniosCategoria-jornada'] = array();
 //$condiciones['Condicion.Liquidacion-estado'] = array('value'=>'Sin Confirmar', 'type'=>'hidden');
@@ -42,8 +42,8 @@ $condiciones['Condicion.Relacion-id'] = array(	'label' => 'Relacion',
 //$condiciones['Condicion.Liquidacion-mes'] = array('options'=>$meses);
 //$condiciones['Condicion.Liquidacion-ano'] = array('class'=>'derecha');
 //$condiciones['Condicion.Liquidacion-periodo'] = array('options'=>$periodos);
-$condiciones['Condicion.Liquidacion-tipo'] = array('label'=>'Tipo', 'type' => 'select');
-$condiciones['Condicion.Liquidacion-periodo_largo'] = array('label'=>'Periodo', 'type'=>'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A'));
+$condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'type' => 'select');
+$condiciones['Condicion.Liquidacion-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A'));
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Preliquidar','imagen' => 'preliquidar.gif')));
 
@@ -71,23 +71,21 @@ foreach ($registros as $k=>$v) {
 	
 	if($v['Liquidacion']['estado'] === 'Confirmada') {
 		$cuerpo[] = array('contenido'=>$fila, 'opciones' => array('title'=>'Ya se ha liquidado a esta Relacion para el periodo especificado.', 'class'=>'fila_resaltada', 'seleccionMultiple'=>false));
-	}
-	else {
+	} else {
 		if(!empty($v['LiquidacionesError'])) {
 			$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'update' => 'desglose4', 'imagen' => array('nombre' => 'error_icono.gif', 'alt' => 'Errores'), 'url' => 'errores');
 			$cuerpo[] = array('contenido'=>$fila, 'opciones' => array('title'=>'Se han encontrado errores en esta liquidacion.', 'class'=>'fila_resaltada', 'seleccionMultiple'=>true));
-		}
-		else {
+		} else {
 			$cuerpo[] = $fila;
 		}
 	}
 }
 
-$opcionesTabla =  array('tabla'=> array('ordenEnEncabezados'=> false,
-										'modificar'			=> false,
-										'seleccionMultiple'	=> true,
-										'eliminar'			=> false,
-										'permisos'			=> false));
+$opcionesTabla =  array('tabla' => array(	'ordenEnEncabezados'=> false,
+											'modificar'			=> false,
+											'seleccionMultiple'	=> true,
+											'eliminar'			=> false,
+											'permisos'			=> false));
 
 $accionesExtra['opciones'] = array('acciones'=>array($appForm->link('Confirmar', null, array('class'=>'link_boton', 'id'=>'confirmar', 'title'=>'Confirma las liquidaciones seleccionadas'))));
 $botonesExtra[] = $appForm->button('Limpiar', array('title'=>'Limpia las busquedas', 'class'=>'limpiar', 'onclick'=>'document.getElementById("accion").value="limpiar";form.submit();'));
@@ -139,7 +137,7 @@ $appForm->addScript('
 			jQuery(".1s").show();
 			jQuery(".2s").show();
 			jQuery(".a").show();
-		} else if (type === "final_receipt") {
+		} else if (type === "final_liquidation") {
 			jQuery("input.periodo").parent().hide();
 		}
 	}

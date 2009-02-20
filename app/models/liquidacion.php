@@ -30,7 +30,7 @@ class Liquidacion extends AppModel {
 						  		'normal'			=> 'Normal',
 			   					'sac'				=> 'Sac',
 		   						'holliday'			=> 'Vacaciones',
-		   						'final_receipt'		=> 'Liquidacion Final',
+		   						'final_liquidation'	=> 'Liquidacion Final',
 		   						'special'			=> 'Especial'));
 	
 	var $hasMany = array(	'LiquidacionesDetalle' =>
@@ -62,7 +62,7 @@ class Liquidacion extends AppModel {
                               'foreignKey'   => 'empleador_id'),
 							'Factura' =>
                         array('className'    => 'Factura',
-                              'foreignKey'   => 'factura_id')                              );
+                              'foreignKey'   => 'factura_id'));
                               
 
 /**
@@ -266,7 +266,9 @@ class Liquidacion extends AppModel {
 			$this->__conceptos['sac']['valor_cantidad'] = 0;
 			$this->__conceptos['sac']['errores'] = array();
 			return $this->__getSaveArray();
-        }
+        } elseif ($type === 'final_liquidation') {
+			d(":X");
+		}
     }
     
 
@@ -706,7 +708,8 @@ class Liquidacion extends AppModel {
  * @access private.
  */
     function getVarValue($variable) {
-        
+
+
         if (!isset($this->__variables[$variable])) {
             $this->__setError(array(    'tipo'                  => 'Variable Inexistente',
                                         'gravedad'              => 'Media',
@@ -730,6 +733,7 @@ class Liquidacion extends AppModel {
         * Intento resolverla.
         */
         else {
+			
             /**
             * Si es una formula, la resuelvo.
             */
@@ -797,7 +801,32 @@ class Liquidacion extends AppModel {
                 return $valor;
             }
             
-            
+
+
+            switch ($variable) {
+                case '#periodo_liquidacion':
+                    $this->setVar($variable, $this->getPeriod('periodo'));
+                break;
+                case '#periodo_liquidacion_completo':
+                    $this->setVar($variable, $this->getPeriod('periodoCompleto'));
+                break;
+                case '#fecha_desde_liquidacion':
+                    $this->setVar($variable, $this->getPeriod('desde'));
+                break;
+                case '#fecha_hasta_liquidacion':
+                    $this->setVar($variable, $this->getPeriod('hasta'));
+                break;
+			}
+
+
+
+
+
+
+
+			
+			return $this->getVarValue($variable);
+			
             /**
              * System vars. HardCoded
              */

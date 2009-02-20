@@ -25,6 +25,7 @@
  */
 class LiquidacionesController extends AppController {
 
+	/*
 	//var $components = array('Formulador', 'DebugKit.Toolbar');
 	var $components = array('Formulador');
 	//var $helpers = array("ExcelWriter", "Pdf", "Excel");
@@ -32,7 +33,7 @@ class LiquidacionesController extends AppController {
 	private $__variables;
 	private $__periodo;
 	private $__conceptos;
-
+	*/
 
 
 
@@ -54,15 +55,15 @@ class LiquidacionesController extends AppController {
 				if ($this->data['Condicion']['Liquidacion-tipo'] === 'normal' &&
 						!in_array($periodo['periodo'], array('1Q', '2Q', 'M'))) {
 					$message = __('Normal liquidation period should be of the form "YYYYMM[1Q|2Q|M]"', true);
-				}
-				elseif ($this->data['Condicion']['Liquidacion-tipo'] === 'holliday' &&
+				} elseif ($this->data['Condicion']['Liquidacion-tipo'] === 'holliday' &&
 						$periodo['periodo'] !== 'A') {
 					$message = __('Holliday liquidation period should be an Year', true);
-				}
-				elseif ($this->data['Condicion']['Liquidacion-tipo'] === 'sac' &&
+				} elseif ($this->data['Condicion']['Liquidacion-tipo'] === 'sac' &&
 						!in_array($periodo['periodo'], array('1S', '2S'))) {
 					$message = __('Sac liquidation period should be of the form "YYYY[12]S"', true);
 				}
+			} elseif ($this->data['Condicion']['Liquidacion-tipo'] !== 'final_liquidation') {
+				$message = __('Must enter a period', true);
 			} else {
 				$message = __('Invalid Period', true);
 			}
