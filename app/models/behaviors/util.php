@@ -30,6 +30,7 @@ class UtilBehavior extends ContainableBehavior {
 	
 	function resolver(&$model, $formula) {
 		if (is_null($this->__formulas)) {
+			App::import('Vendor', 'formulas', 'pragmatia');
 			$this->__formulas = new Formulas();
 		}
 		return $this->__formulas->resolver($formula);
