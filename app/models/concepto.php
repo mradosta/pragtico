@@ -43,7 +43,7 @@ class Concepto extends AppModel {
 				'rule'		=> '/^[a-z,0-9,_]+$/',
 				'message'	=> 'El codigo del concepto solo puede contener letras minusculas y numeros.'),
 			array(
-				'rule'		=> array('minLength', 4),
+				'rule'		=> array('minLength', 3),
 				'message'	=> 'El codigo del concepto debe tener al menos 4 caracteres.'),
 			array(
 				'rule'		=> VALID_NOT_EMPTY, 
