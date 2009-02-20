@@ -32,8 +32,7 @@ foreach ($registros as $k => $v) {
 	$fila = null;
 	$fila[] = array('model' => 'Variable', 'field' => 'id', 'valor' => $v['Variable']['id'], 'write' => $v['Variable']['write'], 'delete' => $v['Variable']['delete']);
 	$fila[] = array('model' => 'Variable', 'field' => 'nombre', 'valor' => $v['Variable']['nombre']);
-	$fila[] = array('model' => 'Variable', 'field' => 'descripcion', 'valor' => $v['Variable']['descripcion']);
-	$fila[] = array('model' => 'Variable', 'field' => 'ejemplo', 'valor' => $v['Variable']['ejemplo']);
+	$fila[] = array('model' => 'Variable', 'field' => 'formula', 'valor' => $v['Variable']['formula']);
 	$cuerpo[] = $fila;
 }
 
