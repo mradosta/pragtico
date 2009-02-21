@@ -141,6 +141,8 @@ class Liquidacion extends AppModel {
 		$this->setVar('#tipo_liquidacion', $type);
 		$this->setPeriod($period);
 		$this->setRelationship($relationship);
+		$this->__conceptos = null;
+		//$this->__variables = null;
 		
 		if ($type === 'normal') {
 			
@@ -804,6 +806,12 @@ class Liquidacion extends AppModel {
 
 
             switch ($variable) {
+                case '#mes_liquidacion':
+                    $this->setVar($variable, $this->getPeriod('mes'));
+                break;
+                case '#ano_liquidacion':
+                    $this->setVar($variable, $this->getPeriod('ano'));
+                break;
                 case '#periodo_liquidacion':
                     $this->setVar($variable, $this->getPeriod('periodo'));
                 break;
