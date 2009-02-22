@@ -96,6 +96,31 @@ class FormatoHelper extends AppHelper {
 	
 	
 /**
+ * Search for an element of an array based on a given key.
+ *
+ * @param string $Key The key of the array. Ej: Model.Submodel.field
+ * @param array $arrayData The array where to find the key.
+ * @return mixed Array value based on given key if found. Key if not found.
+ * @access private.
+ */
+	function __getTextFromArray($key, $arrayData) {
+		$tmp = explode('.', $key);
+		$cantidad = count($tmp);
+		if ($cantidad === 2 && isset($arrayData[$tmp[0]][$tmp[1]])) {
+			$return = $arrayData[$tmp[0]][$tmp[1]];
+		} elseif ($cantidad === 3 && isset($arrayData[$tmp[0]][$tmp[1]][$tmp[2]])) {
+			$return = $arrayData[$tmp[0]][$tmp[1]][$tmp[2]];
+		} elseif ($cantidad === 4 && isset($arrayData[$tmp[0]][$tmp[1]][$tmp[2]][$tmp[3]])) {
+			$return = $arrayData[$tmp[0]][$tmp[1]][$tmp[2]][$tmp[3]];
+		} elseif ($cantidad === 5 && isset($arrayData[$tmp[0]][$tmp[1]][$tmp[2]][$tmp[3]][$tmp[4]])) {
+			$return = $arrayData[$tmp[0]][$tmp[1]][$tmp[2]][$tmp[3]][$tmp[4]];
+		} else {
+			$return = $key;
+		}
+		return str_replace('\'', '', $return);
+	}
+	
+/**
  * Search for patterns and replace by replaces into texts (string or text's array).
  *
  * @param array $patterns Patterns I'm searching for.
@@ -117,6 +142,10 @@ class FormatoHelper extends AppHelper {
  * Iterations could be expressed:
  * 				Model.{n}.field
  *				Model[.SubModel1.].{n}.field
+ *
+ * Conditionals could be expressed:
+ * 				if(Model.field>18,'older',younger')
+ * 				if(Model.field='Argentina','cordoba','madrid')
  *
  * @return mixed Replaced text String or replaced array elements.
  * @access public.
@@ -158,17 +187,63 @@ class FormatoHelper extends AppHelper {
 			}
 			$patterns = array_keys($patterns);
 		}
-		
+
 		foreach ($patterns as $pattern) {
+
 			$key = null;
 			$iterate = false;
 			
 			if (preg_match('/^([0-9]+)\:(.+)$/', $pattern, $matches)) {
-				$toReplace['#*' . $matches[1] . '*#'] = $matches[2];
+				$toReplace['#*' . $matches[1] . '*#'] = $this->__getTextFromArray(array_shift(explode('|', $matches[2])), $replaces);
 				$toReplace['#*' . $pattern . '*#'] = '';
 				$pattern = $matches[2];
 				$key = $matches[1];
-			} 
+			}
+
+			
+			if (preg_match("/^if\((.*)([!=|<>|==|>=|<=]{2})(.*),(.*),(.*)\)$/", $pattern, $matches) || preg_match("/^if\((.*)([>|<|=]{1})(.*),(.*),(.*)\)$/", $pattern, $matches)) {
+				$condition = false;
+				switch ($matches[2]) {
+					case '==':
+					case '=':
+						if ($this->__getTextFromArray($matches[1], $replaces) == $this->__getTextFromArray($matches[3], $replaces)) {
+							$condition = true;
+						}
+						break;
+					case '>=':
+						if ($this->__getTextFromArray($matches[1], $replaces) >= $this->__getTextFromArray($matches[3], $replaces)) {
+							$condition = true;
+						}
+						break;
+					case '<=':
+						if ($this->__getTextFromArray($matches[1], $replaces) <= $this->__getTextFromArray($matches[3], $replaces)) {
+							$condition = true;
+						}
+						break;
+					case '>':
+						if ($this->__getTextFromArray($matches[1], $replaces) > $this->__getTextFromArray($matches[3], $replaces)) {
+							$condition = true;
+						}
+						break;
+					case '<':
+						if ($this->__getTextFromArray($matches[1], $replaces) < $this->__getTextFromArray($matches[3], $replaces)) {
+							$condition = true;
+						}
+						break;
+					case '!=':
+					case '<>':
+						if ($this->__getTextFromArray($matches[1], $replaces) != $this->__getTextFromArray($matches[3], $replaces)) {
+							$condition = true;
+						}
+						break;
+				}
+
+				if ($condition) {
+					$toReplace['#*' . $matches[0] . '*#'] = $this->__getTextFromArray($matches[4], $replaces);
+				} else {
+					$toReplace['#*' . $matches[0] . '*#'] = $this->__getTextFromArray($matches[5], $replaces);
+				}
+			}
 			
 			/**
 			* Search for specific formats.
@@ -205,43 +280,20 @@ class FormatoHelper extends AppHelper {
 				while ($pos = strpos($text, $key)) {
 					$numericKey = str_replace('{n}', $this->getCount(), $firstTmp[0]);
 					$keyLength = strlen($key);
-					
 					$text = substr($text, 0, $pos) . $numericKey . substr($text, $pos + $keyLength);
-					
-					$tmp = explode('.', $numericKey);
 					$this->setCount($this->getCount() + 1);
-					
-					if ($cantidad === 2 && isset($replaces[$tmp[0]][$tmp[1]])) {
-						$toReplace['#*' . $numericKey . '*#'] = $replaces[$tmp[0]][$tmp[1]];
-					} elseif ($cantidad === 3 && isset($replaces[$tmp[0]][$tmp[1]][$tmp[2]])) {
-						$toReplace['#*' . $numericKey . '*#'] = $replaces[$tmp[0]][$tmp[1]][$tmp[2]];
-					} elseif ($cantidad === 4 && isset($replaces[$tmp[0]][$tmp[1]][$tmp[2]][$tmp[3]])) {
-						$toReplace['#*' . $numericKey . '*#'] = $replaces[$tmp[0]][$tmp[1]][$tmp[2]][$tmp[3]];
-					} elseif ($cantidad === 5 && isset($replaces[$tmp[0]][$tmp[1]][$tmp[2]][$tmp[3]][$tmp[4]])) {
-						$toReplace['#*' . $numericKey . '*#'] = $replaces[$tmp[0]][$tmp[1]][$tmp[2]][$tmp[3]][$tmp[4]];
-					} else {
-						$toReplace['#*' . $numericKey . '*#'] = '';
-					}
+					$toReplace['#*' . $numericKey . '*#'] = $this->__getTextFromArray($numericKey, $replaces);
 				}
 				unset($toReplace['#*' . $key . '*#']);
-			} else {
-				if ($cantidad === 2) {
-					$toReplace['#*' . $key . '*#'] = $replaces[$tmp[0]][$tmp[1]];
-				} elseif ($cantidad === 3) {
-					$toReplace['#*' . $key . '*#'] = $replaces[$tmp[0]][$tmp[1]][$tmp[2]];
-				} elseif ($cantidad === 4) {
-					$toReplace['#*' . $key . '*#'] = $replaces[$tmp[0]][$tmp[1]][$tmp[2]][$tmp[3]];
-				} elseif ($cantidad === 5) {
-					$toReplace['#*' . $key . '*#'] = $replaces[$tmp[0]][$tmp[1]][$tmp[2]][$tmp[3]][$tmp[4]];
-				} else {
-					$toReplace['#*' . $key . '*#'] = '';
-				}
+			} elseif (!isset($toReplace['#*' . $key . '*#'])) {
+				$toReplace['#*' . $key . '*#'] = $this->__getTextFromArray($key, $replaces);
 			}
 			
 			if (!empty($formato)) {
 				$toReplace['#*' . $key . '*#'] = $this->format($toReplace['#*' . $key . '*#'], $formato);
 			}
 		}
+		
 		return str_replace(array_keys($toReplace), $toReplace, $text);
 	}
 

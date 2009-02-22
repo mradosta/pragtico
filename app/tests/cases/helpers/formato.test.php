@@ -48,6 +48,110 @@ class FormatoTest extends CakeTestCase {
 	}
 
 
+/**
+ * Testing text replacements with conditionals.
+ * 
+ * @access public
+ * @return void
+ */
+	function testReplaceWithConditionals() {
+		
+		/**
+		* Mayor than.
+		*/
+		$texto = null;
+		$texto['A'] = 'My name is #*Trabajador.nombre*#';
+		$texto['B'] = 'My age is #*Trabajador.age*#. You are 18 years old.';
+		$texto['C'] = "I am #*if(Trabajador.age<=20,'younger','older')*# than you.";
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'age' => '20'));
+		$result = $this->formato->replace(null, $reemplazos, $texto);
+		$expected = null;
+		$expected['A'] = 'My name is Martin';
+		$expected['B'] = 'My age is 20. You are 18 years old.';
+		$expected['C'] = "I am younger than you.";
+		$this->assertEqual($expected, $result);
+		
+
+		/**
+		* Mayor than.
+		*/
+		$texto = null;
+		$texto['A'] = 'My name is #*Trabajador.nombre*#';
+		$texto['B'] = 'My age is #*Trabajador.age*#. You are 18 years old.';
+		$texto['C'] = "I am #*if(Trabajador.age>20,'older','younger')*# than you.";
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'age' => '20'));
+		$result = $this->formato->replace(null, $reemplazos, $texto);
+		$expected = null;
+		$expected['A'] = 'My name is Martin';
+		$expected['B'] = 'My age is 20. You are 18 years old.';
+		$expected['C'] = "I am younger than you.";
+		$this->assertEqual($expected, $result);
+		
+		
+		/**
+		* False.
+		*/
+		$texto = null;
+		$texto['A'] = 'My name is #*Trabajador.nombre*#';
+		$texto['B'] = 'I work in #*Trabajador.pais*#.';
+		$texto['C'] = "My prefered city is #*if(Trabajador.pais='Argentina','Cordoba','Madrid')*#.";
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Spain', 'ciudad' => 'Cordoba'));
+		$result = $this->formato->replace(null, $reemplazos, $texto);
+		$expected = null;
+		$expected['A'] = 'My name is Martin';
+		$expected['B'] = 'I work in Spain.';
+		$expected['C'] = "My prefered city is Madrid.";
+		$this->assertEqual($expected, $result);
+
+		
+		/**
+		* True.
+		*/
+		$texto = null;
+		$texto['A'] = 'My name is #*Trabajador.nombre*#';
+		$texto['B'] = 'I work in #*Trabajador.pais*#.';
+		$texto['C'] = "My prefered city is #*if(Trabajador.pais='Spain','Madrid',Trabajador.ciudad)*#.";
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Spain', 'ciudad' => 'Cordoba'));
+		$result = $this->formato->replace(null, $reemplazos, $texto);
+		$expected = null;
+		$expected['A'] = 'My name is Martin';
+		$expected['B'] = 'I work in Spain.';
+		$expected['C'] = "My prefered city is Madrid.";
+		$this->assertEqual($expected, $result);
+
+		
+		/**
+		* True.
+		*/
+		$texto = null;
+		$texto['A'] = 'My name is #*Trabajador.nombre*#';
+		$texto['B'] = 'I work in #*Trabajador.pais*#.';
+		$texto['C'] = "My prefered city is #*if(Trabajador.pais='Argentina',Trabajador.ciudad,'')*#.";
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina', 'ciudad' => 'Cordoba'));
+		$result = $this->formato->replace(null, $reemplazos, $texto);
+		$expected = null;
+		$expected['A'] = 'My name is Martin';
+		$expected['B'] = 'I work in Argentina.';
+		$expected['C'] = "My prefered city is Cordoba.";
+		$this->assertEqual($expected, $result);
+
+		
+		/**
+		* False.
+		*/
+		$texto = null;
+		$texto['A'] = 'My name is #*Trabajador.nombre*#';
+		$texto['B'] = 'I work in #*Trabajador.pais*#.';
+		$texto['C'] = "My prefered city is #*if(Trabajador.pais='Argentina','',Trabajador.ciudad)*#.";
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina', 'ciudad' => 'Cordoba'));
+		$result = $this->formato->replace(null, $reemplazos, $texto);
+		$expected = null;
+		$expected['A'] = 'My name is Martin';
+		$expected['B'] = 'I work in Argentina.';
+		$expected['C'] = "My prefered city is .";
+		$this->assertEqual($expected, $result);
+		
+	}
 	
 /**
  * Testing text replacements in Clear Text.
