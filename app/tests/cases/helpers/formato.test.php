@@ -54,10 +54,115 @@ class FormatoTest extends CakeTestCase {
  * @access public
  * @return void
  */
+	function testReplaceWithConditionalsAndIterators() {
+		
+		$texto = null;
+        $texto['A12'] = '#*LiquidacionesDetalle.{n}.concepto_nombre*#';
+        $texto['A13'] = '#*LiquidacionesDetalle.{n}.concepto_nombre*#';
+        $texto['D12'] = '#*LiquidacionesDetalle.{n}.valor_cantidad*#';
+        $texto['D13'] = '#*LiquidacionesDetalle.{n}.valor_cantidad*#';
+        $texto['E12'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Remunerativo',LiquidacionesDetalle.{n}.valor,'')*#";
+        $texto['E13'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Remunerativo',LiquidacionesDetalle.{n}.valor,'')*#";
+        $texto['F12'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Deduccion',LiquidacionesDetalle.{n}.valor,'')*#";
+        $texto['F13'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Deduccion',LiquidacionesDetalle.{n}.valor,'')*#";
+        $texto['G12'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='No Remunerativo',LiquidacionesDetalle.{n}.valor,'')*#";
+        $texto['G13'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='No Remunerativo',LiquidacionesDetalle.{n}.valor,'')*#";
+		$reemplazos = array('LiquidacionesDetalle' => array(
+			array('concepto_tipo' => 'Remunerativo', 'concepto_nombre' => 'Basico', 'valor' => '700.60', 'valor_cantidad' => '0.00'),
+			array('concepto_tipo' => 'Remunerativo', 'concepto_nombre' => 'Antiguedad', 'valor' => '0.00', 'valor_cantidad' => '0.00')));
+		$this->formato->setCount(0);
+		$result = $this->formato->replace(null, $reemplazos, $texto);
+		$expected = null;
+		$expected['A12'] = 'Basico';
+		$expected['D12'] = '0.00';
+		$expected['E12'] = '700.60';
+		$expected['F12'] = '';
+		$expected['G12'] = '';
+		$expected['A13'] = 'Antiguedad';
+		$expected['D13'] = '0.00';
+		$expected['E13'] = '0.00';
+		$expected['F13'] = '';
+		$expected['G13'] = '';
+		$this->assertEqual($expected, $result);
+
+		
+		$texto = null;
+		$texto['A1'] = 'My name is #*Trabajador.{n}.nombre*#';
+		$texto['C1'] = 'My last name is #*Trabajador.{n}.apellido*#.';
+		$texto['A2'] = 'My name is #*Trabajador.{n}.nombre*#';
+		$texto['C2'] = 'My last name is #*Trabajador.{n}.apellido*#.';
+		$reemplazos = array('Trabajador' => array(array('nombre' => 'Martin', 'apellido' => 'Radosta'), array('nombre' => 'Juan', 'apellido' => 'Perez')));
+		$this->formato->setCount(0);
+		$result = $this->formato->replace(null, $reemplazos, $texto);
+		$expected = null;
+		$expected['A1'] = 'My name is Martin';
+		$expected['C1'] = 'My last name is Radosta.';
+		$expected['A2'] = 'My name is Juan';
+		$expected['C2'] = 'My last name is Perez.';
+		$this->assertEqual($expected, $result);
+		
+
+		$texto = null;
+		$texto['A1'] = 'My name is #*Trabajador.{n}.nombre*#';
+		$texto['B1'] = 'My last name is #*Trabajador.{n}.apellido*#.';
+		$texto['A2'] = 'My name is #*Trabajador.{n}.nombre*#';
+		$texto['B2'] = 'My last name is #*Trabajador.{n}.apellido*#.';
+		$reemplazos = array('Trabajador' => array(array('nombre' => 'Martin', 'apellido' => 'Radosta'), array('nombre' => 'Juan', 'apellido' => 'Perez')));
+		$this->formato->setCount(0);
+		$result = $this->formato->replace(null, $reemplazos, $texto);
+		$expected = null;
+		$expected['A1'] = 'My name is Martin';
+		$expected['B1'] = 'My last name is Radosta.';
+		$expected['A2'] = 'My name is Juan';
+		$expected['B2'] = 'My last name is Perez.';
+		$this->assertEqual($expected, $result);
+		
+		
+		/**
+		* Different.
+		*/
+		$texto = "My first address was #*if(TrabajadoresDireccion.{n}.pais='Spain','',TrabajadoresDireccion.{n}.calle)*#. My second address was #*TrabajadoresDireccion.{n}.calle*#";
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin'), 'TrabajadoresDireccion' => array(array('pais' => 'Argentina', 'calle' => 'O. Mercadillo'), array('pais' => 'Argentina', 'calle' => 'O. Oro')));
+		$this->formato->setCount(0);
+		$result = $this->formato->replace(null, $reemplazos, $texto);
+		$expected = 'My first address was O. Mercadillo. My second address was O. Oro';
+		$this->assertEqual($expected, $result);
+
+		
+		/**
+		* Equal.
+		*/
+		$texto = "My first address was #*if(TrabajadoresDireccion.{n}.pais='Spain',TrabajadoresDireccion.{n}.calle,'')*#. My second address was #*TrabajadoresDireccion.{n}.calle*#";
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin'), 'TrabajadoresDireccion' => array(array('pais' => 'Spain', 'calle' => 'O. Mercadillo'), array('pais' => 'Argentina', 'calle' => 'O. Oro')));
+		$this->formato->setCount(0);
+		$result = $this->formato->replace(null, $reemplazos, $texto);
+		$expected = 'My first address was O. Mercadillo. My second address was O. Oro';
+		$this->assertEqual($expected, $result);
+		
+		
+		$texto = null;
+		$texto['A'] = 'My name is #*Trabajador.nombre*#';
+		$texto['B'] = 'My age is #*Trabajador.age*#. You are 18 years old.';
+		$texto['C'] = "I am #*if(Trabajador.age<=20,'younger','older')*# than you.";
+		$reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'age' => '20'));
+		$result = $this->formato->replace(null, $reemplazos, $texto);
+		$expected = null;
+		$expected['A'] = 'My name is Martin';
+		$expected['B'] = 'My age is 20. You are 18 years old.';
+		$expected['C'] = "I am younger than you.";
+		$this->assertEqual($expected, $result);
+	}	
+
+/**
+ * Testing text replacements with conditionals.
+ * 
+ * @access public
+ * @return void
+ */
 	function testReplaceWithConditionals() {
 		
 		/**
-		* Mayor than.
+		* Minor or equal than.
 		*/
 		$texto = null;
 		$texto['A'] = 'My name is #*Trabajador.nombre*#';
@@ -224,6 +329,17 @@ class FormatoTest extends CakeTestCase {
  * @return void
  */
 	function testReplaceInClearText() {
+		
+		/**
+		* Add format with options on fake field.
+		*/
+        $texto = 'My name is #*Trabajador.nombre*#, I work in #*Trabajador.pais*#. My first working day was #*Bar.foo|date:default=>true;format=>d/m/Y*#';
+        $patrones = null;
+        $reemplazos = array('Trabajador' => array('nombre' => 'Martin', 'pais' => 'Argentina', 'ingreso' => ''));
+        $result = $this->formato->replace($patrones, $reemplazos, $texto);
+        $expected = 'My name is Martin, I work in Argentina. My first working day was ' . date('d/m/Y');
+        $this->assertEqual($expected, $result);
+
 		
 		/**
 		* Mix of numeric patterns and common patterns within the text.

@@ -104,6 +104,11 @@ class FormatoHelper extends AppHelper {
  * @access private.
  */
 	function __getTextFromArray($key, $arrayData) {
+
+		if (strpos($key, '{n}') !== false) {
+			$key = str_replace('{n}', $this->getCount(), $key);
+		}
+
 		$tmp = explode('.', $key);
 		$cantidad = count($tmp);
 		if ($cantidad === 2 && isset($arrayData[$tmp[0]][$tmp[1]])) {
@@ -150,8 +155,8 @@ class FormatoHelper extends AppHelper {
  * @return mixed Replaced text String or replaced array elements.
  * @access public.
  */
-	function replace($patterns = null, $replaces = null, $texts = null) {
-		
+	function replace($patterns = null, $replaces = null, $texts = null, $nextRecord = true) {
+
 		if (empty($texts)) {
 			return false;
 		}
@@ -159,8 +164,40 @@ class FormatoHelper extends AppHelper {
 		if (is_string($texts)) {
 			$text = $texts;
 		} else {
+
 			foreach ($texts as $key => $text) {
-				$return[$key] = $this->replace($patterns, $replaces, $text);
+				if (preg_match('/([A-Z]+)([0-9]+)/', $key, $colum)) {
+					$tmps[$colum[1]][$colum[2]] = $text;
+				}
+			}
+
+			if (!empty($tmps)) {
+				$secondTmp = $tmps;
+				$numbers = array_keys(array_pop($tmps));
+				for ($i = 0; $i < count($numbers); $i++) {
+					foreach ($secondTmp as $index => $value) {
+						if (isset($value[$numbers[$i]])) {
+							$ordered[$index . $numbers[$i]] = $value[$numbers[$i]];
+							unset($texts[$index . $numbers[$i]]);
+						}
+					}
+				}
+				$texts = array_merge($texts, $ordered);
+			}
+			
+			foreach ($texts as $key => $text) {
+				$nextRecord = true;
+				if (preg_match('/([A-Z]+)([0-9]+)/', $key, $colum)) {
+					$letter = $colum[1];
+					for ($letterIncrement = 0; $letterIncrement <= 26; $letterIncrement++) {
+						$letter++;
+						if (isset($texts[$letter . $colum[2]])) {
+							$nextRecord = false;
+							break;
+						}
+					}
+				}
+				$return[$key] = $this->replace($patterns, $replaces, $text, $nextRecord);
 			}
 			return $return;
 		}
@@ -187,11 +224,17 @@ class FormatoHelper extends AppHelper {
 			}
 			$patterns = array_keys($patterns);
 		}
+		$replaces = array_merge(array('Bar' => array('foo' => '')), $replaces);
+		
 
 		foreach ($patterns as $pattern) {
 
 			$key = null;
 			$iterate = false;
+
+			if (!isset($skip)) {
+				$skip = 0;
+			}
 			
 			if (preg_match('/^([0-9]+)\:(.+)$/', $pattern, $matches)) {
 				$toReplace['#*' . $matches[1] . '*#'] = $this->__getTextFromArray(array_shift(explode('|', $matches[2])), $replaces);
@@ -238,12 +281,25 @@ class FormatoHelper extends AppHelper {
 						break;
 				}
 
+				
 				if ($condition) {
 					$toReplace['#*' . $matches[0] . '*#'] = $this->__getTextFromArray($matches[4], $replaces);
 				} else {
 					$toReplace['#*' . $matches[0] . '*#'] = $this->__getTextFromArray($matches[5], $replaces);
 				}
+				if (strpos($matches[0], '{n}') !== false) {
+					if ($nextRecord === true) {
+						$this->setCount($this->getCount() + 1);
+					}
+					foreach ($matches as $match) {
+						if (strpos($match, '{n}') !== false) {
+							$skip++;
+						}
+					}
+				}
 			}
+			$skip--;
+			
 			
 			/**
 			* Search for specific formats.
@@ -274,26 +330,31 @@ class FormatoHelper extends AppHelper {
 			
 			$tmp = explode('.', $firstTmp[0]);
 			$cantidad = count($tmp);
-			
-			if (strpos($pattern, '{n}') !== false) {
+
+			if (strpos($pattern, '{n}') !== false && $skip <= 0) {
 				$l = strlen($text);
 				while ($pos = strpos($text, $key)) {
 					$numericKey = str_replace('{n}', $this->getCount(), $firstTmp[0]);
 					$keyLength = strlen($key);
 					$text = substr($text, 0, $pos) . $numericKey . substr($text, $pos + $keyLength);
-					$this->setCount($this->getCount() + 1);
+					if ($nextRecord === true) {
+						$this->setCount($this->getCount() + 1);
+					}
 					$toReplace['#*' . $numericKey . '*#'] = $this->__getTextFromArray($numericKey, $replaces);
+					if ($numericKey === $toReplace['#*' . $numericKey . '*#']) {
+						$toReplace['#*' . $numericKey . '*#'] = '';
+					}
 				}
 				unset($toReplace['#*' . $key . '*#']);
 			} elseif (!isset($toReplace['#*' . $key . '*#'])) {
 				$toReplace['#*' . $key . '*#'] = $this->__getTextFromArray($key, $replaces);
 			}
-			
+
 			if (!empty($formato)) {
 				$toReplace['#*' . $key . '*#'] = $this->format($toReplace['#*' . $key . '*#'], $formato);
 			}
 		}
-		
+
 		return str_replace(array_keys($toReplace), $toReplace, $text);
 	}
 
