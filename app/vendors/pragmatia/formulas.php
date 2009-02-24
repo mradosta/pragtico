@@ -53,7 +53,9 @@ class Formulas {
  */
     function __construct() {
 		/** PHPExcel_Calculation */
-		App::import('Vendor', 'Calculation', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'Calculation.php');
+		if (!class_exists('PHPExcel_Calculation')) {
+			App::import('Vendor', 'Calculation', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'Calculation.php');
+		}
 		$this->__objPHPExcel = new PHPExcel();
 	}
 
