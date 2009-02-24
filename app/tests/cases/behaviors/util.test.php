@@ -19,9 +19,9 @@
  * @package       cake.tests
  * @subpackage    cake.tests.cases.libs.model.behaviors
  * @since         CakePHP(tm) v 1.2.0.5669
- * @version       $Revision: 7821 $
- * @modifiedby    $LastChangedBy: renan.saddam $
- * @lastmodified  $Date: 2008-11-03 21:58:44 -0200 (lun, 03 nov 2008) $
+ * @version       $Revision$
+ * @modifiedby    $LastChangedBy$
+ * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 
