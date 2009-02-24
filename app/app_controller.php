@@ -252,7 +252,17 @@ class AppController extends Controller {
 	}
 
 
-    function save() {
+/**
+ * Saves data.
+ *
+ * @param array $data. When not empty, $data will be saved. Otherwise, $this->data will be saved.
+ */		
+    function save($data = null) {
+		
+		if (!empty($data)) {
+			$this->data = $data;
+		}
+		
         if (isset($this->data['Form']['volverAInsertar'])) {
             $this->action = 'add';
             $back = 1;
