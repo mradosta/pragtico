@@ -580,14 +580,23 @@ class FormatoHelper extends AppHelper {
 					} elseif (substr($matches[3], 0, 1) == '2') {
 						$before = 'Segunda quincena de ';
 					}
-					$mes = $matches[2];
+					$mes = $this->__getMonths((int)$matches[2]);
 					$ano = $matches[1];
+				} elseif (preg_match('/(\d\d\d\d)(\d)S/', strtoupper($valor), $matches)) {
+					$ano = $matches[1];
+					$mes = '';
+					if ($matches[2] == 1) {
+						$before = $this->__getMonths(1) . ' a ' . $this->__getMonths(6);
+					} else {
+						$before = $this->__getMonths(7) . ' a ' . $this->__getMonths(12);
+					}
 				} elseif (strlen($valor) === 6 || strlen($valor) === 5) {
+					
 					$options = array_merge(array('case' => 'lower'), $options);
 					$before = '';
 					$ano = substr($valor, 0, 4);
+					$mes = $this->__getMonths((int)substr($valor, 4, 2));
 				}
-				$mes = $this->__getMonths((int)substr($valor, 4, 2));
 				$return = $before . $mes . ' de ' . $ano;
 				$return = $this->__case($return, $options['case']);
 				break;
