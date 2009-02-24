@@ -37,7 +37,10 @@ class Banco extends AppModel {
         'codigo' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY, 
-				'message'	=> 'Debe especificar el codigo del banco.')
+				'message'	=> 'Debe especificar el codigo del banco.'),
+			array(
+				'rule'		=> VALID_NUMBER, 
+				'message'	=> 'El codigo del banco debe ser un numerico.')
         )
 	);
 

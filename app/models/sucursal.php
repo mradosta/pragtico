@@ -30,7 +30,7 @@ class Sucursal extends AppModel {
 				'message'	=> 'Debe especificar el codigo de la sucursal del banco.'),
 			array(
 				'rule'		=> VALID_NUMBER, 
-				'message'	=> 'El codigo de la sucursal del banco debe ser numerico.')
+				'message'	=> 'El codigo de la sucursal del banco debe ser un numerico.')
 	    )
 	);
 
