@@ -347,13 +347,33 @@ class UtilBehavior extends ContainableBehavior {
  * @return string Un string con el valor formateado de acuerdo a lo especificado.
  * @access public
  */
-	function format(&$model, $valor, $options = array()) {
+	function format(&$Model, $valor, $options = array()) {
 		App::import("Helper", array("Number", "Time", "Formato"));
 		$formato = new FormatoHelper();
 		$formato->Time = new TimeHelper();
 		$formato->Number = new NumberHelper();
 		return $formato->format($valor, $options);
 	}
+
+
+/**
+ * Gets patterns out of text.
+ *
+ * @param string $text The text from where to get the patterns.
+ * @param boolean $replacedPatterns True if should return replaced patterns, 
+ *									False if should return exact pattern match.
+ * @param string $patternStart The begining of the pattern. Default: #*
+ * @param string $patternEnd The ending of the pattern. Default: *#
+ *
+ * @return mixed Array with matched patterns. False in other case.
+ * @access public.
+ */
+	function getPatterns(&$Model, $text = '', $replacedPatterns = true, $patternStart = '#*', $patternEnd = '*#') {
+		App::import('Helper', array('Formato'));
+		$formato = new FormatoHelper();
+		return $formato->getPatterns($text, $replacedPatterns, $patternStart, $patternEnd);
+	}
+
 
 /**
  * A partir de un array de Condiciones propio (con campos lov de selecciona multiple, por ejemplo), genero un array
