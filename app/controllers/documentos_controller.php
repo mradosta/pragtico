@@ -93,7 +93,7 @@ class DocumentosController extends AppController {
 /**
  * Quita los campos propios del framework, ya que el usuario no tiene porque verlos, lo confunde.
  */
-	function __removerFrameworkData($array) {
+	function __removerFrameworkData_deprecated($array) {
 		if (!is_array($array)) {
 			$array;
 		}
