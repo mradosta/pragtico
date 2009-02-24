@@ -13,7 +13,7 @@ if ($this->action === 'add') {
 	$appForm->addCrumb(__('Edit', true));
 	$count = count($this->data);
 	if($count === 1) {
-		$appForm->addCrumb("<h5>" . $this->data[0][Inflector::classify($this->params['controller'])]['bread_crumb_text'] . "</h5>");
+		$appForm->addCrumb('<h5>' . $this->data[0][Inflector::classify($this->params['controller'])]['bread_crumb_text'] . '</h5>');
 	} else {
 		$appForm->addCrumb(sprintf(__('%s Records', true), $count));
 	}
@@ -45,17 +45,17 @@ if(!empty($bloqueAdicional)) {
 /**
  * Pongo las acciones.
  */
-$bloques[] = $this->element("add/acciones", array("accionesExtra"=>$accionesExtra));
+$bloques[] = $this->element('add/acciones', array('accionesExtra' => $accionesExtra));
 
 
 /**
  * Pongo alguna variable especifica del Form que me llega desde el controller.
  */
-if(!empty($variablesForm)) {
-	foreach($variablesForm as $variable=>$valor) {
-		$bloques[] = $appForm->input("Form." . $variable, 
-										array(	"type"	=> "hidden", 
-												"value"	=> $valor));
+if (!empty($variablesForm)) {
+	foreach($variablesForm as $variable => $valor) {
+		$bloques[] = $appForm->input('Form.' . $variable,
+										array(	'type'	=> 'hidden',
+												'value'	=> $valor));
 	}
 }
 
@@ -63,15 +63,14 @@ if(!empty($variablesForm)) {
 /**
  * Creo el formulario y pongo todo dentro.
  */
-if(!isset($opcionesForm['action'])) {
-	$opcionesForm['action'] = "save";
+if (!isset($opcionesForm['action'])) {
+	$opcionesForm['action'] = 'save';
 }
-$opcionesForm['action'] = "save";
 $form = $appForm->form($bloques, $opcionesForm);
 
 
 /**
 * Pongo todo dentro de un div (add) y muestro el resultado.
 */
-echo $appForm->bloque($form, array('div' => array("class"=>"add")));
+echo $appForm->bloque($form, array('div' => array('class' => 'add')));
 ?>
