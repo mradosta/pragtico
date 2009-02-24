@@ -34,5 +34,6 @@ svn propset svn:keywords "Revision LastChangedBy Date" ../app/controllers/*.php
 svn propset svn:keywords "Revision LastChangedBy Date" ../app/controllers/components/*.php
 svn propset svn:keywords "Revision LastChangedBy Date" ../app/models/*.php
 svn propset svn:keywords "Revision LastChangedBy Date" ../app/models/behaviors/*.php
-find ../app/views/ -type f -name *.ctp|xargs svn propset svn:keywords "Revision LastChangedBy Date"
+find ../app/views/elements/ -type f -name *.php|xargs svn propset svn:keywords "Revision LastChangedBy Date"
+find ../app/tests/ -type f -name *.php|xargs svn propset svn:keywords "Revision LastChangedBy Date"
 svn propset svn:keywords "Revision LastChangedBy Date" ./plantillas/*
