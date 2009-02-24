@@ -108,33 +108,24 @@ class AppFormHelper extends FormHelper {
 		/**
 		* Genero la leyenda.
 		*/
-		$legend = "";
-		if ($this->action === "edit") {
+		$legend = '';
+		if ($this->action === 'edit') {
 			$legend = __('Edit', true) . ' ';
-		}
-		elseif ($this->action === "add") {
+		} elseif ($this->action === 'add') {
 			$legend = __('New', true) . ' ';
-		}
-		elseif ($this->action === "index") {
+		} elseif ($this->action === 'index') {
 			$legend = __('Search', true) . ' ';
-			//$legend = $this->tag('a', $legend, array('onclick' => 'jQuery(this).parent().parent().parent().parent().hide()'));
-			//$legend = $this->tag('a', $legend, array('onclick' => 'jQuery(".menu").hide()'));
 		}
 		if (!empty($opcionesFs['fieldset']['legend'])) {
-			if ($opcionesFs['fieldset']['legend'][0] !== "!") {
-				$opcionesFs['fieldset']['legend'] = $legend . " " . $opcionesFs['fieldset']['legend'];
-			}
-			else {
+			if ($opcionesFs['fieldset']['legend'][0] !== '!') {
+				$opcionesFs['fieldset']['legend'] = $legend . ' ' . $opcionesFs['fieldset']['legend'];
+			} else {
 				$opcionesFs['fieldset']['legend'] = substr($opcionesFs['fieldset']['legend'], 1);
 			}
-		}
-		else {
-			$opcionesFs['fieldset']['legend'] = $legend . " " . $model;
+		} else {
+			$opcionesFs['fieldset']['legend'] = $legend . ' ' . $model;
 		}
 
-		//if ($this->action === "index") {
-		//	$opcionesFs['fieldset']['legend'] .= $this->tag('span', 'xx', array('class' => 'derecha'));
-		//}
 
 		/**
 		* Me aseguro de trabajar siempre con un array. Si no lo es, lo convierto en uno.
@@ -151,16 +142,15 @@ class AppFormHelper extends FormHelper {
 				$fieldset['opciones'] = array();
 			}
 			
-			if (empty($fieldset['opciones']['fieldset']['class']) || strpos("master", $fieldset['opciones']['fieldset']['class']) !== false) {
+			if (empty($fieldset['opciones']['fieldset']['class']) || strpos('master', $fieldset['opciones']['fieldset']['class']) !== false) {
 				if (empty($fieldset['opciones']['fieldset']['class'])) {
-					$fieldset['opciones']['fieldset']['class'] = "master";
+					$fieldset['opciones']['fieldset']['class'] = 'master';
 				}
 				$fieldsetsMaster[] = $fieldset;
-				$classes[] = "master";
-			}
-			else {
+				$classes[] = 'master';
+			} else {
 				$fieldsetsDetail[] = $fieldset;
-				$classes[] = "detail";
+				$classes[] = 'detail';
 			}
 		}
 
@@ -172,35 +162,32 @@ class AppFormHelper extends FormHelper {
 				$salidaMaster = null;
 				foreach ($fieldset['campos'] as $campo=>$opcionesCampo) {
 
-					if (preg_match("/^Condicion./", $campo)) {
+					if (substr($campo, 0, 9) === 'Condicion') {
 						$tmpName = $campo;
-						$tmpName = preg_replace("/^Condicion./", "", $tmpName);
-						list($model, $field) = explode("-", $tmpName);
+						$tmpName = preg_replace('/^Condicion./', '', $tmpName);
+						list($model, $field) = explode('-', $tmpName);
 
-						if (substr($field, strlen($field) - 7) == "__desde") {
-							$field = str_replace("__desde", "", $field);
+						if (substr($field, strlen($field) - 7) === '__desde') {
+							$field = str_replace('__desde', '', $field);
+						} elseif (substr($field, strlen($field) - 7) === '__hasta') {
+							$field = str_replace('__hasta', '', $field);
 						}
-						elseif (substr($field, strlen($field) - 7) == "__hasta") {
-							$field = str_replace("__hasta", "", $field);
-						}
-					}
-					else {
-						list($model, $field) = explode(".", $campo);
+					} else {
+						list($model, $field) = explode('.', $campo);
 					}
 
-					if (isset($v[$model][$field])) {
+					if (isset($v[$model][$field]) && !isset($opcionesCampo['value'])) {
 						$opcionesCampo['value'] = $v[$model][$field];
 					}
 
 					if (!empty($this->validationErrors[$model][$k][$field]) || !empty($this->validationErrors[$model][$k][$model][$field])) {
 						if (empty($opcionesCampo['after'])) {
-							$opcionesCampo['after'] = "";
+							$opcionesCampo['after'] = '';
 						}
 						if (!empty($this->validationErrors[$model][$k][$field])) {
-							$opcionesCampo['after'] .= $this->Html->tag("div", $this->validationErrors[$model][$k][$field], array("class" => "error-message"));
-						}
-						else {
-							$opcionesCampo['after'] .= $this->Html->tag("div", $this->validationErrors[$model][$k][$model][$field], array("class" => "error-message"));
+							$opcionesCampo['after'] .= $this->tag('div', $this->validationErrors[$model][$k][$field], array('class' => 'error-message'));
+						} else {
+							$opcionesCampo['after'] .= $this->tag('div', $this->validationErrors[$model][$k][$model][$field], array("class" => "error-message"));
 						}
 					}
 					/**
@@ -246,13 +233,12 @@ class AppFormHelper extends FormHelper {
 										$opcionesCampoDetail['after'] .= $this->Html->tag("div", $this->validationErrors[$model][$k][$modelDetail][$kDetail][$fieldDetail], array("class" => "error-message"));
 									}
 
-									if (isset($vDetail[$fieldDetail])) {
+									if (isset($vDetail[$fieldDetail]) && !isset($opcionesCampoDetail['value'])) {
 										$opcionesCampoDetail['value'] = $vDetail[$fieldDetail];
 									}
 									if ($cantidadRegistros > 1) {
 										$opcionesCampoDetail['name'] = "data[" . $k . "][" . $modelDetail . "][" . $kDetail . "][" . $fieldDetail . "]";
-									}
-									else {
+									} else {
 										$opcionesCampoDetail['name'] = "data[" . $modelDetail . "][" . $kDetail . "][" . $fieldDetail . "]";
 									}
 									$salidaDetail .= $this->input($campo, $opcionesCampoDetail);
