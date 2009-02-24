@@ -138,7 +138,9 @@ class AppModel extends Model {
             if ($sameModel === true) {
                 if ($this->saveAll($this->data[$this->name], $options)) {
                     $c += count($this->data);
-                }
+                } else {
+					$validationErrors[$k] = $this->validationErrors;
+				}
                 continue;
             }
 
@@ -213,7 +215,7 @@ class AppModel extends Model {
             return true;
         } else {
             //$this->savedDataLog['errors'] = $this->__getErrors();
-            $this->validationErrors = $validationErrors;
+			$this->validationErrors = $validationErrors;
             return false;
         }
     }
