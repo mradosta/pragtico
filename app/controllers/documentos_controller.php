@@ -70,7 +70,8 @@ class DocumentosController extends AppController {
 				$this->render('/elements/descargar', 'descargar');
 			}
 		} else {
-			$this->Session->setFlash(__('No document found, Verify', true), 'error');
+			$this->Session->setFlash(__('No document found. Please verify', true), 'error');
+			$this->History->goBack();
 		}
 	}
 

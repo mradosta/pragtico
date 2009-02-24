@@ -34,6 +34,7 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Documento', 'field' => 'id', 'valor' => $v['Documento']['id'], 'write' => $v['Documento']['write'], 'delete' => $v['Documento']['delete']);
 	$fila[] = array("tipo"=>"accion", "valor"=>$appForm->link($appForm->image('archivo.gif', array('alt' => "Descargar")), "descargar/" . $v['Documento']['id']));	
 	$fila[] = array('model' => 'Documento', 'field' => 'nombre', 'valor' => $v['Documento']['nombre']);
+	$fila[] = array('model' => 'Documento', 'field' => 'model', 'valor' => $v['Documento']['model']);
 	$fila[] = array('model' => 'Documento', 'field' => 'observacion', 'valor' => $v['Documento']['observacion']);
 	$cuerpo[] = $fila;
 }
