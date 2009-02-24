@@ -257,23 +257,22 @@ class AppController extends Controller {
  *
  * @param array $data. When not empty, $data will be saved. Otherwise, $this->data will be saved.
  */		
-    function save($data = null) {
+    function save($data = array()) {
 		
-		if (!empty($data)) {
+		if (!empty($data) && is_array($data)) {
 			$this->data = $data;
 		}
 		
+		$back = 1;
         if (isset($this->data['Form']['volverAInsertar'])) {
             $this->action = 'add';
-            $back = 1;
             if (!empty($this->data['Form']['volverAInsertar'])) {
-                $back = 2;
+                $back = 0;
             }
         } else {
             $this->action = 'edit';
-            $back = 2;
         }
-        
+
         if (!empty($this->data['Form']['accion'])) {
             if ($this->data['Form']['accion'] === 'duplicar') {
                 unset($this->data[$this->modelClass][$this->{$this->modelClass}->primaryKey]);

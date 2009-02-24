@@ -19,12 +19,6 @@
  * @lastmodified    $Date$
  * @author          Martin Radosta <mradosta@pragmatia.com>
  */
-
- /**
- * Tamanio maximo del array que contendra el historial de navegacion.
- */
-define('MAX_HISTORY', 10);
-
 /**
  * La clase encapsula la logica necesaria para resolver la navegacion.
  *
@@ -35,12 +29,12 @@ class HistoryComponent extends Object {
     
 	
 /**
- * Guarda las paginas por las que fue pasando.
+ * Actions not to be saved.
  *
  * @var array
  * @access private
  */
-	private $__historia = array();
+	private $__blackListedActions = array('listable', 'save');
 	
 	
 /**
@@ -49,7 +43,7 @@ class HistoryComponent extends Object {
  * @var boolean
  * @access private
  */
-    var $__started= false;
+    var $__started = false;
 	
 	
 /**
@@ -69,10 +63,11 @@ class HistoryComponent extends Object {
  * @access public
  */
     function startup(&$controller) {
-    
+
         /**
         * Prevengo que entre mas de una vez.
         */
+		
         if (!$this->__started) {
             $this->__started = true;
             $this->controller = $controller;
@@ -82,54 +77,33 @@ class HistoryComponent extends Object {
 
 	
 /**
- * Vuelve a una pagina visitada anterior.
+ * Goes to a previews visited page.
  *
- * @param integer $pos Cuantas paginas atras quiero volverme.
+ * @param integer $pos Position in history where to go back.
  * @return void
  * @access public
  */
 	
     function goBack($pos = 1) {
-        if (is_numeric($pos)) {
-	        $history = array();
-	        foreach ($this->__historia as $k=>$v) {
-	        	if ($v !== "/fake/url/do_not_add") {
-	        		$history[] = $v;
-	        	}
-	        }
-	        $this->__historia = $history;
-	        $pos = count($this->__historia) - $pos;
-			//d($pos);
-	        
-        	if (isset($this->__historia[$pos])){
-				/*
-				file_put_contents("/tmp/historia.txt", "\n\n=========================", FILE_APPEND);
-				file_put_contents("/tmp/historia.txt", "\nBACK A: " . $this->__historia[$pos] . "(" . $pos . ")\n\n", FILE_APPEND);
-				*/
-        		$this->controller->redirect($this->__historia[$pos], true);
-        	}
-        }
+	    $history = array_reverse($this->controller->Session->read('__history'));
+		
+		/*
+		$this->log('=================');
+		$this->log('Me voy a:');
+		$this->log(Router::url($history[$pos]));
+		$this->log('=================');
+		*/
+        $this->controller->redirect($history[$pos], true);
     }
 
-	
-/**
- * Me muesta la historia guardada.
- *
- * @return void
- * @access public
- */
-    function show() {
-        return $this->__historia;
-    }
 
-	
 /**
  * Agrega una url al stack del history, que nunca se usara. 
  *
  * @return void
  * @access public
  */
-    function addFakeUrl() {
+    function addFakeUrl_deprecated() {
 		if (count($this->controller->Session->read('historia')) == MAX_HISTORY) {
 			array_shift($this->__historia);
 		}
@@ -139,55 +113,47 @@ class HistoryComponent extends Object {
 
     
 /**
- * Agrega una url al stack del history,
+ * Adds current url to history stack,
  *
  * @return void
- * @access public
+ * @access private
  */
 	function _addUrl() {
-		$url = $this->controller->referer();
-    	if (empty($url)) {
-    		return;
-    	}
-		
-		$this->__historia = $this->controller->Session->read('historia');
-		$cantidad = count($this->__historia);
-		
-		/**
-		* Cuando abro una lov o un desglose ajax, o cancelo no guardo esto en el history.
-		*/
-		if (    (!empty($this->controller->data['Form']['accion']) && $this->controller->data['Form']['accion'] === "cancelar")
-			|| (!empty($this->controller->params['named']['layout']) && $this->controller->params['named']['layout'] === "lov")
-			|| (!empty($this->controller->data['Formulario']['layout']) && $this->controller->data['Formulario']['layout'] === "lov")
-			|| (!empty($this->controller->data['Formulario']['layout']) && $this->controller->data['Formulario']['layout'] === "lov")
-			|| (in_array($this->controller->action, array('save', 'listable', 'descargar')))
-			|| (!empty($this->controller->params['isAjax']))) {
-			return;
-		}
 
-		/**
-		* Prevengo que se inserte en la history dos veces el mismo.
-		* Por ejemplo, cuando un validate no valida, etc.
-		*/
-		if ($url != $this->__historia[$cantidad - 1]) {
-			if ($cantidad == MAX_HISTORY) {
-				array_shift($this->__historia);
-			}
-			$this->__historia[] = $url;
-		}
-		else {
+		if (in_array($this->controller->action, $this->__blackListedActions)
+			|| $this->controller->params['isAjax'] === true) {
 			return;
 		}
 		
-		/*
-		file_put_contents("/tmp/historia.txt", "\n\n=========================", FILE_APPEND);
-		foreach ($this->__historia as $pos => $v) {
-			file_put_contents("/tmp/historia.txt", "\nESTADO DE HISTORY: " . $this->__historia[$pos] . "(" . $pos . ")", FILE_APPEND);
+		$url['controller'] = strtolower($this->controller->name);
+		$url['action'] = $this->controller->action;
+		$url = array_merge($url, $this->controller->params['pass']);
+		$url = array_merge($url, $this->controller->params['named']);
+
+		$history = $this->controller->Session->read('__history');
+		if (empty($history)) {
+			$this->controller->Session->write('__history', array($url));
+		} else {
+			
+			$count = count($history);
+			$history[$count] = $url;
+			
+			if (serialize($history[$count - 1]) !== serialize($url)) {
+				$this->controller->Session->write('__history', array_slice($history, -3));
+
+				/*
+				$this->log('=================');
+				$this->log('Agrego a __history:');
+				$this->log($url);
+				$this->log('=================');
+				
+				$this->log('=================');
+				$this->log('__history lo guardo asi:');
+				$this->log(array_reverse($history));
+				$this->log('=================');
+    */
+			}
 		}
-		file_put_contents("/tmp/historia.txt", "\n\n", FILE_APPEND);
-		*/
-		
-		$this->controller->Session->write('historia', $this->__historia);
     }
 
 }
