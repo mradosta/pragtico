@@ -20,37 +20,16 @@
 * Especifico los campos de ingreso de datos.
 */
 $campos = null;
-$campos['Documento.id'] = array("label"=>"Documento", "options"=>$documentos, "verificarRequerido"=>"forzado");
-if(!empty($model) && !empty($id)) {
-	$campos['Extra.model'] = array("type"=>"hidden", "value"=>$model);
-	$campos['Extra.id'] = array("type"=>"hidden", "value"=>$id);
-}
-if(!empty($contain)) {
-	$campos['Extra.contain'] = array("type"=>"hidden", "value"=>$contain);
-}
+$campos['Documento.id'] = array('type' => 'radio', 'options' => $documentos, 'label' => __('Document', true));
+$campos['Model.id'] = array('type' => 'hidden', 'value' => $id);
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "Generar Documento", 'imagen' => 'documentos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('imagen' => 'bancos.gif')));
 
-/**
-* Pinto el element add con todos los fieldsets que he definido.
-*/
+//$botonesExtra[] = $appForm->button(__('Cancel', true), array("class"=>"cancelar", "onclick"=>"document.getElementById('accion').value='cancelar';form.submit();"));
+$accionesExtra[] = 'cancelar';
+$accionesExtra[] = $appForm->submit('Generar', array('title'=>'Genera una Pre-liquidacion', 'onclick'=>'document.getElementById("accion").value="generar"'));
+//echo $this->element('index/index', array('botonesExtra'=>array('opciones' => array('botones'=>$botonesExtra)), 'accionesExtra'=>$accionesExtra, 'condiciones'=>$fieldset, 'cuerpo' => $cuerpo, 'opcionesTabla'=>$opcionesTabla, 'opcionesForm'=>array('action'=>'preliquidar')));
 
-$bloqueAdicional = $appForm->image('detalles.gif', array("id"=>"mostrar_data", "style"=>"cursor:pointer;", 'alt' => "Mostrar los posibles campos que se pueden utilizar"));
-$bloqueAdicional .= $appForm->tag("span", " Mostrar los posibles campos que se pueden utilizar");
-$bloqueAdicional .= $appForm->tag("div", $data, array('class' => 'unica', "id"=>"data", "style"=>"display:none;"));
-
-$accionesExtra['opciones'] = array("acciones"=>array("cancelar", $appForm->button("Generar", array("class"=>"boton", "onclick"=>"form.submit();"))));
-echo $this->element('add/add', array("accionesExtra"=>$accionesExtra, "bloqueAdicional"=>$bloqueAdicional, "fieldset"=>$fieldset, "opcionesForm"=>array("action"=>"generar")));
-
-/**
-* Agrego el evento click asociado al boton confirmar.
-*/
-$js = '
-	jQuery("#mostrar_data").click(
-		function() {
-			jQuery("#data").toggle();
-		}
-	);';
-$appForm->addScript($js);
+echo $this->element('add/add', array('opcionesForm' => array('action' => 'generar'), 'fieldset' => $fieldset, 'accionesExtra' => array('opciones' => array('acciones' => $accionesExtra)), 'opcionesForm' => array('action' => 'generar')));
 ?>

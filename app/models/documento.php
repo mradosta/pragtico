@@ -37,30 +37,46 @@ class Documento extends AppModel {
     var $hasMany = array('DocumentosPatron' => array('dependent' => true));
     
 
-    function beforeSave($options = array()) {
-        
-        App::import("Vendor", "files", "pragmatia");
-        $File = new Files();
-        
-        unset($this->data[$this->name]['archivo']);
-        $this->data[$this->name]['file_data'] = file_get_contents(TMP . $this->data[$this->name]['file_name']);
-        switch ($type = $File->getType($this->data[$this->name]['file_type'])) {
+/**
+ * After save, moves the uploaded file to documents directory.
+ */	
+	function afterSave($created) {
+		copy(TMP . $this->data['Documento']['file_name'], WWW_ROOT . 'files' . DS . 'documents' . DS . $this->id . '-' . Inflector::classify(strtolower(str_replace(' ', '_', $this->data['Documento']['nombre']))) . '.' . $this->data['Documento']['file_extension']);
+		@unlink(TMP . $this->data['Documento']['file_name']);
+	}
+	
+
+/**
+ * Extract patters from file based on it's mime type.
+ *
+ * @param $file String File name.
+ * @param $extension String file extension.
+ * @return array Array of patters found in file.
+ * @access private
+ */
+    function getPatternsFromFile($file, $extension) {
+
+        switch ($extension) {
+			case 'rtf':
+			case 'txt':
+				return $this->getPatterns(file_get_contents($file));
+				break;	
             case 'xls':
             case 'xlsx':
-                set_include_path(get_include_path() . PATH_SEPARATOR . APP . "vendors" . DS . "PHPExcel" . DS . "Classes");
-                App::import('Vendor', "IOFactory", true, array(APP . "vendors" . DS . "PHPExcel" . DS . "Classes" . DS . "PHPExcel"), "IOFactory.php");
+                set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes');
+                App::import('Vendor', 'IOFactory', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'IOFactory.php');
                 
                 if ($type === 'xls') {
                     $objReader = PHPExcel_IOFactory::createReader('Excel5');
                 } else {
                     $objReader = PHPExcel_IOFactory::createReader('Excel2007');
                 }
-                $objPHPExcel = $objReader->load(TMP . $this->data[$this->name]['file_name']);
+                $objPHPExcel = $objReader->load($file);
                 $worksheet = $objPHPExcel->getActiveSheet();
                 $lastRow = $worksheet->getHighestRow();
                 $lastCol = $worksheet->getHighestColumn();
                 $cells = $worksheet->getCellCollection();
-                $texto = "";
+                $texto = '';
                 for ($row = 1; $row <= $lastRow; $row++){
                     for ($col = 'A'; $col <= $lastCol; $col++){
                         $cell = $col . $row;
@@ -72,13 +88,10 @@ class Documento extends AppModel {
                         }
                     }
                 }
-                $this->data['DocumentosPatron'] = $documentosPatron;
-                return true;
-                
-                break;
+                return $documentosPatron;
         }
-        return parent::beforeSave();
+		return false;
     }
-    
+	
 }
 ?>
