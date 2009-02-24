@@ -58,7 +58,11 @@ $cuerpo[] = $fila;
 * Conceptos.
 */
 $fila = null;
-$fila[] = array("valor"=>$formato->format($this->data['Liquidacion']['ano'] . $this->data['Liquidacion']['mes'] . $this->data['Liquidacion']['periodo'], array('type' => 'periodoEnLetras', 'case' => 'ucfirst')), "class"=>"imitar_th_izquierda", "colspan"=>10);
+if (!empty($this->data['Liquidacion']['mes'])) {
+	$fila[] = array("valor"=>$formato->format($this->data['Liquidacion']['ano'] . $this->data['Liquidacion']['mes'] . $this->data['Liquidacion']['periodo'], array('type' => 'periodoEnLetras', 'case' => 'ucfirst')), "class"=>"imitar_th_izquierda", "colspan"=>10);
+} else {
+	$fila[] = array("valor"=>$formato->format($this->data['Liquidacion']['ano'] . $this->data['Liquidacion']['periodo'], array('type' => 'periodoEnLetras', 'case' => 'ucfirst')), "class"=>"imitar_th_izquierda", "colspan"=>10);
+}
 $cuerpo[] = $fila;
 $fila = null;
 $fila[] = array("valor"=>"Concepto", "class"=>"imitar_th_izquierda");

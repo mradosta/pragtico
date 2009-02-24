@@ -142,11 +142,9 @@ class Liquidacion extends AppModel {
 		$this->setPeriod($period);
 		$this->setRelationship($relationship);
 		$this->__conceptos = null;
-		//$this->__variables = null;
 		
 		if ($type === 'normal') {
 			
-
 			$opcionesFindConcepto = null;
 			$this->setConcept(
 				$this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
@@ -191,6 +189,7 @@ class Liquidacion extends AppModel {
 			unset($options['informaciones']);
 
             $condtions['Liquidacion.relacion_id'] = $relationship['Relacion']['id'];
+			$condtions['Liquidacion.tipo'] = 'Normal';
             $options['year'] = $condtions['Liquidacion.ano'] = $period['ano'];
             if ($period['periodo'] == '1S') {
 				$options['period'] = 1;
@@ -234,17 +233,6 @@ class Liquidacion extends AppModel {
             set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes');
             App::import('Vendor', 'IOFactory', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'IOFactory.php');
 
-
-            /**
-             * Use this code to serialize an excel2007 file.
-             */
-            //$objPHPExcelReader = PHPExcel_IOFactory::createReader('Excel2007');
-            //$objPHPExcel = $objPHPExcelReader->load(WWW_ROOT . 'files' . DS . 'base' . DS . 'sac.xlsx');
-            //$objPHPExcelWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Serialized');
-            //$objPHPExcelWriter->save('/tmp/sac-serialized-v1.6.5');
-
-            //$objPHPExcelReader = PHPExcel_IOFactory::createReader('Serialized');
-            //$objPHPExcel = $objPHPExcelReader->load(WWW_ROOT . 'files' . DS . 'base' . DS . 'sac-serialized-v1.6.5');
             $objPHPExcelReader = PHPExcel_IOFactory::createReader('Excel2007');
             $objPHPExcel = $objPHPExcelReader->load(WWW_ROOT . 'files' . DS . 'base' . DS . 'sac.xlsx');
             $objPHPExcel->setActiveSheetIndex(0);
@@ -257,17 +245,19 @@ class Liquidacion extends AppModel {
 				}
             }
 
-            //$objPHPExcelWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-            //$objPHPExcelWriter->save('/tmp/sac-generated2.xlsx');
-            //return sprintf('%01.2f', $objPHPExcelSheet->getCell('TOTAL_PRAGTICO')->getCalculatedValue());
-
-
 			$this->setConcept($this->LiquidacionesDetalle->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $relationship, 'codigoConcepto' => 'sac')));
 			$this->__conceptos['sac']['valor'] = $objPHPExcelSheet->getCell('TOTAL_PRAGTICO')->getCalculatedValue();
 			$this->__conceptos['sac']['debug'] = '';
 			$this->__conceptos['sac']['valor_cantidad'] = 0;
 			$this->__conceptos['sac']['errores'] = array();
-			return $this->__getSaveArray();
+			
+			if ($this->__getSaveArray() === true) {
+				$objPHPExcelWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+				$objPHPExcelWriter->save(TMP . '/liquidacion-' . $this->id . '.xls');
+				return true;
+			} else {
+				return false;
+			}
         } elseif ($type === 'final_liquidation') {
 			d(":X");
 		}
@@ -284,9 +274,9 @@ class Liquidacion extends AppModel {
 		*/
 		$liquidacion = null;
 		$liquidacion['fecha'] = date('Y-m-d');
-		$liquidacion['ano'] = $this->getVarValue('#ano_liquidacion');
-		$liquidacion['mes'] = $this->getVarValue('#mes_liquidacion');
-		$liquidacion['periodo'] = $this->getVarValue('#periodo_liquidacion');
+		$liquidacion['ano'] = $this->getPeriod('ano');
+		$liquidacion['mes'] = $this->getPeriod('mes');
+		$liquidacion['periodo'] = $this->getPeriod('periodo');
 		$liquidacion['tipo'] = $this->getVarValue('#tipo_liquidacion');
 		$liquidacion['estado'] = 'Sin Confirmar';
 		$liquidacion['relacion_id'] = $this->getRelationship('Relacion', 'id');
@@ -313,6 +303,7 @@ class Liquidacion extends AppModel {
 		$totales['total_beneficios'] = 0;
 		$totales['total_pesos'] = 0;
 		$detalle = null;
+
 		foreach ($this->__conceptos as $detalleLiquidacion) {
 			$v = $this->__agregarDetalle($detalleLiquidacion);
 			if (!empty($v)) {
@@ -389,14 +380,18 @@ class Liquidacion extends AppModel {
 		$auxiliar['fecha'] = "##MACRO:fecha_liquidacion##";
 		$auxiliar['liquidacion_id'] = "##MACRO:liquidacion_id##";
 		$auxiliar['relacion_id'] = $liquidacion['relacion_id'];
-		
-		$auxiliar['monto'] = $totales['total_pesos'];
-		$auxiliar['moneda'] = "Pesos";
-		$this->__setAuxiliar(array("save"=>serialize($auxiliar), "model" => "Pago"));
-		
-		$auxiliar['monto'] = $totales['total_beneficios'];
-		$auxiliar['moneda'] = "Beneficios";
-		$this->__setAuxiliar(array("save"=>serialize($auxiliar), "model" => "Pago"));
+
+		if ($totales['total_pesos'] > 0) {
+			$auxiliar['monto'] = $totales['total_pesos'];
+			$auxiliar['moneda'] = 'Pesos';
+			$this->__setAuxiliar(array('save' => serialize($auxiliar), 'model' => 'Pago'));
+		}
+
+		if ($totales['total_beneficios'] > 0) {
+			$auxiliar['monto'] = $totales['total_beneficios'];
+			$auxiliar['moneda'] = "Beneficios";
+			$this->__setAuxiliar(array('save' => serialize($auxiliar), 'model' => 'Pago'));
+		}
 		
 		$save['Liquidacion']			= array_merge($liquidacion, $totales);
 		$save['LiquidacionesDetalle']	= $detalle;
@@ -417,21 +412,14 @@ class Liquidacion extends AppModel {
 		$save['LiquidacionesDetalle']	= $detalle;
 		$this->create();
 		return $this->saveAll($save);
-		/*
-		if ($this->saveAll($save)) {
-			return $this->id;
-		} else {
-			return false;
-		}
-		*/
 	}
+
 
 /**
 * Esta funcion realiza el mapeo entre lo que tengo en el array de conceptos,
 * y los datos que necesito para guardarlo en el detalle de la liquidacion.
 */
 	function __agregarDetalle($detalleLiquidacion) {
-		//debug($detalleLiquidacion);
 		$detalle = null;
 		if (!empty($detalleLiquidacion['concepto_id'])) {
 			$detalle['concepto_id'] = $detalleLiquidacion['concepto_id'];
@@ -442,7 +430,6 @@ class Liquidacion extends AppModel {
 			$detalle['concepto_sac'] = $detalleLiquidacion['sac'];
 			$detalle['concepto_imprimir'] = $detalleLiquidacion['imprimir'];
 			$detalle['concepto_antiguedad'] = $detalleLiquidacion['antiguedad'];
-			//$detalle['concepto_remuneracion'] = $detalleLiquidacion['remuneracion'];
 			$detalle['concepto_formula'] = $detalleLiquidacion['formula'] . ' ===>RES:' . $detalleLiquidacion['valor'];
 			$detalle['concepto_cantidad'] = $detalleLiquidacion['cantidad'];
 			$detalle['concepto_orden'] = $detalleLiquidacion['orden'];
@@ -458,7 +445,7 @@ class Liquidacion extends AppModel {
 	}
 
 	
-	function addEditDetalle($opciones) {
+	function addEditDetalle_deprecated($opciones) {
 		/**
 		* Se refiere a los conceptos que deben tratarse de forma especial, ya que modifican data en table, u otra cosa.
 		*/
@@ -711,7 +698,6 @@ class Liquidacion extends AppModel {
  */
     function getVarValue($variable) {
 
-
         if (!isset($this->__variables[$variable])) {
             $this->__setError(array(    'tipo'                  => 'Variable Inexistente',
                                         'gravedad'              => 'Media',
@@ -804,7 +790,6 @@ class Liquidacion extends AppModel {
             }
             
 
-
             switch ($variable) {
                 case '#mes_liquidacion':
                     $this->setVar($variable, $this->getPeriod('mes'));
@@ -840,6 +825,7 @@ class Liquidacion extends AppModel {
              */
             switch ($variable) {
                 case '#mes_liquidacion':
+					d("X");
                     $this->setVar($variable, $this->getPeriod('mes'));
                 break;
                 case '#ano_liquidacion':
