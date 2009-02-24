@@ -105,32 +105,53 @@ $appForm->addScript('
 		
 		if (table == undefined) {
 			table = "table.index";
-		}
-		jQuery(table).find("tbody").find("tr").each(
+			jQuery(table + " > tbody > tr").each(
 
-			function() {
-				newTbody.append(this);
-				
-				if (clickedRowId == jQuery(this).attr("charoff")) {
-					var td = jQuery("<td/>").attr("colspan", "10");
-					td.append(jQuery("<div/>").attr("class", "desglose").load(url, 
-	 					function() {
-							jQuery("img.breakdown_icon", this).bind("click", breakdown);
-						}
-				  	));
-					var tr = jQuery("<tr/>").addClass(breakDownRowId).addClass("breakdown_row").append(td);
-					newTbody.append(tr);
+				function() {
+					newTbody.append(this);
+					
+					if (clickedRowId == jQuery(this).attr("charoff")) {
+						var td = jQuery("<td/>").attr("colspan", "10");
+						td.append(jQuery("<div/>").attr("class", "desglose").load(url, 
+							function() {
+								jQuery("img.breakdown_icon", this).bind("click", breakdown);
+							}
+						));
+						var tr = jQuery("<tr/>").addClass(breakDownRowId).addClass("breakdown_row").append(td);
+						newTbody.append(tr);
+					}
 				}
-			}
-		);
-		jQuery(table).find("tbody").remove();
-		jQuery(table).append(newTbody);
+			);
+			jQuery(table + " > tbody").remove();
+			jQuery(table).append(newTbody);
+		} else {
+	
+			table.parent().find("table:first > tbody > tr").each(
+				function() {
+					newTbody.append(this);
+					
+					if (clickedRowId == jQuery(this).attr("charoff")) {
+						var td = jQuery("<td/>").attr("colspan", "10");
+						td.append(jQuery("<div/>").attr("class", "desglose").load(url, 
+							function() {
+								jQuery("img.breakdown_icon", this).bind("click", breakdown);
+							}
+						));
+						var tr = jQuery("<tr/>").addClass(breakDownRowId).addClass("breakdown_row").append(td);
+						newTbody.append(tr);
+					}
+				}
+			);
+			table.find("tbody").remove();
+			table.append(newTbody);
+		}
+		
 		return false;
 	}
 	
 	
 	/**
-	 * Deletes cookie and hide all breakdown rows.
+	 * Delete cookies and hide all breakdown rows.
 	 */
 	var closeAllBreakdowns = function() {
 		jQuery.cookie("breakDowns", null);
@@ -177,18 +198,14 @@ $appForm->addScript('
 		var breakDownRowId = "breakdown_row" + url.replace(/\//g, "_");
 		if (jQuery("." + breakDownRowId).length) {
 			jQuery("." + breakDownRowId).toggle();
-
 			if (!jQuery("." + breakDownRowId).is(":visible")) {
 				delete breakDowns[jQuery.inArray(url, breakDowns)];
 				jQuery.cookie("breakDowns", breakDowns.join("|"));
 			}
-			
 		} else {
-
 			breakDowns.push(url);
 			jQuery.cookie("breakDowns", breakDowns.join("|"));
 			var table = jQuery(this).parent().parent().parent().parent();
-			
 			buildTable(clickedRowId, url, table);
 		}
 	}
