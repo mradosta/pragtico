@@ -33,6 +33,7 @@ $condiciones['Condicion.Relacion-id'] = array(	"label"	=> "Relacion",
 																								"Trabajador.apellido")));
 $condiciones['Condicion.Novedad-tipo'] = array("type"=>"select", 'multiple' => 'checkbox');
 $condiciones['Condicion.Novedad-periodo'] = array("type"=>"periodo");
+$condiciones['Condicion.Novedad-estado'] = array("type"=>"select", 'multiple' => 'checkbox');
 
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "novedades de la relacion laboral", 'imagen' => 'novedades.gif')));
@@ -48,12 +49,13 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
 	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
 	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
+	$fila[] = array('model' => 'Novedad', 'field' => 'estado', 'valor' => $v['Novedad']['estado']);
 	$fila[] = array('model' => 'Novedad', 'field' => 'periodo', 'valor' => $v['Novedad']['periodo']);
 	$fila[] = array('model' => 'Novedad', 'field' => 'tipo', 'valor' => $v['Novedad']['tipo']);
 	$fila[] = array('model' => 'Novedad', 'field' => 'subtipo', 'valor' => $v['Novedad']['subtipo'], 'nombreEncabezado' => 'Detalle');
 	$fila[] = array('model' => 'Novedad', 'field' => 'data', 'valor' => $v['Novedad']['data'], 'tipoDato' => 'integer', 'nombreEncabezado' => 'Valor');
 	if($v['Novedad']['existe'] === true) {
-		$cuerpo[] = array("contenido"=>$fila, 'opciones' => array("seleccionMultiple"=>false, "eliminar"=>false, "modificar"=>false, "title"=>"Existe una novedad del mismo tipo ya ingresada para el mismo periodo. Verifique.", "class"=>"fila_resaltada"));
+		$cuerpo[] = array("contenido"=>$fila, 'opciones' => array("seleccionMultiple"=>false, "eliminar"=>false, "modificar"=>false, "title"=>"Existe una novedad del mismo tipo ya ingresada y liquidada para el mismo periodo. Verifique.", "class" => "fila_resaltada"));
 	}
 	else {
 		$cuerpo[] = $fila;

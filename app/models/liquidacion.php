@@ -133,15 +133,19 @@ class Liquidacion extends AppModel {
  */
     function getReceipt($relationship, $period, $type = 'normal', $options = array()) {
 
+		$this->__conceptos = null;
+		$this->__variables = null;
+
 		/** Initial set of vars and concepts */
 		$this->setVar($options['variables']);
 		if (!empty($options['informaciones'][$relationship['ConveniosCategoria']['convenio_id']])) {
 			$this->setVar($options['informaciones'][$relationship['ConveniosCategoria']['convenio_id']]);
 		}
+
 		$this->setVar('#tipo_liquidacion', $type);
 		$this->setPeriod($period);
 		$this->setRelationship($relationship);
-		$this->__conceptos = null;
+
 		
 		if ($type === 'normal') {
 			
@@ -152,6 +156,13 @@ class Liquidacion extends AppModel {
 								'desde' 	=> $this->getVarValue('#fecha_desde_liquidacion'),
 								'hasta' 	=> $this->getVarValue('#fecha_hasta_liquidacion'))));
 			
+			/** Get novelties */
+			$novedades = $this->Relacion->Novedad->getNovedades($this->getRelationship(), $this->getPeriod());
+			foreach ($novedades['variables'] as $varName => $varValue) {
+				$this->setVar($varName, $varValue);
+			}
+			$this->__setAuxiliar($novedades['auxiliar']);
+			$this->setConcept($novedades['conceptos']);
 			
 			/** Get hours */
 			$horas = $this->Relacion->Hora->getHoras($this->getRelationship(), $this->getPeriod());

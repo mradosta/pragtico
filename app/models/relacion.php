@@ -108,6 +108,9 @@ class Relacion extends AppModel {
 							'Ropa' =>
                         array('className'    => 'Ropa',
                               'foreignKey'   => 'relacion_id'),
+							'Novedad' =>
+                        array('className'    => 'Novedad',
+                              'foreignKey'   => 'relacion_id'),
 							'Vacacion' =>
                         array('className'    => 'Vacacion',
                               'foreignKey'   => 'relacion_id'),

@@ -75,6 +75,11 @@ class Novedad extends AppModel {
 				$existe = false;
 				if (isset($v['Novedad']['tipo'])) {
 					if ($v['Novedad']['tipo'] === 'Concepto') {
+						if ($v['Novedad']['estado'] !== 'Pendiente') {
+							$existe = true;
+						}
+						$results[$k]['Novedad']['subtipo'] = array_pop(explode(':', $v['Novedad']['subtipo']));
+						/*
 						$periodo = $this->format($v['Novedad']['periodo'], 'periodo');
 						$conditions = array('RelacionesConcepto.concepto_id' =>	array_shift(explode(':', $v['Novedad']['subtipo'])),
 											'RelacionesConcepto.relacion_id' =>	$v['Novedad']['relacion_id'],
@@ -88,16 +93,17 @@ class Novedad extends AppModel {
 													'recursive'		=> -1,
 													'conditions' 	=> $conditions));
 						
-						/**
-						* En caso de que exista, si dentro de la formula tiene la variable, 
-						* lo marco como que no existe porque luego la reemplazare.
-						*/
+						
+						// En caso de que exista, si dentro de la formula tiene la variable,
+						//lo marco como que no existe porque luego la reemplazare.
 						if (!empty($existe['RelacionesConcepto']['formula']) && strpos($existe['RelacionesConcepto']['formula'], '#valor_novedad') !== false) {
 							$existe = false;
 						}
+						*/
 					} elseif ($v['Novedad']['tipo'] === 'Horas') {
 						$Hora = ClassRegistry::init('Hora');
 						$find = null;
+						$find['Hora.estado'] = 'Liquidada';
 						$find['Hora.tipo'] = $v['Novedad']['subtipo'];
 						$find['Hora.periodo'] = $v['Novedad']['periodo'];
 						$find['Hora.relacion_id'] = $v['Novedad']['relacion_id'];
@@ -119,6 +125,7 @@ class Novedad extends AppModel {
 						$Descuento = ClassRegistry::init('Descuento');
 						$find = null;
 						$periodo = $this->format($v['Novedad']['periodo'], 'periodo');
+						$find['Descuento.tipo'] = 'Vale';
 						$find['Descuento.tipo'] = 'Vale';
 						$find['Descuento.desde >='] = $periodo['desde'];
 						$find['Descuento.desde <='] = $periodo['hasta'];
@@ -160,6 +167,8 @@ class Novedad extends AppModel {
 					$save = null;
 					$save['Novedad']['id'] = null;
 					$save['Novedad']['periodo'] = $periodo;
+					$save['Novedad']['alta'] = date('d/m/Y');
+					$save['Novedad']['estado'] = 'Pendiente';
 					$save['Novedad']['relacion_id'] = $relacion_id;
 					
 					if (!in_array($tipo, $predefinidos)) {
@@ -171,7 +180,6 @@ class Novedad extends AppModel {
 						if (empty($concepto['Concepto']['id'])) {
 							continue;
 						}
-						//$save['Novedad']['data'] = '#valor_planilla:' . $registro;
 						$save['Novedad']['data'] = $registro;
 						$save['Novedad']['tipo'] = 'Concepto';
 						$save['Novedad']['subtipo'] = $concepto['Concepto']['id'] . ':' . $tipo;
@@ -205,7 +213,6 @@ class Novedad extends AppModel {
 							}
 						}
 					}
-					
 					$saveAll[] = $save;
 				}
 			}
@@ -214,8 +221,47 @@ class Novedad extends AppModel {
 	}
 
 
+
+	function getNovedades($relacion, $periodo) {
+
+		if ($periodo['periodo'] === 'M') {
+			$period[] = $periodo['ano'] . $periodo['mes'] . 'M';
+			$period[] = $periodo['ano'] . $periodo['mes'] . '1Q';
+			$period[] = $periodo['ano'] . $periodo['mes'] . '2Q';
+		} else {
+			$period[] = $periodo['periodoCompleto'];
+		}
+		
+		$novedades = $this->find('all',
+				array('conditions' 	=> array(
+					  		'Novedad.periodo' 		=> $period,
+		 					'Novedad.estado' 		=> 'Confirmada',
+							'Novedad.tipo' 			=> 'Concepto',
+							'Novedad.relacion_id'	=> $relacion['Relacion']['id']),
+					  'recursive'	=> -1));
+
+		$variables = $conceptos = $auxiliares = array();
+		if (!empty($novedades)) {
+			$Concepto = ClassRegistry::init('Concepto');
+			foreach ($novedades as $novedad) {
+				$conceptoCodigo = strtolower(array_pop(explode(':', $novedad['Novedad']['subtipo'])));
+				$variables['#' . $conceptoCodigo] = $novedad['Novedad']['data'];
+				$conceptos = array_merge($conceptos, $Concepto->findConceptos('ConceptoPuntual', array('relacion' => $relacion, 'codigoConcepto' => $conceptoCodigo)));
+
+				$auxiliar = null;
+				$auxiliar['id'] = $novedad['Novedad']['id'];
+				$auxiliar['estado'] = 'Liquidada';
+				$auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
+				$auxiliares[] = array('save'=>serialize($auxiliar), 'model' => 'Novedad');
+				
+			}
+		}
+		return array('conceptos' => $conceptos, 'variables' => $variables, 'auxiliar' => $auxiliares);
+	}
+
+	
 /**
- * Distribuye las novedades en las diferecntes tablas (horas, ausencias, descuentos) o crea los conceptos necesarios.
+ * Distribuye las novedades en las diferentes tablas (horas, ausencias, descuentos).
  *
  * @param array $ids Los ids de las novedades a distribuir en cada tabla.
  * @return mixed Cantidad de novedades distribuidas. False en caso de error o que no hayn podido confirmarse todos los ids.
@@ -226,7 +272,8 @@ class Novedad extends AppModel {
 				array('conditions' 	=> array('Novedad.id' => $ids), 
 					  'recursive'	=> -1));
 		$c = $i = $ii = 0;
-		
+
+		$excludeIds = array();
 		foreach ($novedades as $novedad) {
 			$periodo = $this->format($novedad['Novedad']['periodo'], 'periodo');
 			switch ($novedad['Novedad']['tipo']) {
@@ -262,6 +309,10 @@ class Novedad extends AppModel {
 					$saves[$i]['Descuento']['observacion'] = 'Ingresado desde planilla';
 				break;
 				case 'Concepto':
+					$excludeIds[] = $novedad['Novedad']['id'];
+					$saves[$i]['Novedad']['id'] = $novedad['Novedad']['id'];
+					$saves[$i]['Novedad']['estado'] = 'Confirmada';
+				/*
 					$saves[$i]['RelacionesConcepto']['desde'] = $this->format($periodo['desde'], 'date');
 					$saves[$i]['RelacionesConcepto']['hasta'] = $this->format($periodo['hasta'], 'date');
 					$saves[$i]['RelacionesConcepto']['relacion_id'] = $novedad['Novedad']['relacion_id'];
@@ -289,6 +340,7 @@ class Novedad extends AppModel {
 					}
 					
 					$saves[$i]['RelacionesConcepto']['formula'] = $formula;
+				*/
 				break;
 			}
 			$i++;
@@ -297,13 +349,13 @@ class Novedad extends AppModel {
 		$this->begin();
 		foreach ($saves as $save) {
 			$keys = array_keys($save);
-			if ($this->Relacion->{$keys[0]}->save($save)	) {
+			if ($this->Relacion->{$keys[0]}->save($save)) {
 				$c++;
 			}
 		}
-		
+
 		if ($i === $c) {
-			$this->deleteAll(array('Novedad.id'=>$ids), false, false, false);
+			$this->deleteAll(array('Novedad.id' => array_diff($ids, $excludeIds)), false, false, false);
 			$this->commit();
 			return $i;
 		}

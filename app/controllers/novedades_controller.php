@@ -27,7 +27,8 @@
 class NovedadesController extends AppController {
 
 	var $helpers = array("Documento");
-	
+
+
 /**
  * Confirma las novedades seleccionadas.
  */
@@ -59,15 +60,14 @@ class NovedadesController extends AppController {
  */
 	function importar_planilla() {
 		if (!empty($this->data['Formulario']['accion'])) {
-			if ($this->data['Formulario']['accion'] === "importar") {
+			if ($this->data['Formulario']['accion'] === 'importar') {
 				if (!empty($this->data['Novedad']['planilla']['tmp_name'])) {
-					set_include_path(get_include_path() . PATH_SEPARATOR . APP . "vendors" . DS . "PHPExcel" . DS . "Classes");
-					App::import('Vendor', "IOFactory", true, array(APP . "vendors" . DS . "PHPExcel" . DS . "Classes" . DS . "PHPExcel"), "IOFactory.php");
+					set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes');
+					App::import('Vendor', 'IOFactory', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'IOFactory.php');
 					
 					if (preg_match("/.*\.xls$/", $this->data['Novedad']['planilla']['name'])) {
 						$objReader = PHPExcel_IOFactory::createReader('Excel5');
-					}
-					elseif (preg_match("/.*\.xlsx$/", $this->data['Novedad']['planilla']['name'])) {
+					} elseif (preg_match("/.*\.xlsx$/", $this->data['Novedad']['planilla']['name'])) {
 						$objReader = PHPExcel_IOFactory::createReader('Excel2007');
 					}
 					$objPHPExcel = $objReader->load($this->data['Novedad']['planilla']['tmp_name']);
@@ -86,40 +86,34 @@ class NovedadesController extends AppController {
 							$mapeo['Horas']['Extra 50%']					= $i+1;
 							$mapeo['Horas']['Extra 100%' ] 					= $i+2;
 							$i = $i+2;
-						}
-						elseif ($value === "Horas Ajuste") {
+						} elseif ($value === "Horas Ajuste") {
 							$mapeo['Horas']['Ajuste Normal'] 				= $i;
 							$mapeo['Horas']['Ajuste Extra 50%']				= $i+1;
 							$mapeo['Horas']['Ajuste Extra 100%']			= $i+2;
 							$i = $i+2;
-						}
-						elseif ($value === "Horas Nocturna") {
+						} elseif ($value === "Horas Nocturna") {
 							$mapeo['Horas']['Normal Nocturna']				= $i;
 							$mapeo['Horas']['Extra Nocturna 50%']			= $i+1;
 							$mapeo['Horas']['Extra Nocturna 100%']			= $i+2;
 							$i = $i+2;
-						}
-						elseif ($value === "Horas Ajuste Nocturna") {
+						} elseif ($value === "Horas Ajuste Nocturna") {
 							$mapeo['Horas']['Ajuste Normal Nocturna']		= $i;
 							$mapeo['Horas']['Ajuste Extra Nocturna 50%']	= $i+1;
 							$mapeo['Horas']['Ajuste Extra Nocturna 100%']	= $i+2;
 							$i = $i+2;
-						}
-						elseif ($value === "Ausencias") {
+						} elseif ($value === "Ausencias") {
 							$mapeo['Ausencias']['Motivo']					= $i;
 							$mapeo['Ausencias']['Dias']						= $i+1;
 							$i = $i+1;
-						}
-						elseif ($value === "Vales") {
+						} elseif ($value === "Vales") {
 							$mapeo['Vales']['Importe']						= $i;
-						}
-						else {
+						} else {
 							$mapeo[$value]['Valor']							= $i;
 						}
 					}
 					
-					for($i=10; $i<=$objPHPExcel->getActiveSheet()->getHighestRow(); $i++) {
-						$relacionId = $objPHPExcel->getActiveSheet()->getCell("A" . $i)->getValue();
+					for($i = 10; $i <= $objPHPExcel->getActiveSheet()->getHighestRow(); $i++) {
+						$relacionId = $objPHPExcel->getActiveSheet()->getCell('A' . $i)->getValue();
 						foreach ($mapeo as $k => $v) {
 							foreach ($v as $k1 => $v1) {
 								$valor = $objPHPExcel->getActiveSheet()->getCellByColumnAndRow($v1, $i)->getValue();
@@ -131,15 +125,14 @@ class NovedadesController extends AppController {
 					}
 					
 					if ($this->Novedad->grabar($datos, $this->data['Novedad']['periodo'])) {
-						$this->redirect("index");
+						$this->redirect('index');
 					}
 				}
-			}
-			elseif ($this->data['Formulario']['accion'] === "cancelar") {
-				$this->redirect("index");
+			} elseif ($this->data['Formulario']['accion'] === 'cancelar') {
+				$this->redirect('index');
 			}
 		}
-		$this->data['Novedad']['formato'] = "Excel2007";
+		$this->data['Novedad']['formato'] = 'Excel2007';
 	}
 	
 	

@@ -97,13 +97,13 @@ class LiquidacionesController extends AppController {
 			}
 			$condiciones['Relacion.ingreso <='] = $periodo['hasta'];
 			$condiciones['Relacion.estado'] = 'Activa';
-			$condiciones['NOT'] = array('Relacion.id' =>$confirmadas);
+			$condiciones['NOT'] = array('Relacion.id' => $confirmadas);
 			$relaciones = $this->Liquidacion->Relacion->find('all',
 					array(	'contain'		=> array(	'ConveniosCategoria.ConveniosCategoriasHistorico',
 														'Trabajador.ObrasSocial',
 														'Empleador'),
 							'conditions'	=> $condiciones));
-			
+
 			if (empty($relaciones)) {
 				$this->Session->setFlash('No se encontraron relacion para liquidar. Verifique si no se han liquidado y confirmado previamente o los criterios de busqueda no son correctos.', 'error');
 				$this->redirect(array('action' => 'preliquidar'));
