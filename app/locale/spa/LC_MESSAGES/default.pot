@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2008-12-30 17:31-0200\n"
-"PO-Revision-Date: 2008-12-30 17:33-0300\n"
+"POT-Creation-Date: 2009-02-25 12:36-0200\n"
+"PO-Revision-Date: 2009-02-25 12:52-0300\n"
 "Last-Translator: mradosta <mradosta@pragmatia.com>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -14,30 +14,62 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: /app_controller.php:355
+#: /app_controller.php:298;547
 msgid "The record has been saved"
 msgstr "Se guardo el registro correctamente"
 
-#: /app_controller.php:357
+#: /app_controller.php:300;549
 #, fuzzy
 msgid "%s of %s records have been saved"
 msgstr "% de % registros se han guardado correctamente"
 
-#: /app_controller.php:387;389
+#: /app_controller.php:330;333;578;580
 msgid "The record could not be saved. Please verify errors and try again."
 msgstr "No fue posible guardar el registro. Verifique los errores e intente nuevamente."
 
-#: /app_controller.php:422
+#: /app_controller.php:613
 msgid "Record deleted"
 msgstr "El registro se ha eliminado"
 
-#: /app_controller.php:424
+#: /app_controller.php:615
 msgid "%s records deleted"
 msgstr "%s registros eliminados"
 
-#: /app_controller.php:432
+#: /app_controller.php:623
 msgid "The record could not be deleted"
 msgstr "No fue posible eliminar el registro"
+
+#: /controllers/documentos_controller.php:73
+msgid "No document found. Please verify"
+msgstr "No se encontro el documento. Verifique."
+
+#: /controllers/liquidaciones_controller.php:45
+msgid "Normal liquidation period should be of the form \"YYYYMM[1Q|2Q|M]\""
+msgstr "El periodo para un aliquidacion normal debe ser de la forma \"YYYYMM[1Q|2Q|M]\""
+
+#: /controllers/liquidaciones_controller.php:48
+msgid "Holliday liquidation period should be an Year"
+msgstr "El periodo de liquidacion para vacaciones debe ser año"
+
+#: /controllers/liquidaciones_controller.php:51
+msgid "Sac liquidation period should be of the form \"YYYY[12]S\""
+msgstr "El periodo de liquidacion para SAC debe ser de la forma \"YYYY[12]S\""
+
+#: /controllers/liquidaciones_controller.php:54
+msgid "Must enter a period"
+msgstr "Debe seleccionar un periodo"
+
+#: /controllers/liquidaciones_controller.php:56
+msgid "Invalid Period"
+msgstr "Periodo invalido"
+
+#: /controllers/liquidaciones_controller.php:116
+msgid "Can't delete previous liquidations. Call Administrator"
+msgstr "No fue posible eliminar las liquidacion previas. Comuniquese con el administrador."
+
+#: /controllers/usuarios_controller.php:123
+msgid "Login failed. Invalid username or password."
+msgstr "Nombre de usuario o contraseña invalido."
 
 #: /models/behaviors/permisos.php:252
 msgid "Security access method not supported. Please use one of this: \"read\", \"write\" or \"delete\""
@@ -127,36 +159,40 @@ msgstr "%s (segundos)"
 msgid "View Variables"
 msgstr ""
 
+#: /views/documentos/generar.ctp:23
+msgid "Document"
+msgstr "Documento"
+
 #: /views/elements/add/acciones.ctp:8
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: /views/elements/add/acciones.ctp:10
+#: /views/elements/add/acciones.ctp:9
 msgid "Duplicate"
 msgstr "Duplicar"
 
-#: /views/elements/add/acciones.ctp:11
+#: /views/elements/add/acciones.ctp:10
 #: /views/elements/index/acciones.ctp:18
 msgid "Delete"
 msgstr "Eliminar"
 
-#: /views/elements/add/acciones.ctp:12
+#: /views/elements/add/acciones.ctp:11
 msgid "Save"
 msgstr "Guardar"
 
 #: /views/elements/add/add.ctp:11
 #: /views/elements/index/acciones.ctp:16
-#: /views/helpers/formulario.php:116
+#: /views/helpers/app_form.php:115
 msgid "New"
 msgstr "Nuevo"
 
-#: /views/elements/add/add.ctp:14
+#: /views/elements/add/add.ctp:13
 #: /views/elements/index/acciones.ctp:14
-#: /views/helpers/formulario.php:113
+#: /views/helpers/app_form.php:113
 msgid "Edit"
 msgstr "Modificar"
 
-#: /views/elements/add/add.ctp:55
+#: /views/elements/add/add.ctp:18
 msgid "%s Records"
 msgstr "%s Registros"
 
@@ -177,7 +213,7 @@ msgid "Clear"
 msgstr "Limpiar"
 
 #: /views/elements/index/buscadores.ctp:30;88
-#: /views/helpers/formulario.php:119
+#: /views/helpers/app_form.php:117;1935
 msgid "Search"
 msgstr "Buscar"
 
@@ -213,6 +249,81 @@ msgstr "Limpiar todas las busquedas"
 msgid "Close all breakdowns"
 msgstr "Limpiar todos los desgloses"
 
+#: /views/helpers/app_form.php:305
+msgid "Invalid script location"
+msgstr ""
+
+#: /views/helpers/app_form.php:352
+msgid "Non existing image"
+msgstr ""
+
+#: /views/helpers/app_form.php:628
+#, fuzzy
+msgid "Show %s of %s"
+msgstr "Mostrar %s Registros"
+
+#: /views/helpers/app_form.php:766
+#, fuzzy
+msgid "Select current record"
+msgstr "Eliminar los registros seleccionados"
+
+#: /views/helpers/app_form.php:1069
+msgid "The grid is empty. Enter some data or verify your search criterias."
+msgstr "No se encontraron resultado. Ingrese datos o verifique los criterios de busqueda"
+
+#: /views/helpers/app_form.php:2076
+msgid "Pick date"
+msgstr "Seleccione una fecha"
+
+#: /views/helpers/formato.php:693
+msgid "january"
+msgstr "enero"
+
+#: /views/helpers/formato.php:694
+msgid "february"
+msgstr "febrero"
+
+#: /views/helpers/formato.php:695
+#, fuzzy
+msgid "march"
+msgstr "Buscar"
+
+#: /views/helpers/formato.php:696
+msgid "april"
+msgstr "abril"
+
+#: /views/helpers/formato.php:697
+msgid "may"
+msgstr "mayo"
+
+#: /views/helpers/formato.php:698
+msgid "june"
+msgstr "junio"
+
+#: /views/helpers/formato.php:699
+msgid "july"
+msgstr "julio"
+
+#: /views/helpers/formato.php:700
+msgid "august"
+msgstr "agosto"
+
+#: /views/helpers/formato.php:701
+msgid "september"
+msgstr "septiembre"
+
+#: /views/helpers/formato.php:702
+msgid "october"
+msgstr "octubre"
+
+#: /views/helpers/formato.php:703
+msgid "november"
+msgstr "noviembre"
+
+#: /views/helpers/formato.php:704
+msgid "december"
+msgstr "diciembre"
+
 #: /views/helpers/paginador.php:48;62;78;89
 msgid "Ascending order"
 msgstr "Orden ascendente"
@@ -240,6 +351,22 @@ msgstr "Ir a la siguiente página"
 #: /views/helpers/paginador.php:181
 msgid "Go to last page"
 msgstr "Ir a la última página"
+
+#: /views/zones/add.ctp:24
+msgid "Code"
+msgstr "Codigo"
+
+#: /views/zones/add.ctp:25
+msgid "Name"
+msgstr "Nombre"
+
+#: /views/zones/add.ctp:26
+msgid "Percentage"
+msgstr "Porcentage"
+
+#: /views/zones/index.ctp:25
+msgid "Zone"
+msgstr "Zona"
 
 #: /webroot/test.php:101
 msgid "Debug setting does not allow access to this url."

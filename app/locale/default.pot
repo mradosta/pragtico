@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2008-12-30 17:31-0200\n"
+"POT-Creation-Date: 2009-02-25 12:36-0200\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -15,28 +15,60 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: /app_controller.php:355
+#: /app_controller.php:298;547
 msgid "The record has been saved"
 msgstr ""
 
-#: /app_controller.php:357
+#: /app_controller.php:300;549
 msgid "%s of %s records have been saved"
 msgstr ""
 
-#: /app_controller.php:387;389
+#: /app_controller.php:330;333;578;580
 msgid "The record could not be saved. Please verify errors and try again."
 msgstr ""
 
-#: /app_controller.php:422
+#: /app_controller.php:613
 msgid "Record deleted"
 msgstr ""
 
-#: /app_controller.php:424
+#: /app_controller.php:615
 msgid "%s records deleted"
 msgstr ""
 
-#: /app_controller.php:432
+#: /app_controller.php:623
 msgid "The record could not be deleted"
+msgstr ""
+
+#: /controllers/documentos_controller.php:73
+msgid "No document found. Please verify"
+msgstr ""
+
+#: /controllers/liquidaciones_controller.php:45
+msgid "Normal liquidation period should be of the form \"YYYYMM[1Q|2Q|M]\""
+msgstr ""
+
+#: /controllers/liquidaciones_controller.php:48
+msgid "Holliday liquidation period should be an Year"
+msgstr ""
+
+#: /controllers/liquidaciones_controller.php:51
+msgid "Sac liquidation period should be of the form \"YYYY[12]S\""
+msgstr ""
+
+#: /controllers/liquidaciones_controller.php:54
+msgid "Must enter a period"
+msgstr ""
+
+#: /controllers/liquidaciones_controller.php:56
+msgid "Invalid Period"
+msgstr ""
+
+#: /controllers/liquidaciones_controller.php:116
+msgid "Can't delete previous liquidations. Call Administrator"
+msgstr ""
+
+#: /controllers/usuarios_controller.php:123
+msgid "Login failed. Invalid username or password."
 msgstr ""
 
 #: /models/behaviors/permisos.php:252
@@ -127,36 +159,40 @@ msgstr ""
 msgid "View Variables"
 msgstr ""
 
+#: /views/documentos/generar.ctp:23
+msgid "Document"
+msgstr ""
+
 #: /views/elements/add/acciones.ctp:8
 msgid "Cancel"
 msgstr ""
 
-#: /views/elements/add/acciones.ctp:10
+#: /views/elements/add/acciones.ctp:9
 msgid "Duplicate"
 msgstr ""
 
-#: /views/elements/add/acciones.ctp:11
+#: /views/elements/add/acciones.ctp:10
 #: /views/elements/index/acciones.ctp:18
 msgid "Delete"
 msgstr ""
 
-#: /views/elements/add/acciones.ctp:12
+#: /views/elements/add/acciones.ctp:11
 msgid "Save"
 msgstr ""
 
 #: /views/elements/add/add.ctp:11
 #: /views/elements/index/acciones.ctp:16
-#: /views/helpers/formulario.php:116
+#: /views/helpers/app_form.php:115
 msgid "New"
 msgstr ""
 
-#: /views/elements/add/add.ctp:14
+#: /views/elements/add/add.ctp:13
 #: /views/elements/index/acciones.ctp:14
-#: /views/helpers/formulario.php:113
+#: /views/helpers/app_form.php:113
 msgid "Edit"
 msgstr ""
 
-#: /views/elements/add/add.ctp:55
+#: /views/elements/add/add.ctp:18
 msgid "%s Records"
 msgstr ""
 
@@ -177,7 +213,7 @@ msgid "Clear"
 msgstr ""
 
 #: /views/elements/index/buscadores.ctp:30;88
-#: /views/helpers/formulario.php:119
+#: /views/helpers/app_form.php:117;1935
 msgid "Search"
 msgstr ""
 
@@ -213,6 +249,78 @@ msgstr ""
 msgid "Close all breakdowns"
 msgstr ""
 
+#: /views/helpers/app_form.php:305
+msgid "Invalid script location"
+msgstr ""
+
+#: /views/helpers/app_form.php:352
+msgid "Non existing image"
+msgstr ""
+
+#: /views/helpers/app_form.php:628
+msgid "Show %s of %s"
+msgstr ""
+
+#: /views/helpers/app_form.php:766
+msgid "Select current record"
+msgstr ""
+
+#: /views/helpers/app_form.php:1069
+msgid "The grid is empty. Enter some data or verify your search criterias."
+msgstr ""
+
+#: /views/helpers/app_form.php:2076
+msgid "Pick date"
+msgstr ""
+
+#: /views/helpers/formato.php:693
+msgid "january"
+msgstr ""
+
+#: /views/helpers/formato.php:694
+msgid "february"
+msgstr ""
+
+#: /views/helpers/formato.php:695
+msgid "march"
+msgstr ""
+
+#: /views/helpers/formato.php:696
+msgid "april"
+msgstr ""
+
+#: /views/helpers/formato.php:697
+msgid "may"
+msgstr ""
+
+#: /views/helpers/formato.php:698
+msgid "june"
+msgstr ""
+
+#: /views/helpers/formato.php:699
+msgid "july"
+msgstr ""
+
+#: /views/helpers/formato.php:700
+msgid "august"
+msgstr ""
+
+#: /views/helpers/formato.php:701
+msgid "september"
+msgstr ""
+
+#: /views/helpers/formato.php:702
+msgid "october"
+msgstr ""
+
+#: /views/helpers/formato.php:703
+msgid "november"
+msgstr ""
+
+#: /views/helpers/formato.php:704
+msgid "december"
+msgstr ""
+
 #: /views/helpers/paginador.php:48;62;78;89
 msgid "Ascending order"
 msgstr ""
@@ -239,6 +347,22 @@ msgstr ""
 
 #: /views/helpers/paginador.php:181
 msgid "Go to last page"
+msgstr ""
+
+#: /views/zones/add.ctp:24
+msgid "Code"
+msgstr ""
+
+#: /views/zones/add.ctp:25
+msgid "Name"
+msgstr ""
+
+#: /views/zones/add.ctp:26
+msgid "Percentage"
+msgstr ""
+
+#: /views/zones/index.ctp:25
+msgid "Zone"
 msgstr ""
 
 #: /webroot/test.php:101
