@@ -24,10 +24,10 @@ if(!isset($accionesExtra)) {
 	$accionesExtra = array();
 }
 if(!isset($separadorRetorno)) {
-	$separadorRetorno = "";
+	$separadorRetorno = '';
 }
 if(empty($opcionesForm)) {
-	$opcionesForm['action'] = "index";
+	$opcionesForm['action'] = 'index';
 }
 if(!isset($pie)) {
 	$pie = array();
@@ -36,14 +36,14 @@ if(!isset($pie)) {
 /**
  * Creo un bloque con caja redondeada entre las condiciones, los botones y las opciones lov (si las hubiese).
  */
-$lov = $this->element("index/lov");
+$lov = $this->element('index/lov');
 
 /**
  * Pongo el nombre del controller como un parametro, aunque no lo use, de modo de que el cache cree un archivo 
  * por cada controlador.
  */
-//$botones = $this->element("index/buscadores", array("cache"=>"+30 day", $this->name=>"name", "botonesExtra"=>$botonesExtra, "opcionesForm"=>$opcionesForm));
-$botones = $this->element("index/buscadores", array("botonesExtra"=>$botonesExtra, "opcionesForm"=>$opcionesForm));
+//$botones = $this->element('index/buscadores', array('cache'=>'+30 day', $this->name=>'name', 'botonesExtra'=>$botonesExtra, 'opcionesForm'=>$opcionesForm));
+$botones = $this->element('index/buscadores', array('botonesExtra' => $botonesExtra, 'opcionesForm' => $opcionesForm));
 
 $bloques[] = $appForm->tag('div', am($condiciones, $botones, $lov), array('class' => 'unica'));
 
@@ -55,12 +55,12 @@ $bloques[] = $appForm->tag('div', am($condiciones, $botones, $lov), array('class
  * Pongo el nombre del controller como un parametro, aunque no lo use, de modo de que el cache cree un archivo 
  * por cada controlador.
  */
-//$acciones = $this->element("index/acciones", array("cache"=>"+30 day", $this->name=>"name", "accionesExtra"=>$accionesExtra));
-$acciones = $this->element("index/acciones", array("accionesExtra"=>$accionesExtra));
+//$acciones = $this->element('index/acciones', array('cache'=>'+30 day', $this->name=>'name', 'accionesExtra'=>$accionesExtra));
+$acciones = $this->element('index/acciones', array('accionesExtra' => $accionesExtra));
 
 
 if(!isset($opcionesTabla)) {
-	//$opcionesTabla = array("tabla"=>array("permisos"=>false));
+	//$opcionesTabla = array('tabla'=>array('permisos'=>false));
 	$opcionesTabla = array();
 }
 
@@ -69,28 +69,27 @@ if(!isset($opcionesTabla)) {
 */
 if(!empty($this->params['named']['retornarA']) && !empty($this->params['named']['camposRetorno'])) {
 
-	$opcionesTabla =  array("tabla"=>
-								array(	"seleccionLov"		=> array("retornarA"		=> $this->params['named']['retornarA'],
-																	"separadorRetorno"	=> $this->params['named']['separadorRetorno'],
-																	"camposRetorno"		=> $this->params['named']['camposRetorno']),
-										"eliminar"			=> false,
-										"modificar"			=> false,
-										"seleccionMultiple"	=> true,
-										"mostrarEncabezados"=> true,
-										"zebra"				=> true,
-										"mostrarIds"		=> false));
-} 
-else {
-	$opcionesTabla =  array("tabla"=> array("class" => "index"));
+	$opcionesTabla =  array('tabla'=>
+								array(	'seleccionLov'		=> array('retornarA'		=> $this->params['named']['retornarA'],
+																	'separadorRetorno'	=> $this->params['named']['separadorRetorno'],
+																	'camposRetorno'		=> $this->params['named']['camposRetorno']),
+										'eliminar'			=> false,
+										'modificar'			=> false,
+										'seleccionMultiple'	=> true,
+										'mostrarEncabezados'=> true,
+										'zebra'				=> true,
+										'mostrarIds'		=> false));
+} elseif (empty($opcionesTabla)) {
+	$opcionesTabla =  array('tabla' => array('class' => 'index'));
 }
 
 /**
  * Creo un bloque con el paginador superior e inferior.
  */
-//$paginador = $this->element("index/paginador", array("cache"=>"+30 day", $this->name=>"name"));
-$paginador = $this->element("index/paginador");
-$bloque_paginador_superior = $appForm->tag('div', $paginador, array("class"=>"paginador_superior"));
-$bloque_paginador_inferior = $appForm->tag('div', $paginador, array("class"=>"paginador_inferior"));
+//$paginador = $this->element('index/paginador', array('cache'=>'+30 day', $this->name=>'name'));
+$paginador = $this->element('index/paginador');
+$bloque_paginador_superior = $appForm->tag('div', $paginador, array('class' => 'paginador_superior'));
+$bloque_paginador_inferior = $appForm->tag('div', $paginador, array('class' => 'paginador_inferior'));
 
 /**
  * Creo la tabla.
@@ -105,11 +104,10 @@ if(!isset($cuerpo)) {
  */
 if(!empty($opcionesTabla['tabla']['contenido'])) {
 	$bloques[] = $opcionesTabla['tabla']['contenido'];
-}
-else if(!((isset($opcionesTabla['tabla']['omitirMensajeVacio']) && $opcionesTabla['tabla']['omitirMensajeVacio'] === true) && empty($cuerpo))) {
-	$tabla = $appForm->tag("div", $appForm->tabla(array_merge(array('cuerpo' => $cuerpo, "pie"=>$pie), $opcionesTabla)), array("class"=>"tabla"));
-	$bloque_superior = $appForm->tag('div', $acciones . $bloque_paginador_superior, array("class"=>"bloque_superior_index"));
-	$bloque_inferior = $appForm->tag('div', $bloque_paginador_inferior, array("class"=>"bloque_inferior_index"));
+} else if(!((isset($opcionesTabla['tabla']['omitirMensajeVacio']) && $opcionesTabla['tabla']['omitirMensajeVacio'] === true) && empty($cuerpo))) {
+	$tabla = $appForm->tag('div', $appForm->tabla(array_merge(array('cuerpo' => $cuerpo, 'pie' => $pie), $opcionesTabla)), array('class' => 'tabla'));
+	$bloque_superior = $appForm->tag('div', $acciones . $bloque_paginador_superior, array('class' => 'bloque_superior_index'));
+	$bloque_inferior = $appForm->tag('div', $bloque_paginador_inferior, array('class' => 'bloque_inferior_index'));
 	$bloques[] = $appForm->tag('div', $bloque_superior . $tabla . $bloque_inferior, array('class' => 'unica'));
 }
 
@@ -126,8 +124,7 @@ $form = $appForm->form($bloques, $opcionesForm);
 */
 if ($this->params['isAjax']) {
 	echo $appForm->bloque($form);
-}
-else {
+} else {
 	echo $appForm->tag('div', $form, array('class' => 'index'));
 }	
 
