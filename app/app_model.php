@@ -478,5 +478,45 @@ class AppModel extends Model {
             }
         }
     }
+
+
+	
+	function getCrumb($data) {
+
+		$breadCrumb = false;
+		if (empty($this->breadCrumb)) {
+			$breadCrumb['fields'][] = $this->name . '.' . $this->primaryKey;
+		} else {
+			if (is_string($this->breadCrumb)) {
+				$breadCrumb['fields'][] = $this->breadCrumb;
+			} else {
+				$breadCrumb = $this->breadCrumb;
+			}
+		}
+		
+		if (!empty($data) && $breadCrumb !== false) {
+			
+			$texts = null;
+			foreach ($breadCrumb['fields'] as $contents) {
+				$c = explode('.', $contents);
+				if (count($c) === 3) {
+					$text = $data[$c[0]][$c[1]][$c[2]];
+				} elseif (count($c) === 2) {
+					$text = $data[$c[0]][$c[1]];
+				} elseif (count($c) === 1) {
+					$text = $data[$c[0]];
+				}
+				$texts[] = $text;
+			}
+			if (!empty($breadCrumb['format'])) {
+				return vsprintf($breadCrumb['format'], $texts);
+			} else {
+				return implode(' ', $texts);
+			}
+		} else {
+			return '';
+		}
+	}
+	
 }
 ?>

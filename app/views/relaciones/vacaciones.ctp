@@ -30,21 +30,7 @@ foreach ($this->data['Vacacion'] as $k=>$v) {
 	$cuerpo[] = $fila;
 }
 
-
-/**
-* Creo la tabla.
-*/
-$opcionesTabla =  array("tabla"=>
-							array(	"eliminar"			=>true,
-									"ordenEnEncabezados"=>false,
-									"modificar"			=>true,
-									"seleccionMultiple"	=>false,
-									"mostrarEncabezados"=>true,
-									"zebra"				=>false,
-									"mostrarIds"		=>false));
-
-$url = array('controller' => "vacaciones", 'action' => 'add', "Vacacion.relacion_id"=>$this->data['Relacion']['id']);
-echo $this->element('desgloses/agregar', array('url' => $url, "texto"=>"Vacaciones"));
-echo $appForm->bloque($appForm->tabla(am(array('cuerpo' => $cuerpo), $opcionesTabla)), array('div' => array('class' => 'unica')));
+$url = array('controller' => 'vacaciones', 'action' => 'add', 'Vacacion.relacion_id' => $this->data['Relacion']['id']);
+echo $this->element('desgloses/agregar', array('url' => $url, 'titulo' => 'Vacaciones', 'cuerpo' => $cuerpo));
 
 ?>

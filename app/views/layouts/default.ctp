@@ -166,7 +166,7 @@ $appForm->addScript('
 	 */
 	var breakDownsCookie = jQuery.cookie("breakDowns");
 	if (breakDownsCookie != null) {
-		breakDowns = breakDownsCookie.split("|");
+		breakDowns = breakDownsCookie.split("|").clean("");
 		jQuery("img.breakdown_icon").each(
 			function() {
 				if (jQuery.inArray(this.getAttribute("longdesc"), breakDowns) >= 0) {
@@ -175,7 +175,16 @@ $appForm->addScript('
 				}
 			}
 		);
-	}	
+		
+		jQuery(".bread_crumb_class").remove();
+		if (breakDowns.length == 1) {
+			var span = jQuery("<span/>").addClass("bread_crumb_class").text(" » " + jQuery("img[longdesc=\'" + breakDowns[0] + "\']").attr("alt"));
+			jQuery("div.banda_izquierda > p").append(span);
+		} else if (breakDowns.length > 1){
+			var span = jQuery("<span/>").addClass("bread_crumb_class").text(" » " + breakDowns.length + " Desgloses abiertos");
+			jQuery("div.banda_izquierda > p").append(span);
+		}
+	}
 	
 	
 	/**
@@ -183,23 +192,23 @@ $appForm->addScript('
 	 */
  	var breakdown = function() {
 
-		jQuery("div.banda_izquierda > p").text(jQuery("div.banda_izquierda > p").text() + " >> " + jQuery(this).attr("alt"));
-
 		var clickedRowId = jQuery(this).parent().parent().attr("charoff");
 		var url = this.getAttribute("longdesc");
 		
 		var breakDownsCookie = jQuery.cookie("breakDowns");
 		if (breakDownsCookie != null) {
-			breakDowns = breakDownsCookie.split("|");
+			breakDowns = breakDownsCookie.split("|").clean("");
 		} else {
 			breakDowns = Array();
 		}
+
 		
 		var breakDownRowId = "breakdown_row" + url.replace(/\//g, "_");
 		if (jQuery("." + breakDownRowId).length) {
 			jQuery("." + breakDownRowId).toggle();
 			if (!jQuery("." + breakDownRowId).is(":visible")) {
 				delete breakDowns[jQuery.inArray(url, breakDowns)];
+				breakDowns = breakDowns.clean("").clean(undefined);
 				jQuery.cookie("breakDowns", breakDowns.join("|"));
 			}
 		} else {
@@ -208,6 +217,17 @@ $appForm->addScript('
 			var table = jQuery(this).parent().parent().parent().parent();
 			buildTable(clickedRowId, url, table);
 		}
+
+
+		jQuery(".bread_crumb_class").remove();
+		if (breakDowns.length == 1) {
+			var span = jQuery("<span/>").addClass("bread_crumb_class").text(" » " + jQuery("img[longdesc=\'" + breakDowns[0] + "\']").attr("alt"));
+			jQuery("div.banda_izquierda > p").append(span);
+		} else if (breakDowns.length > 1){
+			var span = jQuery("<span/>").addClass("bread_crumb_class").text(" » " + breakDowns.length + " Desgloses abiertos");
+			jQuery("div.banda_izquierda > p").append(span);
+		}
+		
 	}
 	jQuery("img.breakdown_icon").bind("click", breakdown);
 	

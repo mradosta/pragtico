@@ -463,7 +463,7 @@ class AppFormHelper extends FormHelper {
 		* Si es una tabla simple, no le pongo inteligencia, es decir,
 		* pinto lo que me venga.
 		*/
-		if ($opciones['simple']){
+		if ($opciones['simple']) {
 			foreach ($datos['cuerpo'] as $f) {
 				$cells = $headers = array();
 				foreach ($f as $columna) {
@@ -508,6 +508,10 @@ class AppFormHelper extends FormHelper {
 		
 		if (!empty($datos['cuerpo'])) {
 			$cuerpo = array();
+			$view = ClassRegistry::getObject('view');
+			$modelName = Inflector::classify($this->params['controller']);
+			$Model = ClassRegistry::getObject($modelName);
+			
 			
 			if ($opciones['permisos']) {
 				/**
@@ -542,8 +546,7 @@ class AppFormHelper extends FormHelper {
 															'action' 		=> 'permisos'));
 								if ($contenido === true) {
 									array_unshift($datos['cuerpo'][$kk]['contenido'], $registroPermisos);
-								}
-								else {
+								} else {
 									array_unshift($datos['cuerpo'][$kk], $registroPermisos);
 								}
 							}
@@ -552,7 +555,7 @@ class AppFormHelper extends FormHelper {
 				}
 			}
 			
-			foreach ($datos['cuerpo'] as $k=>$v) {
+			foreach ($datos['cuerpo'] as $k => $v) {
 				/**
 				* El contenido de la fila puede venir como un array puro o dentro del elemento contenido.
 				*/
@@ -580,7 +583,7 @@ class AppFormHelper extends FormHelper {
 					$valor = "&nbsp;";
 					$atributosCelda = null;
 					
-					if (isset($campo['valor']) && $campo['valor'] != '0') {
+					if (isset($campo['valor']) && $campo['valor'] !== '0') {
 						$valor = $campo['valor'];
 					}
 					
@@ -624,9 +627,18 @@ class AppFormHelper extends FormHelper {
 						if (!isset($campo['bread_crumb'])) {
 							$campo['bread_crumb'] = '';
 						}
+
+						if (!empty($view->viewVars['registros'])) {
+							$breadCrumbData = $Model->getCrumb(array_pop(Set::extract('/' . $modelName . '[id=' . $campo['id'] . ']/..', $view->viewVars['registros'])));
+							$title = sprintf(__('Show %s of %s', true), $campo['imagen']['alt'], $breadCrumbData);
+						} else {
+							$breadCrumbData = '';
+							$title = sprintf(__('Show %s', true), $campo['imagen']['alt']);
+						}
+		
 						$acciones[] = $this->image($nombre, array_merge($campo['imagen'], array(
-								'title'		=> sprintf(__('Show %s of %s', true), $campo['imagen']['alt'], $campo['bread_crumb']),
-								'alt'		=> $campo['bread_crumb'],
+								'title'		=> $title,
+								'alt'		=> $breadCrumbData,
 								'class'		=> 'breakdown_icon',
 								'longdesc'	=> Router::url($url))));
 						

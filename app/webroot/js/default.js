@@ -1,6 +1,20 @@
 //defino la variable para que este accesible desde todos lados (como una global)
 var timer;
 
+Array.prototype.clean = function(to_delete)
+{
+   var a;
+   for (a = 0; a < this.length; a++)
+   {
+      if (this[a] == to_delete)
+      {         
+         this.splice(a, 1);
+         a--;
+      }
+   }
+   return this;
+};
+
 var desglose = function (tr, url) {
 	var selector = "#" + tr;
 	

@@ -3,15 +3,10 @@
 /**
  * Creo la miga de pan.
  */
-if (empty($miga)) {
-	$appForm->addCrumb($this->name);
-	$appForm->addCrumb(__('Grid', true));
-} else {
-	$appForm->addCrumb($this->name, 
-			array('controller' 	=> $this->params['controller'], 
-				'action' 		=> 'index'));
-	$appForm->addCrumb($miga);
-}
+$appForm->addCrumb($this->name,
+		array('controller' 	=> $this->params['controller'],
+			'action' 		=> 'index'));
+$appForm->addCrumb(__('Grid', true));
 
 
 /**

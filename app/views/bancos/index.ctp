@@ -25,11 +25,6 @@ $condiciones['Condicion.Banco-nombre'] = array();
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'bancos.gif')));
 
-
-$miga = array('format' 	=> '(%s) %s', 
-			  'content' => array('Banco.codigo', 'Banco.nombre'));
-
-
 /**
 * Creo el cuerpo de la tabla.
 */
@@ -44,6 +39,4 @@ foreach ($registros as $k => $v) {
 }
 
 echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo));
-
-//$appForm->addScript('jQuery('#form').ajaxForm();');
 ?>
