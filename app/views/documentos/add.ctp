@@ -29,7 +29,7 @@ $campos['Documento.file_type'] = array('type' => 'hidden');
 $campos['Documento.file_size'] = array('type' => 'hidden');
 $campos['Documento.file_extension'] = array('type' => 'hidden');
 $campos['Documento.model'] = array('type' => 'select', 'options' => $models, 'empty' => true);
-$campos['Documento.archivo'] = array('aclaracion' => 'Debe cargar un archivo RTF con los patrones de la forma #*Model.campo*#.', 'type' => 'file', 'label' => 'Archivo Origen (.rtf)');
+$campos['Documento.archivo'] = array('aclaracion' => 'Debe cargar un archivo TXT/RTF/XLS/XLSX con los patrones de la forma #*Model.campo*#.', 'type' => 'file', 'label' => 'Archivo Origen');
 $campos['Documento.observacion'] = array();
 
 

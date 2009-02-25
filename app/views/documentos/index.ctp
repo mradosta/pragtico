@@ -32,13 +32,17 @@ foreach ($registros as $k => $v) {
 	$fila = null;
     $fila[] = array('tipo' => 'desglose', 'id' => $v['Documento']['id'], 'imagen' => array('nombre' => 'detalles.gif', 'alt' => 'Patterns'), 'url' => 'patterns');
 	$fila[] = array('model' => 'Documento', 'field' => 'id', 'valor' => $v['Documento']['id'], 'write' => $v['Documento']['write'], 'delete' => $v['Documento']['delete']);
-	$fila[] = array("tipo"=>"accion", "valor"=>$appForm->link($appForm->image('archivo.gif', array('alt' => "Descargar")), "descargar/" . $v['Documento']['id']));	
+	$fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('archivo.gif', array('alt' => 'Descargar')), array('action' => 'download', $v['Documento']['id'])));
 	$fila[] = array('model' => 'Documento', 'field' => 'nombre', 'valor' => $v['Documento']['nombre']);
 	$fila[] = array('model' => 'Documento', 'field' => 'model', 'valor' => $v['Documento']['model']);
 	$fila[] = array('model' => 'Documento', 'field' => 'observacion', 'valor' => $v['Documento']['observacion']);
 	$cuerpo[] = $fila;
 }
 
-echo $this->element('index/index', array("accionesExtra"=>array('opciones' => array("acciones"=>array("nuevo", "eliminar"))), "condiciones"=>$fieldset, "opcionesTabla"=>array("tabla"=>array("modificar"=>false)), 'cuerpo' => $cuerpo));
+echo $this->element('index/index',
+		array(	'accionesExtra'	=> array('opciones' => array('acciones' => array('nuevo', 'eliminar'))),
+				'condiciones'	=> $fieldset,
+				'opcionesTabla'	=> array('tabla' => array('modificar' => false)),
+				'cuerpo' 		=> $cuerpo));
 
 ?>

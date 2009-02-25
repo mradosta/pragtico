@@ -30,7 +30,12 @@ class Documento extends AppModel {
         'nombre' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
-				'message'	=> 'Debe especificar el nombre del documento modelo.')
+				'message'	=> 'Debe especificar el nombre del documento.')
+        ),
+        'model' => array(
+			array(
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar el Model asociado.')
         )
 	);
 
@@ -41,10 +46,40 @@ class Documento extends AppModel {
  * After save, moves the uploaded file to documents directory.
  */	
 	function afterSave($created) {
-		copy(TMP . $this->data['Documento']['file_name'], WWW_ROOT . 'files' . DS . 'documents' . DS . $this->id . '-' . Inflector::classify(strtolower(str_replace(' ', '_', $this->data['Documento']['nombre']))) . '.' . $this->data['Documento']['file_extension']);
+		copy(TMP . $this->data['Documento']['file_name'], $this->getFileName($this->id, $this->data['Documento']['nombre'], $this->data['Documento']['file_extension']));
 		@unlink(TMP . $this->data['Documento']['file_name']);
 	}
 	
+
+/**
+ * Before delete, saves the current record.
+ */			
+	function beforeDelete() {
+		$this->__document = $this->findById($this->id);
+		return parent::beforeDelete();
+	}
+
+
+/**
+ * After delete, deletes file from file system
+ */	
+	function afterDelete() {
+		@unlink($this->getFileName($this->__document['Documento']['id'], $this->__document['Documento']['nombre'], $this->__document['Documento']['file_extension']));
+		return parent::afterDelete();
+	}
+	
+
+/**
+ * Returns file name.
+ */		
+	function getFileName($id, $name, $extension, $path = true) {
+		if ($path === true) {
+			return WWW_ROOT . 'files' . DS . 'documents' . DS . $id . '-' . Inflector::classify(strtolower(str_replace(' ', '_', $name))) . '.' . $extension;
+		} else {
+			return $id . '-' . Inflector::classify(strtolower(str_replace(' ', '_', $name))) . '.' . $extension;
+		}
+	}
+
 
 /**
  * Extract patters from file based on it's mime type.
@@ -66,7 +101,7 @@ class Documento extends AppModel {
                 set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes');
                 App::import('Vendor', 'IOFactory', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'IOFactory.php');
                 
-                if ($type === 'xls') {
+                if ($extension === 'xls') {
                     $objReader = PHPExcel_IOFactory::createReader('Excel5');
                 } else {
                     $objReader = PHPExcel_IOFactory::createReader('Excel2007');

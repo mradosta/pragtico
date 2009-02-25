@@ -184,18 +184,21 @@ class DocumentosController extends AppController {
 
 
 /**
- * Permite descargar el archivo del documento.
+ * Download document.
  */
-	function descargar($id) {
+    function download($id) {
+		
 		$documento = $this->Documento->findById($id);
-		$archivo['data'] = $documento['Documento']['file_data'];
-		$archivo['size'] = $documento['Documento']['file_size'];
-		$archivo['type'] = $documento['Documento']['file_type'];
-		$archivo['name'] = $this->Util->getFileName($documento['Documento']['nombre'], $documento['Documento']['file_type']);
-		$this->set('archivo', $archivo);
-		$this->render('../elements/descargar', 'descargar');
-	}
-
+        $this->view = 'Media';
+        $params = array(
+              'id' => $this->Documento->getFileName($id, $documento['Documento']['nombre'], $documento['Documento']['file_extension'], false),
+              'name' => Inflector::classify(strtolower(str_replace(' ', '_', $documento['Documento']['nombre']))),
+              'download' => true,
+              'extension' => $documento['Documento']['file_extension'],
+              'path' => WWW_ROOT . 'files' . DS . 'documents' . DS
+        );
+       	$this->set($params);
+    }
 
     
 }
