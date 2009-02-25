@@ -34,7 +34,7 @@ class HistoryComponent extends Object {
  * @var array
  * @access private
  */
-	private $__blackListedActions = array('listable', 'save');
+	private $__blackListedActions = array('listable', 'save', 'delete');
 	
 	
 /**
