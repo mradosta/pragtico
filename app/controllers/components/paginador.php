@@ -50,7 +50,7 @@ class PaginadorComponent extends Object {
  * @access public
  */
     function startup(&$controller) {
-        $this->controller = &$controller;
+        $this->controller = $controller;
     }
 
 
@@ -218,10 +218,12 @@ class PaginadorComponent extends Object {
 
 			foreach ($this->controller->{$model}->totalizar as $operacion => $campos) {
 				foreach ($campos as $campo) {
-					$r = $this->controller->{$model}->find('first', array(
+					$r = $this->controller->{$model}->find('all', array(
 												'conditions'	=> $condiciones,
+												'recursive'		=> -1,
+												'contain'		=> array(),
 												'fields'		=> strtoupper($operacion) . '(' . $model . '.' . $campo . ') as total'));
-					$resultado[$campo] = $r[$model]['total'];
+					$resultado[$campo] = $r[0][$model]['total'];
 				}
 			}
 
