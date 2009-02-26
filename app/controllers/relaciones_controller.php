@@ -67,22 +67,22 @@ class RelacionesController extends AppController {
 	}
 
 /**
- * Add.
+ * Save.
  */
-	function add() {
+	function save() {
 		/**
 		* Si esta grabando y selecciona un recibo del empleador, agrego a la relacion laboral,
 		* los conceptos que posea ese recibo.
 		*/
-        if (!empty($this->data['Relacion']['recibo_id']) && !empty($this->data['Form']['accion']) && $this->data['Form']['accion'] == 'grabar') {
+        if (empty($this->data['Relacion']['id']) && !empty($this->data['Relacion']['recibo_id']) && !empty($this->data['Form']['accion']) && $this->data['Form']['accion'] === 'grabar') {
         	$recibo = $this->Relacion->Empleador->Recibo->findById($this->data['Relacion']['recibo_id']);
         	foreach ($recibo['RecibosConcepto'] as $v) {
-        		$relacionesConcepto[] = array('concepto_id'=>$v['concepto_id']);
+        		$relacionesConcepto[] = array('concepto_id' => $v['concepto_id']);
         	}
         	unset($this->data['Relacion']['recibo_id']);
-	        $this->data = array_merge($this->data, array('RelacionesConcepto'=>$relacionesConcepto));
+	        $this->data = array_merge($this->data, array('RelacionesConcepto' => $relacionesConcepto));
         }
-        parent::add();
+        return parent::save();
 	}
 
 

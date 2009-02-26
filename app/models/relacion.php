@@ -28,8 +28,8 @@ class Relacion extends AppModel {
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
-	var $modificadores = array('index'=>array('contain'=>array('Trabajador', 'Empleador')),
-								'edit'=>array('contain'=>array(
+	var $modificadores = array('index' => array('contain' => array('Trabajador', 'Empleador')),
+								'edit' => array('contain' => array(
 											  	'Trabajador',
 												'Empleador',
 												'Situacion',
@@ -37,8 +37,9 @@ class Relacion extends AppModel {
 												'Actividad',
 												'Area',
 												'ConveniosCategoria.Convenio')),
-								'add' =>array(								
-										'valoresDefault'=>array('ingreso' => array('date' => 'd/m/Y'))));
+								'add' => array(								
+										'valoresDefault' => array('ingreso' => array('date' => 'd/m/Y'),
+																  'horas' => '8')));
 
 	var $breadCrumb = array('format' 	=> '%s %s (%s)',
 							'fields' 	=> array('Trabajador.apellido', 'Trabajador.nombre', 'Empleador.nombre'));

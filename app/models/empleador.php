@@ -70,6 +70,9 @@ class Empleador extends AppModel {
         
 	);
 
+	var $breadCrumb = array('format' 	=> '%s - %s',
+							'fields' 	=> array('Empleador.cuit', 'Empleador.nombre'));
+	
 	var $belongsTo = array('Localidad', 'Actividad');
 	
 	var $hasMany = array(	'Area',
