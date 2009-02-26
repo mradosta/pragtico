@@ -32,7 +32,7 @@ class AppModel extends Model {
  */
 	
 	function afterFind($results, $primary = false) {
-		if ($primary == true) {
+		if ($primary === true) {
 			if (Set::check($results, '0.0')) {
 				$fieldName = key($results[0][0]);
 				foreach ($results as $key=>$value) {

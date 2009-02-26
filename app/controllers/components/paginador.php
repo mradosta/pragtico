@@ -220,8 +220,8 @@ class PaginadorComponent extends Object {
 				foreach ($campos as $campo) {
 					$r = $this->controller->{$model}->find('first', array(
 												'conditions'	=> $condiciones,
-												'fields'		=> 'SUM(' . $model . '.' . $campo . ') as total'));
-					$resultado[$campo] = $r[0]['total'];
+												'fields'		=> strtoupper($operacion) . '(' . $model . '.' . $campo . ') as total'));
+					$resultado[$campo] = $r[$model]['total'];
 				}
 			}
 
