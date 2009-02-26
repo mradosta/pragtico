@@ -38,7 +38,7 @@ class HistoryComponent extends Object {
 	
 	
 /**
- * Indica si ya fue instanciado el component.
+ * Prevent the re-initialization of the component.
  *
  * @var boolean
  * @access private
@@ -47,7 +47,7 @@ class HistoryComponent extends Object {
 	
 	
 /**
- * El Controller que instancio el component.
+ * The Controller who instantiated the componet.
  *
  * @var array
  * @access public
@@ -56,18 +56,17 @@ class HistoryComponent extends Object {
 
 	
 /**
- * Inicializa el Component para usar en el controller.
+ * Initialize the component.
  *
- * @param object $controller Una referencia al controller que esta instanciando el component.
+ * @param object $controller A reference to the controller.
  * @return void
  * @access public
  */
     function startup(&$controller) {
 
         /**
-        * Prevengo que entre mas de una vez.
-        */
-		
+         * Prevent to be executed more than once.
+         */
         if (!$this->__started) {
             $this->__started = true;
             $this->controller = $controller;
@@ -96,21 +95,6 @@ class HistoryComponent extends Object {
         $this->controller->redirect($history[$pos], true);
     }
 
-
-/**
- * Agrega una url al stack del history, que nunca se usara. 
- *
- * @return void
- * @access public
- */
-    function addFakeUrl_deprecated() {
-		if (count($this->controller->Session->read('historia')) == MAX_HISTORY) {
-			array_shift($this->__historia);
-		}
-		$this->__historia[] = "/fake/url/do_not_add";
-		$this->controller->Session->write('historia', $this->__historia);
-    }
-
     
 /**
  * Adds current url to history stack,
@@ -121,7 +105,8 @@ class HistoryComponent extends Object {
 	function _addUrl() {
 
 		if (in_array($this->controller->action, $this->__blackListedActions)
-			|| $this->controller->params['isAjax'] === true) {
+			|| $this->controller->params['isAjax'] === true
+		    || $this->controller->params['named']['layout'] === 'lov') {
 			return;
 		}
 		
@@ -151,7 +136,7 @@ class HistoryComponent extends Object {
 				$this->log('__history lo guardo asi:');
 				$this->log(array_reverse($history));
 				$this->log('=================');
-    */
+    			*/
 			}
 		}
     }
