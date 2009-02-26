@@ -103,9 +103,10 @@ class Formulas {
 
 		$formula = $this->__cleanUp($formula);
 		/** Invalidate division by zero */
-		if (preg_match('/.*\/\s*0.*/', $formula)) {
-			return '#N/A';
-		}
+		//if (preg_match('/.*\/\s*0.*/', $formula)) {
+		//	return '#N/A';
+		//}
+  		
 		
 		/** PHPExcel mistakes when comparing string, so verify it in PHP and send PHPExcel calculated boolean value.*/
 		if (preg_match_all("/\((\'[\w\s\/]+\'=\'[\w\s\/]+\')/", $formula, $strings)) {
@@ -117,7 +118,7 @@ class Formulas {
 				} else {
 					$this->__objPHPExcel->getActiveSheet()->setCellValue('A' . $cellId, false);
 				}
-				
+
 				/** Replace scaped character */
 				$string = str_replace('/', '\/', $string);
 				$formula = preg_replace('/' . $string . '/', 'A' . $cellId, $formula, 1);
@@ -168,7 +169,12 @@ class Formulas {
 		
 		$this->__cellId++;
 		$this->__objPHPExcel->getActiveSheet()->setCellValue("ZZ" . $this->__cellId, $formula);
-		return $this->__objPHPExcel->getActiveSheet()->getCell("ZZ" . $this->__cellId)->getCalculatedValue();
+		$result = $this->__objPHPExcel->getActiveSheet()->getCell("ZZ" . $this->__cellId)->getCalculatedValue();
+		if ($result == '' && $result !== 0) {
+			return '#N/A';
+		} else {
+			return $result;
+		}
 	}
 
 }
