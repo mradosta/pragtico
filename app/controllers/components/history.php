@@ -106,7 +106,7 @@ class HistoryComponent extends Object {
 
 		if (in_array($this->controller->action, $this->__blackListedActions)
 			|| $this->controller->params['isAjax'] === true
-		    || $this->controller->params['named']['layout'] === 'lov') {
+		    || (isset($this->controller->params['named']['layout']) && $this->controller->params['named']['layout'] === 'lov')) {
 			return;
 		}
 		
