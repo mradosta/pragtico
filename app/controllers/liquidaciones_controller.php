@@ -196,7 +196,6 @@ class LiquidacionesController extends AppController {
 		/**
 		* Agrego una url a la History para que vuelva bien a donde debe, ya que no uso un edit  comun.
 		*/
-		//$this->History->addFakeUrl();
 		$this->Liquidacion->recursive = -1;
 		$this->data = $this->Liquidacion->read(null, $id);
 	}

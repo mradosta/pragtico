@@ -12,7 +12,7 @@ if ($this->action === 'add') {
 } else {
 	$appForm->addCrumb(__('Edit', true));
 	$count = count($this->data);
-	if($count === 1) {
+	if($count === 1 && isset($this->data[0])) {
 		$appForm->addCrumb('<h5>' . $this->data[0][Inflector::classify($this->params['controller'])]['bread_crumb_text'] . '</h5>');
 	} else {
 		$appForm->addCrumb(sprintf(__('%s Records', true), $count));

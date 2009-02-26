@@ -23,11 +23,11 @@
 $campos = null;
 $campos['Liquidacion.id'] = array();
 $campos['Liquidacion.observacion'] = array();
-$fieldset = $appForm->pintarFieldsets(array(array('campos' => $campos)), array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "Obervaciones", 'imagen' => 'observaciones.gif')));
+$fieldset = $appForm->pintarFieldsets(array(array('campos' => $campos)), array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => 'Obervaciones', 'imagen' => 'observaciones.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->element('add/add', array('fieldset' => $fieldset, "opcionesForm"=>array("action"=>"saveMultiple")));
+echo $this->element('add/add', array('fieldset' => $fieldset, 'opcionesForm' => array('action' => 'save')));
 
 ?>
