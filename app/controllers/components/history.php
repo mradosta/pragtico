@@ -110,7 +110,8 @@ class HistoryComponent extends Object {
 			return;
 		}
 		
-		$url['controller'] = strtolower($this->controller->name);
+		//$url['controller'] = strtolower($this->controller->name);
+		$url['controller'] = $this->controller->name;
 		$url['action'] = $this->controller->action;
 		$url = array_merge($url, $this->controller->params['pass']);
 		$url = array_merge($url, $this->controller->params['named']);
