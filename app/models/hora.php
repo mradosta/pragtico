@@ -145,7 +145,7 @@ class Hora extends AppModel {
 					continue;
 				}
 				$tipo = $map[$hora['Hora']['tipo']];
-				$horas[$tipo] = $hora[0]['total'];
+				$horas[$tipo] = $hora['Hora']['total'];
 
 				/**
 				* Busco el concepto.
