@@ -176,9 +176,9 @@ class PaginadorComponent extends Object {
 				$condicionMultiple = null;
 				$sufix = substr(trim($k), -2);
 				$k = str_replace('.', '-', $this->__removerReemplazos($k));
-				if ($sufix == '>=') {
+				if ($sufix === '>=') {
 					$this->controller->data['Condicion'][$k . '__desde'] = $this->Util->format($this->__removerReemplazos($v), array('type' => 'datetime'));
-				} elseif ($sufix == '<=') {
+				} elseif ($sufix === '<=') {
 					$this->controller->data['Condicion'][$k . '__hasta'] = $this->Util->format($this->__removerReemplazos($v), array('type' => 'datetime'));
 				} else {
 					$this->controller->data['Condicion'][$k] = $this->__removerReemplazos($v);
@@ -215,13 +215,12 @@ class PaginadorComponent extends Object {
 			if (isset($this->controller->{$model}->Behaviors->Containable->runtime[$model])) {
 				$contain = $this->controller->{$model}->Behaviors->Containable->runtime[$model];
 			}
+			$this->controller->{$model}->contain();
 
 			foreach ($this->controller->{$model}->totalizar as $operacion => $campos) {
 				foreach ($campos as $campo) {
 					$r = $this->controller->{$model}->find('all', array(
-												'conditions'	=> $condiciones,
 												'recursive'		=> -1,
-												'contain'		=> array(),
 												'fields'		=> strtoupper($operacion) . '(' . $model . '.' . $campo . ') as total'));
 					$resultado[$campo] = $r[0][$model]['total'];
 				}
