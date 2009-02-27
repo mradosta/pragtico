@@ -130,10 +130,6 @@ $fila = null;
 $fila[] = array("valor"=>"Son " . $formato->format($this->data['Liquidacion']['total_beneficios'], "numeroEnLetras") . " pesos en Beneficios", "class"=>"imitar_th_izquierda", "colspan"=>9);
 $fila[] = array("valor"=>"Beneficios " . $formato->format($this->data['Liquidacion']['total_beneficios'], "moneda"), "class"=>"imitar_th_derecha");
 $cuerpo[] = $fila;
-$fila = null;
-$fila[] = array("valor"=>"&nbsp;", "class"=>"imitar_th_izquierda", "colspan"=>9);
-$fila[] = array("valor"=>$formato->format($this->data['Liquidacion']['total'], array("before"=>"$ ", "places"=>2)), "class"=>"imitar_th_derecha");
-$cuerpo[] = $fila;	
 	
 
 $opcionesTabla =  array("tabla"=>
