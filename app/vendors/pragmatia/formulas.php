@@ -74,7 +74,6 @@ class Formulas {
 		if (substr($formula, 0, 1) !== '=') {
 			$formula = '=' . $formula;
 		}
-
 		return $formula;
 	}
 
@@ -105,11 +104,10 @@ class Formulas {
 		/** Invalidate division by zero */
 		//if (preg_match('/.*\/\s*0.*/', $formula)) {
 		//	return '#N/A';
-		//}
-  		
+		//}  		
 		
 		/** PHPExcel mistakes when comparing string, so verify it in PHP and send PHPExcel calculated boolean value.*/
-		if (preg_match_all("/\((\'[\w\s\/]+\'=\'[\w\s\/]+\')/", $formula, $strings)) {
+		if (preg_match_all("/\((\'[\.\w\s\/]+\'=\'[\.\w\s\/]+\')/", $formula, $strings)) {
 			foreach (array_unique($strings[1]) as $k => $string) {
 				$cellId++;
 				$partes = explode('=', $string);
@@ -143,7 +141,7 @@ class Formulas {
 			$this->__objPHPExcel->getActiveSheet()->setCellValue('A' . $cellId, $strings[1][0]);
 			$formula = preg_replace("/\'" . $strings[1][0] . "\'/", 'A' . $cellId, $formula, 1);
 			$cellId++;
-			$this->__objPHPExcel->getActiveSheet()->setCellValue("A" . $cellId, $strings[2][0]);
+			$this->__objPHPExcel->getActiveSheet()->setCellValue('A' . $cellId, $strings[2][0]);
 			$formula = preg_replace("/\'" . $strings[2][0] . "\'/", 'A' . $cellId, $formula, 1);
 		}
 
@@ -168,8 +166,10 @@ class Formulas {
 		}
 		
 		$this->__cellId++;
-		$this->__objPHPExcel->getActiveSheet()->setCellValue("ZZ" . $this->__cellId, $formula);
-		$result = $this->__objPHPExcel->getActiveSheet()->getCell("ZZ" . $this->__cellId)->getCalculatedValue();
+		$formula = str_replace('\'', '"', $formula);
+		$this->__objPHPExcel->getActiveSheet()->setCellValue('ZZ' . $this->__cellId, $formula);
+		$result = $this->__objPHPExcel->getActiveSheet()->getCell('ZZ' . $this->__cellId)->getCalculatedValue();
+		
 		if ($result == '' && $result !== 0) {
 			return '#N/A';
 		} else {

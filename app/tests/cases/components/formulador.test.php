@@ -92,6 +92,11 @@ class FormuladorComponentTestCase extends CakeTestCase {
 	
 	function testResolverNombreFormulas() {
 
+		$formula = "=if('F.A.E.C. y S.'='N/A', 'Aporte Solidario', 'F.A.E.C. y S.')";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = 'F.A.E.C. y S.';
+		$this->assertEqual($expected, $result);
+		
 		$formula = "=if 	('mensual'       ='mensual1', 'Basico',         'Horas')";
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = 'Horas';
