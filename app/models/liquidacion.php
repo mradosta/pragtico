@@ -563,7 +563,7 @@ class Liquidacion extends AppModel {
 			
 			if (substr($nombreConcepto, 0, 3) === '=if') {
 				$nombreConcepto = $this->resolver($nombreConcepto);
-			} else {
+			} elseif (in_array(substr($nombreConcepto, 0, 1), array('#', '='))) {
 				$nombreConcepto = substr($nombreConcepto, 1);
 			}
 		} else {
