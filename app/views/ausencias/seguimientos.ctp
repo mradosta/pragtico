@@ -27,7 +27,12 @@ foreach ($this->data['AusenciasSeguimiento'] as $k=>$v) {
 	$fila[] = array('model' => 'AusenciasSeguimiento', 'field' => 'dias', 'valor' => $v['dias']);
 	$fila[] = array('model' => 'AusenciasSeguimiento', 'field' => 'comprobante', 'valor' => $v['comprobante']);
 	$fila[] = array('model' => 'AusenciasSeguimiento', 'field' => 'estado', 'valor' => $v['estado']);
-	$cuerpo[] = $fila;
+	if ($v['estado'] === 'Liquidado') {
+		$fila[] = array('tipo' => 'desglose', 'id' => $v['liquidacion_id'], 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidaciones'), 'url' => array('controller' => 'liquidaciones', 'action' => 'recibo_html'));
+		$cuerpo[] = array('contenido' => $fila, 'opciones' => array('seleccionMultiple' => false, 'eliminar' => false, 'modificar' => false));
+	} else {
+		$cuerpo[] = $fila;
+	}
 }
 
 $url = array('controller' => "ausencias_seguimientos", 'action' => 'add', "AusenciasSeguimiento.ausencia_id"=>$this->data['Ausencia']['id']);
