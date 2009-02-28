@@ -131,7 +131,8 @@ class Ausencia extends AppModel {
 				'conditions'		=> array(	'Ausencia.relacion_id' 	=> $relacion['Relacion']['id'],
 												array('AND' => array('Ausencia.desde >='	=> $periodo['desde'],
 																	'Ausencia.desde <='		=> $periodo['hasta'])))));
-		
+
+		$ausencias['Accidente'] = 0;
 		$ausencias['Justificada'] = 0;
 		$ausencias['Injustificada'] = 0;
 		$conceptos = $auxiliares = array();
@@ -184,11 +185,10 @@ class Ausencia extends AppModel {
 								'codigoConcepto'	=> 'ausencia_' . strtolower($type)));
 			}
 		}
-				$ausencias['#ausencias_justificadas'] = 0;
-		$ausencias['#ausencias_justificadas'] = 0;
 
 		return array('conceptos' 	=> $conceptos,
-					 'variables' 	=> array('#ausencias_justificadas' 		=> $ausencias['Justificada'],
+					 'variables' 	=> array('#ausencias_accidentes' 		=> $ausencias['Accidente'],
+											 '#ausencias_justificadas' 		=> $ausencias['Justificada'],
 										  	 '#ausencias_injustificadas' 	=> $ausencias['Injustificada']),
 					 'auxiliar' 	=> $auxiliares);
 	}
