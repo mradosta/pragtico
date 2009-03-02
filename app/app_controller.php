@@ -309,7 +309,13 @@ class AppController extends Controller {
                      */
                     $ids = Set::extract('/' . $this->modelClass . '/' . $this->{$this->modelClass}->primaryKey, $this->data);
                     if (!empty($ids)) {
-                        $data = $this->data;
+						$data = null;
+						if (!isset($this->data[0])) {
+                        	$data[] = $this->data;
+						} else {
+							$data = $this->data;
+						}
+						$this->data = null;
                         
                         /**
                          * Puede haber un modificador al comportamiento estandar setaeado en el model.
@@ -318,12 +324,20 @@ class AppController extends Controller {
                             $this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
                         }
                         
-                        $this->data = $this->{$this->modelClass}->find('all', 
+						$this->{$this->modelClass}->Behaviors->attach('Crumbable');
+                        $this->data = $this->{$this->modelClass}->find('all',
                                 array(  'acceso'    => 'write', 
                                         'conditions'=> array($this->modelClass . '.' . $this->{$this->modelClass}->primaryKey => $ids)));
+
                         foreach ($data as $k => $v) {
-                            foreach ($v as $model=>$datos) {
-                                $this->data[$k][$model] = $datos;
+                            foreach ($v as $model => $datos) {
+								if (isset($datos[0])) {
+									foreach ($datos as $kDetail => $vDatail) {
+										$this->data[$k][$model][$kDetail] = array_merge($this->data[$k][$model][$kDetail], $vDatail);
+									}
+								} else {
+                                	$this->data[$k][$model] = array_merge($this->data[$k][$model], $datos);
+								}
                             }
                         }
                         //$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error", array("errores"=>$dbError));
@@ -340,258 +354,6 @@ class AppController extends Controller {
         $this->render('add');
     }
     
-/**
- * save.
- * Se encarga ed guardar datos editados.
- * Maneja arrays de data, es decir, puede guardar data de edicion multiple como simple.
- * Valida y guarda master/detail.
- *
- * @return void.
- * @access public
- */
-	function xsave() {
-		if (isset($this->data['Form']['volverAInsertar'])) {
-			$this->action = 'add';
-			$back = 1;
-			if (!empty($this->data['Form']['volverAInsertar'])) {
-				$back = 2;
-			}
-		} else {
-			$this->action = 'edit';
-			$back = 2;
-		}
-		
-		if (!empty($this->data['Form']['accion'])) {
-			if ($this->data['Form']['accion'] === 'duplicar') {
-				unset($this->data[$this->modelClass][$this->{$this->modelClass}->primaryKey]);
-				$this->data['Form']['accion'] = 'grabar';
-			}
-			
-			if ($this->data['Form']['accion'] === 'grabar') {
-				$c = 0;
-				/**
-				* Saco lo que no tengo que grabar.
-				* En form, tengo informacion que mande desde la vista.
-				* En Bar es informacion temporal que necesita el control relacionado.
-				*/
-				unset($this->data['Form']);
-				unset($this->data['Bar']);
-				
-				/**
-				 * Me aseguro de trabajar siempre con un array de data.
-				 */
-				if (!isset($this->data[0])) {
-					$this->data = array($this->data);
-				}
-				
-				/**
-				 * Must verify if all elements in the array part of the same model. Maybe I've
-				 * elements of a related model.
-				 */
-				$ant = array_shift(array_keys($this->data[0]));
-				$mismoModel = true;
-				foreach ($this->data as $k=>$v) {
-					if ($ant !== array_pop(array_keys($v))) {
-						$mismoModel = false;
-					}
-				}
-				
-				$invalidFields = null;
-				$cantidad = count($this->data);
-				if ($mismoModel) {
-					if (!$this->{$this->modelClass}->saveAll($this->data, array('validate' => 'first'))) {
-						$invalidFields = $this->{$this->modelClass}->validationErrors;
-					}
-					$c = $cantidad;
-				} else {
-					foreach ($this->data as $k => $v) {
-						
-						/**
-						* Debo buscar los datos que tenia originalmente, para luego verificar si
-						* se han eliminado alguno de los detalles.
-						*/
-						$find = array();
-						$tmp = $v;
-						unset($tmp[$this->modelClass]);
-						if (!empty($v[$this->modelClass][$this->{$this->modelClass}->primaryKey])) {
-							$findBy = "findBy" . $this->{$this->modelClass}->primaryKey;
-							$this->{$this->modelClass}->contain(array_keys($tmp));
-							$find = $this->{$this->modelClass}->{$findBy}($v[$this->modelClass][$this->{$this->modelClass}->primaryKey]);
-						}
-						
-						/**
-						 * Must take care of habtm relations when saving.
-						 */
-						if (!empty($this->{$this->modelClass}->hasAndBelongsToMany)) {
-							foreach($this->{$this->modelClass}->hasAndBelongsToMany as $habtmModel => $habtmOptions) {
-								if (!empty($v[$habtmModel][$habtmOptions['associationForeignKey']]) && $this->{$this->modelClass}->{$habtmModel}->Behaviors->trigger($this->{$this->modelClass}->{$habtmModel}, 'beforeSave') === true) {
-									$newsHabtm = null;
-									
-									$v[$habtmModel] = array_merge($v[$habtmModel], $this->{$this->modelClass}->{$habtmModel}->data[$habtmOptions['className']]);
-									$this->{$this->modelClass}->{$habtmModel}->data = array();
-									
-									if (empty($v[$habtmModel][$habtmOptions['foreignKey']]) && !empty($v[$this->modelClass][$this->{$this->modelClass}->primaryKey])) {
-										$v[$habtmModel][$habtmOptions['foreignKey']] = $v[$this->modelClass][$this->{$this->modelClass}->primaryKey];
-									} else {
-										$v[$habtmModel][$habtmOptions['foreignKey']] = null;
-									}
-									
-									if (isset($v[$habtmModel][$habtmOptions['associationForeignKey']]) && is_array($v[$habtmModel][$habtmOptions['associationForeignKey']])) {
-										$newHabtm = $v[$habtmModel];
-										foreach ($v[$habtmModel][$habtmOptions['associationForeignKey']] as $associationForeignKeyValue) {
-											$newHabtm[$habtmOptions['associationForeignKey']] = null;
-											$newHabtm[$habtmOptions['associationForeignKey']] = $associationForeignKeyValue;
-											$newHabtm[$this->{$this->modelClass}->{$habtmOptions['with']}->primaryKey] = null;
-											$newsHabtm[] = $newHabtm;
-										}
-										$v[$habtmModel] = $newsHabtm;
-									}
-									
-									if (!empty($v[$habtmModel])) {
-										foreach ($v[$habtmModel] as $kHabtmData => $vHabtmData) {
-											$exits = Set::extract('/' . $habtmModel . '[' . $this->{$this->modelClass}->{$habtmModel}->primaryKey . '=' . $vHabtmData[$habtmOptions['associationForeignKey']] . ']/' . $habtmOptions['with'] . '/' . $this->{$this->modelClass}->{$habtmModel}->primaryKey, $find);
-											if (isset($exits[0])) {
-												$v[$habtmModel][$kHabtmData][$this->{$this->modelClass}->{$habtmModel}->primaryKey] = $exits[0];
-											}
-										}
-									}
-								} elseif (empty($v[$habtmModel][$habtmOptions['associationForeignKey']])) {
-									unset($v[$habtmModel][$habtmOptions['associationForeignKey']]);
-								}
-							}
-						} 
-						
-						/**
-						 * Must take care of hasMany relations when saving if comming from checkbox.
-						 */
-						if (!empty($this->{$this->modelClass}->hasMany)) {
-							foreach($this->{$this->modelClass}->hasMany as $hasManyModel => $hasManyOptions) {
-								$newHasMany = null;
-								if (!empty($v[$hasManyModel])) {
-									foreach ($v[$hasManyModel] as $hasManyField => $hasManyValues) {
-										if (!empty($hasManyValues)) {
-											foreach ($hasManyValues as $hasManyValue) {
-												$newHasMany[][$hasManyField] = $hasManyValue;
-											} 
-										}
-									}
-									if (!empty($newHasMany)) {
-										$v[$hasManyModel] = $newHasMany;
-									} else {
-										unset($v[$hasManyModel][$hasManyField]);
-									}
-								}
-							}
-						}
-						
-						
-						$db = ConnectionManager::getDataSource($this->{$this->modelClass}->useDbConfig);
-						$db->begin($this->{$this->modelClass});
-						
-						/**
-						* if any detail has been deleted, must delete them manually.
-						*/
-						$errorsDeletingDetails = false;
-						if ($this->action !== 'add') {
-							$associations = $this->{$this->modelClass}->getAssociated();
-							foreach ($tmp as $detailKey => $detailValue) {
-								
-								if ($associations[$detailKey] !== 'hasAndBelongsToMany') {
-									$originalDetailsId = Set::extract("/" . $this->{$this->modelClass}->{$detailKey}->primaryKey, $find[$detailKey]);
-									
-									$postedDetailsId = array();
-									foreach ($v[$detailKey] as $tv) {
-										if (!empty($tv[$this->{$this->modelClass}->{$detailKey}->primaryKey])) {
-											$postedDetailsId[] = $tv[$this->{$this->modelClass}->{$detailKey}->primaryKey];
-										}
-									}
-									
-									foreach (array_diff($originalDetailsId, $postedDetailsId) as $id) {
-										if (!$this->{$this->modelClass}->{$detailKey}->del($id)) {
-											$errorsDeletingDetails = true;
-										}
-									}
-								}
-								
-								if (empty($v[$detailKey])) {
-									unset($v[$detailKey]);
-								}
-							}
-						}
-						
-						if ($errorsDeletingDetails === false) {
-							$this->{$this->modelClass}->create($v);
-							//d($v);
-							debug($this->{$this->modelClass}->saveAll($v, array('validate' => 'first')));
-							d($this->{$this->modelClass}->validationErrors);
-							//$this->{$this->modelClass}->set($v);
-							if ($this->{$this->modelClass}->saveAll($v, array('validate' => 'first'))) {
-								$c++;
-							} elseif (!empty($this->{$this->modelClass}->validationErrors)) {
-								$invalidFields[$k] = $this->{$this->modelClass}->validationErrors;
-							} else {
-								$c++;
-							}
-						} else {
-							$db->rollback($this->{$this->modelClass});
-						}
-					}
-				}
-				$dbError = $this->{$this->modelClass}->getError();
-				
-				/**
-				* En base al/los errores que pueden haber determino que mensaje mostrar.
-				*/
-				if (empty($dbError) && empty($invalidFields)) {
-					if ($c === 1) {
-						$mensaje = __('The record has been saved', true);
-					} else {
-						$mensaje = sprintf(__('%s of %s records have been saved', true), $c, $cantidad);
-					}
-					$this->Session->setFlash($mensaje, "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
-					$this->History->goBack($back);
-				} else {
-
-					/**
-					 * Debo recuperar nuevamente los datos porque los necesito en los controler relacionados (Lov, relacionado).
-					 * Los que ya tengo, los dejo como estaban, porque se debe a que no validaron.
-					 */
-					$ids = Set::extract('/' . $this->modelClass . '/' . $this->{$this->modelClass}->primaryKey, $this->data);
-					if (!empty($ids)) {
-						$data = $this->data;
-						
-						/**
-						 * Puede haber un modificador al comportamiento estandar setaeado en el model.
-						 */
-						if (isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
-							$this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
-						}
-						
-						$this->data = $this->{$this->modelClass}->find('all', 
-								array(	'acceso'	=> 'write', 
-										'conditions'=> array($this->modelClass . '.' . $this->{$this->modelClass}->primaryKey => $ids)));
-						foreach ($data as $k => $v) {
-							foreach ($v as $model=>$datos) {
-								$this->data[$k][$model] = $datos;
-							}
-						}
-						$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error", array("errores"=>$dbError));
-					} else {
-						$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error", array("errores"=>$dbError));
-					}
-					
-					/**
-					 * Cargo la variable validationErrors con los errores que surgieron de la validacion.
-					 */
-					$this->{$this->modelClass}->validationErrors = $invalidFields;
-				}
-			} elseif ($this->data['Form']['accion'] === 'cancelar') {
-				$this->History->goBack();
-			}
-		}
-		$this->render('add');
-	}
-
 
 /**
  * Delete.
