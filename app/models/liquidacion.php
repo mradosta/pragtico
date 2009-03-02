@@ -387,9 +387,9 @@ class Liquidacion extends AppModel {
 		* Diferencio en los diferentes tipos (beneficios o pesos).
 		*/
 		$auxiliar = null;
-		$auxiliar['estado'] = "Pendiente";
-		$auxiliar['fecha'] = "##MACRO:fecha_liquidacion##";
-		$auxiliar['liquidacion_id'] = "##MACRO:liquidacion_id##";
+		$auxiliar['estado'] = 'Pendiente';
+		$auxiliar['fecha'] = '##MACRO:fecha_liquidacion##';
+		$auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
 		$auxiliar['relacion_id'] = $liquidacion['relacion_id'];
 
 		if ($totales['total_pesos'] > 0) {
@@ -412,7 +412,7 @@ class Liquidacion extends AppModel {
 		if (!empty($auxiliar)) {
 			$save['LiquidacionesAuxiliar'] = $auxiliar;
 		}
-		
+
 		$error = null;
 		$error = $this->__getError();
 		if (!empty($error)) {
@@ -991,12 +991,11 @@ class Liquidacion extends AppModel {
     
 
     function __setError($error) {
-        $this->__saveError[] = $error;
+        $this->__receiptError[] = $error;
     }
     
     function __getError() {
-        //return $this->__saveError;
-		return;
+        return $this->__receiptError;
     }
 
     function setPeriod($period) {

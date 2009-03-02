@@ -26,6 +26,7 @@ foreach ($this->data['LiquidacionesError'] as $k=>$v) {
 	$fila[] = array('model' => 'LiquidacionesError', 'field' => 'tipo', 'valor' => $v['tipo']);
 	$fila[] = array('model' => 'LiquidacionesError', 'field' => 'gravedad', 'valor' => $v['gravedad']);
 	$fila[] = array('model' => 'LiquidacionesError', 'field' => 'concepto', 'valor' => $v['concepto']);
+	$fila[] = array('model' => 'LiquidacionesError', 'field' => 'variable', 'valor' => $v['variable']);
 	$fila[] = array('model' => 'LiquidacionesError', 'field' => 'formula', 'valor' => $v['formula']);
 	$fila[] = array('model' => 'LiquidacionesError', 'field' => 'descripcion', 'valor' => $v['descripcion']);
 	$fila[] = array('model' => 'LiquidacionesError', 'field' => 'descripcion_adicional', 'valor' => $v['descripcion_adicional']);
