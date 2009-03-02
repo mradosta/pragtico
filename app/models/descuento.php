@@ -83,11 +83,13 @@ class Descuento extends AppModel {
 	);
 
 
-	var $belongsTo = array(	'Relacion' =>
-                        array('className'    => 'Relacion',
-                              'foreignKey'   => 'relacion_id'));
+	var $breadCrumb = array('format' => '%s %s (%s)', 
+							'fields' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));
+
+
+	var $belongsTo = array('Liquidacion', 'Relacion');
 	
-	var $hasMany = array(	'DescuentosDetalle' =>
+	var $hasMany = array(	'Pago', 'DescuentosDetalle' =>
 					array('className'    => 'DescuentosDetalle',
 						  'foreignKey'   => 'descuento_id'));
 
@@ -129,8 +131,11 @@ class Descuento extends AppModel {
 				  	'contain'		=> 'DescuentosDetalle',
 				  	'checkSecurity'	=> false,
 					'conditions' 	=> array(
+				array('OR'	=> array(	'Descuento.hasta' 		=> '0000-00-00',
+										'Descuento.hasta >=' 	=> $opciones['periodo']['hasta'])),
 				'Descuento.relacion_id' 						=> $relacion['Relacion']['id'],
 				'Descuento.desde >=' 							=> $opciones['periodo']['desde'],
+
  				'(Descuento.descontar & ' . $descontar . ') >' 	=> 0,
  				'Descuento.estado' 								=> 'Activo')
 		));
@@ -227,12 +232,23 @@ class Descuento extends AppModel {
  * descontar field is bitwise, must sum values then.
  */
 	function beforeSave($options = array()) {
-		if (isset($this->data['Descuento']['descontar'])) {
+		if (isset($this->data['Descuento']['descontar']) && is_array($this->data['Descuento']['descontar'])) {
 			$this->data['Descuento']['descontar'] = array_sum($this->data['Descuento']['descontar']);
-			if ($this->data['Descuento']['tipo'] === 'Vale') {
-				$this->data['Descuento']['cuotas'] = 1;
-			}
 		}
+		if ($this->data['Descuento']['tipo'] === 'Vale') {
+			$this->data['Descuento']['cuotas'] = 1;
+		}
+
+		/** Must create a pending peyment */
+		if (empty($this->data['Descuento']['id']) && in_array($this->data['Descuento']['tipo'], array('Vale', 'Prestamo'))) {
+			$this->data['Pago'][0]['fecha'] = $this->data['Descuento']['alta'];
+			$this->data['Pago'][0]['relacion_id'] = $this->data['Descuento']['alta'];
+			$this->data['Pago'][0]['relacion_id'] = $this->data['Descuento']['relacion_id'];
+			$this->data['Pago'][0]['monto'] = $this->data['Descuento']['monto'];
+			$this->data['Pago'][0]['moneda'] = 'Pesos';
+			$this->data['Pago'][0]['estado'] = 'Pendiente';
+		}
+		
 		return parent::beforeSave($options);
 	}
 

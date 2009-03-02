@@ -29,14 +29,14 @@ class Pago extends AppModel {
 	var $order = array('Pago.fecha' => 'desc');
 
 	var $validate = array(
-        'fecha' => array(
+        'fechax' => array(
 			array(
 				'rule'		=> VALID_DATE, 
 				'message'	=> 'Debe especificar una fecha valida.')
         )
 	);
 
-	var $belongsTo = array('Relacion', 'Liquidacion');
+	var $belongsTo = array('Relacion', 'Liquidacion', 'Descuento');
                               
 	var $hasMany = array(	'PagosForma' =>
                         array('className'    => 'PagosForma',

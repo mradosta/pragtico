@@ -21,18 +21,19 @@
 */
 $campos = null;
 $campos['Descuento.id'] = array();
-$campos['Descuento.relacion_id'] = array(	"label"=>"Relacion",
-											"lov"=>array("controller"	=>	"relaciones",
-													"seleccionMultiple"	=> 	0,
-														"camposRetorno"	=>	array(	"Trabajador.nombre",
-																					"Trabajador.apellido",
-																					"Empleador.nombre")));
+$campos['Descuento.relacion_id'] = array(	'label'=>'Relacion',
+											'lov'=>array('controller'	=>	'relaciones',
+													'seleccionMultiple'	=> 	0,
+														'camposRetorno'	=>	array(	'Trabajador.nombre',
+																					'Trabajador.apellido',
+																					'Empleador.nombre')));
 $campos['Descuento.alta'] = array();
 $campos['Descuento.desde'] = array();
-$campos['Descuento.descripcion'] = array('aclaracion' => "Esta descripcion saldra impresa en el recibo.");
-$campos['Descuento.monto'] = array("label"=>"Monto $", 'aclaracion' => "Se refiere al monto total a descontar.");
+$campos['Descuento.hasta'] = array();
+$campos['Descuento.descripcion'] = array('aclaracion' => 'Esta descripcion saldra impresa en el recibo.');
+$campos['Descuento.monto'] = array('label' => 'Monto $', 'aclaracion' => 'Se refiere al monto total a descontar.');
 $campos['Descuento.cuotas'] = array();
-$campos['Descuento.maximo'] = array('aclaracion' => "Es el porcentaje a descontar con cada cuota sobre el SMVM.");
+$campos['Descuento.maximo'] = array('aclaracion' => 'Es el porcentaje a descontar con cada cuota sobre el SMVM.');
 $campos['Descuento.descontar'] = array('multiple' => 'checkbox');
 $campos['Descuento.concurrencia'] = array();
 $campos['Descuento.tipo'] = array();
@@ -45,7 +46,5 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' =
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-$miga = array('format' 	=> '%s %s (%s)', 
-			  'content' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));
-echo $this->element("add/add", array('fieldset' => $fieldset, 'miga' => $miga));
+echo $this->element('add/add', array('fieldset' => $fieldset));
 ?>
