@@ -25,6 +25,8 @@
 class LiquidacionesController extends AppController {
 
 
+	var $components = array('Formulador');
+	
 /**
  * PreLiquidar.
  * Me permite hacer una preliquidacion.
