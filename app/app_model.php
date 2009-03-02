@@ -105,6 +105,7 @@ class AppModel extends Model {
     function appSave($data = array(), $options = array()) {
 
         //$options = array_merge(array('validate' => 'first', 'atomic' => false), $options);
+		//$options = array_merge(array('validate' => 'first', 'callbacks' => 'after'), $options);
 		$options = array_merge(array('validate' => 'first'), $options);
         
         /**
@@ -121,12 +122,22 @@ class AppModel extends Model {
             $dataCount++;
             $this->data = $v;
 
-            //if (!$this->beforeSave()) {
-            //    continue;
-            //}
-			//if (!empty($this->data)) {
-			//	$data = array_merge($data, $this->data);
-			//}
+			/*
+			$result = $this->Behaviors->trigger($this, 'beforeSave', array($options), array(
+				'break' => true, 'breakOn' => false
+			));
+			if (!$result || !$this->beforeSave($options)) {
+				$this->whitelist = $_whitelist;
+				return false;
+			}
+			*/
+			
+            if (!$this->beforeSave()) {
+                continue;
+            }
+			if (!empty($this->data)) {
+				$data[$k] = array_merge($data[$k], $this->data);
+			}
             
             /**
              * Must verify if all elements in the array belongs to the same model.
@@ -148,14 +159,27 @@ class AppModel extends Model {
             $relatedData = $this->data;
             unset($relatedData[$this->name]);
             if (!empty($this->data[$this->name][$this->primaryKey])) {
-                $findBy = 'findBy' . $this->primaryKey;
+                $findBy = 'findBy' . Inflector::camelize($this->primaryKey);
                 $this->contain(array_keys($relatedData));
                 $find = $this->{$findBy}($this->data[$this->name][$this->primaryKey]);
             }
 
             $associations = $this->getAssociated();
             foreach ($relatedData as $detailKey => $detailValue) {
-                
+
+				/** Make sure to trigger behaviors for related models */
+				if ($associations[$detailKey] == 'hasMany') {
+					foreach ($detailValue as $hasManyKey => $hasManyValue) {
+						$this->{$detailKey}->data = array($detailKey => $hasManyValue);
+						if (!$this->Behaviors->trigger($this->{$detailKey}, 'beforeSave', array($options), array(
+							'break' => true, 'breakOn' => false))) {
+							continue 3;
+						}
+						$this->data[$detailKey][$hasManyKey] = array_merge($this->data[$detailKey][$hasManyKey], $this->{$detailKey}->data[$detailKey]);
+					}
+				}
+
+
                 if (!empty($this->{$associations[$detailKey]}[$detailKey]['unique'])) {
 
                     if ($associations[$detailKey] !== 'hasAndBelongsToMany') {
