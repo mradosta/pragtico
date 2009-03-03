@@ -35,9 +35,8 @@ class Manager2Service extends AppModel {
 	function facturacion($id) {
 
 		if (is_numeric($id)) {
-			$Pago = new Pago();
-			App::import('Model', 'Factura');
-			$Factura = new Factura();
+			$Pago = ClassRegistry::init('Pago');
+			$Factura = ClassRegistry::init('Factura');
 			$condiciones['Liquidacion.estado'] = array('Confirmada');
 			$condiciones['Liquidacion.id >'] = $id;
 			$liquidaciones = $Pago->Liquidacion->find('first', array('checkSecurity'=>false, 'conditions'=>$condiciones, 'fields' => 'max(Liquidacion.id) as ultimo'));
@@ -73,8 +72,7 @@ class Manager2Service extends AppModel {
 				}
 			}
 			return $doc->saveXML();
-		}
-		else {
+		} else {
   			return '';
 		}
 	}
@@ -88,7 +86,7 @@ class Manager2Service extends AppModel {
 	function empleadores($id) {
 	
 		if (is_numeric($id)) {
-			$Empleador = new Empleador();
+			$Empleador = ClassRegistry::init('Empleador');
 			$registros = $Empleador->find('all', array('checkSecurity'=>false, 'conditions'=>array('Empleador.id >'=>$id)));
 			$tmp = $registros;
 			$ultimo = array_pop($tmp);
@@ -122,8 +120,7 @@ class Manager2Service extends AppModel {
 				$child = $empleadores->appendChild($child);
 			}
 			return $doc->saveXML();
-		}
-		else {
+		} else {
 			return '';
 		}
 	}
@@ -139,7 +136,7 @@ class Manager2Service extends AppModel {
 	function pagos($id) {
 
 		if (is_numeric($id)) {
-			$Pago = new Pago();
+			$Pago = ClassRegistry::init('Pago');
 			$registros = $Pago->find('all', array(	'contain'	=>array('Relacion.Trabajador',
 																		'PagosForma.Cuenta'),
 													'conditions'=>array('Pago.id >'		=> $id,
@@ -170,8 +167,7 @@ class Manager2Service extends AppModel {
 					$child->setAttribute('tipo', $forma['forma']);
 					if (!empty($forma['Cuenta']['cbu'])) {
 						$child->setAttribute('cbuOrigen', $forma['Cuenta']['cbu']);
-					}
-					else {
+					} else {
 						$child->setAttribute('cbuOrigen', '');
 					}
 					$child->setAttribute('monto', $forma['monto']);
@@ -181,8 +177,7 @@ class Manager2Service extends AppModel {
 				}
 			}
 			return $doc->saveXML();
-		}
-		else {
+		} else {
 			return '';
 		}
 	}
@@ -197,7 +192,7 @@ class Manager2Service extends AppModel {
 	function anulaciones_pagos($id) {
 
 		if (is_numeric($id)) {
-			$Pago = new Pago();
+			$Pago = ClassRegistry::init('Pago');
 			$registros = $Pago->find('all', array(	'contain'		=>
 														array('PagosForma'=>array(
 															'conditions'=>array(	'PagosForma.monto <'=>0,
@@ -226,8 +221,7 @@ class Manager2Service extends AppModel {
 						$child->setAttribute('tipo', $forma['forma']);
 						if (!empty($forma['Cuenta']['cbu'])) {
 							$child->setAttribute('cbuOrigen', $forma['Cuenta']['cbu']);
-						}
-						else {
+						} else {
 							$child->setAttribute('cbuOrigen', '');
 						}
 						$child->setAttribute('monto', $forma['monto'] * -1);
@@ -238,8 +232,7 @@ class Manager2Service extends AppModel {
 				}
 			}
 			return $doc->saveXML();
-		}
-		else {
+		} else {
 			return '';
 		}
 	}
