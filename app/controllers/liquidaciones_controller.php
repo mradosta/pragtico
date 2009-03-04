@@ -26,7 +26,56 @@ class LiquidacionesController extends AppController {
 
 
 	var $components = array('Formulador');
+	var $helpers = array('Documento');
 	
+
+	function libro_sueldos() {
+		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
+			if (empty($this->data['Condicion']['Liquidacion-empleador_id'])
+				&& empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
+				$this->Session->setFlash('Debe seleccionar un por lo menos un Empleador o un Grupo y el Empleador.', 'error');
+			} elseif (empty($this->data['Condicion']['Liquidacion-periodo']) || !preg_match('/^(20\d\d)(0[1-9]|1[012])$/', $this->data['Condicion']['Liquidacion-periodo'], $periodo)) {
+				$this->Session->setFlash('Debe especificar un periodo valido de la forma AAAAMM.', 'error');
+			} else {
+				$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], 'periodo');
+				
+				/** Search employers */
+				//$this->Liquidacion->Relacion->Empleador->contain(array(''));<br>$this->Liquidacion->Relacion->Empleador->
+				$this->Liquidacion->Relacion->Empleador->recursive = -1;
+				$this->set('employer', $this->Liquidacion->Relacion->Empleador->findById($this->data['Condicion']['Liquidacion-empleador_id']));
+				$empleadores = $this->data['Condicion']['Liquidacion-empleador_id'];
+				if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
+					$empleadores = Set::extract('/Empleador/id', $this->Liquidacion->Relacion->Empleador->find('all', array(
+							'recursive' 	=> -1,
+							'conditions' 	=> array(
+							'(Empleador.group_id & ' . $this->data['Condicion']['Liquidacion-grupo_id'] . ') >' => 0))
+					));
+				}
+				
+				$conditions = array('Liquidacion.empleador_id' 	=> $empleadores,
+									'Liquidacion.estado'		=> 'Confirmada',
+		 							'Liquidacion.ano'			=> $periodo['ano'],
+		 							'Liquidacion.mes'			=> $periodo['mes']);
+
+				$this->Liquidacion->Behaviors->detach('Permisos');
+				$this->Liquidacion->Behaviors->detach('Util');
+				$liquidaciones = $this->Liquidacion->find('all',
+						array(	'contain'		=> array(
+									'LiquidacionesDetalle' => array('order' => 'LiquidacionesDetalle.concepto_tipo'),
+									'Relacion' => array('Trabajador', 'Empleador', 'Modalidad', 'ConveniosCategoria.ConveniosCategoriasHistorico')),
+								'conditions'	=> $conditions,
+							 	'order'			=> array('Liquidacion.empleador_nombre')));
+				$this->set('data', $liquidaciones);
+				$this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
+				$this->layout = 'ajax';
+				//} else {
+				//	$this->Session->setFlash("No se han encontrado liquidaciones confirmadas para el periodo seleccioando segun los criterios especificados.", "error");
+				//}
+			}
+		}
+		$this->set('grupos', $this->Util->getUserGroups());
+	}
+
 /**
  * PreLiquidar.
  * Me permite hacer una preliquidacion.
