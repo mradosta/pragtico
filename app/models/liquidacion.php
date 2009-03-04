@@ -599,7 +599,7 @@ class Liquidacion extends AppModel {
 				if (!in_array($conceptoTmp['codigo'], $conceptosNot) && $conceptoTmp['tipo'] == $matches[1] && ($conceptoTmp['imprimir'] === "Si" || $conceptoTmp['imprimir'] === "Solo con valor")) {
 					if (empty($conceptoTmp['valor'])) {
 						$resolucionCalculo = $this->__getConceptValue($conceptoTmp);
-						$this->__conceptos[$conceptoTmp['codigo']] = am($resolucionCalculo, $this->__conceptos[$conceptoTmp['codigo']]);
+						$this->__conceptos[$conceptoTmp['codigo']] = array_merge($resolucionCalculo, $this->__conceptos[$conceptoTmp['codigo']]);
 						$conceptoTmp['valor'] = $resolucionCalculo['valor'];
 					}
 					$valor += $conceptoTmp['valor'];
@@ -803,34 +803,41 @@ class Liquidacion extends AppModel {
 
             switch ($variable) {
                 case '#mes_liquidacion':
-                    $this->setVar($variable, $this->getPeriod('mes'));
+					$return = $this->getPeriod('mes');
                 break;
                 case '#ano_liquidacion':
-                    $this->setVar($variable, $this->getPeriod('ano'));
+					$return = $this->getPeriod('ano');
                 break;
                 case '#periodo_liquidacion':
-                    $this->setVar($variable, $this->getPeriod('periodo'));
+					$return = $this->getPeriod('periodo');
                 break;
                 case '#periodo_liquidacion_completo':
-                    $this->setVar($variable, $this->getPeriod('periodoCompleto'));
+					$return = $this->getPeriod('periodoCompleto');
                 break;
                 case '#fecha_desde_liquidacion':
-                    $this->setVar($variable, $this->getPeriod('desde'));
+					$return = $this->getPeriod('desde');
                 break;
                 case '#fecha_hasta_liquidacion':
-                    $this->setVar($variable, $this->getPeriod('hasta'));
+					$return = $this->getPeriod('hasta');
                 break;
+				default:
+					$return = 0;
+                    $this->__setError(array(    'tipo'                  => 'Variable No Resuelta',
+                                                'gravedad'              => 'Alta',
+                                                'concepto'              => '',
+                                                'variable'              => $variable,
+                                                'formula'               => $this->__variables[$variable]['formula'],
+                                                'descripcion'           => 'La formula intenta usar una variable que no es posible resolverla con los datos de la relacion.',
+                                                'recomendacion'         => 'Verifique que la relacion tenga cargados todos los datos necesarios.',
+                                                'descripcion_adicional' => ''));
+				break;
 			}
 
+			$this->setVar($variable, $return);
+			return $return;
 
 
 
-
-
-
-			
-			return $this->getVarValue($variable);
-			
             /**
              * System vars. HardCoded
              */
