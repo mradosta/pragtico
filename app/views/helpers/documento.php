@@ -125,6 +125,15 @@ class DocumentoHelper extends AppHelper {
 	}
 
 
+	function setWidth($cellName, $value) {
+		if (is_numeric($cellName)) {
+			return $this->doc->getActiveSheet()->getColumnDimensionByColumn($cellName)->setWidth($value);
+		} else {
+			return $this->doc->getActiveSheet()->getColumnDimension($cellName)->setWidth($value);
+		}
+	}
+
+
 /**
  * Setea un valor y opcionalmente el formato en una celda o rango.
  * En caso de especificarse un rango, hace un merge de las celdas del rango.
@@ -152,8 +161,7 @@ class DocumentoHelper extends AppHelper {
 			$cellName = $this->__getCellName($tmp[0]);
 			$this->doc->getActiveSheet()->mergeCells($cellName . ":" . $this->__getCellName($tmp[1]));
 			unset($options['merge']);
-		}
-		else {
+		} else {
 			$cellName = $this->__getCellName($cellName);
 		}
 		
@@ -244,42 +252,42 @@ class DocumentoHelper extends AppHelper {
  * @return void.
  * @access public.	
  */
-	function save($formato = "Excel2007", $archivo = null) {
+	function save($formato = 'Excel2007', $archivo = null) {
 		$objPHPExcelWriter = PHPExcel_IOFactory::createWriter($this->doc, $formato);
 
-		if ($formato === "Excel2007") {
+		if ($formato === 'Excel2007') {
 			/**
 			* Si se trata de Excel 2007, no precalculo por que no tiene sentido, ya que perdere tiempo ahora, y luego,
 			* al abrilo, excel, calcula automaticamente las formulas.
 			*/
 			$objPHPExcelWriter->setPreCalculateFormulas(false);
-			$extension = "xlsx";
+			$extension = 'xlsx';
 		}
-		elseif ($formato === "Excel5") {
-			$extension = "xls";
+		elseif ($formato === 'Excel5') {
+			$extension = 'xls';
 		}
-		elseif ($formato === "PDF") {
-			$extension = "pdf";
+		elseif ($formato === 'PDF') {
+			$extension = 'pdf';
 		}
-		elseif ($formato === "HTML") {
-			$extension = "html";
+		elseif ($formato === 'HTML') {
+			$extension = 'html';
 		}
 
 		/**
 		* Obligo a que me aparezca el dialogo de descarga para guardar el archivo.
 		*/
 		if (empty($archivo)) {
-			$archivo = "php://output";
-			header("Pragma: public");
-			header("Expires: 0");
-			header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-			header("Content-Type: application/force-download");
-			header("Content-Type: application/octet-stream");
-			header("Content-Type: application/download");
-			header("Content-Disposition: attachment;filename=planilla." . $extension);
-			header("Content-Transfer-Encoding: binary");
+			$archivo = 'php://output';
+			header('Pragma: public');
+			header('Expires: 0');
+			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+			header('Content-Type: application/force-download');
+			header('Content-Type: application/octet-stream');
+			header('Content-Type: application/download');
+			header('Content-Disposition: attachment;filename=file.' . $extension);
+			header('Content-Transfer-Encoding: binary');
 		}
-		Configure::write("debug", 0);
+		Configure::write('debug', 0);
 		$objPHPExcelWriter->save($archivo);
 		exit();
 	}
