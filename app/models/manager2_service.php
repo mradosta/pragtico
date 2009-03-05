@@ -87,37 +87,56 @@ class Manager2Service extends AppModel {
 	
 		if (is_numeric($id)) {
 			$Empleador = ClassRegistry::init('Empleador');
-			$registros = $Empleador->find('all', array('checkSecurity'=>false, 'conditions'=>array('Empleador.id >'=>$id)));
+			$Empleador->Behaviors->detach('Permisos');
+			$registros = $Empleador->find('all',
+				array(	'conditions' 	=> array('Empleador.id >' => $id),
+	  					'contain'		=> array('Area'),
+	  					'limit'			=> 2,
+						'fields'		=>	array(	'Empleador.cuit',
+													'Empleador.nombre',
+													'Empleador.direccion',
+													'Empleador.barrio',
+													'Empleador.ciudad',
+													'Empleador.pais',
+													'Empleador.telefono',
+													'Empleador.fax',
+													'Empleador.pagina_web',
+												 	'Empleador.group_id'),
+					 	'order'			=> array('Empleador.group_id')));
+
 			$tmp = $registros;
 			$ultimo = array_pop($tmp);
 			$doc = new DomDocument('1.0');
 			
 			$root = $doc->createElement('datos');
-			$root->setAttribute ('firstId', $id);
-			$root->setAttribute ('lastId', $ultimo['Empleador']['id']);
+			$root->setAttribute('firstId', $id);
+			$root->setAttribute('lastId', $ultimo['Empleador']['id']);
 			$root = $doc->appendChild($root);
+			$empleadores = $root->appendChild($doc->createElement('empleadores'));
 			
-			$empleadores = $doc->createElement('empleadores');
-			$empleadores = $root->appendChild($empleadores);
-
+			$prevGroup = null;
 			foreach ($registros as $registro) {
-				$child = $doc->createElement('empleador');
-				unset($registro['Empleador']['id']);
-				unset($registro['Empleador']['created']);
-				unset($registro['Empleador']['modified']);
-				unset($registro['Empleador']['user_id']);
-				unset($registro['Empleador']['group_id']);
-				unset($registro['Empleador']['permissions']);
-				unset($registro['Empleador']['write']);
-				unset($registro['Empleador']['delete']);
-				foreach ($registro['Empleador'] as $k=>$v) {
-					$k = inflector::variable($k);
-					if ($k == 'cuit') {
-						$v = str_replace('-', '', $v);
-					}
-					$child->setAttribute($k, $v);
+				if ($registro['Empleador'] !== $prevGroup) {
+					$grupo = $doc->createElement('grupo');
+					$grupo->setAttribute('codigo', $registro['Empleador']['group_id']);
+					$grupo = $empleadores->appendChild($grupo);
 				}
-				$child = $empleadores->appendChild($child);
+				
+				foreach ($registro['Area'] as $area) {
+					$child = $doc->createElement('empleador');
+					$child->setAttribute('codigo', $area['id']);
+					foreach ($registro['Empleador'] as $k => $v) {
+						if ($k === 'cuit') {
+							$v = str_replace('-', '', $v);
+						} elseif ($k === 'pagina_web') {
+							$k = 'paginaWeb';
+						} elseif ($k === 'group_id') {
+							continue;
+						}
+						$child->setAttribute($k, $v);
+					}
+					$grupo->appendChild($child);
+				}
 			}
 			return $doc->saveXML();
 		} else {

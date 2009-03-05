@@ -56,7 +56,10 @@ class ServiceController extends AppController {
 			array("trace"=>1,
 					'uri'=>"http://localhost/servicioWeb"));
 		try{
-			
+
+			//strGrupo
+			//strCodigo
+			//strCUIT
 			$request = new SoapVar(array( 'strCUIT'=>"30641966645"),SOAP_ENC_OBJECT);
 			$request = new SoapVar(array( 'strCUIT'=>"20131933992"),SOAP_ENC_OBJECT);
 		
@@ -116,6 +119,7 @@ class ServiceController extends AppController {
 			);
 		try {
 			$retorno['wsdl'] = $this->Soap->getWSDL("manager2", 'call');
+			//$retorno['retorno'] = $soapClient->empleadores(0);
 			$retorno['retorno'] = $soapClient->facturacion(0);
 			//$retorno['retorno'] = $soapClient->pagos(1);
 			//d($soapClient->facturacion(1) . ". Se ejecuto OK");
