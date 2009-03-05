@@ -707,7 +707,7 @@ class AppFormHelper extends FormHelper {
 									$clase = 'centro';
 									break;
 								case 'integer':
-								case 'decimal':
+								case 'float':
 									$clase = 'derecha';
 									break;
 								case 'date':
