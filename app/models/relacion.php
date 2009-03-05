@@ -158,6 +158,12 @@ class Relacion extends AppModel {
 		if (empty($this->data['Relacion']['situacion_id'])) {
 			unset($this->data['Relacion']['situacion_id']);
 		}
+
+		/** Update state when expiry date is set */
+		if (!empty($this->data['Relacion']['egreso'])) {
+			$this->data['Relacion']['estado'] = 'Historica';
+		}
+		
 		return parent::beforeSave();
 	}
 
