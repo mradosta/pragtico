@@ -165,7 +165,7 @@ class Concepto extends AppModel {
 												"Coeficiente.nombre",
 												"Coeficiente.tipo",
 												"Coeficiente.valor");
-		$fieldEmpleadoresCoeficiente = 	array(	"EmpleadoresCoeficiente.valor");
+		$fieldEmpleadoresCoeficiente = 	array(	"EmpleadoresCoeficiente.porcentaje");
 		$order 		= "ORDER BY
 								CASE Concepto.tipo WHEN 'Remunerativo' THEN 0
 									WHEN 'No Remunerativo' THEN 1

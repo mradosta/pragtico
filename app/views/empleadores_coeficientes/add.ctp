@@ -29,7 +29,7 @@ $campos['EmpleadoresCoeficiente.coeficiente_id'] = array(	"lov"=>array("controll
 																	"seleccionMultiple"	=> 	0,
 																		"camposRetorno"	=>	array(	"Coeficiente.nombre",
 																									"Coeficiente.valor")));
-$campos['EmpleadoresCoeficiente.valor'] = array('aclaracion' => "Indica el valor a sumar o restar al coeficiente.");
+$campos['EmpleadoresCoeficiente.porcentaje'] = array('aclaracion' => "Indica el porcentaje a sumar o restar al coeficiente valor del coeficiente.");
 $campos['EmpleadoresCoeficiente.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "coeficiente del empleador", 'imagen' => 'coeficientes.gif')));

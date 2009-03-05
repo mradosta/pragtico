@@ -33,6 +33,7 @@ class Area extends AppModel {
         )
 	);
 
+	var $hasAndBelongsToMany = array('Coeficiente');
 	var $belongsTo = array('Empleador');
 
 }

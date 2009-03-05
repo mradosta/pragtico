@@ -23,5 +23,14 @@
  */
 class AreasController extends AppController {
 
+/**
+ * coeficientes.
+ * Muestra via desglose los coeficientes de un area.
+ */
+	function coeficientes($id) {
+		$this->Area->contain('Coeficiente');
+		$this->data = $this->Area->read(null, $id);
+	}	
+	
 }
 ?>

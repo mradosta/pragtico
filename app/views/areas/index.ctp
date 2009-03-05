@@ -19,9 +19,9 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-$condiciones['Condicion.Area-empleador_id'] = array(	"lov"=>array("controller"	=>	"empleadores",
-																		"camposRetorno"	=>array("Empleador.cuit",
-																								"Empleador.nombre")));
+$condiciones['Condicion.Area-empleador_id'] = array(	'lov'=>array('controller'	=>	'empleadores',
+																		'camposRetorno'	=>array('Empleador.cuit',
+																								'Empleador.nombre')));
 $condiciones['Condicion.Area-identificador'] = array();
 $condiciones['Condicion.Area-nombre'] = array();
 $condiciones['Condicion.Area-direccion'] = array();
@@ -36,6 +36,7 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('ima
 $cuerpo = null;
 foreach ($registros as $k => $v) {
 	$fila = null;
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Area']['id'], 'imagen' => array('nombre' => 'coeficientes.gif', 'alt' => 'Coeficientes'), 'url' => 'coeficientes');
 	$fila[] = array('model' => 'Area', 'field' => 'id', 'valor' => $v['Area']['id'], 'write' => $v['Area']['write'], 'delete' => $v['Area']['delete']);
 	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Empleador']['nombre']);
 	$fila[] = array('model' => 'Area', 'field' => 'identificador', 'valor' => $v['Area']['identificador']);

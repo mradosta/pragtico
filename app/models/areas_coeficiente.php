@@ -1,7 +1,7 @@
 <?php
 /**
  * Este archivo contiene toda la logica de acceso a datos asociada a los coeficientes
- * de los empleadores.
+ * de las Areas.
  *
  * PHP versions 5
  *
@@ -11,28 +11,28 @@
  * @package         pragtico
  * @subpackage      app.models
  * @since           Pragtico v 1.0.0
- * @version         $Revision$
- * @modifiedby      $LastChangedBy$
- * @lastmodified    $Date$
+ * @version         $Revision: 201 $
+ * @modifiedby      $LastChangedBy: mradosta $
+ * @lastmodified    $Date: 2008-12-30 16:36:44 -0200 (mar, 30 dic 2008) $
  * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
  * La clase encapsula la logica de acceso a datos asociada a los coeficientes
- * de los empleadores.
+ * de las Areas.
  *
  * @package     pragtico
  * @subpackage  app.models
  */
-class EmpleadoresCoeficiente extends AppModel {
+class AreasCoeficiente extends AppModel {
 
-	var $modificadores = array(	'index' => array('contain' => array('Empleador', 'Coeficiente')),
+	var $modificadores = array(	'index' => array('contain' => array('Area', 'Coeficiente')),
 							  	'add' => array('contain' => array()));
 	
 	var $validate = array(
-        'emplador_id' => array(
+        'area_id' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
-				'message'	=> 'Debe seleccionar el empleador.')
+				'message'	=> 'Debe seleccionar el Area.')
         ),
         'coeficiente_id' => array(
 			array(
@@ -46,6 +46,6 @@ class EmpleadoresCoeficiente extends AppModel {
         )        
 	);
 
-	var $belongsTo = array('Empleador', 'Coeficiente');
+	var $belongsTo = array('Area', 'Coeficiente');
 }
 ?>
