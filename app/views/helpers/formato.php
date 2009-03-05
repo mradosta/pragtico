@@ -494,8 +494,13 @@ class FormatoHelper extends AppHelper {
 				$return = $this->Number->format($valor, $options);
 				break;
 			case 'moneda':
+			case 'currency':
 				$options['type'] = 'number';
 				$return = $this->format($valor, array_merge(array('before' => '$ '), $options));
+				break;
+			case 'percentage':
+				$options['type'] = 'number';
+				$return = $this->format($valor, array_merge(array('after' => ' %'), $options));
 				break;
 			case 'ano':
 			case 'mes':
@@ -573,12 +578,16 @@ class FormatoHelper extends AppHelper {
 				$return = $ano . $mes . 'M';
 				break;
 			case 'periodoEnLetras':
+				$options = array_merge(array('case' => 'lower'), $options);
+				$beforeShort = '';
 				if (preg_match(VALID_PERIODO, $valor, $matches)) {
 					$before = '';
 					if (substr($matches[3], 0, 1) == '1') {
 						$before = 'Primera quincena de ';
+						$beforeShort = $matches[3] . ' ';
 					} elseif (substr($matches[3], 0, 1) == '2') {
 						$before = 'Segunda quincena de ';
+						$beforeShort = $matches[3] . ' ';
 					}
 					$mes = $this->__getMonths((int)$matches[2]);
 					$ano = $matches[1];
@@ -591,13 +600,16 @@ class FormatoHelper extends AppHelper {
 						$before = $this->__getMonths(7) . ' a ' . $this->__getMonths(12);
 					}
 				} elseif (strlen($valor) === 6 || strlen($valor) === 5) {
-					
-					$options = array_merge(array('case' => 'lower'), $options);
 					$before = '';
 					$ano = substr($valor, 0, 4);
 					$mes = $this->__getMonths((int)substr($valor, 4, 2));
 				}
-				$return = $before . $mes . ' de ' . $ano;
+				
+				if (!empty($options['short'])) {
+					$return = $beforeShort . substr($mes, 0, 3) . ' ' . $ano;
+				} else {
+					$return = $before . $mes . ' de ' . $ano;
+				}
 				$return = $this->__case($return, $options['case']);
 				break;
 			case 'mesEnLetras':

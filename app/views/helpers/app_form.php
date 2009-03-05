@@ -685,11 +685,11 @@ class AppFormHelper extends FormHelper {
 							}
 						}
 
-						$model =& ClassRegistry::getObject($modelKey);
-						if (!array_key_exists("class", $atributos) && is_object($model)) {
+						$model = ClassRegistry::getObject($modelKey);
+						if (!array_key_exists('class', $atributos) && is_object($model)) {
 							$columnType = $model->getColumnType($nombreCampo);
-							if (substr($columnType, 0, 5) == "enum(") {
-								$columnType = "enum";
+							if (substr($columnType, 0, 5) == 'enum(') {
+								$columnType = 'enum';
 							}
 						}
 						if (!empty($campo['tipoDato'])) {
@@ -697,32 +697,28 @@ class AppFormHelper extends FormHelper {
 						}
 						if (!empty($columnType)) {
 							switch($columnType) {
-								case "moneda":
-									$clase = "derecha";
-									$valor = $this->Formato->format($valor, array("type" => "moneda"));
+								case 'moneda':
+								case 'currency':
+								case 'percentage':
+									$clase = 'derecha';
+									$valor = $this->Formato->format($valor, array('type' => $columnType));
 									break;
-								case "enum":
-									$clase = "centro";
+								case 'enum':
+									$clase = 'centro';
 									break;
-								case "integer":
-									$clase = "derecha";
+								case 'integer':
+								case 'decimal':
+									$clase = 'derecha';
 									break;
-								case "float":
-								case "decimal":
-									$clase = "derecha";
+								case 'date':
+								case 'datetime':
+									$clase = 'centro';
+									$valor = $this->Formato->format($valor, $columnType);
 									break;
-								case "date":
-									$clase = "centro";
-									$valor = $this->Formato->format($valor, "date");
-									break;
-								case "datetime":
-									$clase = "centro";
-									$valor = $this->Formato->format($valor, "dateTime");
-									break;
-								case "string":
-								case "text":
+								case 'string':
+								case 'text':
 								default:
-									$clase = "izquierda";
+									$clase = 'izquierda';
 									break;
 							}
 							if (empty($campo['class'])) {
