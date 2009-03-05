@@ -128,7 +128,7 @@ class LiquidacionesController extends AppController {
 			$condicionesLiquidacion['Liquidacion.periodo'] = $periodo['periodo'];
 			$condicionesLiquidacion['Liquidacion.tipo'] = $this->data['Condicion']['Liquidacion-tipo'];
 			$condicionesLiquidacion['Liquidacion.estado'] = 'Confirmada';
-			$liquidaciones = $this->Liquidacion->Relacion->Liquidacion->find('all', array(
+			$liquidaciones = $this->Liquidacion->find('all', array(
 					'recursive'		=> -1,
 					'fields'		=> 'relacion_id',
 					'conditions'	=> $condicionesLiquidacion));
@@ -140,11 +140,11 @@ class LiquidacionesController extends AppController {
 			if (!empty($this->data['Condicion']['Relacion-id'])) {
 				$condiciones['Relacion.id'] = $this->data['Condicion']['Relacion-id'];
 			}
-			if (!empty($this->data['Condicion']['Trabajador-id'])) {
-				$condiciones['Trabajador.id'] = $this->data['Condicion']['Trabajador-id'];
+			if (!empty($this->data['Condicion']['Relacion-trabajador_id'])) {
+				$condiciones['Relacion.trabajador_id'] = $this->data['Condicion']['Relacion-trabajador_id'];
 			}
-			if (!empty($this->data['Condicion']['Empleador-id'])) {
-				$condiciones['Empleador.id'] = $this->data['Condicion']['Empleador-id'];
+			if (!empty($this->data['Condicion']['Relacion-empleador_id'])) {
+				$condiciones['Relacion.empleador_id'] = $this->data['Condicion']['Relacion-empleador_id'];
 			}
 			$condiciones['Relacion.ingreso <='] = $periodo['hasta'];
 			$condiciones['Relacion.estado'] = 'Activa';
@@ -154,9 +154,9 @@ class LiquidacionesController extends AppController {
 														'Trabajador.ObrasSocial',
 														'Empleador'),
 							'conditions'	=> $condiciones));
-
+			d($relaciones);
 			if (empty($relaciones)) {
-				$this->Session->setFlash('No se encontraron relacion para liquidar. Verifique si no se han liquidado y confirmado previamente o los criterios de busqueda no son correctos.', 'error');
+				$this->Session->setFlash('No se encontraron relaciones para liquidar. Verifique si no se han liquidado y confirmado previamente o los criterios de busqueda no son correctos.', 'error');
 				$this->redirect(array('action' => 'preliquidar'));
 			}
 			
