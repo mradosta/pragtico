@@ -136,19 +136,14 @@ class Relacion extends AppModel {
 
 
 	function beforeSave() {
-		/**
-		* Si no cargo el legajo, lo obtengo desde el documento del trabajador.
-		*/
+		/** When no record number is entered, assing same number as document */
 		if (empty($this->data['Relacion']['legajo']) && !empty($this->data['Relacion']['trabajador_id'])) {
 			$this->Trabajador->recursive = -1;
 			$trabajador = $this->Trabajador->findById($this->data['Relacion']['trabajador_id']);
 			$this->data['Relacion']['legajo'] = $trabajador['Trabajador']['numero_documento'];
 		}
 	
-		/**
-		* Si las foraneas opcionales no las saco del array, en caso de que esten vacias, el framework intentara
-		* guardarlas con el valor vacio, y este fallara.
-		*/
+		/** Optional empty foreingKeys should be removed to avoid errors when saving */
 		if (empty($this->data['Relacion']['actividad_id'])) {
 			unset($this->data['Relacion']['actividad_id']);
 		}
@@ -160,7 +155,7 @@ class Relacion extends AppModel {
 		}
 
 		/** Update state when expiry date is set */
-		if (!empty($this->data['Relacion']['egreso'])) {
+		if (!empty($this->data['Relacion']['egreso']) && $this->data['Relacion']['egreso'] !== '0000-00-00') {
 			$this->data['Relacion']['estado'] = 'Historica';
 		}
 		
