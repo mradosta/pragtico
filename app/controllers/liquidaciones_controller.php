@@ -154,7 +154,7 @@ class LiquidacionesController extends AppController {
 														'Trabajador.ObrasSocial',
 														'Empleador'),
 							'conditions'	=> $condiciones));
-			d($relaciones);
+			
 			if (empty($relaciones)) {
 				$this->Session->setFlash('No se encontraron relaciones para liquidar. Verifique si no se han liquidado y confirmado previamente o los criterios de busqueda no son correctos.', 'error');
 				$this->redirect(array('action' => 'preliquidar'));
