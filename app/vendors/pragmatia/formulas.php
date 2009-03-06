@@ -101,10 +101,6 @@ class Formulas {
 		$cellId = 0;
 
 		$formula = $this->__cleanUp($formula);
-		/** Invalidate division by zero */
-		//if (preg_match('/.*\/\s*0.*/', $formula)) {
-		//	return '#N/A';
-		//}  		
 		
 		/** PHPExcel mistakes when comparing string, so verify it in PHP and send PHPExcel calculated boolean value.*/
 		if (preg_match_all("/\((\'[\.\w\s\/]+\'=\'[\.\w\s\/]+\')/", $formula, $strings)) {
@@ -170,7 +166,7 @@ class Formulas {
 		$this->__objPHPExcel->getActiveSheet()->setCellValue('ZZ' . $this->__cellId, $formula);
 		$result = $this->__objPHPExcel->getActiveSheet()->getCell('ZZ' . $this->__cellId)->getCalculatedValue();
 		
-		if ($result == '' && $result !== 0) {
+		if ($result === '' && $result !== 0) {
 			return '#N/A';
 		} else {
 			return $result;

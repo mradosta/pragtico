@@ -54,6 +54,7 @@ class FormuladorComponentTestCase extends CakeTestCase {
  * @access public
  */
 	function startCase() {
+
     	$this->FormuladorComponentTest =& new FormuladorComponent();
     	$this->controller = new FakeTestController();
 		$this->FormuladorComponentTest->startup(&$this->controller);
@@ -146,6 +147,16 @@ class FormuladorComponentTestCase extends CakeTestCase {
 		$expected = '18';
 		$this->assertEqual($expected, $result);
 
+		$formula = '=if(and((2008-01-01 >= 2007-01-01), (2008-01-31 <= 2008-01-28)), 30, 1)';
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '1';
+		$this->assertEqual($expected, $result);
+		
+		$formula = '=if(and((2008-01-01 >= 2007-01-01), (2008-01-31 <= 2009-01-28)), 30, 1)';
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '30';
+		$this->assertEqual($expected, $result);
+		
 		$formula = "=IF(AND(MONTH(date('2008-07-07'))>6,YEAR(date('2008-07-07'))=YEAR(date('2008-12-31');DAY(A2)>1)),INT(NETWORKDAYS(date('2008-07-07'),date('2008-12-31'))/20),IF(AND(MONTH(date('2008-07-07'))<6,YEAR(date('2008-07-07'))=YEAR(date('2008-12-31'))),14,IF((YEAR(date('2008-12-31'))-YEAR(date('2008-07-07')))<=5,14,IF((YEAR(date('2008-12-31'))-YEAR(date('2008-07-07')))<=10,21,IF((YEAR(date('2008-12-31'))-YEAR(date('2008-07-07')))<=15,28,35)))))";
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '14';
@@ -179,6 +190,16 @@ class FormuladorComponentTestCase extends CakeTestCase {
 
 	
     function testResolverAlgebraica() {
+		
+		$formula = "=10/0";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '#N/A';
+		$this->assertEqual($expected, $result);
+		
+		$formula = "=if(5 > 0, ((700.6 + 0) * 5 / 100) * 0, 0 * 0)";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '0';
+		$this->assertEqual($expected, $result);
 		
 		$formula = "=if     ('ax'='ak', if ('j'='j', 3, 4), min(6,3)) + if    (  	5 >    4, 1, 2)";
 		$result = $this->FormuladorComponentTest->resolver($formula);
