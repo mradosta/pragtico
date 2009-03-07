@@ -70,6 +70,7 @@ class Formulas {
 	function __cleanUp($formula) {
 		/** Replace spaces in formulas to unify criterias.*/
 		$formula = preg_replace('/\s*([=|,|\(|\)])\s*/', '$1', $formula);
+		$formula = preg_replace('/(\d)\s{0,}\/\s{0,}(\d)/', '$1/$2', $formula);
 		$formula = preg_replace('/[^[:print:]]/', '', $formula);
 		if (substr($formula, 0, 1) !== '=') {
 			$formula = '=' . $formula;
@@ -101,24 +102,17 @@ class Formulas {
 		$cellId = 0;
 
 		$formula = $this->__cleanUp($formula);
-		
-		/** PHPExcel mistakes when comparing string, so verify it in PHP and send PHPExcel calculated boolean value.*/
-		if (preg_match_all("/\((\'[\.\w\s\/]+\'=\'[\.\w\s\/]+\')/", $formula, $strings)) {
-			foreach (array_unique($strings[1]) as $k => $string) {
-				$cellId++;
-				$partes = explode('=', $string);
-				if ($partes[0] === $partes[1]) {
-					$this->__objPHPExcel->getActiveSheet()->setCellValue('A' . $cellId, true);
-				} else {
-					$this->__objPHPExcel->getActiveSheet()->setCellValue('A' . $cellId, false);
-				}
 
-				/** Replace scaped character */
-				$string = str_replace('/', '\/', $string);
-				$formula = preg_replace('/' . $string . '/', 'A' . $cellId, $formula, 1);
+		/** Partial solution to avoid PHPExcel unnecesary formula part evaluation */
+		// http://phpexcel.codeplex.com/WorkItem/View.aspx?WorkItemId=9447
+		$parts = explode(',', $formula);
+		if (!empty($parts)) {
+			foreach($parts as $k => $part) {
+				$parts[$k] = preg_replace('/([\d\.]+\/0)/', '0', $part);
 			}
+			$formula = implode(',', $parts);
 		}
-
+		
 		/** Replace Mysql dates to PHPExcel dates */
 		if (preg_match_all("/date\('(\d\d\d\d)-(\d\d)-(\d\d)'\)/", $formula, $strings)) {
 			$formula = $this->__cleanUpDate($strings, $formula);
@@ -130,18 +124,7 @@ class Formulas {
 			$formula = $this->__cleanUpDate($strings, $formula);
 		}
 
-		
-		/** Maybe values for an if statment are string, so must put then in separated cells */
-		if (preg_match_all("/\([A-Z]+\d\,\'([\w\s]+)\'\,\'([\w\s]+)\'\)/", $formula, $strings)) {
-			$cellId++;
-			$this->__objPHPExcel->getActiveSheet()->setCellValue('A' . $cellId, $strings[1][0]);
-			$formula = preg_replace("/\'" . $strings[1][0] . "\'/", 'A' . $cellId, $formula, 1);
-			$cellId++;
-			$this->__objPHPExcel->getActiveSheet()->setCellValue('A' . $cellId, $strings[2][0]);
-			$formula = preg_replace("/\'" . $strings[2][0] . "\'/", 'A' . $cellId, $formula, 1);
-		}
 
-		
 		/** Convert group functions arguments to values in columns */
 		if (preg_match_all("/(.*)([min|max|sum|average]+)\(([[0-9]\,]+)\)/Ui", $formula, $partes)) {
 			if (!empty($partes[3])) {
@@ -164,13 +147,7 @@ class Formulas {
 		$this->__cellId++;
 		$formula = str_replace('\'', '"', $formula);
 		$this->__objPHPExcel->getActiveSheet()->setCellValue('ZZ' . $this->__cellId, $formula);
-		$result = $this->__objPHPExcel->getActiveSheet()->getCell('ZZ' . $this->__cellId)->getCalculatedValue();
-		
-		if ($result === '' && $result !== 0) {
-			return '#N/A';
-		} else {
-			return $result;
-		}
+		return $this->__objPHPExcel->getActiveSheet()->getCell('ZZ' . $this->__cellId)->getCalculatedValue();
 	}
 
 }

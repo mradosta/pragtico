@@ -55,13 +55,24 @@ class FormuladorComponentTestCase extends CakeTestCase {
  */
 	function startCase() {
 
+		/*
+		include 'PHPExcel.php';
+		$objPHPExcel = new PHPExcel();
+		$objPHPExcel->getActiveSheet()->setCellValue('A1', '=IF(1=2, 1/1, 2)');
+		debug($objPHPExcel->getActiveSheet()->getCell('A1')->getCalculatedValue());
+
+		$objPHPExcel->getActiveSheet()->setCellValue('B1', '=IF(1=2, 1/0, 1)');
+		d($objPHPExcel->getActiveSheet()->getCell('B1')->getCalculatedValue());
+		*/
+		
     	$this->FormuladorComponentTest =& new FormuladorComponent();
     	$this->controller = new FakeTestController();
 		$this->FormuladorComponentTest->startup(&$this->controller);
+
     }
 
 	function testInformationFuncions() {
-
+		
 		$formula = "=if(isblank(0000-00-00), 1, 2)";
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '1';
@@ -79,6 +90,21 @@ class FormuladorComponentTestCase extends CakeTestCase {
 	}
 
 	function testDivisionByZero() {
+		
+		$formula = "=if('mensual' = 'xxxx', 1/0, 1319)";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '1319';
+		$this->assertEqual($expected, $result);
+		
+		$formula = "=if('mensual' = 'xxxx', if('a' = 'a', (1319.56 / 0)), 1319)";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '1319';
+		$this->assertEqual($expected, $result);
+		
+		$formula = "=if('mensual' = 'xxxx', if('a' = 'a', (1319.56 / 0)), 1319)";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '1319';
+		$this->assertEqual($expected, $result);
 		
 		$formula = "=if('mensual' = 'mensual', (1319.56 / 0), 1319.56)";
 		$result = $this->FormuladorComponentTest->resolver($formula);
@@ -189,13 +215,16 @@ class FormuladorComponentTestCase extends CakeTestCase {
 	}
 
 	
-    function testResolverAlgebraica() {
+    function testResolverMisc() {
 		
-		$formula = "=10/0";
+		$formula = "=int(4.6)";
 		$result = $this->FormuladorComponentTest->resolver($formula);
-		$expected = '#N/A';
+		$expected = '4';
 		$this->assertEqual($expected, $result);
-		
+	}
+	
+    function testResolverAlgebraica() {
+
 		$formula = "=if(5 > 0, ((700.6 + 0) * 5 / 100) * 0, 0 * 0)";
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '0';
