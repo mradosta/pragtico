@@ -58,9 +58,6 @@ class Ausencia extends AppModel {
 	var $belongsTo = array(	'Relacion' =>
                         array('className'    => 'Relacion',
                               'foreignKey'   => 'relacion_id'),
-							'Liquidacion' =>
-                        array('className'    => 'Liquidacion',
-                              'foreignKey'   => 'liquidacion_id'),
 							'AusenciasMotivo' =>
                         array('className'    => 'AusenciasMotivo',
                               'foreignKey'   => 'ausencia_motivo_id'));

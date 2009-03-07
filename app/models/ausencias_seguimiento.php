@@ -56,7 +56,7 @@ class AusenciasSeguimiento extends AppModel {
         )        
 	);
 
-	var $belongsTo = array('Ausencia');
+	var $belongsTo = array('Ausencia', 'Liquidacion');
 
 }
 ?>
