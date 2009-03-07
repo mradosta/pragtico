@@ -108,7 +108,7 @@ class Formulas {
 		$parts = explode(',', $formula);
 		if (!empty($parts)) {
 			foreach($parts as $k => $part) {
-				$parts[$k] = preg_replace('/([\d\.]+\/0)/', '0', $part);
+				$parts[$k] = preg_replace('/([\d\.]+\/0)/', '#N/A', $part);
 			}
 			$formula = implode(',', $parts);
 		}
