@@ -26,12 +26,5 @@
 class GruposParametrosController extends AppController {
 
 
-/**
- * Realiza los seteos especificos (valores por defecto) al agregar y/o editar.
- */
-	function __seteos() {
-        $this->set("grupos", $this->GruposParametro->Grupo->find("list", array("recursive"=>-1, "fields"=>array("Grupo.nombre"))));
-	}
-
 }	
 ?>
