@@ -90,7 +90,7 @@ $opcionesTabla =  array('tabla' => array(	'ordenEnEncabezados'=> false,
 											'eliminar'			=> false,
 											'permisos'			=> false));
 
-$accionesExtra['opciones'] = array('acciones'=>array($appForm->link('Confirmar', null, array('class'=>'link_boton', 'id'=>'confirmar', 'title'=>'Confirma las liquidaciones seleccionadas'))));
+$accionesExtra['opciones'] = array('acciones' => array($appForm->link('Confirmar', null, array('class' => 'link_boton', 'id' => 'confirmar', 'title' => 'Confirma las preliquidaciones seleccionadas')), $appForm->link('Guardar', null, array('class' => 'link_boton', 'id' => 'guardar', 'title' => 'Guarda las preliquidaciones seleccionadas')), $appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas'))));
 $botonesExtra[] = $appForm->button('Limpiar', array('title'=>'Limpia las busquedas', 'class'=>'limpiar', 'onclick'=>'document.getElementById("accion").value="limpiar";form.submit();'));
 $botonesExtra[] = $appForm->submit('Generar', array('title'=>'Genera una Pre-liquidacion', 'onclick'=>'document.getElementById("accion").value="generar"'));
 echo $this->element('index/index', array('botonesExtra'=>array('opciones' => array('botones'=>$botonesExtra)), 'accionesExtra'=>$accionesExtra, 'condiciones'=>$fieldset, 'cuerpo' => $cuerpo, 'opcionesTabla'=>$opcionesTabla, 'opcionesForm'=>array('action'=>'preliquidar')));
@@ -154,11 +154,15 @@ $appForm->addScript('
 	);
 	
 	
-	jQuery("#confirmar").click(
+	jQuery("#confirmar, #imprimir").click(
 		function() {
 			var c = jQuery(".tabla :checkbox").checkbox("contar");
 			if (c > 0) {
-				jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'confirmar')) . '";
+				if (jQuery(this).attr("id") == "confirmar") {
+					jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'confirmar')) . '";
+				} else {
+					jQuery("#form")[0].action = "' . Router::url(array('controller' => 'documentos', 'action' => 'generar', 'model' => 'Liquidacion', 'contain' => $contain)) . '";
+				}
 				jQuery("#form")[0].submit();
 			} else {
 				alert("Debe seleccionar al menos una pre-liquidacion para confirmar.");

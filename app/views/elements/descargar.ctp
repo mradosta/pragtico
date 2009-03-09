@@ -26,15 +26,39 @@
 		//$result = $formato->replace(null, $liquidacion, $patterns);
 
 		if ($archivo['type'] === 'application/vnd.ms-excel') {
-			$data = $formato->replace(null, $reemplazarTexto['reemplazos'], $reemplazarTexto['texto']);
-			set_include_path(get_include_path() . PATH_SEPARATOR . APP . "vendors" . DS . "PHPExcel" . DS . "Classes");
-			App::import('Vendor', "IOFactory", true, array(APP . "vendors" . DS . "PHPExcel" . DS . "Classes" . DS . "PHPExcel"), "IOFactory.php");
+			set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes');
+			App::import('Vendor', 'IOFactory', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'IOFactory.php');
 			$objReader = PHPExcel_IOFactory::createReader('Excel5');
 			$objPHPExcel = $objReader->load(WWW_ROOT . 'files' . DS . 'modelo_recibo_naty.xls');
 			$worksheet = $objPHPExcel->getActiveSheet();
 
-			foreach ($data as $cell => $value) {
-				$worksheet->setCellValue($cell, $value);
+			foreach ($worksheet->getRowIterator() as $objRow) {
+				$cellIterator = $objRow->getCellIterator();
+				$cellIterator->setIterateOnlyExistingCells(false);
+				foreach ($cellIterator as $objCell) {
+					$cells[$objCell->getColumn()][$objCell->getRow()] = null;
+				}
+			}
+
+
+			$rowNum = 0;
+			foreach ($reemplazarTexto['reemplazos'] as $reemplazo) {
+				$formato->setCount(0);
+				$data = $formato->replace(null, $reemplazo, $reemplazarTexto['texto']);
+				foreach ($cells as $col => $rows ) {
+					foreach ($rows as $row => $v) {
+						$newCellName = $col . ($row + $rowNum);
+						if (isset($data[$col . $row])) {
+							$worksheet->setCellValue($newCellName, $data[$col . $row]);
+						} else {
+							$worksheet->setCellValue($newCellName, $worksheet->getCell($col . $row)->getValue());
+						}
+						$worksheet->duplicateStyle($worksheet->getStyle($col . $row), $newCellName);
+					}
+				}
+				
+				$rowNum = $worksheet->getHighestRow();
+				$worksheet->setBreak('A' . $rowNum, PHPExcel_Worksheet::BREAK_ROW);
 			}
 			
 			$objPHPExcelWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');

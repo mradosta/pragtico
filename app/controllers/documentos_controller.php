@@ -35,13 +35,18 @@ class DocumentosController extends AppController {
  */
 	function generar($id = null) {
 
-		if (!empty($this->params['named']['model'])) {
-			$documentos = $this->Documento->find('all',
-					array('conditions' => array('Documento.model' => $this->params['named']['model'])));
-		} elseif (!empty($this->data['Documento']['id'])) {
+		if (!empty($this->data['Documento']['id'])) {
 			$documentos = $this->Documento->find('all',
 					array('conditions' => array('Documento.id' => $this->data['Documento']['id'])));
-			$id = $this->data['Model']['id'];
+		} elseif (!empty($this->params['named']['model'])) {
+			$documentos = $this->Documento->find('all',
+					array('conditions' => array('Documento.model' => $this->params['named']['model'])));
+		}
+		
+		if (empty($id)) {
+			if (!empty($this->params['data']['seleccionMultiple'])) {
+				$id = $this->Util->extraerIds($this->params['data']['seleccionMultiple']);
+			}
 		}
 
 		if (!empty($documentos)) {
@@ -56,7 +61,7 @@ class DocumentosController extends AppController {
 					$Model->contain(unserialize(urldecode($this->params['named']['contain'])));
 				}
 
-				$data = $Model->findById($id);
+				$data = $Model->find('all', array('conditions' => array($Model->name . '.' . $Model->primaryKey => $id)));
 
 				$reemplazarTexto['texto'] = Set::combine($documentos[0]['DocumentosPatron'], '{n}.identificador', '{n}.patron');
 				$reemplazarTexto['reemplazos'] = $data;
