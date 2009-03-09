@@ -258,50 +258,47 @@ div.menu {
 	font-weight: bold;
 }
 
-div.menu dl {
-	color: #FFFFFF;
-	text-align: right;
-}
-
-div.menu dt {
-	padding-right: 15px;
-	padding-bottom: 3px;
-	line-height: 28px;
-	background: transparent url(img/boton_menu_padre.gif) no-repeat;
-	cursor: pointer;
-	font-size: 12px;
-}
-
-div.menu dl dt img {
-	float: left;
-}
-
-div.menu dl dd {
-	margin: 0;
-}
-
-div.menu dl dd img {
-	float: left;
-	margin-top: -6px;
-}
-
-div.menu span {
-	margin-right: 24px;
-}
-
 div.menu a {
-	float: left;
-	padding-top: 6px;
-	padding-bottom: 3px;
-	text-align: right;
 	display: block;
-	background: transparent url(img/boton_menu_hijo.gif) no-repeat;
-	width: 173px;
-	text-decoration: none;
-	color: #FFFFFF;
+	height: 30px;
+	margin-top: 2px;
 }
 
 div.menu a:hover {
+	text-decoration: none;
+}
+
+div.menu a.header {
+	border: 0;
+	background: transparent url(img/boton_menu_padre.gif) no-repeat;
+}
+
+div.menu div {
+	border: 0;
+}
+
+div.menu img {
+	float: left;
+}
+
+div.menu a span {
+	font-size: 11px;
+	color: #ffffff;
+	padding-top: 6px;
+	padding-left: 5px;
+	float: left;
+}
+
+div.menu div.panel span {
+	float: right;
+	padding-right: 17px;
+}
+
+div.menu div.panel a {
+	background: transparent url(img/boton_menu_hijo.gif) no-repeat;
+}
+
+div.menu div.panel a:hover {
 	background-image: url(img/boton_menu_hijo_activo.gif);
 }
 

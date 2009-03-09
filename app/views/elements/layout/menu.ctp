@@ -1,5 +1,4 @@
 <?php
-
 $MenuItems = $session->read('__itemsMenu');
 //$navegacion = $appForm->traerPreferencia('navegacion');
 $navegacion = null;
@@ -7,16 +6,6 @@ $navegacion = null;
 $menu = '';
 foreach ($MenuItems as $k => $padre) {
 	
-	if (empty($padre['Menu']['ayuda'])) {
-		$padre['Menu']['ayuda'] = $padre['Menu']['etiqueta'];
-	}
-
-	if (empty($padre['Menu']['imagen'])) {
-		$padre['Menu']['imagen'] = $padre['Menu']['nombre'] . '.gif';
-	}
-
-	$menu .=  $appForm->tag('dt', $appForm->image($padre['Menu']['imagen']) . $padre['Menu']['etiqueta'], array('title' => $padre['Menu']['ayuda']));
-
 	$hijos = '';
 	foreach ($padre['children'] as $k1 => $hijo) {
 		if(empty($hijo['Menu']['ayuda'])) {
@@ -27,42 +16,30 @@ foreach ($MenuItems as $k => $padre) {
 			$hijo['Menu']['imagen'] = $hijo['Menu']['nombre'] . '.gif';
 		}
 		
+		/*
 		$url = array(	'controller'	=> $hijo['Menu']['controller'],
 						'action'		=> $hijo['Menu']['action'],
 						'am'			=> $k);
+		*/
+		$url = array(	'controller'	=> $hijo['Menu']['controller'],
+						'action'		=> $hijo['Menu']['action']);
 
 		if ($navegacion === 'ajax') {
-			$hijos .= $ajax->link($appForm->image($hijo['Menu']['imagen']) . $appForm->tag('span', $hijo['Menu']['etiqueta']), $url, array('update'=>'index', 'title' => $hijo['Menu']['ayuda']));
+			$hijos .= $appForm->tag('div', $ajax->link($appForm->image($hijo['Menu']['imagen']) . $appForm->tag('span', $hijo['Menu']['etiqueta']), $url, array('update' => 'cuerpo', 'title' => $hijo['Menu']['ayuda'])));
 		} else {
-			$hijos .= $appForm->link($appForm->image($hijo['Menu']['imagen']) . $appForm->tag('span', $hijo['Menu']['etiqueta']), $url, array('title' => $hijo['Menu']['ayuda']));
+			$hijos .= $appForm->tag('div', $appForm->link($appForm->image($hijo['Menu']['imagen']) . $appForm->tag('span', $hijo['Menu']['etiqueta']), $url, array('title' => $hijo['Menu']['ayuda'])));
 		}
 	}
-	$menu .=  $appForm->tag('dd', $hijos);
+	$children =  $appForm->tag('div', $hijos, array('class' => 'panel'));
+	
+	if (empty($padre['Menu']['ayuda'])) {
+		$padre['Menu']['ayuda'] = $padre['Menu']['etiqueta'];
+	}
+	if (empty($padre['Menu']['imagen'])) {
+		$padre['Menu']['imagen'] = $padre['Menu']['nombre'] . '.gif';
+	}
+	$parent =  $appForm->link($appForm->image($padre['Menu']['imagen']) . $appForm->tag('span', $padre['Menu']['etiqueta']), null, array('class' => 'header', 'title' => $padre['Menu']['ayuda']));
+	$menu .= $appForm->tag('div', $parent . $children);
 }
-$menu =  $appForm->tag('dl', $menu);
-echo $appForm->tag('div', $menu, array('class'=>'menu'));
-
-/**
- * Get actualMenu passed by argument or from session.
- */
-if (isset($this->params['named']['am'])) {
-	$actualMenu = $this->params['named']['am'];
-} else {
-	$actualMenu = $session->read('__actualMenu');
-}
-
-$js = '
-	jQuery(".menu").Accordion( {
-			headerSelector	: "dt",
-			panelSelector	: "dd",
-			activeClass 	: "menuActive",
-			hoverClass   	: "menuHover",
-			panelHeight 	: 305,
-			speed         	: 300,
-			currentPanel	: ' . $actualMenu . '
-		}
-	);
-';
-//console.log(jQuery(".menu")[0].accordionCfg.currentPanel);
-$appForm->addScript($js, 'ready');
+echo $appForm->tag('div', $menu, array('class' => 'menu'));
 ?>

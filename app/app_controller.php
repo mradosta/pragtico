@@ -708,10 +708,10 @@ class AppController extends Controller {
     function beforeFilter() {
 		/**
 		 * Save selected menu (actualMenu) in the session.
-		 */
 		if (isset($this->passedArgs['am'])) {
 			$this->Session->write('__actualMenu', $this->passedArgs['am']);
 		}
+		 */
 		
 		
 		/**
