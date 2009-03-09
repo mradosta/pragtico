@@ -28,13 +28,13 @@ class RelacionesController extends AppController {
 	
 /**
  * Set default search condition to active relations.
- */
 	function index() {
 		if (empty($this->data['Condicion.Relacion-estado'])) {
 			$this->data['Condicion']['Relacion-estado'] = 'Activa';
 		}
 		return parent::index();
 	}
+ */
 
 
 /**
