@@ -133,7 +133,8 @@ class Liquidacion extends AppModel {
  */
     function getReceipt($relationship, $period, $type = 'normal', $options = array()) {
 
-		$this->__conceptos = null;
+		$this->__conceptos = array();
+		$this->__receiptError = array();
 		$this->__variables = null;
 
 		/** Initial set of vars and concepts */
@@ -148,14 +149,13 @@ class Liquidacion extends AppModel {
 
 		
 		if ($type === 'normal') {
-			
 			$opcionesFindConcepto = null;
 			$this->setConcept(
 				$this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
 					array(		'relacion' 	=> $relationship,
 								'desde' 	=> $this->getVarValue('#fecha_desde_liquidacion'),
 								'hasta' 	=> $this->getVarValue('#fecha_hasta_liquidacion'))));
-			
+
 			/** Get novelties */
 			$novedades = $this->Relacion->Novedad->getNovedades($this->getRelationship(), $this->getPeriod());
 			foreach ($novedades['variables'] as $varName => $varValue) {
@@ -455,34 +455,6 @@ class Liquidacion extends AppModel {
 		return $detalle;
 	}
 
-	
-	function addEditDetalle_deprecated($opciones) {
-		/**
-		* Se refiere a los conceptos que deben tratarse de forma especial, ya que modifican data en table, u otra cosa.
-		*/
-		$this->recursive = -1;
-		$liquidacion = $this->findById($opciones['liquidacionId']);
-		$conceptosHora = array('horas_extra_50', 'horas_extra_100');
-		if (in_array($opciones['conceptoCodigo'], $conceptosHora)) {
-			$this->LiquidacionesDetalle->Concepto->recursive = -1;
-			$concepto = $this->LiquidacionesDetalle->Concepto->findByCodigo($opciones['conceptoCodigo']);
-
-			$save['relacion_id'] = $liquidacion['Liquidacion']['relacion_id'];
-			$save['liquidacion_id'] = $liquidacion['Liquidacion']['id'];
-			$save['tipo'] = str_replace('Horas ', '', preg_replace('/0$/', '0 %', Inflector::humanize($opciones['conceptoCodigo'])));
-			$save['periodo'] = $liquidacion['Liquidacion']['ano'] . str_pad('0', 2, $liquidacion['Liquidacion']['mes'], STR_PAD_RIGHT) . $liquidacion['Liquidacion']['periodo'];
-			$save['estado'] = 'Pendiente';
-			$save['cantidad'] = $opciones['valor'];
-			$save['observacion'] = 'Ingresado desde la modificacion de una Liquidacion';
-			$horaModel = new Hora();
-			//$horaModel->begin();
-			$horaModel->save(array('Hora'=>$save));
-			
-			//$horaModel->rollBack();
-		}
-	}
-
-
 
 /**
 * Dado un concepto, resuelve la formula.
@@ -715,12 +687,11 @@ class Liquidacion extends AppModel {
                                         'concepto'              => '',
                                         'variable'              => $variable,
                                         'formula'               => '',
-                                        'descripcion'           => 'La formula intenta usar una variable inexistente. Se resolvera a 0 (cero) su valor.',
+                                        'descripcion'           => 'La formula intenta usar una variable inexistente. Se resolvera a "#N/A" su valor.',
                                         'recomendacion'         => 'Verifique que la formula este correctamente definida y que las variables que esta formula utiliza existan en el sistema.',
                                         'descripcion_adicional' => ''));
-
-            $this->setVar($variable, 0);
-            return 0;
+            $this->setVar($variable, '#N/A');
+            return '#N/A';
         }
         /**
         * Ya he resuelto esta variable anteriormente.
@@ -747,6 +718,7 @@ class Liquidacion extends AppModel {
                     }
                 }
 
+				//debug($variable . ': ' . $formula);
                 $valor = $this->resolver($formula);
                 
                 if ($valor === '#N/A') {
@@ -835,164 +807,6 @@ class Liquidacion extends AppModel {
 
 			$this->setVar($variable, $return);
 			return $return;
-
-
-
-            /**
-             * System vars. HardCoded
-             */
-            switch ($variable) {
-                case '#mes_liquidacion':
-					d("X");
-                    $this->setVar($variable, $this->getPeriod('mes'));
-                break;
-                case '#ano_liquidacion':
-                    $this->setVar($variable, $this->getPeriod('ano'));
-                break;
-                case '#periodo_liquidacion':
-                    $this->setVar($variable, $this->getPeriod('periodo'));
-                break;
-                case '#periodo_liquidacion_completo':
-                    $this->setVar($variable, $this->getPeriod('periodoCompleto'));
-                break;
-                case '#fecha_desde_liquidacion':
-                    $this->setVar($variable, $this->getPeriod('desde'));
-                break;
-                case '#fecha_hasta_liquidacion':
-                    $this->setVar($variable, $this->getPeriod('hasta'));
-                break;
-                case '#fecha_actual':
-                    $this->setVar($variable, date('Y-m-d'));
-                break;
-                case '#dia_ingreso':
-                    $this->setVar($variable, $this->format($this->getVarValue('#fecha_ingreso'), 'dia'));
-                break;
-                case '#dia_egreso':
-                    $this->setVar($variable, $this->format($this->getVarValue('#fecha_egreso'), 'dia'));
-                break;
-                case '#mes_ingreso':
-                    $this->setVar($variable, $this->format($this->getVarValue('#fecha_ingreso'), 'mes'));
-                break;
-                case '#mes_egreso':
-                    $this->setVar($variable, $this->format($this->getVarValue('#fecha_egreso'), 'mes'));
-                break;
-                case '#ano_ingreso':
-                    $this->setVar($variable, $this->format($this->getVarValue('#fecha_ingreso'), 'ano'));
-                break;
-                case '#ano_egreso':
-                    $this->setVar($variable, $this->format($this->getVarValue('#fecha_egreso'), 'ano'));
-                break;
-                case '#dia_desde_liquidacion':
-                    $this->setVar($variable, $this->getPeriod('desde'));
-                break;
-                case '#dia_hasta_liquidacion':
-                    $this->setVar($variable, $this->getPeriod('hasta'));
-                break;
-                case '#dias_antiguedad':
-                case '#meses_antiguedad':
-                case '#anos_antiguedad':
-                    $fechaEgreso = $this->getVarValue('#fecha_egreso');
-                    if ($fechaEgreso !== '0000-00-00' && $fechaEgreso < $this->getVarValue('#fecha_hasta_liquidacion')) {
-                        $antiguedad = $this->dateDiff($this->getVarValue('#fecha_ingreso'), $fechaEgreso);
-                    } else {
-                        $antiguedad = $this->dateDiff($this->getVarValue('#fecha_ingreso'), $this->getVarValue('#fecha_hasta_liquidacion'));
-                    }
-                    if ($variable === '#dias_antiguedad') {
-                        $this->setVar($variable, $antiguedad['dias']);
-                    } elseif ($variable === '#meses_antiguedad') {
-                        $this->setVar($variable, floor($antiguedad['dias'] / 30));
-                    } elseif ($variable === '#anos_antiguedad') {
-                        $this->setVar($variable, floor($antiguedad['dias'] / 365));
-                    }
-                break;
-                case '#dias_corridos_periodo':
-                    if ($this->getVarValue('#dia_ingreso') > 1
-                        && $this->getVarValue('#mes_ingreso') === $this->getVarValue('#mes_liquidacion')
-                        && $this->getVarValue('#ano_ingreso') === $this->getVarValue('#ano_liquidacion')) {
-                        $desde = $this->getVarValue('#fecha_ingreso');
-                    } else {
-                        $desde = $this->getVarValue('#fecha_desde_liquidacion');
-                    }
-    
-                    if ($this->getVarValue('#dia_egreso') < $this->getVarValue('#dia_hasta_liquidacion')
-                        && $this->getVarValue('#mes_egreso') === $this->getVarValue('#mes_liquidacion')
-                        && $this->getVarValue('#ano_egreso') === $this->getVarValue('#ano_liquidacion')) {
-                        $hasta = $this->getVarValue('#fecha_egreso');
-                    } else {
-                        $hasta = $this->getVarValue('#fecha_hasta_liquidacion');
-                    }
-                    $antiguedad = $this->dateDiff($desde, $hasta);
-                    $this->setVar($variable, $antiguedad['dias']);
-                break;
-                case '#dias_vacaciones':
-					/**
-					 * $formula = "=IF(AND(MONTH(date('2008-07-07'))>6,YEAR(date('2008-07-07'))=YEAR(date('2008-12-31');DAY(A2)>1)),INT(NETWORKDAYS(date('2008-07-07'),date('2008-12-31'))/20),IF(AND(MONTH(date('2008-07-07'))<6,YEAR(date('2008-07-07'))=YEAR(date('2008-12-31'))),14,IF((YEAR(date('2008-12-31'))-YEAR(date('2008-07-07')))<=5,14,IF((YEAR(date('2008-12-31'))-YEAR(date('2008-07-07')))<=10,21,IF((YEAR(date('2008-12-31'))-YEAR(date('2008-07-07')))<=15,28,35)))))";
-					 * Assumptions:
-					 * 6 month => 182 days (average between first and second half).
-					 * 5 years => 1826 days (add 1 day because of lead year).
-					 */
-					$ingreso = $this->getVarValue('#fecha_ingreso');
-					$endYear = (int)$this->getPeriod('ano');
-					$startYear = (int)$this->format($ingreso, 'ano');
-                    $december31 = $this->format(array('ano' => $endYear, 'mes' => 12, 'dia' => 31), array('format' => 'Y-m-d', 'type' => 'date'));
-					$ingreso = $this->getVarValue('#fecha_ingreso');
-                    $antiguedad = $this->dateDiff($ingreso, $december31);
-					//debug($endYear);d($startYear);
-                    if ($antiguedad['dias'] <= 182 || (12 - (int)$this->format($ingreso, 'mes') < 6 && $endYear === $startYear)) {
-						$this->setVar($variable, floor($antiguedad['dias'] / 30));
-					//} elseif ($antiguedad['dias'] > 182 && $antiguedad['dias'] <= 1826) {
-					} elseif ($endYear - $startYear <= 5) {
-						$this->setVar($variable, 14);
-					//} elseif ($antiguedad['dias'] > 1826 && $antiguedad['dias'] <= (1826 * 2)) {
-					} elseif ($endYear - $startYear <= 10) {
-						$this->setVar($variable, 21);
-					//} elseif ($antiguedad['dias'] > (1826 * 2) && $antiguedad['dias'] <= (1826 * 4)) {
-					} elseif ($endYear - $startYear <= 20) {
-						$this->setVar($variable, 28);
-					} else {
-						$this->setVar($variable, 35);
-					}
-                    break;
-				/*
-                case '#horas':
-                case '#horas_ajuste':
-                case '#horas_ajuste_extra_100':
-                case '#horas_ajuste_extra_50':
-                case '#horas_ajuste_extra_nocturna_100':
-                case '#horas_ajuste_extra_nocturna_50':
-                case '#horas_ajuste_nocturna':
-                case '#horas_extra_100':
-                case '#horas_extra_50':
-                case '#horas_extra_nocturna_100':
-                case '#horas_extra_nocturna_50':
-                case '#horas_nocturna':
-                    //Busco las horas trabajadas en el periodo y las cargo al array variables.
-                    $horas = $this->Relacion->Hora->getHoras($this->getRelationship(), $this->getPeriod());
-                    foreach ($horas['variables'] as $horaTipo=>$horaValor) {
-                        $this->setVar($horaTipo, $horaValor);
-                    }
-                    $this->__setAuxiliar($horas['auxiliar']);
-                    $this->setConcept($horas['conceptos']);
-                break;
-                case '#ausencias_justificadas':
-                case '#ausencias_injustificadas':
-                    $ausencias = $this->Relacion->Ausencia->getAusencias($this->getRelationship(), $this->getPeriod());
-                    $this->setVar('#ausencias_justificadas', $ausencias['Justificada']);
-                    $this->setVar('#ausencias_injustificadas', $ausencias['Injustificada']);
-                break;
-				*/
-            }
-            /*
-                    $this->__setError(array(    'tipo'                  => 'Variable No Resuelta',
-                                                'gravedad'              => 'Alta',
-                                                'concepto'              => '',
-                                                'variable'              => $variable,
-                                                'formula'               => $this->__variables[$variable]['formula'],
-                                                'descripcion'           => 'La formula intenta usar una variable que no es posible resolverla con los datos de la relacion.',
-                                                'recomendacion'         => 'Verifique que la relacion tenga cargados todos los datos necesarios.',
-                                                'descripcion_adicional' => ''));
-            */
-            return $this->getVarValue($variable);
         }
     }
     
