@@ -137,24 +137,20 @@ class LiquidacionesController extends AppController {
 			
 			/** Search for the relations */
 			$condiciones = null;
-			if (!empty($this->data['Condicion']['Relacion-id'])) {
-				$condiciones['Relacion.id'] = $this->data['Condicion']['Relacion-id'];
-			}
-			if (!empty($this->data['Condicion']['Relacion-trabajador_id'])) {
-				$condiciones['Relacion.trabajador_id'] = $this->data['Condicion']['Relacion-trabajador_id'];
-			}
-			if (!empty($this->data['Condicion']['Relacion-empleador_id'])) {
-				$condiciones['Relacion.empleador_id'] = $this->data['Condicion']['Relacion-empleador_id'];
-			}
+			$condiciones = $this->Paginador->generarCondicion();
+			unset($condiciones['Liquidacion.tipo']);
+			unset($condiciones['Liquidacion.periodo_largo']);
 			$condiciones['Relacion.ingreso <='] = $periodo['hasta'];
 			$condiciones['Relacion.estado'] = 'Activa';
-			$condiciones['NOT'] = array('Relacion.id' => $confirmadas);
+			if (!empty($confirmadas)) {
+				$condiciones['NOT'] = array('Relacion.id' => $confirmadas);
+			}
+			
 			$relaciones = $this->Liquidacion->Relacion->find('all',
 					array(	'contain'		=> array(	'ConveniosCategoria.ConveniosCategoriasHistorico',
 														'Trabajador.ObrasSocial',
 														'Empleador'),
 							'conditions'	=> $condiciones));
-			
 			if (empty($relaciones)) {
 				$this->Session->setFlash('No se encontraron relaciones para liquidar. Verifique si no se han liquidado y confirmado previamente o los criterios de busqueda no son correctos.', 'error');
 				$this->redirect(array('action' => 'preliquidar'));
@@ -173,12 +169,13 @@ class LiquidacionesController extends AppController {
 			 * Lo hago de esta forma, ya que busco todo junto y no uno por uno en cada relacion por una cuestion de performance,
 			 * ya que seguramente las relaciones liquidadas tengas los mismos convenios.
 			 */
-			$informaciones = $this->Liquidacion->Relacion->ConveniosCategoria->Convenio->getInformacion(Set::extract("/ConveniosCategoria/convenio_id", $relaciones));
+			$informaciones = $this->Liquidacion->Relacion->ConveniosCategoria->Convenio->getInformacion(Set::extract('/ConveniosCategoria/convenio_id', $relaciones));
 
 			/** Find all vars */
 			$Variable = ClassRegistry::init('Variable');
-			$variables = Set::combine($Variable->find('all', array('recursive' => -1, 'order' => false)),
-					'{n}.Variable.nombre', '{n}.Variable');
+			$variables = Set::combine($Variable->find('all', array(
+					'recursive' => -1,
+	 				'order' => false)), '{n}.Variable.nombre', '{n}.Variable');
 			$variables['#tipo_liquidacion']['valor'] = $this->data['Condicion']['Liquidacion-tipo'];
 			
 
