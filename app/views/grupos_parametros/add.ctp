@@ -21,18 +21,17 @@
 */
 $campos = null;
 $campos['GruposParametro.id'] = array();
-$campos['GruposParametro.grupo_id'] = array("options"=>$grupos);
-
-$campos['GruposParametro.nombre'] = array();
+$campos['GruposParametro.grupo_id'] = array('options' => 'listable', 'model'=>'Grupo', 'displayField' => 'Grupo.nombre', 'empty'=>true);
+$campos['GruposParametro.parametro_id'] = array('options' => 'listable', 'model'=>'Parametro', 'displayField' => 'Parametro.nombre', 'empty'=>true);
 $campos['GruposParametro.valor'] = array();
 $campos['GruposParametro.descripcion'] = array();
 
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "Parametro del Grupo", 'imagen' => 'parametros.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => 'Parametro del Grupo', 'imagen' => 'parametros.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => 'GruposParametro.nombre'));
+echo $this->element('add/add', array('fieldset' => $fieldset));
 ?>
