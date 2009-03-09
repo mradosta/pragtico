@@ -45,9 +45,7 @@ class GruposParametro extends AppModel {
         )
 	);
 
-	var $belongsTo = array(	'Grupo' =>
-                        array('className'    => 'Grupo',
-                              'foreignKey'   => 'grupo_id'));
+	var $belongsTo = array(	'Grupo', 'Parametro');
 
 }
 ?>

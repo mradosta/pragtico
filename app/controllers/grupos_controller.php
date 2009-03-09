@@ -40,7 +40,7 @@ class GruposController extends AppController {
  * Muestra via desglose menus parametros a este grupo.
  */
 	function parametros($id) {
-		$this->Grupo->contain(array("GruposParametro"));
+		$this->Grupo->contain(array("GruposParametro.Parametro"));
 		$this->data = $this->Grupo->read(null, $id);
 	}	
 	
