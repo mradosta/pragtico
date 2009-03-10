@@ -336,15 +336,15 @@ class AppController extends Controller {
 										$this->data[$k][$model][$kDetail] = array_merge($this->data[$k][$model][$kDetail], $vDatail);
 									}
 								} else {
-                                	$this->data[$k][$model] = array_merge($this->data[$k][$model], $datos);
+                                	$this->data[$k][$model] = $datos;
 								}
                             }
                         }
                         //$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error", array("errores"=>$dbError));
-						$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error");
+						$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), 'error');
                     } else {
                         //$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error", array("errores"=>$dbError));
-						$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error");
+						$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), 'error');
                     }
                 }
             } elseif ($this->data['Form']['accion'] === 'cancelar') {
