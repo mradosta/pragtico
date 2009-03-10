@@ -1845,17 +1845,12 @@ class AppFormHelper extends FormHelper {
 				$options['class'] = "derecha";
 			}
 
-			//elseif ($tipoCampo === "checkboxMultiple") {
-			//	return $this->__checkboxMultiple($tagName, $options);
-			//}
-			
-			
 			elseif (isset($options['multiple']) && $options['multiple'] === 'checkbox') {
 				$id = mt_rand();
-				$seleccion[] = $this->link("T", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("seleccionar");return false;')) . " / ";
-				$seleccion[] = $this->link("N", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("deseleccionar");return false;')) . " / ";
-				$seleccion[] = $this->link("I", "", array("onclick"=>'jQuery("#' . $id . ' input[@type=\'checkbox\']").checkbox("invertir");return false;'));
-				$seleccionString = $this->tag("div", $seleccion, array("class" => "seleccion"));
+				$seleccion[] = $this->link('T', null, array('onclick' => 'jQuery("#' . $id . ' input:checkbox").checkbox("seleccionar");return false;'));
+				$seleccion[] = $this->link('N', null, array('onclick' => 'jQuery("#' . $id . ' input:checkbox").checkbox("deseleccionar");return false;'));
+				$seleccion[] = $this->link('I', null, array('onclick' => 'jQuery("#' . $id . ' input:checkbox").checkbox("invertir");return false;'));
+				$seleccionString = $this->tag('div', implode(' / ', $seleccion), array('class' => 'seleccion'));
 				if (empty($options['after'])) {
 					unset($options['after']);
 				}
