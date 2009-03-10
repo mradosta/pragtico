@@ -130,7 +130,8 @@ class Ausencia extends AppModel {
 																	'Ausencia.desde <='		=> $periodo['hasta'])))));
 
 		$ausencias['Accidente'] = 0;
-		$ausencias['Justificada'] = 0;
+		$ausencias['Justificada Enfermedad'] = 0;
+		$ausencias['Justificada Licencia'] = 0;
 		$ausencias['Injustificada'] = 0;
 		$conceptos = $auxiliares = array();
 
