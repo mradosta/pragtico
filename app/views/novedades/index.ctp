@@ -46,24 +46,25 @@ $cuerpo = null;
 foreach ($registros as $k => $v) {
 	$fila = null;
 	$fila[] = array('model' => 'Novedad', 'field' => 'id', 'valor' => $v['Novedad']['id'], 'write' => $v['Novedad']['write'], 'delete' => $v['Novedad']['delete']);
-	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
-	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
-	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
+	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], 'nombreEncabezado'=>'Empleador');
+	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], 'class'=>'derecha', 'nombreEncabezado'=>'Documento');
+	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . ' ' . $v['Relacion']['Trabajador']['nombre'], 'nombreEncabezado'=>'Trabajador');
 	$fila[] = array('model' => 'Novedad', 'field' => 'estado', 'valor' => $v['Novedad']['estado']);
 	$fila[] = array('model' => 'Novedad', 'field' => 'periodo', 'valor' => $v['Novedad']['periodo']);
 	$fila[] = array('model' => 'Novedad', 'field' => 'tipo', 'valor' => $v['Novedad']['tipo']);
 	$fila[] = array('model' => 'Novedad', 'field' => 'subtipo', 'valor' => $v['Novedad']['subtipo'], 'nombreEncabezado' => 'Detalle');
 	$fila[] = array('model' => 'Novedad', 'field' => 'data', 'valor' => $v['Novedad']['data'], 'tipoDato' => 'integer', 'nombreEncabezado' => 'Valor');
-	if($v['Novedad']['existe'] === true) {
-		$cuerpo[] = array("contenido"=>$fila, 'opciones' => array("seleccionMultiple"=>false, "eliminar"=>false, "modificar"=>false, "title"=>"Existe una novedad del mismo tipo ya ingresada y liquidada para el mismo periodo. Verifique.", "class" => "fila_resaltada"));
-	}
-	else {
+	if ($v['Novedad']['tipo'] === 'Concepto' && $v['Novedad']['estado'] === 'Liquidada') {
+		$cuerpo[] = array('contenido' => $fila, 'opciones' => array('seleccionMultiple' => false, 'eliminar' => false, 'modificar' => false, 'title' => 'Existe una novedad del mismo tipo ya ingresada y liquidada para el mismo periodo. Verifique.', 'class' => 'fila_resaltada'));
+	} elseif ($v['Novedad']['existe'] === true) {
+		$cuerpo[] = array('contenido' => $fila, 'opciones' => array('title' => 'Existe una novedad del mismo tipo para el mismo periodo y para la misma relacion. Verifique.', 'class' => 'fila_resaltada'));
+	} else {
 		$cuerpo[] = $fila;
 	}
 }
-$generar = $appForm->link("Generar Planilla", "generar_planilla", array("title"=>"Genera las planillas para el ingreso de novedades", "class"=>"link_boton"));
-$importar = $appForm->link("Importar Planilla", "importar_planilla", array("class"=>"link_boton", "title"=>"Importa las planillas de novedades"));
-$confirmar = $appForm->link("Confirmar", null, array("class"=>"link_boton", "id"=>"confirmar", "title"=>"Confirma las novedades seleccionadas"));
+$generar = $appForm->link('Generar Planilla', 'generar_planilla', array('title'=>'Genera las planillas para el ingreso de novedades', 'class'=>'link_boton'));
+$importar = $appForm->link('Importar Planilla', 'importar_planilla', array('class'=>'link_boton', 'title'=>'Importa las planillas de novedades'));
+$confirmar = $appForm->link('Confirmar', null, array('class'=>'link_boton', 'id'=>'confirmar', 'title'=>'Confirma las novedades seleccionadas'));
 $accionesExtra['opciones'] = array("acciones"=>array($confirmar, "eliminar", $generar, $importar));
 $opcionesTabla =  array("tabla"=>array("modificar"=>false));
 echo $this->element('index/index', array("opcionesTabla"=>$opcionesTabla, "condiciones"=>$fieldset, 'cuerpo' => $cuerpo, "accionesExtra"=>$accionesExtra));

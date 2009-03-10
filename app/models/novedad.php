@@ -70,44 +70,30 @@ class Novedad extends AppModel {
  * Based on novelty type, mark the existance of a previewsly informed novelty.
  */
 	function afterFind($results, $primary = false) {
-		if ($primary) {
+		if ($primary && isset($results[0]['Novedad'])) {
 			foreach ($results as $k => $v) {
 				$existe = false;
 				if (isset($v['Novedad']['tipo'])) {
 					if ($v['Novedad']['tipo'] === 'Concepto') {
-						if ($v['Novedad']['estado'] !== 'Pendiente') {
+						
+						$conditions = null;
+						$conditions['relacion_id'] = $results[$k]['Novedad']['relacion_id'];
+						$conditions['tipo'] = $results[$k]['Novedad']['tipo'];
+						$conditions['subtipo'] = $results[$k]['Novedad']['subtipo'];
+						$conditions['periodo'] = $results[$k]['Novedad']['periodo'];
+						$conditions['estado'] = array('Confirmada', 'Liquidada');
+						if ($this->hasAny($conditions) > 1) {
 							$existe = true;
 						}
+						
 						$results[$k]['Novedad']['subtipo'] = array_pop(explode(':', $v['Novedad']['subtipo']));
-						/*
-						$periodo = $this->format($v['Novedad']['periodo'], 'periodo');
-						$conditions = array('RelacionesConcepto.concepto_id' =>	array_shift(explode(':', $v['Novedad']['subtipo'])),
-											'RelacionesConcepto.relacion_id' =>	$v['Novedad']['relacion_id'],
-											array('OR'	=> array(	'RelacionesConcepto.desde' => '0000-00-00',
-																	'RelacionesConcepto.desde <=' => $periodo['desde'])),
-											array('OR'	=> array(	'RelacionesConcepto.hasta' => '0000-00-00',
-																	'RelacionesConcepto.hasta >=' => $periodo['hasta']))
-										   );
-								
-						$existe = $this->Relacion->RelacionesConcepto->find('first', array(
-													'recursive'		=> -1,
-													'conditions' 	=> $conditions));
-						
-						
-						// En caso de que exista, si dentro de la formula tiene la variable,
-						//lo marco como que no existe porque luego la reemplazare.
-						if (!empty($existe['RelacionesConcepto']['formula']) && strpos($existe['RelacionesConcepto']['formula'], '#valor_novedad') !== false) {
-							$existe = false;
-						}
-						*/
 					} elseif ($v['Novedad']['tipo'] === 'Horas') {
 						$Hora = ClassRegistry::init('Hora');
 						$find = null;
-						$find['Hora.estado'] = 'Liquidada';
 						$find['Hora.tipo'] = $v['Novedad']['subtipo'];
 						$find['Hora.periodo'] = $v['Novedad']['periodo'];
 						$find['Hora.relacion_id'] = $v['Novedad']['relacion_id'];
-						$existe = $Hora->find('first', array(	'recursive' 	=> -1, 
+						$existe = $Hora->find('count', array(	'recursive' 	=> -1,
 											 					'checkSecurity'	=> false,
 											 					'conditions' 	=> $find));
 					} elseif ($v['Novedad']['tipo'] === 'Ausencias') {
@@ -116,7 +102,6 @@ class Novedad extends AppModel {
 						$periodo = $this->format($v['Novedad']['periodo'], 'periodo');
 						$find['Ausencia.desde >='] = $periodo['desde'];
 						$find['Ausencia.desde <='] = $periodo['hasta'];
-						//$find['Ausencia.ausencia_motivo_id'] = array_shift(explode(':', $v['Novedad']['subtipo']));
 						$find['Ausencia.relacion_id'] = $v['Novedad']['relacion_id'];
 						$existe = $Ausencia->find('first', array(	'recursive' 	=> -1, 
 											 						'checkSecurity'	=> false,
@@ -125,7 +110,6 @@ class Novedad extends AppModel {
 						$Descuento = ClassRegistry::init('Descuento');
 						$find = null;
 						$periodo = $this->format($v['Novedad']['periodo'], 'periodo');
-						$find['Descuento.tipo'] = 'Vale';
 						$find['Descuento.tipo'] = 'Vale';
 						$find['Descuento.desde >='] = $periodo['desde'];
 						$find['Descuento.desde <='] = $periodo['hasta'];
@@ -312,35 +296,6 @@ class Novedad extends AppModel {
 					$excludeIds[] = $novedad['Novedad']['id'];
 					$saves[$i]['Novedad']['id'] = $novedad['Novedad']['id'];
 					$saves[$i]['Novedad']['estado'] = 'Confirmada';
-				/*
-					$saves[$i]['RelacionesConcepto']['desde'] = $this->format($periodo['desde'], 'date');
-					$saves[$i]['RelacionesConcepto']['hasta'] = $this->format($periodo['hasta'], 'date');
-					$saves[$i]['RelacionesConcepto']['relacion_id'] = $novedad['Novedad']['relacion_id'];
-					$saves[$i]['RelacionesConcepto']['concepto_id'] = array_shift(explode(':', $novedad['Novedad']['subtipo']));
-					$saves[$i]['RelacionesConcepto']['observacion'] = 'Ingresado desde planilla';
-					
-					$find = $this->Relacion->RelacionesConcepto->find('first', 
-							array(	'recursive' 			=> -1,
-									'conditions' => array(
-										'RelacionesConcepto.relacion_id' 	=> $saves[$i]['RelacionesConcepto']['relacion_id'],
-		   								'RelacionesConcepto.concepto_id'	=> $saves[$i]['RelacionesConcepto']['concepto_id'])
-									));
-					
-					if (empty($find)) {
-						$saves[$i]['RelacionesConcepto']['id'] = null;
-						$formula = '=' . $novedad['Novedad']['data'];
-					}
-					if (empty($find['RelacionesConcepto']['formula'])) {
-						$saves[$i]['RelacionesConcepto']['id'] = $find['RelacionesConcepto']['id'];
-						$formula = '=' . $novedad['Novedad']['data'];
-					}
-					else {
-						$saves[$i]['RelacionesConcepto']['id'] = $find['RelacionesConcepto']['id'];
-						$formula = preg_replace('/(.*)(#valor_novedad):?([0-9]+|)(.*)/', '${1}${2}:' . $novedad['Novedad']['data'] .'$4', $find['RelacionesConcepto']['formula']);
-					}
-					
-					$saves[$i]['RelacionesConcepto']['formula'] = $formula;
-				*/
 				break;
 			}
 			$i++;
