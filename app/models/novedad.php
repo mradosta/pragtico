@@ -191,7 +191,7 @@ class Novedad extends AppModel {
 									if (!empty($motivo)) {
 										$save['Novedad']['subtipo'] = $motivo['AusenciasMotivo']['id'] . ':' . $registro;
 									} else {
-										$save['Novedad']['subtipo'] = '1:Justificada (sin especificar)';
+										$save['Novedad']['subtipo'] = '1:Justificada por Enfermedad';
 									}
 								}
 							}

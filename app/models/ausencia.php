@@ -184,9 +184,10 @@ class Ausencia extends AppModel {
 		}
 
 		return array('conceptos' 	=> $conceptos,
-					 'variables' 	=> array('#ausencias_accidentes' 		=> $ausencias['Accidente'],
-											 '#ausencias_justificadas' 		=> $ausencias['Justificada'],
-										  	 '#ausencias_injustificadas' 	=> $ausencias['Injustificada']),
+					 'variables' 	=> array('#ausencias_accidentes' 				=> $ausencias['Accidente'],
+											 '#ausencias_justificadas_enfermedad' 	=> $ausencias['Justificada Enfermedad'],
+											 '#ausencias_justificadas_licencia' 	=> $ausencias['Justificada Licencia'],
+										  	 '#ausencias_injustificadas' 			=> $ausencias['Injustificada']),
 					 'auxiliar' 	=> $auxiliares);
 	}
 	
