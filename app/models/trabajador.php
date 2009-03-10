@@ -34,6 +34,9 @@ class Trabajador extends AppModel {
 										'valoresDefault'=>array('pais' => 'Argentina',
 																'nacionalidad' => 'Argentina')));
 
+	var $breadCrumb = array('format' 	=> '(%s) %s %s',
+							'fields' 	=> array('Trabajador.numero_documento', 'Trabajador.nombre', 'Trabajador.apellido'));
+	
 	var $validate = array(
         'apellido' => array(
 			array(
@@ -83,7 +86,6 @@ class Trabajador extends AppModel {
 				'rule'	=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe seleccionar la provincia.')
         )
-        
 	);
 
 	var $belongsTo = array(	'Localidad' =>

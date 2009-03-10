@@ -32,6 +32,8 @@ class Empleador extends AppModel {
 										'valoresDefault'=>array('alta' => array('date' => 'd/m/Y'),
 																'pais' => 'Argentina')));
 
+	var $breadCrumb = array('format' 	=> '(%s) %s',
+							'fields' 	=> array('Empleador.cuit', 'Empleador.nombre'));
 	
 	var $validate = array( 
         'nombre' => array(
@@ -70,9 +72,6 @@ class Empleador extends AppModel {
         
 	);
 
-	var $breadCrumb = array('format' 	=> '%s - %s',
-							'fields' 	=> array('Empleador.cuit', 'Empleador.nombre'));
-	
 	var $belongsTo = array('Localidad', 'Actividad');
 	
 	var $hasMany = array(	'Area',

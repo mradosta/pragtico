@@ -25,13 +25,9 @@ class Concepto extends AppModel {
 
 	var $order = array('Concepto.orden' => 'asc');
 
-		/*
-        'formula' => array(
-			array(
-				'rule'		=> VALID_NOT_EMPTY,
-				'message'	=> 'Debe ingresar la formula de calculo del concepto.')
-        ),
-        */
+	var $breadCrumb = array('format' 	=> '(%s) %s',
+							'fields' 	=> array('Concepto.codigo', 'Concepto.nombre'));
+	
 	var $validate = array(
         'nombre' => array(
 			array(
