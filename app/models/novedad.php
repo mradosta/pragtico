@@ -179,21 +179,17 @@ class Novedad extends AppModel {
 						*/
 						if ($tipo === 'Ausencias') {
 							if ($subTipo === 'Dias') {
-								continue;
-							} else {
+								$save['Novedad']['subtipo'] = '1:Justificada por Enfermedad';
 								$save['Novedad']['data'] = $registros['Dias'];
-								
-								if (empty($registro)) {
-									$save['Novedad']['subtipo'] = 1;
-								} else {
+								if (isset($datos[$relacion_id][$tipo]['Motivo'])) {
 									$this->Relacion->Ausencia->AusenciasMotivo->recursive = -1;
-									$motivo = $this->Relacion->Ausencia->AusenciasMotivo->findByMotivo($registro);
+									$motivo = $this->Relacion->Ausencia->AusenciasMotivo->findByMotivo($datos[$relacion_id][$tipo]['Motivo']);
 									if (!empty($motivo)) {
-										$save['Novedad']['subtipo'] = $motivo['AusenciasMotivo']['id'] . ':' . $registro;
-									} else {
-										$save['Novedad']['subtipo'] = '1:Justificada por Enfermedad';
+										$save['Novedad']['subtipo'] = $motivo['AusenciasMotivo']['id'] . ':' . $datos[$relacion_id][$tipo]['Motivo'];
 									}
 								}
+							} else {
+								continue;
 							}
 						}
 					}
@@ -268,7 +264,7 @@ class Novedad extends AppModel {
 					$saves[$i]['Hora']['estado'] = 'Confirmada';
 					$saves[$i]['Hora']['relacion_id'] = $novedad['Novedad']['relacion_id'];
 					$saves[$i]['Hora']['periodo'] = $periodo['periodoCompleto'];
-					$saves[$i]['Hora']['observacion'] = 'Ingresado desde planilla';
+					$saves[$i]['Hora']['observacion'] = 'Ingresado desde planilla. Confirmado el ' . date('d/m/Y');
 				break;
 				case 'Ausencias':
 					$saves[$i]['Ausencia']['id'] = null;
@@ -276,7 +272,7 @@ class Novedad extends AppModel {
 					$saves[$i]['Ausencia']['ausencia_motivo_id'] = array_shift(explode(':', $novedad['Novedad']['subtipo']));
 					$saves[$i]['Ausencia']['relacion_id'] = $novedad['Novedad']['relacion_id'];
 					$saves[$i]['AusenciasSeguimiento'][$ii]['dias'] = $novedad['Novedad']['data'];
-					$saves[$i]['AusenciasSeguimiento'][$ii]['observacion'] = 'Ingresado desde planilla';
+					$saves[$i]['AusenciasSeguimiento'][$ii]['observacion'] = 'Ingresado desde planilla. Confirmado el ' . date('d/m/Y');
 					$saves[$i]['AusenciasSeguimiento'][$ii]['estado'] = 'Confirmado';
 					$ii++;
 				break;
@@ -290,7 +286,7 @@ class Novedad extends AppModel {
 					$saves[$i]['Descuento']['descontar'] = array('1');
 					$saves[$i]['Descuento']['concurrencia'] = 'Permite superponer';
 					$saves[$i]['Descuento']['estado'] = 'Activo';
-					$saves[$i]['Descuento']['observacion'] = 'Ingresado desde planilla';
+					$saves[$i]['Descuento']['observacion'] = 'Ingresado desde planilla. Confirmado el ' . date('d/m/Y');
 				break;
 				case 'Concepto':
 					$excludeIds[] = $novedad['Novedad']['id'];
@@ -300,15 +296,15 @@ class Novedad extends AppModel {
 			}
 			$i++;
 		}
-		
+
 		$this->begin();
 		foreach ($saves as $save) {
 			$keys = array_keys($save);
-			if ($this->Relacion->{$keys[0]}->save($save)) {
+			if ($this->Relacion->{$keys[0]}->appSave($save)) {
 				$c++;
 			}
 		}
-
+		
 		if ($i === $c) {
 			$this->deleteAll(array('Novedad.id' => array_diff($ids, $excludeIds)), false, false, false);
 			$this->commit();
