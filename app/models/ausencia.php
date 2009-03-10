@@ -180,7 +180,7 @@ class Ausencia extends AppModel {
 			foreach (array_unique(Set::extract('/AusenciasMotivo/tipo', $r)) as $type) {
 				$conceptos[] = $Concepto->findConceptos('ConceptoPuntual',
 						array(	'relacion' 			=> $relacion,
-								'codigoConcepto'	=> 'ausencias_' . strtolower(str_replace(' ', '_', $type))));
+								'codigoConcepto'	=> 'ausencias_' . strtolower(str_replace(' ', 's_', $type))));
 			}
 		}
 
