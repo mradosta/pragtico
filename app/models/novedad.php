@@ -224,7 +224,7 @@ class Novedad extends AppModel {
 		if (!empty($novedades)) {
 			$Concepto = ClassRegistry::init('Concepto');
 			foreach ($novedades as $novedad) {
-				$conceptoCodigo = strtolower(array_pop(explode(':', $novedad['Novedad']['subtipo'])));
+				$conceptoCodigo = strtolower(str_replace(' ', '_', array_pop(explode(':', $novedad['Novedad']['subtipo']))));
 				$variables['#' . $conceptoCodigo] = $novedad['Novedad']['data'];
 				$conceptos = array_merge($conceptos, $Concepto->findConceptos('ConceptoPuntual', array('relacion' => $relacion, 'codigoConcepto' => $conceptoCodigo)));
 
