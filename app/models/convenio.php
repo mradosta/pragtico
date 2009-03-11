@@ -56,10 +56,12 @@ class Convenio extends AppModel {
 
 	var $hasMany = array(	'ConveniosCategoria' =>
                         array('className'    => 'ConveniosCategoria',
-                              'foreignKey'   => 'convenio_id'),
+                              'foreignKey'   => 'convenio_id',
+							  'dependent'	 => true),
 							'ConveniosInformacion' =>
                         array('className'    => 'ConveniosInformacion',
-                              'foreignKey'   => 'convenio_id'));
+                              'foreignKey'   => 'convenio_id',
+							  'dependent'	 => true));
                               
 	var $hasAndBelongsToMany = array('Concepto' =>
 						array('with' => 'ConveniosConcepto'));
