@@ -57,10 +57,10 @@ class FormatoTest extends CakeTestCase {
 	function testReplaceWithConditionalsAndIterators() {
 		
 		$texto = null;
-        $texto['A12'] = '#*LiquidacionesDetalle.{n}.concepto_nombre*#';
+		$texto['A12'] = '#*LiquidacionesDetalle.{n}.concepto_nombre*#';
         $texto['A13'] = '#*LiquidacionesDetalle.{n}.concepto_nombre*#';
-        $texto['D12'] = '#*LiquidacionesDetalle.{n}.valor_cantidad*#';
-        $texto['D13'] = '#*LiquidacionesDetalle.{n}.valor_cantidad*#';
+        $texto['D12'] = "#*if(LiquidacionesDetalle.{n}.valor_cantidad='0.01','')*#";
+        $texto['D13'] = "#*if(LiquidacionesDetalle.{n}.valor_cantidad=0.00,'')*#";
         $texto['E12'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Remunerativo',LiquidacionesDetalle.{n}.valor,'')*#";
         $texto['E13'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Remunerativo',LiquidacionesDetalle.{n}.valor,'')*#";
         $texto['F12'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Deduccion',LiquidacionesDetalle.{n}.valor,'')*#";
@@ -74,12 +74,12 @@ class FormatoTest extends CakeTestCase {
 		$result = $this->formato->replace(null, $reemplazos, $texto);
 		$expected = null;
 		$expected['A12'] = 'Basico';
-		$expected['D12'] = '0.00';
+		$expected['D12'] = '';
 		$expected['E12'] = '700.60';
 		$expected['F12'] = '';
 		$expected['G12'] = '';
 		$expected['A13'] = 'Antiguedad';
-		$expected['D13'] = '0.00';
+		$expected['D13'] = '';
 		$expected['E13'] = '0.00';
 		$expected['F13'] = '';
 		$expected['G13'] = '';
@@ -780,6 +780,11 @@ class FormatoTest extends CakeTestCase {
 		$valor = '2008-01-22';
 		$result = $this->formato->format($valor, array('type' => 'mesEnLetras', 'case' => 'upper'));
 		$expected = 'JANUARY';
+		$this->assertEqual($expected, $result);
+
+		$valor = '2008-01-22';
+		$result = $this->formato->format($valor, array('type' => 'mesEnLetras', 'short' => true, 'case' => 'upper'));
+		$expected = 'JAN';
 		$this->assertEqual($expected, $result);
 
 		$valor = 'all';

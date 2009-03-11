@@ -243,9 +243,14 @@ class FormatoHelper extends AppHelper {
 				$key = $matches[1];
 			}
 
-			
-			if (preg_match("/^if\((.*)([!=|<>|==|>=|<=]{2})(.*),(.*),(.*)\)$/", $pattern, $matches) || preg_match("/^if\((.*)([>|<|=]{1})(.*),(.*),(.*)\)$/", $pattern, $matches)) {
+
+
+			if (preg_match("/^if\((.*)([!=|<>|==|>=|<=]{2})(.*),(.*),(.*)\)$/", $pattern, $matches)
+				|| preg_match("/^if\((.*)([>|<|=]{1})(.*),(.*),(.*)\)$/", $pattern, $matches)
+				|| preg_match("/^if\((.*)([!=|<>|==|>=|<=]{2})(.*),(.*)\)$/", $pattern, $matches)
+				|| preg_match("/^if\((.*)([>|<|=]{1})(.*),(.*)\)$/", $pattern, $matches)) {
 				$condition = false;
+				
 				switch ($matches[2]) {
 					case '==':
 					case '=':
@@ -281,11 +286,15 @@ class FormatoHelper extends AppHelper {
 						break;
 				}
 
-				
+
 				if ($condition) {
 					$toReplace['#*' . $matches[0] . '*#'] = $this->__getTextFromArray($matches[4], $replaces);
 				} else {
-					$toReplace['#*' . $matches[0] . '*#'] = $this->__getTextFromArray($matches[5], $replaces);
+					if (isset($matches[5])) {
+						$toReplace['#*' . $matches[0] . '*#'] = $this->__getTextFromArray($matches[5], $replaces);
+					} else {
+						$toReplace['#*' . $matches[0] . '*#'] = '';
+					}
 				}
 				if (strpos($matches[0], '{n}') !== false) {
 					if ($nextRecord === true) {
@@ -613,17 +622,25 @@ class FormatoHelper extends AppHelper {
 				$return = $this->__case($return, $options['case']);
 				break;
 			case 'mesEnLetras':
-				$options = array_merge(array('case' => 'lower', 'keyStart' => 1), $options);
+				$options = array_merge(array('short' => false, 'case' => 'lower', 'keyStart' => 1), $options);
 				$meses = $this->__getMonths(null, $options['keyStart']);
 				if (strtolower($valor) === 'all') {
 					$tmp = null;
 					foreach ($meses as $k => $mes) {
-						$tmp[$k] = $this->__case($mes, $options['case']);
+						if (!empty($options['short'])) {
+							$tmp[$k] = substr($this->__case($mes, $options['case']), 0, 3);
+						} else {
+							$tmp[$k] = $this->__case($mes, $options['case']);
+						}
 					}
 					$return = $tmp;
 				} else {
 					$mes = (int)$this->format($valor, array('type' => 'mes'));
-					$return = $this->__case($meses[$mes], $options['case']);
+					if (!empty($options['short'])) {
+						$return = substr($this->__case($meses[$mes], $options['case']), 0, 3);
+					} else {
+						$return = $this->__case($meses[$mes], $options['case']);
+					}
 				}
 				break;
 			case 'numeroEnLetras':
