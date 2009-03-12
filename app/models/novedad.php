@@ -166,7 +166,7 @@ class Novedad extends AppModel {
 						}
 						$save['Novedad']['data'] = $registro;
 						$save['Novedad']['tipo'] = 'Concepto';
-						$save['Novedad']['subtipo'] = $concepto['Concepto']['id'] . ':' . $tipo;
+						$save['Novedad']['subtipo'] = $concepto['Concepto']['id'] . ':' . $concepto['Concepto']['codigo'];
 					} else {
 						$save['Novedad']['concepto_id'] = null;
 						$save['Novedad']['tipo'] = $tipo;
@@ -224,7 +224,7 @@ class Novedad extends AppModel {
 		if (!empty($novedades)) {
 			$Concepto = ClassRegistry::init('Concepto');
 			foreach ($novedades as $novedad) {
-				$conceptoCodigo = strtolower(str_replace(' ', '_', array_pop(explode(':', $novedad['Novedad']['subtipo']))));
+				$conceptoCodigo = array_pop(explode(':', $novedad['Novedad']['subtipo']));
 				$variables['#' . $conceptoCodigo] = $novedad['Novedad']['data'];
 				$conceptos = array_merge($conceptos, $Concepto->findConceptos('ConceptoPuntual', array('relacion' => $relacion, 'codigoConcepto' => $conceptoCodigo)));
 
