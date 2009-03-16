@@ -28,7 +28,11 @@ foreach ($this->data['Concepto'] as $k=>$v) {
 	$fila[] = array('model' => 'EmpleadoresConcepto', 'field' => 'id', 'valor' => $v['EmpleadoresConcepto']['id'], 'write' => $v['EmpleadoresConcepto']['write'], 'delete' => $v['EmpleadoresConcepto']['delete']);
 	$fila[] = array('model' => 'EmpleadoresConcepto', 'field' => 'codigo', 'valor' => $v['codigo']);
 	$fila[] = array('model' => 'EmpleadoresConcepto', 'field' => 'nombre', 'valor' => $v['nombre']);
-	$fila[] = array('model' => 'EmpleadoresConcepto', 'field' => 'formula', 'valor' => $v['EmpleadoresConcepto']['formula']);
+	if (!empty($v['EmpleadoresConcepto']['formula'])) {
+		$fila[] = array('model' => 'EmpleadoresConcepto', 'field' => 'formula', 'valor' => $v['EmpleadoresConcepto']['formula']);
+	} else {
+		$fila[] = array('model' => 'Concepto', 'field' => 'formula', 'valor' => $v['formula']);
+	}
 	$cuerpo[] = $fila;
 }
 
