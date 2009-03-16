@@ -45,6 +45,8 @@ $cuerpo = null;
 foreach ($registros as $k => $v) {
 	$fila = null;
 	$fila[] = array('model' => 'RelacionesConcepto', 'field' => 'id', 'valor' => $v['RelacionesConcepto']['id'], 'write' => $v['RelacionesConcepto']['write'], 'delete' => $v['RelacionesConcepto']['delete']);
+	$fila[] = array('model' => 'RelacionesConcepto', 'field' => 'jerarquia', 'valor' => $v['RelacionesConcepto']['jerarquia']);
+	$fila[] = array('model' => 'RelacionesConcepto', 'field' => 'formula_aplicara', 'valor' => $v['RelacionesConcepto']['formula_aplicara'], 'nombreEncabezado' => 'Formula que se Aplicara');
 	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], 'nombreEncabezado' => 'Empleador');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'class' => 'derecha', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], 'nombreEncabezado' => 'Documento');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . ' ' . $v['Relacion']['Trabajador']['nombre'], 'nombreEncabezado' => 'Trabajador');

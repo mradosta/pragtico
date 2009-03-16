@@ -447,12 +447,15 @@ class Concepto extends AppModel {
 			*/
 			if (!empty($v['0']['formula'])) {
 				$conceptos[$v['Concepto']['codigo']]['formula'] = $v['0']['formula'];
-			}
-			elseif (!empty($v['EmpleadoresConcepto']['formula'])) {
+				$conceptos[$v['Concepto']['codigo']]['jerarquia'] = 'Relacion';
+			} elseif (!empty($v['EmpleadoresConcepto']['formula'])) {
 				$conceptos[$v['Concepto']['codigo']]['formula'] = $v['EmpleadoresConcepto']['formula'];
-			}
-			elseif (!empty($v['ConveniosConcepto']['formula'])) {
+				$conceptos[$v['Concepto']['codigo']]['jerarquia'] = 'Empleador';
+			} elseif (!empty($v['ConveniosConcepto']['formula'])) {
 				$conceptos[$v['Concepto']['codigo']]['formula'] = $v['ConveniosConcepto']['formula'];
+				$conceptos[$v['Concepto']['codigo']]['jerarquia'] = 'Convenio';
+			} else {
+				$conceptos[$v['Concepto']['codigo']]['jerarquia'] = 'Concepto';
 			}
 			
 			/**
@@ -460,11 +463,9 @@ class Concepto extends AppModel {
 			*/
 			if (!empty($v['RelacionesConcepto']['id'])) {
 				$conceptos[$v['Concepto']['codigo']]['id'] = $v['RelacionesConcepto']['id'];
-			}
-			elseif (!empty($v['EmpleadoresConcepto']['formula'])) {
+			} elseif (!empty($v['EmpleadoresConcepto']['formula'])) {
 				$conceptos[$v['Concepto']['codigo']]['id'] = $v['EmpleadoresConcepto']['id'];
-			}
-			elseif (!empty($v['ConveniosConcepto']['formula'])) {
+			} elseif (!empty($v['ConveniosConcepto']['formula'])) {
 				$conceptos[$v['Concepto']['codigo']]['id'] = $v['ConveniosConcepto']['id'];
 			}
 		}

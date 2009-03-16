@@ -33,6 +33,9 @@ $campos['RelacionesConcepto.concepto_id'] = array(	"lov"=>array("controller"	=>	
 $campos['RelacionesConcepto.desde'] = array();
 $campos['RelacionesConcepto.hasta'] = array();
 $campos['RelacionesConcepto.formula'] = array();
+$campos['RelacionesConcepto.jerarquia'] = array('type' => 'soloLectura');
+$campos['RelacionesConcepto.formula_aplicara'] = array('type' => 'soloLectura', 'label' => 'Formula que se Aplicara');
+
 $campos['RelacionesConcepto.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 

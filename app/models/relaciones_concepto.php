@@ -26,9 +26,9 @@
 class RelacionesConcepto extends AppModel {
 
 	var $modificadores = array(	'index'	=>
-			array('contain'	=> array('Relacion'	=> array('Empleador', 'Trabajador'), 'Concepto')),
+			array('contain'	=> array('Relacion'	=> array('Empleador', 'Trabajador', 'ConveniosCategoria'), 'Concepto')),
 								'edit'	=>
-			array('contain'	=> array('Relacion'	=> array('Empleador', 'Trabajador'), 'Concepto')));
+			array('contain'	=> array('Relacion'	=> array('Empleador', 'Trabajador', 'ConveniosCategoria'), 'Concepto')));
 	
 	var $validate = array(
         'relacion_id__' => array(
@@ -44,5 +44,20 @@ class RelacionesConcepto extends AppModel {
 	
 	var $belongsTo = array('Relacion', 'Concepto');
 
+
+	function afterFind($results, $primary = false) {
+		if (!isset($results[0][0]) && $primary === true) {
+			foreach ($results as $k => $result) {
+				$options = null;
+				$options['relacion'] = $result;
+				$options['relacion']['ConveniosCategoria'] = $result['Relacion']['ConveniosCategoria'];
+				$options['codigoConcepto'] = $result['Concepto']['codigo'];
+				$tmp = $this->Concepto->findConceptos('Relacion', $options);
+				$results[$k]['RelacionesConcepto']['jerarquia'] = $tmp[$result['Concepto']['codigo']]['jerarquia'];
+				$results[$k]['RelacionesConcepto']['formula_aplicara'] = $tmp[$result['Concepto']['codigo']]['formula'];
+			}
+		}
+		return parent::afterFind($results, $primary);
+	}
 }
 ?>
