@@ -499,7 +499,7 @@ class Liquidacion extends AppModel {
 										"formula"				=>$concepto['formula'],
 										"descripcion"			=>"La cantidad intenta usar una variable que no ha podido ser resuelta.",
 										"recomendacion"			=>"Verifique que los datos hayan sido correctamente ingresados.",
-										"descripcion_adicional"	=>$this->__variables[$concepto['cantidad']]['formula']);
+										"descripcion_adicional"	=>"");
 				}
 			} else {
 				$errores[] = array(	"tipo"					=>"Variable Inexistente",
