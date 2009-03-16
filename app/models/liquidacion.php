@@ -292,6 +292,7 @@ class Liquidacion extends AppModel {
 		$liquidacion['estado'] = 'Sin Confirmar';
 		$liquidacion['relacion_id'] = $this->getRelationship('Relacion', 'id');
 		$liquidacion['relacion_ingreso'] = $this->getRelationship('Relacion', 'ingreso');
+		$liquidacion['relacion_legajo'] = $this->getRelationship('Relacion', 'legajo');
 		$liquidacion['relacion_horas'] = $this->getRelationship('Relacion', 'horas');
 		$liquidacion['relacion_basico'] = $this->getRelationship('Relacion', 'basico');
 		$liquidacion['relacion_area_id'] = $this->getRelationship('Relacion', 'area_id');
