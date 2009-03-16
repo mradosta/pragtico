@@ -65,41 +65,38 @@ if (!empty($this->data['Liquidacion']['mes'])) {
 }
 $cuerpo[] = $fila;
 $fila = null;
-$fila[] = array("valor"=>"Concepto", "class"=>"imitar_th_izquierda");
-$fila[] = array("valor"=>"Cantidad", "class"=>"imitar_th_izquierda");
-$fila[] = array("valor"=>"Remunarativo", "class"=>"imitar_th_izquierda");
-$fila[] = array("valor"=>"Deduccion", "class"=>"imitar_th_izquierda");
-$fila[] = array("valor"=>"No Remunarativo", "class"=>"imitar_th_izquierda");
+$fila[] = array('valor' => 'Concepto', 'class' => 'imitar_th_izquierda');
+$fila[] = array('valor' => 'Cantidad', 'class' => 'imitar_th_izquierda');
+$fila[] = array('valor' => 'Remunarativo', 'class' => 'imitar_th_izquierda');
+$fila[] = array('valor' => 'Deduccion', 'class' => 'imitar_th_izquierda');
+$fila[] = array('valor' => 'No Remunarativo', 'class' => 'imitar_th_izquierda');
 $cuerpo[] = $fila;
 
 
 foreach($this->data['LiquidacionesDetalle'] as $concepto) {
-	if($concepto['concepto_imprimir'] == "Si" || ($concepto['concepto_imprimir'] == "Solo con valor" && $concepto['valor'] > 0)) {
+	if($concepto['concepto_imprimir'] === 'Si' || ($concepto['concepto_imprimir'] === 'Solo con valor')) {
 		$fila = null;
-		$fila[] = array("valor"=>$concepto['concepto_codigo'], "class"=>"oculto");
-		$fila[] = array("valor"=>$concepto['concepto_nombre']);
+		$fila[] = array('valor' => $concepto['concepto_codigo'], 'class' => 'oculto');
+		$fila[] = array('valor' => $concepto['concepto_nombre']);
 		if($concepto['valor_cantidad'] > 0) {
-			$fila[] = array("valor"=>$concepto['valor_cantidad'], "class"=>"derecha editable");
-		}
-		else {
-			$fila[] = array("valor"=>"");
+			$fila[] = array('valor' => $concepto['valor_cantidad'], 'class' => 'derecha editable');
+		} else {
+			$fila[] = array('valor' => '');
 		}
 
-		$valor = $formato->format($concepto['valor'], "moneda");
-		if($concepto['concepto_tipo'] == "Remunerativo") {
-			$fila[] = array("valor"=>$valor, "class"=>"derecha");
-			$fila[] = array("valor"=>"");
-			$fila[] = array("valor"=>"");
-		}
-		elseif($concepto['concepto_tipo'] == "Deduccion") {
-			$fila[] = array("valor"=>"");
-			$fila[] = array("valor"=>$valor, "class"=>"derecha");
-			$fila[] = array("valor"=>"");
-		}
-		elseif($concepto['concepto_tipo'] == "No Remunerativo") {
-			$fila[] = array("valor"=>"");
-			$fila[] = array("valor"=>"");
-			$fila[] = array("valor"=>$valor, "class"=>"derecha");
+		$valor = $formato->format($concepto['valor'], 'moneda');
+		if($concepto['concepto_tipo'] === 'Remunerativo') {
+			$fila[] = array('valor' => $valor, 'class' => 'derecha');
+			$fila[] = array('valor' => '');
+			$fila[] = array('valor' => '');
+		} elseif($concepto['concepto_tipo'] === "Deduccion") {
+			$fila[] = array('valor' => '');
+			$fila[] = array('valor' => $valor, 'class' => 'derecha');
+			$fila[] = array('valor' => '');
+		} elseif($concepto['concepto_tipo'] === 'No Remunerativo') {
+			$fila[] = array('valor' => '');
+			$fila[] = array('valor' => '');
+			$fila[] = array('valor' => $valor, 'class' => 'derecha');
 		}
 		$cuerpo[] = $fila;
 	}
@@ -109,31 +106,31 @@ foreach($this->data['LiquidacionesDetalle'] as $concepto) {
 * Totales
 */
 $fila = null;
-$fila[] = array("valor"=>"Totales", "class"=>"imitar_th_izquierda", "colspan"=>2);
-$fila[] = array("valor"=>$formato->format($this->data['Liquidacion']['remunerativo'], "moneda"), "class"=>"derecha");
-$fila[] = array("valor"=>$formato->format($this->data['Liquidacion']['deduccion'], "moneda"), "class"=>"derecha");
-$fila[] = array("valor"=>$formato->format($this->data['Liquidacion']['no_remunerativo'], "moneda"), "class"=>"derecha");
+$fila[] = array('valor' => 'Totales', 'class'=>'imitar_th_izquierda', 'colspan'=>2);
+$fila[] = array('valor' => $formato->format($this->data['Liquidacion']['remunerativo'], 'moneda'), 'class' => 'derecha');
+$fila[] = array('valor' => $formato->format($this->data['Liquidacion']['deduccion'], 'moneda'), 'class' => 'derecha');
+$fila[] = array('valor' => $formato->format($this->data['Liquidacion']['no_remunerativo'], 'moneda'), 'class' => 'derecha');
 $cuerpo[] = $fila;
 
 $fila = null;
-$fila[] = array("valor"=>"Son " . $formato->format($this->data['Liquidacion']['total_pesos'], "numeroEnLetras") . " en Pesos", "class"=>"imitar_th_izquierda", "colspan"=>4);
-$fila[] = array("valor"=>"Pesos " . $formato->format($this->data['Liquidacion']['total_pesos'], "moneda"), "class"=>"imitar_th_derecha");
+$fila[] = array('valor' => 'Son ' . $formato->format($this->data['Liquidacion']['total_pesos'], 'numeroEnLetras') . ' en Pesos', 'class'=>'imitar_th_izquierda', 'colspan'=>4);
+$fila[] = array('valor' => 'Pesos ' . $formato->format($this->data['Liquidacion']['total_pesos'], 'moneda'), 'class'=>'imitar_th_derecha');
 $cuerpo[] = $fila;
 $fila = null;
-$fila[] = array("valor"=>"Son " . $formato->format($this->data['Liquidacion']['total_beneficios'], "numeroEnLetras") . " en Beneficios", "class"=>"imitar_th_izquierda", "colspan"=>4);
-$fila[] = array("valor"=>"Beneficios " . $formato->format($this->data['Liquidacion']['total_beneficios'], "moneda"), "class"=>"imitar_th_derecha");
+$fila[] = array('valor' => 'Son ' . $formato->format($this->data['Liquidacion']['total_beneficios'], 'numeroEnLetras') . ' en Beneficios', 'class'=>'imitar_th_izquierda', 'colspan'=>4);
+$fila[] = array('valor' => 'Beneficios ' . $formato->format($this->data['Liquidacion']['total_beneficios'], 'moneda'), 'class'=>'imitar_th_derecha');
 $cuerpo[] = $fila;
 
-$opcionesTabla =  array("tabla"=>
-							array(	"eliminar"			=>false,
-									"ordenEnEncabezados"=>false,
-									'permisos'			=>false,
-									"modificar"			=>false,
-									"seleccionMultiple"	=>false,
-									"mostrarEncabezados"=>false,
-									"zebra"				=>false,
-									"mostrarIds"		=>false,
-									"omitirMensajeVacio"=>true));
+$opcionesTabla =  array('tabla'=>
+							array(	'eliminar'			=> false,
+									'ordenEnEncabezados'=> false,
+									'permisos'			=> false,
+									'modificar'			=> false,
+									'seleccionMultiple'	=> false,
+									'mostrarEncabezados'=> false,
+									'zebra'				=> false,
+									'mostrarIds'		=> false,
+									'omitirMensajeVacio'=> true));
 
 
 $tabla = $appForm->tabla(am(array('cuerpo' => $cuerpo), $opcionesTabla));
@@ -141,7 +138,7 @@ $tabla = $appForm->tabla(am(array('cuerpo' => $cuerpo), $opcionesTabla));
 /**
 * Pongo todo dentro de un div (index) y muestro el resultado.
 */
-echo $appForm->bloque($appForm->bloque($tabla), array('div' => array("id"=>"liq", "class"=>"index")));
+echo $appForm->bloque($appForm->bloque($tabla), array('div' => array('id' => 'liq', 'class' => 'index')));
 
 $url = Router::url("/");
 echo $appForm->codeBlock('
