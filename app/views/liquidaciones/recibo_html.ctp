@@ -74,7 +74,7 @@ $cuerpo[] = $fila;
 
 
 foreach($this->data['LiquidacionesDetalle'] as $concepto) {
-	if($concepto['concepto_imprimir'] === 'Si' || ($concepto['concepto_imprimir'] === 'Solo con valor')) {
+	if($concepto['concepto_imprimir'] === 'Si' || ($concepto['concepto_imprimir'] === 'Solo con valor') && $valor !== 0) {
 		$fila = null;
 		$fila[] = array('valor' => $concepto['concepto_codigo'], 'class' => 'oculto');
 		$fila[] = array('valor' => $concepto['concepto_nombre']);
