@@ -29,8 +29,10 @@ foreach ($this->data['Concepto'] as $k=>$v) {
 	$fila[] = array('model' => 'EmpleadoresConcepto', 'field' => 'codigo', 'valor' => $v['codigo']);
 	$fila[] = array('model' => 'EmpleadoresConcepto', 'field' => 'nombre', 'valor' => $v['nombre']);
 	if (!empty($v['EmpleadoresConcepto']['formula'])) {
+		$fila[] = array('model' => 'Bar', 'field' => 'foo', 'valor' => 'Empleador', 'nombreEncabezado' => 'Jerarquia', 'ordenEncabezado' => false);
 		$fila[] = array('model' => 'EmpleadoresConcepto', 'field' => 'formula', 'valor' => $v['EmpleadoresConcepto']['formula']);
 	} else {
+		$fila[] = array('model' => 'Bar', 'field' => 'foo', 'valor' => 'Concepto', 'nombreEncabezado' => 'Jerarquia', 'ordenEncabezado' => false);
 		$fila[] = array('model' => 'Concepto', 'field' => 'formula', 'valor' => $v['formula']);
 	}
 	$cuerpo[] = $fila;
