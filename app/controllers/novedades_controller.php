@@ -26,7 +26,18 @@
 
 class NovedadesController extends AppController {
 
-	var $helpers = array("Documento");
+	var $helpers = array('Documento');
+
+
+/**
+ * Set default search condition to pending novelties.
+ */
+	function index() {
+		if (empty($this->data)) {
+			$this->data['Condicion']['Novedad-estado'] = 'Pendiente';
+		}
+		return parent::index();
+	}
 
 
 /**
