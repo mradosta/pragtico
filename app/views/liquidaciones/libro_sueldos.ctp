@@ -143,7 +143,7 @@ if (!empty($data)) {
 		$maxCount = 0;
 		foreach ($record['LiquidacionesDetalle'] as $detail) {
 
-			if($detail['concepto_imprimir'] === 'Si' || ($detail['concepto_imprimir'] === 'Solo con valor' && $detail['valor'] > 0)) {
+			if($detail['concepto_imprimir'] === 'Si' || ($detail['concepto_imprimir'] === 'Solo con valor' && abs($detail['valor']) > 0)) {
 				if ($detailFlag !== $detail['concepto_tipo']) {
 					$detailFlag = $detail['concepto_tipo'];
 					$fila = $initialRow;
