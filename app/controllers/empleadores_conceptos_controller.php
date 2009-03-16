@@ -37,12 +37,16 @@ class EmpleadoresConceptosController extends AppController {
 				foreach ($registros as $registro) {
 					$seleccionados[] = array_shift(explode("|", $registro));
 				}
-				
+
 				$conceptosSeleccionados = $this->EmpleadoresConcepto->Concepto->find("list", array("recursive"=>-1, "conditions"=>array("Concepto.codigo"=>$seleccionados)));
-				$conceptosConvenio = $this->EmpleadoresConcepto->find("list", array("fields" => "EmpleadoresConcepto.empleador_id", "contain" => "Concepto", "conditions"=>array("EmpleadoresConcepto.empleador_id"=>$this->data['EmpleadoresConcepto']['empleador_id'])));
-				
-				$quitar = array_diff($conceptosConvenio, $conceptosSeleccionados);
-				$agregar = array_diff($conceptosSeleccionados, $conceptosConvenio);
+				$conceptosEmpleador = Set::combine($this->EmpleadoresConcepto->find('all',
+					array(	'fields' 	=> 'EmpleadoresConcepto.id',
+						  	'contain' 	=> 'Concepto',
+							'conditions'=> array('EmpleadoresConcepto.empleador_id' => $this->data['EmpleadoresConcepto']['empleador_id']))),
+					'{n}.EmpleadoresConcepto.id', '{n}.Concepto.id');
+
+				$quitar = array_diff($conceptosEmpleador, $conceptosSeleccionados);
+				$agregar = array_diff($conceptosSeleccionados, $conceptosEmpleador);
 				$this->EmpleadoresConcepto->begin();
 				$c = 0;
 				foreach ($quitar as $k=>$v) {
@@ -86,16 +90,20 @@ class EmpleadoresConceptosController extends AppController {
 			$this->EmpleadoresConcepto->Empleador->contain(array("Concepto"));
 			$empleador = $this->EmpleadoresConcepto->Empleador->findById($this->passedArgs['EmpleadoresConcepto.empleador_id']);
 
-			$conceptosAsignados = Set::extract("/Concepto", $empleador['Concepto']);
-			$conceptosAsignadosCodigos = Set::extract("/Concepto/codigo", $conceptosAsignados);
-			$conceptosNoAsignados = $this->EmpleadoresConcepto->Concepto->find("all",
-				array(	"recursive"	=>	-1,
-						"conditions"=>
-							array("NOT"=>array("Concepto.codigo"=>$conceptosAsignadosCodigos))));
+			if (!empty($empleador['Concepto'])) {
+				$conceptosAsignados = Set::extract('/Concepto', $empleador);
+			} else {
+				$conceptosAsignados = array();
+			}
+			$conceptosAsignadosCodigos = Set::extract('/Concepto/codigo', $conceptosAsignados);
+			$conceptosNoAsignados = $this->EmpleadoresConcepto->Concepto->find('all',
+				array(	'recursive'	=>	-1,
+						'conditions'=>
+							array('NOT' => array('Concepto.codigo' => $conceptosAsignadosCodigos))));
 			
-			$this->set("empleador", $empleador);
-			$this->set("datosIzquierda", $conceptosNoAsignados);
-			$this->set("datosDerecha", $conceptosAsignados);
+			$this->set('empleador', $empleador);
+			$this->set('datosIzquierda', $conceptosNoAsignados);
+			$this->set('datosDerecha', $conceptosAsignados);
 		}
 		else {
 			$this->Session->setFlash("Debe seleccionar un Empleador.", 'error');
