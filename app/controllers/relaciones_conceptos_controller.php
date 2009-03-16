@@ -84,21 +84,27 @@ class RelacionesConceptosController extends AppController {
 	function add_rapido() {
 
 		if (!empty($this->passedArgs['RelacionesConcepto.relacion_id'])) {
-			$this->RelacionesConcepto->Relacion->contain("ConveniosCategoria", "Trabajador", "Empleador", "RelacionesConcepto.Concepto");
+			$this->RelacionesConcepto->Relacion->contain(array("ConveniosCategoria", "Trabajador", "Empleador", "RelacionesConcepto.Concepto"));
 			$relacion = $this->RelacionesConcepto->Relacion->findById($this->passedArgs['RelacionesConcepto.relacion_id']);
-
-			$conceptosAsignados = Set::extract("/Concepto", $relacion['RelacionesConcepto']);
-			$conceptosAsignadosCodigos = Set::extract("/Concepto/codigo", $conceptosAsignados);
+			
+			/** Order results */
+			$conceptosAsignadosTmp = Set::combine($relacion['RelacionesConcepto'], '{n}.Concepto.codigo', '{n}.Concepto');
+			ksort($conceptosAsignadosTmp);
+			foreach ($conceptosAsignadosTmp as $concepto) {
+				$conceptosAsignados[]['Concepto'] = $concepto;
+				$conceptosAsignadosCodigos = $concepto['codigo'];
+			}
+			
 			$conceptosNoAsignados = $this->RelacionesConcepto->Concepto->find("all",
-				array(	"recursive"	=>	-1,
+				array(	"recursive"	=> -1,
+						"order"		=> array('Concepto.nombre'),
 						"conditions"=>
 							array("NOT"=>array("Concepto.codigo"=>$conceptosAsignadosCodigos))));
 			
 			$this->set("relacion", $relacion);
 			$this->set("datosIzquierda", $conceptosNoAsignados);
 			$this->set("datosDerecha", $conceptosAsignados);
-		}
-		else {
+		} else {
 			$this->Session->setFlash("Debe seleccionar una relacion.", 'error');
 			$this->History->goBack(2);
 		}
