@@ -58,6 +58,12 @@ $campos['Empleador.actividad_id'] = array(	'aclaracion' =>  "Se refiere a la act
 																"seleccionMultiple"	=> 	0,
 																	"camposRetorno"	=> 	array(	"Actividad.codigo",
 																								"Actividad.nombre")));
+$campos['Empleador.employers_type_id'] = array('label' => 'Tipo',
+											   'aclaracion' =>  "Se refiere al Tipo de Empleador (SIAP).",
+											"lov"		=>	array(	"controller"		=> 	"employers_types",
+																"seleccionMultiple"	=> 	0,
+																	"camposRetorno"	=> 	array(	"EmployersType.code",
+																								"EmployersType.name")));
 $fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => "Afip", 'imagen' => 'afip.gif')));
 
 
