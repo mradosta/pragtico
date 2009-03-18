@@ -187,14 +187,17 @@ class Liquidacion extends AppModel {
 			$this->__setAuxiliar($discounts['auxiliar']);
 			$this->setConcept($discounts['conceptos']);
 			
-
-			/** Resolv */
-			foreach ($this->getConcept() as $cCod => $concepto) {
-				$this->__conceptos[$cCod] = array_merge($this->__conceptos[$cCod],
-						$this->__getConceptValue($concepto));
-			}
-			return $this->__getSaveArray();
 		} elseif ($type === 'vacaciones') {
+			foreach ($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
+					array(		'relacion' 	=> $relationship,
+								'desde' 	=> $this->getVarValue('#fecha_desde_liquidacion'),
+								'hasta' 	=> $this->getVarValue('#fecha_hasta_liquidacion'))) as $cCod => $concepto) {
+
+				if ($concepto['tipo'] === 'Deduccion') {
+					$this->setConcept(array($cCod => $concepto));
+				}
+			}
+			
 			$this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
 					array(	'relacion' 			=> $this->getRelationship(),
 							'codigoConcepto'	=> 'vacaciones')));
@@ -202,8 +205,6 @@ class Liquidacion extends AppModel {
 			$this->__conceptos['vacaciones'] = array_merge($this->__conceptos['vacaciones'],
 						$this->__getConceptValue($this->__conceptos['vacaciones']));
 
-			//d($this->__getSaveArray());
-			return $this->__getSaveArray();
 		} elseif ($type === 'sac') {
 
 			unset($options['variables']);
@@ -282,6 +283,13 @@ class Liquidacion extends AppModel {
         } elseif ($type === 'liquidacion_final') {
 			d(":X");
 		}
+
+		/** Resolv */
+		foreach ($this->getConcept() as $cCod => $concepto) {
+			$this->__conceptos[$cCod] = array_merge($this->__conceptos[$cCod],
+					$this->__getConceptValue($concepto));
+		}
+		return $this->__getSaveArray();
     }
     
 

@@ -160,6 +160,6 @@ echo $appForm->codeBlock('
 			return "#desglose1_" + liquidacionId
 		}
 	});'
-*/
 );
+*/
 ?>

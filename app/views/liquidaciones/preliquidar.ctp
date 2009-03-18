@@ -127,8 +127,6 @@ $appForm->addScript('
 			jQuery(".1s").show();
 			jQuery(".2s").show();
 		} else if (type === "vacaciones") {
-			jQuery(".1q").show();
-			jQuery(".2q").show();
 			jQuery(".m").show();
 			jQuery(".a", jQuery("input.periodo_vacacional").parent()).show();
 			jQuery("input.periodo_vacacional").parent().show();
