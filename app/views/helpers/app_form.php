@@ -1257,13 +1257,11 @@ class AppFormHelper extends FormHelper {
  * @return string
  */
 	function input($tagName, $options = array()) {
-		
-		/**
-		* Pongo un valor por defecto para el after, ya que lo uso para la lov, la fecha, etc...
-		*/
-		if (empty($options['after'])) {
-			$options['after'] = "";
-		}
+
+		$defaults['class'] = '';
+		$defaults['after'] = '';
+		$options = array_merge($defaults, $options);
+
 		$requerido = "";
 		if (!isset($options['verificarRequerido'])) {
 			$verificarRequerido = true;
@@ -1670,7 +1668,7 @@ class AppFormHelper extends FormHelper {
 			elseif ($tipoCampo === "periodo") {
 				$rnd = intval(rand());
 				$options['type'] = 'text';
-				$options['class'] = 'periodo';
+				$options['class'] .= ' periodo';
 				$options['id'] = $rnd;
 				$after = '';
 				$q1 = $this->link($this->image('1q.gif', array('class' => 'periodo 2q')), null, array("title" => "Primera Quincena", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array('type' => '1QAnterior')) . "');"));
