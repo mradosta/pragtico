@@ -301,24 +301,24 @@ class LiquidacionesController extends AppController {
 				$ausenciasMotivo = Set::combine($ausenciasMotivo, '{n}.AusenciasMotivo.id', '{n}.Situacion');
 				
 				
-				$Siap = ClassRegistry::init("Siap");
+				$Siap = ClassRegistry::init('Siap');
 				$data = $Siap->findById($this->data['Condicion']['Siap-version']);
 				foreach ($data['SiapsDetalle'] as $k => $v) {
 					$detalles[$v['elemento']] = $v;
 				}
 				
-				$conditions = array("Liquidacion.empleador_id" 	=> $empleadores,
-									"Liquidacion.estado"		=> "Confirmada",
-		 							"Liquidacion.ano"			=> $periodo['ano'],
-		 							"Liquidacion.mes"			=> $periodo['mes']);
+				$conditions = array('Liquidacion.empleador_id' 	=> $empleadores,
+									'Liquidacion.estado'		=> 'Confirmada',
+		 							'Liquidacion.ano'			=> $periodo['ano'],
+		 							'Liquidacion.mes'			=> $periodo['mes']);
 				
-				$liquidaciones = $this->Liquidacion->find("all", 
-						array(	"checkSecurity"	=> false,
-								"contain"		=> array(	"Empleador",
-										"Relacion" 		=> array("Situacion", "ConveniosCategoria", "Ausencia" => 
-												array("conditions" => array("Ausencia.desde >=" => $periodo['desde'], "Ausencia.desde <=" => $periodo['hasta']))),
-										"Trabajador" 	=> array("ObrasSocial", "Condicion", "Siniestrado", "Localidad")),
-								"conditions"	=> $conditions));
+				$liquidaciones = $this->Liquidacion->find('all',
+						array(	'checkSecurity'	=> false,
+								'contain'		=> array(	'Empleador',
+										'Relacion' 		=> array('Situacion', 'ConveniosCategoria', 'Modalidad', 'Ausencia' =>
+												array('conditions' => array('Ausencia.desde >=' => $periodo['desde'], 'Ausencia.desde <=' => $periodo['hasta']))),
+										'Trabajador' 	=> array('ObrasSocial', 'Condicion', 'Siniestrado', 'Localidad')),
+								'conditions'	=> $conditions));
 				
 				if (!empty($liquidaciones)) {
 					
@@ -364,8 +364,8 @@ class LiquidacionesController extends AppController {
 							$campos['c7']['valor'] = $liquidacion['Trabajador']['Actividad']['codigo'];
 						}
 						$campos['c8']['valor'] = $liquidacion['Trabajador']['Localidad']['codigo_zona'];
-						if (!empty($liquidacion['Trabajador']['modalidad_id'])) {
-							$campos['c10']['valor'] = $liquidacion['Trabajador']['Modalidad']['codigo'];
+						if (!empty($liquidacion['Relacion']['modalidad_id'])) {
+							$campos['c10']['valor'] = $liquidacion['Relacion']['Modalidad']['codigo'];
 						}
 						if (!empty($liquidacion['Trabajador']['obra_social_id'])) {
 							$campos['c11']['valor'] = $liquidacion['Trabajador']['ObrasSocial']['codigo'];
