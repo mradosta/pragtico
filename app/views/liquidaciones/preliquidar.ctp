@@ -36,14 +36,9 @@ $condiciones['Condicion.Relacion-id'] = array(
 			  										'Trabajador.nombre',
 			   										'Trabajador.apellido')));
 
-//$condiciones['Condicion.ConveniosCategoria-jornada'] = array();
-//$condiciones['Condicion.Liquidacion-estado'] = array('value'=>'Sin Confirmar', 'type'=>'hidden');
-
-//$condiciones['Condicion.Liquidacion-mes'] = array('options'=>$meses);
-//$condiciones['Condicion.Liquidacion-ano'] = array('class'=>'derecha');
-//$condiciones['Condicion.Liquidacion-periodo'] = array('options'=>$periodos);
 $condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'type' => 'select');
-$condiciones['Condicion.Liquidacion-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A'));
+$condiciones['Condicion.Liquidacion-periodo_largo'] = array('label' => 'Periodo Liquidacion', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A'));
+$condiciones['Condicion.Liquidacion-periodo_vacacional'] = array('label' => 'Periodo Vacacional', 'type' => 'periodo', 'periodo' => array('A'), 'class' => 'periodo_vacacional');
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Preliquidar','imagen' => 'preliquidar.gif')));
 
@@ -55,7 +50,6 @@ $cuerpo = null;
 $contain = urlencode(serialize(array('LiquidacionesDetalle' => array('conditions' => array('LiquidacionesDetalle.concepto_imprimir' => array('Si', 'Solo con valor'))))));
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	//d($v['Liquidacion']);
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidaciones'), 'url'=>'recibo_html');
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidaciones (debug)'), 'url'=>'recibo_html_debug');
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'observaciones.gif', 'alt' => 'Agregar Observacion'), 'url' => 'agregar_observacion');
@@ -115,7 +109,7 @@ $appForm->addScript('
 
 	/** Shows / Hides period options, depending receipt type */
 	function period(type) {
-	
+
 		jQuery(".1q").hide();
 		jQuery(".2q").hide();
 		jQuery(".m").hide();
@@ -123,6 +117,7 @@ $appForm->addScript('
 		jQuery(".2s").hide();
 		jQuery(".a").hide();
 		jQuery("input.periodo").parent().show();
+		jQuery("input.periodo_vacacional").parent().hide();
 		
 		if (type === "normal") {
 			jQuery(".1q").show();
@@ -131,20 +126,24 @@ $appForm->addScript('
 		} else if (type === "sac") {
 			jQuery(".1s").show();
 			jQuery(".2s").show();
-		} else if (type === "holliday") {
-			jQuery(".a").show();
-		} else if (type === "special") {
+		} else if (type === "vacaciones") {
+			jQuery(".1q").show();
+			jQuery(".2q").show();
+			jQuery(".m").show();
+			jQuery(".a", jQuery("input.periodo_vacacional").parent()).show();
+			jQuery("input.periodo_vacacional").parent().show();
+		} else if (type === "especial") {
 			jQuery(".1q").show();
 			jQuery(".2q").show();
 			jQuery(".m").show();
 			jQuery(".1s").show();
 			jQuery(".2s").show();
 			jQuery(".a").show();
-		} else if (type === "final_liquidation") {
+		} else if (type === "liquidacion_final") {
 			jQuery("input.periodo").parent().hide();
 		}
 	}
-	period("normal");
+	period(jQuery("#CondicionLiquidacion-tipo").find(":selected").val());
 
 	jQuery("#CondicionLiquidacion-tipo").change(
  		function() {

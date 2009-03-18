@@ -29,9 +29,9 @@ class Liquidacion extends AppModel {
 	var $opciones = array('tipo' => array(
 						  		'normal'			=> 'Normal',
 			   					'sac'				=> 'Sac',
-		   						'holliday'			=> 'Vacaciones',
-		   						'final_liquidation'	=> 'Liquidacion Final',
-		   						'special'			=> 'Especial'));
+		   						'vacaciones'		=> 'Vacaciones',
+		   						'liquidacion_final'	=> 'Liquidacion Final',
+		   						'especial'			=> 'Especial'));
 	
 	var $hasMany = array(	'LiquidacionesDetalle' =>
                         array('className'   => 'LiquidacionesDetalle',
@@ -194,6 +194,16 @@ class Liquidacion extends AppModel {
 						$this->__getConceptValue($concepto));
 			}
 			return $this->__getSaveArray();
+		} elseif ($type === 'vacaciones') {
+			$this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
+					array(	'relacion' 			=> $this->getRelationship(),
+							'codigoConcepto'	=> 'vacaciones')));
+
+			$this->__conceptos['vacaciones'] = array_merge($this->__conceptos['vacaciones'],
+						$this->__getConceptValue($this->__conceptos['vacaciones']));
+
+			//d($this->__getSaveArray());
+			return $this->__getSaveArray();
 		} elseif ($type === 'sac') {
 
 			unset($options['variables']);
@@ -269,7 +279,7 @@ class Liquidacion extends AppModel {
 			} else {
 				return false;
 			}
-        } elseif ($type === 'final_liquidation') {
+        } elseif ($type === 'liquidacion_final') {
 			d(":X");
 		}
     }
@@ -719,8 +729,8 @@ class Liquidacion extends AppModel {
                     }
                 }
 
-				//debug($variable . ': ' . $formula);
                 $valor = $this->resolver($formula);
+				//debug($variable . ' = ' . $valor . ' ( ' . $formula . ' )');
                 
                 if ($valor === '#N/A') {
                     $valor = 0;

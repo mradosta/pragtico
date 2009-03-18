@@ -95,8 +95,11 @@ class LiquidacionesController extends AppController {
 						!in_array($periodo['periodo'], array('1Q', '2Q', 'M'))) {
 					$message = __('Normal liquidation period should be of the form "YYYYMM[1Q|2Q|M]"', true);
 				} elseif ($this->data['Condicion']['Liquidacion-tipo'] === 'holliday' &&
-						$periodo['periodo'] !== 'A') {
-					$message = __('Holliday liquidation period should be an Year', true);
+						!in_array($periodo['periodo'], array('1Q', '2Q', 'M'))) {
+					$message = __('Holliday liquidation period should be of the form "YYYYMM[1Q|2Q|M]"', true);
+				} elseif ($this->data['Condicion']['Liquidacion-tipo'] === 'holliday' &&
+						!preg_match('/\d\d\d\d/', $this->data['Condicion']['Liquidacion-periodo_vacacional'])) {
+					$message = __('Holliday period should be of the form "YYYY"', true);
 				} elseif ($this->data['Condicion']['Liquidacion-tipo'] === 'sac' &&
 						!in_array($periodo['periodo'], array('1S', '2S'))) {
 					$message = __('Sac liquidation period should be of the form "YYYY[12]S"', true);
@@ -140,6 +143,7 @@ class LiquidacionesController extends AppController {
 			$condiciones = $this->Paginador->generarCondicion();
 			unset($condiciones['Liquidacion.tipo']);
 			unset($condiciones['Liquidacion.periodo_largo']);
+			unset($condiciones['Liquidacion.periodo_vacacional']);
 			$condiciones['Relacion.ingreso <='] = $periodo['hasta'];
 			$condiciones['Relacion.estado'] = 'Activa';
 			if (!empty($confirmadas)) {
@@ -177,7 +181,7 @@ class LiquidacionesController extends AppController {
 					'recursive' => -1,
 	 				'order' => false)), '{n}.Variable.nombre', '{n}.Variable');
 			$variables['#tipo_liquidacion']['valor'] = $this->data['Condicion']['Liquidacion-tipo'];
-			
+			$variables['#fecha_hasta_periodo_vacacional']['valor'] = sprintf('%d-12-31', $this->data['Condicion']['Liquidacion-periodo_vacacional']);
 
 			/** Make the liquidations if not done. */
 			$ids = null;
@@ -195,7 +199,7 @@ class LiquidacionesController extends AppController {
 
 		$resultados = $this->Paginador->paginar(
 				array('Liquidacion.estado' => 'Sin Confirmar'),
-				array('Liquidacion.periodo_largo'));
+				array('Liquidacion.periodo_largo', 'Liquidacion.periodo_vacacional'));
 		$this->set('registros', $resultados['registros']);
 	}
 
