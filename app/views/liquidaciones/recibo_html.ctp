@@ -140,6 +140,7 @@ $tabla = $appForm->tabla(am(array('cuerpo' => $cuerpo), $opcionesTabla));
 */
 echo $appForm->bloque($appForm->bloque($tabla), array('div' => array('id' => 'liq', 'class' => 'index')));
 
+/*
 $url = Router::url("/");
 echo $appForm->codeBlock('
 	jQuery(".editable").editable("' . $url . 'liquidaciones/recibo_html", {
@@ -159,5 +160,6 @@ echo $appForm->codeBlock('
 			return "#desglose1_" + liquidacionId
 		}
 	});'
+*/
 );
 ?>
