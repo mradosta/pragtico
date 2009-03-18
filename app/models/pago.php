@@ -24,7 +24,7 @@
 class Pago extends AppModel {
 
 	var $modificadores = array(	'index' =>
-			array('contain'	=> array('Liquidacion', 'PagosForma', 'Relacion'	=> array('Empleador', 'Trabajador'))));
+			array('contain'	=> array('Descuento', 'Liquidacion', 'PagosForma', 'Relacion'	=> array('Empleador', 'Trabajador'))));
 	
 	var $order = array('Pago.fecha' => 'desc');
 

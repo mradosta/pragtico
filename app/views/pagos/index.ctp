@@ -47,7 +47,6 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset'=>array('image
 $cuerpo = null;
 foreach ($registros as $k => $v) {
 	$fila = null;
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Pago']['liquidacion_id'], 'imagen'=>array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidacion'), 'url'=>'../liquidaciones/recibo_html');
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Pago']['id'], 'imagen'=>array('nombre' => 'pagos_formas.gif', 'alt' => 'Formas de Pago'), 'url'=>'formas');
 	if ($v['Pago']['estado'] === 'Pendiente' && $v['Pago']['moneda'] === 'Pesos') {
 		$fila[] = array('tipo' => 'accion', 'valor' => 
@@ -67,7 +66,15 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], 'nombreEncabezado' => 'Empleador');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], 'class' => 'derecha', 'nombreEncabezado' => 'Documento');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . ' ' . $v['Relacion']['Trabajador']['nombre'], 'nombreEncabezado' => 'Trabajador');
-	$fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => sprintf('%s - %s%s%s', $v['Liquidacion']['tipo'], $v['Liquidacion']['ano'], $v['Liquidacion']['mes'], $v['Liquidacion']['periodo']), 'nombreEncabezado' => 'Liquidacion');
+
+	if (!empty($v['Pago']['liquidacion_id'])) {
+		$fila[] = array('tipo' => 'desglose', 'id' => $v['Pago']['liquidacion_id'], 'imagen'=>array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidacion'), 'url'=>'../liquidaciones/recibo_html');
+		$valor = sprintf('Liq. %s - %s%s%s', $v['Liquidacion']['tipo'], $v['Liquidacion']['ano'], $v['Liquidacion']['mes'], $v['Liquidacion']['periodo']);
+	} else {
+		$valor = sprintf('%s - %s', $v['Descuento']['tipo'], $formato->format($v['Descuento']['alta'], 'date'));
+	}
+	$fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => $valor, 'nombreEncabezado' => 'Origen');
+	
 	$fila[] = array('model' => 'Pago', 'field' => 'fecha', 'valor' => $v['Pago']['fecha']);
 	$fila[] = array('model' => 'Pago', 'field' => 'moneda', 'valor' => $v['Pago']['moneda']);
 	$fila[] = array('model' => 'Pago', 'field' => 'monto', 'valor' => $v['Pago']['monto'], 'tipoDato' => 'moneda');
