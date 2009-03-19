@@ -40,7 +40,7 @@ $lov = $this->element('index/lov');
 //$botones = $this->element('index/buscadores', array('cache'=>'+30 day', $this->name=>'name', 'botonesExtra'=>$botonesExtra, 'opcionesForm'=>$opcionesForm));
 $botones = $this->element('index/buscadores', array('botonesExtra' => $botonesExtra, 'opcionesForm' => $opcionesForm));
 
-$bloques[] = $appForm->tag('div', am($condiciones, $botones, $lov), array('class' => 'unica'));
+$bloques[] = $appForm->tag('div', am($condiciones, $botones, $lov), array('class' => 'unica conditions_frame'));
 
 
 /**

@@ -91,17 +91,41 @@ $appForm->addScript("jquery.flydom", "links");
 
 $appForm->addScript('
 	jQuery(".menu").accordion({
-		navigation: true,
-		header: "a.header"
-	});
+		header: "a.header",
+  		active: parseInt(jQuery.cookie("selectedMenuCookie"))
+	}).bind("change.ui-accordion",
+ 		function(event, ui) {
+			jQuery("a.header", this).each(function(index) {
+				if (jQuery(this).parent().hasClass("selected")) {
+					jQuery.cookie("selectedMenuCookie", index);
+					return false;
+				}
+			});
+		}
+	);
+
+	jQuery("#hideConditions").bind("click",
+ 		function() {
+			jQuery(".conditions_frame").toggle();
+			if (jQuery(".conditions_frame").is(":visible")) {
+				jQuery.cookie("conditionsFrameCookie", "true");
+			} else {
+				jQuery.cookie("conditionsFrameCookie", "false");
+			}
+		}
+	);
+
+	if (jQuery.cookie("conditionsFrameCookie") == "false") {
+		jQuery(".conditions_frame").hide();
+	}
 ');
 
 $codigo_html[] = $asset->scripts_for_layout();
 $codigo_html[] = '</head>';
 $codigo_html[] = '<body>';
 
-//$menu = $this->element('layout' . DS . 'menu', array('cache' => '+1 day'));
-$menu = $this->element('layout' . DS . 'menu');
+$menu = $this->element('layout' . DS . 'menu', array('cache' => '+1 day'));
+//$menu = $this->element('layout' . DS . 'menu');
 
 $codigo_html[] = $flash;
 $codigo_html[] = $this->element('layout' . DS . 'encabezado');

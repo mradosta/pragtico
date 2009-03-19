@@ -56,7 +56,7 @@ var buildTable = function(clickedRowId, url, table) {
  * Delete cookies and hide all breakdown rows.
  */
 var closeAllBreakdowns = function() {
-	jQuery.cookie("breakDowns", null);
+	jQuery.cookie("breakDownsCookie", null);
 	jQuery(".breakdown_row").hide();
 	return false;
 }
@@ -66,7 +66,7 @@ jQuery("#closeAllBreakdowns").click(closeAllBreakdowns);
 /**
  * If exist in cookie, must re-open breakdown.
  */
-var breakDownsCookie = jQuery.cookie("breakDowns");
+var breakDownsCookie = jQuery.cookie("breakDownsCookie");
 if (breakDownsCookie != null) {
 	breakDowns = breakDownsCookie.split("|").clean("");
 	jQuery("img.breakdown_icon").each(
@@ -97,7 +97,7 @@ var breakdown = function() {
 	var clickedRowId = jQuery(this).parent().parent().attr("charoff");
 	var url = this.getAttribute("longdesc");
 
-	var breakDownsCookie = jQuery.cookie("breakDowns");
+	var breakDownsCookie = jQuery.cookie("breakDownsCookie");
 	if (breakDownsCookie != null) {
 		breakDowns = breakDownsCookie.split("|").clean("");
 	} else {
@@ -111,11 +111,11 @@ var breakdown = function() {
 		if (!jQuery("." + breakDownRowId).is(":visible")) {
 			delete breakDowns[jQuery.inArray(url, breakDowns)];
 			breakDowns = breakDowns.clean("").clean(undefined);
-			jQuery.cookie("breakDowns", breakDowns.join("|"));
+			jQuery.cookie("breakDownsCookie", breakDowns.join("|"));
 		}
 	} else {
 		breakDowns.push(url);
-		jQuery.cookie("breakDowns", breakDowns.join("|"));
+		jQuery.cookie("breakDownsCookie", breakDowns.join("|"));
 		var table = jQuery(this).parent().parent().parent().parent();
 		buildTable(clickedRowId, url, table);
 	}
