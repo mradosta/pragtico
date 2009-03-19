@@ -34,10 +34,10 @@ foreach ($registros as $k => $v) {
 
 	$fila = null;
 	$id = $v['Usuario']['id'];
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'grupos.gif', 'alt' => "Grupos"), 'url' => 'grupos');
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'roles.gif', 'alt' => "Roles"), 'url' => 'roles');
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'cambiar_clave.gif', 'alt' => "Cambiar Clave"), "url"=>"cambiar_clave");
-	$fila[] = array('model' => 'Usuario', 'field' => 'id", "valor"=>$id, 'write' => $v['Usuario']['write'], 'delete' => $v['Usuario']['delete']);
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'grupos.gif', 'alt' => 'Grupos'), 'url' => 'grupos');
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'roles.gif', 'alt' => 'Roles'), 'url' => 'roles');
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'cambiar_clave.gif', 'alt' => 'Cambiar Clave'), 'url'=>'cambiar_clave');
+	$fila[] = array('model' => 'Usuario', 'field' => 'id', 'valor'=>$id, 'write' => $v['Usuario']['write'], 'delete' => $v['Usuario']['delete']);
 	$fila[] = array('model' => 'Usuario', 'field' => 'nombre', 'valor' => $v['Usuario']['nombre']);
 	$fila[] = array('model' => 'Usuario', 'field' => 'nombre_completo', 'valor' => $v['Usuario']['nombre_completo']);
 	$fila[] = array('model' => 'Usuario', 'field' => 'estado', 'valor' => $v['Usuario']['estado']);
