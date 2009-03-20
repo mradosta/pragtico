@@ -89,7 +89,7 @@
 		$documento->activeSheet->setBreak('A' . $fila, PHPExcel_Worksheet::BREAK_ROW);
 		$initialRow = $fila + 1;
 	}
-	
+
 	//$documento->save('Excel2007', '/tmp/file');
 	//$documento->save('Excel5', '/tmp/file');
 	$documento->save('Excel5');
