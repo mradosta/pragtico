@@ -51,7 +51,7 @@
 			$documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') + ($i * 22)) . ',' . $fila, sprintf('Usuario: %s - %s', $receipt['Liquidacion']['empleador_id'] ,$receipt['Liquidacion']['empleador_nombre']));
 
 			$fila+=4;
-			$documento->setCellValue((PHPExcel_Cell::columnIndexFromString('A') + ($i * 22)) . ',' . $fila, substr($receipt['Liquidacion']['tipo'], 0, 3) . ' ' . $formato->format($receipt['Liquidacion']['ano'] . $receipt['Liquidacion']['mes'] . $receipt['Liquidacion']['periodo'], array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')));
+			$documento->setCellValue((PHPExcel_Cell::columnIndexFromString('A') + ($i * 22)) . ',' . $fila, substr($receipt['Liquidacion']['tipo'], 0, 3) . ' ' . $formato->format($receipt['Liquidacion']['ano'] . str_pad($receipt['Liquidacion']['mes'], 2, '0', STR_PAD_LEFT) . $receipt['Liquidacion']['periodo'], array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')));
 			$documento->setCellValue((PHPExcel_Cell::columnIndexFromString('H') + ($i * 22)) . ',' . $fila, sprintf('%s, %s', $receipt['Liquidacion']['trabajador_apellido'], $receipt['Liquidacion']['trabajador_nombre']));
 			$documento->setCellValue((PHPExcel_Cell::columnIndexFromString('R') + ($i * 22)) . ',' . $fila, $receipt['Liquidacion']['trabajador_cuil'], $styleRight);
 			$documento->setCellValue((PHPExcel_Cell::columnIndexFromString('V') + ($i * 22)) . ',' . $fila, $receipt['Liquidacion']['relacion_legajo'], $styleRight);
