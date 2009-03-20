@@ -35,6 +35,48 @@ class DocumentoHelper extends AppHelper {
  */
 	var $doc;
 
+
+/**
+ * The active sheet.
+ *
+ * @var object
+ * @access public.
+ */
+	var $activeSheet;
+	
+	
+/**
+ * Letter to numeric column mapping.
+ *
+ * @var object
+ * @access public.
+ */
+	var $colMap = array('A' => 0,
+						'B' => 1,
+						'C' => 2,
+						'D' => 3,
+						'E' => 4,
+						'F' => 5,
+						'G' => 6,
+						'H' => 7,
+						'I' => 8,
+						'J' => 9,
+						'K' => 10,
+						'L' => 11,
+						'M' => 12,
+						'N' => 13,
+						'O' => 14,
+						'P' => 15,
+						'Q' => 16,
+						'R' => 17,
+						'S' => 18,
+						'T' => 19,
+						'U' => 20,
+						'V' => 21,
+						'W' => 22,
+						'X' => 23,
+						'Y' => 24,
+						'Z' => 25);
 	
 /**
  * Constructor de la clase.
@@ -93,6 +135,11 @@ class DocumentoHelper extends AppHelper {
     }
 	
 
+	function setActiveSheet($activeSheetName = '') {
+		$this->activeSheet = $this->doc->getActiveSheet();
+	}
+
+
 /**
  * Forma un nombre de celda standar.
  *
@@ -104,9 +151,8 @@ class DocumentoHelper extends AppHelper {
  * @access private.	
  */
 	function __getCellName($cellName = null) {
-		/**
-		* Busco si me setearon una celda solo con numeros.
-		*/
+		
+		/** Search for numbered named coll (zero indexed).*/
 		if (preg_match("/^([0-9]+)\,([0-9]+)$/", $cellName, $matches)) {
 			return PHPExcel_Cell::stringFromColumnIndex($matches[1]) . $matches[2];
 		}
@@ -128,6 +174,10 @@ class DocumentoHelper extends AppHelper {
 	function setWidth($cellName, $value) {
 		if (is_numeric($cellName)) {
 			return $this->doc->getActiveSheet()->getColumnDimensionByColumn($cellName)->setWidth($value);
+		} elseif (preg_match('/^([A-Z]+)\:([A-Z]+)$/', $cellName, $matches)) {
+			for ($i = PHPExcel_Cell::columnIndexFromString($matches['1']); $i <= PHPExcel_Cell::columnIndexFromString($matches['2']); $i++) {
+				$this->doc->getActiveSheet()->getColumnDimensionByColumn($i)->setWidth($value);
+			}
 		} else {
 			return $this->doc->getActiveSheet()->getColumnDimension($cellName)->setWidth($value);
 		}
@@ -156,7 +206,7 @@ class DocumentoHelper extends AppHelper {
 		/**
 		* Verifico si tengo un rango.
 		*/
-		$tmp = explode(":", $cellName);
+		$tmp = explode(':', $cellName);
 		if (count($tmp) === 2) {
 			$cellName = $this->__getCellName($tmp[0]);
 			$this->doc->getActiveSheet()->mergeCells($cellName . ":" . $this->__getCellName($tmp[1]));
@@ -287,8 +337,8 @@ class DocumentoHelper extends AppHelper {
 			header('Content-Disposition: attachment;filename=file.' . $extension);
 			header('Content-Transfer-Encoding: binary');
 		}
-		Configure::write('debug', 0);
-		$objPHPExcelWriter->save($archivo);
+		//Configure::write('debug', 0);
+		$objPHPExcelWriter->save($archivo . '.' . $extension);
 		exit();
 	}
 

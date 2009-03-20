@@ -158,7 +158,7 @@ $appForm->addScript('
 				if (jQuery(this).attr("id") == "confirmar") {
 					jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'confirmar')) . '";
 				} else {
-					jQuery("#form")[0].action = "' . Router::url(array('controller' => 'documentos', 'action' => 'generar', 'model' => 'Liquidacion', 'contain' => $contain)) . '";
+					jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'imprimir')) . '";
 				}
 				jQuery("#form")[0].submit();
 			} else {

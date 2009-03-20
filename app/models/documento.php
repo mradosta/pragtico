@@ -106,16 +106,19 @@ class Documento extends AppModel {
                 } else {
                     $objReader = PHPExcel_IOFactory::createReader('Excel2007');
                 }
+				//$objReader->setReadDataOnly(true);
                 $objPHPExcel = $objReader->load($file);
                 $worksheet = $objPHPExcel->getActiveSheet();
                 $lastRow = $worksheet->getHighestRow();
                 $lastCol = $worksheet->getHighestColumn();
                 $cells = $worksheet->getCellCollection();
+				//d($worksheet->getStyle('C14'));
                 $texto = '';
                 for ($row = 1; $row <= $lastRow; $row++){
                     for ($col = 'A'; $col <= $lastCol; $col++){
                         $cell = $col . $row;
                         if (isset($cells[$cell])) {
+							//d($cells[$cell]->getStyle());
                             $tmp = $cells[$cell]->getValue();
                             if (preg_match('/(#\*.+\*#)/', $tmp, $mathes)) {
                                 $documentosPatron[] = array('identificador' => $cell, 'patron' => $mathes[1]);

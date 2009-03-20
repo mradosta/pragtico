@@ -34,8 +34,8 @@ class LiquidacionesController extends AppController {
 			if (empty($this->data['Condicion']['Liquidacion-empleador_id'])
 				&& empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
 				$this->Session->setFlash('Debe seleccionar un por lo menos un Empleador o un Grupo y el Empleador.', 'error');
-			} elseif (empty($this->data['Condicion']['Liquidacion-periodo']) || !preg_match('/^(20\d\d)(0[1-9]|1[012])$/', $this->data['Condicion']['Liquidacion-periodo'], $periodo)) {
-				$this->Session->setFlash('Debe especificar un periodo valido de la forma AAAAMM.', 'error');
+			} elseif (empty($this->data['Condicion']['Liquidacion-periodo']) || $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], 'periodo') === false) {
+				$this->Session->setFlash('Debe especificar un periodo valido.', 'error');
 			} else {
 				$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], 'periodo');
 				
@@ -45,6 +45,15 @@ class LiquidacionesController extends AppController {
 				$this->set('employer', $this->Liquidacion->Relacion->Empleador->findById($this->data['Condicion']['Liquidacion-empleador_id']));
 				$empleadores = $this->data['Condicion']['Liquidacion-empleador_id'];
 				if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
+
+					$grupo = array_pop(ClassRegistry::init('Grupo')->find('all',
+						array(	'conditions' 	=> array('Grupo.id' => $this->data['Condicion']['Liquidacion-grupo_id']),
+								'contain'		=> array('GruposParametro.Parametro'))
+					));
+
+					d(Set::combine($grupo['GruposParametro'], '{n}.Parametro.nombre', '{n}.valor'));
+					d($grupo['GruposParametro']);
+					
 					$empleadores = Set::extract('/Empleador/id', $this->Liquidacion->Relacion->Empleador->find('all', array(
 							'recursive' 	=> -1,
 							'conditions' 	=> array(
@@ -65,12 +74,15 @@ class LiquidacionesController extends AppController {
 									'Relacion' => array('Trabajador', 'Empleador', 'Modalidad', 'ConveniosCategoria.ConveniosCategoriasHistorico')),
 								'conditions'	=> $conditions,
 							 	'order'			=> array('Liquidacion.empleador_nombre')));
-				$this->set('data', $liquidaciones);
-				$this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
-				$this->layout = 'ajax';
-				//} else {
-				//	$this->Session->setFlash("No se han encontrado liquidaciones confirmadas para el periodo seleccioando segun los criterios especificados.", "error");
-				//}
+
+
+				if (empty($liquidaciones)) {
+					$this->Session->setFlash('No se han encontrado liquidaciones confirmadas para el periodo seleccioando segun los criterios especificados.', 'error');
+				} else {
+					$this->set('data', $liquidaciones);
+					$this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
+					$this->layout = 'ajax';
+				}
 			}
 		}
 		$this->set('grupos', $this->Util->getUserGroups());
@@ -181,7 +193,9 @@ class LiquidacionesController extends AppController {
 					'recursive' => -1,
 	 				'order' => false)), '{n}.Variable.nombre', '{n}.Variable');
 			$variables['#tipo_liquidacion']['valor'] = $this->data['Condicion']['Liquidacion-tipo'];
-			$variables['#fecha_hasta_periodo_vacacional']['valor'] = sprintf('%d-12-31', $this->data['Condicion']['Liquidacion-periodo_vacacional']);
+			if (!empty($this->data['Condicion']['Liquidacion-periodo_vacacional'])) {
+				$variables['#fecha_hasta_periodo_vacacional']['valor'] = sprintf('%d-12-31', $this->data['Condicion']['Liquidacion-periodo_vacacional']);
+			}
 
 			/** Make the liquidations if not done. */
 			$ids = null;
@@ -221,7 +235,23 @@ class LiquidacionesController extends AppController {
 		$this->data = $this->Liquidacion->read(null, $id);
 	}
 
+/**
+ * recibo_html.
+ * Muestra via desglose el recibo (detalle) de la preliquidacion.
+ */
+	function imprimir($id = null) {
+		if (empty($id)) {
+			if (!empty($this->params['data']['seleccionMultiple'])) {
+				$id = $this->Util->extraerIds($this->params['data']['seleccionMultiple']);
+			}
+		}
+		
+		$this->Liquidacion->contain('LiquidacionesDetalle');
+		$this->data = $this->Liquidacion->find('all', array('conditions' => array('Liquidacion.id' => $id)));
+		$this->render('recibo_excel');
+	}
 
+	
 /**
  * recibo_html_debug.
  * Muestra via desglose el recibo (detalle) de la preliquidacion con informacion de debug.

@@ -108,9 +108,9 @@ if (!empty($data)) {
 		$egreso = $formato->format($record['Relacion']['egreso'], 'date');
 		$documento->setCellValue('E' . $fila, 'Baja: ' . $egreso);
 		if (empty($egreso)) {
-			$documento->setCellValue('I' . $fila, 'Estado: Inactivo');
-		} else {
 			$documento->setCellValue('I' . $fila, 'Estado: Activo');
+		} else {
+			$documento->setCellValue('I' . $fila, 'Estado: Inactivo');
 		}
 
 		
@@ -214,7 +214,7 @@ if (!empty($data)) {
 	if (!empty($grupos)) {
 		$condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos, 'empty' => true);
 	}
-	$condiciones['Condicion.Liquidacion-periodo'] = array('type' => 'periodo', 'periodo' => array('soloAAAAMM'), 'aclaracion' => 'De la forma AAAAMM');
+	$condiciones['Condicion.Liquidacion-periodo'] = array('type' => 'periodo');
 	$condiciones['Condicion.Liquidacion-formato'] = array('type' => 'radio', 'options' => array('Excel5' => 'Excel', 'Excel2007' => 'Excel 2007'), 'value' => 'Excel2007');
 
 	$fieldsets[] = array('campos' => $condiciones);

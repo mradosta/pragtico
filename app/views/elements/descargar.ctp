@@ -29,7 +29,10 @@
 			set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes');
 			App::import('Vendor', 'IOFactory', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'IOFactory.php');
 			$objReader = PHPExcel_IOFactory::createReader('Excel5');
-			$objPHPExcel = $objReader->load(WWW_ROOT . 'files' . DS . 'modelo_recibo_naty.xls');
+			//$objPHPExcel = $objReader->load(WWW_ROOT . 'files' . DS . 'modelo_recibo_naty.xls');
+			//$objReader->setReadDataOnly(true);
+			$objPHPExcel = $objReader->load(WWW_ROOT . 'files' . DS . 'documents' . DS . $archivo['name']);
+			//d($objPHPExcel);
 			$worksheet = $objPHPExcel->getActiveSheet();
 
 			foreach ($worksheet->getRowIterator() as $objRow) {

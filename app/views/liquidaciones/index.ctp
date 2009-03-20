@@ -61,6 +61,26 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'total', 'valor' => $v['Liquidacion']['total'], 'tipoDato' => 'moneda');
 	$cuerpo[] = $fila;
 }
+$accionesExtra['opciones'] = array('acciones' => array($appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas'))));
 
-echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo));
+echo $this->element('index/index', array('accionesExtra' => $accionesExtra, 'condiciones' => $fieldset, 'cuerpo' => $cuerpo));
+
+/**
+* Agrego el evento click asociado al boton confirmar.
+*/
+$appForm->addScript('
+
+	jQuery("#imprimir").click(
+		function() {
+			var c = jQuery(".tabla :checkbox").checkbox("contar");
+			if (c > 0) {
+				jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'imprimir')) . '";
+				jQuery("#form")[0].submit();
+			} else {
+				alert("Debe seleccionar al menos una pre-liquidacion para confirmar.");
+			}
+		}
+	);', 'ready');
+
+
 ?>
