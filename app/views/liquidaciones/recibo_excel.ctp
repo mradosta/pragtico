@@ -91,7 +91,7 @@
 	}
 	
 	//$documento->save('Excel2007', '/tmp/file');
-	$documento->save('Excel5', '/tmp/file');
-	//$documento->save('Excel5');
+	//$documento->save('Excel5', '/tmp/file');
+	$documento->save('Excel5');
 	
 ?>

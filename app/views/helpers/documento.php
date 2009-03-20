@@ -337,7 +337,7 @@ class DocumentoHelper extends AppHelper {
 			header('Content-Disposition: attachment;filename=file.' . $extension);
 			header('Content-Transfer-Encoding: binary');
 		}
-		//Configure::write('debug', 0);
+		Configure::write('debug', 0);
 		$objPHPExcelWriter->save($archivo . '.' . $extension);
 		exit();
 	}
