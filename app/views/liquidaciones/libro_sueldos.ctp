@@ -31,8 +31,17 @@ if (!empty($data)) {
 	$pageMargins->setBottom(0.2);
 	$pageMargins->setLeft(0.2);
 	$pageMargins->setRight(0.2);
+
+	$left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s",
+					$groupParams['nombre_fantasia'],
+					$groupParams['direccion'],
+	  				$groupParams['barrio'],
+	    			$groupParams['codigo_postal'],
+					$groupParams['ciudad'],
+	 				$groupParams['pais'],
+	  				$groupParams['cuit']);
 	
-	$left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s", $employer['Empleador']['nombre'], $employer['Empleador']['direccion'], $employer['Empleador']['barrio'], $employer['Empleador']['codigo_postal'], $employer['Empleador']['ciudad'], $employer['Empleador']['pais'], $employer['Empleador']['cuit']);
+	//$left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s", $employer['Empleador']['nombre'], $employer['Empleador']['direccion'], $employer['Empleador']['barrio'], $employer['Empleador']['codigo_postal'], $employer['Empleador']['ciudad'], $employer['Empleador']['pais'], $employer['Empleador']['cuit']);
 	$center = "&C\n\nLibro Especial de Sueldos - Art. 52 Ley 20744";
 	$right = '&RHoja &P';
 	if (!empty($groupParams['libro_sueldos_encabezado'])) {
@@ -84,6 +93,7 @@ if (!empty($data)) {
 			$fila+=2;
 			$documento->setCellValue('A' . $fila, 'Empresa Usuario:');
 			$documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['nombre'], $styleBold);
+			$documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), $styleBold);
 			
 			$fila++;
 			$documento->setCellValue('A' . $fila, 'CUIT:');
