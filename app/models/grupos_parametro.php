@@ -25,9 +25,11 @@
  */
 class GruposParametro extends AppModel {
 
-	var $order = array('GruposParametro.nombre' => 'asc');
-
-	var $validate = array(
+	var $modificadores = array('edit' => array('contain' => array(
+											  	'Grupo',
+												'Parametro')));
+	
+			var $validate = array(
         'grupo_id' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
