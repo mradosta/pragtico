@@ -52,6 +52,7 @@ class LiquidacionesController extends AppController {
 					));
 
 					$this->set('groupParams', Set::combine($grupo['GruposParametro'], '{n}.Parametro.nombre', '{n}.valor'));
+					$this->set('periodo', $periodo['periodoCompleto']);
 					
 					$empleadores = Set::extract('/Empleador/id', $this->Liquidacion->Relacion->Empleador->find('all', array(
 							'recursive' 	=> -1,

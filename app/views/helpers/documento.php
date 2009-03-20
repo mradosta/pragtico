@@ -46,39 +46,6 @@ class DocumentoHelper extends AppHelper {
 	
 	
 /**
- * Letter to numeric column mapping.
- *
- * @var object
- * @access public.
- */
-	var $colMap = array('A' => 0,
-						'B' => 1,
-						'C' => 2,
-						'D' => 3,
-						'E' => 4,
-						'F' => 5,
-						'G' => 6,
-						'H' => 7,
-						'I' => 8,
-						'J' => 9,
-						'K' => 10,
-						'L' => 11,
-						'M' => 12,
-						'N' => 13,
-						'O' => 14,
-						'P' => 15,
-						'Q' => 16,
-						'R' => 17,
-						'S' => 18,
-						'T' => 19,
-						'U' => 20,
-						'V' => 21,
-						'W' => 22,
-						'X' => 23,
-						'Y' => 24,
-						'Z' => 25);
-	
-/**
  * Constructor de la clase.
  * Instancia un objeto de la clase PHPExcel.
  * @return void.
@@ -176,7 +143,7 @@ class DocumentoHelper extends AppHelper {
 			return $this->doc->getActiveSheet()->getColumnDimensionByColumn($cellName)->setWidth($value);
 		} elseif (preg_match('/^([A-Z]+)\:([A-Z]+)$/', $cellName, $matches)) {
 			for ($i = PHPExcel_Cell::columnIndexFromString($matches['1']); $i <= PHPExcel_Cell::columnIndexFromString($matches['2']); $i++) {
-				$this->doc->getActiveSheet()->getColumnDimensionByColumn($i)->setWidth($value);
+				$this->doc->getActiveSheet()->getColumnDimensionByColumn($i-1)->setWidth($value);
 			}
 		} else {
 			return $this->doc->getActiveSheet()->getColumnDimension($cellName)->setWidth($value);
