@@ -31,10 +31,13 @@ if (!empty($data)) {
 	$pageMargins->setBottom(0.2);
 	$pageMargins->setLeft(0.2);
 	$pageMargins->setRight(0.2);
-
+	
 	$left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s", $employer['Empleador']['nombre'], $employer['Empleador']['direccion'], $employer['Empleador']['barrio'], $employer['Empleador']['codigo_postal'], $employer['Empleador']['ciudad'], $employer['Empleador']['pais'], $employer['Empleador']['cuit']);
-	$center = "&C\n\nLibro Especial de Sueldos - Art. 52 Ley 20744\n-Regimen de Contrato de Trabajo Personal Eventual-\nArt. 13 - Dto. 342/92\nAnexo Decreto N 1694/2006";
+	$center = "&C\n\nLibro Especial de Sueldos - Art. 52 Ley 20744";
 	$right = '&RHoja &P';
+	if (!empty($groupParams['libro_sueldos_encabezado'])) {
+		$center .= $groupParams['libro_sueldos_encabezado'];
+	}
 	$documento->doc->getActiveSheet()->getHeaderFooter()->setOddHeader($left . $center . $right);
 	
 	$styleBoldCenter = array('style' => array(
