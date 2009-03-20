@@ -615,7 +615,7 @@ class FormatoHelper extends AppHelper {
 				}
 				
 				if (!empty($options['short'])) {
-					$return = $beforeShort . substr($mes, 0, 3) . ' ' . $ano;
+					$return = $beforeShort . substr($mes, 0, 3) . ' ' . substr($ano, -2);
 				} else {
 					$return = $before . $mes . ' de ' . $ano;
 				}

@@ -724,22 +724,22 @@ class FormatoTest extends CakeTestCase {
 		
     	$valor = '2008111Q';
 		$result = $this->formato->format($valor, array('type' => 'periodoEnLetras', 'short' => true));
-		$expected = '1q nov 2008';
+		$expected = '1q nov 08';
 		$this->assertEqual($expected, $result);
 		
     	$valor = '2008042Q';
 		$result = $this->formato->format($valor, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'upper'));
-		$expected = '2Q APR 2008';
+		$expected = '2Q APR 08';
 		$this->assertEqual($expected, $result);
 		
     	$valor = '200804';
 		$result = $this->formato->format($valor, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'upper'));
-		$expected = 'APR 2008';
+		$expected = 'APR 08';
 		$this->assertEqual($expected, $result);
 		
     	$valor = '200804M';
 		$result = $this->formato->format($valor, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'upper'));
-		$expected = 'APR 2008';
+		$expected = 'APR 08';
 		$this->assertEqual($expected, $result);
 		
     	$valor = '20081S';
