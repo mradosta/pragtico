@@ -29,12 +29,12 @@ class PermisosBehavior extends ModelBehavior {
 
 
 /**
- * Numeric equivalents to owner, group or role and others permissions.
+ * Numeric equivalents to owner, group (or role) and others permissions.
  *
  * @var array
  * @access private
  */
-	private $__permisos = array(
+	private $__permissions = array(
 		'owner_read'   => 256,
 		'owner_write'  => 128,
 		'owner_delete' => 64,
@@ -92,7 +92,7 @@ class PermisosBehavior extends ModelBehavior {
 
 /**
  * Before save callback
- * Asigno los permisos por defecto, en caso de ser un registro nuevo.
+ * Set default user_id, group_id, role_id and permissions when creating a new record.
  *
  * @return boolean True si la operacion puede continua, false si debe abortarse.
  * @access public.
@@ -179,8 +179,7 @@ class PermisosBehavior extends ModelBehavior {
 		if (isset($results['user_id']) && isset($results['group_id']) && isset($results['permissions'])) {
 			return array_merge($results, array(	'write'	=> $this->__puede($usuario, $results, 'write'),
 												'delete'=> $this->__puede($usuario, $results, 'delete')));
-		}
-		else {
+		} else {
 			return $results;
 		}
 	}
@@ -211,7 +210,7 @@ class PermisosBehavior extends ModelBehavior {
 		* Verifico lo que puede hacer el dueno.
 		*/
 		if (($usuario['Usuario']['id'] === $registro['user_id'])
-			&& ((int)$registro['permissions'] & (int)$this->__permisos['owner_' . $acceso])) {
+			&& ((int)$registro['permissions'] & (int)$this->__permissions['owner_' . $acceso])) {
 			return true;
 		}
 
@@ -219,9 +218,9 @@ class PermisosBehavior extends ModelBehavior {
 		* Verifico lo que pueden hacer el grupo en funcion del rol.
 		*/
 		if ((((int)$usuario['Usuario']['grupos'] & (int)$registro['group_id'])
-			&& ((int)$registro['permissions'] & (int)$this->__permisos['group_' . $acceso])) &&
+			&& ((int)$registro['permissions'] & (int)$this->__permissions['group_' . $acceso])) &&
 		   (((int)$usuario['Usuario']['roles'] & (int)$registro['role_id'])
-			&& ((int)$registro['permissions'] & (int)$this->__permisos['group_' . $acceso]))) {
+			&& ((int)$registro['permissions'] & (int)$this->__permissions['group_' . $acceso]))) {
 			return true;
 		}
 
@@ -230,7 +229,7 @@ class PermisosBehavior extends ModelBehavior {
 		*/
 		if ($usuario['Usuario']['id'] !== $registro['user_id'] &&
 			((int)$usuario['Usuario']['grupos'] & (int)$registro['group_id'] === 0) &&
-			((int)$registro['permissions'] & (int)$this->__permisos['other_' . $acceso])) {
+			((int)$registro['permissions'] & (int)$this->__permissions['other_' . $acceso])) {
 			return true;
 		}
 		return false;
@@ -285,8 +284,7 @@ class PermisosBehavior extends ModelBehavior {
 		} elseif (isset($queryData['conditions']) && !is_string($queryData['conditions']) && isset($queryData['conditions']['checkSecurity'])) {
 			$securityAccess = $queryData['conditions']['checkSecurity'];
 			unset($queryData['conditions']['checkSecurity']);
-		}
-		else {
+		} else {
 			$securityAccess = 'read';
 		}
 
@@ -303,8 +301,7 @@ class PermisosBehavior extends ModelBehavior {
 		*/
 		if (in_array($securityAccess, array('read', 'write', 'delete'))) {
 			$seguridad = $this->__generarCondicionSeguridad($securityAccess, $model->name);
-		}
-		else {
+		} else {
 			trigger_error('Metodo de seguridad no soportado.', E_USER_ERROR);
 		}
 
@@ -331,7 +328,7 @@ class PermisosBehavior extends ModelBehavior {
  * no se chequea seguridad. Array con las condiciones en cualquier otro caso.
  * @access public
  */
-	function generarCondicionSeguridad(&$model, $acceso) {
+	function generarCondicionSeguridad_deprecated(&$model, $acceso) {
 		return $this->__generarCondicionSeguridad($acceso, $model->name);
 	}
 
@@ -370,15 +367,14 @@ class PermisosBehavior extends ModelBehavior {
 		if ($acceso === 'delete') {
 			$resultPermissions = $this->__simplifiedPermissions;
 		} else {
-			$resultPermissions = $this->__permisos;
+			$resultPermissions = $this->__permissions;
 		}
 		/**
 		* Si se trata de un usuario perteneciente al rol administradores, que no tiene grupo (root), no verifico permisos.
 		*/
 		if (empty($usuario['Grupo']) && (int)$usuario['Usuario']['roles'] & 1) {
 			return array();
-		}
-		else {
+		} else {
 			/**
 			* Si explicitamente no ha seleccionado ningun grupo, supongo que desea ver solo sus registros...
 			* Los registros de los cuales el es dueno.
@@ -389,8 +385,7 @@ class PermisosBehavior extends ModelBehavior {
 						$modelName . '.user_id' => $usuarioId,
 						'(' . $modelName . '.permissions) & ' . $this->__simplifiedPermissions['owner_' . $acceso] => $resultPermissions['owner_' . $acceso]
 					);
-			}
-			else {
+			} else {
 				$seguridad['OR'][] =
 					array('AND' => array(
 						array(
