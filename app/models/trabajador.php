@@ -119,14 +119,16 @@ class Trabajador extends AppModel {
 		* Si tengo la sucursal y la cuenta, puedo generar el CBU.
 		* Solo lo necesito mostrar con un edit.
 		*/
-		if ($primary === true && isset($results[0]['Trabajador']['cbu'])) {
-			$pattern = '/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d/';
-			if (preg_match($pattern, $results[0]['Trabajador']['cbu'], $matches)) {
-				$Sucursal = ClassRegistry::init('Sucursal');
-				$sucursal = $Sucursal->findByCodigo($matches[2]);
-				$results[0]['Trabajador']['banco'] = $sucursal['Banco']['nombre'];
-				$results[0]['Trabajador']['sucursal'] = $sucursal['Sucursal']['direccion'];
-				$results[0]['Trabajador']['cuenta'] = $matches[3];
+		if ($primary === true && !empty($results[0]['Trabajador']['cbu'])) {
+			foreach($results as $k => $result) {
+				$pattern = '/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d/';
+				if (preg_match($pattern, $result['Trabajador']['cbu'], $matches)) {
+					$Sucursal = ClassRegistry::init('Sucursal');
+					$sucursal = $Sucursal->findByCodigo($matches[2]);
+					$results[$k]['Trabajador']['banco'] = $sucursal['Banco']['nombre'];
+					$results[$k]['Trabajador']['sucursal'] = $sucursal['Sucursal']['direccion'];
+					$results[$k]['Trabajador']['cuenta'] = $matches[3];
+				}
 			}
 		}
 		return parent::afterFind($results, $primary);
