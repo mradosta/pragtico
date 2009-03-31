@@ -26,9 +26,6 @@ class Suss extends AppModel {
 	var $order = array('Suss.fecha' => 'desc');
 
 	var $validate = array(
-        'empleador_id__' => array(
-				'rule'		=> VALID_NOT_EMPTY,
-				'message'	=> 'Debe seleccionar un empleador.'),
         'periodo' => array(
 			array(
 				'rule'	=> '/^(20\d\d)(0[1-9]|1[012])$/', 

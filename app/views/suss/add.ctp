@@ -21,6 +21,9 @@
 */
 $campos = null;
 $campos['Suss.id'] = array();
+if (!empty($grupos) && $this->action === 'add') {
+	$campos['Suss.grupo_id'] = array('options' => $grupos, 'empty' => true);
+}
 $campos['Suss.empleador_id'] = array(	"lov"=>array(	"controller"		=> 	"empleadores",
 														"seleccionMultiple"	=> 	0,
 														"camposRetorno"		=> 	array(	"Empleador.cuit",
