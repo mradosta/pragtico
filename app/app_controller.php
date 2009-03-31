@@ -258,11 +258,15 @@ class AppController extends Controller {
  * @param array $data. When not empty, $data will be saved. Otherwise, $this->data will be saved.
  */		
     function save($data = array()) {
-		
+
 		if (!empty($data) && is_array($data)) {
-			$this->data = $data;
+			if (!empty($this->data['Form'])) {
+				$this->data = array_merge($data, array('Form' => $this->data['Form']));
+			} else {
+				$this->data = $data;
+			}
 		}
-		
+
 		$back = 1;
         if (isset($this->data['Form']['volverAInsertar'])) {
             $this->action = 'add';
