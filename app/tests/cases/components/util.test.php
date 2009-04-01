@@ -63,6 +63,10 @@ class UtilComponentTestCase extends CakeTestCase {
         $expected = '2009-04-17';
         $this->assertEqual($expected, $result);
 
+        $result = $this->UtilComponentTest->dateAddWorkingDays('2009-04-15', 0);
+        $expected = '2009-04-15';
+        $this->assertEqual($expected, $result);
+		
         $result = $this->UtilComponentTest->dateAddWorkingDays('2009-04-16', 2);
         $expected = '2009-04-20';
         $this->assertEqual($expected, $result);
