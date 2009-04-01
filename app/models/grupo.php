@@ -41,18 +41,20 @@ class Grupo extends AppModel {
 						array('with' => 'GruposUsuario'));
 
 
-	function beforeSave() {
+	function beforeValidate() {
 		/**
 		* Es un add.
 		* Como uso matematica binaria, el proximo ID debe ser generado por mi como potencia de 2 del anterior.
 		*/
 		if (empty($this->data['Grupo']['id'])) {
-			$this->recursive = -1;
-			$grupo = $this->find('first', array('checkSecurity'=>false, 'fields'=>array('MAX(Grupo.id) AS maximo')));
-			$ultimoGrupo = $grupo[0]['maximo'];
-			$this->data['Grupo']['id'] = $ultimoGrupo * 2;
+			$this->Behaviors->detach('Permisos');
+			$group = $this->find('first', array(
+					'fields' 		=> array('MAX(Grupo.id) AS last'),
+					'recursive' 	=> -1));
+			$this->data['Grupo']['id'] = $group['Grupo']['last'] * 2;
+			$this->Behaviors->attach('Permisos');
 		}
-		return parent::beforeSave();
+		return parent::beforeValidate();
 	}
 
 }
