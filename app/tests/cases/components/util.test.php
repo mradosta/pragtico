@@ -46,6 +46,36 @@ class UtilComponentTestCase extends CakeTestCase {
     }
 
 
+	function testDateAddWorkingDays() {
+        $result = $this->UtilComponentTest->dateAddWorkingDays('2008-12-23', 2, array('2008-05-25'));
+        $expected = '2008-12-25';
+        $this->assertEqual($expected, $result);
+		
+        $result = $this->UtilComponentTest->dateAddWorkingDays('2008-12-23', 2);
+        $expected = '2008-12-26';
+        $this->assertEqual($expected, $result);
+		
+        $result = $this->UtilComponentTest->dateAddWorkingDays('2009-03-27', 2);
+        $expected = '2009-03-31';
+        $this->assertEqual($expected, $result);
+
+        $result = $this->UtilComponentTest->dateAddWorkingDays('2009-04-15', 2);
+        $expected = '2009-04-17';
+        $this->assertEqual($expected, $result);
+
+        $result = $this->UtilComponentTest->dateAddWorkingDays('2009-04-16', 2);
+        $expected = '2009-04-20';
+        $this->assertEqual($expected, $result);
+
+        $result = $this->UtilComponentTest->dateAddWorkingDays('2008-02-28', 1);
+        $expected = '2008-02-29';
+        $this->assertEqual($expected, $result);
+
+        $result = $this->UtilComponentTest->dateAddWorkingDays('2008-02-28', 2);
+        $expected = '2008-03-03';
+        $this->assertEqual($expected, $result);
+	}
+	
     function testDateDiff() {
 		
         $result = $this->UtilComponentTest->dateDiff('2007-01-01', '2007-12-31');

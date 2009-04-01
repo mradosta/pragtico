@@ -426,6 +426,22 @@ class UtilBehavior extends ContainableBehavior {
 
 
 /**
+ * Generates a date based on a starting date plus N working days.
+ *
+ * @param integer $workingDays The number of days to add.
+ * @param date $startDate The starting date.
+ * @param mixed $nonWorkingDays If string default, Argentina non working days will be used.
+ *								If array of dates is specified, they'll used instead.
+ * @return date 
+ **/
+	function dateAddWorkingDays(&$model, $startDate, $workingDays = 1, $nonWorkingDays = 'default') {
+		App::import('Vendor', 'dates', 'pragmatia');
+		$Dates = new Dates();
+		return $Dates->dateAddWorkingDays($startDate, $workingDays, $nonWorkingDays);
+	}
+
+
+/**
  * Genera una query.
  * En debug level > 0, tambien la formatea para una mejor visualizacion.
  *

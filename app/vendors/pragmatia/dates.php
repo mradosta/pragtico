@@ -206,6 +206,89 @@ class Dates {
 	
 	
 /**
+ * Generates a date based on a starting date plus N working days.
+ *
+ * http://www.tundidor.com.ar/php/calcular-dias-habiles-con-php/
+ * 
+ * @param integer $workingDays The number of days to add.
+ * @param date $startDate The starting date.
+ * @param mixed $nonWorkingDays If string default, Argentina non working days will be used.
+ *								If array of dates is specified, they'll used instead.
+ * @return date 
+ **/
+	function dateAddWorkingDays($startDate, $workingDays = 1, $nonWorkingDays = 'default') {
+ 
+        /** Separo la fecha en dia month y año */
+        $day = date('d',strtotime($startDate));
+        $month = date('m',strtotime($startDate));
+        $year = date('Y',strtotime($startDate));
+        
+		/** Arreglo con los feriados de Argentina Ver http://www.mininterior.gov.ar/servicios/feriados2008.asp */
+		$feriados = array();
+		if ($nonWorkingDays === 'default') {
+			$feriados = array(
+				'01-01-' . $year,    // Año Nuevo
+				'24-03-' . $year,    // Día Nacional de la Memoria por la Verdad y la Justicia
+				'21-03-' . $year,    // Viernes Santo Festividad Cristiana
+				'02-04-' . $year,    // Día del Veterano y de los Caídos en la Guerra de Malvinas (ley 26.110)
+				'01-05-' . $year,    // Día del Trabajador
+				'25-05-' . $year,    // Primer Gobierno Patrio
+				'16-06-' . $year,    // Paso a la Inmortalidad del General Manuel Belgraon
+				'09-07-' . $year,    // Día de la Independencia
+				'18-08-' . $year,    // Paso a la Inmortalidad del General José de San Martín
+				'12-10-' . $year,    // Día de la Raza
+				'08-12-' . $year,    // Inmaculada Concepción de María
+				'25-12-' . $year,    // Navidad
+			);
+		} elseif (is_array($nonWorkingDays)) {
+			$feriados = $nonWorkingDays;
+		}
+        
+		/** calculo el timonthtamp de la fechainicial ($desde) */
+        $mkDesde    = mktime(0, 0, 0,$month, $day, $year);
+
+		/** Calculo el timonthtamp de la fechainicial ($desde) + los dias que tiene que correrse */
+        $mkResult    = mktime(0, 0, 0, $month, $day + $workingDays, $year);
+ 
+        /** Realizo la correccion correspondiente por el fin de semana */
+        switch (date('N', $mkResult)) {
+            case 1: //Lunes
+            $mkResult += (86400*2);//le agrego 2 dias
+            break;
+            case 2: //Martes
+            $mkResult += (86400);//le agrego 1 dia
+            break;
+            case 3: //Miercoles
+            case 4: //Jueves
+            case 5: //Viernes
+            break;
+            case 6: //Sabado
+            $mkResult += (86400*2);//le agrego 2 dias
+            break;
+            case 7:    //Domingo
+            $mkResult += (86400*2);//le agrego 2 dias
+            break;
+        }
+ 
+        /** Convierto las fechas en timonthtap para poder compararlos */
+        $mkFeriados = array_map('strtotime', $feriados);
+ 
+        /** Recorro los feriados para ver si mis fechas coinciden con alguno y si lo es hago la correccion necesaria. */
+        foreach ($mkFeriados as $mkFecha){
+            if(($mkDesde <= $mkFecha) and ($mkResult >= $mkFecha)){
+                $mkResult += 86400;//le agrego 1 dia
+            }
+        }
+ 
+        /** devuelvo el resultado en el formato deseado
+        * $resultado = strftime('%A %e %B %Y',$mkResult);
+		*/
+        $resultado = date('Y-m-d', $mkResult);
+        return $resultado;
+    }
+
+
+/**
  * Dada una fecha en alguno de los formatos admitidos, retorna una fechaHora MySql valida y completa.
  *
  * @param  string $fecha Una fecha.
@@ -223,6 +306,7 @@ class Dates {
 		} else {
 			$fecha = trim($fecha);
 		}
+		
 		if(preg_match(VALID_DATETIME_MYSQL, $fecha, $matches) || preg_match(VALID_DATE_MYSQL, $fecha, $matches)) {
 			if(!isset($matches[4])) {
 				$matches[4] = '00';
@@ -234,8 +318,7 @@ class Dates {
 				$matches[6] = '00';
 			}
 			return $matches[1] . '-' . $matches[2] . '-' . $matches[3] . ' ' . $matches[4] . ':' . $matches[5] . ':' . $matches[6];
-		}
-		else {
+		} else {
 			return false;
 		}
 	}

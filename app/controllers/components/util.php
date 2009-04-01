@@ -156,7 +156,7 @@ class UtilComponent extends Object {
  * @access public
  */
 	function format($valor, $options = array()) {
-		App::import("Helper", array("Number", "Time", "Formato"));
+		App::import('Helper', array('Number', 'Time', 'Formato'));
 		$formato = new FormatoHelper();
 		$formato->Time = new TimeHelper();
 		$formato->Number = new NumberHelper();
@@ -182,11 +182,27 @@ class UtilComponent extends Object {
  * @access public
  */
 	function dateDiff($fechaDesde, $fechaHasta = null) {
-		App::import("Vendor", "dates", "pragmatia");
+		App::import('Vendor', 'dates', 'pragmatia');
 		$Dates = new Dates();
 		return $Dates->dateDiff($fechaDesde, $fechaHasta);
 	}
 
+	
+/**
+ * Generates a date based on a starting date plus N working days.
+ *
+ * @param integer $workingDays The number of days to add.
+ * @param date $startDate The starting date.
+ * @param mixed $nonWorkingDays If string default, Argentina non working days will be used.
+ *								If array of dates is specified, they'll used instead.
+ * @return date 
+ **/
+	function dateAddWorkingDays($startDate, $workingDays = 1, $nonWorkingDays = 'default') {
+		App::import('Vendor', 'dates', 'pragmatia');
+		$Dates = new Dates();
+		return $Dates->dateAddWorkingDays($startDate, $workingDays, $nonWorkingDays);
+	}
+	
 	
 /**
  * Suma una cantidad de "intervalo" a una fecha.
