@@ -314,10 +314,12 @@ class Liquidacion extends AppModel {
 		$liquidacion['relacion_horas'] = $this->getRelationship('Relacion', 'horas');
 		$liquidacion['relacion_basico'] = $this->getRelationship('Relacion', 'basico');
 		$liquidacion['relacion_area_id'] = $this->getRelationship('Relacion', 'area_id');
+		$liquidacion['relacion_antiguedad'] = $this->getVarValue('#anos_antiguedad');
 		$liquidacion['trabajador_id'] = $this->getRelationship('Trabajador', 'id');
 		$liquidacion['trabajador_cuil'] = $this->getRelationship('Trabajador', 'cuil');
 		$liquidacion['trabajador_nombre'] = $this->getRelationship('Trabajador', 'nombre');
 		$liquidacion['trabajador_apellido'] = $this->getRelationship('Trabajador', 'apellido');
+		$liquidacion['trabajador_cbu'] = $this->getRelationship('Trabajador', 'cbu');
 		$liquidacion['empleador_id'] = $this->getRelationship('Empleador', 'id');
 		$liquidacion['empleador_cuit'] = $this->getRelationship('Empleador', 'cuit');
 		$liquidacion['empleador_nombre'] = $this->getRelationship('Empleador', 'nombre');

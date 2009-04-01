@@ -245,9 +245,23 @@ class LiquidacionesController extends AppController {
 				$id = $this->Util->extraerIds($this->params['data']['seleccionMultiple']);
 			}
 		}
-		
+
+		$this->data = null;
 		$this->Liquidacion->contain('LiquidacionesDetalle');
-		$this->data = $this->Liquidacion->find('all', array('conditions' => array('Liquidacion.id' => $id)));
+		$this->Liquidacion->Empleador->Suss->contain('Banco');
+		foreach ($this->Liquidacion->find('all', array('conditions' => array('Liquidacion.id' => $id))) as $receipt) {
+
+			$suss = $this->Liquidacion->Empleador->Suss->find('first',
+				array('conditions' => array(
+					'Suss.empleador_id' => $receipt['Liquidacion']['empleador_id'],
+					'Suss.periodo'		=> $receipt['Liquidacion']['ano'] . str_pad($receipt['Liquidacion']['mes'], 2, '0', STR_PAD_LEFT)))
+			);
+			if (!empty($suss)) {
+				$this->data[] = array_merge($receipt, $suss);
+			} else {
+				$this->data[] = $receipt;
+			}
+		}
 		$this->render('recibo_excel');
 	}
 
