@@ -149,7 +149,6 @@ class LiquidacionesController extends AppController {
 					'conditions'	=> $condicionesLiquidacion));
 			$confirmadas = Set::extract('/Liquidacion/relacion_id', $liquidaciones);
 			
-			
 			/** Search for the relations */
 			$condiciones = null;
 			$condiciones = $this->Paginador->generarCondicion();
@@ -163,10 +162,11 @@ class LiquidacionesController extends AppController {
 			}
 			
 			$relaciones = $this->Liquidacion->Relacion->find('all',
-					array(	'contain'		=> array(	'ConveniosCategoria.ConveniosCategoriasHistorico',
+					array(	'contain'		=> array(	'ConveniosCategoria',
 														'Trabajador.ObrasSocial',
 														'Empleador'),
 							'conditions'	=> $condiciones));
+			
 			if (empty($relaciones)) {
 				$this->Session->setFlash('No se encontraron relaciones para liquidar. Verifique si no se han liquidado y confirmado previamente o los criterios de busqueda no son correctos.', 'error');
 				$this->redirect(array('action' => 'preliquidar'));
@@ -202,6 +202,22 @@ class LiquidacionesController extends AppController {
 			$opciones['variables'] = $variables;
 			$opciones['informaciones'] = $informaciones;
 			foreach ($relaciones as $relacion) {
+				$historico = $this->Liquidacion->Relacion->ConveniosCategoria->ConveniosCategoriasHistorico->find('first',
+					array(
+						'recursive'	 	=> -1,
+	  					'checkSecurity'	=> false,
+						'conditions' 	=>
+						array(
+							'ConveniosCategoriasHistorico.convenios_categoria_id' => $relacion['ConveniosCategoria']['id'],
+							'ConveniosCategoriasHistorico.desde <=' => $periodo['desde'],
+					  		array('OR' => array(	'ConveniosCategoriasHistorico.hasta >=' => $periodo['hasta'],
+											'ConveniosCategoriasHistorico.hasta' => '0000-00-00')))));
+
+				if (!empty($historico)) {
+					$relacion['ConveniosCategoria']['costo'] = $historico['ConveniosCategoriasHistorico']['costo'];
+				} else {
+					$relacion['ConveniosCategoria']['costo'] = 0;
+				}
 				$this->Liquidacion->getReceipt($relacion, $periodo, $variables['#tipo_liquidacion']['valor'], $opciones);
 			}
 		}
