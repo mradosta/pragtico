@@ -33,13 +33,13 @@ if (!empty($data)) {
 	$pageMargins->setRight(0.2);
 
 	$left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s",
-					$groupParams['nombre_fantasia'],
-					$groupParams['direccion'],
-	  				$groupParams['barrio'],
-	    			$groupParams['codigo_postal'],
-					$groupParams['ciudad'],
-	 				$groupParams['pais'],
-	  				$groupParams['cuit']);
+		!empty($groupParams['nombre_fantasia'])?$groupParams['nombre_fantasia']:'',
+		!empty($groupParams['direccion'])?$groupParams['direccion']:'',
+		!empty($groupParams['barrio'])?$groupParams['barrio']:'',
+		!empty($groupParams['codigo_postal'])?$groupParams['codigo_postal']:'',
+		!empty($groupParams['ciudad'])?$groupParams['ciudad']:'',
+		!empty($groupParams['pais'])?$groupParams['pais']:'',
+		!empty($groupParams['cuit'])?$groupParams['cuit']:'');
 	
 	//$left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s", $employer['Empleador']['nombre'], $employer['Empleador']['direccion'], $employer['Empleador']['barrio'], $employer['Empleador']['codigo_postal'], $employer['Empleador']['ciudad'], $employer['Empleador']['pais'], $employer['Empleador']['cuit']);
 	$center = "&C\n\nLibro Especial de Sueldos - Art. 52 Ley 20744";
@@ -47,6 +47,7 @@ if (!empty($data)) {
 	if (!empty($groupParams['libro_sueldos_encabezado'])) {
 		$center .= $groupParams['libro_sueldos_encabezado'];
 	}
+	//$documento->doc->getActiveSheet()->getHeaderFooter()->setAlignWithMargins(true);
 	$documento->doc->getActiveSheet()->getHeaderFooter()->setOddHeader($left . $center . $right);
 	
 	$styleBoldCenter = array('style' => array(
@@ -227,7 +228,7 @@ if (!empty($data)) {
 	if (!empty($grupos)) {
 		$condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos, 'empty' => true);
 	}
-	$condiciones['Condicion.Liquidacion-periodo'] = array('type' => 'periodo');
+	$condiciones['Condicion.Liquidacion-periodo'] = array('type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A'));
 	$condiciones['Condicion.Liquidacion-formato'] = array('type' => 'radio', 'options' => array('Excel5' => 'Excel', 'Excel2007' => 'Excel 2007'), 'value' => 'Excel2007');
 
 	$fieldsets[] = array('campos' => $condiciones);
