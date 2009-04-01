@@ -30,6 +30,9 @@ class ConveniosCategoria extends AppModel {
 	*/
 	var $modificadores = array('index'=>array('contain'=>array('Convenio', 'ConveniosCategoriasHistorico')));
 	
+	var $breadCrumb = array('format' 	=> '%s (%s)',
+							'fields' 	=> array('ConveniosCategoria.nombre', 'Convenio.nombre'));
+	
 	var $validate = array(
         'nombre' => array(
 			array(
@@ -97,7 +100,6 @@ class ConveniosCategoria extends AppModel {
 				$costo = $v['costo'];
 				break;
 			}
-			
 		}
 		return $costo;
 	}
