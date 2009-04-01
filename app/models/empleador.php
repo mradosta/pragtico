@@ -35,12 +35,12 @@ class Empleador extends AppModel {
 	var $breadCrumb = array('format' 	=> '(%s) %s',
 							'fields' 	=> array('Empleador.cuit', 'Empleador.nombre'));
 
-	var $opciones = array('pago' => array(	'Primer Dia Habil' 					=>	'Primer Dia Habil',
-											'Segundo Dia Habil' 				=>	'Segundo Dia Habil',
-											'Tercer Dia Habil' 				=>	'Tercer Dia Habil',
-											'Cuarto Dia Habil' 				=>	'Cuarto Dia Habil',
-											'Quinto Dia Habil' 				=>	'Quinto Dia Habil',
-											'Ultimo Dia Habil del Periodo' 	=>	'Ultimo Dia Habil del Periodo'));
+	var $opciones = array('pago' => array(	'1' => 'Primer Dia Habil',
+											'2' => 'Segundo Dia Habil',
+											'3' => 'Tercer Dia Habil',
+											'4' => 'Cuarto Dia Habil',
+											'5' => 'Quinto Dia Habil',
+											'0' => 'Ultimo Dia Habil del Periodo'));
 	
 	var $validate = array( 
         'nombre' => array(

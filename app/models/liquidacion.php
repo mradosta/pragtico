@@ -306,6 +306,7 @@ class Liquidacion extends AppModel {
 		$liquidacion['ano'] = $this->getPeriod('ano');
 		$liquidacion['mes'] = $this->getPeriod('mes');
 		$liquidacion['periodo'] = $this->getPeriod('periodo');
+		$liquidacion['pago'] = $this->dateAddWorkingDays($this->getPeriod('hasta'), $this->getRelationship('Empleador', 'pago'));
 		$liquidacion['tipo'] = $this->getVarValue('#tipo_liquidacion');
 		$liquidacion['estado'] = 'Sin Confirmar';
 		$liquidacion['relacion_id'] = $this->getRelationship('Relacion', 'id');
