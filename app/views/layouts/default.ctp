@@ -104,19 +104,23 @@ $appForm->addScript('
 		}
 	);
 
+	var path = "'. Router::url('/') . 'img/";
 	jQuery("#hideConditions").bind("click",
  		function() {
 			jQuery(".conditions_frame").toggle();
 			if (jQuery(".conditions_frame").is(":visible")) {
 				jQuery.cookie("conditionsFrameCookie", "true");
+				jQuery("#hideConditions > img").attr("src", path + "pinchado.gif");
 			} else {
 				jQuery.cookie("conditionsFrameCookie", "false");
+				jQuery("#hideConditions > img").attr("src", path + "sin_pinchar.gif");
 			}
 		}
 	);
 
 	if (jQuery.cookie("conditionsFrameCookie") == "false") {
 		jQuery(".conditions_frame").hide();
+		jQuery("#hideConditions > img").attr("src", path + "sin_pinchar.gif");
 	}
 ');
 
@@ -124,8 +128,8 @@ $codigo_html[] = $asset->scripts_for_layout();
 $codigo_html[] = '</head>';
 $codigo_html[] = '<body>';
 
-$menu = $this->element('layout' . DS . 'menu', array('cache' => '+1 day'));
-//$menu = $this->element('layout' . DS . 'menu');
+//$menu = $this->element('layout' . DS . 'menu', array('cache' => '+1 day'));
+$menu = $this->element('layout' . DS . 'menu');
 
 $codigo_html[] = $flash;
 $codigo_html[] = $this->element('layout' . DS . 'encabezado');
