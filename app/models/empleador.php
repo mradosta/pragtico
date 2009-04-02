@@ -35,12 +35,12 @@ class Empleador extends AppModel {
 	var $breadCrumb = array('format' 	=> '(%s) %s',
 							'fields' 	=> array('Empleador.cuit', 'Empleador.nombre'));
 
-	var $opciones = array('pago' => array(	'1' => 'Primer Dia Habil',
+	var $opciones = array('pago' => array(	'0' => 'Ultimo Dia Habil del Periodo',
+											'1' => 'Primer Dia Habil',
 											'2' => 'Segundo Dia Habil',
 											'3' => 'Tercer Dia Habil',
 											'4' => 'Cuarto Dia Habil',
-											'5' => 'Quinto Dia Habil',
-											'0' => 'Ultimo Dia Habil del Periodo'));
+											'5' => 'Quinto Dia Habil'));
 	
 	var $validate = array( 
         'nombre' => array(
@@ -75,8 +75,22 @@ class Empleador extends AppModel {
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe seleccionar la provincia.')
+        ),
+        'localidad_id' => array(
+			array(
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar la localidad.')
+        ),
+        'actividad_id' => array(
+			array(
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar la actividad.')
+        ),
+        'employers_type_id' => array(
+			array(
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar el tipo de empleador.')
         )
-        
 	);
 
 	var $belongsTo = array('Localidad', 'Actividad', 'EmployersType');
@@ -97,15 +111,13 @@ class Empleador extends AppModel {
 
 
 
+	/**
 	function beforeSave() {
-		/**
-		 * Si las foraneas opcionales no las saco del array, en caso de que esten vacias, el framework intentara
-		 * guardarlas con el valor vacio, y este fallara.
-		 */
-		if (empty($this->data['Empleador']['actividad_id'])) {
-			unset($this->data['Empleador']['actividad_id']);
+		if (empty($this->id)) {
+	    	$this->data = array_merge($this->data, array('Area' => array(array('nombre' => 'General'))));
 		}
 		return parent::beforeSave();
-	}			
+	}
+	*/
 }
 ?>

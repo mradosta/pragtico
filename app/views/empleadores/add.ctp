@@ -48,7 +48,7 @@ $fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => arra
 
 $campos = null;
 $campos['Empleador.redondear'] = array('aclaracion' => "Indica si debe redondear la liquidacion.");
-$campos['Empleador.pago'] = array('empty' => true);
+$campos['Empleador.pago'] = array();
 $campos['Empleador.facturar_por_area'] = array();
 $fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => "Informacion Adicional", 'imagen' => 'informacion_adicional.gif')));
 
