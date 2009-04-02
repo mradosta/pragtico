@@ -1928,8 +1928,7 @@ class AppFormHelper extends FormHelper {
 				*/
 				if (isset($options['lov']['seleccionMultiple']) && $options['lov']['seleccionMultiple'] == 0) {
 					$type = 'text';
-				}
-				else {
+				} else {
 					$type = 'textarea';
 				}
 
@@ -1978,7 +1977,7 @@ class AppFormHelper extends FormHelper {
 				* Creo la hidden que sera quien en definitiva, contenga el valor correto a actualizar, lo que
 				* muestra la lov es solo una "pantalla" linda al usuario, esta input hidden tiene el valor que se actualizara.
 				*/
-				$options['after'] .= $this->input($tagName, am($options, array('id' => $id, "type" => "hidden")));
+				$options['after'] .= $requerido . $this->input($tagName, array_merge($options, array('id' => $id, "type" => "hidden")));
 
 				/**
 				* Busco el valor "descriptivo" para mostrarle al usuario.
@@ -2015,9 +2014,9 @@ class AppFormHelper extends FormHelper {
 														'type'		=> $type,
 														'class'		=> 'izquierda'));
 
-				list($model, $field) = explode(".", $tagName);
-				if (!empty($this->data[$model][$field . "__"])) {
-					$options['value'] = $this->data[$model][$field . "__"];
+				list($model, $field) = explode('.', $tagName);
+				if (!empty($this->data[$model][$field . '__'])) {
+					$options['value'] = $this->data[$model][$field . '__'];
 				}
 				return $this->input($tagName . "__", $options);
 			}
