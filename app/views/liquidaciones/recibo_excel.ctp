@@ -64,7 +64,7 @@
 			$documento->setCellValue((PHPExcel_Cell::columnIndexFromString('F') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['relacion_ingreso'], 'date'), $styleRight);
 			$documento->setCellValue((PHPExcel_Cell::columnIndexFromString('H') -1 + ($i * 23)) . ',' . $fila, $receipt['Liquidacion']['relacion_antiguedad'], $styleCenter);
 			$documento->setCellValue((PHPExcel_Cell::columnIndexFromString('I') -1 + ($i * 23)) . ',' . $fila, $receipt['Liquidacion']['convenio_categoria_nombre']);
-			$documento->setCellValue((PHPExcel_Cell::columnIndexFromString('S') -1 + ($i * 23)) . ',' . $fila, " " . substr($receipt['Liquidacion']['trabajador_cbu'], 8, 13));
+			$documento->setCellValue((PHPExcel_Cell::columnIndexFromString('S') -1 + ($i * 23)) . ',' . $fila, substr($receipt['Liquidacion']['trabajador_cbu'], 0, 3) . " " . substr($receipt['Liquidacion']['trabajador_cbu'], 8, 13));
 
 			$fila+=4;
 			foreach ($receipt['LiquidacionesDetalle'] as $detail) {
