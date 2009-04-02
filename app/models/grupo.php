@@ -57,5 +57,30 @@ class Grupo extends AppModel {
 		return parent::beforeValidate();
 	}
 
+
+/**
+ * Finds parameters values.
+ *
+ * @param integer $groupId The group to find parameters to.
+ * @param boolean $all If true, get all parameters even they're not set for the selected group.
+ *					   If false, only get parameters for the selected group.
+ * @return array key => value array.
+ * @access public.
+ */
+	function getParams($groupId, $all = true) {
+		if ($all === true) {
+			$params = Set::combine($this->GruposParametro->Parametro->find('all'), '{n}.Parametro.nombre', '');
+		} else {
+			$params = array();
+		}
+		$group = $this->find('first',
+			array(	'conditions' 	=> array('Grupo.id' => $groupId),
+					'contain'		=> array('GruposParametro.Parametro')));
+		foreach ($group['GruposParametro'] as $groupParam) {
+			$params[$groupParam['Parametro']['nombre']] = str_replace("\r", '', $groupParam['valor']);
+		}
+		return $params;
+	}
+	
 }
 ?>

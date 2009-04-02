@@ -33,36 +33,34 @@ class LiquidacionesController extends AppController {
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 			if (empty($this->data['Condicion']['Liquidacion-empleador_id'])
 				&& empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
-				$this->Session->setFlash('Debe seleccionar un por lo menos un Empleador o un Grupo y el Empleador.', 'error');
+				$this->Session->setFlash('Debe seleccionar por lo menos un Empleador o un Grupo.', 'error');
+			} elseif (!empty($this->data['Condicion']['Liquidacion-empleador_id'])
+				&& !empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
+				$this->Session->setFlash('Debe seleccionar un Empleador o un Grupo, pero no ambos.', 'error');
 			} elseif (empty($this->data['Condicion']['Liquidacion-periodo']) || $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], 'periodo') === false) {
 				$this->Session->setFlash('Debe especificar un periodo valido.', 'error');
 			} else {
 				$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], 'periodo');
 				
 				/** Search employers */
-				//$this->Liquidacion->Relacion->Empleador->contain(array(''));<br>$this->Liquidacion->Relacion->Empleador->
 				$this->Liquidacion->Relacion->Empleador->recursive = -1;
-				$this->set('employer', $this->Liquidacion->Relacion->Empleador->findById($this->data['Condicion']['Liquidacion-empleador_id']));
-				$empleadores = $this->data['Condicion']['Liquidacion-empleador_id'];
+				$this->set('periodo', $periodo['periodoCompleto']);
 				if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
 
-					$grupo = array_pop(ClassRegistry::init('Grupo')->find('all',
-						array(	'conditions' 	=> array('Grupo.id' => $this->data['Condicion']['Liquidacion-grupo_id']),
-								'contain'		=> array('GruposParametro.Parametro'))
-					));
-
-					$this->set('groupParams', Set::combine($grupo['GruposParametro'], '{n}.Parametro.nombre', '{n}.valor'));
-					$this->set('periodo', $periodo['periodoCompleto']);
-					
+					$this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Liquidacion-grupo_id']));
 					$empleadores = Set::extract('/Empleador/id', $this->Liquidacion->Relacion->Empleador->find('all', array(
 							'recursive' 	=> -1,
 							'conditions' 	=> array(
 							'(Empleador.group_id & ' . $this->data['Condicion']['Liquidacion-grupo_id'] . ') >' => 0))
 					));
+				} else {
+					$empleadores = $this->data['Condicion']['Liquidacion-empleador_id'];
+					$this->set('employer', $this->Liquidacion->Relacion->Empleador->findById($this->data['Condicion']['Liquidacion-empleador_id']));
 				}
-				
+
 				$conditions = array('Liquidacion.empleador_id' 	=> $empleadores,
 									'Liquidacion.estado'		=> 'Confirmada',
+		 							'Liquidacion.tipo'			=> $this->data['Condicion']['Liquidacion-tipo'],
 		 							'Liquidacion.ano'			=> $periodo['ano'],
 		 							'Liquidacion.mes'			=> $periodo['mes']);
 
@@ -74,7 +72,6 @@ class LiquidacionesController extends AppController {
 									'Relacion' => array('Trabajador', 'Empleador', 'Modalidad', 'ConveniosCategoria.ConveniosCategoriasHistorico')),
 								'conditions'	=> $conditions,
 							 	'order'			=> array('Liquidacion.empleador_nombre')));
-
 
 				if (empty($liquidaciones)) {
 					$this->Session->setFlash('No se han encontrado liquidaciones confirmadas para el periodo seleccioando segun los criterios especificados.', 'error');

@@ -25,29 +25,32 @@ if (!empty($data)) {
 	$documento->doc->getActiveSheet()->getDefaultRowDimension()->setRowHeight(10);
 	$documento->doc->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_PORTRAIT);
 	$documento->doc->getActiveSheet()->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
-
+	
+	/**
+	* Issue reported
+	* http://phpexcel.codeplex.com/WorkItem/View.aspx?WorkItemId=9560
+	*/
 	$pageMargins = $documento->doc->getActiveSheet()->getPageMargins();
-	//$pageMargins->setTop(1);
 	$pageMargins->setBottom(0.2);
 	$pageMargins->setLeft(0.2);
 	$pageMargins->setRight(0.2);
 
-	$left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s",
-		!empty($groupParams['nombre_fantasia'])?$groupParams['nombre_fantasia']:'',
-		!empty($groupParams['direccion'])?$groupParams['direccion']:'',
-		!empty($groupParams['barrio'])?$groupParams['barrio']:'',
-		!empty($groupParams['codigo_postal'])?$groupParams['codigo_postal']:'',
-		!empty($groupParams['ciudad'])?$groupParams['ciudad']:'',
-		!empty($groupParams['pais'])?$groupParams['pais']:'',
-		!empty($groupParams['cuit'])?$groupParams['cuit']:'');
-	
-	//$left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s", $employer['Empleador']['nombre'], $employer['Empleador']['direccion'], $employer['Empleador']['barrio'], $employer['Empleador']['codigo_postal'], $employer['Empleador']['ciudad'], $employer['Empleador']['pais'], $employer['Empleador']['cuit']);
-	$center = "&C\n\nLibro Especial de Sueldos - Art. 52 Ley 20744";
-	$right = '&RHoja &P';
-	if (!empty($groupParams['libro_sueldos_encabezado'])) {
-		$center .= $groupParams['libro_sueldos_encabezado'];
+	if (!empty($employer)) {
+		//$left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s", $employer['Empleador']['nombre'], $employer['Empleador']['direccion'], $employer['Empleador']['barrio'], $employer['Empleador']['codigo_postal'], $employer['Empleador']['ciudad'], $employer['Empleador']['pais'], $employer['Empleador']['cuit']);
+		$left = '';
+		$center = "&CLibro Especial de Sueldos - Art. 52 Ley 20744";
+	} else {
+		$left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s",
+			$groupParams['nombre_fantasia'],
+			$groupParams['direccion'],
+			$groupParams['barrio'],
+			$groupParams['codigo_postal'],
+			$groupParams['ciudad'],
+			$groupParams['pais'],
+			$groupParams['cuit']);
+		$center = "&CLibro Especial de Sueldos - Art. 52 Ley 20744" . $groupParams['libro_sueldos_encabezado'];
 	}
-	//$documento->doc->getActiveSheet()->getHeaderFooter()->setAlignWithMargins(true);
+	$right = '&RHoja &P';
 	$documento->doc->getActiveSheet()->getHeaderFooter()->setOddHeader($left . $center . $right);
 	
 	$styleBoldCenter = array('style' => array(
@@ -81,9 +84,7 @@ if (!empty($data)) {
 
 	$fila = 0;
 	$employerFlag = null;
-	$recordCount = 0;
 	foreach ($data as $record) {
-		$recordCount++;
 		
 		if ($employerFlag !== $record['Relacion']['Empleador']['cuit']) {
 			$employerFlag = $record['Relacion']['Empleador']['cuit'];
@@ -91,7 +92,7 @@ if (!empty($data)) {
 			$recordCount = 0;
 			$documento->doc->getActiveSheet()->setBreak('A' .$fila, PHPExcel_Worksheet::BREAK_ROW);
 			
-			$fila+=2;
+			$fila+=3;
 			$documento->setCellValue('A' . $fila, 'Empresa Usuario:');
 			$documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['nombre'], $styleBold);
 			$documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), $styleBold);
@@ -106,6 +107,7 @@ if (!empty($data)) {
 			
 			$fila+=3;
 		}
+		$recordCount++;
 		
 		$fila++;
 		$documento->setCellValue('A' . $fila, 'CUIL: ' . $record['Relacion']['Trabajador']['cuil']);
@@ -196,8 +198,6 @@ if (!empty($data)) {
 		$documento->setCellValue('K' . $fila, '$ ' . $record['Liquidacion']['no_remunerativo'], $styleBoldRight);
 
 		$fila++;
-		//$documento->doc->getActiveSheet()->getStyle('K' . $fila)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_CURRENCY_USD_SIMPLE);
-		//$documento->setCellValue('K' . $fila, $record['Liquidacion']['total_pesos']);
 		$documento->setCellValue('K' . $fila, 'Total Neto $ ' . $record['Liquidacion']['total_pesos'], $styleBoldRight);
 
 		$fila++;
@@ -215,7 +215,9 @@ if (!empty($data)) {
 		$fila++;
 
 		if ($recordCount === 4) {
+			$recordCount = 0;
 			$documento->doc->getActiveSheet()->setBreak('A' .$fila, PHPExcel_Worksheet::BREAK_ROW);
+			$fila+=2;
 		}
 	}
 	$documento->save($fileFormat);
@@ -228,7 +230,8 @@ if (!empty($data)) {
 	if (!empty($grupos)) {
 		$condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos, 'empty' => true);
 	}
-	$condiciones['Condicion.Liquidacion-periodo'] = array('type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A'));
+	$condiciones['Condicion.Liquidacion-periodo'] = array('type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S'));
+	$condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'multiple' => 'checkbox', 'type' => 'select');
 	$condiciones['Condicion.Liquidacion-formato'] = array('type' => 'radio', 'options' => array('Excel5' => 'Excel', 'Excel2007' => 'Excel 2007'), 'value' => 'Excel2007');
 
 	$fieldsets[] = array('campos' => $condiciones);
