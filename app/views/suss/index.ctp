@@ -19,9 +19,9 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-if (!empty($grupos)) {
-	$condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos, 'empty' => true);
-}
+//if (!empty($grupos)) {
+//	$condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos, 'empty' => true);
+//}
 $condiciones['Condicion.Suss-empleador_id'] = array('lov' => array(
 		'controller'		=> 	'empleadores',
 		'seleccionMultiple'	=> 	1,
