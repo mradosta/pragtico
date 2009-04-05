@@ -161,8 +161,7 @@ class Dates {
 		
 		if($fecha = $this->__getValidDateTime($fecha)) {
 			$fecha = strtotime($fecha);
-		}
-		else {
+		} else {
 			return false;
 		}
 		$ds = getdate($fecha);
@@ -201,7 +200,8 @@ class Dates {
 				break;
 		}
 		
-		return date('Y-m-d h:i:s', mktime($h ,$n, $s, $m ,$d, $y));
+		//return date('Y-m-d h:i:s', mktime($h ,$n, $s, $m ,$d, $y));
+		return date('Y-m-d', mktime($h ,$n, $s, $m ,$d, $y));
 	}
 	
 	

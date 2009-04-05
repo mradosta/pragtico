@@ -79,7 +79,20 @@ class UtilComponentTestCase extends CakeTestCase {
         $expected = '2008-03-03';
         $this->assertEqual($expected, $result);
 	}
+
 	
+	function testDateAdd() {
+		
+        $result = $this->UtilComponentTest->dateAdd('2008-03-10', 2);
+        $expected = '2008-03-12';
+        $this->assertEqual($expected, $result);
+		
+        $result = $this->UtilComponentTest->dateAdd('1990-11-04', 4);
+        $expected = '1990-11-08';
+        $this->assertEqual($expected, $result);
+	}
+
+
     function testDateDiff() {
 		
         $result = $this->UtilComponentTest->dateDiff('2007-01-01', '2007-12-31');
