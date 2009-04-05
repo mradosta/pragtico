@@ -44,15 +44,14 @@ class NovedadesController extends AppController {
  * Confirma las novedades seleccionadas.
  */
 	function confirmar() {
-		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === "confirmar") {
+		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'confirmar') {
 			if ($cantidad = $this->Novedad->distribuir($this->Util->extraerIds($this->data['seleccionMultiple']))) {
-				$this->Session->setFlash("Se confrmaron correctamente " . $cantidad . " novedades", "ok");
-			}
-			else {
-				$this->Session->setFlash("No fue posible confirmar las novedades", "error");
+				$this->Session->setFlash('Se confrmaron correctamente ' . $cantidad . ' novedades', 'ok');
+			} else {
+				$this->Session->setFlash('No fue posible confirmar las novedades', 'error');
 			}
 		}
-		$this->redirect("index");
+		$this->redirect('index');
 	}
 
 /**
@@ -114,7 +113,8 @@ class NovedadesController extends AppController {
 							$i = $i+2;
 						} elseif ($value === "Ausencias") {
 							$mapeo['Ausencias']['Motivo']					= $i;
-							$mapeo['Ausencias']['Dias']						= $i+1;
+							$mapeo['Ausencias']['Desde']					= $i+1;
+							$mapeo['Ausencias']['Dias']						= $i+2;
 							$i = $i+1;
 						} elseif ($value === "Vales") {
 							$mapeo['Vales']['Importe']						= $i;
@@ -134,7 +134,7 @@ class NovedadesController extends AppController {
 							}
 						}
 					}
-					
+
 					if ($this->Novedad->grabar($datos, $this->data['Novedad']['periodo'])) {
 						$this->redirect('index');
 					}
@@ -156,65 +156,48 @@ class NovedadesController extends AppController {
  */
 	function generar_planilla() {
 		if (!empty($this->data['Formulario']['accion'])) {
-			if ($this->data['Formulario']['accion'] === "buscar") {
+			if ($this->data['Formulario']['accion'] === 'buscar') {
 				if (empty($this->data['Condicion']['Relacion-trabajador_id'])
 					&& empty($this->data['Condicion']['Relacion-empleador_id'])
 					&& empty($this->data['Condicion']['Relacion-id'])) {
-					$this->Session->setFlash("Debe seleccionar al menos un criterio para la generacion de la planilla.", "error");
-				}
-				else {
-					$formatoDocumento = $this->data['Condicion']['Novedad-formato'];
+					$this->Session->setFlash('Debe seleccionar al menos un criterio para la generacion de la planilla.', 'error');
+				} elseif (empty($this->data['Condicion']['Novedad-tipo'])) {
+					$this->Session->setFlash('Debe seleccionar al menos un tipo para la generacion de la planilla.', 'error');
+				} else {
 					$tipos = $this->data['Condicion']['Novedad-tipo'];
+					$formatoDocumento = $this->data['Condicion']['Novedad-formato'];
 					unset($this->data['Condicion']['Novedad-formato']);
 					unset($this->data['Condicion']['Novedad-tipo']);
 					$conditions = $this->Paginador->generarCondicion();
-					$registros = $this->Novedad->Relacion->find("all",
-						array("contain"	=> array("ConveniosCategoria", "Trabajador", "Empleador"),
-							"conditions"=> $conditions));
-					$this->set("registros", $registros);
-					$this->set("motivos", $this->Novedad->Relacion->Ausencia->AusenciasMotivo->find("list", array("fields"	=> array("AusenciasMotivo.id", "AusenciasMotivo.motivo"))));
-					$this->set("formatoDocumento", $formatoDocumento);
-					$this->set("tipos", $tipos);
-					$this->set("tiposPredefinidos", $this->Novedad->getIngresosPosibles("predefinidos"));
-					$this->layout = "ajax";
+					$registros = $this->Novedad->Relacion->find('all',
+						array('contain'	=> array('ConveniosCategoria', 'Trabajador', 'Empleador'),
+							'conditions'=> $conditions));
+
+					if (!empty($registros)) {
+						$this->set('registros', $registros);
+						$this->set('motivos', $this->Novedad->Relacion->Ausencia->AusenciasMotivo->find('list', array('fields'	=> array('AusenciasMotivo.id', 'AusenciasMotivo.motivo'))));
+						$this->set('formatoDocumento', $formatoDocumento);
+						$this->set('tipos', $tipos);
+						$this->set('tiposPredefinidos', $this->Novedad->getIngresosPosibles('predefinidos'));
+						$this->layout = 'ajax';
+					} else {
+						$this->Session->setFlash('No se encontraron relaciones para generar la planilla con los criterios establecidos. Por favor verifique.', 'error');
+					}
 				}
-			}
-			elseif ($this->data['Formulario']['accion'] === "limpiar") {
-				$this->Session->del("filtros." . $this->name . "." . $this->action);
+			} elseif ($this->data['Formulario']['accion'] === "limpiar") {
+				$this->Session->del('filtros.' . $this->name . '.' . $this->action);
 				unset($this->data['Condicion']);
 			}
 		}
-		/**
-		* Fijo lo que viene preseleccionado.
-		*/
+		/** Fijo lo que viene preseleccionado */
 		$this->data['Condicion']['Novedad-formato'] = "Excel2007";
 		$tiposIngreso = $this->Novedad->getIngresosPosibles();
 		$this->data['Condicion']['Novedad-tipo'] = $tiposIngreso;
 		foreach ($tiposIngreso as $v) {
 			$tiposIngresoKey[$v] = $v;
 		}
-		$this->set("tiposIngreso", $tiposIngresoKey);
+		$this->set('tiposIngreso', $tiposIngresoKey);
 	}
 	
-
-/*	
-	function novedades() {
-		$tipos = array("Excel5" => "Excel", "Excel2007" => "Excel 2007");
-		if (!empty($this->data)) {
-			$registros = $this->Relacion->find("all",
-				array("contain"	=> array("ConveniosCategoria", "Trabajador", "Empleador"),
-					"conditions"=> array("Relacion.empleador_id"=>$this->data['Condicion']['Relacion-empleador_id'])));
-			$this->set("motivos", $this->Relacion->Ausencia->AusenciasMotivo->find("list",
-				array("fields"	=> array("AusenciasMotivo.id", "AusenciasMotivo.motivo"))));
-			$this->set("registros", $registros);
-			$this->set("tipo", $this->data['Condicion']['Bar-tipo']);
-			$this->layout = "ajax";
-		}
-		$this->set("tipos", $tipos);
-		$this->data['Condicion']['Bar-tipo'] = "Excel2007";
-	}
-*/
 }
-
-
 ?>

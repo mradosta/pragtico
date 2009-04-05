@@ -29,7 +29,7 @@ if(!empty($registros)) {
 	* Pongo el titulo de la planilla.
 	*/
 	$documento->setCellValue('E1:M3', 'Novedades - ' . date('d/m/Y'),
-		array('style'=>array('font'		=> array('bold' => true, 'size' => 14),
+		array('style' => array('font'		=> array('bold' => true, 'size' => 14),
 							'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER))
 			));
 
@@ -78,9 +78,9 @@ if(!empty($registros)) {
 		);
 
 	$documento->setCellValue('A' . $fila . ':A' . ($fila+1), 'Relacion');
-	$documento->setCellValue('B' . $fila . ':B' . ($fila+1), 'Empleador', array('style'=>$estiloTituloColumna));
-	$documento->setCellValue('C' . $fila . ':C' . ($fila+1), 'Trabajador', array('style'=>$estiloTituloColumna));
-	$documento->setCellValue('D' . $fila . ':D' . ($fila+1), 'Categoria', array('style'=>$estiloTituloColumna));
+	$documento->setCellValue('B' . $fila . ':B' . ($fila+1), 'Empleador', array('style' => $estiloTituloColumna));
+	$documento->setCellValue('C' . $fila . ':C' . ($fila+1), 'Trabajador', array('style' => $estiloTituloColumna));
+	$documento->setCellValue('D' . $fila . ':D' . ($fila+1), 'Categoria', array('style' => $estiloTituloColumna));
 	$columna = $columnaInicioConceptosDinamicos = 3;
 	
 	/**
@@ -88,48 +88,48 @@ if(!empty($registros)) {
 	*/
 	if(in_array('Horas', $tipos)) {
 		$columna++;
-		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas', array('style'=>$estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas', array('style' => $estiloTituloColumna));
 		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$documento->setCellValue($columna . ',' . ($fila+1), 'Normal', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$columna++;
-		$documento->setCellValue($columna . ',' . ($fila+1), '50%', array('style'=>$estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . ($fila+1), 'Normal', array('style' => $estiloTituloColumna));
 		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
 		$columna++;
-		$documento->setCellValue($columna . ',' . ($fila+1), '100%', array('style'=>$estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . ($fila+1), '50%', array('style' => $estiloTituloColumna));
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
+		$columna++;
+		$documento->setCellValue($columna . ',' . ($fila+1), '100%', array('style' => $estiloTituloColumna));
 		
 		$columna++;
-		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas Ajuste', array('style'=>$estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas Ajuste', array('style' => $estiloTituloColumna));
 		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$documento->setCellValue($columna . ',' . ($fila+1), 'Normal', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$columna++;
-		$documento->setCellValue($columna . ',' . ($fila+1), '50%', array('style'=>$estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . ($fila+1), 'Normal', array('style' => $estiloTituloColumna));
 		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
 		$columna++;
-		$documento->setCellValue($columna . ',' . ($fila+1), '100%', array('style'=>$estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . ($fila+1), '50%', array('style' => $estiloTituloColumna));
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
+		$columna++;
+		$documento->setCellValue($columna . ',' . ($fila+1), '100%', array('style' => $estiloTituloColumna));
 		
 		$columna++;
-		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas Nocturna', array('style'=>$estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas Nocturna', array('style' => $estiloTituloColumna));
 		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$documento->setCellValue($columna . ',' . ($fila+1), 'Normal', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$columna++;
-		$documento->setCellValue($columna . ',' . ($fila+1), '50%', array('style'=>$estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . ($fila+1), 'Normal', array('style' => $estiloTituloColumna));
 		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
 		$columna++;
-		$documento->setCellValue($columna . ',' . ($fila+1), '100%', array('style'=>$estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . ($fila+1), '50%', array('style' => $estiloTituloColumna));
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
+		$columna++;
+		$documento->setCellValue($columna . ',' . ($fila+1), '100%', array('style' => $estiloTituloColumna));
 		
 		$columna++;
-		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas Ajuste Nocturna', array('style'=>$estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas Ajuste Nocturna', array('style' => $estiloTituloColumna));
 		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$documento->setCellValue($columna . ',' . ($fila+1), 'Normal', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$columna++;
-		$documento->setCellValue($columna . ',' . ($fila+1), '50%', array('style'=>$estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . ($fila+1), 'Normal', array('style' => $estiloTituloColumna));
 		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
 		$columna++;
-		$documento->setCellValue($columna . ',' . ($fila+1), '100%', array('style'=>$estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . ($fila+1), '50%', array('style' => $estiloTituloColumna));
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
+		$columna++;
+		$documento->setCellValue($columna . ',' . ($fila+1), '100%', array('style' => $estiloTituloColumna));
 	}
 	
 	/**
@@ -137,13 +137,16 @@ if(!empty($registros)) {
 	*/
 	if(in_array('Ausencias', $tipos)) {
 		$columna++;
-		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+1) . ',' . $fila, 'Ausencias', array('style'=>$estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Ausencias', array('style' => $estiloTituloColumna));
 		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(27);
-		$documento->setCellValue($columna . ',' . ($fila+1), 'Motivo', array('style'=>$estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . ($fila+1), 'Motivo', array('style' => $estiloTituloColumna));
 		$columnaMotivo = $columna;
 		$columna++;
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(10);
+		$documento->setCellValue($columna . ',' . ($fila+1), 'Desde', array('style' => $estiloTituloColumna));
+		$columna++;
 		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$documento->setCellValue($columna . ',' . ($fila+1), 'Dias', array('style'=>$estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . ($fila+1), 'Dias', array('style' => $estiloTituloColumna));
 	}
 	
 	
@@ -152,8 +155,8 @@ if(!empty($registros)) {
 	*/
 	if(in_array('Vales', $tipos)) {
 		$columna++;
-		$documento->setCellValue($columna . ',' . $fila, 'Vales', array('style'=>$estiloTituloColumna));
-		$documento->setCellValue($columna . ',' . ($fila+1), '$', array('style'=>$estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . $fila, 'Vales', array('style' => $estiloTituloColumna));
+		$documento->setCellValue($columna . ',' . ($fila+1), '$', array('style' => $estiloTituloColumna));
 		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(9);
 	}
 	
@@ -163,7 +166,7 @@ if(!empty($registros)) {
 	foreach($tipos as $concepto) {
 		if(!in_array($concepto, $tiposPredefinidos)) {
 			$columna++;
-			$documento->setCellValue($columna . ',' . $fila . ':' . $columna . ',' . ($fila+1), $concepto, array('style'=>$estiloTituloColumna));
+			$documento->setCellValue($columna . ',' . $fila . ':' . $columna . ',' . ($fila+1), $concepto, array('style' => $estiloTituloColumna));
 		}
 	}
 	
@@ -188,7 +191,8 @@ if(!empty($registros)) {
 		* El combo con los posibles motivos.
 		*/
 		if(isset($columnaMotivo)) {
-			$documento->setDataValidation($columnaMotivo . ',' . $fila, 'lista', array('valores'=>$motivos));
+			$documento->setDataValidation(($columnaMotivo+1) . ',' . $fila, 'date');
+			$documento->setDataValidation($columnaMotivo . ',' . $fila, 'list', array('valores'=>$motivos));
 		}
 	}
 	$documento->doc->getActiveSheet()->freezePane('B10');

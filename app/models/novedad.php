@@ -143,7 +143,6 @@ class Novedad extends AppModel {
 		}
 		
 		$predefinidos = $this->getIngresosPosibles('predefinidos');
-		
 		foreach ($datos as $relacion_id => $data) {
 			foreach ($data as $tipo => $registros) {
 				foreach ($registros as $subTipo => $registro) {
@@ -180,7 +179,12 @@ class Novedad extends AppModel {
 						if ($tipo === 'Ausencias') {
 							if ($subTipo === 'Dias') {
 								$save['Novedad']['subtipo'] = '1:Justificada por Enfermedad';
-								$save['Novedad']['data'] = $registros['Dias'];
+								if (!empty($registros['Desde'])) {
+									/** 25569 = Days between 1970-01-01 and 1900-01-01 */
+									$save['Novedad']['data'] = $this->format($this->dateAdd('1970-01-01', $registros['Desde'] - 25569), 'date') . '|' . $registros['Dias'];
+								} else {
+									$save['Novedad']['data'] = $registros['Dias'];
+								}
 								if (isset($datos[$relacion_id][$tipo]['Motivo'])) {
 									$this->Relacion->Ausencia->AusenciasMotivo->recursive = -1;
 									$motivo = $this->Relacion->Ausencia->AusenciasMotivo->findByMotivo($datos[$relacion_id][$tipo]['Motivo']);
@@ -268,7 +272,13 @@ class Novedad extends AppModel {
 				break;
 				case 'Ausencias':
 					$saves[$i]['Ausencia']['id'] = null;
-					$saves[$i]['Ausencia']['desde'] = $this->format($periodo['desde'], 'date');
+					if (strpos($novedad['Novedad']['data'], '|') !== false) {
+						$tmp = explode('|', $novedad['Novedad']['data']);
+						$saves[$i]['Ausencia']['desde'] = $tmp[0];
+						$novedad['Novedad']['data'] = $tmp[1];
+					} else {
+						$saves[$i]['Ausencia']['desde'] = $this->format($periodo['desde'], 'date');
+					}
 					$saves[$i]['Ausencia']['ausencia_motivo_id'] = array_shift(explode(':', $novedad['Novedad']['subtipo']));
 					$saves[$i]['Ausencia']['relacion_id'] = $novedad['Novedad']['relacion_id'];
 					$saves[$i]['AusenciasSeguimiento'][$ii]['dias'] = $novedad['Novedad']['data'];
@@ -296,7 +306,7 @@ class Novedad extends AppModel {
 			}
 			$i++;
 		}
-
+		
 		$this->begin();
 		foreach ($saves as $save) {
 			$keys = array_keys($save);

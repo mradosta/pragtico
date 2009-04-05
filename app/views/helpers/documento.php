@@ -218,14 +218,14 @@ class DocumentoHelper extends AppHelper {
 		
 		$objValidation = $this->doc->getActiveSheet()->getCell($cellName)->getDataValidation();
 		
-		if ($type === "decimal") {
+		if ($type === 'decimal') {
 			$tipo = PHPExcel_Cell_DataValidation::TYPE_DECIMAL;
-			$mensaje = "Solo puede ingresar numeros";
-		}
-		elseif ($type === "lista") {
-			/**
-			* Creo una lista qu eluego la oculto, con esto valido.
-			*/
+			$mensaje = 'Solo puede ingresar numeros';
+		} elseif ($type === 'date') {
+			$tipo = PHPExcel_Cell_DataValidation::TYPE_DATE;
+			$mensaje = 'Solo puede ingresar fechas';
+		} elseif ($type === 'list') {
+			/** Creo una lista que luego la oculto, con esto valido. */
 			preg_match("/^([A-Z]+)([0-9]+)$/", $cellName, $matches);
 			$colPosition = PHPExcel_Cell::columnIndexFromString($matches[1]) + 100;
 			$ff = 0;
@@ -237,7 +237,6 @@ class DocumentoHelper extends AppHelper {
 			$range = $namedColPosition . "1:" . $namedColPosition . $ff;
 			$name = "ValueList" . intval(rand());
 			$this->doc->addNamedRange(new PHPExcel_NamedRange($name, $this->doc->getActiveSheet(), $range));
-			//$this->doc->getActiveSheet()->getColumnDimension($namedColPosition)->setVisible(false);
 			$tipo = PHPExcel_Cell_DataValidation::TYPE_LIST;
 			$mensaje = "Debe seleccionar un valor de la lista";
 			$objValidation->setFormula1($name);
