@@ -31,7 +31,7 @@ $campos['AreasCoeficiente.coeficiente_id'] = array('lov' => array(
  	'seleccionMultiple'	=> 	0,
 	'camposRetorno'		=>	array(	'Coeficiente.nombre', 'Coeficiente.valor')));
 	
-$campos['AreasCoeficiente.porcentaje'] = array('aclaracion' => 'Indica el porcentaje a sumar o restar al coeficiente valor del coeficiente.');
+$campos['AreasCoeficiente.porcentaje'] = array('aclaracion' => 'Indica el porcentaje a sumar o restar al valor del coeficiente.');
 $campos['AreasCoeficiente.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => 'coeficiente del area', 'imagen' => 'coeficientes.gif')));
