@@ -169,7 +169,8 @@ class Concepto extends AppModel {
 								END";
 
 		if ($tipo === "Relacion") {
-			$fields = am($fieldsRelaciones, $fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente);
+			$fieldsPropios = array('Area.nombre', 'AreasCoefiente.porcentaje');
+			$fields = am($fieldsRelaciones, $fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente, $fieldsPropios);
 			$table 	= 	"relaciones_conceptos";
 			$joins	=	array(
 							array(
@@ -209,6 +210,21 @@ class Concepto extends AppModel {
 								"conditions" => array(
 									array(	"Coeficiente.id = EmpleadoresCoeficiente.coeficiente_id",
 											"EmpleadoresCoeficiente.empleador_id"	=> $opciones['relacion']['Relacion']['empleador_id']))
+							),
+							array(
+								"alias" => "Area",
+								"table" => "areas",
+								"type" 	=> "LEFT",
+								"conditions" => array(
+									array(	"Area.empleador_id" => $opciones['relacion']['Relacion']['empleador_id']))
+							),
+							array(
+								"alias" => "AreasCoefiente",
+								"table" => "areas_coeficientes",
+								"type" 	=> "LEFT",
+								"conditions" => array(
+									array(	"Area.id = AreasCoefiente.area_id",
+										 	"Coeficiente.id = AreasCoefiente.coeficiente_id"))
 							)							
 						);
 			$conditions = array(
@@ -431,14 +447,18 @@ class Concepto extends AppModel {
 			$conceptos[$v['Concepto']['codigo']]['concepto_id'] = $v['Concepto']['id'];
 
 			/**
-			* Verifico que el valor del coeficiente no haya sido sobreescrito por el empleador.
+			* Verifico que el valor del coeficiente no haya sido sobreescrito por el empleador o por el area.
 			*/
 			$conceptos[$v['Concepto']['codigo']]['coeficiente_id'] = $v['Coeficiente']['id'];
 			$conceptos[$v['Concepto']['codigo']]['coeficiente_nombre'] = $v['Coeficiente']['nombre'];
 			$conceptos[$v['Concepto']['codigo']]['coeficiente_tipo'] = $v['Coeficiente']['tipo'];
-			$conceptos[$v['Concepto']['codigo']]['coeficiente_valor'] = $v['Coeficiente']['valor'];
-			if (!empty($v['EmpleadoresCoeficiente']['coeficiente_valor'])) {
-				$conceptos[$v['Concepto']['codigo']]['coeficiente_valor'] = $v['EmpleadoresCoeficiente']['coeficiente_valor'];
+			$coeficienteValor = $v['Coeficiente']['valor'];
+			$conceptos[$v['Concepto']['codigo']]['coeficiente_valor'] = $coeficienteValor;
+			if (!empty($v['EmpleadoresCoeficiente']['porcentaje'])) {
+				$conceptos[$v['Concepto']['codigo']]['coeficiente_valor'] = $coeficienteValor + ($coeficienteValor * $v['EmpleadoresCoeficiente']['porcentaje'] / 100);
+			}
+			if (!empty($v['AreasCoefiente']['porcentaje'])) {
+				$conceptos[$v['Concepto']['codigo']]['coeficiente_valor'] = $coeficienteValor + ($coeficienteValor * $v['AreasCoefiente']['porcentaje'] / 100);
 			}
 
 			/**
@@ -469,7 +489,7 @@ class Concepto extends AppModel {
 				$conceptos[$v['Concepto']['codigo']]['id'] = $v['ConveniosConcepto']['id'];
 			}
 		}
-
+		
 		return $conceptos;
 	}
 
