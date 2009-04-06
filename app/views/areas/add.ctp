@@ -26,12 +26,13 @@ $campos['Area.empleador_id'] = array('lov' => array(
 		'seleccionMultiple'	=> 	0,
 		'camposRetorno'		=>	array(	'Empleador.cuit',
 										'Empleador.nombre')));
-$campos['Area.localidad_id'] = array('lov' => array(
-		'controller'		=>	'localidades',
+$campos['Area.zone_id'] = array('label' => 'Zona', 
+								'lov' 	=> array(
+		'controller'		=>	'zones',
 		'seleccionMultiple'	=> 	0,
 		'separadorRetorno'	=> 	', ',
-		'camposRetorno'		=>	array(	'Provincia.nombre',
-										'Localidad.nombre')));
+		'camposRetorno'		=>	array(	'Zone.code',
+										'Zone.name')));
 $campos['Area.nombre'] = array();
 $campos['Area.identificador'] = array('aclaracion' => 'Se refiere a un identificador externo. No se utilizara dentro del Sistema.');
 $campos['Area.contacto'] = array();

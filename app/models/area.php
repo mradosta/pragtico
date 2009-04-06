@@ -31,7 +31,7 @@ class Area extends AppModel {
 				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe especificar el nombre del area del empleador.')
         ),
-        'localidad_id' => array(
+        'zone_id' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe seleccionar la localidad.')
@@ -44,7 +44,7 @@ class Area extends AppModel {
 	);
 
 	var $hasAndBelongsToMany = array('Coeficiente');
-	var $belongsTo = array('Empleador');
+	var $belongsTo = array('Empleador', 'Zone');
 
 }
 ?>
