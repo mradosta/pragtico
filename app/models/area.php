@@ -30,6 +30,16 @@ class Area extends AppModel {
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe especificar el nombre del area del empleador.')
+        ),
+        'localidad_id' => array(
+			array(
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar la localidad.')
+        ),
+        'empleador_id' => array(
+			array(
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar el empleador.')
         )
 	);
 
