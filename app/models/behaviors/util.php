@@ -479,7 +479,9 @@ class UtilBehavior extends ContainableBehavior {
 		}
 		foreach ($queryData['joins'] as $k=>$v) {
 			$queryData['joins'][$k]['table'] = $db->name($v['table']);
-			$queryData['joins'][$k]['alias'] = $db->name(Inflector::classify($v['table']));
+			if (empty($queryData['joins'][$k]['alias'])) {
+				$queryData['joins'][$k]['alias'] = $db->name(Inflector::classify($v['table']));
+			}
 			if (empty($v['conditions'])) {
 				$queryData['joins'][$k]['conditions'][] = $queryData['alias'] . ".id = " . $queryData['joins'][$k]['alias'] . "." . strtolower($queryData['alias']) . "_id";
 			}
