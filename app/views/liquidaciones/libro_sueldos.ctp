@@ -228,7 +228,7 @@ if (!empty($data)) {
 			'seleccionMultiple' => false,
 			'camposRetorno'		=> array('Empleador.cuit', 'Empleador.nombre')));
 	if (!empty($grupos)) {
-		$condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos, 'empty' => true);
+		$condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos);
 	}
 	$condiciones['Condicion.Liquidacion-periodo'] = array('type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S'));
 	$condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'multiple' => 'checkbox', 'type' => 'select');

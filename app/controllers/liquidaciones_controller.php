@@ -33,10 +33,7 @@ class LiquidacionesController extends AppController {
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 			if (empty($this->data['Condicion']['Liquidacion-empleador_id'])
 				&& empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
-				$this->Session->setFlash('Debe seleccionar por lo menos un Empleador o un Grupo.', 'error');
-			} elseif (!empty($this->data['Condicion']['Liquidacion-empleador_id'])
-				&& !empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
-				$this->Session->setFlash('Debe seleccionar un Empleador o un Grupo, pero no ambos.', 'error');
+				$this->Session->setFlash('Debe seleccionar por lo menos un Empleador y/o un Grupo.', 'error');
 			} elseif (empty($this->data['Condicion']['Liquidacion-periodo']) || $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], 'periodo') === false) {
 				$this->Session->setFlash('Debe especificar un periodo valido.', 'error');
 			} else {
