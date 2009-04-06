@@ -493,10 +493,11 @@ class LiquidacionesController extends AppController {
 						$campos['c42']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
 						if ($liquidacion['Relacion']['ConveniosCategoria']['nombre'] === "Fuera de convenio") {
 							$campos['c43']['valor'] = "0";
-						}
-						else {
+						} else {
 							$campos['c43']['valor'] = "1";
 						}
+						$campos['c48']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
+						$campos['c51']['valor'] = $liquidacion['Liquidacion']['no_remunerativo'];
 						$lineas[] = $this->__generarRegistro($campos);
 					}
 					$this->set("archivo", array("contenido"=>implode("\n\r", $lineas), "nombre" => "SIAP-" . $periodo['ano'] . "-" . $periodo['mes'] . ".txt"));
