@@ -22,6 +22,10 @@
 if(!empty($grupos)) {																								
 	$condiciones['Condicion.Liquidacion-grupo_id'] = array('options'=>$grupos, 'empty'=>true);
 }
+$condiciones['Condicion.Relacion-empleador_id'] = array(
+		'lov'	=> array('controller'	=> 'empleadores',
+						'camposRetorno'	=> array('Empleador.cuit', 'Empleador.nombre')));
+
 $condiciones['Condicion.Liquidacion-periodo'] = array('type' => 'periodo');
 $condiciones['Condicion.Liquidacion-estado'] = array('type' => 'select', 'multiple' => 'checkbox', 'aclaracion' => 'Se refiere a que liquidaciones tomar como base para la prefacturacion.');
 

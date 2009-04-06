@@ -35,7 +35,46 @@ class Factura extends AppModel {
                         array('className'   => 'Empleador',
                               'foreignKey' 	=> 'empleador_id'));
 
-	function resumen($condiciones = null, $tipo = "resumido") {
+
+	function resumen($conditions = null, $tipo = "resumido") {
+
+		/*
+		$data = $this->Liquidacion->find('all',
+			array(	'conditions' 	=> $conditions,
+				 	'contain'		=> array('LiquidacionesDetalle', 'Empleador.Area.Coeficiente')));
+		*/
+		$data = $this->Liquidacion->find('all',
+			array(	'conditions' 	=> $conditions));
+
+
+		$totals['trabajadores'] = count(array_unique(Set::extract('/Liquidacion/trabajador_id', $data)));
+		$totals['remunerativo_a_facturar'] = 0;
+		$totals['remunerativo'] = 0;
+		$totals['no_remunerativo_a_facturar'] = 0;
+		$totals['no_remunerativo'] = 0;
+		foreach($data as $receipt) {
+			foreach ($receipt['LiquidacionesDetalle'] as $detalle) {
+				if($detalle['concepto_imprimir'] === 'Si' || ($detalle['concepto_imprimir'] === 'Solo con valor') && abs($detalle['valor']) > 0) {
+					if ($detalle['concepto_tipo']  === 'Remunerativo') {
+						$totals['remunerativo_a_facturar'] += $detalle['valor'] * $detalle['coeficiente_valor'];
+						$totals['remunerativo'] += $detalle['valor'];
+					}
+					elseif ($detalle['concepto_tipo']  === 'No Remunerativo') {
+						$totals['no_remunerativo_a_facturar'] += $detalle['valor'] * $detalle['coeficiente_valor'];
+						$totals['no_remunerativo'] += $detalle['valor'];
+					}
+				}
+			}
+		}
+		
+		$totals['sub_total'] = $totals['remunerativo_a_facturar'] + $totals['no_remunerativo_a_facturar'];
+		$totals['iva'] = $totals['sub_total'] * 21 / 100;
+		$totals['total'] = $totals['sub_total'] + $totals['iva'];
+		d($totals);
+	}
+
+	
+	function resumenx($condiciones = null, $tipo = "resumido") {
 		
 		if ($tipo == "resumido") {
 			$sql = "

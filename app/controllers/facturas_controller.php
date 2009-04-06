@@ -28,18 +28,21 @@ class FacturasController extends AppController {
 
 
 	function resumen() {
-		if (!isset($this->data['Resumen']['tipo'])) {
-			$this->data['Resumen']['tipo'] = "resumido";
-		}
+		//if (!isset($this->data['Resumen']['tipo'])) {
+		//	$this->data['Resumen']['tipo'] = "resumido";
+		//}
+		//d($this->data);
 		if (!empty($this->data['Condicion']['Liquidacion-periodo']) && !empty($this->data['Condicion']['Liquidacion-empleador_id'])) {
-			$periodo = $this->Util->traerPeriodo($this->data['Condicion']['Liquidacion-periodo']);
-			if (!empty($periodo)) {
-				$this->data['Condicion']['Liquidacion-ano'] = $periodo['ano'];
-				$this->data['Condicion']['Liquidacion-mes'] = $periodo['mes'];
-				$this->data['Condicion']['Liquidacion-periodo'] = $periodo['periodo'];
+			$period = $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], 'periodo');
+			if (!empty($period)) {
+				$this->data['Condicion']['Liquidacion-ano'] = $period['ano'];
+				$this->data['Condicion']['Liquidacion-mes'] = $period['mes'];
+				$this->data['Condicion']['Liquidacion-periodo'] = $period['periodo'];
 				$condiciones = $this->Paginador->generarCondicion($this->data);
 				//$this->data['Resumen']['tipo'] = "resumido";
+				//d($condiciones);
 				$registros = $this->Factura->resumen($condiciones, $this->data['Resumen']['tipo']);
+				d($registros);
 				$this->set("registros", $registros);
 				$this->set("condiciones", $condiciones);
 				//$this->render("resumen_resumido_pdf", "pdf");

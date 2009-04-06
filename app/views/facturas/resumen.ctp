@@ -23,9 +23,10 @@ $condiciones['Condicion.Liquidacion-empleador_id'] = array(	"lov"=>array("contro
 																		"camposRetorno"	=>array("Empleador.nombre")));
 $condiciones['Condicion.Liquidacion-periodo'] = array("type"=>"periodo");
 $condiciones['Resumen.tipo'] = array("type"=>"radio", "options"=>$tipos);
+$condiciones['Condicion.Liquidacion-estado'] = array('type' => 'select', 'multiple' => 'checkbox', 'aclaracion' => 'Se refiere a que liquidaciones tomar como base para la prefacturacion.');
 
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('imagen' => 'buscar.gif', 'legend' => "Resumen")));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'buscar.gif', 'legend' => "Resumen")));
 
 
 $botonesExtra = $appForm->submit("Generar", array("title"=>"Imprime el Resumen de Facturacion"));
