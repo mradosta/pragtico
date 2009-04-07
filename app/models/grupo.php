@@ -68,16 +68,20 @@ class Grupo extends AppModel {
  * @access public.
  */
 	function getParams($groupId, $all = true) {
-		if ($all === true) {
-			$params = Set::combine($this->GruposParametro->Parametro->find('all'), '{n}.Parametro.nombre', '');
-		} else {
-			$params = array();
-		}
 		$group = $this->find('first',
 			array(	'conditions' 	=> array('Grupo.id' => $groupId),
 					'contain'		=> array('GruposParametro.Parametro')));
-		foreach ($group['GruposParametro'] as $groupParam) {
-			$params[$groupParam['Parametro']['nombre']] = str_replace("\r", '', $groupParam['valor']);
+		if (!empty($group['GruposParametro'])) {
+			if ($all === true) {
+				$params = Set::combine($this->GruposParametro->Parametro->find('all'), '{n}.Parametro.nombre', '');
+			} else {
+				$params = array();
+			}
+			foreach ($group['GruposParametro'] as $groupParam) {
+				$params[$groupParam['Parametro']['nombre']] = str_replace("\r", '', $groupParam['valor']);
+			}
+		} else {
+			return array();
 		}
 		return $params;
 	}
