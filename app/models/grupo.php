@@ -85,6 +85,6 @@ class Grupo extends AppModel {
 		}
 		return $params;
 	}
-	
+
 }
 ?>
