@@ -135,6 +135,7 @@ class Liquidacion extends AppModel {
 
 		$this->__conceptos = array();
 		$this->__receiptError = array();
+		$this->__saveAuxiliar = array();
 		$this->__variables = null;
 
 		/** Initial set of vars and concepts */
