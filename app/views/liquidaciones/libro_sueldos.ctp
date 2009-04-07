@@ -227,7 +227,7 @@ if (!empty($data)) {
 			$fila++;
 		}
 	}
-	$documento->save($fileFormat, '/tmp/xx');
+	$documento->save($fileFormat);
 	
 } else {
 	$condiciones['Condicion.Liquidacion-empleador_id'] = array(	'lov' => array(
