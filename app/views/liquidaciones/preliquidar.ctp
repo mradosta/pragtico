@@ -86,10 +86,10 @@ foreach ($registros as $k=>$v) {
 $opcionesTabla =  array('tabla' => array(	'ordenEnEncabezados'=> false,
 											'modificar'			=> false,
 											'seleccionMultiple'	=> true,
-											'eliminar'			=> false,
+											'eliminar'			=> true,
 											'permisos'			=> false));
 
-$accionesExtra['opciones'] = array('acciones' => array($appForm->link('Confirmar', null, array('class' => 'link_boton', 'id' => 'confirmar', 'title' => 'Confirma las preliquidaciones seleccionadas')), $appForm->link('Guardar', null, array('class' => 'link_boton', 'id' => 'guardar', 'title' => 'Guarda las preliquidaciones seleccionadas')), $appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas'))));
+$accionesExtra['opciones'] = array('acciones' => array($appForm->link('Confirmar', null, array('class' => 'link_boton', 'id' => 'confirmar', 'title' => 'Confirma las preliquidaciones seleccionadas')), $appForm->link('Guardar', null, array('class' => 'link_boton', 'id' => 'guardar', 'title' => 'Guarda las preliquidaciones seleccionadas')), $appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas')), 'eliminar'));
 $botonesExtra[] = 'limpiar';
 $botonesExtra[] = 'buscar';
 $botonesExtra[] = $appForm->submit('Generar', array('id' => 'generar', 'title'=>'Genera una Pre-liquidacion', 'onclick'=>'document.getElementById("accion").value="generar"'));
