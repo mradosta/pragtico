@@ -162,6 +162,11 @@ class FormuladorComponentTestCase extends CakeTestCase {
 	
 	
     function testResolverFechas() {
+
+		$formula = "=if('2009-03-31' = '2009-03-31', 1, datedif(if('2009-03-31' > '2009-03-01', '2009-03-31'), if('2010-02-28' < '2009-03-31', '2010-02-29', '2009-03-31')))";
+		$result = $this->FormuladorComponentTest->resolver($formula);
+		$expected = '1';
+		$this->assertEqual($expected, $result);
 		
 		$formula = "=datedif(if('2008-02-10' > '2008-02-01', '2008-02-10'), if('2010-02-28' < '2008-02-29', '2010-02-29', '2008-02-29'))";
 		$result = $this->FormuladorComponentTest->resolver($formula);
