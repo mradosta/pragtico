@@ -28,13 +28,13 @@ $condiciones['Condicion.Relacion-empleador_id'] = array('lov' =>
 		array(	'controller'		=> 'empleadores',
 				'camposRetorno'		=> array('Empleador.nombre')));
 
-$condiciones['Condicion.Pago-relacion_id'] = array('lov '=>
+$condiciones['Condicion.Pago-relacion_id'] = array('lov' =>
 		array('controller'			=> 'relaciones',
 			  'camposRetorno'		=> array('Empleador.nombre', 'Trabajador.apellido')));
 
 $condiciones['Condicion.Pago-fecha__desde'] = array('label' => 'Desde', 'type' => 'date');
 $condiciones['Condicion.Pago-fecha__hasta'] = array('label' => 'Hasta', 'type' => 'date');
-$condiciones['Condicion.Liquidacion-periodo'] = array('type' => 'periodo');
+$condiciones['Condicion.Liquidacion-periodo_completo'] = array('type' => 'periodo');
 $condiciones['Condicion.Pago-estado'] = array("type"=>"select", 'multiple' => 'checkbox');
 $fieldsets[] = array('campos' => $condiciones);
 

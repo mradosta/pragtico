@@ -42,18 +42,27 @@ class PagosController extends AppController {
 
 	
 	function index() {
-		if (!empty($this->data['Condicion']['Liquidacion-periodo'])) {
-			$periodo = $this->Util->traerPeriodo($this->data['Condicion']['Liquidacion-periodo']);
+		if (!empty($this->data['Condicion']['Liquidacion-periodo_completo'])) {
+			$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_completo'], 'periodo');
 			if (!empty($periodo)) {
 				$this->data['Condicion']['Liquidacion-ano'] = $periodo['ano'];
 				$this->data['Condicion']['Liquidacion-mes'] = $periodo['mes'];
 				$this->data['Condicion']['Liquidacion-periodo'] = $periodo['periodo'];
+				unset($this->data['Condicion']['Liquidacion-periodo_completo']);
 			}
-			//$this->paginate = array_merge($this->paginate, array("contain"=>array('PagosForma', 'Liquidacion', 'Relacion' => array('Empleador', 'Trabajador'))));
 		}
 		parent::index();
 	}
 
+
+	function beforeRender() {
+		if ($this->action === 'index') {
+			$filters = $this->Session->read('filtros.' . $this->name . '.' . $this->action);
+			if (!empty($filters['condiciones']['Liquidacion.ano']) && !empty($filters['condiciones']['Liquidacion.mes']) && !empty($filters['condiciones']['Liquidacion.periodo like'])) {
+				$this->data['Condicion']['Liquidacion-periodo_completo'] = $filters['condiciones']['Liquidacion.ano'] . $filters['condiciones']['Liquidacion.mes'] . str_replace('%', '', $filters['condiciones']['Liquidacion.periodo like']);
+			}
+		}
+	}
 
 /**
  * formas.
