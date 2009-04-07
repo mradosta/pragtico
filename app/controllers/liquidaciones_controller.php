@@ -42,9 +42,11 @@ class LiquidacionesController extends AppController {
 				/** Search employers */
 				$this->Liquidacion->Relacion->Empleador->recursive = -1;
 				$this->set('periodo', $periodo['periodoCompleto']);
-				if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
+				$this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Liquidacion-grupo_id']));
+				$this->set('startPage', $this->data['Condicion']['Bar-start_page']);
+				
+				if (!empty($this->data['Condicion']['Liquidacion-grupo_id']) && empty($this->data['Condicion']['Liquidacion-empleador_id'])) {
 
-					$this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Liquidacion-grupo_id']));
 					$empleadores = Set::extract('/Empleador/id', $this->Liquidacion->Relacion->Empleador->find('all', array(
 							'recursive' 	=> -1,
 							'conditions' 	=> array(
@@ -58,6 +60,7 @@ class LiquidacionesController extends AppController {
 				$conditions = array('Liquidacion.empleador_id' 	=> $empleadores,
 									'Liquidacion.estado'		=> 'Confirmada',
 		 							'Liquidacion.tipo'			=> $this->data['Condicion']['Liquidacion-tipo'],
+		  							'Liquidacion.periodo'		=> $periodo['periodo'],
 		 							'Liquidacion.ano'			=> $periodo['ano'],
 		 							'Liquidacion.mes'			=> $periodo['mes']);
 

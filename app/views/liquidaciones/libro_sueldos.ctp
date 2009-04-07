@@ -35,7 +35,7 @@ if (!empty($data)) {
 	$pageMargins->setLeft(0.2);
 	$pageMargins->setRight(0.2);
 
-	if (!empty($employer)) {
+	if (empty($groupParams)) {
 		//$left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s", $employer['Empleador']['nombre'], $employer['Empleador']['direccion'], $employer['Empleador']['barrio'], $employer['Empleador']['codigo_postal'], $employer['Empleador']['ciudad'], $employer['Empleador']['pais'], $employer['Empleador']['cuit']);
 		$left = '';
 		$center = "&CLibro Especial de Sueldos - Art. 52 Ley 20744";
@@ -50,8 +50,8 @@ if (!empty($data)) {
 			$groupParams['cuit']);
 		$center = "&CLibro Especial de Sueldos - Art. 52 Ley 20744" . $groupParams['libro_sueldos_encabezado'];
 	}
-	$right = '&RHoja &P';
-	$documento->doc->getActiveSheet()->getHeaderFooter()->setOddHeader($left . $center . $right);
+	//$right = '&RHoja &P';
+	$documento->doc->getActiveSheet()->getHeaderFooter()->setOddHeader($left . $center);
 	
 	$styleBoldCenter = array('style' => array(
 		'font'		=> array('bold' => true),
@@ -84,15 +84,19 @@ if (!empty($data)) {
 
 	$fila = 0;
 	$employerFlag = null;
-	foreach ($data as $record) {
+	$pageCount = $startPage - 1;
+	foreach ($data as $k => $record) {
 		
 		if ($employerFlag !== $record['Relacion']['Empleador']['cuit']) {
 			$employerFlag = $record['Relacion']['Empleador']['cuit'];
 
 			$recordCount = 0;
-			$documento->doc->getActiveSheet()->setBreak('A' .$fila, PHPExcel_Worksheet::BREAK_ROW);
+			$documento->doc->getActiveSheet()->setBreak('A' . $fila, PHPExcel_Worksheet::BREAK_ROW);
+			$fila++;
+			$pageCount++;
+			$documento->setCellValue('K' . $fila, 'Hoja ' . $pageCount);
 			
-			$fila+=3;
+			$fila+=2;
 			$documento->setCellValue('A' . $fila, 'Empresa Usuario:');
 			$documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['nombre'], $styleBold);
 			$documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), $styleBold);
@@ -214,13 +218,16 @@ if (!empty($data)) {
 		$documento->setCellValue('K' . $fila, '', $styleBorderBottom);
 		$fila++;
 
-		if ($recordCount === 4) {
+		if ($recordCount === 4 && $k < count($data) - 1) {
 			$recordCount = 0;
-			$documento->doc->getActiveSheet()->setBreak('A' .$fila, PHPExcel_Worksheet::BREAK_ROW);
-			$fila+=2;
+			$documento->doc->getActiveSheet()->setBreak('A' . $fila, PHPExcel_Worksheet::BREAK_ROW);
+			$fila++;
+			$pageCount++;
+			$documento->setCellValue('K' . $fila, 'Hoja ' . $pageCount);
+			$fila++;
 		}
 	}
-	$documento->save($fileFormat);
+	$documento->save($fileFormat, '/tmp/xx');
 	
 } else {
 	$condiciones['Condicion.Liquidacion-empleador_id'] = array(	'lov' => array(
@@ -233,6 +240,7 @@ if (!empty($data)) {
 	$condiciones['Condicion.Liquidacion-periodo'] = array('type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S'));
 	$condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'multiple' => 'checkbox', 'type' => 'select');
 	$condiciones['Condicion.Liquidacion-formato'] = array('type' => 'radio', 'options' => array('Excel5' => 'Excel', 'Excel2007' => 'Excel 2007'), 'value' => 'Excel2007');
+	$condiciones['Condicion.Bar-start_page'] = array('label' => 'Hoja Inicial', 'type' => 'text', 'value' => '1');
 
 	$fieldsets[] = array('campos' => $condiciones);
 	$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Generar Libro Sueldos','imagen' => 'archivo.gif')));
