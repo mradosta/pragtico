@@ -36,7 +36,7 @@ $condiciones['Condicion.Relacion-id'] = array(	'label' => 'Relacion',
 																						'Trabajador.nombre',
 																						'Trabajador.apellido')));
 $condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'type' => 'select', 'multiple' => 'checkbox');
-$condiciones['Condicion.Liquidacion-periodo'] = array('type'=>'periodo');
+$condiciones['Condicion.Liquidacion-periodo_completo'] = array('type'=>'periodo');
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Liquidaciones','imagen' => 'liquidaciones.gif')));
 
@@ -51,7 +51,6 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidaciones (debug)'), 'url' => 'recibo_html_debug');
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'pagos.gif', 'alt' => 'Pagos'), 'url' => 'pagos');
 	$fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('excel.gif', array('alt' => 'Generar recibo excel', 'title'=>'Generar recibo excel')), array('action' => 'imprimir', 'id' => $v['Liquidacion']['id'])));
-	//$fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('pdf.gif', array('alt' => 'Generar recibo pdf', 'title'=>'Generar recibo pdf')), 'recibo_pdf/' . $v['Liquidacion']['id']));
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'id', 'valor' => $v['Liquidacion']['id'], 'write' => $v['Liquidacion']['write'], 'delete' => $v['Liquidacion']['delete']);
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => $v['Liquidacion']['tipo']);
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'ano', 'valor' => $v['Liquidacion']['ano'] . str_pad($v['Liquidacion']['mes'], 2, '0' ,STR_PAD_LEFT) . $v['Liquidacion']['periodo'], 'nombreEncabezado'=>'Periodo');

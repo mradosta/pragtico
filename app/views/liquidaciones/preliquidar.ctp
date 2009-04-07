@@ -37,6 +37,8 @@ $condiciones['Condicion.Relacion-id'] = array(
 			   										'Trabajador.apellido')));
 
 $condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'type' => 'select');
+//$condiciones['Condicion.Liquidacion-estado'] = array('options' => array('Guardada' => 'Guardada', 'Sin Confirmar' => 'Sin Confirmar'));
+$condiciones['Condicion.Liquidacion-estado'] = array('options' => $states, 'type' => 'select', 'multiple' => 'checkbox');
 $condiciones['Condicion.Liquidacion-periodo_largo'] = array('label' => 'Periodo Liquidacion', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A'));
 $condiciones['Condicion.Liquidacion-periodo_vacacional'] = array('label' => 'Periodo Vacacional', 'type' => 'periodo', 'periodo' => array('A'), 'class' => 'periodo_vacacional');
 $fieldsets[] = array('campos' => $condiciones);
@@ -58,6 +60,8 @@ foreach ($registros as $k=>$v) {
 	//$fila[] = array('tipo'=>'accion', 'valor'=>$appForm->link($appForm->image('excel.gif', array('alt' => 'Generar recibo excel', 'title'=>'Generar recibo excel')), array('controller' => 'documentos', 'action' => 'generar', 'model' => 'Liquidacion', 'id' => $v['Liquidacion']['id'], 'contain' => $contain)));
 
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'id', 'valor' => $v['Liquidacion']['id'], 'write' => $v['Liquidacion']['write'], 'delete' => $v['Liquidacion']['delete']);
+	$fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => $v['Liquidacion']['tipo']);
+	$fila[] = array('model' => 'Liquidacion', 'field' => 'estado', 'valor' => $v['Liquidacion']['estado']);
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'ano', 'valor' => $v['Liquidacion']['ano'] . str_pad($v['Liquidacion']['mes'], 2, '0' ,STR_PAD_LEFT) . $v['Liquidacion']['periodo'], 'nombreEncabezado'=>'Periodo');
 	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], 'nombreEncabezado'=>'Empleador');
 	//$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], 'nombreEncabezado'=>'Documento');
@@ -86,16 +90,23 @@ $opcionesTabla =  array('tabla' => array(	'ordenEnEncabezados'=> false,
 											'permisos'			=> false));
 
 $accionesExtra['opciones'] = array('acciones' => array($appForm->link('Confirmar', null, array('class' => 'link_boton', 'id' => 'confirmar', 'title' => 'Confirma las preliquidaciones seleccionadas')), $appForm->link('Guardar', null, array('class' => 'link_boton', 'id' => 'guardar', 'title' => 'Guarda las preliquidaciones seleccionadas')), $appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas'))));
-$botonesExtra[] = $appForm->button('Limpiar', array('title'=>'Limpia las busquedas', 'class'=>'limpiar', 'onclick'=>'document.getElementById("accion").value="limpiar";form.submit();'));
-$botonesExtra[] = $appForm->submit('Generar', array('title'=>'Genera una Pre-liquidacion', 'onclick'=>'document.getElementById("accion").value="generar"'));
-echo $this->element('index/index', array('botonesExtra'=>array('opciones' => array('botones'=>$botonesExtra)), 'accionesExtra'=>$accionesExtra, 'condiciones'=>$fieldset, 'cuerpo' => $cuerpo, 'opcionesTabla'=>$opcionesTabla, 'opcionesForm'=>array('action'=>'preliquidar')));
+$botonesExtra[] = 'limpiar';
+$botonesExtra[] = 'buscar';
+$botonesExtra[] = $appForm->submit('Generar', array('id' => 'generar', 'title'=>'Genera una Pre-liquidacion', 'onclick'=>'document.getElementById("accion").value="generar"'));
+echo $this->element('index/index', array(
+		'botonesExtra'	=> array('opciones' => array('botones'=>$botonesExtra)),
+		'accionesExtra'	=> $accionesExtra,
+  		'condiciones'	=> $fieldset,
+		'cuerpo' 		=> $cuerpo,
+  		'opcionesTabla'	=> $opcionesTabla,
+		'opcionesForm' 	=> array('action'=>'preliquidar')));
 /**
 * Agrego el evento click asociado al boton confirmar.
 */
 $appForm->addScript('
 
 	/** Prevent from submit without entering a period */
-	jQuery(":submit").click(
+	jQuery("#generar").click(
  		function() {
 			if (jQuery("input.periodo").parent().is(":visible")) {
 				if (jQuery("input.periodo").val() == "") {
@@ -152,12 +163,14 @@ $appForm->addScript('
 	);
 	
 	
-	jQuery("#confirmar, #imprimir").click(
+	jQuery("#confirmar, #guardar, #imprimir").click(
 		function() {
 			var c = jQuery(".tabla :checkbox").checkbox("contar");
 			if (c > 0) {
 				if (jQuery(this).attr("id") == "confirmar") {
 					jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'confirmar')) . '";
+				} else if (jQuery(this).attr("id") == "guardar") {
+					jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'guardar')) . '";
 				} else {
 					jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'imprimir')) . '";
 				}

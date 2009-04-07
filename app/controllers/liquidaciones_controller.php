@@ -95,9 +95,11 @@ class LiquidacionesController extends AppController {
 		$this->paginate = array_merge($this->paginate,
 				array('conditions' => array('Liquidacion.estado' => 'Sin Confirmar')));
 		*/
-		if (($this->data['Formulario']['accion'] === 'generar')) {
+
+		$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
+		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 			
-			$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
+			//$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
 			if ($periodo !== false) {
 				$message = null;
 				if ($this->data['Condicion']['Liquidacion-tipo'] === 'normal' &&
@@ -130,7 +132,7 @@ class LiquidacionesController extends AppController {
 				$this->redirect(array('action' => 'preliquidar'));
 			}
 
-			
+
 			/**
 			 * De las liquidaciones que he seleccionado para pre-liquidar, verifico que no sean
 			 * liquidaciones ya confirmadas para el mismo periodo del mismo tipo.
@@ -145,30 +147,31 @@ class LiquidacionesController extends AppController {
 					'fields'		=> 'relacion_id',
 					'conditions'	=> $condicionesLiquidacion));
 			$confirmadas = Set::extract('/Liquidacion/relacion_id', $liquidaciones);
-			
+
 			/** Search for the relations */
 			$condiciones = null;
 			$condiciones = $this->Paginador->generarCondicion();
 			unset($condiciones['Liquidacion.tipo']);
 			unset($condiciones['Liquidacion.periodo_largo']);
 			unset($condiciones['Liquidacion.periodo_vacacional']);
+			unset($condiciones['Liquidacion.estado']);
 			$condiciones['Relacion.ingreso <='] = $periodo['hasta'];
 			$condiciones['Relacion.estado'] = 'Activa';
 			if (!empty($confirmadas)) {
 				$condiciones['NOT'] = array('Relacion.id' => $confirmadas);
 			}
-			
+
 			$relaciones = $this->Liquidacion->Relacion->find('all',
 					array(	'contain'		=> array(	'ConveniosCategoria',
 														'Trabajador.ObrasSocial',
 														'Empleador'),
 							'conditions'	=> $condiciones));
-			
+
 			if (empty($relaciones)) {
-				$this->Session->setFlash('No se encontraron relaciones para liquidar. Verifique si no se han liquidado y confirmado previamente o los criterios de busqueda no son correctos.', 'error');
+				$this->Session->setFlash('No se encontraron relaciones para liquidar. Verifique que no se haya liquidado y confirmado previamente o los criterios de busqueda no son correctos.', 'error');
 				$this->redirect(array('action' => 'preliquidar'));
 			}
-			
+
 			/** Delete user's unconfirmed liquidations */
 			$usuario = $this->Session->read('__Usuario');
 			$delete = array('Liquidacion.user_id' => $usuario['Usuario']['id'], 'Liquidacion.estado' => 'Sin Confirmar');
@@ -217,16 +220,32 @@ class LiquidacionesController extends AppController {
 				}
 				$this->Liquidacion->getReceipt($relacion, $periodo, $variables['#tipo_liquidacion']['valor'], $opciones);
 			}
+			$condiciones = array('Liquidacion.estado' => 'Sin Confirmar');
+			$this->data['Condicion']['Liquidacion-estado'] = 'Sin Confirmar';			
+		} else {
+			$condiciones = $this->Paginador->generarCondicion();
+			if ($periodo !== false) {
+				$condiciones['Liquidacion.mes'] = $periodo['mes'];
+				$condiciones['Liquidacion.ano'] = $periodo['ano'];
+				$condiciones['Liquidacion.periodo'] = $periodo['periodo'];
+			}
 		}
 
+		/** Take care of filtering saved or unconfirmed receipt */
+		if (empty($condiciones['Liquidacion.estado'])) {
+			$condiciones = array_merge($condiciones, array('Liquidacion.estado' => array('Guardada', 'Sin Confirmar')));
+			$this->data['Condicion']['Liquidacion-estado'] = array('Guardada', 'Sin Confirmar');
+		}
+		
 		$this->Liquidacion->contain(array(
 				'Relacion.Trabajador',
 				'Relacion.Empleador',
 	 			'LiquidacionesError'));
-
 		$resultados = $this->Paginador->paginar(
-				array('Liquidacion.estado' => 'Sin Confirmar'),
-				array('Liquidacion.periodo_largo', 'Liquidacion.periodo_vacacional'));
+			$condiciones,
+			array('Liquidacion.periodo_largo', 'Liquidacion.periodo_vacacional'));
+		
+		$this->set('states', array('Guardada' => 'Guardada', 'Sin Confirmar' => 'Sin Confirmar'));
 		$this->set('registros', $resultados['registros']);
 	}
 
@@ -238,6 +257,23 @@ class LiquidacionesController extends AppController {
  * @return void.
  * @access private.
  */
+	function guardar($id = null) {
+		if (empty($id)) {
+			if (!empty($this->params['data']['seleccionMultiple'])) {
+				$id = $this->Util->extraerIds($this->params['data']['seleccionMultiple']);
+			}
+		}
+		$this->Liquidacion->unbindModel(array('belongsTo' => array('Trabajador', 'Empleador', 'Relacion', 'Factura')));
+		if ($this->Liquidacion->updateAll(
+				array('Liquidacion.estado' => "'Guardada'"),
+				array('Liquidacion.id' => $id))) {
+			$this->Session->setFlash(sprintf('Se guardaron correctamente %s liquidacion/es', count($id)), 'ok');
+		} else {
+			$this->Session->setFlash('No fue posible guardar las liquidaciones seleccionadas', 'error');
+		}
+		$this->autorender = false;
+	}
+
 
 /**
  * recibo_html.
@@ -573,18 +609,28 @@ class LiquidacionesController extends AppController {
 	
 	
 	function index() {
-		if (!empty($this->data['Condicion']['Liquidacion-periodo'])) {
-			if ($tmp = $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], "periodo")) {
-				$condiciones['Liquidacion.ano'] = $tmp['ano'];
-				$condiciones['Liquidacion.mes'] = $tmp['mes'];
-				$condiciones['Liquidacion.periodo'] = $tmp['periodo'];
+		if (!empty($this->data['Condicion']['Liquidacion-periodo_completo'])) {
+			$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_completo'], 'periodo');
+			if (!empty($periodo)) {
+				$this->data['Condicion']['Liquidacion-ano'] = $periodo['ano'];
+				$this->data['Condicion']['Liquidacion-mes'] = $periodo['mes'];
+				$this->data['Condicion']['Liquidacion-periodo'] = $periodo['periodo'];
+				unset($this->data['Condicion']['Liquidacion-periodo_completo']);
 			}
-			unset($this->data['Condicion']['Liquidacion-periodo']);
 		}
-		$condiciones['Liquidacion.estado'] = "Confirmada";
-		$this->paginate = array_merge($this->paginate, array('conditions' => $condiciones));
 		parent::index();
 	}
+
+
+	function beforeRender() {
+		if ($this->action === 'index') {
+			$filters = $this->Session->read('filtros.' . $this->name . '.' . $this->action);
+			if (!empty($filters['condiciones']['Liquidacion.ano']) && !empty($filters['condiciones']['Liquidacion.mes']) && !empty($filters['condiciones']['Liquidacion.periodo like'])) {
+				$this->data['Condicion']['Liquidacion-periodo_completo'] = $filters['condiciones']['Liquidacion.ano'] . $filters['condiciones']['Liquidacion.mes'] . str_replace('%', '', $filters['condiciones']['Liquidacion.periodo like']);
+			}
+		}
+	}
+	
 
 /**
  * pagos.
