@@ -24,19 +24,98 @@
 class Factura extends AppModel {
 
 
-	var $hasMany = array(	'Liquidacion' =>
-                        array('className'   => 'Liquidacion',
-                              'foreignKey' 	=> 'factura_id'),
+	var $hasMany = array(	'Liquidacion',
 							'FacturasDetalle' =>
-                        array('className'   => 'FacturasDetalle',
-                              'foreignKey' 	=> 'factura_id'));
+                        array('dependent'   => true));
 
 	var $belongsTo = array(	'Empleador' =>
                         array('className'   => 'Empleador',
                               'foreignKey' 	=> 'empleador_id'));
 
 
-	function resumen($conditions = null, $tipo = "resumido") {
+
+	function __getSaveArray($employerId, $saveDatailsTmp, $confirmable) {
+		$total = 0;
+		foreach ($saveDatailsTmp as $tmp) {
+			$saveDatails[] = $tmp;
+			$total += $tmp['total'];
+		}
+
+		$saveMaster['empleador_id'] = $employerId;
+		$saveMaster['fecha'] = date('d/m/Y');
+		$saveMaster['estado'] = 'Sin Confirmar';
+		$saveMaster['total'] = $total;
+		$saveMaster['confirmable'] = $confirmable;
+		return array_merge(array('Factura' => $saveMaster), array('FacturasDetalle' => $saveDatails));
+	}
+
+	
+	function getInvoice($conditions = null) {
+
+		if (empty($conditions)) {
+			return false;
+		}
+
+		$confirmable = 'No';
+		if ($conditions['Liquidacion.estado'] === 'Confirmada') {
+			$confirmable = 'Si';
+		}
+		
+		$conditions = array_merge($conditions, array('Liquidacion.factura_id' => null));
+		$data = $this->Liquidacion->find('all',
+			array(	'conditions' 	=> $conditions,
+					'order' 		=> array('Liquidacion.empleador_id'),
+				 	'contain'		=> array('LiquidacionesDetalle')));
+
+		if (!empty($data)) {
+			
+			$saveMaster = $saveDatails = $saveDatailsTmp = null;
+			$employerId = null;
+			$receipts = null;
+			foreach ($data as $receipt) {
+
+				$receipts[] = $receipt['Liquidacion']['id'];
+				
+				if ($employerId !== $receipt['Liquidacion']['empleador_id']) {
+					$employerId = $receipt['Liquidacion']['empleador_id'];
+					if (!empty($saveDatailsTmp)) {
+						$save[] = $this->__getSaveArray($employerId, $saveDatailsTmp, $confirmable);
+						$saveMaster = $saveDatails = $saveDatailsTmp = null;
+					}
+				}
+				
+				foreach ($receipt['LiquidacionesDetalle'] as $detail) {
+					
+					if ($detail['coeficiente_tipo'] !== 'No Facturable' && ($detail['concepto_imprimir'] === 'Si' || ($detail['concepto_imprimir'] === 'Solo con valor') && abs($detail['valor']) > 0)) {
+
+						if (!isset($saveDatails[$detail['coeficiente_nombre']])) {
+							$saveDatailsTmp[$detail['coeficiente_nombre']]['coeficiente_id'] = $detail['coeficiente_id'];
+							$saveDatailsTmp[$detail['coeficiente_nombre']]['coeficiente_nombre'] = $detail['coeficiente_nombre'];
+							$saveDatailsTmp[$detail['coeficiente_nombre']]['coeficiente_tipo'] = $detail['coeficiente_tipo'];
+							$saveDatailsTmp[$detail['coeficiente_nombre']]['coeficiente_valor'] = $detail['coeficiente_valor'];
+							$saveDatailsTmp[$detail['coeficiente_nombre']]['subtotal'] = $detail['valor'];
+							$saveDatailsTmp[$detail['coeficiente_nombre']]['total'] = $detail['valor'] * $detail['coeficiente_valor'];
+						} else {
+							$saveDatailsTmp[$detail['coeficiente_nombre']]['subtotal'] += $detail['valor'];
+							$saveDatailsTmp[$detail['coeficiente_nombre']]['total'] += $detail['valor'] * $detail['coeficiente_valor'];
+						}
+					}
+				}
+			}
+			$save[] = $this->__getSaveArray($employerId, $saveDatailsTmp, $confirmable);
+		} else {
+			return false;
+		}
+
+		if ($this->appSave($save)) {
+			return $this->Liquidacion->updateAll(array('Liquidacion.factura_id' => $this->id), array('Liquidacion.id' => $receipts));
+		} else {
+			return false;
+		}
+	}
+	
+	//function report($conditions = null, $type = 'summarized') {
+		function report($conditions = null, $type = 'summarized') {
 
 		/*
 		$data = $this->Liquidacion->find('all',
@@ -44,33 +123,57 @@ class Factura extends AppModel {
 				 	'contain'		=> array('LiquidacionesDetalle', 'Empleador.Area.Coeficiente')));
 		*/
 		$data = $this->Liquidacion->find('all',
-			array(	'conditions' 	=> $conditions));
+			array(	'conditions' 	=> $conditions,
+					'order' 		=> array('Liquidacion.tipo'),
+				 	'contain'		=> array('LiquidacionesDetalle')));
+
+		if ($type === 'summarized') {
+			$result['trabajadores'] = count(array_unique(Set::extract('/Liquidacion/trabajador_id', $data)));
+			$result['remunerativo_a_facturar'] = 0;
+			$result['remunerativo'] = 0;
+			$result['no_remunerativo_a_facturar'] = 0;
+			$result['no_remunerativo'] = 0;
+		}
 
 
-		$totals['trabajadores'] = count(array_unique(Set::extract('/Liquidacion/trabajador_id', $data)));
-		$totals['remunerativo_a_facturar'] = 0;
-		$totals['remunerativo'] = 0;
-		$totals['no_remunerativo_a_facturar'] = 0;
-		$totals['no_remunerativo'] = 0;
 		foreach($data as $receipt) {
+			if ($type === 'detailed') {
+				$result[$receipt['Liquidacion']['relacion_id'] . '-' . $receipt['Liquidacion']['tipo']]['Trabajador'] = array('legajo' => $receipt['Liquidacion']['relacion_legajo'], 'apellido_nombre' => $receipt['Liquidacion']['trabajador_apellido'] . ' ' . $receipt['Liquidacion']['trabajador_nombre']);
+				$tmpDetail = array();
+			}
+
 			foreach ($receipt['LiquidacionesDetalle'] as $detalle) {
-				if($detalle['concepto_imprimir'] === 'Si' || ($detalle['concepto_imprimir'] === 'Solo con valor') && abs($detalle['valor']) > 0) {
-					if ($detalle['concepto_tipo']  === 'Remunerativo') {
-						$totals['remunerativo_a_facturar'] += $detalle['valor'] * $detalle['coeficiente_valor'];
-						$totals['remunerativo'] += $detalle['valor'];
+				if ($type === 'detailed') {
+					if ($detalle['coeficiente_tipo'] !== 'No Facturable' && abs($detalle['valor']) > 0 && abs($detalle['coeficiente_valor']) > 0) {
+						$tmpDetail[] = array(	'nombre' 	=> $detalle['concepto_nombre'],
+											 	'pago' 		=> $detalle['concepto_pago'],
+			 									'cantidad' 	=> $detalle['valor_cantidad'],
+												'valor' 	=> $detalle['valor'] * $detalle['coeficiente_valor']);
 					}
-					elseif ($detalle['concepto_tipo']  === 'No Remunerativo') {
-						$totals['no_remunerativo_a_facturar'] += $detalle['valor'] * $detalle['coeficiente_valor'];
-						$totals['no_remunerativo'] += $detalle['valor'];
+				} elseif ($type === 'summarized') {
+					if($detalle['concepto_imprimir'] === 'Si' || ($detalle['concepto_imprimir'] === 'Solo con valor') && abs($detalle['valor']) > 0) {
+						if ($detalle['concepto_tipo']  === 'Remunerativo') {
+							$result['remunerativo_a_facturar'] += $detalle['valor'] * $detalle['coeficiente_valor'];
+							$result['remunerativo'] += $detalle['valor'];
+						} elseif ($detalle['concepto_tipo']  === 'No Remunerativo') {
+							$result['no_remunerativo_a_facturar'] += $detalle['valor'] * $detalle['coeficiente_valor'];
+							$result['no_remunerativo'] += $detalle['valor'];
+						}
 					}
 				}
 			}
+			if ($type === 'detailed') {
+				$result[$receipt['Liquidacion']['relacion_id'] . '-' . $receipt['Liquidacion']['tipo']]['Coeficiente'] = $tmpDetail;
+			}
+		}
+			
+		if ($type === 'summarized') {
+			$result['sub_total'] = $result['remunerativo_a_facturar'] + $result['no_remunerativo_a_facturar'];
+			$result['iva'] = $result['sub_total'] * 21 / 100;
+			$result['total'] = $result['sub_total'] + $result['iva'];
 		}
 		
-		$totals['sub_total'] = $totals['remunerativo_a_facturar'] + $totals['no_remunerativo_a_facturar'];
-		$totals['iva'] = $totals['sub_total'] * 21 / 100;
-		$totals['total'] = $totals['sub_total'] + $totals['iva'];
-		d($totals);
+		return $result;
 	}
 
 	
