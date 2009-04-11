@@ -230,13 +230,13 @@ if (!empty($data)) {
 	$documento->save($fileFormat);
 	
 } else {
+	if (!empty($grupos)) {
+		$condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos);
+	}
 	$condiciones['Condicion.Liquidacion-empleador_id'] = array(	'lov' => array(
 			'controller'		=>	'empleadores',
 			'seleccionMultiple' => false,
 			'camposRetorno'		=> array('Empleador.cuit', 'Empleador.nombre')));
-	if (!empty($grupos)) {
-		$condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos);
-	}
 	$condiciones['Condicion.Liquidacion-periodo'] = array('type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S'));
 	$condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'multiple' => 'checkbox', 'type' => 'select');
 	$condiciones['Condicion.Liquidacion-formato'] = array('type' => 'radio', 'options' => array('Excel5' => 'Excel', 'Excel2007' => 'Excel 2007'), 'value' => 'Excel2007');
@@ -246,6 +246,7 @@ if (!empty($data)) {
 	$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Generar Libro Sueldos','imagen' => 'archivo.gif')));
 
 	$accionesExtra['opciones'] = array('acciones' => array());
+	$botonesExtra[] = 'limpiar';
 	$botonesExtra[] = $appForm->submit('Generar', array('title' => 'Genera el Libro de Sueldos', 'onclick'=>'document.getElementById("accion").value="generar"'));
 
 	echo $this->element('index/index', array(
