@@ -618,6 +618,7 @@ class LiquidacionesController extends AppController {
 				unset($this->data['Condicion']['Liquidacion-periodo_completo']);
 			}
 		}
+		$this->paginate['conditions'] = array('Liquidacion.estado' => 'Confirmada');
 		parent::index();
 	}
 
