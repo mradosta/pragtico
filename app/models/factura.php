@@ -117,64 +117,60 @@ class Factura extends AppModel {
 	//function report($conditions = null, $type = 'summarized') {
 		function report($conditions = null, $type = 'summarized') {
 
-		/*
-		$data = $this->Liquidacion->find('all',
-			array(	'conditions' 	=> $conditions,
-				 	'contain'		=> array('LiquidacionesDetalle', 'Empleador.Area.Coeficiente')));
-		*/
-		$data = $this->Liquidacion->find('all',
-			array(	'conditions' 	=> $conditions,
-					'order' 		=> array('Liquidacion.tipo'),
-				 	'contain'		=> array('LiquidacionesDetalle')));
-
 		if ($type === 'summarized') {
-			$result['trabajadores'] = count(array_unique(Set::extract('/Liquidacion/trabajador_id', $data)));
-			$result['remunerativo_a_facturar'] = 0;
-			$result['remunerativo'] = 0;
-			$result['no_remunerativo_a_facturar'] = 0;
-			$result['no_remunerativo'] = 0;
+			$contain = array('Empleador', 'FacturasDetalle');
+		} elseif ($type === 'detailed') {
+			$contain = array('Empleador', 'FacturasDetalle', 'Liquidacion.LiquidacionesDetalle');
+		} else {
+			return false;
 		}
 
+		$data = $this->find('all', array(
+			'conditions'	=> $conditions,
+			'contain'		=> $contain));
 
-		foreach($data as $receipt) {
-			if ($type === 'detailed') {
-				$result[$receipt['Liquidacion']['relacion_id'] . '-' . $receipt['Liquidacion']['tipo']]['Trabajador'] = array('legajo' => $receipt['Liquidacion']['relacion_legajo'], 'apellido_nombre' => $receipt['Liquidacion']['trabajador_apellido'] . ' ' . $receipt['Liquidacion']['trabajador_nombre']);
-				$tmpDetail = array();
-			}
+		if (!empty($data) && $type == 'summarized') {
+			$result['remunerativo_a_facturar'] = 0;
+			$result['no_remunerativo_a_facturar'] = 0;
 
-			foreach ($receipt['LiquidacionesDetalle'] as $detalle) {
-				if ($type === 'detailed') {
-					if ($detalle['coeficiente_tipo'] !== 'No Facturable' && abs($detalle['valor']) > 0 && abs($detalle['coeficiente_valor']) > 0) {
-						$tmpDetail[] = array(	'nombre' 	=> $detalle['concepto_nombre'],
-											 	'pago' 		=> $detalle['concepto_pago'],
-			 									'cantidad' 	=> $detalle['valor_cantidad'],
-												'valor' 	=> $detalle['valor'] * $detalle['coeficiente_valor']);
-					}
-				} elseif ($type === 'summarized') {
-					if($detalle['concepto_imprimir'] === 'Si' || ($detalle['concepto_imprimir'] === 'Solo con valor') && abs($detalle['valor']) > 0) {
-						if ($detalle['concepto_tipo']  === 'Remunerativo') {
-							$result['remunerativo_a_facturar'] += $detalle['valor'] * $detalle['coeficiente_valor'];
-							$result['remunerativo'] += $detalle['valor'];
-						} elseif ($detalle['concepto_tipo']  === 'No Remunerativo') {
-							$result['no_remunerativo_a_facturar'] += $detalle['valor'] * $detalle['coeficiente_valor'];
-							$result['no_remunerativo'] += $detalle['valor'];
+			foreach($data as $invoice) {
+				foreach ($invoice['FacturasDetalle'] as $detail) {
+					if ($type === 'summarized') {
+						if ($detail['coeficiente_tipo']  === 'Remunerativo') {
+							$result['remunerativo_a_facturar'] += $detail['subtotal'];
+						} elseif ($detail['coeficiente_tipo']  === 'No Remunerativo') {
+							$result['no_remunerativo_a_facturar'] += $detail['subtotal'];
 						}
 					}
 				}
 			}
-			if ($type === 'detailed') {
-				$result[$receipt['Liquidacion']['relacion_id'] . '-' . $receipt['Liquidacion']['tipo']]['Coeficiente'] = $tmpDetail;
+			return array('Type' => $type, 'Total' => $result, 'Empleador' => $data[0]['Empleador']);
+		} elseif (!empty($data) && $type == 'detailed'){
+			foreach ($data as $invoice) {				
+				foreach ($invoice['Liquidacion'] as $receipt) {
+					$trabajador = null;
+					foreach ($receipt['LiquidacionesDetalle'] as $detail) {
+
+						if (empty($trabajador)) {
+							$details[$receipt['trabajador_id']]['Trabajador'] = array(
+								'legajo'	=> $receipt['relacion_legajo'], 
+								'nombre'	=> $receipt['trabajador_nombre'],
+								'apellido'	=> $receipt['trabajador_apellido']);
+						}
+						$details[$receipt['trabajador_id']]['Concepto'][$detail['concepto_codigo']] = array(
+							'Descripcion'		=> $detail['concepto_nombre'], 
+							'Cantidad'			=> $detail['valor_cantidad'], 
+							'V. Unit.'			=> $detail['valor']);
+					}
+				}
 			}
+			//$titles = array('Legajo', 'Apellido y Nombre', 'Descripcion', 'Cantidad', 'V. Unit.');
+			return array('Type' => $type, 'Details' => $details);
+		}else {
+			return array();
 		}
-			
-		if ($type === 'summarized') {
-			$result['sub_total'] = $result['remunerativo_a_facturar'] + $result['no_remunerativo_a_facturar'];
-			$result['iva'] = $result['sub_total'] * 21 / 100;
-			$result['total'] = $result['sub_total'] + $result['iva'];
-		}
-		
-		return $result;
 	}
+	
 
 	
 	function resumenx($condiciones = null, $tipo = "resumido") {

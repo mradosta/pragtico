@@ -32,29 +32,33 @@ class FacturasController extends AppController {
 		//	$this->data['Resumen']['tipo'] = "resumido";
 		//}
 		//d($this->data);
-		if (!empty($this->data['Condicion']['Liquidacion-periodo']) && !empty($this->data['Condicion']['Liquidacion-empleador_id'])) {
-			$period = $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], 'periodo');
-			
+		//$records = $this->Factura->find('all', $this->Paginador->generarCondicion($this->data));
+
+
+		if (!empty($this->data['Condicion']['Factura-periodo']) && !empty($this->data['Condicion']['Factura-empleador_id'])) {
+			$period = $this->Util->format($this->data['Condicion']['Factura-periodo'], 'periodo');
+			$this->data['Condicion']['Factura-fecha__desde'] = $period['desde'];
+			$this->data['Condicion']['Factura-fecha__hasta'] = $period['hasta'];
+
+			/*
 			if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
 				$this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Liquidacion-grupo_id']));
 				unset($this->data['Condicion']['Liquidacion-grupo_id']);
 			}
+			*/
 			
-			if (!empty($period)) {
-				$this->data['Condicion']['Liquidacion-ano'] = $period['ano'];
-				$this->data['Condicion']['Liquidacion-mes'] = $period['mes'];
-				$this->data['Condicion']['Liquidacion-periodo'] = $period['periodo'];
-				$condiciones = $this->Paginador->generarCondicion($this->data);
-				
-				$records = $this->Factura->report($condiciones, $this->data['Resumen']['tipo']);
+			//debug($this->data);
+			unset($this->data['Condicion']['Factura-periodo']);
+			$conditions = $this->Paginador->generarCondicion(false);
+			$this->data['Condicion']['Factura-periodo'] = $period['periodoCompleto'];
 
-				if (empty($records)) {
-					$this->Session->setFlash('No se han encontrado liquidaciones para el periodo seleccioando segun los criterios especificados.', 'error');
-				} else {
-					$this->set('data', $records);
-					//$this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
-					$this->layout = 'ajax';
-				}
+			$records = $this->Factura->report($conditions, $this->data['Resumen']['tipo']);
+			if (empty($records)) {
+				$this->Session->setFlash('No se han encontrado facturas para el periodo seleccioando segun los criterios especificados.', 'error');
+			} else {
+				$this->set('data', $records);
+				//$this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
+				$this->layout = 'ajax';
 			}
 		} else {
 			$this->set('grupos', $this->Util->getUserGroups());
