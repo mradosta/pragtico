@@ -59,17 +59,26 @@ class PaginadorComponent extends Object {
  * $this->data['Condicion']. Si este esta vacio, intenta leerlos desde la sesion si esta existe
  * en caso de que se haya paginado.
  *
+ * @params boolean $useSession. If true, session data for the controller will be merged with controller->data
+ *								to create conditions. 
+ *								When false, just controller->data will be use to create conditions. 
+ *
  * @return array Un array con las condiciones de la forma que exije el framework para el metodo find.
  * @access public
  */
-    function generarCondicion() {
+    function generarCondicion($useSession = true) {
 		if (isset($this->controller->data['Formulario']['accion']) && $this->controller->data['Formulario']['accion'] == 'limpiar') {
 			$this->controller->Session->del('filtros.' . $this->controller->name . '.' . $this->controller->action);
 			unset($this->controller->data['Condicion']);
 			return array();
 		}
 
-		$filter = $this->controller->Session->read('filtros.' . $this->controller->name . '.' . $this->controller->action);
+		if ($useSession === true) {
+			$filter = $this->controller->Session->read('filtros.' . $this->controller->name . '.' . $this->controller->action);
+		} else {
+			$filter = array();
+		}
+
 		if (!empty($filter)) {
 			$condiciones = $filter['condiciones'];
 			$valoresLov = $filter['valoresLov'];
