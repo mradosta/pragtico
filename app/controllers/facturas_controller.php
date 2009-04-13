@@ -151,5 +151,25 @@ class FacturasController extends AppController {
 		$this->data = $this->Factura->read(null, $id);
 	}
 
+
+	function confirmar() {
+		$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
+		
+		if (!empty($ids)) {
+			$this->Factura->unbindModel(array('belongsTo' => array('Empleador')));
+			if ($this->Factura->updateAll(array('Factura.estado' => "'Confirmada'"), array('Factura.id' => $ids, 'Factura.confirmable' => 'Si'))) {
+				$this->Session->setFlash('Las facturas seleccionadas se confirmaron correctamente', 'ok');
+			} else {
+				$this->Session->setFlash('No pudieron confirmarse las facturas. Verifique.', 'error');
+			}
+		}
+		$this->History->goBack();
+	}
+	
+	function index() {
+		$this->paginate['conditions'] = array('Factura.estado' => 'Confirmada');
+		parent::index();
+	}
+
 }
 ?>

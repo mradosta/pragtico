@@ -1,0 +1,70 @@
+<?php
+/**
+ * Este archivo contiene la presentacion.
+ *
+ * PHP versions 5
+ *
+ * @filesource
+ * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
+ * @link			http://www.pragmatia.com
+ * @package			pragtico
+ * @subpackage		app.views
+ * @since			Pragtico v 1.0.0
+ * @version			$Revision: 477 $
+ * @modifiedby		$LastChangedBy: mradosta $
+ * @lastmodified	$Date: 2009-04-07 18:08:38 -0300 (Tue, 07 Apr 2009) $
+ * @author      	Martin Radosta <mradosta@pragmatia.com>
+ */
+ 
+/**
+* Especifico los campos para ingresar las condiciones.
+*/
+$condiciones['Condicion.Factura-empleador_id'] = array('lov' => array(
+		'controller'	=> 'empleadores',
+		'camposRetorno'	=> array('Empleador.cuit', 'Empleador.nombre')));
+$condiciones['Condicion.Factura-fecha__desde'] = array('label' => 'Desde', 'type' => 'date');
+$condiciones['Condicion.Factura-fecha__hasta'] = array('label' => 'Hasta', 'type' => 'date');
+
+$fieldsets[] = array('campos' => $condiciones);
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Facturas', 'imagen' => 'facturas.gif')));
+
+
+/**
+* Creo el cuerpo de la tabla.
+*/
+$cuerpo = null;
+foreach ($registros as $k => $v) {
+	$fila = null;
+	$fila = null;
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Factura']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'detalles.gif', 'alt' => 'Detalles'), 'url' => 'detalles');
+	$fila[] = array('model' => 'Factura', 'field' => 'id', 'valor' => $v['Factura']['id'], 'write' => $v['Factura']['write'], 'delete' => $v['Factura']['delete']);
+	$fila[] = array('model' => 'Factura', 'field' => 'estado', 'valor' => $v['Factura']['estado']);
+	$fila[] = array('model' => 'Empleador', 'field' => 'cuit', 'valor' => $v['Empleador']['cuit'], 'class' => 'centro');
+	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Empleador']['nombre'], 'nombreEncabezado' => 'Empleador');
+	$fila[] = array('model' => 'Factura', 'field' => 'fecha', 'valor' => $v['Factura']['fecha']);
+	$fila[] = array('model' => 'Factura', 'field' => 'total', 'valor' => $v['Factura']['total'], 'tipoDato' => 'moneda');
+	$cuerpo[] = $fila;
+}
+$accionesExtra['opciones'] = array('acciones' => array($appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas'))));
+
+echo $this->element('index/index', array('accionesExtra' => $accionesExtra, 'condiciones' => $fieldset, 'cuerpo' => $cuerpo));
+
+/**
+* Agrego el evento click asociado al boton confirmar.
+*/
+$appForm->addScript('
+
+	jQuery("#imprimir").click(
+		function() {
+			var c = jQuery(".tabla :checkbox").checkbox("contar");
+			if (c > 0) {
+				jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'imprimir')) . '";
+				jQuery("#form")[0].submit();
+			} else {
+				alert("Debe seleccionar al menos una pre-liquidacion para confirmar.");
+			}
+		}
+	);', 'ready');
+
+
+?>
