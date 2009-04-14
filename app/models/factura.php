@@ -158,13 +158,24 @@ class Factura extends AppModel {
 								'apellido'	=> $receipt['trabajador_apellido']);
 						}
 						$details[$receipt['trabajador_id']]['Concepto'][$detail['concepto_codigo']] = array(
-							'Descripcion'		=> $detail['concepto_nombre'], 
-							'Cantidad'			=> $detail['valor_cantidad'], 
-							'V. Unit.'			=> $detail['valor']);
+							'Legajo'			=>	false, 
+							'Apellido y Nombre'	=>	false, 
+							'Descripcion'		=>	$detail['concepto_nombre'], 
+							'Cantidad'			=>	$detail['valor_cantidad'], 
+							'V. Unit.'			=>	$detail['valor'],
+							'S. Bruto.'			=>	($detail['valor_cantidad']*$detail['valor']),
+							'Total Fact.'		=>	0,
+							'Total Fact. NR'	=>	0,
+							'Total Fact. TK'	=>	0);
+						$details[$receipt['trabajador_id']]['Totales'] = array(
+							'title'				=>	'Totales del Empleado', 
+							'S. Bruto'			=>	0, 
+							'Total Fact.'		=>	0, 
+							'Total Fact. NR'	=>	0,
+							'Total Fact. TK'	=>	0);
 					}
 				}
 			}
-			//$titles = array('Legajo', 'Apellido y Nombre', 'Descripcion', 'Cantidad', 'V. Unit.');
 			return array('Type' => $type, 'Details' => $details);
 		}else {
 			return array();

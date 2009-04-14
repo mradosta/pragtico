@@ -73,34 +73,51 @@ if (!empty($data)) {
 			$fila++;
 		}
 	} elseif ($data['Type'] == 'detailed') {
-		$fila = 1;				
-		$col = 1;
-		/*
-		foreach ($data['Titles'] as $title) {
-			$documento->setCellValue($col . ',' . $fila, $title);
-			$col++;
-		}
-		*/
-		$fila++;
-		//d($data);
+		$documento->setWidth('A', 10);
+		$documento->setWidth('B', 30);
+		$documento->setWidth('C', 45);
+		$fila = 1;
+		$col = 'A';
+		$titles = true;
 		foreach ($data['Details'] as $detail) {
-			d($detail);
+			if ($titles === true) {
+				foreach ($detail['Concepto']['sueldo_bruto'] as $k => $v) {
+					$documento->setCellValue($col . $fila, $k);
+					$col++;	
+				}
+				$titles = false;
+			}
+			$fila++;
 			$col = 'A';
 			$documento->setCellValue($col . $fila, $detail['Trabajador']['legajo']);
 			$col++;
 			$documento->setCellValue($col . $fila, sprintf('%s %s', $detail['Trabajador']['apellido'], $detail['Trabajador']['nombre']));
+			$col++;
+
 			foreach ($detail['Concepto'] as $concept) {
+				unset($concept['Legajo']);
+				unset($concept['Apellido y Nombre']);
 				foreach ($concept as $k => $v) {
-					$col++;
 					$documento->setCellValue($col . $fila, $v);
 					$col++;
-					$documento->setCellValue($col . $fila, $v);
-					$col++;
-					$documento->setCellValue($col . $fila, $v);
-					$fila++;
+					continue;					
 				}
+				$fila++;
+				$col = 'C';
 			}
-						
+			$col = 'F';
+			$flag = true;
+			foreach ($detail['Totales'] as $k => $v) {
+					if ($flag === true) {
+						$col = 'B';
+						$documento->setCellValue($col . $fila, $v);
+						$col = 'F';
+						$flag = false;
+						continue;
+					}
+					$documento->setCellValue($col . $fila, $v);
+					$col++;
+			}
 		}
 	}
 
