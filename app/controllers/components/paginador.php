@@ -59,7 +59,7 @@ class PaginadorComponent extends Object {
  * $this->data['Condicion']. Si este esta vacio, intenta leerlos desde la sesion si esta existe
  * en caso de que se haya paginado.
  *
- * @params boolean $useSession. If true, session data for the controller will be merged with controller->data
+ * @param boolean $useSession. If true, session data for the controller will be merged with controller->data
  *								to create conditions. 
  *								When false, just controller->data will be use to create conditions. 
  *
@@ -203,12 +203,21 @@ class PaginadorComponent extends Object {
  *
  * @param array $condicion Condiciones que se sumaran a las que hay en la sesion.
  * @param array $whiteList Campos que no deben ser inlcuidos en los filtros pero si guardados en la session.
+ * @param boolean $useSession. If true, session data for the controller will be merged with controller->data
+ *								to create conditions. 
+ *								When false, just controller->data will be use to create conditions. 
  *
  * @return array Resultados de la paginacion.
  * @access public
  */
-	function paginar($condicion = array(), $whiteList = array()) {
-		$condiciones = array_merge($this->generarCondicion(), $condicion);
+	function paginar($condicion = array(), $whiteList = array(), $useSession = true) {
+		
+		if ($useSession === true) {
+			$condiciones = array_merge($this->generarCondicion(), $condicion);
+		} else {
+			$condiciones = $condicion;
+		}
+
 		if (!empty($this->controller->paginate['conditions'])) {
 			$condiciones = array_merge($this->controller->paginate['conditions'], $condiciones);
 		}
