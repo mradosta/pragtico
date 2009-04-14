@@ -22,7 +22,7 @@
 if(!empty($grupos)) {																								
 	$condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos, 'empty' => true);
 }
-$condiciones['Condicion.Relacion-empleador_id'] = array(
+$condiciones['Condicion.Liquidacion-empleador_id'] = array(
 		'lov'	=> array('controller'	=> 'empleadores',
 						'camposRetorno'	=> array('Empleador.cuit', 'Empleador.nombre')));
 
