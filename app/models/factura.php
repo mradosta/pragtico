@@ -69,40 +69,38 @@ class Factura extends AppModel {
 
 		if (!empty($data)) {
 			
-			$saveMaster = $saveDatails = $saveDatailsTmp = null;
+			$saveMaster = $saveDatails = null;
 			$employerId = null;
 			$receipts = null;
 			foreach ($data as $receipt) {
 
-				$receipts[] = $receipt['Liquidacion']['id'];
-				
 				if ($employerId !== $receipt['Liquidacion']['empleador_id']) {
 					$employerId = $receipt['Liquidacion']['empleador_id'];
 					if (!empty($saveDatailsTmp)) {
-						$save[] = $this->__getSaveArray($employerId, $saveDatailsTmp, $confirmable);
-						$saveMaster = $saveDatails = $saveDatailsTmp = null;
+						$save[] = $this->__getSaveArray($employerId, $saveDatails, $confirmable);
+						$saveMaster = $saveDatails = null;
 					}
 				}
-				
+
 				foreach ($receipt['LiquidacionesDetalle'] as $detail) {
 					
 					if ($detail['coeficiente_tipo'] !== 'No Facturable' && ($detail['concepto_imprimir'] === 'Si' || ($detail['concepto_imprimir'] === 'Solo con valor') && abs($detail['valor']) > 0)) {
 
 						if (!isset($saveDatails[$detail['coeficiente_nombre']])) {
-							$saveDatailsTmp[$detail['coeficiente_nombre']]['coeficiente_id'] = $detail['coeficiente_id'];
-							$saveDatailsTmp[$detail['coeficiente_nombre']]['coeficiente_nombre'] = $detail['coeficiente_nombre'];
-							$saveDatailsTmp[$detail['coeficiente_nombre']]['coeficiente_tipo'] = $detail['coeficiente_tipo'];
-							$saveDatailsTmp[$detail['coeficiente_nombre']]['coeficiente_valor'] = $detail['coeficiente_valor'];
-							$saveDatailsTmp[$detail['coeficiente_nombre']]['subtotal'] = $detail['valor'];
-							$saveDatailsTmp[$detail['coeficiente_nombre']]['total'] = $detail['valor'] * $detail['coeficiente_valor'];
+							$saveDatails[$detail['coeficiente_nombre']]['coeficiente_id'] = $detail['coeficiente_id'];
+							$saveDatails[$detail['coeficiente_nombre']]['coeficiente_nombre'] = $detail['coeficiente_nombre'];
+							$saveDatails[$detail['coeficiente_nombre']]['coeficiente_tipo'] = $detail['coeficiente_tipo'];
+							$saveDatails[$detail['coeficiente_nombre']]['coeficiente_valor'] = $detail['coeficiente_valor'];
+							$saveDatails[$detail['coeficiente_nombre']]['subtotal'] = $detail['valor'];
+							$saveDatails[$detail['coeficiente_nombre']]['total'] = $detail['valor'] * $detail['coeficiente_valor'];
 						} else {
-							$saveDatailsTmp[$detail['coeficiente_nombre']]['subtotal'] += $detail['valor'];
-							$saveDatailsTmp[$detail['coeficiente_nombre']]['total'] += $detail['valor'] * $detail['coeficiente_valor'];
+							$saveDatails[$detail['coeficiente_nombre']]['subtotal'] += $detail['valor'];
+							$saveDatails[$detail['coeficiente_nombre']]['total'] += $detail['valor'] * $detail['coeficiente_valor'];
 						}
 					}
 				}
 			}
-			$save[] = $this->__getSaveArray($employerId, $saveDatailsTmp, $confirmable);
+			$save[] = $this->__getSaveArray($employerId, $saveDatails, $confirmable);
 		} else {
 			return false;
 		}
