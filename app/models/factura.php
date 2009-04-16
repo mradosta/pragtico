@@ -74,6 +74,8 @@ class Factura extends AppModel {
 			$receipts = null;
 			foreach ($data as $receipt) {
 
+				$receipts[] = $receipt['Liquidacion']['id'];
+
 				if ($employerId !== $receipt['Liquidacion']['empleador_id']) {
 					$employerId = $receipt['Liquidacion']['empleador_id'];
 					if (!empty($saveDatailsTmp)) {
@@ -149,31 +151,35 @@ class Factura extends AppModel {
 					$trabajador = null;
 					foreach ($receipt['LiquidacionesDetalle'] as $detail) {
 
-						if (empty($trabajador)) {
-							$details[$receipt['trabajador_id']]['Trabajador'] = array(
-								'legajo'	=> $receipt['relacion_legajo'], 
-								'nombre'	=> $receipt['trabajador_nombre'],
-								'apellido'	=> $receipt['trabajador_apellido']);
+						if ($detail['coeficiente_tipo'] !== 'No Facturable' && ($detail['concepto_imprimir'] === 'Si' || ($detail['concepto_imprimir'] === 'Solo con valor') && abs($detail['valor']) > 0)) {
+
+							$detail['coeficiente_tipo']
+									
+							if (empty($trabajador)) {
+								$details[$receipt['trabajador_id']]['Trabajador'] = array(
+									'legajo'	=> $receipt['relacion_legajo'], 
+									'nombre'	=> $receipt['trabajador_nombre'],
+									'apellido'	=> $receipt['trabajador_apellido']);
+							}
+							$details[$receipt['trabajador_id']]['Concepto'][$detail['concepto_codigo']] = array(
+								'Descripcion'		=> $detail['concepto_nombre'],
+								'Cantidad'			=> $detail['valor_cantidad'],
+								'V. Unit.'			=> 0,
+								'S. Bruto.'			=> $detail['valor'],
+								'Total Fact.'		=> ($detail['valor'] * $detail['coeficiente_valor']),
+								'Total Fact. NR'	=> 0,
+								'Total Fact. TK'	=> 0);
+							$details[$receipt['trabajador_id']]['Totales'] = array(
+								'title'				=> 'Totales del Empleado',
+								'S. Bruto'			=> 0, 
+								'Total Fact.'		=> 0, 
+								'Total Fact. NR'	=> 0,
+								'Total Fact. TK'	=> 0);
 						}
-						$details[$receipt['trabajador_id']]['Concepto'][$detail['concepto_codigo']] = array(
-							'Legajo'			=>	false, 
-							'Apellido y Nombre'	=>	false, 
-							'Descripcion'		=>	$detail['concepto_nombre'], 
-							'Cantidad'			=>	$detail['valor_cantidad'], 
-							'V. Unit.'			=>	$detail['valor'],
-							'S. Bruto.'			=>	($detail['valor_cantidad']*$detail['valor']),
-							'Total Fact.'		=>	0,
-							'Total Fact. NR'	=>	0,
-							'Total Fact. TK'	=>	0);
-						$details[$receipt['trabajador_id']]['Totales'] = array(
-							'title'				=>	'Totales del Empleado', 
-							'S. Bruto'			=>	0, 
-							'Total Fact.'		=>	0, 
-							'Total Fact. NR'	=>	0,
-							'Total Fact. TK'	=>	0);
 					}
 				}
 			}
+			d(array('Type' => $type, 'Details' => $details));
 			return array('Type' => $type, 'Details' => $details);
 		}else {
 			return array();
@@ -301,7 +307,7 @@ class Factura extends AppModel {
 		}
 	}
 
-	function prefacturar($condiciones = null) {
+	function prefacturar_deprecated($condiciones = null) {
 
 		/**
 		* Adecuo las condiciones.
