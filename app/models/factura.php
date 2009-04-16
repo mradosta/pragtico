@@ -153,7 +153,7 @@ class Factura extends AppModel {
 
 						if ($detail['coeficiente_tipo'] !== 'No Facturable' && ($detail['concepto_imprimir'] === 'Si' || ($detail['concepto_imprimir'] === 'Solo con valor') && abs($detail['valor']) > 0)) {
 
-							$detail['coeficiente_tipo']
+							//$detail['coeficiente_tipo']
 									
 							if (empty($trabajador)) {
 								$details[$receipt['trabajador_id']]['Trabajador'] = array(
