@@ -26,8 +26,9 @@ $condiciones['Condicion.Relacion-trabajador_id'] = array(	'lov'=>array('controll
 																		'separadorRetorno'	=>	', ',
 																		'camposRetorno'		=>array('Trabajador.apellido',
 																									'Trabajador.nombre')));
-$condiciones['Condicion.Trabajador-numero_documento'] = array('label'=>'Documento');
 $condiciones['Condicion.Trabajador-apellido'] = array('label'=>'Apellido');
+$condiciones['Condicion.Trabajador-nombre'] = array();
+$condiciones['Condicion.Trabajador-numero_documento'] = array('label'=>'Documento');
 $condiciones['Condicion.Relacion-estado'] = array('type' => 'select', 'multiple' => 'checkbox');
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'relaciones.gif')));
