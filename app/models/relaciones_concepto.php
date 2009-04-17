@@ -48,13 +48,15 @@ class RelacionesConcepto extends AppModel {
 	function afterFind($results, $primary = false) {
 		if (!isset($results[0][0]) && $primary === true) {
 			foreach ($results as $k => $result) {
-				$options = null;
-				$options['relacion'] = $result;
-				$options['relacion']['ConveniosCategoria'] = $result['Relacion']['ConveniosCategoria'];
-				$options['codigoConcepto'] = $result['Concepto']['codigo'];
-				$tmp = $this->Concepto->findConceptos('Relacion', $options);
-				$results[$k]['RelacionesConcepto']['jerarquia'] = $tmp[$result['Concepto']['codigo']]['jerarquia'];
-				$results[$k]['RelacionesConcepto']['formula_aplicara'] = $tmp[$result['Concepto']['codigo']]['formula'];
+				if (isset($options['relacion']['ConveniosCategoria'])) {
+					$options = null;
+					$options['relacion'] = $result;
+					$options['relacion']['ConveniosCategoria'] = $result['Relacion']['ConveniosCategoria'];
+					$options['codigoConcepto'] = $result['Concepto']['codigo'];
+					$tmp = $this->Concepto->findConceptos('Relacion', $options);
+					$results[$k]['RelacionesConcepto']['jerarquia'] = $tmp[$result['Concepto']['codigo']]['jerarquia'];
+					$results[$k]['RelacionesConcepto']['formula_aplicara'] = $tmp[$result['Concepto']['codigo']]['formula'];
+				}
 			}
 		}
 		return parent::afterFind($results, $primary);
