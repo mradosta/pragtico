@@ -150,6 +150,12 @@ class Liquidacion extends AppModel {
 
 		
 		if ($type === 'normal') {
+
+			$jornada = $this->getRelationship('ConveniosCategoria', 'jornada');
+			if (($period['periodo'] !== 'M' && $jornada === 'Mensual') || ($period['periodo'] === 'M' && $jornada === 'Por Hora')) {
+				return;
+			}
+			
 			$opcionesFindConcepto = null;
 			$this->setConcept(
 				$this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
