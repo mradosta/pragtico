@@ -48,7 +48,7 @@
 		for ($i = 0; $i <= 1; $i++) {
 			$fila = $initialRow;
 			$fila+=9;
-			$documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, sprintf('Usuario: %s - %s', $receipt['Liquidacion']['empleador_id'], $receipt['Liquidacion']['empleador_nombre']));
+			$documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, $receipt['Liquidacion']['empleador_nombre']);
 
 			$fila+=3;
 			$documento->setCellValue((PHPExcel_Cell::columnIndexFromString('A') -1 + ($i * 23)) . ',' . $fila, substr($receipt['Liquidacion']['tipo'], 0, 3) . ' ' . $formato->format($receipt['Liquidacion']['ano'] . str_pad($receipt['Liquidacion']['mes'], 2, '0', STR_PAD_LEFT) . $receipt['Liquidacion']['periodo'], array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')));
