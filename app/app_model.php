@@ -168,9 +168,10 @@ class AppModel extends Model {
             foreach ($relatedData as $detailKey => $detailValue) {
 
 				/** Make sure to trigger behaviors for related models */
-				if ($associations[$detailKey] == 'hasMany') {
+				if ($associations[$detailKey] === 'hasMany') {
 					foreach ($detailValue as $hasManyKey => $hasManyValue) {
 						$this->{$detailKey}->data = array($detailKey => $hasManyValue);
+						$this->{$detailKey}->create($this->{$detailKey}->data[$detailKey]);
 						if (!$this->Behaviors->trigger($this->{$detailKey}, 'beforeSave', array($options), array(
 							'break' => true, 'breakOn' => false))) {
 							continue 3;
