@@ -223,7 +223,6 @@ class Descuento extends AppModel {
 				}
 			}
 		}
-		//d(array('concepto' => $concepto, 'auxiliar' => $auxiliares));
 		return array('conceptos' => $concepto, 'auxiliar' => $auxiliares);
 	}
 
@@ -248,7 +247,6 @@ class Descuento extends AppModel {
 			$this->data['Pago'][0]['moneda'] = 'Pesos';
 			$this->data['Pago'][0]['estado'] = 'Pendiente';
 		}
-		
 		return parent::beforeSave($options);
 	}
 
