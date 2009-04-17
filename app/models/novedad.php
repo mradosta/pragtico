@@ -251,7 +251,7 @@ class Novedad extends AppModel {
  * @return mixed Cantidad de novedades distribuidas. False en caso de error o que no hayn podido confirmarse todos los ids.
  * @access public
  */
-	function distribuir($ids) {
+	function confirmar($ids) {
 		$novedades = $this->find('all', 
 				array('conditions' 	=> array('Novedad.id' => $ids), 
 					  'recursive'	=> -1));
@@ -319,8 +319,7 @@ class Novedad extends AppModel {
 			$this->deleteAll(array('Novedad.id' => array_diff($ids, $excludeIds)), false, false, false);
 			$this->commit();
 			return $i;
-		}
-		else {
+		} else {
 			$this->rollback();
 			return false;
 		}

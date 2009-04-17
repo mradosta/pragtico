@@ -45,7 +45,7 @@ class NovedadesController extends AppController {
  */
 	function confirmar() {
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'confirmar') {
-			if ($cantidad = $this->Novedad->distribuir($this->Util->extraerIds($this->data['seleccionMultiple']))) {
+			if ($cantidad = $this->Novedad->confirmar($this->Util->extraerIds($this->data['seleccionMultiple']))) {
 				$this->Session->setFlash('Se confrmaron correctamente ' . $cantidad . ' novedades', 'ok');
 			} else {
 				$this->Session->setFlash('No fue posible confirmar las novedades', 'error');
