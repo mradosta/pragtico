@@ -131,9 +131,7 @@ class Hora extends AppModel {
 		$map['Ajuste Extra Nocturna 50%'] = '#horas_ajuste_extra_nocturna_50';
 		$map['Ajuste Extra Nocturna 100%'] = '#horas_ajuste_extra_nocturna_100';
 
-		/**
-		* Inicializo el array.
-		*/
+		/** Array initialization */
 		foreach ($map as $v) {
 			$horas[$v] = 0;
 		}
@@ -147,11 +145,13 @@ class Hora extends AppModel {
 				$tipo = $map[$hora['Hora']['tipo']];
 				$horas[$tipo] = $hora['Hora']['total'];
 
-				/**
-				* Busco el concepto.
-				*/
+				/** Search the concept */
 				$codigoConcepto = str_replace('#', '', $tipo);
-				$conceptos = array_merge($conceptos, $Concepto->findConceptos('ConceptoPuntual', array('relacion'=>$relacion, 'codigoConcepto'=>$codigoConcepto)));
+				if ($codigoConcepto === 'horas') {
+					$codigoConcepto = 'sueldo_basico';
+				}
+				$conceptos = array_merge($conceptos, $Concepto->findConceptos('ConceptoPuntual', array('relacion' => $relacion, 'codigoConcepto' => $codigoConcepto)));
+				//d($conceptos);
 			}
 			
 			/**
