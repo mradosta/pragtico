@@ -47,37 +47,51 @@ class Relacion extends AppModel {
 	var $validate = array(
         'trabajador_id__' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
+				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe seleccionar un trabajador.')
         ),
         'empleador_id__' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
+				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe seleccionar un empleador.')
         ),
         'area_id' => array(
 			array(
-				'rule'	=> '/^[1-9]{1}[0-9]{0,10}$/',
+				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe seleccionar un area.')
         ),
         'horas' => array(
 			array(
-				'rule'	=> VALID_NUMBER,
+				'rule'		=> VALID_NUMBER,
 				'message'	=> 'Debe ingresar un numero para las horas.')
         ),
         'ingreso' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
+				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe especificar la fecha inicio de la relacion laboral.'),
 			array(
-				'rule'	=> VALID_DATE,
+				'rule'		=> VALID_DATE,
 				'message'	=> 'Debe especificar una fecha valida.')
-
         ),
-        'convenios_categoria_id__' => array(
+        'convenios_categoria_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
+				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe seleccionar una categoria.')
+        ),
+        'situacion_id' => array(
+			array(
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar la situacion.')
+        ),
+        'modalidad_id' => array(
+			array(
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar la modalidad.')
+        ),
+        'actividad_id' => array(
+			array(
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar la actividad.')
         )
 	);
 
@@ -143,17 +157,6 @@ class Relacion extends AppModel {
 			$this->data['Relacion']['legajo'] = $trabajador['Trabajador']['numero_documento'];
 		}
 	
-		/** Optional empty foreingKeys should be removed to avoid errors when saving */
-		if (empty($this->data['Relacion']['actividad_id'])) {
-			unset($this->data['Relacion']['actividad_id']);
-		}
-		if (empty($this->data['Relacion']['modalidad_id'])) {
-			unset($this->data['Relacion']['modalidad_id']);
-		}
-		if (empty($this->data['Relacion']['situacion_id'])) {
-			unset($this->data['Relacion']['situacion_id']);
-		}
-
 		/** Update state when expiry date is set */
 		if (!empty($this->data['Relacion']['egreso']) && $this->data['Relacion']['egreso'] !== '0000-00-00') {
 			$this->data['Relacion']['estado'] = 'Historica';
