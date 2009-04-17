@@ -267,13 +267,14 @@ class AppController extends Controller {
 			}
 		}
 
-		$back = 1;
         if (isset($this->data['Form']['volverAInsertar'])) {
+			$back = 1;
             $this->action = 'add';
             if (!empty($this->data['Form']['volverAInsertar'])) {
                 $back = 0;
             }
         } else {
+			$back = 2;
             $this->action = 'edit';
         }
 
@@ -340,7 +341,7 @@ class AppController extends Controller {
 										$this->data[$k][$model][$kDetail] = array_merge($this->data[$k][$model][$kDetail], $vDatail);
 									}
 								} else {
-                                	$this->data[$k][$model] = $datos;
+                                	$this->data[$k][$model] = array_merge($this->data[$k][$model], $datos);
 								}
                             }
                         }
