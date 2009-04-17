@@ -42,10 +42,12 @@ foreach ($registros as $k => $v) {
 	$fila = null;
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Factura']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'detalles.gif', 'alt' => 'Detalles'), 'url' => 'detalles');
 	$fila[] = array('model' => 'Factura', 'field' => 'id', 'valor' => $v['Factura']['id'], 'write' => $v['Factura']['write'], 'delete' => $v['Factura']['delete']);
+	$fila[] = array('model' => 'Factura', 'field' => 'fecha', 'valor' => $v['Factura']['fecha']);
+	$fila[] = array('model' => 'Factura', 'field' => 'tipo', 'valor' => $v['Factura']['tipo']);
+	$fila[] = array('model' => 'Factura', 'field' => 'ano', 'valor' => $v['Factura']['ano'] . str_pad($v['Factura']['mes'], 2, '0' ,STR_PAD_LEFT) . $v['Factura']['periodo'], 'nombreEncabezado'=>'Periodo');
 	$fila[] = array('model' => 'Factura', 'field' => 'estado', 'valor' => $v['Factura']['estado']);
 	$fila[] = array('model' => 'Empleador', 'field' => 'cuit', 'valor' => $v['Empleador']['cuit'], 'class' => 'centro');
 	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Empleador']['nombre'], 'nombreEncabezado' => 'Empleador');
-	$fila[] = array('model' => 'Factura', 'field' => 'fecha', 'valor' => $v['Factura']['fecha']);
 	$fila[] = array('model' => 'Factura', 'field' => 'total', 'valor' => $v['Factura']['total'], 'tipoDato' => 'moneda');
 	
 	if ($v['Factura']['confirmable'] === 'No') {

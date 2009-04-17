@@ -34,18 +34,28 @@ class Factura extends AppModel {
 
 
 
-	function __getSaveArray($employerId, $saveDatailsTmp, $confirmable) {
+	function __getSaveArray($employerId, $saveDatailsTmp, $conditions) {
 		$total = 0;
 		foreach ($saveDatailsTmp as $tmp) {
 			$saveDatails[] = $tmp;
 			$total += $tmp['total'];
 		}
-
+		
 		$saveMaster['empleador_id'] = $employerId;
 		$saveMaster['fecha'] = date('d/m/Y');
 		$saveMaster['estado'] = 'Sin Confirmar';
 		$saveMaster['total'] = $total;
-		$saveMaster['confirmable'] = $confirmable;
+		$saveMaster['confirmable'] = 'No';
+		if ($conditions['Liquidacion.estado'] === 'Confirmada') {
+			$saveMaster['confirmable'] = 'Si';
+		}
+		$saveMaster['ano'] = $conditions['Liquidacion.ano'];
+		$saveMaster['mes'] = $conditions['Liquidacion.mes'];
+		$saveMaster['periodo'] = 'M';
+		if (!empty($conditions['Liquidacion.periodo like'])) {
+			$saveMaster['periodo'] = str_replace('%', '', $conditions['Liquidacion.periodo like']);
+		}
+		$saveMaster['tipo'] = Inflector::humanize($conditions['Liquidacion.tipo']);
 		return array_merge(array('Factura' => $saveMaster), array('FacturasDetalle' => $saveDatails));
 	}
 
@@ -56,11 +66,6 @@ class Factura extends AppModel {
 			return false;
 		}
 
-		$confirmable = 'No';
-		if ($conditions['Liquidacion.estado'] === 'Confirmada') {
-			$confirmable = 'Si';
-		}
-		
 		$conditions = array_merge($conditions, array('Liquidacion.factura_id' => null));
 		$data = $this->Liquidacion->find('all',
 			array(	'conditions' 	=> $conditions,
@@ -79,7 +84,7 @@ class Factura extends AppModel {
 				if ($employerId !== $receipt['Liquidacion']['empleador_id']) {
 					$employerId = $receipt['Liquidacion']['empleador_id'];
 					if (!empty($saveDatailsTmp)) {
-						$save[] = $this->__getSaveArray($employerId, $saveDatails, $confirmable);
+						$save[] = $this->__getSaveArray($employerId, $saveDatails, $conditions);
 						$saveMaster = $saveDatails = null;
 					}
 				}
@@ -102,7 +107,7 @@ class Factura extends AppModel {
 					}
 				}
 			}
-			$save[] = $this->__getSaveArray($employerId, $saveDatails, $confirmable);
+			$save[] = $this->__getSaveArray($employerId, $saveDatails, $conditions);
 		} else {
 			return false;
 		}
@@ -164,11 +169,10 @@ class Factura extends AppModel {
 							$details[$receipt['trabajador_id']]['Concepto'][$detail['concepto_codigo']] = array(
 								'Descripcion'		=> $detail['concepto_nombre'],
 								'Cantidad'			=> $detail['valor_cantidad'],
-								'V. Unit.'			=> 0,
-								'S. Bruto.'			=> $detail['valor'],
-								'Total Fact.'		=> ($detail['valor'] * $detail['coeficiente_valor']),
-								'Total Fact. NR'	=> 0,
-								'Total Fact. TK'	=> 0);
+								'Monto Liq.'		=> $detail['valor'],
+								'Fact. Rem.'		=> ($detail['valor'] * $detail['coeficiente_valor']),
+								'Fact. No Rem.'		=> ($detail['valor'] * $detail['coeficiente_valor']),
+								'Fact. Benef.'		=> ($detail['valor'] * $detail['coeficiente_valor']));
 							$details[$receipt['trabajador_id']]['Totales'] = array(
 								'title'				=> 'Totales del Empleado',
 								'S. Bruto'			=> 0, 
