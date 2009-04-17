@@ -88,6 +88,7 @@ class RelacionesConceptosController extends AppController {
 			$relacion = $this->RelacionesConcepto->Relacion->findById($this->passedArgs['RelacionesConcepto.relacion_id']);
 			
 			/** Order results */
+			$conceptosAsignados = $conceptosAsignadosCodigos = array();
 			$conceptosAsignadosTmp = Set::combine($relacion['RelacionesConcepto'], '{n}.Concepto.codigo', '{n}.Concepto');
 			ksort($conceptosAsignadosTmp);
 			foreach ($conceptosAsignadosTmp as $concepto) {
