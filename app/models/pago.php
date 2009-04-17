@@ -71,7 +71,7 @@ class Pago extends AppModel {
 			$this->contain('PagosForma');
 		}
 		$pagosTmp = $this->find('all', array('conditions'=>array('Pago.id'=>$ids, 'Pago.estado' => 'Pendiente')));
-		
+
 		$ids = array();
 		foreach ($pagosTmp as $pago) {
 			$pagos[$pago['Pago']['id']] = $pago;
@@ -79,7 +79,8 @@ class Pago extends AppModel {
 		}
 		$c=0;
 		foreach ($ids as $id) {
-			if (($pagos[$id]['Pago']['moneda'] === 'Beneficios' && $tipo === 'Beneficios') || $pagos[$id]['Pago']['moneda'] === 'Pesos' && $tipo !== 'Beneficios') {
+			if (($pagos[$id]['Pago']['moneda'] === 'Beneficios' && $tipo === 'Beneficios')
+				|| ($pagos[$id]['Pago']['moneda'] === 'Pesos' && $tipo !== 'Beneficios')) {
 
 				
 				$acumulado = $this->__getPartialPayments($pagos[$id]);
@@ -104,7 +105,7 @@ class Pago extends AppModel {
 				$save['pago_monto'] = $pagos[$id]['Pago']['monto'];
 				$save['pago_acumulado'] = $acumulado;
 				
-				if ($tipo == 'Deposito') {
+				if ($tipo === 'Deposito') {
 					$save['cbu_numero'] = $pagos[$id]['Relacion']['Trabajador']['cbu'];
 				}
 				
@@ -114,14 +115,10 @@ class Pago extends AppModel {
 				$savePago['permissions'] = '292';
 				$savePago['estado'] = 'Imputado';
 				$savePago['id'] = $id;
-				$this->begin();
-				if ($this->save(array('Pago'=>$savePago)) && $this->PagosForma->save(array('PagosForma'=>$save))) {
-					$this->commit();
-					$c++;
-				}
-				else {
-					$this->rollback();
-				}
+				
+				return $this->appSave(	array('Pago' 		=> $savePago,
+					 						'PagosForma'	=> array($save)),
+										array('validate' => false));
 			}
 		}
 		return $c;
