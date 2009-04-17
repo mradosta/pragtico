@@ -506,8 +506,7 @@ class Concepto extends AppModel {
  */
 	function agregarQuitarConcepto($relaciones = array(), $conceptos = array(), $opciones) {
 		$c = 0;
-		if (isset($opciones['accion']) && ($opciones['accion'] == "quitar" || $opciones['accion'] == "agregar")) {
-			$accion = $opciones['accion'];
+		if (isset($opciones['accion']) && in_array($opciones['accion'], array('quitar', 'agregar'))) {
 			$error = false;
 			$this->begin();
 			foreach ($relaciones as $relacion_id) {
@@ -516,21 +515,18 @@ class Concepto extends AppModel {
 					$save['concepto_id'] = $concepto_id;
 					$this->RelacionesConcepto->recursive = -1;
 					$existe = $this->RelacionesConcepto->find($save);
-					if (empty($existe) && $accion == "agregar") {
+					if (empty($existe) && $opciones['accion'] === 'agregar') {
 						$this->RelacionesConcepto->create();
 						if ($this->RelacionesConcepto->save($save)) {
 							$c++;
-						}
-						else {
+						} else {
 							$error = true;
 							break 2;
 						}
-					}
-					elseif (!empty($existe) && $accion == "quitar") {
+					} elseif (!empty($existe) && $opciones['accion'] === 'quitar') {
 						if ($this->RelacionesConcepto->del($existe['RelacionesConcepto']['id'])) {
 							$c++;
-						}
-						else {
+						} else {
 							$error = true;
 							break 2;
 						}
@@ -539,8 +535,7 @@ class Concepto extends AppModel {
 			}
 			if ($error) {
 				$this->rollback();
-			}
-			else {
+			} else {
 				$this->commit();
 			}
 		}
