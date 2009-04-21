@@ -119,8 +119,99 @@ class Factura extends AppModel {
 		}
 	}
 	
+	
+	function report($invoiceId) {
+
+		$data = $this->find('all', array(
+			'conditions'	=> array('Factura.id' => $invoiceId),
+			'contain'		=> array('Empleador', 'FacturasDetalle', 'Liquidacion.LiquidacionesDetalle')));
+
+		$reportData = null;
+		$reportData['Facturado Remunerativo'] = 0;
+		$reportData['Facturado No Remunerativo'] = 0;
+		$reportData['Liquidado Remunerativo'] = 0;
+		$reportData['Liquidado No Remunerativo'] = 0;
+		$reportData['Liquidado Deduccion'] = 0;
+				
+		if (!empty($data)) {
+			foreach ($data as $invoice) {
+				foreach ($invoice['Liquidacion'] as $receipt) {
+					
+					$trabajador = null;
+					foreach ($receipt['LiquidacionesDetalle'] as $detail) {
+
+						if ($detail['coeficiente_tipo'] !== 'No Facturable' && ($detail['concepto_imprimir'] === 'Si' || ($detail['concepto_imprimir'] === 'Solo con valor') && abs($detail['valor']) > 0)) {
+
+							if (empty($trabajador)) {
+								$details[$receipt['trabajador_id']]['Trabajador'] = array(
+									'legajo'	=> $receipt['relacion_legajo'], 
+									'nombre'	=> $receipt['trabajador_nombre'],
+									'apellido'	=> $receipt['trabajador_apellido']);
+							}
+
+							$t = $detail['valor'] * $detail['coeficiente_valor'];
+							$t1 = $t2 = $t3 = 0;
+							if (!isset($totals[$receipt['trabajador_id']]['Liquidado'])) {
+								$totals[$receipt['trabajador_id']]['Liquidado'] = $detail['valor'];
+							} else {
+								$totals[$receipt['trabajador_id']]['Liquidado'] += $detail['valor'];
+							}
+							if ($detail['concepto_pago'] === 'Beneficios') {
+								if (!isset($totals[$receipt['trabajador_id']]['Beneficios'])) {
+									$totals[$receipt['trabajador_id']]['Beneficios'] = $t;
+								} else {
+									$totals[$receipt['trabajador_id']]['Beneficios'] += $t;
+								}
+								$t3 = $t;
+							} elseif ($detail['concepto_tipo'] === 'Remunerativo') {
+								if (!isset($totals[$receipt['trabajador_id']]['Remunerativo'])) {
+									$totals[$receipt['trabajador_id']]['Remunerativo'] = $t;
+								} else {
+									$totals[$receipt['trabajador_id']]['Remunerativo'] += $t;
+								}
+								$t1 = $t;
+								$reportData['Facturado Remunerativo'] += $t;
+								$reportData['Liquidado Remunerativo'] += $detail['valor'];
+							} elseif ($detail['concepto_tipo'] === 'No Remunerativo') {
+								if (!isset($totals[$receipt['trabajador_id']]['No Remunerativo'])) {
+									$totals[$receipt['trabajador_id']]['No Remunerativo'] = $t;
+								} else {
+									$totals[$receipt['trabajador_id']]['No Remunerativo'] += $t;
+								}
+								$t2 = $t;
+								$reportData['Facturado No Remunerativo'] += $t;
+								$reportData['Liquidado No Remunerativo'] += $detail['valor'];
+							} elseif ($detail['concepto_tipo'] === 'Deduccion') {
+								$reportData['Liquidado Deduccion'] += $detail['valor'];
+							}
+
+							$details[$receipt['trabajador_id']]['Concepto'][$detail['concepto_codigo']] = array(
+								'Descripcion'				=> $detail['concepto_nombre'],
+								'Cantidad'					=> $detail['valor_cantidad'],
+								'Liquidado'					=> $detail['valor'],
+								'Facturado Remunerativo'	=> $t1,
+								'Facturado No Remunerativo'	=> $t2,
+								'Facturado Beneficios'		=> $t3);
+
+							$details[$receipt['trabajador_id']]['Totales'] = $totals[$receipt['trabajador_id']];
+						}
+					}
+				}
+			}
+			
+			$reportData['Total de Empleados Facturados'] = count($details);
+			$reportData['Iva'] = ($reportData['Facturado No Remunerativo'] + $reportData['Facturado Remunerativo']) * 21 / 100;
+			$reportData['Total'] = $reportData['Facturado No Remunerativo'] + $reportData['Facturado Remunerativo'] + $reportData['Iva'];
+			$reportData['Total Liquidado'] = $reportData['Liquidado Remunerativo'] + $reportData['Liquidado No Remunerativo'];
+			
+			return array('details' => $details, 'totals' => $reportData);
+		} else {
+			return array();
+		}
+	}
+	
 	//function report($conditions = null, $type = 'summarized') {
-		function report($conditions = null, $type = 'summarized') {
+		function reportx($conditions = null, $type = 'summarized') {
 
 		if ($type === 'summarized') {
 			$contain = array('Empleador', 'FacturasDetalle');
@@ -192,124 +283,6 @@ class Factura extends AppModel {
 	
 
 	
-	function resumenx($condiciones = null, $tipo = "resumido") {
-		
-		if ($tipo == "resumido") {
-			$sql = "
-				select
-							Empleador.id,
-							Empleador.cuit,
-							Empleador.nombre,
-							LiquidacionesDetalle.concepto_codigo,
-							LiquidacionesDetalle.concepto_nombre,
-							LiquidacionesDetalle.concepto_orden,
-							LiquidacionesDetalle.coeficiente_valor,
-							sum(LiquidacionesDetalle.valor) as total,
-							sum(LiquidacionesDetalle.valor_cantidad) as cantidad,
-							count(1) as cuenta
-				from 		empleadores Empleador,
-							liquidaciones Liquidacion,
-							liquidaciones_detalles LiquidacionesDetalle 
-				where		1=1
-				and			Liquidacion.id = LiquidacionesDetalle.liquidacion_id
-				and			Empleador.id = Liquidacion.empleador_id
-				and			(LiquidacionesDetalle.concepto_imprimir = 'Si'
-							or LiquidacionesDetalle.concepto_imprimir = 'Solo con valor')
-				and			";
-			$db =& ConnectionManager::getDataSource($this->useDbConfig);
-			$sql .= $db->conditions($condiciones, true, false);
-			$sql .= " group by
-							Empleador.id,
-							Empleador.cuit,
-							Empleador.nombre,
-							LiquidacionesDetalle.concepto_codigo,
-							LiquidacionesDetalle.concepto_nombre,
-							LiquidacionesDetalle.concepto_orden,
-							LiquidacionesDetalle.coeficiente_valor
-				order by	Empleador.nombre,
-							LiquidacionesDetalle.concepto_orden
-			";
-
-			$r = $this->query($sql);
-			foreach ($r as $v) {
-				$data = null;
-				$data['nombre'] = $v['LiquidacionesDetalle']['concepto_nombre'];
-				$data['coeficiente'] = $v['LiquidacionesDetalle']['coeficiente_valor'];
-				$data['total'] = $v['0']['total'];
-				$data['cantidad'] = $v['0']['cantidad'];
-
-				if (!isset($return[$v['Empleador']['id']])) {
-					$return[$v['Empleador']['id']]['cuit'] = $v['Empleador']['cuit'];
-					$return[$v['Empleador']['id']]['nombre'] = $v['Empleador']['nombre'];
-				}
-				$return[$v['Empleador']['id']]['Concepto'][] = $data;
-			}
-			return array_values($return);
-		}
-		elseif ($tipo == "detallado") {
-			$sql = "
-				select
-							Empleador.id,
-							Empleador.cuit,
-							Empleador.nombre,
-							Trabajador.id,
-							Trabajador.legajo,
-							Trabajador.cuil,
-							Trabajador.nombre,
-							Trabajador.apellido,
-							Area.nombre,
-							LiquidacionesDetalle.concepto_codigo,
-							LiquidacionesDetalle.concepto_nombre,
-							LiquidacionesDetalle.concepto_orden,
-							LiquidacionesDetalle.coeficiente_valor,
-							LiquidacionesDetalle.valor as total,
-							LiquidacionesDetalle.valor_cantidad as cantidad
-				from 		empleadores Empleador,
-							trabajadores Trabajador,
-							liquidaciones Liquidacion,
-							liquidaciones_detalles LiquidacionesDetalle,
-							relaciones Relacion left join areas Area on (Area.id = Relacion.area_id)
-				where		1=1
-				and			Liquidacion.id = LiquidacionesDetalle.liquidacion_id
-				and			Empleador.id = Liquidacion.empleador_id
-				and			Trabajador.id = Liquidacion.trabajador_id
-				and			Relacion.id = Liquidacion.relacion_id
-				and			(LiquidacionesDetalle.concepto_imprimir = 'Si'
-							or LiquidacionesDetalle.concepto_imprimir = 'Solo con valor')
-				and			";
-			$db =& ConnectionManager::getDataSource($this->useDbConfig);
-			$sql .= $db->conditions($condiciones, true, false);
-			$sql .= "
-				order by	Empleador.nombre,
-							Trabajador.apellido,
-							Trabajador.nombre,
-							LiquidacionesDetalle.concepto_orden
-			";
-
-			$r = $this->query($sql);
-			foreach ($r as $v) {
-				$data = null;
-				$data['nombre'] = $v['LiquidacionesDetalle']['concepto_nombre'];
-				$data['coeficiente'] = $v['LiquidacionesDetalle']['coeficiente_valor'];
-				$data['total'] = $v['LiquidacionesDetalle']['total'];
-				$data['cantidad'] = $v['LiquidacionesDetalle']['cantidad'];
-
-				if (!isset($return[$v['Empleador']['id']])) {
-					$return[$v['Empleador']['id']]['cuit'] = $v['Empleador']['cuit'];
-					$return[$v['Empleador']['id']]['nombre'] = $v['Empleador']['nombre'];
-				}
-				if (!isset($return[$v['Empleador']['id']]['Trabajador'][$v['Trabajador']['id']])) {
-					$return[$v['Empleador']['id']]['Trabajador'][$v['Trabajador']['id']]['legajo'] = $v['Trabajador']['legajo'];
-					$return[$v['Empleador']['id']]['Trabajador'][$v['Trabajador']['id']]['cuil'] = $v['Trabajador']['cuil'];
-					$return[$v['Empleador']['id']]['Trabajador'][$v['Trabajador']['id']]['apellido'] = $v['Trabajador']['apellido'];
-					$return[$v['Empleador']['id']]['Trabajador'][$v['Trabajador']['id']]['nombre'] = $v['Trabajador']['nombre'];
-					$return[$v['Empleador']['id']]['Trabajador'][$v['Trabajador']['id']]['area'] = $v['Area']['nombre'];
-				}
-				$return[$v['Empleador']['id']]['Trabajador'][$v['Trabajador']['id']]['Concepto'][] = $data;
-			}
-			return array_values($return);
-		}
-	}
 
 	function prefacturar_deprecated($condiciones = null) {
 

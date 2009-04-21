@@ -62,6 +62,7 @@ if (!empty($data)) {
 	
 
 	*/
+	/*
 	if ($data['Type'] == 'summarized') {
 		$documento->setWidth('A', 100);
 		$documento->setWidth('B', 10);
@@ -73,30 +74,49 @@ if (!empty($data)) {
 			$fila++;
 		}
 	} elseif ($data['Type'] == 'detailed') {
+		*/
+	
+		$styleBoldCenter = array('style' => array(
+			'font'		=> array('bold' => true),
+			'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
+			'borders' 	=> array( 'bottom'     => array('style' => PHPExcel_Style_Border::BORDER_DOTTED))));
+	
+		$styleBold = array('style' => array('font' => array(
+			'bold' 		=> true)));
+	
 		$documento->setWidth('A', 10);
 		$documento->setWidth('B', 30);
-		$documento->setWidth('C', 45);
+		$documento->setWidth('C', 35);
+		$documento->setWidth('D', 10);
+		$documento->setWidth('E', 11);
+		$documento->setWidth('F', 11);
+		$documento->setWidth('G', 11);
+		$documento->setWidth('H', 11);
+		
 		$fila = 1;
 		$col = 'A';
 		$titles = true;
-		foreach ($data['Details'] as $detail) {
-			if ($titles === true) {
-				foreach ($detail['Concepto']['sueldo_bruto'] as $k => $v) {
-					$documento->setCellValue($col . $fila, $k);
-					$col++;	
-				}
-				$titles = false;
-			}
+		
+		$documento->setCellValue('A' . $fila, 'Legajo', $styleBoldCenter);
+		$documento->setCellValue('B' . $fila, 'Apellido y Nombre', $styleBoldCenter);
+		$documento->setCellValue('C' . $fila, 'Concepto', $styleBoldCenter);
+		$documento->setCellValue('D' . $fila, 'Cantidad', $styleBoldCenter);
+		$documento->setCellValue('E' . $fila, 'Liquidado', $styleBoldCenter);
+		$documento->setCellValue('F' . $fila, 'F. Rem.', $styleBoldCenter);
+		$documento->setCellValue('G' . $fila, 'F. No Rem.', $styleBoldCenter);
+		$documento->setCellValue('H' . $fila, 'F. Benef.', $styleBoldCenter);
+		
+		$fila++;	
+		foreach ($data['details'] as $detail) {
+
 			$fila++;
 			$col = 'A';
-			$documento->setCellValue($col . $fila, $detail['Trabajador']['legajo']);
+			$documento->setCellValue($col . $fila, $detail['Trabajador']['legajo'], $styleBold);
 			$col++;
-			$documento->setCellValue($col . $fila, sprintf('%s %s', $detail['Trabajador']['apellido'], $detail['Trabajador']['nombre']));
+			$documento->setCellValue($col . $fila, sprintf('%s %s', $detail['Trabajador']['apellido'], $detail['Trabajador']['nombre']), $styleBold);
 			$col++;
 
 			foreach ($detail['Concepto'] as $concept) {
-				unset($concept['Legajo']);
-				unset($concept['Apellido y Nombre']);
 				foreach ($concept as $k => $v) {
 					$documento->setCellValue($col . $fila, $v);
 					$col++;
@@ -105,22 +125,52 @@ if (!empty($data)) {
 				$fila++;
 				$col = 'C';
 			}
-			$col = 'F';
-			$flag = true;
+			
+			$col = 'E';
 			foreach ($detail['Totales'] as $k => $v) {
-					if ($flag === true) {
-						$col = 'B';
-						$documento->setCellValue($col . $fila, $v);
-						$col = 'F';
-						$flag = false;
-						continue;
-					}
-					$documento->setCellValue($col . $fila, $v);
-					$col++;
+				$documento->setCellValue($col . $fila, $v, $styleBold);
+				$col++;
 			}
+			$fila++;
 		}
-	}
 
+		$fila+=2;
+		$documento->setCellValue('B' . $fila . ':E' . $fila, 'TOTALES', $styleBoldCenter);
+		$fila++;
+		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Total de Empleados Facturados', $styleBold);
+		$documento->setCellValue('E' . $fila, $data['totals']['Total de Empleados Facturados'], $styleBold);
+		$fila++;
+		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Facturado Remunerativo', $styleBold);
+		$documento->setCellValue('E' . $fila, $data['totals']['Facturado Remunerativo'], $styleBold);
+		$fila++;
+		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Facturado No Remunerativo', $styleBold);
+		$documento->setCellValue('E' . $fila, $data['totals']['Facturado No Remunerativo'], $styleBold);
+		$fila++;
+		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Iva', $styleBold);
+		$documento->setCellValue('E' . $fila, $data['totals']['Iva'], $styleBold);
+		$fila++;
+		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Total', $styleBold);
+		$documento->setCellValue('E' . $fila, $data['totals']['Total'], $styleBold);
+		$fila++;
+		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Total', $styleBold);
+		$documento->setCellValue('E' . $fila, $data['totals']['Total'], $styleBold);
+		$fila+=2;
+		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Liquidado Remunerativo', $styleBold);
+		$documento->setCellValue('E' . $fila, $data['totals']['Liquidado Remunerativo'], $styleBold);
+		$fila++;
+		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Liquidado No Remunerativo', $styleBold);
+		$documento->setCellValue('E' . $fila, $data['totals']['Liquidado No Remunerativo'], $styleBold);
+		$fila++;
+		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Total Liquidado', $styleBold);
+		$documento->setCellValue('E' . $fila, $data['totals']['Total Liquidado'], $styleBold);
+		$fila+=2;
+		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Liquidado Deduccion', $styleBold);
+		$documento->setCellValue('E' . $fila, $data['totals']['Liquidado Deduccion'], $styleBold);
+		
+		$reportData[''] = 0;
+		$reportData['Liquidado Deduccion'] = 0;
+		
+		
 	$fileFormat = 'Excel5';
 	$documento->save($fileFormat);
 	

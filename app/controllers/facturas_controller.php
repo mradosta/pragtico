@@ -27,7 +27,20 @@ class FacturasController extends AppController {
 	var $helpers = array('Documento');
 
 
-	function resumen() {
+	function resumen($facturaId) {
+
+		$records = $this->Factura->report($facturaId);
+		if (empty($records)) {
+			$this->Session->setFlash('No se han encontrado facturas para el periodo seleccioando segun los criterios especificados.', 'error');
+		} else {
+			$this->set('data', $records);
+			//$this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
+			$this->layout = 'ajax';
+		}
+	}
+	
+
+	function xresumen() {
 		//if (!isset($this->data['Resumen']['tipo'])) {
 		//	$this->data['Resumen']['tipo'] = "resumido";
 		//}
