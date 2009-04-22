@@ -192,7 +192,7 @@ if (!empty($data)) {
 		$documento->setCellValue('E' . $fila, $formato->format($data['totals']['Total Liquidado'], 'currency'), $styleBoldRight);
 				
 	$fileFormat = 'Excel5';
-	$documento->save($fileFormat, '/tmp/xx');
+	$documento->save($fileFormat);
 	
 } else {
 
