@@ -36,7 +36,6 @@ if (!empty($data)) {
 	$pageMargins->setRight(0.2);
 
 	if (empty($groupParams)) {
-		//$left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s", $employer['Empleador']['nombre'], $employer['Empleador']['direccion'], $employer['Empleador']['barrio'], $employer['Empleador']['codigo_postal'], $employer['Empleador']['ciudad'], $employer['Empleador']['pais'], $employer['Empleador']['cuit']);
 		$left = '';
 		$center = "&CLibro Especial de Sueldos - Art. 52 Ley 20744";
 	} else {
