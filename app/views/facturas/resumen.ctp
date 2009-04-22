@@ -25,6 +25,19 @@ if (!empty($data)) {
 	$documento->doc->getActiveSheet()->getDefaultRowDimension()->setRowHeight(10);
 	$documento->doc->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_PORTRAIT);
 	$documento->doc->getActiveSheet()->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
+
+
+	if (!empty($groupParams)) {
+		$documento->doc->getActiveSheet()->getHeaderFooter()->setOddHeader(
+			sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s",
+				$groupParams['nombre_fantasia'],
+				$groupParams['direccion'],
+				$groupParams['barrio'],
+				$groupParams['codigo_postal'],
+				$groupParams['ciudad'],
+				$groupParams['pais'],
+				$groupParams['cuit']));
+	}
 	
 	/*
 	if (!empty($employer)) {
@@ -79,10 +92,17 @@ if (!empty($data)) {
 		$styleBoldCenter = array('style' => array(
 			'font'		=> array('bold' => true),
 			'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
-			'borders' 	=> array( 'bottom'     => array('style' => PHPExcel_Style_Border::BORDER_DOTTED))));
+			'borders' 	=> array('bottom'     => array('style' => PHPExcel_Style_Border::BORDER_DOTTED))));
 	
+		$styleBoldRight = array('style' => array(
+			'font'		=> array('bold' => true),
+			'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT)));
+		
 		$styleBold = array('style' => array('font' => array(
 			'bold' 		=> true)));
+		
+		$styleRight = array('style' => array(
+			'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT)));
 	
 		$documento->setWidth('A', 10);
 		$documento->setWidth('B', 30);
@@ -96,6 +116,10 @@ if (!empty($data)) {
 		$fila = 1;
 		$col = 'A';
 		$titles = true;
+
+		$documento->setCellValue('A' . $fila . ':D' . $fila, 'Empresa Usuario: ' . $data['employer']['nombre'], $styleBold);
+		$documento->setCellValue('G' . $fila . ':H' . $fila, 'Periodo: ' . $data['invoice']['ano'] . str_pad($data['invoice']['mes'], 2, '0' ,STR_PAD_LEFT) . $data['invoice']['periodo'], $styleBoldRight);
+		$fila+=2;
 		
 		$documento->setCellValue('A' . $fila, 'Legajo', $styleBoldCenter);
 		$documento->setCellValue('B' . $fila, 'Apellido y Nombre', $styleBoldCenter);
@@ -106,7 +130,6 @@ if (!empty($data)) {
 		$documento->setCellValue('G' . $fila, 'F. No Rem.', $styleBoldCenter);
 		$documento->setCellValue('H' . $fila, 'F. Benef.', $styleBoldCenter);
 		
-		$fila++;	
 		foreach ($data['details'] as $detail) {
 
 			$fila++;
@@ -118,7 +141,11 @@ if (!empty($data)) {
 
 			foreach ($detail['Concepto'] as $concept) {
 				foreach ($concept as $k => $v) {
-					$documento->setCellValue($col . $fila, $v);
+					if ($col !== 'C') {
+						$documento->setCellValue($col . $fila, $formato->format($v, 'currency'), $styleRight);
+					} else {
+						$documento->setCellValue($col . $fila, $v);
+					}
 					$col++;
 					continue;					
 				}
@@ -128,7 +155,7 @@ if (!empty($data)) {
 			
 			$col = 'E';
 			foreach ($detail['Totales'] as $k => $v) {
-				$documento->setCellValue($col . $fila, $v, $styleBold);
+				$documento->setCellValue($col . $fila, $formato->format($v, 'currency'), $styleBoldRight);
 				$col++;
 			}
 			$fila++;
@@ -138,41 +165,34 @@ if (!empty($data)) {
 		$documento->setCellValue('B' . $fila . ':E' . $fila, 'TOTALES', $styleBoldCenter);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Total de Empleados Facturados', $styleBold);
-		$documento->setCellValue('E' . $fila, $data['totals']['Total de Empleados Facturados'], $styleBold);
+		$documento->setCellValue('E' . $fila, $formato->format($data['totals']['Total de Empleados Facturados'], 'currency'), $styleBoldRight);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Facturado Remunerativo', $styleBold);
-		$documento->setCellValue('E' . $fila, $data['totals']['Facturado Remunerativo'], $styleBold);
+		$documento->setCellValue('E' . $fila, $formato->format($data['totals']['Facturado Remunerativo'], 'currency'), $styleBoldRight);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Facturado No Remunerativo', $styleBold);
-		$documento->setCellValue('E' . $fila, $data['totals']['Facturado No Remunerativo'], $styleBold);
+		$documento->setCellValue('E' . $fila, $formato->format($data['totals']['Facturado No Remunerativo'], 'currency'), $styleBoldRight);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Iva', $styleBold);
-		$documento->setCellValue('E' . $fila, $data['totals']['Iva'], $styleBold);
+		$documento->setCellValue('E' . $fila, $formato->format($data['totals']['Iva'], 'currency'), $styleBoldRight);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Total', $styleBold);
-		$documento->setCellValue('E' . $fila, $data['totals']['Total'], $styleBold);
+		$documento->setCellValue('E' . $fila, $formato->format($data['totals']['Total'], 'currency'), $styleBoldRight);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Total', $styleBold);
-		$documento->setCellValue('E' . $fila, $data['totals']['Total'], $styleBold);
+		$documento->setCellValue('E' . $fila, $formato->format($data['totals']['Total'], 'currency'), $styleBoldRight);
 		$fila+=2;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Liquidado Remunerativo', $styleBold);
-		$documento->setCellValue('E' . $fila, $data['totals']['Liquidado Remunerativo'], $styleBold);
+		$documento->setCellValue('E' . $fila, $formato->format($data['totals']['Liquidado Remunerativo'], 'currency'), $styleBoldRight);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Liquidado No Remunerativo', $styleBold);
-		$documento->setCellValue('E' . $fila, $data['totals']['Liquidado No Remunerativo'], $styleBold);
+		$documento->setCellValue('E' . $fila, $formato->format($data['totals']['Liquidado No Remunerativo'], 'currency'), $styleBoldRight);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Total Liquidado', $styleBold);
-		$documento->setCellValue('E' . $fila, $data['totals']['Total Liquidado'], $styleBold);
-		$fila+=2;
-		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Liquidado Deduccion', $styleBold);
-		$documento->setCellValue('E' . $fila, $data['totals']['Liquidado Deduccion'], $styleBold);
-		
-		$reportData[''] = 0;
-		$reportData['Liquidado Deduccion'] = 0;
-		
-		
+		$documento->setCellValue('E' . $fila, $formato->format($data['totals']['Total Liquidado'], 'currency'), $styleBoldRight);
+				
 	$fileFormat = 'Excel5';
-	$documento->save($fileFormat);
+	$documento->save($fileFormat, '/tmp/xx');
 	
 } else {
 
