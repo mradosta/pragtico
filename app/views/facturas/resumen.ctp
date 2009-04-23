@@ -173,11 +173,11 @@ if (!empty($data)) {
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Facturado No Remunerativo', $styleBold);
 		$documento->setCellValue('E' . $fila, $formato->format($data['totals']['Facturado No Remunerativo'], 'currency'), $styleBoldRight);
 		$fila++;
+		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Facturado Beneficios', $styleBold);
+		$documento->setCellValue('E' . $fila, $formato->format($data['totals']['Facturado Beneficios'], 'currency'), $styleBoldRight);
+		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Iva', $styleBold);
 		$documento->setCellValue('E' . $fila, $formato->format($data['totals']['Iva'], 'currency'), $styleBoldRight);
-		$fila++;
-		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Total', $styleBold);
-		$documento->setCellValue('E' . $fila, $formato->format($data['totals']['Total'], 'currency'), $styleBoldRight);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Total', $styleBold);
 		$documento->setCellValue('E' . $fila, $formato->format($data['totals']['Total'], 'currency'), $styleBoldRight);
@@ -190,7 +190,7 @@ if (!empty($data)) {
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Total Liquidado', $styleBold);
 		$documento->setCellValue('E' . $fila, $formato->format($data['totals']['Total Liquidado'], 'currency'), $styleBoldRight);
-				
+
 	$fileFormat = 'Excel5';
 	$documento->save($fileFormat);
 	

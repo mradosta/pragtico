@@ -129,6 +129,7 @@ class Factura extends AppModel {
 		$reportData = null;
 		$reportData['Facturado Remunerativo'] = 0;
 		$reportData['Facturado No Remunerativo'] = 0;
+		$reportData['Facturado Beneficios'] = 0;
 		$reportData['Liquidado Remunerativo'] = 0;
 		$reportData['Liquidado No Remunerativo'] = 0;
 				
@@ -161,6 +162,7 @@ class Factura extends AppModel {
 								$totals[$receipt['trabajador_id']]['Beneficios'] += $t;
 							}
 							$t3 = $t;
+							$reportData['Facturado Beneficios'] += $t;
 						} elseif ($detail['concepto_tipo'] === 'Remunerativo') {
 							if (!isset($totals[$receipt['trabajador_id']]['Remunerativo'])) {
 								$totals[$receipt['trabajador_id']]['Remunerativo'] = $t;
@@ -195,8 +197,8 @@ class Factura extends AppModel {
 			}
 
 			$reportData['Total de Empleados Facturados'] = count($details);
-			$reportData['Iva'] = ($reportData['Facturado No Remunerativo'] + $reportData['Facturado Remunerativo']) * 21 / 100;
-			$reportData['Total'] = $reportData['Facturado No Remunerativo'] + $reportData['Facturado Remunerativo'] + $reportData['Iva'];
+			$reportData['Iva'] = ($reportData['Facturado No Remunerativo'] + $reportData['Facturado Remunerativo'] + $reportData['Facturado Beneficios']) * 21 / 100;
+			$reportData['Total'] = $reportData['Facturado No Remunerativo'] + $reportData['Facturado Remunerativo'] + $reportData['Facturado Beneficios'] + $reportData['Iva'];
 			$reportData['Total Liquidado'] = $reportData['Liquidado Remunerativo'] + $reportData['Liquidado No Remunerativo'];
 
 			return array(	'invoice'	=> $invoice['Factura'],
