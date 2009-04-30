@@ -187,12 +187,25 @@ class Liquidacion extends AppModel {
 			$this->__setAuxiliar($ausencias['auxiliar']);
 			$this->setConcept($ausencias['conceptos']);
 
+			/*
+			$total = 0;
+			foreach ($this->getConcept() as $cCod => $concepto) {
+				$this->__conceptos[$cCod] = array_merge($this->__conceptos[$cCod],
+						$this->__getConceptValue($concepto));
+				if ($this->__conceptos[$cCod]['tipo'] === 'Remunerativo') {
+					$total += $this->__conceptos[$cCod]['valor'];
+				}
+			}
+			d($total);
+			//d($this->__getSaveArray());
+			*/
 			/** Get discounts */
 			$discounts = $this->Relacion->Descuento->getDescuentos($this->getRelationship(),
 					array(	'periodo' 	=> $this->getPeriod(),
 							'tipo'		=> $type));
 			$this->__setAuxiliar($discounts['auxiliar']);
 			$this->setConcept($discounts['conceptos']);
+		
 			
 		} elseif ($type === 'vacaciones') {
 			foreach ($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
@@ -292,6 +305,8 @@ class Liquidacion extends AppModel {
 		}
 
 		/** Resolv */
+		//d($this->__conceptos['antiguedad']);
+		//d($this->getConcept());
 		foreach ($this->getConcept() as $cCod => $concepto) {
 			$this->__conceptos[$cCod] = array_merge($this->__conceptos[$cCod],
 					$this->__getConceptValue($concepto));
@@ -575,18 +590,9 @@ class Liquidacion extends AppModel {
 		/**
 		* Veo si es una formula, hay un not, obtengo los conceptos y rearmo los formula eliminando la perte del not.
 		*/
-		if (preg_match('/not\((.*)\)/', $formula, $matches)) {
-			$pos = strpos($matches[1], ")");
-			if ($pos) {
-				$formula = str_replace(", ", ",", $formula);
-				$formula = str_replace(" ,", ",", $formula);
-				$reemplazoNot = str_replace(", ", ",", $matches[1]);
-				$reemplazoNot = str_replace(" ,", ",", $reemplazoNot);
-				$reemplazoNot = substr($reemplazoNot, 0, $pos);
-				$conceptosNot = explode(",", str_replace("@", "", $reemplazoNot));
-				$reemplazoNot = "not(" . $reemplazoNot . ",";
-			}
-			$formula = str_replace($reemplazoNot, "", $formula);
+		if (preg_match('/not\(((?>[^()]+))\)/', $formula, $matches)) {
+			$conceptosNot = explode(',', str_replace('@', '', str_replace(' ', '', $matches[1])));
+			$formula = str_replace('(,', '(', str_replace($matches[0], '', str_replace(' ', '', $formula)));
 		}
 		
 		
