@@ -590,7 +590,7 @@ class Liquidacion extends AppModel {
 		/**
 		* Veo si es una formula, hay un not, obtengo los conceptos y rearmo los formula eliminando la perte del not.
 		*/
-		if (preg_match('/not\(((?>[^()]+))\)/', $formula, $matches)) {
+		if (preg_match('/not\(([^()]+)\)/', $formula, $matches)) {
 			$conceptosNot = explode(',', str_replace('@', '', str_replace(' ', '', $matches[1])));
 			$formula = str_replace('(,', '(', str_replace($matches[0], '', str_replace(' ', '', $formula)));
 		}
