@@ -59,12 +59,12 @@ class Descuento extends AppModel {
 			array(
 				'rule'		=> VALID_NOT_EMPTY, 
 				'message'	=> 'Debe ingresar una fecha.'),
-        ),
+        )/*,
         'monto' => array(
 			array(
 				'rule'		=> VALID_NUMBER,
 				'message'	=> 'Debe ingresar el monto a descontar.')
-        ),
+        )*/,
         'tipo' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
@@ -129,6 +129,14 @@ class Descuento extends AppModel {
 		$r = $this->find('all',
 			array(
 				  	'contain'		=> 'DescuentosDetalle',
+	   				'order'			=> "
+					order by	case Descuento.tipo
+									when 'Cuota Alimentaria' then 0
+									when 'Embargo' then 1
+									when 'Vale' then 2
+									when 'Prestamo' then 3
+								end,
+								Descuento.alta",
 				  	'checkSecurity'	=> false,
 					'conditions' 	=> array(
 				array('OR'	=> array(	'Descuento.hasta' 		=> '0000-00-00',
@@ -140,57 +148,61 @@ class Descuento extends AppModel {
  				'Descuento.estado' 								=> 'Activo')
 		));
 		
-		$concepto = $auxiliares = array();
+		$conceptos = $auxiliares = array();
 		if (!empty($r)) {
 			foreach ($r as $k => $v) {
+				
+				/** Check for concurrency */
+				if ($v['Descuento']['concurrencia'] === 'Solo uno a la vez') {
+					if (empty($concurrencia[$v['Descuento']['tipo']])) {
+						$concurrencia[$v['Descuento']['tipo']] = true;
+					} else {
+						continue;
+					}
+				}
+
+
 				$cuotaDescontadas = count($v['DescuentosDetalle']);
 				$totalDescontado = array_sum(Set::extract('/monto', $v['DescuentosDetalle']));
 				$cuotaActual = $cuotaDescontadas + 1;
-				switch ($v['Descuento']['tipo']) {
-					case 'Prestamo':
-					case 'Vale':
-						$valorCuota = $v['Descuento']['monto'] / $v['Descuento']['cuotas'];
-						$formula = '=' . $valorCuota;
-						break;
-					case 'Embargo':
-						$valorCuota = $v['Descuento']['monto'] / $v['Descuento']['cuotas'];
-						break;
-					case 'Cuota Alimentaria':
-						break;
+
+				if (in_array($v['Descuento']['tipo'], array('Prestamo', 'Vale'))) {
+					$valorCuota = $v['Descuento']['monto'] / $v['Descuento']['cuotas'];
+					/** Establezco el maximo a descontar */
+					if ($v['Descuento']['maximo'] > 0 && $valorCuota > $v['Descuento']['maximo']) {
+						$valorCuota = $v['Descuento']['maximo'];
+					}
+
+					/** Verifico que la cuota no sea mayor al saldo */
+					$saldo = $v['Descuento']['monto'] - $totalDescontado;
+					if ($saldo < $valorCuota) {
+						$valorCuota = $saldo;
+					}
 				}
 
-				
-				/**
-				* Establezco el maximo a descontar.
-				*/
-				if ($v['Descuento']['maximo'] > 0 && $valorCuota > $v['Descuento']['maximo']) {
-					$valorCuota = $v['Descuento']['maximo'];
-				}
-
-				/**
-				* Verifico que la cuota no sea mayor al saldo.
-				*/
-				$saldo = $v['Descuento']['monto'] - $totalDescontado;
-				if ($saldo < $valorCuota) {
-					$valorCuota = $saldo;
-				}
-				
 				
 				/**
 				* Busco el codigo del concepto.
 				*/
-				$modelConcepto = ClassRegistry::init('Concepto');
-				$codigoConcepto = strtolower($v['Descuento']['tipo']);
-				$concepto = $modelConcepto->findConceptos('ConceptoPuntual', array_merge(array('relacion' => $relacion, 'codigoConcepto' => $codigoConcepto), $opciones));
-				if (!empty($formula)) {
-					$concepto[$codigoConcepto]['formula'] = $formula;
+				$Concepto = ClassRegistry::init('Concepto');
+				$codigoConcepto = Inflector::underscore(str_replace(' ', '', $v['Descuento']['tipo']));
+				$concepto = $Concepto->findConceptos('ConceptoPuntual', array_merge(
+						array('relacion' => $relacion, 'codigoConcepto' => $codigoConcepto), $opciones));
+
+				if (!empty($valorCuota)) {
+					$concepto[$codigoConcepto]['formula'] = '=' . $valorCuota;
 				}
-				$concepto[$codigoConcepto]['debug'] = 'Tipo:' . $codigoConcepto . ', Monto Total:$' . $v['Descuento']['monto'] . ', Total de Cuotas:' . $v['Descuento']['cuotas'] . ', Cuotas Descontadas:' . $cuotaDescontadas . ', Saldo:$' . $saldo . ', Cuota a Descontar en esta Liquidacion:' . $cuotaActual . ', Valor esta Cuota:$' . $valorCuota;
-				$concepto[$codigoConcepto]['valor_cantidad'] = '0';
-				if ($v['Descuento']['tipo'] === 'Prestamo') {
-					$concepto[$codigoConcepto]['nombre'] = $v['Descuento']['tipo'] . ' ' . $v['Descuento']['descripcion'] . '. Fecha: ' . $this->format($v['Descuento']['alta'], 'date') . ' (Cuota: ' . $cuotaActual . '/' . $v['Descuento']['cuotas'] . ')';
-				} else {
-					$concepto[$codigoConcepto]['nombre'] = $v['Descuento']['tipo'] . ' ' . $v['Descuento']['descripcion'] . '. Fecha: ' . $this->format($v['Descuento']['alta'], 'date');
+				
+				//$concepto[$codigoConcepto]['debug'] = 'Tipo:' . $codigoConcepto . ', Monto Total:$' . $v['Descuento']['monto'] . ', Total de Cuotas:' . $v['Descuento']['cuotas'] . ', Cuotas Descontadas:' . $cuotaDescontadas . ', Saldo:$' . $saldo . ', Cuota a Descontar en esta Liquidacion:' . $cuotaActual . ', Valor esta Cuota:$' . $valorCuota;
+				//$concepto[$codigoConcepto]['valor_cantidad'] = '0';
+				//if ($v['Descuento']['tipo'] === 'Prestamo') {
+				//	$concepto[$codigoConcepto]['nombre'] = $v['Descuento']['tipo'] . ' ' . $v['Descuento']['descripcion'] . '. Fecha: ' . $this->format($v['Descuento']['alta'], 'date') . ' (Cuota: ' . $cuotaActual . '/' . $v['Descuento']['cuotas'] . ')';
+				//} else {
+				//	$concepto[$codigoConcepto]['nombre'] = $v['Descuento']['tipo'] . ' ' . $v['Descuento']['descripcion'] . '. Fecha: ' . $this->format($v['Descuento']['alta'], 'date');
+				//}
+				
+				if (empty($conceptos[$codigoConcepto])) {
+					$conceptos[$codigoConcepto] = $concepto[$codigoConcepto];
 				}
 				
 				/**
@@ -200,30 +212,23 @@ class Descuento extends AppModel {
 				$auxiliar['descuento_id'] = $v['Descuento']['id'];
 				$auxiliar['fecha'] = '##MACRO:fecha_liquidacion##';
 				$auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
-				$auxiliar['monto'] = $valorCuota;
-				$auxiliar['observacion'] = '(Cuota: ' . $cuotaActual . '/' . $v['Descuento']['cuotas'] . ')';
+				$auxiliar['monto'] = '##MACRO:concepto_valor##';
+				//$auxiliar['observacion'] = '(Cuota: ' . $cuotaActual . '/' . $v['Descuento']['cuotas'] . ')';
 				$auxiliares[] = array('save'=>serialize($auxiliar), 'model' => 'DescuentosDetalle');
 
 				/**
 				* Si se termino de pagar el credito, debo actualizar el estado a Finalizado.
-				*/
 				if (($totalDescontado + $valorCuota) >=  $v['Descuento']['monto']) {
 					$auxiliar = null;
 					$auxiliar['estado'] = 'Finalizado';
 					$auxiliar['id'] = $v['Descuento']['id'];
 					$auxiliares[] = array('save'=>serialize($auxiliar), 'model' => 'Descuento');
 				}
-
-				/**
-				* Si solo uno a la vez, no puedo ponerle otro descuento, por lo tanto, salgo del foreach.
-				* De la query vienen ordenados por fecha de alta.
 				*/
-				if ($v['Descuento']['concurrencia'] === 'Solo uno a la vez') {
-					break;
-				}
 			}
 		}
-		return array('conceptos' => $concepto, 'auxiliar' => $auxiliares);
+		//d(array('conceptos' => $conceptos, 'auxiliar' => $auxiliares));
+		return array('conceptos' => $conceptos, 'auxiliar' => $auxiliares);
 	}
 
 

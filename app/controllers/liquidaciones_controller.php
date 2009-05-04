@@ -166,7 +166,7 @@ class LiquidacionesController extends AppController {
 														'Trabajador.ObrasSocial',
 														'Empleador'),
 							'conditions'	=> $condiciones));
-
+			
 			if (empty($relaciones)) {
 				$this->Session->setFlash('No se encontraron relaciones para liquidar. Verifique que no se haya liquidado y confirmado previamente o los criterios de busqueda no son correctos.', 'error');
 				$this->redirect(array('action' => 'preliquidar'));
@@ -682,7 +682,8 @@ class LiquidacionesController extends AppController {
 			* Puede haber campos que deben ser guardados y no tienen valor, estos debo ponerle valor actual,
 			* por ejemplo, la fecha del dia que se confirma, y no la del dia que se pre-liquido.
 			*/
-			$auxiliares = $this->Liquidacion->LiquidacionesAuxiliar->find("all", array("conditions"=>array("LiquidacionesAuxiliar.liquidacion_id"=>$ids)));
+			$auxiliares = $this->Liquidacion->LiquidacionesAuxiliar->find('all',
+					array('conditions' => array('LiquidacionesAuxiliar.liquidacion_id' => $ids)));
 			$c = 0;
 			$this->Liquidacion->begin();
 			$idsAuxiliares = null;
@@ -691,8 +692,8 @@ class LiquidacionesController extends AppController {
 				$idsAuxiliares[] = $v['LiquidacionesAuxiliar']['id'];
 				$save = unserialize($v['LiquidacionesAuxiliar']['save']);
 
-				foreach ($save as $campo=>$valor) {
-					preg_match('/^##MACRO:([a-z,_]+)##$/',$valor, $matches);
+				foreach ($save as $campo => $valor) {
+					preg_match('/^##MACRO:([a-z_]+)##$/',$valor, $matches);
 					if (!empty($matches[1])) {
 						switch($matches[1]) {
 							case 'fecha_liquidacion':
@@ -701,10 +702,17 @@ class LiquidacionesController extends AppController {
 							case 'liquidacion_id':
 								$save[$campo] = $v['LiquidacionesAuxiliar']['liquidacion_id'];
 								break;
+							case 'concepto_valor':
+								$this->Liquidacion->LiquidacionesDetalle->recursive = -1;
+								$concepto = $this->Liquidacion->LiquidacionesDetalle->find('first',
+									array('LiquidacionesDetalle.liquidacion_id' => $v['LiquidacionesAuxiliar']['liquidacion_id'],
+										  'LiquidacionesDetalle.liquidacion_id' => $save['descuento_id']));
+								$save[$campo] = $concepto['LiquidacionesDetalle']['valor'];
+								break;
 						}
 					}
 				}
-				
+
 				$modelSave = ClassRegistry::init($model);
 				$save = array($model => $save);
 				$modelSave->create($save);
@@ -712,7 +720,6 @@ class LiquidacionesController extends AppController {
 					$c++;
 				}
 			}
-			
 
 			/**
 			 * Si lo anterior salio todo ok, continuo.
