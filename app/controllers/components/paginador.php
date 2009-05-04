@@ -85,16 +85,21 @@ class PaginadorComponent extends Object {
 		} else {
     		$condiciones = $valoresLov = array();
 		}
-		
+
 		if (!empty($this->controller->data['Condicion']) && is_array($this->controller->data['Condicion'])) {
 			foreach ($this->controller->data['Condicion'] as $k => $v) {
-				if (empty($v)) {
-					unset($this->controller->data['Condicion'][$k]);
-				} elseif (is_array($v)) {
+
+				/** Remove session data that's posted empty */
+				$tmp = $this->__reemplazos(str_replace('-', '.', $k), '');
+				if (!empty($condiciones[$tmp['key']])) {
+					unset($condiciones[$tmp['key']]);
+				}
+				
+				if (is_array($v)) {
 					$v = implode('**||**', $v);
 				}
 
-				if (strpos($k, '-') && is_string($v) && strlen($v) > 0) {
+				if (strpos($k, '-') !== false && !empty($v)) {
 					$t = explode('-', $k);
 					if (count($t) == 2) {
 						if (substr($t[1], -2) !== '__') {
@@ -152,7 +157,7 @@ class PaginadorComponent extends Object {
 				$this->controller->Session->write('filtros.' . $this->controller->name . '.' . $this->controller->action, array('condiciones' => $condiciones, 'valoresLov' => $valoresLov));
 			}
 		}
-
+		
 		return $condiciones;
     }
 
@@ -292,14 +297,14 @@ class PaginadorComponent extends Object {
 				$extra = 'hasta';
 			}
 
-			if (isset($this->controller->$model) && is_object($this->controller->$model)) {
-				$tipoDato = $this->controller->$model->getColumnType($campo);
+			if (isset($this->controller->{$model}) && is_object($this->controller->{$model})) {
+				$tipoDato = $this->controller->{$model}->getColumnType($campo);
 			}
 			/**
 			* Para el caso de una busqueda por un model asociado, veo si lo encuentro.
 			*/
-			elseif (isset($this->controller->{$this->controller->modelClass}->$model) && is_object($this->controller->{$this->controller->modelClass}->$model)) {
-				$tipoDato = $this->controller->{$this->controller->modelClass}->$model->getColumnType($campo);
+			elseif (isset($this->controller->{$this->controller->modelClass}->{$model}) && is_object($this->controller->{$this->controller->modelClass}->$model)) {
+				$tipoDato = $this->controller->{$this->controller->modelClass}->{$model}->getColumnType($campo);
 			}
 
 			$key = $model . '.' . $campo;
