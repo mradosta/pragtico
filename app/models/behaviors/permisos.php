@@ -307,11 +307,16 @@ class PermisosBehavior extends ModelBehavior {
 
 		if (!empty($seguridad)) {
 			if (!empty($queryData['conditions']) && is_array($queryData['conditions'])) {
-				$queryData['conditions'] = array_merge($queryData['conditions'], $seguridad);
+				if (!empty($queryData['conditions']['OR'])) {
+					$queryData['conditions']['AND']['OR'] = $seguridad['OR'];
+				} else {
+					$queryData['conditions'] = array_merge($queryData['conditions'], $seguridad);
+				}
 			} else {
 				$queryData['conditions'] = $seguridad;
 			}
 		}
+		
 		return $queryData;
 	}
 
