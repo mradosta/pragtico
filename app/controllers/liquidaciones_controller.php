@@ -99,7 +99,6 @@ class LiquidacionesController extends AppController {
 		$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 			
-			//$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
 			if ($periodo !== false) {
 				$message = null;
 				if ($this->data['Condicion']['Liquidacion-tipo'] === 'normal' &&
