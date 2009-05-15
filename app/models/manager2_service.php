@@ -37,40 +37,67 @@ class Manager2Service extends AppModel {
 		if (is_numeric($id)) {
 			$Pago = ClassRegistry::init('Pago');
 			$Factura = ClassRegistry::init('Factura');
-			$condiciones['Liquidacion.estado'] = array('Confirmada');
-			$condiciones['Liquidacion.id >'] = $id;
-			$liquidaciones = $Pago->Liquidacion->find('first', array('checkSecurity'=>false, 'conditions'=>$condiciones, 'fields' => 'max(Liquidacion.id) as ultimo'));
-			$registros = $Factura->calcularCoeficientes($condiciones);
-			$niveles[0] = array('model' => 'Empleador', 'field' => 'cuit');
-			$niveles[1] = array('model' => 'Coeficiente', 'field' => 'id');
-			$registros = $Factura->mapToKey($registros, array('keyLevels'=>$niveles, 'valor'=>array('models'=>array(array('name' => '0'), array('name' => 'Coeficiente', 'fields' => 'nombre')))));
+			$Factura->Behaviors->detach('Permisos');
+			$registros = $Factura->find('all', array(
+				'limit'			=> 2,
+			  	'contain' 		=> array('Empleador', 'Area'),
+				'order'			=> array('Factura.group_id')));
+
+
+			$tmp = $registros;
+			$ultimo = array_pop($tmp);
 			$doc = new DomDocument('1.0');
+			
 			$root = $doc->createElement('datos');
-			$root->setAttribute ('firstId', $id);
-			$root->setAttribute ('lastId', $liquidaciones[0]['ultimo']);
+			$root->setAttribute('firstId', $id);
+			$root->setAttribute('lastId', $ultimo['Factura']['id']);
 			$root = $doc->appendChild($root);
+			$empleadores = $root->appendChild($doc->createElement('empleadores'));
 			
-			$empleadores = $doc->createElement('empleadores');
-			$empleadores = $root->appendChild($empleadores);
+			$prevGroup = null;
 			
-			foreach ($registros as $cuit=>$registro) {
-				$child = $doc->createElement('empleador');
-				$child->setAttribute('cuit', str_replace('-', '', $cuit));
-				$empleador = $empleadores->appendChild($child);
+			$names = array(	3 => 'Facturado Remunerativo',
+						   	4 => 'Facturado No Remunerativo',
+		 					5 => 'Facturado Beneficios',
+							7 => 'Liquidado No Remunerativo');
+			foreach ($registros as $registro) {
+
+				if ($registro['Factura']['group_id'] !== $prevGroup) {
+					$prevGroup = $registro['Factura']['group_id'];
+					$grupo = $doc->createElement('grupo');
+					$grupo->setAttribute('codigo', $registro['Factura']['group_id']);
+					$empleadores->appendChild($grupo);
+				}
+
+				$empleador = $doc->createElement('empleador');
+				$empleador->setAttribute('cuit', str_replace('-', '', $registro['Empleador']['cuit']));
+				if (!empty($registro['Area']['identificador'])) {
+					$empleador->setAttribute('codigo', $registro['Area']['identificador']);
+				} else {
+					$empleador->setAttribute('codigo', '');
+				}
+				$empleador->setAttribute('periodo', $registro['Factura']['ano'] . str_pad($registro['Factura']['mes'], 2, '0', STR_PAD_LEFT) . $registro['Factura']['periodo']);
+				$grupo->appendChild($empleador);
 				
-				$child = $doc->createElement('coeficientes');
-				$coeficientes = $empleador->appendChild($child);
-				foreach ($registro as $coeficienteId=>$v) {
+				$coeficientes = $empleador->appendChild($doc->createElement('coeficientes'));
+
+				$totals = $Factura->report($registro['Factura']['id']);
+				$totales[3] = $totals['totals']['Facturado Remunerativo']; //Remunerativo
+				$totales[4] = $totals['totals']['Facturado No Remunerativo']; //No Remunerativo
+				$totales[5] = $totals['totals']['Facturado Beneficios']; //Beneficios
+				$totales[7] = $totals['totals']['Liquidado No Remunerativo']; //Liquidado Remunerativo
+				
+				foreach ($totales as $codigo => $valor) {
 					$child = $doc->createElement('coeficiente');
-					$child->setAttribute('codigo', $coeficienteId);
-					$child->setAttribute('nombre', $v['nombre']);
-					$child->setAttribute('cantidad', '');
+					$child->setAttribute('nombre', $names[$codigo]);
+					$child->setAttribute('codigo', $codigo);
+					$child->setAttribute('importe', $valor);
+					$child->setAttribute('cantidad', '1');
 					$child->setAttribute('textoAdicional', '');
-					$child->setAttribute('pagado', $v['pagado']);
-					$child->setAttribute('importe', $v['total']);
 					$child = $coeficientes->appendChild($child);
 				}
 			}
+			//d('<textarea cols="50" rows="50">' . $doc->saveXML() . '</textarea>');
 			return $doc->saveXML();
 		} else {
   			return '';
@@ -116,7 +143,8 @@ class Manager2Service extends AppModel {
 			
 			$prevGroup = null;
 			foreach ($registros as $registro) {
-				if ($registro['Empleador'] !== $prevGroup) {
+				if ($registro['Empleador']['group_id'] !== $prevGroup) {
+					$prevGroup = $registro['Empleador']['group_id'];
 					$grupo = $doc->createElement('grupo');
 					$grupo->setAttribute('codigo', $registro['Empleador']['group_id']);
 					$grupo = $empleadores->appendChild($grupo);
@@ -156,11 +184,11 @@ class Manager2Service extends AppModel {
 
 		if (is_numeric($id)) {
 			$Pago = ClassRegistry::init('Pago');
+			$Pago->Behaviors->detach('Permisos');
 			$registros = $Pago->find('all', array(	'contain'	=>array('Relacion.Trabajador',
 																		'PagosForma.Cuenta'),
 													'conditions'=>array('Pago.id >'		=> $id,
 																		'Pago.monto >'	=> 0),
-													'checkSecurity'=>false,
 													'order'		=>'Pago.id'));
 			$tmp = $registros;
 			$ultimo = array_pop($tmp);
@@ -173,13 +201,22 @@ class Manager2Service extends AppModel {
 			
 			$pagos = $doc->createElement('pagos');
 			$pagos = $root->appendChild($pagos);
-			
+
+			$prevGroup = null;
 			foreach ($registros as $registro) {
+
+				if ($registro['Pago']['group_id'] !== $prevGroup) {
+					$prevGroup = $registro['Pago']['group_id'];
+					$grupo = $doc->createElement('grupo');
+					$grupo->setAttribute('codigo', $registro['Pago']['group_id']);
+					$grupo = $pagos->appendChild($grupo);
+				}
+				
 				$child = $doc->createElement('pago');
 				$child->setAttribute('cuil', str_replace('-', '', $registro['Relacion']['Trabajador']['cuil']));
 				$child->setAttribute('nombre', $registro['Relacion']['Trabajador']['apellido'] . ' ' . $registro['Relacion']['Trabajador']['nombre']);
-				$child->setAttribute('cuenta', $registro['Relacion']['Trabajador']['cuenta']);
-				$pago = $pagos->appendChild($child);
+				$child->setAttribute('cuenta', $registro['Relacion']['Trabajador']['cbu']);
+				$pago = $grupo->appendChild($child);
 				foreach ($registro['PagosForma'] as $forma) {
 					$child = $doc->createElement('medio');
 					$child->setAttribute('comprobante', $forma['cheque_numero']);
@@ -192,9 +229,10 @@ class Manager2Service extends AppModel {
 					$child->setAttribute('monto', $forma['monto']);
 					$child->setAttribute('fechaEmision', $forma['fecha']);
 					$child->setAttribute('fechaPago', $forma['fecha_pago']);
-					$child = $pago->appendChild($child);
+					$pago->appendChild($child);
 				}
 			}
+			//d('<textarea cols="50" rows="50">' . $doc->saveXML() . '</textarea>');
 			return $doc->saveXML();
 		} else {
 			return '';
@@ -212,11 +250,11 @@ class Manager2Service extends AppModel {
 
 		if (is_numeric($id)) {
 			$Pago = ClassRegistry::init('Pago');
+			$Pago->Behaviors->detach('Permisos');
 			$registros = $Pago->find('all', array(	'contain'		=>
 														array('PagosForma'=>array(
-															'conditions'=>array(	'PagosForma.monto <'=>0,
-																					'PagosForma.id >'=>$id, ))),
-													'checkSecurity'=>false));
+															'conditions'=>array(	'PagosForma.monto <'	=> 0,
+																					'PagosForma.id >'		=> $id)))));
 			$tmp = $registros;
 			$doc = new DomDocument('1.0');
 			$root = $doc->createElement('datos');
