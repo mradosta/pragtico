@@ -31,6 +31,9 @@ foreach ($this->data['FacturasDetalle'] as $k=>$v) {
 	$cuerpo[] = $fila;
 }
 
-echo $this->element('desgloses/agregar', array('titulo' => 'Detalle', 'cuerpo' => $cuerpo));
+echo $this->element('desgloses/agregar', array(
+		'opcionesTabla' => array('tabla' => array('eliminar' => false, 'modificar' => false)),
+		'titulo' 		=> 'Detalle',
+  		'cuerpo' 		=> $cuerpo));
 
 ?>

@@ -47,12 +47,16 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Factura', 'field' => 'estado', 'valor' => $v['Factura']['estado']);
 	$fila[] = array('model' => 'Empleador', 'field' => 'cuit', 'valor' => $v['Empleador']['cuit'], 'class' => 'centro');
 	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Empleador']['nombre'], 'nombreEncabezado' => 'Empleador');
+	$fila[] = array('model' => 'Area', 'field' => 'nombre', 'valor' => $v['Area']['nombre'], 'nombreEncabezado' => 'Area');
 	$fila[] = array('model' => 'Factura', 'field' => 'total', 'valor' => $v['Factura']['total'], 'tipoDato' => 'moneda');
 	$cuerpo[] = $fila;
 }
 $accionesExtra['opciones'] = array('acciones' => array($appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas'))));
 
-echo $this->element('index/index', array('accionesExtra' => $accionesExtra, 'condiciones' => $fieldset, 'cuerpo' => $cuerpo));
+echo $this->element('index/index', array(
+		'accionesExtra' => $accionesExtra,
+  		'opcionesTabla' => array('tabla' => array('eliminar' => false, 'modificar' => false)), 
+  		'condiciones' 	=> $fieldset, 'cuerpo' => $cuerpo));
 
 /**
 * Agrego el evento click asociado al boton confirmar.

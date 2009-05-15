@@ -35,6 +35,7 @@ class FacturasController extends AppController {
 		} else {
 			$this->set('data', $records);
 			//$this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
+			$this->set('groupParams', ClassRegistry::init('Grupo')->getParams($records['invoice']['group_id']));
 			$this->layout = 'ajax';
 		}
 	}
@@ -82,7 +83,6 @@ class FacturasController extends AppController {
 	
 	function prefacturar() {
 
-		$this->Factura->contain(array('Empleador'));
 		if (!empty($this->data)) {
 			
 			if (!empty($this->data['Formulario']['accion'])) {
@@ -107,6 +107,10 @@ class FacturasController extends AppController {
 						}
 
 						$condiciones = $this->Paginador->generarCondicion($this->data);
+
+						/** Delete user's unconfirmed Invoices */
+						$usuario = $this->Session->read('__Usuario');
+						$this->Factura->deleteAll(array('Factura.user_id' => $usuario['Usuario']['id'], 'Factura.estado' => 'Sin Confirmar'));
 						if (!$this->Factura->getInvoice($condiciones)) {
 							$this->Session->setFlash(__('Can\'t create invoices. Check search criterias', true), 'error');
 							$resultados['registros'] = array();
@@ -141,7 +145,12 @@ class FacturasController extends AppController {
 				}
 			}
 		}
-			
+		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'limpiar') {
+			$this->data = array();
+		}
+		$this->data['Condicion']['Liquidacion-estado'] = 'Confirmada';
+		
+		$this->Factura->contain(array('Empleador', 'Area'));
 		if (!isset($resultados)) {
 			$resultados = $this->Paginador->paginar(array('Factura.estado' => 'Sin Confirmar'), array(), false);
 		}

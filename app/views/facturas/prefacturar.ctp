@@ -52,6 +52,7 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Factura', 'field' => 'estado', 'valor' => $v['Factura']['estado']);
 	$fila[] = array('model' => 'Empleador', 'field' => 'cuit', 'valor' => $v['Empleador']['cuit'], 'class' => 'centro');
 	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Empleador']['nombre'], 'nombreEncabezado' => 'Empleador');
+	$fila[] = array('model' => 'Area', 'field' => 'nombre', 'valor' => $v['Area']['nombre'], 'nombreEncabezado' => 'Area');
 	$fila[] = array('model' => 'Factura', 'field' => 'total', 'valor' => $v['Factura']['total'], 'tipoDato' => 'moneda');
 	
 	if ($v['Factura']['confirmable'] === 'No') {
