@@ -102,31 +102,40 @@ class UsuariosController extends AppController {
  * @return void
  * @access public 
  */
-    function login() {
-        if (!empty($this->data)) {
-			if ($usuario = $this->Usuario->verificarLogin(array('nombre'=>$this->data['Usuario']['loginNombre'], 'clave'=>$this->data['Usuario']['loginClave']))) {
+    function login($user = null, $password = null) {
 
-				/**
-				* Guardo en la session el usuario.
-				*/
-				$this->Session->write('__Usuario', $usuario);
+        if (!empty($this->data['Usuario']['loginNombre']) && !empty($this->data['Usuario']['loginClave'])) {
+            $user = $this->data['Usuario']['loginNombre'];
+            $password = $this->data['Usuario']['loginClave'];
+        }
+        
+        if (!empty($user) && !empty($password)) {
+            $usuario = $this->Usuario->verificarLogin(array('nombre' => $user, 'clave' => $password));
 
-				/**
-				* Busco los menus.
-				*/
-				$this->Session->write('__itemsMenu', $this->Usuario->traerMenus($usuario));
-				$this->Session->write('__actualMenu', '0');
-				$this->redirect('../relaciones/index', null, true);
-			}
-			else {
-				//$this->Session->setFlash('Usuario o contraseña incorrectos.', 'error');
-				$this->Session->setFlash(__('Login failed. Invalid username or password.', true), 'error');
-				$this->redirect('login', null, true);
-			}
+            if (!empty($usuario)) {
+
+                if (!empty($this->data['Usuario']['loginGroup'])) {
+                    $this->requestAction('grupos/setear_grupo_default/' . $this->data['Usuario']['loginGroup'] . '/true');
+                    $this->redirect('../relaciones/index', null, true);
+                } else if (!empty($usuario['Grupo'])) {
+                    $this->set('groups', Set::combine($usuario['Grupo'], '{n}.id', '{n}.nombre'));
+                }
+
+                
+                /** Guardo en la session el usuario.*/
+                $this->Session->write('__Usuario', $usuario);
+
+                /** Busco los menus.*/
+                $this->Session->write('__itemsMenu', $this->Usuario->traerMenus($usuario));
+                //$this->Session->write('__actualMenu', '0');
+            //$this->redirect('../relaciones/index', null, true);
+            } else {
+                $this->Session->setFlash(__('Login failed. Invalid username or password.', true), 'error');
+                $this->redirect('login', null, true);
+            }
         }
-        else {
-        	$this->layout = 'login';
-        }
+        
+        $this->layout = 'login';
     }
     
 /**

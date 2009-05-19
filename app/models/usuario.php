@@ -187,8 +187,7 @@ class Usuario extends AppModel {
 				$usuario['Usuario']['preferencias']['grupos_seleccionados'] = $usuario['Usuario']['grupos'];
 				if (!isset($usuario['Grupo'][0]['id'])) {
 					$usuario['Usuario']['preferencias']['grupo_default_id'] = 0;
-				}
-				else {
+				} else {
 					$usuario['Usuario']['preferencias']['grupo_default_id'] = $usuario['Grupo'][0]['id'];
 				}
 				return $usuario;

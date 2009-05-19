@@ -33,9 +33,46 @@ $bloques[] = $appForm->bloque($campos);
 
 $usuario = $appForm->input("Usuario.loginNombre", array("label"=>"Usuario", "tabindex"=>"1"));
 $clave = $appForm->input("Usuario.loginClave", array("type"=>"password", "label"=>"Clave"));
+
+$group = '';
+if (!empty($groups)) {
+    $group = $appForm->input("Usuario.loginGroup", array("label"=>"Grupo", "type"=>"select", 'options' => $groups));
+}
+
+
+//$ingresar = $appForm->button("Ingresar", array('id' => 'login'));
 $ingresar = $appForm->submit("Ingresar");
 
-$bloques = $usuario . $clave . $ingresar;
+/**
+* Hago el request via jSon.
+*/
+
+/*
+if (isset($url)) {
+    echo $javascript->codeBlock('alert("'.$url.'")');
+    echo $javascript->codeBlock('window.location = "'.$url.'"');
+}
+*/
+
+            
+$appForm->addScript('
+        //jQuery("#UsuarioLoginGroup").parent().hide();
+        jQuery("#login").bind("click", function() {
+            jQuery.getJSON("login/" + jQuery("#UsuarioLoginNombre").val() + "/" + jQuery("#UsuarioLoginClave").val(),
+            function(datos){
+                var options = "";
+                for (var i = 0; i < datos.length; i++) {
+                    options += "<option value=\"" + datos[i].optionValue + "\">" + datos[i].optionDisplay + "</option>";
+                }
+                
+                jQuery("#UsuarioLoginGroup").html(options);
+                jQuery("#UsuarioLoginGroup").parent().show();
+            });
+        });
+');
+
+
+$bloques = $usuario . $clave . $group . $ingresar;
 
 
 /**

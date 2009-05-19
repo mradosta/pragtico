@@ -34,7 +34,10 @@ $codigo_html[] = "\t<link rel='icon' href='" . $this->webroot . "favicon.ico' ty
 $codigo_html[] = "\t<link rel='shortcut icon' href='" . $this->webroot . "favicon.ico' type='image/x-icon'/>";
 
 $html->css("aplicacion.default.screen", null, array("media"=>"screen"), false);
-$appForm->addScript("jquery", "links");
+
+$js[] = 'jquery';
+$js[] = 'default';
+$appForm->addScript($js, 'links');
 $codigo_html[] = $asset->scripts_for_layout();
 $codigo_html[] = "</head>";
 

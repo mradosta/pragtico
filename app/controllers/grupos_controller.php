@@ -52,17 +52,23 @@ class GruposController extends AppController {
  * @return void.
  * @access public
  */
-	function setear_grupo_default($id) {
+	function setear_grupo_default($id, $background = false) {
 		$usuario = $this->Session->read("__Usuario");
 		if ($usuario['Usuario']['grupos'] & (int)$id) {
 			$usuario['Usuario']['preferencias']['grupo_default_id'] = $id;
 			$this->Session->write("__Usuario", $usuario);
-			$this->Session->setFlash('El nuevo grupo por defecto se seteo correctamente.', 'ok');
-		}
-		else {
+            if ($background === false) {
+                $this->Session->setFlash('El nuevo grupo por defecto se seteo correctamente.', 'ok');
+            }
+		} else if ($background === false) {
 			$this->Session->setFlash('Usted no tiene autorizacion para cambiar el grupo.', 'error');
 		}
-		$this->History->goBack();
+        
+        if ($background === false) {
+            $this->History->goBack();
+        } else {
+            $this->autoRender = false;
+        }
 	}
 
 	
