@@ -114,21 +114,23 @@ class UsuariosController extends AppController {
 
             if (!empty($usuario)) {
 
-                if (!empty($this->data['Usuario']['loginGroup'])) {
-                    $this->requestAction('grupos/setear_grupo_default/' . $this->data['Usuario']['loginGroup'] . '/true');
-                    $this->redirect('../relaciones/index', null, true);
-                } else if (!empty($usuario['Grupo'])) {
+                if (!empty($usuario['Grupo']) && empty($this->data['Usuario']['loginGroup'])) {
                     $this->set('groups', Set::combine($usuario['Grupo'], '{n}.id', '{n}.nombre'));
+                } else {
+                                
+                    /** Guardo en la session el usuario.*/
+                    $this->Session->write('__Usuario', $usuario);
+
+                    /** Busco los menus.*/
+                    $this->Session->write('__itemsMenu', $this->Usuario->traerMenus($usuario));
+                    
+                    if (!empty($this->data['Usuario']['loginGroup'])) {
+                        $this->requestAction('grupos/setear_grupo_default/' . $this->data['Usuario']['loginGroup'] . '/true');
+                    }
+
+                    $this->redirect('../relaciones/index', null, true);
                 }
-
                 
-                /** Guardo en la session el usuario.*/
-                $this->Session->write('__Usuario', $usuario);
-
-                /** Busco los menus.*/
-                $this->Session->write('__itemsMenu', $this->Usuario->traerMenus($usuario));
-                //$this->Session->write('__actualMenu', '0');
-            //$this->redirect('../relaciones/index', null, true);
             } else {
                 $this->Session->setFlash(__('Login failed. Invalid username or password.', true), 'error');
                 $this->redirect('login', null, true);
