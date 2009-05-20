@@ -41,46 +41,6 @@ class FacturasController extends AppController {
 	}
 	
 
-	function xresumen() {
-		//if (!isset($this->data['Resumen']['tipo'])) {
-		//	$this->data['Resumen']['tipo'] = "resumido";
-		//}
-		//d($this->data);
-		//$records = $this->Factura->find('all', $this->Paginador->generarCondicion($this->data));
-
-
-		if (!empty($this->data['Condicion']['Factura-periodo']) && !empty($this->data['Condicion']['Factura-empleador_id'])) {
-			$period = $this->Util->format($this->data['Condicion']['Factura-periodo'], 'periodo');
-			$this->data['Condicion']['Factura-fecha__desde'] = $period['desde'];
-			$this->data['Condicion']['Factura-fecha__hasta'] = $period['hasta'];
-
-			/*
-			if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
-				$this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Liquidacion-grupo_id']));
-				unset($this->data['Condicion']['Liquidacion-grupo_id']);
-			}
-			*/
-			
-			//debug($this->data);
-			unset($this->data['Condicion']['Factura-periodo']);
-			$conditions = $this->Paginador->generarCondicion(false);
-			$this->data['Condicion']['Factura-periodo'] = $period['periodoCompleto'];
-
-			$records = $this->Factura->report($conditions, $this->data['Resumen']['tipo']);
-			if (empty($records)) {
-				$this->Session->setFlash('No se han encontrado facturas para el periodo seleccioando segun los criterios especificados.', 'error');
-			} else {
-				$this->set('data', $records);
-				//$this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
-				$this->layout = 'ajax';
-			}
-		} else {
-			$this->set('grupos', $this->Util->getUserGroups());
-		}
-		$this->set("tipos", array("summarized" => "Resumido", "detailed" => "Detallado"));
-	}
-	
-	
 	function prefacturar() {
 
 		if (!empty($this->data)) {
@@ -109,8 +69,8 @@ class FacturasController extends AppController {
 						$condiciones = $this->Paginador->generarCondicion($this->data);
 
 						/** Delete user's unconfirmed Invoices */
-						$usuario = $this->Session->read('__Usuario');
-						$this->Factura->deleteAll(array('Factura.user_id' => $usuario['Usuario']['id'], 'Factura.estado' => 'Sin Confirmar'));
+						//$usuario = $this->Session->read('__Usuario');
+						//$this->Factura->deleteAll(array('Factura.user_id' => $usuario['Usuario']['id'], 'Factura.estado' => 'Sin Confirmar'));
 						if (!$this->Factura->getInvoice($condiciones)) {
 							$this->Session->setFlash(__('Can\'t create invoices. Check search criterias', true), 'error');
 							$resultados['registros'] = array();
