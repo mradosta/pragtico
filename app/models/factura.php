@@ -219,7 +219,11 @@ class Factura extends AppModel {
 							'Facturado No Remunerativo'	=> $t2,
 							'Facturado Beneficios'		=> $t3);
 
-						$details[$receipt['trabajador_id']]['Totales'] = $totals[$receipt['trabajador_id']];
+                        $details[$receipt['trabajador_id']]['Totales'] = array_merge(array(
+                                'Liquidado'      => 0,
+                                'Remunerativo'   => 0,
+                                'No Remunerativo'=> 0,
+                                'Beneficios'     => 0), $totals[$receipt['trabajador_id']]);
 					}
 				}
 			}
@@ -228,8 +232,8 @@ class Factura extends AppModel {
 			$reportData['Iva'] = ($reportData['Facturado No Remunerativo'] + $reportData['Facturado Remunerativo'] + $reportData['Facturado Beneficios']) * 21 / 100;
 			$reportData['Total'] = $reportData['Facturado No Remunerativo'] + $reportData['Facturado Remunerativo'] + $reportData['Facturado Beneficios'] + $reportData['Iva'];
 			$reportData['Total Liquidado'] = $reportData['Liquidado Remunerativo'] + $reportData['Liquidado No Remunerativo'];
-
-			return array(	'invoice'	=> $invoice['Factura'],
+			
+            return array(	'invoice'	=> $invoice['Factura'],
 						 	'employer' 	=> $invoice['Empleador'],
 						 	'details' 	=> $details,
 	   						'totals' 	=> $reportData);

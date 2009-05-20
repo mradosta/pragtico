@@ -142,7 +142,7 @@ if (!empty($data)) {
 			foreach ($detail['Concepto'] as $concept) {
 				foreach ($concept as $k => $v) {
 					if (!in_array($col, array('C', 'D'))) {
-                        $documento->doc->getActiveSheet()->getStyle($col . $fila)->getNumberFormat()->setFormatCode('"$ "#0,00');
+                        $documento->doc->getActiveSheet()->getStyle($col . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
 						$documento->setCellValue($col . $fila, $v, $styleRight);
 					} else {
 						$documento->setCellValue($col . $fila, $v);
@@ -156,7 +156,7 @@ if (!empty($data)) {
 			
 			$col = 'E';
 			foreach ($detail['Totales'] as $k => $v) {
-                $documento->doc->getActiveSheet()->getStyle($col . $fila)->getNumberFormat()->setFormatCode('"$ "#0,00');
+                $documento->doc->getActiveSheet()->getStyle($col . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
                 $documento->setCellValue($col . $fila, $v, $styleBoldRight);
 				$col++;
 			}
@@ -164,43 +164,42 @@ if (!empty($data)) {
 		}
 
 		$fila+=2;
-		$documento->setCellValue('B' . $fila . ':E' . $fila, 'TOTALES', $styleBoldCenter);
+		$documento->setCellValue('B' . $fila . ':F' . $fila, 'TOTALES', $styleBoldCenter);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Total de Empleados Facturados', $styleBold);
-        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "#0,00');
-		$documento->setCellValue('E' . $fila, $data['totals']['Total de Empleados Facturados'], $styleBoldRight);
+        $documento->setCellValue('E' . $fila . ':F' . $fila, $data['totals']['Total de Empleados Facturados'], $styleBoldRight);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Facturado Remunerativo', $styleBold);
-        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "#0,00');
-		$documento->setCellValue('E' . $fila, $data['totals']['Facturado Remunerativo'], $styleBoldRight);
+        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
+        $documento->setCellValue('E' . $fila . ':F' . $fila, $data['totals']['Facturado Remunerativo'], $styleBoldRight);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Facturado No Remunerativo', $styleBold);
-        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "#0,00');
-		$documento->setCellValue('E' . $fila, $data['totals']['Facturado No Remunerativo'], $styleBoldRight);
+        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
+        $documento->setCellValue('E' . $fila . ':F' . $fila, $data['totals']['Facturado No Remunerativo'], $styleBoldRight);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Facturado Beneficios', $styleBold);
-        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "#0,00');
-		$documento->setCellValue('E' . $fila, $data['totals']['Facturado Beneficios'], $styleBoldRight);
+        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
+        $documento->setCellValue('E' . $fila . ':F' . $fila, $data['totals']['Facturado Beneficios'], $styleBoldRight);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Iva', $styleBold);
-        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "#0,00');
-		$documento->setCellValue('E' . $fila, $data['totals']['Iva'], $styleBoldRight);
+        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
+        $documento->setCellValue('E' . $fila . ':F' . $fila, $data['totals']['Iva'], $styleBoldRight);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Total', $styleBold);
-        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "#0,00');
-		$documento->setCellValue('E' . $fila, $data['totals']['Total'], $styleBoldRight);
+        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
+        $documento->setCellValue('E' . $fila . ':F' . $fila, $data['totals']['Total'], $styleBoldRight);
 		$fila+=2;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Liquidado Remunerativo', $styleBold);
-        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "#0,00');
-		$documento->setCellValue('E' . $fila, $data['totals']['Liquidado Remunerativo'], $styleBoldRight);
+        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
+        $documento->setCellValue('E' . $fila . ':F' . $fila, $data['totals']['Liquidado Remunerativo'], $styleBoldRight);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Liquidado No Remunerativo', $styleBold);
-        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "#0,00');
-		$documento->setCellValue('E' . $fila, $data['totals']['Liquidado No Remunerativo'], $styleBoldRight);
+        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
+        $documento->setCellValue('E' . $fila . ':F' . $fila, $data['totals']['Liquidado No Remunerativo'], $styleBoldRight);
 		$fila++;
 		$documento->setCellValue('B' . $fila . ':D' . $fila, 'Total Liquidado', $styleBold);
-        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "#0,00');
-		$documento->setCellValue('E' . $fila, $data['totals']['Total Liquidado'], $styleBoldRight);
+        $documento->doc->getActiveSheet()->getStyle('E' . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
+        $documento->setCellValue('E' . $fila . ':F' . $fila, $data['totals']['Total Liquidado'], $styleBoldRight);
 
 	$fileFormat = 'Excel5';
 	$documento->save($fileFormat);
