@@ -55,9 +55,7 @@ class Ausencia extends AppModel {
         ),
 	);
 
-	var $belongsTo = array(	'Relacion' =>
-                        array('className'    => 'Relacion',
-                              'foreignKey'   => 'relacion_id'),
+	var $belongsTo = array(	'Relacion',
 							'AusenciasMotivo' =>
                         array('className'    => 'AusenciasMotivo',
                               'foreignKey'   => 'ausencia_motivo_id'));
@@ -150,86 +148,149 @@ class Ausencia extends AppModel {
 														'Ausencia.desde <='	=> $periodo['hasta']))))));
 		
 		$ausencias['Accidente'] = 0;
+        $ausencias['Accidente ART'] = 0;
+        $ausencias['Valor Dia Accidente Art'] = 0;
 		$ausencias['Justificada Enfermedad'] = 0;
 		$ausencias['Justificada Licencia'] = 0;
 		$ausencias['Injustificada'] = 0;
-		$conceptos = $auxiliares = array();
-
-		if (!empty($r)) {
+        $art = 0;
+        $conceptos = $auxiliares = array();
+		
+        if (!empty($r)) {
 			$Concepto = ClassRegistry::init('Concepto');
 			
 			foreach ($r as $k => $ausencia) {
 
-				$diasAnterioresParaArt = 0;
-				if ($ausencia['AusenciasMotivo']['tipo'] === 'Accidente') {
-					$diffTmp = $this->dateDiff($ausencia['Ausencia']['desde'], $periodo['desde']);
-					$diasAnterioresParaArt = $diffTmp['dias'] - 1;
-				}
-				
-				$diff = $this->dateDiff($ausencia['Ausencia']['desde'], $periodo['hasta']);
-				foreach ($ausencia['AusenciasSeguimiento'] as $seguimiento) {
 
-					if ($seguimiento['dias'] > $diff['dias']) {
+                if ($ausencia['Ausencia']['desde'] < $periodo['desde']) {
+                    $diff = $this->dateDiff($periodo['desde'], $periodo['hasta']);
+                } else {
+                    $diff = $this->dateDiff($ausencia['Ausencia']['desde'], $periodo['hasta']);
+                }
 
-						$ausencias[$ausencia['AusenciasMotivo']['tipo']] += $diff['dias'];
-						$auxiliar = null;
-						$auxiliar['id'] = $seguimiento['id'];
-						$auxiliar['estado'] = 'Liquidado';
-						$auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
-						$auxiliar['dias'] = $diff['dias'];
-						$auxiliares[] = array(	'save' 	=> serialize($auxiliar),
-												'model' => 'AusenciasSeguimiento');
+                if ($ausencia['AusenciasMotivo']['tipo'] === 'Accidente') {
+                    if (count($r) > 1) {
+                        /** TODO: Revisar esto y hacerlo de una forma mas elegante */
+                        echo 'ERROR, mas de una ausencias de tipo accidente cargadas.';
+                        die;
+                    }
+                    $diffArt = $diff;
+                    $ausenciasArt = $ausencia;
+                }
 
-						/** Debo desdoblar el seguimiento en dos partes:
-						*  una ya liquidada (esta) y genero una nueva exactamente igual
-						* con los dias que queron pendientes de este */
-						$seguimiento['id'] = null;
-						$seguimiento['dias'] = $seguimiento['dias'] - $diff['dias'];
-						$auxiliares[] = array(	'save' 	=> serialize($seguimiento),
-												'model' => 'AusenciasSeguimiento');
-						break;
-					} else {
-						$ausencias[$ausencia['AusenciasMotivo']['tipo']] += $seguimiento['dias'];
+                foreach ($ausencia['AusenciasSeguimiento'] as $seguimiento) {
 
-						$auxiliar = null;
-						$auxiliar['id'] = $seguimiento['id'];
-						$auxiliar['estado'] = 'Liquidado';
-						$auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
-						$auxiliares[] = array(	'save' 	=> serialize($auxiliar),
-												'model' => 'AusenciasSeguimiento');
-					}
-				}
+                    if ($seguimiento['dias'] > $diff['dias']) {
+
+                        $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $diff['dias'];
+                        $auxiliar = null;
+                        $auxiliar['id'] = $seguimiento['id'];
+                        $auxiliar['estado'] = 'Liquidado';
+                        $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
+                        $auxiliar['dias'] = $diff['dias'];
+                        $auxiliares[] = array(	'save' 	=> serialize($auxiliar),
+                                                'model' => 'AusenciasSeguimiento');
+
+                        /** Debo desdoblar el seguimiento en dos partes:
+                        *  una ya liquidada (esta) y genero una nueva exactamente igual
+                        * con los dias que queron pendientes de este */
+                        $seguimiento['id'] = null;
+                        if ($ausencia['Ausencia']['desde'] < $periodo['desde']) {
+                            $diffTmp = $this->dateDiff($ausencia['Ausencia']['desde'], $periodo['desde']);
+                            $seguimiento['dias'] = $seguimiento['dias'] - ($diff['dias'] + $diffTmp['dias'] + 1);
+                        } else {
+                            $seguimiento['dias'] = $seguimiento['dias'] - $diff['dias'];
+                        }
+                        $auxiliares[] = array(	'save' 	=> serialize($seguimiento),
+                                                'model' => 'AusenciasSeguimiento');
+                        break;
+                    } else {
+                        $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $seguimiento['dias'];
+
+                        $auxiliar = null;
+                        $auxiliar['id'] = $seguimiento['id'];
+                        $auxiliar['estado'] = 'Liquidado';
+                        $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
+                        $auxiliares[] = array(	'save' 	=> serialize($auxiliar),
+                                                'model' => 'AusenciasSeguimiento');
+                    }
+                }
 			}
-			
-			foreach (array_unique(Set::extract('/AusenciasMotivo/tipo', $r)) as $type) {
-				$conceptos[] = $Concepto->findConceptos('ConceptoPuntual',
-						array(	'relacion' 			=> $relacion,
-								'codigoConcepto'	=> 'ausencias_' . strtolower(str_replace(' ', 's_', $type))));
-			}
-		}
 
-		$art = 0;
-		if (($diasAnterioresParaArt + $ausencias['Accidente']) > 10) {
+            foreach (array_unique(Set::extract('/AusenciasMotivo/tipo', $r)) as $type) {
+                $conceptos[] = $Concepto->findConceptos('ConceptoPuntual',
+                        array(  'relacion'          => $relacion,
+                                'codigoConcepto'    => 'ausencias_' . strtolower(str_replace(' ', 's_', $type))));
+            }
+                
 
-			if ($diasAnterioresParaArt > 10) {
-				$art = $ausencias['Accidente'];
-				$ausencias['Accidente'] = 0;
-			} else if ($diasAnterioresParaArt <= 10) {
-				$art = $diasAnterioresParaArt + $ausencias['Accidente'] - 10;
-				$ausencias['Accidente'] = $diasAnterioresParaArt - $ausencias['Accidente'];
-			} else {
-				$art = $ausencias['Accidente'] - 10;
-				$ausencias['Accidente'] = 10;
-			}
-			
-			$conceptos[] = $Concepto->findConceptos('ConceptoPuntual',
-					array(	'relacion' 			=> $relacion,
-							'codigoConcepto'	=> 'ausencias_accidente_art'));
-		}
-		
+            if (!empty($ausenciasArt) && !empty($diffArt)) {
+                if ($ausenciasArt['Ausencia']['desde'] < $periodo['desde']) {
+                    $diffTmp = $this->dateDiff($ausenciasArt['Ausencia']['desde'], $periodo['desde']);
+                    $daysBeforePeriod = $diffTmp['dias'] - 1;
+                } else {
+                    $daysBeforePeriod = 0;
+                }
+
+                /** If more than 10 days, must create an ART accident and an accident */
+                if ($daysBeforePeriod + $diffArt['dias'] > 10) {
+                    if ($daysBeforePeriod > 10) {
+                        $ausencias['Accidente'] = 0;
+                        $ausencias['Accidente ART'] = $diffArt['dias'];
+                    } else {
+                        $ausencias['Accidente'] = 10 - $daysBeforePeriod;
+                        $ausencias['Accidente ART'] = $diffArt['dias'] - $ausencias['Accidente'];
+                    }
+
+                    $date = $this->dateAdd($ausenciasArt['Ausencia']['desde'], -365);
+                    $dividendo = 365;
+                    if ($date < $relacion['Relacion']['ingreso']) {
+                        $date = $relacion['Relacion']['ingreso'];
+                        $diffDividendo = $this->dateDiff($relacion['Relacion']['ingreso'], $ausenciasArt['Ausencia']['desde']);
+                        $dividendo = $diffDividendo['dias'];
+                    }
+
+                    if ($periodo['periodo'] === '2Q') {
+                        $dia = '15';
+                    } else {
+                        $dia = '01';
+                    }
+
+
+                    $data = $this->Relacion->Liquidacion->LiquidacionesDetalle->find('all', array(
+                        'checkSecurity' => false,
+                        'contain'       => array('Liquidacion'),
+                        'fields'        => array('sum(LiquidacionesDetalle.valor) as valor'),
+                        'conditions'    =>
+                            array(  'Liquidacion.estado'                        => 'Confirmada',
+                                    'Liquidacion.relacion_id'                   => $relacion['Relacion']['id'],
+                                    'LiquidacionesDetalle.concepto_tipo'        => 'Remunerativo',
+                                    'LiquidacionesDetalle.concepto_imprimir !=' => 'No',
+                                    'date(concat(Liquidacion.ano, \'-\', Liquidacion.mes, \'-'.$dia.'\'))  >='
+                                            => $date,
+                                    'date(concat(Liquidacion.ano, \'-\', Liquidacion.mes, \'-'.$dia.'\'))  <'
+                                            => $ausenciasArt['Ausencia']['desde']
+                                 )));
+                    
+                    $valor_dia_accidente_art = $data[0]['LiquidacionesDetalle']['valor'] / $dividendo;
+                    $ausencias['Valor Dia Accidente Art'] = $data[0]['LiquidacionesDetalle']['valor'] / $dividendo;
+                    
+                    
+                    
+                    $conceptos[] = $Concepto->findConceptos('ConceptoPuntual',
+                            array(  'relacion'          => $relacion,
+                                    'codigoConcepto'    => 'ausencias_accidente_art'));
+
+                } else {
+                    $ausencias['Accidente'] = $diffArt['dias'];
+                }
+            }
+        }
+
 		return array('conceptos' 	=> $conceptos,
 					 'variables' 	=> array('#ausencias_accidentes' 				=> $ausencias['Accidente'],
-											 '#ausencias_accidentes_art' 			=> $art,
+                                             '#ausencias_accidentes_art' 			=> $ausencias['Accidente ART'],
+                                             '#valor_dia_accidente_art'             => $ausencias['Valor Dia Accidente Art'],
 											 '#ausencias_justificadas_enfermedad' 	=> $ausencias['Justificada Enfermedad'],
 											 '#ausencias_justificadas_licencia' 	=> $ausencias['Justificada Licencia'],
 										  	 '#ausencias_injustificadas' 			=> $ausencias['Injustificada']),
