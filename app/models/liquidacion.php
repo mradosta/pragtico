@@ -65,6 +65,7 @@ class Liquidacion extends AppModel {
                               'foreignKey'   => 'factura_id'));
                               
 
+    var $__recursivityCounter = 0;
 /**
  * I must overwrite default cakePHP deleteAll method because it's not performant when there're many 
  * relations and many records.
@@ -148,6 +149,7 @@ class Liquidacion extends AppModel {
 		$this->setPeriod($period);
 		$this->setRelationship($relationship);
 
+        $this->resetRecursivity();
 		
 		if ($type === 'normal') {
 
@@ -311,6 +313,7 @@ class Liquidacion extends AppModel {
 			$this->__conceptos[$cCod] = array_merge($this->__conceptos[$cCod],
 					$this->__getConceptValue($concepto));
 		}
+        //d($this->__conceptos);
 		return $this->__getSaveArray();
     }
     
@@ -505,11 +508,27 @@ class Liquidacion extends AppModel {
 * Dado un concepto, resuelve la formula.
 */
 	function __getConceptValue($concepto) {
-		$valor = null;
+        
+        /*
+        if ($this->checkRecursivity($concepto['codigo']) === false) {
+            $errores[] = array( "tipo"                  =>"Formula recursiva",
+                                "gravedad"              =>"Alta",
+                                "concepto"              =>$concepto['codigo'],
+                                "variable"              =>'',
+                                "formula"               =>$concepto['formula'],
+                                "descripcion"           =>"La formula hace referencia a si misma o a un concepto que se referencia a si mismo.",
+                                "recomendacion"         =>"Verifique la formula del concepto.",
+                                "descripcion_adicional" =>"");
+
+            //d(array("valor"=>"#N/A", "debug"=>'', "valor_cantidad"=>'', "nombre"=>$concepto['nombre'], "errores"=>$errores));
+            return array("valor"=>"#N/A", "debug"=>'', "valor_cantidad"=>'', "nombre"=>$concepto['nombre'], "errores"=>$errores);
+        }
+        */
+        
+        $valor = null;
 		$errores = array();
 		$formula = $concepto['formula'];
-		
-		
+        
 		/**
 		* Si en la formula hay variables, busco primero estos valores.
 		*/
@@ -962,5 +981,25 @@ class Liquidacion extends AppModel {
 	function getConcept() {
 		return $this->__conceptos;
 	}
+
+
+    function resetRecursivity() {
+        $this->__recursivityCounter = null;
+    }
+    
+    function checkRecursivity($match) {
+        if (!isset($this->__recursivityCounter[$match])) {
+            $this->__recursivityCounter[$match] = 1;
+        } else {
+            $this->__recursivityCounter[$match]++;
+        }
+
+        if ($this->__recursivityCounter[$match] >= 10) {
+            //d($match . ' ' . $this->__recursivityCounter[$match]);
+            return false;
+        }
+        return true;
+    }
+    
 }
 ?>
