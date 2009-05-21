@@ -25,9 +25,7 @@ class LiquidacionesDetalle extends AppModel {
 
 	var $unique = array('liquidacion_id', 'concepto_id');
 
-	var $belongsTo = array(	'Concepto' =>
-                        array('className'   => 'Concepto',
-                              'foreignKey' 	=> 'concepto_id'));
+	var $belongsTo = array('Liquidacion', 'Concepto');
 
 }
 ?>
