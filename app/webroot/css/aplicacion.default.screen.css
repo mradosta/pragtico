@@ -184,6 +184,13 @@ div.encabezado ul li {
 	padding-top: 1px;
 }
 
+div.encabezado span.default {
+    1color: #817F84;
+    color: #202022;
+    font-weight: bold;
+    font-size: 13px;
+}
+
 div.banda_izquierda {
 	background: url(img/banda.gif) no-repeat;
 	min-width: 380px;
@@ -688,19 +695,19 @@ div.add div.textarea {
  	width: 720px;
 }
 
-div.wysiwyg {                                                                                                                                                               
-	padding: 20px 0 3px 0;                                                                                                                                                
-	margin-left: 15px;                                                                                                                                                    
-	float: left;                                                                                                                                                          
-	width: 770px;                                                                                                                                                         
+div.wysiwyg {                                                       
+	padding: 20px 0 3px 0;                                                         
+	margin-left: 15px;
+    float: left;
+	width: 770px;                                            
 }                                                                                                                                                                           
 
-div.wysiwyg div.editor {                                                                                                                                                    
-	width: 560px;                                                                                                                                                         
-	float: left;                                                                                                                                                          
+div.wysiwyg div.editor {
+	width: 560px;
+	float: left;                                            
 }                                                                                                                                                                           
-div.wysiwyg label {                                                                                                                                                         
-	width: 110px;                                                                                                                                                         
+div.wysiwyg label {
+	width: 110px;
 }
 
 span.solo_lectura {
@@ -797,10 +804,6 @@ div.tablasFromTo tbody td.quitar {
 /*
  * DESGLOSES
  */
-div.desglose {
-	1width: 770px;
-}
-
 div.desglose div.tabla {
 	margin-bottom: 35px;
 }
@@ -1036,7 +1039,7 @@ form.edicion_en_grilla input {
 
 
 tr.fila_resaltada {
-	background-color:#E6FF55;
+	background-color: #E6FF55;
 }
 
 
@@ -1048,7 +1051,7 @@ tr.fila_resaltada {
 
 
 
-.label_liquidacion {
+.label_liquidacion_deprecated {
 	color:gray;
 }
 
@@ -1074,6 +1077,3 @@ div.agregarDetalle {
 div.add .submit {
 	float:right;
 }
-
-
-
