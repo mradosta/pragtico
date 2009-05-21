@@ -123,7 +123,7 @@ class Factura extends AppModel {
                     && $employerId !== $receipt['Liquidacion']['empleador_id']) {
 					$employerId = $receipt['Liquidacion']['empleador_id'];
 					$areaId = null;
-                    if (!empty($saveDatails)) {
+                    if ($k > 0) {
 						$this->__preSave($employerId, $receiptIds, $areaId, $saveDatails, $conditions);
 						$saveMaster = $saveDatails = $receiptIds = null;;
 					}
