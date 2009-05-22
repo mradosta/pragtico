@@ -136,8 +136,9 @@ class Factura extends AppModel {
                     }
                     $employerId = $receipt['Liquidacion']['empleador_id'];
                     $areaId = $receipt['Liquidacion']['relacion_area_id'];
-                } elseif ($count === $k) {
-                    $receiptIds[] = $receipt['Liquidacion']['id'];
+                }
+
+                if ($count === $k && !empty($saveDatails)) {
                     $this->__preSave($employerId, $receiptIds, $areaId, $saveDatails, $conditions);
                 }
             }
