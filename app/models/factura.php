@@ -119,6 +119,7 @@ class Factura extends AppModel {
 					}
 				}
 				
+                $receiptIds[] = $receipt['Liquidacion']['id'];
                 if ($receipt['Empleador']['facturar_por_area'] === 'No'
                     && $employerId !== $receipt['Liquidacion']['empleador_id']) {
 					$employerId = $receipt['Liquidacion']['empleador_id'];
@@ -139,7 +140,6 @@ class Factura extends AppModel {
                     $receiptIds[] = $receipt['Liquidacion']['id'];
                     $this->__preSave($employerId, $receiptIds, $areaId, $saveDatails, $conditions);
                 }
-                $receiptIds[] = $receipt['Liquidacion']['id'];
             }
 			return true;
 		} else {
