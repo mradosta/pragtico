@@ -103,23 +103,6 @@ class Factura extends AppModel {
             $count = count($data) - 1;
 			foreach ($data as $k => $receipt) {
 
-				foreach ($receipt['LiquidacionesDetalle'] as $detail) {
-					if ($detail['coeficiente_tipo'] !== 'No Facturable' && ($detail['concepto_imprimir'] === 'Si' || ($detail['concepto_imprimir'] === 'Solo con valor') && abs($detail['valor']) > 0)) {
-						if (!isset($saveDatails[$detail['coeficiente_nombre']])) {
-							$saveDatails[$detail['coeficiente_nombre']]['coeficiente_id'] = $detail['coeficiente_id'];
-							$saveDatails[$detail['coeficiente_nombre']]['coeficiente_nombre'] = $detail['coeficiente_nombre'];
-							$saveDatails[$detail['coeficiente_nombre']]['coeficiente_tipo'] = $detail['coeficiente_tipo'];
-							$saveDatails[$detail['coeficiente_nombre']]['coeficiente_valor'] = $detail['coeficiente_valor'];
-							$saveDatails[$detail['coeficiente_nombre']]['subtotal'] = $detail['valor'];
-							$saveDatails[$detail['coeficiente_nombre']]['total'] = $detail['valor'] * $detail['coeficiente_valor'];
-						} else {
-							$saveDatails[$detail['coeficiente_nombre']]['subtotal'] += $detail['valor'];
-							$saveDatails[$detail['coeficiente_nombre']]['total'] += $detail['valor'] * $detail['coeficiente_valor'];
-						}
-					}
-				}
-				
-                $receiptIds[] = $receipt['Liquidacion']['id'];
                 if ($receipt['Empleador']['facturar_por_area'] === 'No'
                     && $employerId !== $receipt['Liquidacion']['empleador_id']) {
 					$employerId = $receipt['Liquidacion']['empleador_id'];
@@ -136,6 +119,23 @@ class Factura extends AppModel {
                     }
                     $employerId = $receipt['Liquidacion']['empleador_id'];
                     $areaId = $receipt['Liquidacion']['relacion_area_id'];
+                }
+
+                $receiptIds[] = $receipt['Liquidacion']['id'];
+                foreach ($receipt['LiquidacionesDetalle'] as $detail) {
+                    if ($detail['coeficiente_tipo'] !== 'No Facturable' && ($detail['concepto_imprimir'] === 'Si' || ($detail['concepto_imprimir'] === 'Solo con valor') && abs($detail['valor']) > 0)) {
+                        if (!isset($saveDatails[$detail['coeficiente_nombre']])) {
+                            $saveDatails[$detail['coeficiente_nombre']]['coeficiente_id'] = $detail['coeficiente_id'];
+                            $saveDatails[$detail['coeficiente_nombre']]['coeficiente_nombre'] = $detail['coeficiente_nombre'];
+                            $saveDatails[$detail['coeficiente_nombre']]['coeficiente_tipo'] = $detail['coeficiente_tipo'];
+                            $saveDatails[$detail['coeficiente_nombre']]['coeficiente_valor'] = $detail['coeficiente_valor'];
+                            $saveDatails[$detail['coeficiente_nombre']]['subtotal'] = $detail['valor'];
+                            $saveDatails[$detail['coeficiente_nombre']]['total'] = $detail['valor'] * $detail['coeficiente_valor'];
+                        } else {
+                            $saveDatails[$detail['coeficiente_nombre']]['subtotal'] += $detail['valor'];
+                            $saveDatails[$detail['coeficiente_nombre']]['total'] += $detail['valor'] * $detail['coeficiente_valor'];
+                        }
+                    }
                 }
 
                 if ($count === $k && !empty($saveDatails)) {
