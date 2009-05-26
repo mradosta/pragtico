@@ -272,11 +272,7 @@ class Ausencia extends AppModel {
                                     'date(concat(Liquidacion.ano, \'-\', Liquidacion.mes, \'-'.$dia.'\'))  <'
                                             => $ausenciasArt['Ausencia']['desde']
                                  )));
-                    
-                    $valor_dia_accidente_art = $data[0]['LiquidacionesDetalle']['valor'] / $dividendo;
-                    $ausencias['Valor Dia Accidente Art'] = $data[0]['LiquidacionesDetalle']['valor'] / $dividendo;
-                    
-                    
+                    $ausencias['Valor Dia Accidente Art'] = array_sum(Set::extract('/LiquidacionesDetalle/valor', $data)) / $dividendo;
                     
                     $conceptos[] = $Concepto->findConceptos('ConceptoPuntual',
                             array(  'relacion'          => $relacion,
