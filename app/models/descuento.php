@@ -147,11 +147,34 @@ class Descuento extends AppModel {
  				'(Descuento.descontar & ' . $descontar . ') >' 	=> 0,
  				'Descuento.estado' 								=> 'Activo')
 		));
-		
-		$conceptos = $auxiliares = array();
+
+		$conceptos = $variables = $auxiliares = array();
+        $index['Vale'] = 'a';
+        $index['Prestamo'] = 'a';
+        $index['Embargo'] = 'a';
+        $index['Cuota Alimentaria'] = 'a';
 		if (!empty($r)) {
+            
+            $Concepto = ClassRegistry::init('Concepto');
 			foreach ($r as $k => $v) {
-				
+
+                $tipos[] = $v['Descuento']['tipo'];
+                $name = Inflector::underscore(str_replace(' ', '', $v['Descuento']['tipo'] . '_' . $index[$v['Descuento']['tipo']]));
+                $index[$v['Descuento']['tipo']]++;
+                
+                $conceptos[] = $Concepto->findConceptos('ConceptoPuntual', array_merge(
+                        array('relacion' => $relacion, 'codigoConcepto' => $name), $opciones));
+                
+                $variables['total_descontado_' . $name] = 0;
+                $variables['cuotas_descontadas_' . $name] = 0;
+                $variables['monto_' . $name] = $v['Descuento']['monto'];
+                $variables['cuotas_' . $name] = $v['Descuento']['cuotas'];
+                if (!empty($v['DescuentosDetalle'])) {
+                    $variables['total_descontado_' . $name] = array_sum(Set::extract('/DescuentosDetalle/monto', $v['DescuentosDetalle']));
+                    $variables['cuotas_descontadas_' . $name] = count($v['DescuentosDetalle']);
+                }
+
+
 				/** Check for concurrency */
 				if ($v['Descuento']['concurrencia'] === 'Solo uno a la vez') {
 					if (empty($concurrencia[$v['Descuento']['tipo']])) {
@@ -161,74 +184,20 @@ class Descuento extends AppModel {
 					}
 				}
 
-
-				$cuotaDescontadas = count($v['DescuentosDetalle']);
-				$totalDescontado = array_sum(Set::extract('/monto', $v['DescuentosDetalle']));
-				$cuotaActual = $cuotaDescontadas + 1;
-
-				if (in_array($v['Descuento']['tipo'], array('Prestamo', 'Vale'))) {
-					$valorCuota = $v['Descuento']['monto'] / $v['Descuento']['cuotas'];
-					/** Establezco el maximo a descontar */
-					if ($v['Descuento']['maximo'] > 0 && $valorCuota > $v['Descuento']['maximo']) {
-						$valorCuota = $v['Descuento']['maximo'];
-					}
-
-					/** Verifico que la cuota no sea mayor al saldo */
-					$saldo = $v['Descuento']['monto'] - $totalDescontado;
-					if ($saldo < $valorCuota) {
-						$valorCuota = $saldo;
-					}
-				}
-
 				
-				/**
-				* Busco el codigo del concepto.
-				*/
-				$Concepto = ClassRegistry::init('Concepto');
-				$codigoConcepto = Inflector::underscore(str_replace(' ', '', $v['Descuento']['tipo']));
-				$concepto = $Concepto->findConceptos('ConceptoPuntual', array_merge(
-						array('relacion' => $relacion, 'codigoConcepto' => $codigoConcepto), $opciones));
-
-				if (!empty($valorCuota)) {
-					$concepto[$codigoConcepto]['formula'] = '=' . $valorCuota;
-				}
-				
-				//$concepto[$codigoConcepto]['debug'] = 'Tipo:' . $codigoConcepto . ', Monto Total:$' . $v['Descuento']['monto'] . ', Total de Cuotas:' . $v['Descuento']['cuotas'] . ', Cuotas Descontadas:' . $cuotaDescontadas . ', Saldo:$' . $saldo . ', Cuota a Descontar en esta Liquidacion:' . $cuotaActual . ', Valor esta Cuota:$' . $valorCuota;
-				//$concepto[$codigoConcepto]['valor_cantidad'] = '0';
-				//if ($v['Descuento']['tipo'] === 'Prestamo') {
-				//	$concepto[$codigoConcepto]['nombre'] = $v['Descuento']['tipo'] . ' ' . $v['Descuento']['descripcion'] . '. Fecha: ' . $this->format($v['Descuento']['alta'], 'date') . ' (Cuota: ' . $cuotaActual . '/' . $v['Descuento']['cuotas'] . ')';
-				//} else {
-				//	$concepto[$codigoConcepto]['nombre'] = $v['Descuento']['tipo'] . ' ' . $v['Descuento']['descripcion'] . '. Fecha: ' . $this->format($v['Descuento']['alta'], 'date');
-				//}
-				
-				if (empty($conceptos[$codigoConcepto])) {
-					$conceptos[$codigoConcepto] = $concepto[$codigoConcepto];
-				}
-				
-				/**
-				* Creo un registro el la tabla auxiliar que debera ejecutarse en caso de que se confirme la pre-liquidacion.
-				*/
+				/** Creo un registro el la tabla auxiliar que debera ejecutarse en caso de que se confirme la pre-liquidacion. */
 				$auxiliar = null;
 				$auxiliar['descuento_id'] = $v['Descuento']['id'];
 				$auxiliar['fecha'] = '##MACRO:fecha_liquidacion##';
 				$auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
 				$auxiliar['monto'] = '##MACRO:concepto_valor##';
-				//$auxiliar['observacion'] = '(Cuota: ' . $cuotaActual . '/' . $v['Descuento']['cuotas'] . ')';
-				$auxiliares[] = array('save'=>serialize($auxiliar), 'model' => 'DescuentosDetalle');
-
-				/**
-				* Si se termino de pagar el credito, debo actualizar el estado a Finalizado.
-				if (($totalDescontado + $valorCuota) >=  $v['Descuento']['monto']) {
-					$auxiliar = null;
-					$auxiliar['estado'] = 'Finalizado';
-					$auxiliar['id'] = $v['Descuento']['id'];
-					$auxiliares[] = array('save'=>serialize($auxiliar), 'model' => 'Descuento');
-				}
-				*/
+				$auxiliares[] = array('save' => serialize($auxiliar), 'model' => 'DescuentosDetalle');
 			}
 		}
-		//d(array('conceptos' => $conceptos, 'auxiliar' => $auxiliares));
-		return array('conceptos' => $conceptos, 'auxiliar' => $auxiliares);
+        return array(
+                    'conceptos'    => $conceptos,
+                    'variables'    => $variables,
+                    'auxiliar'     => $auxiliares);
 	}
 
 
