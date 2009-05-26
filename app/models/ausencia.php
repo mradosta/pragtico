@@ -260,6 +260,7 @@ class Ausencia extends AppModel {
                     $data = $this->Relacion->Liquidacion->LiquidacionesDetalle->find('all', array(
                         'checkSecurity' => false,
                         'contain'       => array('Liquidacion'),
+                        'group'         => array('Liquidacion.id'),
                         'fields'        => array('sum(LiquidacionesDetalle.valor) as valor'),
                         'conditions'    =>
                             array(  'Liquidacion.estado'                        => 'Confirmada',
