@@ -511,7 +511,7 @@ class LiquidacionesController extends AppController {
 						$lineas[] = $this->__generarRegistro($campos);
 					}
 					$this->set('archivo', array(
-                        'contenido' => implode('\n\r', $lineas),
+                        'contenido' => implode("\r\n", $lineas),
                         'nombre'    => 'SIAP-' . $periodo['ano'] . '-' . $periodo['mes'] . '.txt'));
 					$this->render('..' . DS . 'elements' . DS . 'txt', 'txt');
 				} else {
