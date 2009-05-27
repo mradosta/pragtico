@@ -43,6 +43,11 @@ class Trabajador extends AppModel {
 				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe especificar el apellido del trabajador.')
         ),
+        'localidad_id' => array(
+            array(
+                'rule'      => VALID_NOT_EMPTY,
+                'message'   => 'Debe seleccionar la localidad del trabajador.')
+        ),
         'nombre' => array(
 			array(
 				'rule'	=> VALID_NOT_EMPTY,
