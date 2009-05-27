@@ -114,10 +114,12 @@ class UsuariosController extends AppController {
 
             if (!empty($usuario)) {
 
-                if (!empty($usuario['Grupo']) && empty($this->data['Usuario']['loginGroup'])) {
+                if (!empty($usuario['Grupo'])
+                    && count($usuario['Grupo']) > 1
+                    && empty($this->data['Usuario']['loginGroup'])) {
                     $this->set('groups', Set::combine($usuario['Grupo'], '{n}.id', '{n}.nombre'));
                 } else {
-                                
+                    
                     /** Guardo en la session el usuario.*/
                     $this->Session->write('__Usuario', $usuario);
 
@@ -126,6 +128,8 @@ class UsuariosController extends AppController {
                     
                     if (!empty($this->data['Usuario']['loginGroup'])) {
                         $this->requestAction('grupos/setear_grupo_default/' . $this->data['Usuario']['loginGroup'] . '/true');
+                    } elseif (count($usuario['Grupo']) == 1) {
+                        $this->requestAction('grupos/setear_grupo_default/' . $usuario['Grupo'][0]['id'] . '/true');
                     }
 
                     $this->redirect('../relaciones/index', null, true);
@@ -136,7 +140,6 @@ class UsuariosController extends AppController {
                 $this->redirect('login', null, true);
             }
         }
-        
         $this->layout = 'login';
     }
     
