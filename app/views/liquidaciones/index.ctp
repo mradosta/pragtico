@@ -64,7 +64,11 @@ foreach ($registros as $k => $v) {
 }
 $accionesExtra['opciones'] = array('acciones' => array($appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas'))));
 
-echo $this->element('index/index', array('accionesExtra' => $accionesExtra, 'condiciones' => $fieldset, 'cuerpo' => $cuerpo));
+echo $this->element('index/index', array(
+        'accionesExtra' => $accionesExtra,
+        'condiciones'   => $fieldset,
+        'opcionesTabla' => array('tabla' => array('eliminar' => false, 'modificar' => false)),
+        'cuerpo'        => $cuerpo));
 
 /**
 * Agrego el evento click asociado al boton confirmar.
