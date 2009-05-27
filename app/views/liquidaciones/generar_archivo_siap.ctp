@@ -20,11 +20,11 @@
 * Especifico los campos para ingresar las condiciones.
 */
 if (!empty($grupos)) {
-    $condiciones['Condicion.Siap-grupo_id'] = array('options' => $grupos);
+    $condiciones['Condicion.Siap-grupo_id'] = array('options' => $grupos, 'empty' => true);
 }
 $condiciones['Condicion.Siap-empleador_id'] = array(
-        'lov' => array(	'controller'        => 	'empleadores',
-                        'seleccionMultiple' =>  false,
+        'lov' => array(	'controller'        => 'empleadores',
+                        'seleccionMultiple' => false,
                         'camposRetorno'	    => array('Empleador.cuit', 'Empleador.nombre')));
 $condiciones['Condicion.Siap-periodo'] = array('type' => 'periodo', 'periodo' => array('soloAAAAMM'), 'aclaracion'  =>  'De la forma AAAAMM');
 $condiciones['Condicion.Siap-version'] = array('options'  =>  'listable', 'model' => 'Siap', 'displayField' => array('Siap.version'));

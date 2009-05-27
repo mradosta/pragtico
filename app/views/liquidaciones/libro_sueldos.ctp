@@ -230,7 +230,7 @@ if (!empty($data)) {
 	
 } else {
 	if (!empty($grupos)) {
-		$condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos);
+		$condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos, 'empty' => true);
 	}
 	$condiciones['Condicion.Liquidacion-empleador_id'] = array(	'lov' => array(
 			'controller'		=>	'empleadores',

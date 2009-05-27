@@ -39,30 +39,26 @@ class LiquidacionesController extends AppController {
 			} else {
 				$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], 'periodo');
 				
-				/** Search employers */
-				$this->Liquidacion->Relacion->Empleador->recursive = -1;
 				$this->set('periodo', $periodo['periodoCompleto']);
 				$this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Liquidacion-grupo_id']));
 				$this->set('startPage', $this->data['Condicion']['Bar-start_page']);
-				
-				if (!empty($this->data['Condicion']['Liquidacion-grupo_id']) && empty($this->data['Condicion']['Liquidacion-empleador_id'])) {
 
-					$empleadores = Set::extract('/Empleador/id', $this->Liquidacion->Relacion->Empleador->find('all', array(
-							'recursive' 	=> -1,
-							'conditions' 	=> array(
-							'(Empleador.group_id & ' . $this->data['Condicion']['Liquidacion-grupo_id'] . ') >' => 0))
-					));
-				} else {
-					$empleadores = $this->data['Condicion']['Liquidacion-empleador_id'];
-					$this->set('employer', $this->Liquidacion->Relacion->Empleador->findById($this->data['Condicion']['Liquidacion-empleador_id']));
-				}
+                
+                $conditions = array('Liquidacion.estado'        => 'Confirmada',
+                                    'Liquidacion.tipo'          => $this->data['Condicion']['Liquidacion-tipo'],
+                                    'Liquidacion.periodo'       => $periodo['periodo'],
+                                    'Liquidacion.ano'           => $periodo['ano'],
+                                    'Liquidacion.mes'           => $periodo['mes']);
+                
+                if (!empty($this->data['Condicion']['Liquidacion-empleador_id'])) {
+                    $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Liquidacion-empleador_id'];
+                    $this->Liquidacion->Relacion->Empleador->recursive = -1;
+                    $this->set('employer', $this->Liquidacion->Relacion->Empleador->findById($this->data['Condicion']['Liquidacion-empleador_id']));                    
+                }
 
-				$conditions = array('Liquidacion.empleador_id' 	=> $empleadores,
-									'Liquidacion.estado'		=> 'Confirmada',
-		 							'Liquidacion.tipo'			=> $this->data['Condicion']['Liquidacion-tipo'],
-		  							'Liquidacion.periodo'		=> $periodo['periodo'],
-		 							'Liquidacion.ano'			=> $periodo['ano'],
-		 							'Liquidacion.mes'			=> $periodo['mes']);
+                if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
+                    $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Liquidacion-grupo_id'] . ') >'] = 0;
+                }
 
 				$this->Liquidacion->Behaviors->detach('Permisos');
 				$this->Liquidacion->Behaviors->detach('Util');
@@ -360,10 +356,7 @@ class LiquidacionesController extends AppController {
 	function generar_archivo_siap() {
 		
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === "generar" && !empty($this->data['Condicion']['Siap-version'])) {
-			if (!empty($this->data['Condicion']['Siap-empleador_id'])
-				&& !empty($this->data['Condicion']['Siap-grupo_id'])) {
-				$this->Session->setFlash("Debe seleccionar el Empleador o el Grupo, pero no ambos.", "error");
-			} elseif (empty($this->data['Condicion']['Siap-empleador_id'])
+            if (empty($this->data['Condicion']['Siap-empleador_id'])
 				&& empty($this->data['Condicion']['Siap-grupo_id'])) {
 				$this->Session->setFlash("Debe seleccionar un Empleador o un Grupo por lo menos.", "error");
 			} elseif (empty($this->data['Condicion']['Siap-periodo']) || !preg_match('/^(20\d\d)(0[1-9]|1[012])$/', $this->data['Condicion']['Siap-periodo'], $periodo)) {
@@ -371,31 +364,17 @@ class LiquidacionesController extends AppController {
 			} else {
 				$periodo = $this->Util->format($this->data['Condicion']['Siap-periodo'], 'periodo');
 				
-				/** Busco los empleadores para los cuales debo generar el archivo. */
-				if (!empty($this->data['Condicion']['Siap-empleador_id'])) {
-					$empleadores = $this->data['Condicion']['Siap-empleador_id'];
-				} else {
+                $conditions = array('Liquidacion.estado'        => 'Confirmada',
+                                    'Liquidacion.ano'           => $periodo['ano'],
+                                    'Liquidacion.mes'           => $periodo['mes']);
 
-                    $empleadores = Set::extract('/Empleador/id', $this->Liquidacion->Relacion->Empleador->find('all', array(
-                            'recursive'     => -1,
-                            'conditions'    => array(
-                            '(Empleador.group_id & ' . $this->data['Condicion']['Siap-grupo_id'] . ') >' => 0))
-                    ));
+				if (!empty($this->data['Condicion']['Siap-empleador_id'])) {
+                    $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Siap-empleador_id'];
 				}
-				
-				$ausenciasMotivo = $this->Liquidacion->Relacion->Ausencia->AusenciasMotivo->find('all', array('conditions' => array('NOT' => array('AusenciasMotivo.situacion_id' => null))));
-				$ausenciasMotivo = Set::combine($ausenciasMotivo, '{n}.AusenciasMotivo.id', '{n}.Situacion');
-				
-				
-				$data = ClassRegistry::init('Siap')->findById($this->data['Condicion']['Siap-version']);
-				foreach ($data['SiapsDetalle'] as $k => $v) {
-					$detalles[$v['elemento']] = $v;
-				}
-				
-				$conditions = array('Liquidacion.empleador_id' 	=> $empleadores,
-									'Liquidacion.estado'		=> 'Confirmada',
-		 							'Liquidacion.ano'			=> $periodo['ano'],
-		 							'Liquidacion.mes'			=> $periodo['mes']);
+
+                if (!empty($this->data['Condicion']['Siap-grupo_id'])) {
+                    $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Siap-grupo_id'] . ') >'] = 0;
+                }
 				
 				$liquidaciones = $this->Liquidacion->find('all',
 						array(	'checkSecurity'	=> false,
@@ -407,6 +386,15 @@ class LiquidacionesController extends AppController {
 				
 				if (!empty($liquidaciones)) {
 					
+                    $ausenciasMotivo = $this->Liquidacion->Relacion->Ausencia->AusenciasMotivo->find('all', array('conditions' => array('NOT' => array('AusenciasMotivo.situacion_id' => null))));
+                    $ausenciasMotivo = Set::combine($ausenciasMotivo, '{n}.AusenciasMotivo.id', '{n}.Situacion');
+                    
+                    
+                    $data = ClassRegistry::init('Siap')->findById($this->data['Condicion']['Siap-version']);
+                    foreach ($data['SiapsDetalle'] as $k => $v) {
+                        $detalles[$v['elemento']] = $v;
+                    }
+                    
 					/**
 					* Must sumarize. Can't do in by query because of contain.
 					*/
