@@ -91,7 +91,7 @@ $appForm->addScript("jquery.flydom", "links");
 //$session->read('__actualMenu')
 $appForm->addScript('
 
-    console.log("recupero despues de gaurdar " + jQuery.cookie("menu_cookie"));
+    //console.log("recupero despues de gaurdar " + jQuery.cookie("menu_cookie"));
     jQuery(".menu").accordion({
         header: "a.header",
         active: parseInt(jQuery.cookie("menu_cookie"))
