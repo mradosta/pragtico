@@ -712,32 +712,32 @@ class AppController extends Controller {
  */
     function beforeFilter() {
 		/**
-		 * Save selected menu (actualMenu) in the session.
+		 * Save selected menu (actualMenu) in a cookie.
+         */
 		if (isset($this->passedArgs['am'])) {
-			$this->Session->write('__actualMenu', $this->passedArgs['am']);
+            setcookie('menu_cookie', $this->passedArgs['am']);
+			//$this->Session->write('__actualMenu', $this->passedArgs['am']);
 		}
-		 */
 		
 		
 		/**
 		* En accionesWhiteList llevo las acciones que no deben chquearse la seguridad.
 		*/
-		if (!$this->Session->check("__Seguridad.accionesWhiteList")) {
+		if (!$this->Session->check('__Seguridad.accionesWhiteList')) {
 			$Accion = ClassRegistry::init('Accion');
 			$data = $Accion->find("all", array("checkSecurity"=>false, "contain" => "Controlador", "conditions"=>array("Accion.seguridad" => "No")));
 			$accionesWhiteList = array();
 			foreach ($data as $v) {
-				$accionesWhiteList[] = $v['Controlador']['nombre'] . "." . $v['Accion']['nombre'];
+				$accionesWhiteList[] = $v['Controlador']['nombre'] . '.' . $v['Accion']['nombre'];
 			}
-			$this->Session->write("__Seguridad.accionesWhiteList", $accionesWhiteList);
-		}
-		else {
-			$accionesWhiteList = $this->Session->read("__Seguridad.accionesWhiteList");
+			$this->Session->write('__Seguridad.accionesWhiteList', $accionesWhiteList);
+		} else {
+			$accionesWhiteList = $this->Session->read('__Seguridad.accionesWhiteList');
 		}
 		
-		if (in_array($this->name . "." . $this->action, $accionesWhiteList)) {
+		if (in_array($this->name . '.' . $this->action, $accionesWhiteList)) {
 			return true;
-		} elseif (!$this->Session->check("__Usuario")) {
+		} elseif (!$this->Session->check('__Usuario')) {
     		$this->redirect(array(	'controller' 	=> 'usuarios',
 									'action'		=> 'login'));
     	}

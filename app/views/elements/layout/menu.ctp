@@ -22,7 +22,8 @@ foreach ($MenuItems as $k => $padre) {
 						'am'			=> $k);
 		*/
 		$url = array(	'controller'	=> $hijo['Menu']['controller'],
-						'action'		=> $hijo['Menu']['action']);
+						'action'		=> $hijo['Menu']['action'],
+                        'am'            => $k);
 
 		if ($navegacion === 'ajax') {
 			$hijos .= $appForm->tag('div', $ajax->link($appForm->image($hijo['Menu']['imagen']) . $appForm->tag('span', $hijo['Menu']['etiqueta']), $url, array('update' => 'cuerpo', 'title' => $hijo['Menu']['ayuda'])));
@@ -38,7 +39,7 @@ foreach ($MenuItems as $k => $padre) {
 	if (empty($padre['Menu']['imagen'])) {
 		$padre['Menu']['imagen'] = $padre['Menu']['nombre'] . '.gif';
 	}
-	$parent =  $appForm->link($appForm->image($padre['Menu']['imagen']) . $appForm->tag('span', $padre['Menu']['etiqueta']), null, array('class' => 'header', 'title' => $padre['Menu']['ayuda']));
+	$parent =  $appForm->link($appForm->image($padre['Menu']['imagen']) . $appForm->tag('span', $padre['Menu']['etiqueta']), null, array('class' => 'header index' . $k, 'title' => $padre['Menu']['ayuda']));
 	$menu .= $appForm->tag('div', $parent . $children);
 }
 echo $appForm->tag('div', $menu, array('class' => 'menu'));

@@ -5,15 +5,15 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.views
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2008, Pragmatia de RPB S.A.
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.views
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 
 /**
@@ -39,9 +39,9 @@ $codigo_html .= '\n
         <link rel="stylesheet" href="jquery.tabs-ie.css" type="text/css" media="screen">
         <![endif]-->';
 */
-//$codigo_html .= $html->css(array(	"aplicacion.default.screen", "jquery.jqmodal", "liquidcorners/liquidcorners"),
-//$html->css(array(	"aplicacion.default.screen",
-//					"jquery.jqmodal"), null, array("media"=>"screen"), false);
+//$codigo_html .= $html->css(array( "aplicacion.default.screen", "jquery.jqmodal", "liquidcorners/liquidcorners"),
+//$html->css(array( "aplicacion.default.screen",
+//                  "jquery.jqmodal"), null, array("media"=>"screen"), false);
 
 /**
 $css[] = "aplicacion.default.screen";
@@ -56,7 +56,7 @@ $css[] = 'aplicacion.default.screen';
 //$css[] = "theme/ui.theme";
 //$css[] = "theme/ui.dialog";
 //if($appForm->traerPreferencia("lov_apertura") != "popup") {
-//	$css[] = "jquery.jqmodal";
+//  $css[] = "jquery.jqmodal";
 //}
 
 $html->css($css, null, array('media' => 'screen'), false);
@@ -72,7 +72,7 @@ $appForm->addScript($js, 'links');
 
 //$appForm->addScript("jquery.autocomplete", "links");
 
-		
+        
 //$appForm->addScript("jquery.jqmodal", "links");
 //$appForm->addScript("jquery.simplemodal", "links");
 //$appForm->addScript("jquery-ui-personalized-1.5.3", "links");
@@ -88,40 +88,51 @@ $appForm->addScript($js, 'links');
 
 $appForm->addScript("jquery.form", "links");
 $appForm->addScript("jquery.flydom", "links");
-
+//$session->read('__actualMenu')
 $appForm->addScript('
-	jQuery(".menu").accordion({
-		header: "a.header",
-  		active: parseInt(jQuery.cookie("selectedMenuCookie"))
-	}).bind("change.ui-accordion",
- 		function(event, ui) {
-			jQuery("a.header", this).each(function(index) {
-				if (jQuery(this).parent().hasClass("selected")) {
-					jQuery.cookie("selectedMenuCookie", index);
-					return false;
-				}
-			});
-		}
-	);
 
-	var path = "'. Router::url('/') . 'img/";
-	jQuery("#hideConditions").bind("click",
- 		function() {
-			jQuery(".conditions_frame").toggle();
-			if (jQuery(".conditions_frame").is(":visible")) {
-				jQuery.cookie("conditionsFrameCookie", "true");
-				jQuery("#hideConditions > img").attr("src", path + "pinchado.gif");
-			} else {
-				jQuery.cookie("conditionsFrameCookie", "false");
-				jQuery("#hideConditions > img").attr("src", path + "sin_pinchar.gif");
-			}
-		}
-	);
+    jQuery(".menu").accordion({
+        header: "a.header",
+        active: parseInt(jQuery.cookie("menu_cookie"))
+    });
+    /*
+    //var options = { path: "/", expires: 10 };
+    jQuery(".menu a.header").click(
+        function() {
+            //jQuery.cookie("menu_cookie", null);
+            var index = jQuery(this).attr("class").replace("header index", "");
+            jQuery.cookie("menu_cookie", index);
 
-	if (jQuery.cookie("conditionsFrameCookie") == "false") {
-		jQuery(".conditions_frame").hide();
-		jQuery("#hideConditions > img").attr("src", path + "sin_pinchar.gif");
-	}
+            console.log("guardo " + index);
+            console.log("recupero despues de gaurdar " + jQuery.cookie("menu_cookie"));
+        }
+    );
+
+    //jQuery.cookie("menu_cookie", null);
+    console.log("recupero " + jQuery.cookie("menu_cookie"));
+    //jQuery(".menu").accordion("animated", false);
+    //jQuery(".menu").accordion("active", parseInt(jQuery.cookie("menu_cookie")));
+    jQuery(".menu").accordion("activate", parseInt(jQuery.cookie("menu_cookie")));
+    */
+    
+    var path = "'. Router::url('/') . 'img/";
+    jQuery("#hideConditions").bind("click",
+        function() {
+            jQuery(".conditions_frame").toggle();
+            if (jQuery(".conditions_frame").is(":visible")) {
+                jQuery.cookie("conditionsFrameCookie", "true");
+                jQuery("#hideConditions > img").attr("src", path + "pinchado.gif");
+            } else {
+                jQuery.cookie("conditionsFrameCookie", "false");
+                jQuery("#hideConditions > img").attr("src", path + "sin_pinchar.gif");
+            }
+        }
+    );
+
+    if (jQuery.cookie("conditionsFrameCookie") == "false") {
+        jQuery(".conditions_frame").hide();
+        jQuery("#hideConditions > img").attr("src", path + "sin_pinchar.gif");
+    }
 ');
 
 $codigo_html[] = $asset->scripts_for_layout();
