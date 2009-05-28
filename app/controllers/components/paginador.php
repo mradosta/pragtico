@@ -244,6 +244,7 @@ class PaginadorComponent extends Object {
 				foreach ($campos as $campo) {
 					$r = $this->controller->{$model}->find('all', array(
 												'recursive'		=> -1,
+                                                'condiciones'   => $condiciones,
 												'fields'		=> strtoupper($operacion) . '(' . $model . '.' . $campo . ') as total'));
 
                     if (isset($r[0][$model]['total'])) {
