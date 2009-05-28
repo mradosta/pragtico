@@ -41,39 +41,38 @@ class Menu extends AppModel {
         )
 	);
 
+    var $breadCrumb = array('format'    => '%s (%s)',
+                            'fields'    => array('Menu.etiqueta', 'Menu.nombre'));
 
 	var $hasAndBelongsToMany = array(	'Rol' =>	array('with' => 'RolesMenu'));
-	
+
 	var $belongsTo = array( 'Parentmenu' 	=>
 					array(	'className'  	=> 'Menu',
 							'foreignKey' 	=> 'parent_id'));
-
 
 	var $hasMany = array(   'Childmenu' 	=>
 					array(	'className'    	=> 'Menu',
 							'foreignKey'   	=> 'parent_id'));
 	
 /**
- * xxxxxxxx
+ * Sets default field values.
  */
-	function beforeSave($options) {
-		/**
-		* Si no cargo nada en la etiqueta, pongo el nombre como etiqueta.
-		*/
+	function beforeSave($options = array()) {
+        
+		/** If no label set, create one */
 		if (empty($this->data['Menu']['etiqueta'])) {
-			$this->data['Menu']['etiqueta'] = ucfirst($this->data['Menu']['nombre']);
+			$this->data['Menu']['etiqueta'] = Inflector::humanize($this->data['Menu']['nombre']);
 		}
 		
 		/**
 		* Si no cargo nada en el controller, pongo el nombre como controller.
+        * TODO: relacionar con los controllers (un combo o algo)
 		*/
 		if (empty($this->data['Menu']['controller'])) {
 			$this->data['Menu']['controller'] = $this->data['Menu']['nombre'];
 		}
 		
-		/**
-		* Si no cargo nada en la action, pongo index como action.
-		*/
+		/** If no specific action set, set index as default action */
 		if (empty($this->data['Menu']['action'])) {
 			$this->data['Menu']['action'] = 'index';
 		}
