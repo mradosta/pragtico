@@ -23,9 +23,11 @@
  */
 class Variable extends AppModel {
 
-	var $order = array('Variable.nombre' => 'asc');
+    protected $__permissions = 500;
+    
+    var $order = array('Variable.nombre' => 'asc');
 	
-	var $validate = array(
+    var $validate = array(
         'nombre' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
