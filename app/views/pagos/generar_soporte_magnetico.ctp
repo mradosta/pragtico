@@ -96,5 +96,3 @@ echo $appForm->bloque($codigoHtml, array('fieldset' => array('legend' => "Genera
 echo $appForm->end();
 */
 ?>
-
-
