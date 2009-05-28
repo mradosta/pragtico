@@ -38,7 +38,7 @@ class Hora extends AppModel {
 												'Pendiente'=>	'Pendiente'));
 	
 	var $validate = array(
-        'relacion_id__' => array(
+        'relacion_id' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe seleccionar la relacion laboral.')
@@ -46,7 +46,10 @@ class Hora extends AppModel {
         'cantidad' => array(
 			array(
 				'rule'		=> VALID_NUMBER,
-				'message'	=> 'Debe ingresar la cantidad de horas.')
+				'message'	=> 'Debe ingresar la cantidad de horas.'),
+            array(
+                'rule'      => VALID_NOT_EMPTY,
+                'message'   => 'Debe ingresar una cantidad.')
         ),
         'periodo' => array(
 			array(
