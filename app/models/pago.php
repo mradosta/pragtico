@@ -231,8 +231,10 @@ class Pago extends AppModel {
 			
 			if (!empty($pagos)) {
 				$total = 0;
-				
+				$pagosIds = null;
 				foreach ($pagos as $pago) {
+                    $pagosIds[] = $pago['Pago']['id'];
+                    
 					preg_match('/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d$/', $pago['Relacion']['Trabajador']['cbu'], $matches);
 					if (!empty($matches[2]) && !empty($matches[3])) {
 					
@@ -340,6 +342,13 @@ class Pago extends AppModel {
 							break;
 					}
 				}
+                $this->unbindModel(array(
+                    'belongsTo' => array_keys($this->belongsTo)
+                ));
+                $this->updateAll(
+                        array(  'Pago.identificador'    => '\'' . date('Y-m-d H:i:s') . '\'',
+                                'Pago.estado'           => '\'En Soporte\''),
+                        array(  'Pago.id'               => $pagosIds));
 			} else {
 				return false;
 			}

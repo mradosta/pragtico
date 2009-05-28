@@ -80,6 +80,7 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Pago', 'field' => 'monto', 'valor' => $v['Pago']['monto'], 'tipoDato' => 'moneda');
 	$fila[] = array('model' => 'Pago', 'field' => 'saldo', 'valor' => $v['Pago']['saldo'], 'tipoDato' => 'moneda');
 	$fila[] = array('model' => 'Pago', 'field' => 'estado', 'valor' => $v['Pago']['estado']);
+    $fila[] = array('model' => 'Pago', 'field' => 'identificador', 'valor' => $v['Pago']['identificador']);
 	if ($v['Pago']['estado'] === 'Imputado' || $v['Pago']['estado'] === 'Cancelado') {
 		$cuerpo[] = array('contenido' 	=> $fila, 
 						  'opciones' 	=> array('seleccionMultiple'=>false));
@@ -96,6 +97,10 @@ $acciones[] = $appForm->link('Soporte Mag.', null,
 			array(	'id' 		=> 'generar_soporte_magnetico', 
 				  	'class' 	=> 'link_boton', 
 	  				'title' 	=> 'Generar Soporte Magnetico'));
+$acciones[] = $appForm->link('Conf. Sop. Mag.', null,
+            array(  'id'        => 'confirmar_soporte_magnetico',
+                    'class'     => 'link_boton', 
+                    'title'     => 'Confirmar Soporte Magnetico'));
 $acciones[] = $appForm->link('Efectivo', null, 
 			array(	'id' 		=> 'pago_efectivo', 
 					'class' 	=> 'link_boton', 
@@ -169,6 +174,12 @@ $js = '
 			enviar("/generar_soporte_magnetico", true);
 		}
 	);
+    
+    jQuery("#confirmar_soporte_magnetico").click(
+        function() {
+            enviar("/confirmar_soporte_magnetico", true);
+        }
+    );
 ';
 $appForm->addScript($js);
 

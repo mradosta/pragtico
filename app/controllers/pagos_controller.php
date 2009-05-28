@@ -168,9 +168,25 @@ class PagosController extends AppController {
 			}
 		}
 		$this->redirect("index");
-	}	
+	}
 
 
+    function confirmar_soporte_magnetico() {
+        if (!empty($this->data['seleccionMultiple'])) {
+            $this->set('ids', serialize($this->Util->extraerIds($this->data['seleccionMultiple'])));
+        }
+        if (!empty($this->data['Soporte']['pago_id'])
+            && !empty($this->data['Soporte']['identificador'])) {
+
+            $this->Pago->updateAll(
+                    array(  'Pago.identificador'    => '\'' . $this->data['Soporte']['identificador'] . '\'',
+                            'Pago.estado'           => '\'Imputado\''),
+                    array(  'Pago.id'               => unserialize($this->data['Soporte']['pago_id'])));
+            $this->redirect(array('controller' => 'pagos', 'action' => 'index'));
+        }
+    }
+
+    
 /**
  * Permite generar un archivo con el formato especificado por cada banco para la acreditacion de haberes en las
  * cuentas de los trabajadores.
@@ -196,13 +212,11 @@ class PagosController extends AppController {
 			if (!empty($archivo)) {
 				$this->set("archivo", array("contenido"=>$archivo['contenido'], "nombre"=>$archivo['banco'] . "-" . date("Y-m-d") . ".txt"));
 				$this->render(".." . DS . "elements" . DS . "txt", "txt");
-			}
-			else {
+			} else {
 				$this->Session->setFlash("Ocurrio un error al intentar generar el soporte magnetico. Ningun pago seleccionado es posible realizarlo con la cuenta seleccionada.", "error");
 				$this->History->goBack();
 			}
-		}
-		elseif (isset($this->data['seleccionMultiple'])) {
+		} elseif (isset($this->data['seleccionMultiple'])) {
 			$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
 			$pagos = $this->Pago->find("all", array("contain" => "PagosForma", "conditions"=>array("Pago.moneda" => "Pesos", "Pago.estado" => "Pendiente", "Pago.id"=>$ids)));
 			if (empty($pagos)) {
