@@ -137,7 +137,7 @@ $js = '
 		if(chequearCantidad) {
 			var c = jQuery(".tabla :checkbox").checkbox("contar");
 			if (c == 0) {
-				alert("Debe seleccionar al menos un pago a imputar.");
+				alert("Debe seleccionar al menos un pago a imputar/confirmar.");
 				return false;
 			}
 		}
