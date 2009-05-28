@@ -715,7 +715,8 @@ class AppController extends Controller {
 		 * Save selected menu (actualMenu) in a cookie.
          */
 		if (isset($this->passedArgs['am'])) {
-            setcookie('menu_cookie', $this->passedArgs['am']);
+            //d($this->passedArgs['am']);
+            setcookie('menu_cookie', $this->passedArgs['am'], 0, '/');
 			//$this->Session->write('__actualMenu', $this->passedArgs['am']);
 		}
 		

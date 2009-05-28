@@ -91,29 +91,11 @@ $appForm->addScript("jquery.flydom", "links");
 //$session->read('__actualMenu')
 $appForm->addScript('
 
+    console.log("recupero despues de gaurdar " + jQuery.cookie("menu_cookie"));
     jQuery(".menu").accordion({
         header: "a.header",
         active: parseInt(jQuery.cookie("menu_cookie"))
     });
-    /*
-    //var options = { path: "/", expires: 10 };
-    jQuery(".menu a.header").click(
-        function() {
-            //jQuery.cookie("menu_cookie", null);
-            var index = jQuery(this).attr("class").replace("header index", "");
-            jQuery.cookie("menu_cookie", index);
-
-            console.log("guardo " + index);
-            console.log("recupero despues de gaurdar " + jQuery.cookie("menu_cookie"));
-        }
-    );
-
-    //jQuery.cookie("menu_cookie", null);
-    console.log("recupero " + jQuery.cookie("menu_cookie"));
-    //jQuery(".menu").accordion("animated", false);
-    //jQuery(".menu").accordion("active", parseInt(jQuery.cookie("menu_cookie")));
-    jQuery(".menu").accordion("activate", parseInt(jQuery.cookie("menu_cookie")));
-    */
     
     var path = "'. Router::url('/') . 'img/";
     jQuery("#hideConditions").bind("click",
