@@ -28,6 +28,40 @@ class LiquidacionesController extends AppController {
 	var $components = array('Formulador');
 	var $helpers = array('Documento');
 	
+    function resumen() {
+
+        if (!empty($this->data)) {
+            $condiciones = $this->Paginador->generarCondicion();
+            $periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
+            if ($periodo !== false) {
+                $condiciones['Liquidacion.mes'] = $periodo['mes'];
+                $condiciones['Liquidacion.ano'] = $periodo['ano'];
+                $condiciones['Liquidacion.periodo'] = $periodo['periodo'];
+            }
+            unset($condiciones['Liquidacion.periodo_largo']);
+            $this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
+            unset($condiciones['Liquidacion.formato']);
+
+            $this->set('conditions', $this->data['Condicion']);
+            $this->set('workers', $this->Liquidacion->find('all', array(
+                    'conditions'    => $condiciones,
+                    'fields'        => array('COUNT(Liquidacion.trabajador_id) AS cantidad'),
+                    'recursive'     => -1)));
+
+            $condiciones['LiquidacionesDetalle.concepto_imprimir !='] = 'No';
+            $this->set('data', $this->Liquidacion->LiquidacionesDetalle->find('all', array(
+                    'conditions'    => $condiciones,
+                    'order'         => 'concepto_orden',
+                    'fields'        => array('LiquidacionesDetalle.concepto_nombre',
+                                             'COUNT(LiquidacionesDetalle.concepto_nombre) AS cantidad',
+                                             'SUM(LiquidacionesDetalle.valor_cantidad) AS suma_cantidad',
+                                             'SUM(LiquidacionesDetalle.valor) AS valor'),
+                    'group'         => array('LiquidacionesDetalle.concepto_nombre'),
+                    'contain'       => array('Liquidacion'))));
+            $this->layout = 'ajax';
+        }
+    }
+
 
 	function libro_sueldos() {
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {

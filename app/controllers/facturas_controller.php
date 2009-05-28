@@ -27,7 +27,7 @@ class FacturasController extends AppController {
 	var $helpers = array('Documento');
 
 
-	function resumen($facturaId) {
+	function reporte($facturaId) {
 
 		$records = $this->Factura->report($facturaId);
 		if (empty($records)) {

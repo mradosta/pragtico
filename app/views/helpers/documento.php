@@ -80,6 +80,7 @@ class DocumentoHelper extends AppHelper {
 		$this->doc->getProperties()->setKeywords("novedades pragtico");
 		$this->doc->getProperties()->setCategory("novedades");
 		$this->doc->setActiveSheetIndex(0);
+        $this->setActiveSheet(0);
 		$this->doc->getActiveSheet()->setShowGridlines(true);
 		$this->doc->getActiveSheet()->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
     	if (isset($options['orientation']) && $options['orientation'] === "landscape") {
