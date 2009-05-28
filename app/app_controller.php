@@ -274,7 +274,7 @@ class AppController extends Controller {
                 $back = 0;
             }
         } else {
-			$back = 2;
+			$back = 1;
             $this->action = 'edit';
         }
 
@@ -334,16 +334,20 @@ class AppController extends Controller {
                                 array(  'acceso'    => 'write', 
                                         'conditions'=> array($this->modelClass . '.' . $this->{$this->modelClass}->primaryKey => $ids)));
 
-                        foreach ($data as $k => $v) {
-                            foreach ($v as $model => $datos) {
-								if (isset($datos[0])) {
-									foreach ($datos as $kDetail => $vDatail) {
-										$this->data[$k][$model][$kDetail] = array_merge($this->data[$k][$model][$kDetail], $vDatail);
-									}
-								} else {
-                                	$this->data[$k][$model] = array_merge($this->data[$k][$model], $datos);
-								}
+                        if ($this->action === 'edit') {
+                            foreach ($data as $k => $v) {
+                                foreach ($v as $model => $datos) {
+                                    if (isset($datos[0])) {
+                                        foreach ($datos as $kDetail => $vDatail) {
+                                            $this->data[$k][$model][$kDetail] = array_merge($this->data[$k][$model][$kDetail], $vDatail);
+                                        }
+                                    } else {
+                                        $this->data[$k][$model] = array_merge($this->data[$k][$model], $datos);
+                                    }
+                                }
                             }
+                        } else {
+                            $this->data = $data;
                         }
                         //$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), "error", array("errores"=>$dbError));
 						$this->Session->setFlash(__('The record could not be saved. Please verify errors and try again.', true), 'error');
@@ -363,11 +367,12 @@ class AppController extends Controller {
 /**
  * Delete.
  *
- * @param integer $id El identificador del registro a ser eliminado.
+ * @param integer $id The record id to delete.
+ * @param integer $goBack How many steps back shouls return.
  * @return void.
  * @access public
  */
-   	function delete($id = null, $goBack = 1) {
+   	function delete($id = null, $goBack = 0) {
         if (!empty($id) && is_numeric($id)) {
 			$ids[] = $id;
 		} else {

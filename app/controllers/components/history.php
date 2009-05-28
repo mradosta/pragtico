@@ -82,16 +82,20 @@ class HistoryComponent extends Object {
  * @return void
  * @access public
  */
-	
+
+    function log($text) {
+        file_put_contents('/tmp/log.txt', $text . "\n", FILE_APPEND);
+    }
+    
     function goBack($pos = 1) {
 	    $history = array_reverse($this->controller->Session->read('__history'));
-		
-		/*
+
+        /*
 		$this->log('=================');
 		$this->log('Me voy a:');
 		$this->log(Router::url($history[$pos]));
 		$this->log('=================');
-		*/
+        */
         $this->controller->redirect($history[$pos], true);
     }
 
@@ -127,17 +131,19 @@ class HistoryComponent extends Object {
 			if (serialize($history[$count - 1]) !== serialize($url)) {
 				$this->controller->Session->write('__history', array_slice($history, -3));
 
-				/*
+                /*
 				$this->log('=================');
 				$this->log('Agrego a __history:');
-				$this->log($url);
+				$this->log(implode('/', $url));
 				$this->log('=================');
 				
 				$this->log('=================');
 				$this->log('__history lo guardo asi:');
-				$this->log(array_reverse($history));
+                foreach (array_reverse($history) as $k => $url) {
+                    $this->log($k . ') ' . implode('/', $url));
+                }
 				$this->log('=================');
-    			*/
+                */
 			}
 		}
     }
