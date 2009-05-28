@@ -365,9 +365,8 @@ class Liquidacion extends AppModel {
 		foreach ($this->__conceptos as $detalleLiquidacion) {
 			$v = $this->__agregarDetalle($detalleLiquidacion);
 			if (!empty($v)) {
-				$detalle[] = $this->__agregarDetalle($detalleLiquidacion);
+				$detalle[] = $v;
 			}
-
 
 			if ($detalleLiquidacion['imprimir'] === "Si" || $detalleLiquidacion['imprimir'] === "Solo con valor") {
 
@@ -665,7 +664,7 @@ class Liquidacion extends AppModel {
 														"recomendacion"			=> "Verifique la formula y que todos los conceptos que esta utiliza existan.",
 														"descripcion_adicional"	=> "verifique: " . $concepto['codigo']));
 						} else {
-							$conceptoParaCalculo[$match]['imprimir'] = 'No';
+							//$conceptoParaCalculo[$match]['imprimir'] = 'No';
 							$this->setConcept($conceptoParaCalculo);
 						}
 					}
