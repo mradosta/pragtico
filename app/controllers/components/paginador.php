@@ -245,7 +245,12 @@ class PaginadorComponent extends Object {
 					$r = $this->controller->{$model}->find('all', array(
 												'recursive'		=> -1,
 												'fields'		=> strtoupper($operacion) . '(' . $model . '.' . $campo . ') as total'));
-					$resultado[$campo] = $r[0][$model]['total'];
+
+                    if (isset($r[0][$model]['total'])) {
+                        $resultado[$campo] = $r[0][$model]['total'];
+                    } else {
+                        $resultado[$campo] = $r[0][0]['total'];
+                    }
 				}
 			}
 

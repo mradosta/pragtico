@@ -67,18 +67,19 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], 'class' => 'derecha', 'nombreEncabezado' => 'Documento');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . ' ' . $v['Relacion']['Trabajador']['nombre'], 'nombreEncabezado' => 'Trabajador');
 
-	if (!empty($v['Pago']['liquidacion_id'])) {
-		$fila[] = array('tipo' => 'desglose', 'id' => $v['Pago']['liquidacion_id'], 'imagen'=>array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidacion'), 'url'=>'../liquidaciones/recibo_html');
-		$valor = sprintf('Liq. %s - %s%s%s', $v['Liquidacion']['tipo'], $v['Liquidacion']['ano'], $v['Liquidacion']['mes'], $v['Liquidacion']['periodo']);
-	} else {
-		$valor = sprintf('%s - %s', $v['Descuento']['tipo'], $formato->format($v['Descuento']['alta'], 'date'));
-	}
-	$fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => $valor, 'nombreEncabezado' => 'Origen');
-	
 	$fila[] = array('model' => 'Pago', 'field' => 'fecha', 'valor' => $v['Pago']['fecha']);
 	$fila[] = array('model' => 'Pago', 'field' => 'moneda', 'valor' => $v['Pago']['moneda']);
 	$fila[] = array('model' => 'Pago', 'field' => 'monto', 'valor' => $v['Pago']['monto'], 'tipoDato' => 'moneda');
 	$fila[] = array('model' => 'Pago', 'field' => 'saldo', 'valor' => $v['Pago']['saldo'], 'tipoDato' => 'moneda');
+    
+    if (!empty($v['Pago']['liquidacion_id'])) {
+        $fila[] = array('tipo' => 'desglose', 'id' => $v['Pago']['liquidacion_id'], 'imagen'=>array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidacion'), 'url'=>'../liquidaciones/recibo_html');
+        $valor = sprintf('Liq. %s - %s%s%s', $v['Liquidacion']['tipo'], $v['Liquidacion']['ano'], $v['Liquidacion']['mes'], $v['Liquidacion']['periodo']);
+    } else {
+        $valor = sprintf('%s - %s', $v['Descuento']['tipo'], $formato->format($v['Descuento']['alta'], 'date'));
+    }
+    $fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => $valor, 'nombreEncabezado' => 'Origen');
+    
 	$fila[] = array('model' => 'Pago', 'field' => 'estado', 'valor' => $v['Pago']['estado']);
     $fila[] = array('model' => 'Pago', 'field' => 'identificador', 'valor' => $v['Pago']['identificador']);
 	if ($v['Pago']['estado'] === 'Imputado' || $v['Pago']['estado'] === 'Cancelado') {
@@ -92,6 +93,21 @@ foreach ($registros as $k => $v) {
 		$cuerpo[] = $fila;
 	}
 }
+
+$fila = null;
+$fila[] = array('model' => 'Pago', 'field' => 'id', 'valor' => '');
+$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => '');
+$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => '');
+$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => '');
+$fila[] = array('model' => 'Pago', 'field' => 'fecha', 'valor' => '');
+$fila[] = array('model' => 'Pago', 'field' => 'moneda', 'valor' => '');
+$fila[] = array('model' => 'Pago', 'field' => 'monto', 'valor'=>$totales['monto']);
+$fila[] = array('model' => 'Pago', 'field' => 'saldo', 'valor' => '');
+$fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => '');
+$fila[] = array('model' => 'Pago', 'field' => 'estado', 'valor' => '');
+$fila[] = array('model' => 'Pago', 'field' => 'identificador', 'valor' => '');
+$pie[] = $fila;
+
 
 $acciones[] = $appForm->link('Soporte Mag.', null, 
 			array(	'id' 		=> 'generar_soporte_magnetico', 
@@ -127,7 +143,8 @@ echo $this->element('index/index', array(
 						  	'accionesExtra' => $accionesExtra, 
 							'opcionesTabla' => array('tabla' => array('eliminar' => false, 'modificar' => false)), 
 							'condiciones' 	=> $fieldset, 
-	   						'cuerpo' 		=> $cuerpo));
+	   						'cuerpo' 		=> $cuerpo,
+                            'pie'           => $pie));
 
 /**
 * Agrego el evento click asociado al detalle de cambio.

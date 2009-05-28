@@ -937,8 +937,7 @@ class Liquidacion extends AppModel {
             }
             if (empty($this->__saveAuxiliar)) {
                 $this->__saveAuxiliar = $auxiliar;
-            }
-            else {
+            } else {
                 $this->__saveAuxiliar = array_merge($this->__saveAuxiliar, $auxiliar);
             }
         }

@@ -28,6 +28,8 @@ class Pago extends AppModel {
 	
 	var $order = array('Pago.fecha' => 'desc');
 
+    var $totalizar = array('sum' => array('monto'));
+    
 	var $validate = array(
         'fechax' => array(
 			array(
