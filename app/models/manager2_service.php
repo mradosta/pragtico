@@ -65,7 +65,17 @@ class Manager2Service extends AppModel {
 				if ($registro['Factura']['group_id'] !== $prevGroup) {
 					$prevGroup = $registro['Factura']['group_id'];
 					$grupo = $doc->createElement('grupo');
-					$grupo->setAttribute('codigo', $registro['Factura']['group_id']);
+
+                    $Grupo = ClassRegistry::init('Grupo');
+                    $Grupo->contain(array('GruposParametro.Parametro'));
+                    $Grupo->Behaviors->detach('Permisos');
+                    $grupo = $Grupo->findById(4);
+                    foreach ($grupo['GruposParametro'] as $parametro) {
+                        if ($parametro['Parametro']['nombre'] === 'cuit') {
+                            $grupo->setAttribute('codigo', $parametro['valor']);
+                            break;
+                        }
+                    }
 					$empleadores->appendChild($grupo);
 				}
 
@@ -293,6 +303,8 @@ class Manager2Service extends AppModel {
 			return '';
 		}
 	}
+
+
 	
 }
 ?>
