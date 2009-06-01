@@ -6,12 +6,10 @@ var buildTable = function(clickedRowId, url, table) {
 	var newTbody = jQuery("<tbody/>");
 
 	if (table == undefined) {
-		table = "table.index";
+		table = "table";
 		jQuery(table + " > tbody > tr").each(
-
 			function() {
 				newTbody.append(this);
-
 				if (clickedRowId == jQuery(this).attr("charoff")) {
 					var td = jQuery("<td/>").attr("colspan", "10");
 					td.append(jQuery("<div/>").attr("class", "desglose").load(url,
@@ -60,34 +58,39 @@ var closeAllBreakdowns = function() {
 	jQuery(".breakdown_row").hide();
 	return false;
 }
-jQuery("#closeAllBreakdowns").click(closeAllBreakdowns);
 
 
-/**
- * If exist in cookie, must re-open breakdown.
- */
-var breakDownsCookie = jQuery.cookie("breakDownsCookie");
-if (breakDownsCookie != null) {
-	breakDowns = breakDownsCookie.split("|").clean("");
-	jQuery("img.breakdown_icon").each(
-		function() {
-			if (jQuery.inArray(this.getAttribute("longdesc"), breakDowns) >= 0) {
-				clickedRowId = this.getAttribute("longdesc").split("/").pop();
-				buildTable(clickedRowId, this.getAttribute("longdesc"));
-			}
-		}
-	);
+jQuery(document).ready(function($) {
+    /**
+    * Binds event.
+    */
+    jQuery("#closeAllBreakdowns").bind("click", closeAllBreakdowns);
+    
+    /**
+    * If exist in cookie, must re-open breakdown.
+    */
+    var breakDownsCookie = jQuery.cookie("breakDownsCookie");
+    if (breakDownsCookie != null) {
+        breakDowns = breakDownsCookie.split("|").clean("");
+        jQuery(".breakdown_icon").each(
+            function() {
+                if (jQuery.inArray(this.getAttribute("longdesc"), breakDowns) >= 0) {
+                    clickedRowId = this.getAttribute("longdesc").split("/").pop();
+                    buildTable(clickedRowId, this.getAttribute("longdesc"));
+                }
+            }
+        );
 
-	jQuery(".bread_crumb_class").remove();
-	if (breakDowns.length == 1) {
-		var span = jQuery("<span/>").addClass("bread_crumb_class").text(" » " + jQuery("img[longdesc=\'" + breakDowns[0] + "\']").attr("alt"));
-		jQuery("div.banda_izquierda > p").append(span);
-	} else if (breakDowns.length > 1){
-		var span = jQuery("<span/>").addClass("bread_crumb_class").text(" » " + breakDowns.length + " Desgloses abiertos");
-		jQuery("div.banda_izquierda > p").append(span);
-	}
-}
-
+        jQuery(".bread_crumb_class").remove();
+        if (breakDowns.length == 1) {
+            var span = jQuery("<span/>").addClass("bread_crumb_class").text(" » " + jQuery("img[longdesc=\'" + breakDowns[0] + "\']").attr("alt"));
+            jQuery("div.banda_izquierda > p").append(span);
+        } else if (breakDowns.length > 1){
+            var span = jQuery("<span/>").addClass("bread_crumb_class").text(" » " + breakDowns.length + " Desgloses abiertos");
+            jQuery("div.banda_izquierda > p").append(span);
+        }
+    }
+});
 
 /**
  * Binds click event to breakdown icons.

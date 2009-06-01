@@ -22,6 +22,7 @@
 ob_start();
 $session->flash();
 $flash = ob_get_clean();
+$barra = $this->element('layout' . DS . 'barra');
 
 $codigo_html[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 $codigo_html[] = "<html xmlns=\"http://www.w3.org/1999/xhtml\">";
@@ -126,7 +127,7 @@ $menu = $this->element('layout' . DS . 'menu');
 
 $codigo_html[] = $flash;
 $codigo_html[] = $this->element('layout' . DS . 'encabezado');
-$codigo_html[] = $this->element('layout' . DS . 'barra');
+$codigo_html[] = $barra;
 $contenido = $appForm->tag('div', $content_for_layout, array('class' => 'cuerpo'));
 $codigo_html[] = $appForm->tag('div', $menu . $contenido, array('class' => 'contenido'));
 $codigo_html[] = $cakeDebug;
