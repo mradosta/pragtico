@@ -127,6 +127,14 @@ div.index div.navegacion {
 	float: right;
 }
 
+div.index div.navegacion div {
+    float: left;
+}
+
+div.index div.navegacion a {
+    float: left;
+}
+
 div.index div.navegacion img {
 	width: 14px;
 	height: 14px;

@@ -31,7 +31,7 @@ class PaginadorHelper extends AppHelper {
  * @var arraya
  * @access public.
  */
-	var $helpers = array("Paginator", "AppForm");
+	var $helpers = array('Paginator', 'AppForm');
 
 	
 /**
@@ -44,60 +44,71 @@ class PaginadorHelper extends AppHelper {
  * @access public.
  */
 	function sort($title, $key = null, $options = array()) {
-		$options['class'] = "sin_orden";
-		$options['title'] = __("Ascending order", true);
-		$options['url'] = array();
 		
+		
+		$options['url'] = array();
+        $options['title'] = __('No order', true);
+        $options['class'] = 'sin_orden';
+        //debug($options['model'] . '.' . $key);
+        //d($this->Paginator->sortKey());
+        if ($options['model'] . '.' . $key == $this->Paginator->sortKey()) {
+            $dir = $this->Paginator->sortDir();
+            if (!empty($dir)) {
+                $options['class'] = $dir . '_orden';
+                $options['title'] = __(ucfirst($dir) . 'ending order', true);
+            }
+        }
+        /*
 		$modelClass = Inflector::classify($this->params['controller']);
 		if (isset($this->params['paging'][$modelClass]['options']['order'])) {
-			if ($options['model'] . "." . $this->Paginator->sortKey() === key($this->params['paging'][$modelClass]['options']['order'])) {
+			if ($options['model'] . '.' . $this->Paginator->sortKey() === key($this->params['paging'][$modelClass]['options']['order'])) {
 				if ($key == $this->Paginator->sortKey()) {
-					if ($this->Paginator->sortDir() === "asc") {
-						$options['class'] = "asc_orden";
-						$options['title'] = __("Descending order", true);
-						$options['url'] = array("direction" => "desc");
+					if ($this->Paginator->sortDir() === 'asc') {
+						$options['class'] = 'asc_orden';
+						$options['title'] = __('Descending order', true);
+						$options['url'] = array('direction' => 'desc');
 					}
 					else {
-						$options['class'] = "desc_orden";
-						$options['title'] = __("Ascending order", true);
-						$options['url'] = array("direction" => "asc");
+						$options['class'] = 'desc_orden';
+						$options['title'] = __('Ascending order', true);
+						$options['url'] = array('direction' => 'asc');
 					}
 				}
 			}
 		}
-		
+		*/
 		/**
 		* Si no hay nada, puede que sea la primera vez que entra y puede que el model tenga un orden por defecto.
 		*/
+                /*
 		else {
 			$instanciaModel =& ClassRegistry::getObject($modelClass);
 			if (!empty($instanciaModel->order)) {
-				if (!empty($instanciaModel->order[$modelClass . "." . $key])) {
-					if ($instanciaModel->order[$modelClass . "." . $key] === "desc") {
-						$options['class'] = "desc_orden";
-						$options['title'] = __("Ascending order", true);
-						$options['url'] = array("direction" => "asc");
+				if (!empty($instanciaModel->order[$modelClass . '.' . $key])) {
+					if ($instanciaModel->order[$modelClass . '.' . $key] === 'desc') {
+						$options['class'] = 'desc_orden';
+						$options['title'] = __('Ascending order', true);
+						$options['url'] = array('direction' => 'asc');
 					}
-					elseif ($instanciaModel->order[$modelClass . "." . $key] === "asc") {
-						$options['class'] = "asc_orden";
-						$options['title'] = __("Descending order", true);
-						$options['url'] = array("direction" => "desc");
+					elseif ($instanciaModel->order[$modelClass . '.' . $key] === 'asc') {
+						$options['class'] = 'asc_orden';
+						$options['title'] = __('Descending order', true);
+						$options['url'] = array('direction' => 'desc');
 					}
 				}
 				else {
-					$options['class'] = "sin_orden";
-					$options['title'] = __("Ascending order", true);
-					$options['url'] = array("direction" => "asc");
+					$options['class'] = 'sin_orden';
+					$options['title'] = __('Ascending order', true);
+					$options['url'] = array('direction' => 'asc');
 				}
 			}
 		}
-		
+		*/
 
 		/**
 		* Me aseguro de no perder ningun parametro que venga via url.
 		* Saco los propios del paginador.
-		*/
-		foreach (array("named", "pass") as $nombre) {
+		foreach (array('named', 'pass') as $nombre) {
 			if (!empty($this->params[$nombre])) {
 				unset($this->params[$nombre]['direction']);
 				unset($this->params[$nombre]['sort']);
@@ -105,9 +116,10 @@ class PaginadorHelper extends AppHelper {
 				$options['url'] = array_merge($options['url'], $this->params[$nombre]);
 			}
 		}
+        */
 		$model = $options['model'];
 		unset($options['model']);
-		return $this->Paginator->sort($title, $model . "." . $key, $options);
+		return $this->Paginator->sort($title, $model . '.' . $key, $options);
 	}
 	
 	
@@ -121,71 +133,54 @@ class PaginadorHelper extends AppHelper {
  * @return string Un bloque HTML.
  * @access public.
  */
-	function paginador($accion = "posicion", $opciones = array()) {
+	function paginador($accion = 'posicion', $opciones = array()) {
 		/**
 		* Si no estan seteadas la variables de la paginacion, no hago nada con el paginador.
 		*/
 		$model = Inflector::classify($this->Paginator->params['controller']);
 		if (empty($this->Paginator->params['paging'][$model]['count'])) {
-			return "";
+			return '';
 		}
 		
 		switch ($accion) {
-			case "posicion": 
+			case 'posicion':
 				return $this->Paginator->counter(array('format'=>__('page %page% of %pages%. %count% records.', true)));
 			break;
 			
-			case "navegacion":
+			case 'navegacion':
 
 				$out = null;
-				
+
 				/*
-				if ($this->traerPreferencia("paginacion") === "ajax") {
-					$targetId = "index";
-					//$targetId = "contenido";
-					if ($this->traerPreferencia("lov_apertura") !== "popup" && !empty($opciones['url']['targetId'])) {
+				if ($this->traerPreferencia('paginacion') === 'ajax') {
+					$targetId = 'index';
+					//$targetId = 'contenido';
+					if ($this->traerPreferencia('lov_apertura') !== 'popup' && !empty($opciones['url']['targetId'])) {
 						$targetId = $opciones['url']['targetId'];
 					}
 					$this->Paginator->options(am(array('update'=>$targetId), $this->Paginator->options, $opciones));
 				}
 				*/
-				$params=$this->Paginator->params();
-				
-				if (isset($params['page']) && $params['page']>1) {
-					$retorno = $this->Paginator->link($this->AppForm->image('primera.gif', array("alt"=>__("Go to first page", true))), array('page'=>1), array_merge(array('escape'=>false), $opciones));
+                /**
+                TODO: Gran cambio en revi 563
+                */
+				if ($this->Paginator->hasPrev()) {
+					$out[] = $this->Paginator->link($this->AppForm->image('primera.gif', array('alt' => __('Go to first page', true))), array('page' => 1), array_merge(array('escape' => false), $opciones));
+                    $out[] = $this->Paginator->prev($this->AppForm->image('anterior.gif', array('alt' => __('Go to previews page', true))), array('escape' => false));
 				} else {
-					$retorno = $this->AppForm->image('primeraoff.gif');
+                    $out[] = $this->AppForm->tag('div', $this->AppForm->image('primeraoff.gif'), array('class' => 'paginator_prev_disabled'));
+                    $out[] = $this->AppForm->tag('div', $this->AppForm->image('anterioroff.gif'), array('class' => 'paginator_prev_disabled'));
 				}
-				$out[] = $this->AppForm->tag("span", $retorno);
-
-				$prev = $this->Paginator->prev($this->AppForm->image('anterior.gif', array("alt"=>__("Go to previews page", true))), array_merge(array('escape'=>false), $opciones));
-				if (is_null($prev)) {
-					$retorno = $this->AppForm->image('anterioroff.gif');
-				} else {
-					$retorno = $prev;
-				}
-				$out[] = $this->AppForm->tag("span", $retorno);
-
 				
-				$next = $this->Paginator->next($this->AppForm->image('siguiente.gif', array("alt"=>__("Go to next page", true))), array_merge($opciones, array('escape'=>false)));
-				if (is_null($next)) {
-					$retorno = $this->AppForm->image('siguienteoff.gif');
-				}
-				else {
-					$retorno = $next;
-				}
-				$out[] = $this->AppForm->tag("span", $retorno);
+                if ($this->Paginator->hasNext()) {
+                    $out[] = $this->Paginator->next($this->AppForm->image('siguiente.gif', array('alt' => __('Go to next page', true))), array('escape' => false));
+                    $out[] = $this->Paginator->link($this->AppForm->image('ultima.gif', array('alt' => __('Go to last page', true))), array('page' => $this->Paginator->params['paging'][$model]['pageCount']), array_merge(array('escape' => false), $opciones));
+                } else {
+                    $out[] = $this->AppForm->tag('div', $this->AppForm->image('siguienteoff.gif'));
+                    $out[] = $this->AppForm->tag('div', $this->AppForm->image('ultimaoff.gif'));
+                }
 
-				
-				if (isset($params['page']) && $params['page']<$params['pageCount']) {
-					$retorno = $this->Paginator->link($this->AppForm->image('ultima.gif', array("alt"=>__("Go to last page", true))), array('page'=>$params['pageCount']), array_merge(array('escape'=>false), $opciones));
-				}
-				else {
-					$retorno = $this->AppForm->image('ultimaoff.gif');
-				}
-				$out[] = $this->AppForm->tag("span", $retorno);
-				
-				return implode("", $out);
+				return implode('', $out);
 			break;
 		}
 	}
