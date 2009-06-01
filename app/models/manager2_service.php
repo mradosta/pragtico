@@ -69,8 +69,8 @@ class Manager2Service extends AppModel {
                     $Grupo = ClassRegistry::init('Grupo');
                     $Grupo->contain(array('GruposParametro.Parametro'));
                     $Grupo->Behaviors->detach('Permisos');
-                    $grupo = $Grupo->findById(4);
-                    foreach ($grupo['GruposParametro'] as $parametro) {
+                    $tmpGrupo = $Grupo->findById(4);
+                    foreach ($tmpGrupo['GruposParametro'] as $parametro) {
                         if ($parametro['Parametro']['nombre'] === 'cuit') {
                             $grupo->setAttribute('codigo', $parametro['valor']);
                             break;
