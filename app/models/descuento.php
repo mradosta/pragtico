@@ -59,12 +59,7 @@ class Descuento extends AppModel {
 			array(
 				'rule'		=> VALID_NOT_EMPTY, 
 				'message'	=> 'Debe ingresar una fecha.'),
-        )/*,
-        'monto' => array(
-			array(
-				'rule'		=> VALID_NUMBER,
-				'message'	=> 'Debe ingresar el monto a descontar.')
-        )*/,
+        ),
         'tipo' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
@@ -75,7 +70,7 @@ class Descuento extends AppModel {
 				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe ingresar la descripcion del descuento.')
         ),
-        'relacion_id__' => array(
+        'relacion_id' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe especificar la relacion laboral a la cual realizar el descuento.')
@@ -165,13 +160,14 @@ class Descuento extends AppModel {
                 $conceptos[] = $Concepto->findConceptos('ConceptoPuntual', array_merge(
                         array('relacion' => $relacion, 'codigoConcepto' => $name), $opciones));
                 
-                $variables['total_descontado_' . $name] = 0;
-                $variables['cuotas_descontadas_' . $name] = 0;
-                $variables['monto_' . $name] = $v['Descuento']['monto'];
-                $variables['cuotas_' . $name] = $v['Descuento']['cuotas'];
+                $variables['#total_descontado_' . $name] = 0;
+                $variables['#cuotas_descontadas_' . $name] = 0;
+                $variables['#monto_' . $name] = $v['Descuento']['monto'];
+                $variables['#cuotas_' . $name] = $v['Descuento']['cuotas'];
+                $variables['#porcentaje_' . $name] = $v['Descuento']['porcentaje'];
                 if (!empty($v['DescuentosDetalle'])) {
-                    $variables['total_descontado_' . $name] = array_sum(Set::extract('/DescuentosDetalle/monto', $v['DescuentosDetalle']));
-                    $variables['cuotas_descontadas_' . $name] = count($v['DescuentosDetalle']);
+                    $variables['#total_descontado_' . $name] = array_sum(Set::extract('/DescuentosDetalle/monto', $v['DescuentosDetalle']));
+                    $variables['#cuotas_descontadas_' . $name] = count($v['DescuentosDetalle']);
                 }
 
 
@@ -201,6 +197,21 @@ class Descuento extends AppModel {
 	}
 
 
+    function beforeValidate($options = array()) {
+        if ($this->data['Descuento']['tipo'] === 'Cuota Alimentaria') {
+            if (empty($this->data['Descuento']['porcentaje'])) {
+                $this->invalidate('porcentaje', 'Debe ingresar el porcentaje a descontar para la cuota alimentaria.');
+                return false;
+            }
+        } else {
+            if (empty($this->data['Descuento']['monto'])) {
+                $this->invalidate('monto', 'Debe ingresar el monto a descontar.');
+                return false;
+            }
+        }
+        return parent::beforeValidate($options);
+    }
+
 /**
  * descontar field is bitwise, must sum values then.
  */
@@ -210,7 +221,10 @@ class Descuento extends AppModel {
 		}
 		if ($this->data['Descuento']['tipo'] === 'Vale') {
 			$this->data['Descuento']['cuotas'] = 1;
-		}
+        } elseif ($this->data['Descuento']['tipo'] === 'Cuota Alimentaria') {
+            $this->data['Descuento']['monto'] = 0;
+            $this->data['Descuento']['cuotas'] = 0;
+        }
 
 		/** Must create a pending peyment */
 		if (empty($this->data['Descuento']['id']) && in_array($this->data['Descuento']['tipo'], array('Vale', 'Prestamo'))) {
