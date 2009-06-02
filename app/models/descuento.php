@@ -165,6 +165,7 @@ class Descuento extends AppModel {
                 $variables['#monto_' . $name] = $v['Descuento']['monto'];
                 $variables['#cuotas_' . $name] = $v['Descuento']['cuotas'];
                 $variables['#porcentaje_' . $name] = $v['Descuento']['porcentaje'];
+                $variables['#descripcion_' . $name] = $v['Descuento']['descripcion'];
                 if (!empty($v['DescuentosDetalle'])) {
                     $variables['#total_descontado_' . $name] = array_sum(Set::extract('/DescuentosDetalle/monto', $v['DescuentosDetalle']));
                     $variables['#cuotas_descontadas_' . $name] = count($v['DescuentosDetalle']);
