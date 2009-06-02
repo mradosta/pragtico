@@ -205,6 +205,9 @@ class Liquidacion extends AppModel {
 			$discounts = $this->Relacion->Descuento->getDescuentos($this->getRelationship(),
 					array(	'periodo' 	=> $this->getPeriod(),
 							'tipo'		=> $type));
+            foreach ($discounts['variables'] as $varName => $varValue) {
+                $this->setVar($varName, $varValue);
+            }
 			$this->__setAuxiliar($discounts['auxiliar']);
 			$this->setConcept($discounts['conceptos']);
 		
