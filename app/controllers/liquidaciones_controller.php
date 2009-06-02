@@ -144,9 +144,7 @@ class LiquidacionesController extends AppController {
 						!in_array($periodo['periodo'], array('1S', '2S'))) {
 					$message = __('Sac liquidation period should be of the form "YYYY[12]S"', true);
 				}
-			} elseif ($this->data['Condicion']['Liquidacion-tipo'] !== 'final_liquidation') {
-				$message = __('Must enter a period', true);
-			} else {
+			} elseif ($this->data['Condicion']['Liquidacion-tipo'] !== 'liquidacion_final') {
 				$message = __('Invalid Period', true);
 			}
 
@@ -156,26 +154,11 @@ class LiquidacionesController extends AppController {
 						$message = "Debe seleccionar un empleador, un trabajador o una relacion laboral.";
 			}
 
-			if (!is_null($message)) {
+			if (!empty($message)) {
 				$this->Session->setFlash($message, 'error');
 				$this->redirect(array('action' => 'preliquidar'));
 			}
 
-
-			/**
-			 * De las liquidaciones que he seleccionado para pre-liquidar, verifico que no sean
-			 * liquidaciones ya confirmadas para el mismo periodo del mismo tipo.
-			 */
-			$condicionesLiquidacion['Liquidacion.mes'] = $periodo['mes'];
-			$condicionesLiquidacion['Liquidacion.ano'] = $periodo['ano'];
-			$condicionesLiquidacion['Liquidacion.periodo'] = $periodo['periodo'];
-			$condicionesLiquidacion['Liquidacion.tipo'] = $this->data['Condicion']['Liquidacion-tipo'];
-			$condicionesLiquidacion['Liquidacion.estado'] = 'Confirmada';
-			$liquidaciones = $this->Liquidacion->find('all', array(
-					'recursive'		=> -1,
-					'fields'		=> 'relacion_id',
-					'conditions'	=> $condicionesLiquidacion));
-			$confirmadas = Set::extract('/Liquidacion/relacion_id', $liquidaciones);
 
 			/** Search for the relations */
 			$condiciones = null;
@@ -184,11 +167,31 @@ class LiquidacionesController extends AppController {
 			unset($condiciones['Liquidacion.periodo_largo']);
 			unset($condiciones['Liquidacion.periodo_vacacional']);
 			unset($condiciones['Liquidacion.estado']);
-			$condiciones['Relacion.ingreso <='] = $periodo['hasta'];
-			$condiciones['Relacion.estado'] = 'Activa';
-			if (!empty($confirmadas)) {
-				$condiciones['NOT'] = array('Relacion.id' => $confirmadas);
-			}
+            if ($this->data['Condicion']['Liquidacion-tipo'] !== 'liquidacion_final') {
+                $condiciones['Relacion.ingreso <='] = $periodo['hasta'];
+                $condiciones['Relacion.estado'] = 'Activa';
+                if ($this->data['Condicion']['Liquidacion-tipo'] !== 'especial') {
+                    /**
+                    * De las liquidaciones que he seleccionado para pre-liquidar, verifico que no sean
+                    * liquidaciones ya confirmadas para el mismo periodo del mismo tipo.
+                    */
+                    $condicionesLiquidacion['Liquidacion.mes'] = $periodo['mes'];
+                    $condicionesLiquidacion['Liquidacion.ano'] = $periodo['ano'];
+                    $condicionesLiquidacion['Liquidacion.periodo'] = $periodo['periodo'];
+                    $condicionesLiquidacion['Liquidacion.tipo'] = $this->data['Condicion']['Liquidacion-tipo'];
+                    $condicionesLiquidacion['Liquidacion.estado'] = 'Confirmada';
+                    $liquidaciones = $this->Liquidacion->find('all', array(
+                            'recursive'     => -1,
+                            'fields'        => 'relacion_id',
+                            'conditions'    => $condicionesLiquidacion));
+                    $confirmadas = Set::extract('/Liquidacion/relacion_id', $liquidaciones);
+                    if (!empty($confirmadas)) {
+                        $condiciones['NOT'] = array('Relacion.id' => $confirmadas);
+                    }
+                }
+            } else {
+                $condiciones['Relacion.estado'] = 'Historica';
+            }
 
 			$relaciones = $this->Liquidacion->Relacion->find('all',
 					array(	'contain'		=> array(	'ConveniosCategoria',

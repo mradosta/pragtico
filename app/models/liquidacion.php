@@ -514,7 +514,7 @@ class Liquidacion extends AppModel {
 		*/
 		if (preg_match_all('/(#[a-z0-9_]+)/', $formula, $variablesTmp)) {
 
-			foreach ($variablesTmp[1] as $k=>$v) {
+			foreach (array_unique($variablesTmp[1]) as $k=>$v) {
 				/**
 				* Debe buscar la variable para reemplazarla dentro de la formula.
 				* Usa la RegEx y no str_replace, porque por ejemplo, si debo reemplzar #horas, y en cuentra
@@ -567,7 +567,7 @@ class Liquidacion extends AppModel {
 			* Si en el nombre hay variables, busco primero estos valores.
 			*/
 			if (preg_match_all("/(#[a-z0-9_]+)/", $nombreConcepto, $variablesTmp)) {
-				foreach ($variablesTmp[1] as $k=>$v) {
+				foreach (array_unique($variablesTmp[1]) as $k=>$v) {
 					/**
 					* Debe buscar la variable para reemplazarla dentro de la formula.
 					* Usa la RegEx y no str_replace, porque por ejemplo, si debo reemplzar #horas, y en cuentra
@@ -625,7 +625,7 @@ class Liquidacion extends AppModel {
 			* Si aun no lo tengo, lo calculo.
 			*/
 			if (preg_match_all("/(@[\w]+)/", $formula, $matches)) {
-				foreach ($matches[1] as $match) {
+				foreach (array_unique($matches[1]) as $match) {
 					$match = substr($match, 1);
 					
 					/** Si no esta, lo busco */
@@ -748,12 +748,30 @@ class Liquidacion extends AppModel {
                 * Si en la formula hay variables, busco primero estos valores.
                 */
                 if (preg_match_all('/(#[a-z0-9_]+)/', $formula, $variables_tmp)) {
-                    foreach ($variables_tmp[1] as $v) {
+                    foreach (array_unique($variables_tmp[1]) as $v) {
                         $formula = preg_replace('/(' . $v . ')([\)|\s|\*|\+\/\-|\=|\,]*[^_])/', $this->getVarValue($v) . '$2', $formula);
+                    }
+                }
+                if (preg_match_all("/@([\w]+)/", $formula, $conceptos_tmp)) {
+                    foreach (array_unique($conceptos_tmp[1]) as $v) {
+                        if (!empty($this->__conceptos[$v])) {
+                            $tmp = $this->__getConceptValue($this->__conceptos[$v]);
+                            $formula = preg_replace('/(@' . $v . ')([\)|\s|\*|\+\/\-|\=|\,]*[^_])/', $tmp['valor'] . '$2', $formula);
+                        } else {
+                            $this->__setError(array(    'tipo'                  => 'Concepto Inexistente',
+                                                        'gravedad'              => 'Alta',
+                                                        'concepto'              => '',
+                                                        'variable'              => $variable,
+                                                        'formula'               => $formula,
+                                                        'descripcion'           => 'La formula intenta usar un concepto que no existe en la relacion.',
+                                                        'recomendacion'         => 'Verifique que la relacion tenga cargados todos los datos necesarios.',
+                                                        'descripcion_adicional' => ''));
+                        }
                     }
                 }
 
                 $valor = $this->resolver($formula);
+                //debug($variable . ': ' .$valor);
 				//debug($variable . ' = ' . $valor . ' ( ' . $formula . ' )');
                 
                 if ($valor === '#N/A') {
@@ -803,6 +821,7 @@ class Liquidacion extends AppModel {
                         $valor = strtoupper($valor);
                     break;
                 }
+                //debug($variable . ': ' .$valor);
                 $this->setVar($variable, $valor);
                 return $valor;
             }
