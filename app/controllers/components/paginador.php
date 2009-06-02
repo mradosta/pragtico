@@ -238,15 +238,14 @@ class PaginadorComponent extends Object {
 			if (isset($this->controller->{$model}->Behaviors->Containable->runtime[$model])) {
 				$contain = $this->controller->{$model}->Behaviors->Containable->runtime[$model];
 			}
-			$this->controller->{$model}->contain();
-
+            /** TODO: En este caso saca todas las relaciones porque puede que cake las resuelva por el contain. Se deberia revisar esto y dejar las belongsTo y las otras resolverlas de alguna forma. */
+            $this->controller->{$model}->contain();
 			foreach ($this->controller->{$model}->totalizar as $operacion => $campos) {
 				foreach ($campos as $campo) {
 					$r = $this->controller->{$model}->find('all', array(
 												'recursive'		=> -1,
-                                                'condiciones'   => $condiciones,
+                                                'conditions'    => $condiciones,
 												'fields'		=> strtoupper($operacion) . '(' . $model . '.' . $campo . ') as total'));
-
                     if (isset($r[0][$model]['total'])) {
                         $resultado[$campo] = $r[0][$model]['total'];
                     } else {
@@ -255,9 +254,7 @@ class PaginadorComponent extends Object {
 				}
 			}
 
-			/**
-			* Restauro contain si lo tenia seteado.
-			*/
+			/** Restauro contain si lo tenia seteado. */
 			if (!empty($contain)) {
 				$this->controller->{$model}->Behaviors->Containable->runtime[$model] = $contain;
 			}
