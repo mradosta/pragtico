@@ -32,12 +32,12 @@ $campos['Descuento.desde'] = array();
 $campos['Descuento.hasta'] = array();
 $campos['Descuento.descripcion'] = array('aclaracion' => 'Esta descripcion saldra impresa en el recibo.');
 $campos['Descuento.monto'] = array('label' => 'Monto $', 'aclaracion' => 'Se refiere al monto total a descontar.');
-//$campos['Descuento.porcentaje'] = array('after' => '%', 'aclaracion' => 'Se refiere al porcentaje a descontar.');
 $campos['Descuento.cuotas'] = array();
 //$campos['Descuento.sobre_smvm'] = array('aclaracion' => 'Indica si el porcentaje a descontarse debe ser por sobre el SMVM. En caso de seleccionar la opcion "No", se tomara sobre el total del sueldo.');
 $campos['Descuento.descontar'] = array('multiple' => 'checkbox');
 $campos['Descuento.concurrencia'] = array();
 $campos['Descuento.tipo'] = array();
+$campos['Descuento.porcentaje'] = array('after' => '%', 'aclaracion' => 'Se refiere al porcentaje a descontar de la Cuota Alimentaria.');
 $campos['Descuento.estado'] = array();
 $campos['Descuento.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
@@ -48,4 +48,19 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' =
 * Pinto el element add con todos los fieldsets que he definido.
 */
 echo $this->element('add/add', array('fieldset' => $fieldset));
+$appForm->addScript('
+    if (jQuery("#DescuentoTipoCuotaAlimentaria:checked").val() == undefined) {
+        jQuery("#DescuentoPorcentaje").parent().hide();
+    }
+    
+    jQuery(":radio", jQuery("#DescuentoTipoCuotaAlimentaria").parent().parent()).click(
+        function() {
+            if (jQuery(this).val() == "Cuota Alimentaria") {
+                jQuery("#DescuentoPorcentaje").parent().show();
+            } else {
+                jQuery("#DescuentoPorcentaje").parent().hide();
+            }
+        }
+    );
+');
 ?>
