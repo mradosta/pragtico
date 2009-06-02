@@ -120,7 +120,7 @@ $form = $appForm->form($bloques, $opcionesForm);
 if ($this->params['isAjax']) {
 	echo $appForm->bloque($form);
 } else {
-	echo $appForm->tag('div', $form, array('class' => 'index'));
+	echo $appForm->tag('div', $form, array('class' => 'index', 'id' => 'index'));
 }	
 
 /** Add breakdown js code */

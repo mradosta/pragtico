@@ -938,7 +938,9 @@ span.color_rojo {
 	padding-left: 2px;
 	color: #F49E23;
 }
-
+.lov {
+overflow: auto;
+}
 img.lupa_lov {
 	width: 20px;
 	height: 18px;
