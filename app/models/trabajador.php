@@ -53,6 +53,26 @@ class Trabajador extends AppModel {
 				'rule'	=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe especificar el nombre del trabajador.')
         ),
+        'sexo' => array(
+            array(
+                'rule'  => VALID_NOT_EMPTY,
+                'message'   => 'Debe especificar el sexo del trabajador.')
+        ),
+        'nacimiento' => array(
+            array(
+                'rule'  => VALID_NOT_EMPTY,
+                'message'   => 'Debe especificar la fecha de nacimiento del trabajador.')
+        ),
+        'direccion' => array(
+            array(
+                'rule'  => VALID_NOT_EMPTY,
+                'message'   => 'Debe especificar la direccion del trabajador.')
+        ),
+        'codigo_postal' => array(
+            array(
+                'rule'  => VALID_NOT_EMPTY,
+                'message'   => 'Debe especificar el codigo postal del trabajador.')
+        ),
         'cuil' => array(
 			array(
 				'rule'	=> VALID_NOT_EMPTY,

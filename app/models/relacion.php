@@ -45,12 +45,12 @@ class Relacion extends AppModel {
 							'fields' 	=> array('Trabajador.apellido', 'Trabajador.nombre', 'Empleador.nombre'));
 	
 	var $validate = array(
-        'trabajador_id__' => array(
+        'trabajador_id' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe seleccionar un trabajador.')
         ),
-        'empleador_id__' => array(
+        'empleador_id' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe seleccionar un empleador.')
