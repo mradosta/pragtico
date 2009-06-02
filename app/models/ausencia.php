@@ -161,7 +161,6 @@ class Ausencia extends AppModel {
 			
 			foreach ($r as $k => $ausencia) {
 
-
                 if ($ausencia['Ausencia']['desde'] < $periodo['desde']) {
                     $diff = $this->dateDiff($periodo['desde'], $periodo['hasta']);
                 } else {
@@ -295,5 +294,49 @@ class Ausencia extends AppModel {
 	}
 	
 
+    function getAccidententAbsences($relacionId, $from, $to) {
+        /** Try to find if the are accident absences before the period */
+        $sql = "
+            select      Ausencia.id,
+                        Ausencia.desde,
+                        AusenciasSeguimiento.dias
+            from        ausencias Ausencia,
+                        ausencias_motivos AusenciasMotivo,
+                        ausencias_seguimientos AusenciasSeguimiento
+            where       Ausencia.id = AusenciasSeguimiento.ausencia_id
+            and         AusenciasMotivo.id = Ausencia.ausencia_motivo_id
+            and         AusenciasSeguimiento.estado = 'Confirmado'
+            and         AusenciasMotivo.tipo = 'Accidente'
+            and         Ausencia.relacion_id = " . $relacionId . "
+            and         Ausencia.desde <= '" . $to . "'";
+        $r = $this->query($sql);
+
+        $ausencias = 0;
+        if (!empty($r)) {
+            foreach ($r as $k => $ausencia) {
+                
+                if ($ausencia['Ausencia']['desde'] < $from) {
+                    $diff = $this->dateDiff($from, $ausencia['Ausencia']['desde']);
+                } else {
+                    $diff = $this->dateDiff($ausencia['Ausencia']['desde'], $to);
+                }
+
+                foreach ($ausencia['AusenciasSeguimiento'] as $diasSeguimiento) {
+                    if ($diasSeguimiento > $diff['dias']) {
+                        $ausencias += $diff['dias'];
+                    }
+                    $ausencias += $diasSeguimiento;
+                }
+            }
+
+            $diff = $this->dateDiff($from, $to);
+            if ($ausencias > $diff['dias']) {
+                $ausencias = $diff['dias'];
+            }
+        }
+        return $ausencias;
+    }
+
+    
 }
 ?>

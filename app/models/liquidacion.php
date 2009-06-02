@@ -232,77 +232,55 @@ class Liquidacion extends AppModel {
 			unset($options['variables']);
 			unset($options['informaciones']);
 
-            $condtions['Liquidacion.relacion_id'] = $relationship['Relacion']['id'];
-			$condtions['Liquidacion.tipo'] = 'Normal';
-            $options['year'] = $condtions['Liquidacion.ano'] = $period['ano'];
+            $conditions['Liquidacion.relacion_id'] = $relationship['Relacion']['id'];
+			$conditions['Liquidacion.tipo'] = 'Normal';
+            $conditions['Liquidacion.estado'] = 'Confirmada';
+            $options['year'] = $conditions['Liquidacion.ano'] = $period['ano'];
             if ($period['periodo'] == '1S') {
 				$options['period'] = 1;
-                $condtions['mes'] = array('AND' => array(
-                        'Liquidacion.mes >=' => 1,
-                        'Liquidacion.mes <=' => 6));
+                $conditions['Liquidacion.mes >='] = 1;
+                $conditions['Liquidacion.mes <='] = 6;
+                $from = $period['ano'] . '-01-01';
+                $to = $period['ano'] . '-06-30';
             } elseif ($period['periodo'] == '2S') {
 				$options['period'] = 2;
-                $condtions['mes'] = array('AND' => array(
-                        'Liquidacion.mes >=' => 6,
-                        'Liquidacion.mes <=' => 12));
+                $conditions['Liquidacion.mes >='] = 7;
+                $conditions['Liquidacion.mes <='] = 12;
+                $from = $period['ano'] . '-07-01';
+                $to = $period['ano'] . '-12-31';
             } else {
                 return array('error' => sprintf('Wrong period (%s). Only "1" for the first_half or "2" for the second_half allowed for type %s.', $options['period'], $type));
             }
-
-
-            $fields = array('Liquidacion.mes', 'SUM(remunerativo) AS total_remunerativo');
+            $fields = array('Liquidacion.mes', 'SUM(Liquidacion.remunerativo) AS total_remunerativo');
             $groupBy = array('Liquidacion.mes');
-			
             $r = $this->find('all', array(
-                    'recursive' => -1,
-                    'fields'    => $fields,
-                    'condtions' => $condtions,
-                    'group'     => $groupBy));
+                    'recursive'     => -1,
+                    'fields'        => $fields,
+                    'conditions'    => $conditions,
+                    'group'         => $groupBy));
 
+            $this->setVar('#mayor_suma_mes_remunerativo_semestre', max(Set::combine($r, '{n}.Liquidacion.mes',
+                          '{n}.Liquidacion.total_remunerativo')));
+            $this->setVar('#total_dias_ausencias_accidente_semestre', $this->Relacion->Ausencia->getAccidententAbsences($relationship['Relacion']['id'], $from, $to));
 
-			$months = $this->format('all', array('type' => 'mesEnLetras', 'keyStart' => 0));
-			foreach ($r as $total) {
-				$options[$months[$total['Liquidacion']['mes']]] = (float)$total['Liquidacion']['total_remunerativo'];
-			}
+            foreach ($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
+                    array(      'relacion'  => $relationship,
+                                'desde'     => $this->getVarValue('#fecha_desde_liquidacion'),
+                                'hasta'     => $this->getVarValue('#fecha_hasta_liquidacion'))) as $cCod => $concepto) {
 
-			
-			
-			$options['relation'] = array_pop(Set::combine(array($relationship), '{n}.Relacion.id', array('{2}, {1} ({0})', '{n}.Empleador.nombre', '{n}.Trabajador.nombre', '{n}.Trabajador.apellido')));
-			$options['start'] = strtotime($relationship['Relacion']['ingreso'] . ' 00:00:00 UTC');
-			if ($relationship['Relacion']['egreso'] !== '0000-00-00') {
-				$options['end'] = strtotime($relationship['Relacion']['egreso'] . ' 00:00:00 UTC');
-			}
-			$options['end'] = strtotime('2010-01-08 00:00:00 UTC');
-            /** Use PHPExcel to get complex calculations done */
-            set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes');
-            App::import('Vendor', 'IOFactory', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'IOFactory.php');
-
-            $objPHPExcelReader = PHPExcel_IOFactory::createReader('Excel2007');
-            $objPHPExcel = $objPHPExcelReader->load(WWW_ROOT . 'files' . DS . 'base' . DS . 'sac.xlsx');
-            $objPHPExcel->setActiveSheetIndex(0);
-            $objPHPExcelSheet = $objPHPExcel->getActiveSheet();
-
-            foreach ($options as $cellName => $data) {
-				if (!empty($data)) {
-					$cellName = ucfirst($cellName);
-                	$objPHPExcelSheet->setCellValue($cellName, $data);
-				}
+                if ($concepto['tipo'] === 'Deduccion') {
+                    $this->setConcept(array($cCod => $concepto));
+                }
             }
+            
+            $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
+                    array(  'relacion'          => $this->getRelationship(),
+                            'codigoConcepto'    => 'sac')));
 
-			$this->setConcept($this->LiquidacionesDetalle->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $relationship, 'codigoConcepto' => 'sac')));
-			$this->__conceptos['sac']['valor'] = $objPHPExcelSheet->getCell('TOTAL_PRAGTICO')->getCalculatedValue();
-			$this->__conceptos['sac']['debug'] = '';
-			$this->__conceptos['sac']['valor_cantidad'] = 0;
-			$this->__conceptos['sac']['errores'] = array();
-			
-			if ($this->__getSaveArray() === true) {
-				$objPHPExcelWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-				$objPHPExcelWriter->save(TMP . '/liquidacion-' . $this->id . '.xls');
-				return true;
-			} else {
-				return false;
-			}
+            $this->__conceptos['sac'] = array_merge($this->__conceptos['sac'], $this->__getConceptValue($this->__conceptos['sac']));
         } elseif ($type === 'liquidacion_final') {
+            // Poner fechade baja a la relacion antes y filtrar por eso
+            //                    
 			d(":X");
 		}
 
