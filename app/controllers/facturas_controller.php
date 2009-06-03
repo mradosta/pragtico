@@ -43,6 +43,7 @@ class FacturasController extends AppController {
 
 	function prefacturar() {
 
+        $this->__filasPorPagina();
 		if (!empty($this->data)) {
 			
 			if (!empty($this->data['Formulario']['accion'])) {
