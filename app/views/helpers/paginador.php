@@ -161,11 +161,13 @@ class PaginadorHelper extends AppHelper {
 					$this->Paginator->options(am(array('update'=>$targetId), $this->Paginator->options, $opciones));
 				}
 				*/
+
+                
                 if (!empty($this->Paginator->params['isAjax'])) {
                     $this->Paginator->options['update'] = 'lov';
-                } else {
+                }/* else {
                     $this->Paginator->options['update'] = 'index';
-                }
+                }*/
                 
                 /**
                 TODO: Gran cambio en revi 563
