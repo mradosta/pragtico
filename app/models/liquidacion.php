@@ -230,13 +230,13 @@ class Liquidacion extends AppModel {
 			$this->__conceptos['vacaciones'] = array_merge($this->__conceptos['vacaciones'],
 						$this->__getConceptValue($this->__conceptos['vacaciones']));
 
-		} elseif ($type === 'sac') {
+		} elseif (in_array($type,  array('liquidacion_final', 'sac'))) {
 
 			unset($options['variables']);
 			unset($options['informaciones']);
 
             $conditions['Liquidacion.relacion_id'] = $relationship['Relacion']['id'];
-			$conditions['Liquidacion.tipo'] = 'Normal';
+			$conditions['Liquidacion.tipo !'] = 'Sac';
             $conditions['Liquidacion.estado'] = 'Confirmada';
             $options['year'] = $conditions['Liquidacion.ano'] = $period['ano'];
             if ($period['periodo'] == '1S') {
@@ -279,22 +279,21 @@ class Liquidacion extends AppModel {
             $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
                     array(  'relacion'          => $this->getRelationship(),
                             'codigoConcepto'    => 'sac')));
-
             $this->__conceptos['sac'] = array_merge($this->__conceptos['sac'], $this->__getConceptValue($this->__conceptos['sac']));
-        } elseif ($type === 'liquidacion_final') {
-            // Poner fechade baja a la relacion antes y filtrar por eso
-            //                    
-			d(":X");
-		}
+
+            if ($type === 'liquidacion_final') {
+                $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
+                        array(  'relacion'          => $this->getRelationship(),
+                                'codigoConcepto'    => 'vacaciones_no_gozadas')));
+                $this->__conceptos['vacaciones_no_gozadas'] = array_merge($this->__conceptos['vacaciones_no_gozadas'], $this->__getConceptValue($this->__conceptos['vacaciones_no_gozadas']));
+            }
+        }
 
 		/** Resolv */
-		//d($this->__conceptos['antiguedad']);
-		//d($this->getConcept());
 		foreach ($this->getConcept() as $cCod => $concepto) {
 			$this->__conceptos[$cCod] = array_merge($this->__conceptos[$cCod],
 					$this->__getConceptValue($concepto));
 		}
-        //d($this->__conceptos);
 		return $this->__getSaveArray();
     }
     
@@ -484,6 +483,30 @@ class Liquidacion extends AppModel {
 	}
 
 
+/** Before performing a SUM, must be sure that I have all involved concepts */
+    function __getAllNecessaryConcepts() {
+        foreach ($this->__conceptos as $k => $conceptoTmp) {
+            if (!isset($this->__conceptos[$k]['checked'])) {
+                $this->__conceptos[$k]['checked'] = true;
+                if (preg_match_all('/@([a-z0-9_]+)/', $conceptoTmp['formula'], $matchesTmp)) {
+                    foreach ($matchesTmp[1] as $m) {
+                        $allNecesaryConcepts[$m] = $m;
+                    }
+                }
+            }
+        }
+        
+        if (!empty($allNecesaryConcepts) && !empty($this->__conceptos)) {
+            $diff = array_diff($allNecesaryConcepts, array_keys($this->__conceptos));
+            if (!empty($diff)) {
+                foreach ($diff as $concept) {
+                    $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $this->getRelationship(), 'codigoConcepto' => $concept)));
+                }
+                $this->__getAllNecessaryConcepts();
+            }
+        }
+    }
+
 /**
 * Dado un concepto, resuelve la formula.
 */
@@ -602,6 +625,9 @@ class Liquidacion extends AppModel {
 			if (!isset($conceptosNot)) {
 				$conceptosNot = array();
 			}
+            
+            $valor = 0;
+            $this->__getAllNecessaryConcepts();
 			foreach ($this->__conceptos as $conceptoTmp) {
 				if (!in_array($conceptoTmp['codigo'], $conceptosNot) && $conceptoTmp['tipo'] == $matches[1] && ($conceptoTmp['imprimir'] === "Si" || $conceptoTmp['imprimir'] === "Solo con valor")) {
 					if (empty($conceptoTmp['valor'])) {
