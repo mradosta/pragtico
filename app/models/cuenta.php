@@ -44,7 +44,8 @@ class Cuenta extends AppModel {
 				'message'	=> 'El Cbu ingresado no es valido.')
         )
 	);
-
+    var $breadCrumb = array('format'    => '%s %s para %s',
+                            'fields'    => array('Cuenta.tipo', 'Cuenta.cbu', 'Empleador.nombre'));
 	var $belongsTo = array('Empleador', 'Sucursal');
 }
 ?>

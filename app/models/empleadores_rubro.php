@@ -29,8 +29,8 @@ class EmpleadoresRubro extends AppModel {
 							'Rubro' =>
                         array('className'    => 'Rubro',
                               'foreignKey'   => 'rubro_id'));
-
-
+    var $breadCrumb = array('format'    => '%s para %s',
+                            'fields'    => array('Rubro.nombre', 'Empleador.nombre'));
 
 }
 ?>

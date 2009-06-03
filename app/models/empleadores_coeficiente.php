@@ -46,6 +46,9 @@ class EmpleadoresCoeficiente extends AppModel {
         )        
 	);
 
+    var $breadCrumb = array('format'    => '%s para %s',
+                            'fields'    => array('Coeficiente.nombre', 'Empleador.nombre'));
+    
 	var $belongsTo = array('Empleador', 'Coeficiente');
 }
 ?>

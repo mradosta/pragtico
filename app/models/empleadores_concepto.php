@@ -36,6 +36,8 @@ class EmpleadoresConcepto extends AppModel {
 							'Concepto' =>
                         array('className'    => 'Concepto',
                               'foreignKey'   => 'concepto_id'));
+    var $breadCrumb = array('format'    => '%s para %s',
+                            'fields'    => array('Concepto.nombre', 'Empleador.nombre'));
 
 }
 ?>
