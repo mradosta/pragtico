@@ -151,7 +151,7 @@ class Liquidacion extends AppModel {
 
         $this->resetRecursivity();
 		
-		if ($type === 'normal') {
+		if ($type === 'normal' || $type === 'especial') {
 
 			$jornada = $this->getRelationship('ConveniosCategoria', 'jornada');
 			if (($period['periodo'] !== 'M' && $jornada === 'Mensual') || ($period['periodo'] === 'M' && $jornada === 'Por Hora')) {
@@ -189,18 +189,6 @@ class Liquidacion extends AppModel {
 			$this->__setAuxiliar($ausencias['auxiliar']);
 			$this->setConcept($ausencias['conceptos']);
 
-			/*
-			$total = 0;
-			foreach ($this->getConcept() as $cCod => $concepto) {
-				$this->__conceptos[$cCod] = array_merge($this->__conceptos[$cCod],
-						$this->__getConceptValue($concepto));
-				if ($this->__conceptos[$cCod]['tipo'] === 'Remunerativo') {
-					$total += $this->__conceptos[$cCod]['valor'];
-				}
-			}
-			d($total);
-			//d($this->__getSaveArray());
-			*/
 			/** Get discounts */
 			$discounts = $this->Relacion->Descuento->getDescuentos($this->getRelationship(),
 					array(	'periodo' 	=> $this->getPeriod(),
@@ -287,6 +275,8 @@ class Liquidacion extends AppModel {
                                 'codigoConcepto'    => 'vacaciones_no_gozadas')));
                 $this->__conceptos['vacaciones_no_gozadas'] = array_merge($this->__conceptos['vacaciones_no_gozadas'], $this->__getConceptValue($this->__conceptos['vacaciones_no_gozadas']));
             }
+        } elseif ($type === 'especial') {
+            return $this->getReceipt($relationship, $period, 'normal', $options);
         }
 
 		/** Resolv */
