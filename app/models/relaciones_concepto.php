@@ -48,7 +48,7 @@ class RelacionesConcepto extends AppModel {
 	function afterFind($results, $primary = false) {
 		if (!isset($results[0][0]) && $primary === true) {
 			foreach ($results as $k => $result) {
-				if (isset($options['relacion']['ConveniosCategoria'])) {
+				if (isset($result['Relacion']['ConveniosCategoria'])) {
 					$options = null;
 					$options['relacion'] = $result;
 					$options['relacion']['ConveniosCategoria'] = $result['Relacion']['ConveniosCategoria'];
