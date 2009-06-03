@@ -273,6 +273,8 @@ class LiquidacionesController extends AppController {
 				'Relacion.Trabajador',
 				'Relacion.Empleador',
 	 			'LiquidacionesError'));
+        
+        $this->__filasPorPagina();
 		$resultados = $this->Paginador->paginar(
 			$condiciones,
 			array('Liquidacion.periodo_largo', 'Liquidacion.periodo_vacacional'));
