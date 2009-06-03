@@ -326,6 +326,15 @@ class Novedad extends AppModel {
 	}
 
 
+/** When manually inserted, must create the subtipo field */
+    function beforeSave($options = array()) {
+        if (!empty($this->data['Novedad']['concepto_id__']) && empty($this->data['Novedad']['subtipo'])) {
+            $this->data['Novedad']['subtipo'] = $this->data['Novedad']['concepto_id'] . ':' . array_shift(explode('-', $this->data['Novedad']['concepto_id__']));
+        }
+        return parent::beforeSave($options);
+    }
+
+
 /**
  * Obtiene un listado de los posibles campos que puedo ingresar por novedades.
  *
