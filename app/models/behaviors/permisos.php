@@ -73,7 +73,14 @@ class PermisosBehavior extends ModelBehavior {
  * @var array
  * @access public
  */
-	public $Session = null;
+	//public $Session = null;
+/**
+ * Current loggedin User.
+ *
+ * @var array
+ * @access private
+ */
+    private $__currentUser = null;
 	
 
 /**
@@ -83,12 +90,20 @@ class PermisosBehavior extends ModelBehavior {
  * @return void..
  * @access public.
  */
-	function setup(&$model, $settings = array()) {		
+	function setup_deprecated(&$model, $settings = array()) {
 		if ($this->Session === null) {
 			$this->Session = &new SessionComponent();
 		}
 	}
 
+
+    function __getCurrentUser() {
+        if (empty($this->__currentUser)) {
+            $Session = &new SessionComponent();
+            $this->__currentUser = $Session->read('__Usuario');
+        }
+        return $this->__currentUser;
+    }
 
 /**
  * Before save callback
@@ -99,7 +114,7 @@ class PermisosBehavior extends ModelBehavior {
  */    
     function beforeSave(&$model) {
 		
-		$usuario = $this->Session->read('__Usuario');
+		$usuario = $this->__getCurrentUser();
 		
     	if (empty($model->id)) {
 			if (!isset($model->data[$model->name]['user_id'])) {
@@ -132,7 +147,7 @@ class PermisosBehavior extends ModelBehavior {
  */	
 	function afterFind(&$model, $results, $primary = false) {
 		
-		$usuario = $this->Session->read('__Usuario');
+		$usuario = $this->__getCurrentUser();
 		
 		/**
 		* Pueden existir casos, por ejemplo, cuando aun no tengo un usuario logueado y hago queries a la 
@@ -352,7 +367,7 @@ class PermisosBehavior extends ModelBehavior {
  */
 	function __generarCondicionSeguridad($acceso, $modelName) {
 		
-		$usuario = $this->Session->read('__Usuario');
+		$usuario = $this->__getCurrentUser();
 		
 		$usuarioId = $usuario['Usuario']['id'];
 		
