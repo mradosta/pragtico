@@ -693,7 +693,7 @@ class AppController extends Controller {
 			}
 		}
 		
-		$registro['Usuario'] = $usuarioSession['Usuario'];
+		$registro['Usuario'] = $usuario['Usuario'];
 		$registro['Grupo'] = $grupos;
 		$registro['Rol'] = $roles;
 		$registro['Usuario']['permisos'] = $pd;

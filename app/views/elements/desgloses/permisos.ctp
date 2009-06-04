@@ -58,7 +58,7 @@ foreach($registro['Grupo'] as $k=>$v){
 		$cellsOut[] = $appForm->tag("th", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $appForm->link($appForm->image('remove.gif', array('alt' => "Quitar")), array("action"=>"permisos", $id, "quitarGrupo"=>$v['Grupo']['id']), $options) . "&nbsp;" . $v['Grupo']['nombre'] . " <i>(Incluido)</i>", array("class"=>"izquierda"));
 	}
 	else {
-		$cellsOut[] = $appForm->tag("th", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $v['Grupo']['nombre'], array("class"=>"izquierda"));
+		$cellsOut[] = $appForm->tag("th", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $appForm->image('grupos.gif') . '&nbsp;' . $v['Grupo']['nombre'], array("class"=>"izquierda"));
 	}
 	$out[] = $appForm->tag("tr", $cellsOut, $atributosFila);
 }
@@ -75,7 +75,7 @@ foreach($registro['Rol'] as $k=>$v){
 		$cellsOut[] = $appForm->tag("th", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $appForm->link($appForm->image('remove.gif', array('alt' => "Quitar")), array("action"=>"permisos", $id, "quitarRol"=>$v['Rol']['id']), $options) . "&nbsp;" . $v['Rol']['nombre'] . " <i>(Incluido)</i>", array("class"=>"izquierda"));
 	}
 	else {
-		$cellsOut[] = $appForm->tag("th", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $v['Rol']['nombre'], array("class"=>"izquierda"));
+		$cellsOut[] = $appForm->tag("th", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $appForm->image('roles.gif') . '&nbsp;' . $v['Rol']['nombre'], array("class"=>"izquierda"));
 	}
 	$out[] = $appForm->tag("tr", $cellsOut, $atributosFila);
 }
