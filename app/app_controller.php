@@ -237,17 +237,25 @@ class AppController extends Controller {
 		} else {
 			$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
 		}
+
+        
 		if (!empty($ids)) {
-			
 			/**
 			 * Puede haber un modificador al comportamiento estandar setaeado en el model.
 			 */
 			if (isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
 				$this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
 			}
-			
-			$this->data = $this->{$this->modelClass}->find("all", array("acceso" => "write", "conditions"=>array($this->modelClass . ".id"=>$ids)));
-			$this->render("add");
+
+            $this->{$this->modelClass}->access = 'write';
+			$this->data = $this->{$this->modelClass}->find('all',
+                    array('conditions' => array($this->modelClass . '.id' => $ids)));
+            if (!empty($this->data)) {
+                $this->render('add');
+            } else {
+                $this->Session->setFlash('El/los registro/s que desea modificar no se encuentran o usted no tiene acceso a el/ellos', 'error');
+                $this->History->goBack();
+            }
 		}
 	}
 
