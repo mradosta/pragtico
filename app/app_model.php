@@ -185,6 +185,7 @@ class AppModel extends Model {
                         if (!empty($this->data[$detailKey])
                             && !empty($this->data[$detailKey]['id'])
                             && count($this->data[$detailKey]) === 1) {
+                            $options['validate'] = false;
                             $ids = null;
                             foreach ($this->data[$detailKey]['id'] as $id) {
                                 $ids[][$this->hasAndBelongsToMany[$detailKey]['associationForeignKey']] = $id;
@@ -217,7 +218,7 @@ class AppModel extends Model {
                     }
                 }
             }
-
+            
             if ($this->saveAll($this->data, $options) === true) {
                 $c++;
             } else {
