@@ -81,18 +81,18 @@ class Usuario extends AppModel {
 
 
 /**
- * Cuando agrego un nuevo registro, la clave la guardo encriptada con md5.
+ * Before saving must encrypt password.
  */
-	function beforeSave($options) {
+	function beforeSave($options = array()) {
 		if (empty($this->data['Usuario']['id'])) {
 			$this->data['Usuario']['clave'] = md5($this->data['Usuario']['clave']);
-		}
-		elseif (!empty($this->data['Usuario']['clave_nueva'])) {
+		} elseif (!empty($this->data['Usuario']['clave_nueva'])) {
 			$this->data['Usuario']['clave'] = md5($this->data['Usuario']['clave_nueva']);
 		}
 		return parent::beforeSave($options);
 	}
-	
+
+
 /**
  * Busca los menus (padres e hijos) a los que puede acceder el usuario segun su rol.
  *
