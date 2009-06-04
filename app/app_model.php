@@ -168,37 +168,50 @@ class AppModel extends Model {
 
             $associations = $this->getAssociated();
             foreach ($relatedData as $detailKey => $detailValue) {
-
-				/** Make sure to trigger behaviors for related models */
-				if ($associations[$detailKey] === 'hasMany') {
-					foreach ($detailValue as $hasManyKey => $hasManyValue) {
-						$this->{$detailKey}->data = array($detailKey => $hasManyValue);
-						$this->{$detailKey}->create($this->{$detailKey}->data[$detailKey]);
-						if (!$this->Behaviors->trigger($this->{$detailKey}, 'beforeSave', array($options), array(
-							'break' => true, 'breakOn' => false))) {
-							continue 3;
-						}
-						$this->data[$detailKey][$hasManyKey] = array_merge($this->data[$detailKey][$hasManyKey], $this->{$detailKey}->data[$detailKey]);
-					}
-				}
-
-
-                if (!empty($this->{$associations[$detailKey]}[$detailKey]['unique'])) {
-
-                    if ($associations[$detailKey] !== 'hasAndBelongsToMany') {
-
-                        $originalDetailsId = Set::extract('/' . $this->{$detailKey}->primaryKey . '', $find[$detailKey]);
-
-                        $postedDetailsId = array();
-                        foreach ($this->data[$detailKey] as $tv) {
-                            if (!empty($tv[$this->{$detailKey}->primaryKey])) {
-                                $postedDetailsId[] = $tv[$this->{$detailKey}->primaryKey];
+                
+                if (isset($associations[$detailKey])) {
+                    /** Make sure to trigger behaviors for related models */
+                    if ($associations[$detailKey] === 'hasMany') {
+                        foreach ($detailValue as $hasManyKey => $hasManyValue) {
+                            $this->{$detailKey}->data = array($detailKey => $hasManyValue);
+                            $this->{$detailKey}->create($this->{$detailKey}->data[$detailKey]);
+                            if (!$this->Behaviors->trigger($this->{$detailKey}, 'beforeSave', array($options), array(
+                                'break' => true, 'breakOn' => false))) {
+                                continue 3;
                             }
+                            $this->data[$detailKey][$hasManyKey] = array_merge($this->data[$detailKey][$hasManyKey], $this->{$detailKey}->data[$detailKey]);
                         }
-                        
-                        foreach (array_diff($originalDetailsId, $postedDetailsId) as $idToDelete) {
-                            if (!$this->{$detailKey}->del($idToDelete)) {
-                                $errorsDeletingDetails = true;
+                    } elseif ($associations[$detailKey] === 'hasAndBelongsToMany') {
+                        if (!empty($this->data[$detailKey])
+                            && !empty($this->data[$detailKey]['id'])
+                            && count($this->data[$detailKey]) === 1) {
+                            $ids = null;
+                            foreach ($this->data[$detailKey]['id'] as $id) {
+                                $ids[][$this->hasAndBelongsToMany[$detailKey]['associationForeignKey']] = $id;
+                            }
+                            unset($this->data[$detailKey]);
+                            $this->data[$this->hasAndBelongsToMany[$detailKey]['with']] = $ids;
+                            $this->bindModel(array('hasMany' => array($this->hasAndBelongsToMany[$detailKey]['with'])));
+                        }
+                    }
+
+
+                    if (!empty($this->{$associations[$detailKey]}[$detailKey]['unique'])) {
+
+                        if ($associations[$detailKey] !== 'hasAndBelongsToMany') {
+                            $originalDetailsId = Set::extract('/' . $this->{$detailKey}->primaryKey, $find[$detailKey]);
+
+                            $postedDetailsId = array();
+                            foreach ($this->data[$detailKey] as $tv) {
+                                if (!empty($tv[$this->{$detailKey}->primaryKey])) {
+                                    $postedDetailsId[] = $tv[$this->{$detailKey}->primaryKey];
+                                }
+                            }
+                            
+                            foreach (array_diff($originalDetailsId, $postedDetailsId) as $idToDelete) {
+                                if (!$this->{$detailKey}->del($idToDelete)) {
+                                    $errorsDeletingDetails = true;
+                                }
                             }
                         }
                     }
