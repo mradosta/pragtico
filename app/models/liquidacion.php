@@ -30,7 +30,7 @@ class Liquidacion extends AppModel {
 						  		'normal'			=> 'Normal',
 			   					'sac'				=> 'Sac',
 		   						'vacaciones'		=> 'Vacaciones',
-		   						'liquidacion_final'	=> 'Liquidacion Final',
+		   						'final'	            => 'Final',
 		   						'especial'			=> 'Especial'));
 	
 	var $hasMany = array(	'LiquidacionesDetalle' =>
@@ -218,7 +218,7 @@ class Liquidacion extends AppModel {
 			$this->__conceptos['vacaciones'] = array_merge($this->__conceptos['vacaciones'],
 						$this->__getConceptValue($this->__conceptos['vacaciones']));
 
-		} elseif (in_array($type,  array('liquidacion_final', 'sac'))) {
+		} elseif (in_array($type,  array('final', 'sac'))) {
 
 			unset($options['variables']);
 			unset($options['informaciones']);
@@ -269,7 +269,7 @@ class Liquidacion extends AppModel {
                             'codigoConcepto'    => 'sac')));
             $this->__conceptos['sac'] = array_merge($this->__conceptos['sac'], $this->__getConceptValue($this->__conceptos['sac']));
 
-            if ($type === 'liquidacion_final') {
+            if ($type === 'final') {
                 $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
                         array(  'relacion'          => $this->getRelationship(),
                                 'codigoConcepto'    => 'vacaciones_no_gozadas')));

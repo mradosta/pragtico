@@ -144,7 +144,7 @@ class LiquidacionesController extends AppController {
 						!in_array($periodo['periodo'], array('1S', '2S'))) {
 					$message = __('Sac liquidation period should be of the form "YYYY[12]S"', true);
 				}
-			} elseif ($this->data['Condicion']['Liquidacion-tipo'] !== 'liquidacion_final') {
+			} elseif ($this->data['Condicion']['Liquidacion-tipo'] !== 'final') {
 				$message = __('Invalid Period', true);
 			}
 
@@ -167,7 +167,7 @@ class LiquidacionesController extends AppController {
 			unset($condiciones['Liquidacion.periodo_largo']);
 			unset($condiciones['Liquidacion.periodo_vacacional']);
 			unset($condiciones['Liquidacion.estado']);
-            if ($this->data['Condicion']['Liquidacion-tipo'] !== 'liquidacion_final') {
+            if ($this->data['Condicion']['Liquidacion-tipo'] !== 'final') {
                 $condiciones['Relacion.ingreso <='] = $periodo['hasta'];
                 $condiciones['Relacion.estado'] = 'Activa';
                 if ($this->data['Condicion']['Liquidacion-tipo'] !== 'especial') {
