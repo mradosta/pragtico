@@ -66,7 +66,7 @@ $js[] = 'jquery/jquery-1.3.2.min';
 $js[] = 'jquery/jquery.cookie';
 $js[] = 'jquery/jquery.accordion';
 $js[] = 'jquery/jquery.checkbox';
-$js[] = 'jquery/jquery.simplemodal';
+//$js[] = 'jquery/jquery.simplemodal';
 $js[] = 'default';
 $js[] = 'datetimepicker';
 $appForm->addScript($js, 'links');
