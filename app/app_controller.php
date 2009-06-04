@@ -386,7 +386,8 @@ class AppController extends Controller {
 		} else {
 			$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
 		}
-			
+
+        $this->{$this->modelClass}->access = 'delete';
 		if ($this->{$this->modelClass}->deleteAll(array($this->modelClass . '.' . $this->{$this->modelClass}->primaryKey => $ids), true, true)) {
 			$cantidad = count($ids);
 			if ($cantidad === 1) {
@@ -396,12 +397,7 @@ class AppController extends Controller {
 			}
 			$this->Session->setFlash($mensaje, 'ok', array('warnings' => $this->{$this->modelClass}->getWarning()));
 		} else {
-			$errores = $this->{$this->modelClass}->getError();
-			if (empty($errores)) {
-				$this->Session->setFlash(null, 'permisos');
-			} else {
-				$this->Session->setFlash(__('The record could not be deleted', true), 'error', array('errores' => $errores));
-			}			
+            $this->Session->setFlash(__('The record could not be deleted', true), 'error');
 		}
 		$this->History->goBack($goBack);
 	}
