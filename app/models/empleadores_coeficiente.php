@@ -50,5 +50,7 @@ class EmpleadoresCoeficiente extends AppModel {
                             'fields'    => array('Coeficiente.nombre', 'Empleador.nombre'));
     
 	var $belongsTo = array('Empleador', 'Coeficiente');
+
+
 }
 ?>

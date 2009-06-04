@@ -38,6 +38,7 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'nombreEncabezado' => 'Empleador', 'valor' => $v['Empleador']['cuit'] . ' - ' . $v['Empleador']['nombre']);
 	$fila[] = array('model' => 'Coeficiente', 'field' => 'nombre', 'nombreEncabezado' => 'Coeficiente', 'valor' => $v['Coeficiente']['nombre']);
 	$fila[] = array('model' => 'Coeficiente', 'field' => 'tipo', 'valor' => $v['Coeficiente']['tipo']);
+    $fila[] = array('model' => 'Coeficiente', 'field' => 'valor', 'valor' => $v['Coeficiente']['valor']);
 	$fila[] = array('model' => 'EmpleadoresCoeficiente', 'field' => 'porcentaje', 'valor' => $v['EmpleadoresCoeficiente']['porcentaje'], 'tipoDato' => 'percentage');
 	$cuerpo[] = $fila;
 }
