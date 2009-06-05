@@ -63,8 +63,9 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'total', 'valor' => $v['Liquidacion']['total'], 'tipoDato' => 'moneda');
 	$cuerpo[] = $fila;
 }
-$accionesExtra['opciones'] = array('acciones' => array($appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas')),
-                                                      $appForm->link('ImprimirX', null, array('class' => 'link_boton', 'id' => 'generar', 'title' => 'Imprime las preliquidaciones seleccionadas'))));
+$accionesExtra['opciones'] = array('acciones' => array(
+    $appForm->link('Impr. (Preimpr)', null, array('class' => 'link_boton', 'id' => 'imprimir_preimpreso', 'title' => 'Imprime las preliquidaciones seleccionadas')),
+    $appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas'))));
 
 echo $this->element('index/index', array(
         'accionesExtra' => $accionesExtra,
@@ -76,11 +77,16 @@ echo $this->element('index/index', array(
 * Agrego el evento click asociado al boton confirmar.
 */
 $appForm->addScript('
-	jQuery("#imprimir").click(
+	jQuery("#imprimir_preimpreso, #imprimir").click(
 		function() {
 			var c = jQuery(".tabla :checkbox").checkbox("contar");
 			if (c > 0) {
-				jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'imprimir')) . '";
+                if (jQuery(this).attr("id") == "imprimir_preimpreso") {
+                    jQuery("#accion").attr("value", "preimpreso")
+                } else {
+                    jQuery("#accion").attr("value", "buscar")
+                }
+                jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'imprimir')) . '";
 				jQuery("#form")[0].submit();
 			} else {
 				alert("Debe seleccionar al menos una pre-liquidacion para imprimir.");
