@@ -108,7 +108,7 @@
 
             $fila++;
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('N') -1 + ($i * 23)) . ',' . $fila, 'Fec. Ingreso:', $styleLeftBold);
-            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('R') -1 + ($i * 23)) . ',' . $fila, $receipt['Liquidacion']['relacion_ingreso']);
+            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('R') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['relacion_ingreso'], 'date'));
             $fila++;
             for ($ti = 0; $ti <= 21; $ti++) {
                 $documento->setCellValue($ti + ($i * 23) . ',' . $fila, '', $styleBorderBottom);
