@@ -55,14 +55,14 @@ class EmpleadoresCoeficientesController extends AppController {
             if (!empty($delete)) {
                 $this->EmpleadoresCoeficiente->deleteAll(array('EmpleadoresCoeficiente.id' => $delete));
             }
+            $this->data['Form']['accion'] = 'grabar';
         }
-        $this->data['Form']['accion'] = 'grabar';
         if (!empty($data)) {
             return parent::save($data);
         } else {
-            $this->History->goBack();
+            return parent::save();
         }
-    }    
+    }
     
 }
 ?>
