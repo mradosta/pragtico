@@ -501,7 +501,8 @@ class Liquidacion extends AppModel {
 * Dado un concepto, resuelve la formula.
 */
 	function __getConceptValue($concepto) {
-        
+
+        //debug($concepto['codigo'] . ' ' . $concepto['formula']);
         /*
         if ($this->checkRecursivity($concepto['codigo']) === false) {
             $errores[] = array( "tipo"                  =>"Formula recursiva",
@@ -604,7 +605,7 @@ class Liquidacion extends AppModel {
 		*/
 		if (preg_match('/not\(([^()]+)\)/', $formula, $matches)) {
 			$conceptosNot = explode(',', str_replace('@', '', str_replace(' ', '', $matches[1])));
-			$formula = str_replace('(,', '(', str_replace($matches[0], '', str_replace(' ', '', $formula)));
+			$formula = str_replace('(,', '(', str_replace(str_replace(' ', '', $matches[0]), '', str_replace(' ', '', $formula)));
 		}
 		
 		
