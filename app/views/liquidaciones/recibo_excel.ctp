@@ -37,9 +37,9 @@
 
 
     $styleBorderBottom = array('style' => array(
-        'borders' => array( 'bottom'     => array('style' => PHPExcel_Style_Border::BORDER_DASHDOT))));
+        'borders' => array( 'bottom'     => array('style' => PHPExcel_Style_Border::BORDER_THIN))));
     $styleBorderTop = array('style' => array(
-        'borders' => array( 'top'     => array('style' => PHPExcel_Style_Border::BORDER_DASHDOT))));
+        'borders' => array( 'top'     => array('style' => PHPExcel_Style_Border::BORDER_THIN))));
     
     $styleLeft = array('style' => array(
         'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT)));
