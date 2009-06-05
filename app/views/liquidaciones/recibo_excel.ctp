@@ -168,9 +168,9 @@
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('V') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['total_pesos'], 'currency'), $styleRightBold);
 
             $fila+=2;
-            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('C') -1 + ($i * 23)) . ',' . $fila, 'Son Pesos:', $styleLeftBold);
+            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, 'Son Pesos:', $styleLeftBold);
             $fila++;
-            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('C') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['total_pesos'], array('type' => 'numeroEnLetras', 'case' => 'ucfirst')));
+            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['total_pesos'], array('type' => 'numeroEnLetras', 'case' => 'ucfirst')));
             
             $fila+=2;
             if (!empty($receipt['Suss'])) {
