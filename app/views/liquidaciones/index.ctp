@@ -50,7 +50,8 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidaciones'), 'url' => 'recibo_html');
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidaciones (debug)'), 'url' => 'recibo_html_debug');
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'pagos.gif', 'alt' => 'Pagos'), 'url' => 'pagos');
-	$fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('excel.gif', array('alt' => 'Generar recibo excel', 'title'=>'Generar recibo excel')), array('action' => 'imprimir', 'id' => $v['Liquidacion']['id'])));
+	$fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('excel.gif', array('alt' => 'Generar Recibo para Pre-impreso', 'title' => 'Generar Recibo para Pre-impreso')), array('action' => 'imprimir', 'tipo' => 'preimpreso', 'id' => $v['Liquidacion']['id'])));
+    $fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('documentos.gif', array('alt' => 'Generar Recibo para Impresion', 'title' => 'Generar Recibo para Impresion')), array('action' => 'imprimir', 'id' => $v['Liquidacion']['id'])));
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'id', 'valor' => $v['Liquidacion']['id'], 'write' => $v['Liquidacion']['write'], 'delete' => $v['Liquidacion']['delete']);
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => $v['Liquidacion']['tipo']);
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'ano', 'valor' => $v['Liquidacion']['ano'] . str_pad($v['Liquidacion']['mes'], 2, '0' ,STR_PAD_LEFT) . $v['Liquidacion']['periodo'], 'nombreEncabezado'=>'Periodo');
@@ -62,7 +63,8 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'total', 'valor' => $v['Liquidacion']['total'], 'tipoDato' => 'moneda');
 	$cuerpo[] = $fila;
 }
-$accionesExtra['opciones'] = array('acciones' => array($appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas'))));
+$accionesExtra['opciones'] = array('acciones' => array($appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas')),
+                                                      $appForm->link('ImprimirX', null, array('class' => 'link_boton', 'id' => 'generar', 'title' => 'Imprime las preliquidaciones seleccionadas'))));
 
 echo $this->element('index/index', array(
         'accionesExtra' => $accionesExtra,
@@ -74,7 +76,6 @@ echo $this->element('index/index', array(
 * Agrego el evento click asociado al boton confirmar.
 */
 $appForm->addScript('
-
 	jQuery("#imprimir").click(
 		function() {
 			var c = jQuery(".tabla :checkbox").checkbox("contar");
@@ -82,7 +83,7 @@ $appForm->addScript('
 				jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'imprimir')) . '";
 				jQuery("#form")[0].submit();
 			} else {
-				alert("Debe seleccionar al menos una pre-liquidacion para confirmar.");
+				alert("Debe seleccionar al menos una pre-liquidacion para imprimir.");
 			}
 		}
 	);', 'ready');

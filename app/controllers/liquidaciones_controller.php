@@ -334,10 +334,20 @@ class LiquidacionesController extends AppController {
 		$this->Liquidacion->Empleador->Suss->contain('Banco');
 		foreach ($this->Liquidacion->find('all', array('conditions' => array('Liquidacion.id' => $id))) as $receipt) {
 
+            $ano = $receipt['Liquidacion']['ano'];
+            $mes = $receipt['Liquidacion']['mes'];
+            if ($receipt['Liquidacion']['mes'] == 1) {
+                $ano--;
+                $mes = 12;
+            } else {
+                $mes--;
+            }
+            $mes = str_pad($mes, 2, '0', STR_PAD_LEFT);
+            
 			$suss = $this->Liquidacion->Empleador->Suss->find('first',
 				array('conditions' => array(
 					'Suss.empleador_id' => $receipt['Liquidacion']['empleador_id'],
-					'Suss.periodo'		=> $receipt['Liquidacion']['ano'] . str_pad($receipt['Liquidacion']['mes'], 2, '0', STR_PAD_LEFT)))
+					'Suss.periodo'		=> $ano . $mes))
 			);
 			if (!empty($suss)) {
 				$this->data[] = array_merge($receipt, $suss);
@@ -345,7 +355,11 @@ class LiquidacionesController extends AppController {
 				$this->data[] = $receipt;
 			}
 		}
-		$this->render('recibo_excel');
+        if (empty($this->params['named']['tipo'])) {
+            $this->render('recibo_excel');
+        } elseif ($this->params['named']['tipo'] === 'preimpreso') {
+            $this->render('recibo_excel_preimpreso');
+        }
 	}
 
 	
