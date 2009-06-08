@@ -130,7 +130,6 @@ class PermisosBehavior extends ModelBehavior {
     			$model->data[$model->name]['permissions'] = $model->getPermissions();
     		}
     	}
-        d($model->data);
     	return true;
     }
 
