@@ -593,18 +593,17 @@ class LiquidacionesController extends AppController {
 		$v = array();
 		if (!empty($campos)) {
 			foreach ($campos as $campo) {
-				if ($campo['direccion_relleno'] === "Derecha") {
-					$v[] = str_pad($campo['valor'], $campo['longitud'], $campo['caracter_relleno'], STR_PAD_RIGHT);
+				if ($campo['direccion_relleno'] === 'Derecha') {
+					$t = str_pad($campo['valor'], $campo['longitud'], $campo['caracter_relleno'], STR_PAD_RIGHT);
+				} elseif ($campo['direccion_relleno'] === 'Izquierda') {
+					$t = str_pad($campo['valor'], $campo['longitud'], $campo['caracter_relleno'], STR_PAD_LEFT);
+				} else {
+					$t = $campo['valor'];
 				}
-				elseif ($campo['direccion_relleno'] === "Izquierda") {
-					$v[] = str_pad($campo['valor'], $campo['longitud'], $campo['caracter_relleno'], STR_PAD_LEFT);
-				}
-				else {
-					$v[] = $campo['valor'];
-				}
+                $v[] = substr($t, 0, $campo['longitud']);
 			}
 		}
-		return implode("", $v);
+		return implode('', $v);
 	}
 
 
