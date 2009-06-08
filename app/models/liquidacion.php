@@ -220,6 +220,17 @@ class Liquidacion extends AppModel {
 
 		} elseif (in_array($type,  array('final', 'sac'))) {
 
+            if ($type === 'final') {
+                $to = $relationship['Relacion']['egreso'];
+                $tmp = explode('-', $relationship['Relacion']['egreso']);
+                $period['ano'] = $tmp[0];
+                if ($tmp[1] <= 6) {
+                    $period['periodo'] = '1S';
+                } else {
+                    $period['periodo'] = '2S';
+                }
+            }
+            
 			unset($options['variables']);
 			unset($options['informaciones']);
 
@@ -232,14 +243,18 @@ class Liquidacion extends AppModel {
                 $conditions['Liquidacion.mes >='] = 1;
                 $conditions['Liquidacion.mes <='] = 6;
                 $from = $period['ano'] . '-01-01';
-                $to = $period['ano'] . '-06-30';
+                if (empty($to)) {
+                    $to = $period['ano'] . '-06-30';
+                }
             } elseif ($period['periodo'] == '2S') {
 				$options['period'] = 2;
                 $conditions['Liquidacion.mes >='] = 7;
                 $conditions['Liquidacion.mes <='] = 12;
                 $from = $period['ano'] . '-07-01';
-                $to = $period['ano'] . '-12-31';
-            } elseif ($type === 'sac') {
+                if (empty($to)) {
+                    $to = $period['ano'] . '-12-31';
+                }
+            } else {
                 return array('error' => sprintf('Wrong period (%s). Only "1" for the first_half or "2" for the second_half allowed for type %s.', $options['period'], $type));
             }
             $fields = array('Liquidacion.mes', 'SUM(Liquidacion.remunerativo) AS total_remunerativo');
@@ -255,8 +270,8 @@ class Liquidacion extends AppModel {
             } else {
                 $this->setVar('#mayor_suma_mes_remunerativo_semestre', 0);
             }
+
             $ausencias = $this->Relacion->Ausencia->getAbsencesByType(array('Accidente', 'Maternidad'), $relationship['Relacion']['id'], $from, $to);
-            //$this->setVar('#total_dias_ausencias_accidente_semestre', $this->Relacion->Ausencia->getAccidententAbsences($relationship['Relacion']['id'], $from, $to));
             $this->setVar('#total_dias_ausencias_accidente_semestre', $ausencias['Accidente']);
             $this->setVar('#total_dias_ausencias_maternidad_semestre', $ausencias['Maternidad']);
 
