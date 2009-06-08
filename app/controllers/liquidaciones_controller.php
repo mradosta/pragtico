@@ -728,8 +728,8 @@ class LiquidacionesController extends AppController {
 							case 'concepto_valor':
 								$this->Liquidacion->LiquidacionesDetalle->recursive = -1;
 								$concepto = $this->Liquidacion->LiquidacionesDetalle->find('first',
-									array('LiquidacionesDetalle.liquidacion_id' => $v['LiquidacionesAuxiliar']['liquidacion_id'],
-										  'LiquidacionesDetalle.liquidacion_id' => $save['descuento_id']));
+									array('conditions' => array('LiquidacionesDetalle.liquidacion_id' => $v['LiquidacionesAuxiliar']['liquidacion_id'],
+										  'LiquidacionesDetalle.concepto_id' => $save['concepto_id'])));
 								$save[$campo] = $concepto['LiquidacionesDetalle']['valor'];
 								break;
 						}

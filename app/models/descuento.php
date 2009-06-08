@@ -137,8 +137,7 @@ class Descuento extends AppModel {
 				array('OR'	=> array(	'Descuento.hasta' 		=> '0000-00-00',
 										'Descuento.hasta >=' 	=> $opciones['periodo']['hasta'])),
 				'Descuento.relacion_id' 						=> $relacion['Relacion']['id'],
-				'Descuento.desde >=' 							=> $opciones['periodo']['desde'],
-
+				'DATE(CONCAT(YEAR(Descuento.desde), \'-\', MONTH(Descuento.desde), \'-' . array_pop(explode('-', $opciones['periodo']['desde'])) . '\')) <=' => $opciones['periodo']['desde'],
  				'(Descuento.descontar & ' . $descontar . ') >' 	=> 0,
  				'Descuento.estado' 								=> 'Activo')
 		));
@@ -157,7 +156,7 @@ class Descuento extends AppModel {
                 $name = Inflector::underscore(str_replace(' ', '', $v['Descuento']['tipo'] . '_' . $index[$v['Descuento']['tipo']]));
                 $index[$v['Descuento']['tipo']]++;
                 
-                $conceptos[] = $Concepto->findConceptos('ConceptoPuntual', array_merge(
+                $conceptos[$k] = $Concepto->findConceptos('ConceptoPuntual', array_merge(
                         array('relacion' => $relacion, 'codigoConcepto' => $name), $opciones));
                 
                 $variables['#total_descontado_' . $name] = 0;
@@ -167,7 +166,7 @@ class Descuento extends AppModel {
                 $variables['#porcentaje_' . $name] = $v['Descuento']['porcentaje'];
                 $variables['#descripcion_' . $name] = $v['Descuento']['descripcion'];
                 if (!empty($v['DescuentosDetalle'])) {
-                    $variables['#total_descontado_' . $name] = array_sum(Set::extract('/DescuentosDetalle/monto', $v['DescuentosDetalle']));
+                    $variables['#total_descontado_' . $name] = array_sum(Set::extract('/DescuentosDetalle/monto', $v));
                     $variables['#cuotas_descontadas_' . $name] = count($v['DescuentosDetalle']);
                 }
 
@@ -184,13 +183,15 @@ class Descuento extends AppModel {
 				
 				/** Creo un registro el la tabla auxiliar que debera ejecutarse en caso de que se confirme la pre-liquidacion. */
 				$auxiliar = null;
-				$auxiliar['descuento_id'] = $v['Descuento']['id'];
+				$auxiliar['concepto_id'] = $conceptos[$k][$name]['id'];
+                $auxiliar['descuento_id'] = $v['Descuento']['id'];
 				$auxiliar['fecha'] = '##MACRO:fecha_liquidacion##';
 				$auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
 				$auxiliar['monto'] = '##MACRO:concepto_valor##';
 				$auxiliares[] = array('save' => serialize($auxiliar), 'model' => 'DescuentosDetalle');
 			}
 		}
+
         return array(
                     'conceptos'    => $conceptos,
                     'variables'    => $variables,
