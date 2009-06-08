@@ -766,14 +766,14 @@ class Liquidacion extends AppModel {
                 */
                 if (preg_match_all('/(#[a-z0-9_]+)/', $formula, $variables_tmp)) {
                     foreach (array_unique($variables_tmp[1]) as $v) {
-                        $formula = preg_replace('/(' . $v . ')([\)|\s|\*|\+\/\-|\=|\,]*[^_])/', $this->getVarValue($v) . '$2', $formula);
+                        $formula = preg_replace('/(' . $v . ')([\)\s\*\+\/\-\=\,]*(?!_))/', $this->getVarValue($v) . '$2', $formula);
                     }
                 }
                 if (preg_match_all("/@([\w]+)/", $formula, $conceptos_tmp)) {
                     foreach (array_unique($conceptos_tmp[1]) as $v) {
                         if (!empty($this->__conceptos[$v])) {
                             $tmp = $this->__getConceptValue($this->__conceptos[$v]);
-                            $formula = preg_replace('/(@' . $v . ')([\)|\s|\*|\+\/\-|\=|\,]*[^_])/', $tmp['valor'] . '$2', $formula);
+                            $formula = preg_replace('/(@' . $v . ')([\)\s\*\+\/\-\=\,]*(?!_))/', $tmp['valor'] . '$2', $formula);
                         } else {
                             $this->__setError(array(    'tipo'                  => 'Concepto Inexistente',
                                                         'gravedad'              => 'Alta',
@@ -788,7 +788,6 @@ class Liquidacion extends AppModel {
                 }
 
                 $valor = $this->resolver($formula);
-                //debug($variable . ': ' .$valor);
 				//debug($variable . ' = ' . $valor . ' ( ' . $formula . ' )');
                 
                 if ($valor === '#N/A') {
