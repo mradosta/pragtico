@@ -28,7 +28,7 @@ foreach ($this->data['SiapsDetalle'] as $k=>$v) {
 	$fila[] = array('model' => 'SiapsDetalle', 'field' => 'elemento', 'valor' => $v['elemento']);
 	$fila[] = array('model' => 'SiapsDetalle', 'field' => 'valor', 'valor' => $v['valor']);
 	$fila[] = array('model' => 'SiapsDetalle', 'field' => 'desde', 'valor' => $v['desde']);
-	$fila[] = array('model' => 'SiapsDetalle', 'field' => 'hasta', 'valor' => $v['longitud']);
+	$fila[] = array('model' => 'SiapsDetalle', 'field' => 'longitud', 'valor' => $v['longitud']);
 	$fila[] = array('model' => 'SiapsDetalle', 'field' => 'caracter_relleno', 'valor' => $v['caracter_relleno']);
 	$fila[] = array('model' => 'SiapsDetalle', 'field' => 'direccion_relleno', 'valor' => $v['direccion_relleno']);
 	$cuerpo[] = $fila;
