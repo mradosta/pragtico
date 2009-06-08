@@ -224,7 +224,7 @@ class Liquidacion extends AppModel {
 			unset($options['informaciones']);
 
             $conditions['Liquidacion.relacion_id'] = $relationship['Relacion']['id'];
-			$conditions['Liquidacion.tipo !'] = 'Sac';
+			$conditions['Liquidacion.tipo !='] = 'Sac';
             $conditions['Liquidacion.estado'] = 'Confirmada';
             $options['year'] = $conditions['Liquidacion.ano'] = $period['ano'];
             if ($period['periodo'] == '1S') {
@@ -249,9 +249,12 @@ class Liquidacion extends AppModel {
                     'fields'        => $fields,
                     'conditions'    => $conditions,
                     'group'         => $groupBy));
-
-            $this->setVar('#mayor_suma_mes_remunerativo_semestre', max(Set::combine($r, '{n}.Liquidacion.mes',
+            if (!empty($r)) {
+                $this->setVar('#mayor_suma_mes_remunerativo_semestre', max(Set::combine($r, '{n}.Liquidacion.mes',
                           '{n}.Liquidacion.total_remunerativo')));
+            } else {
+                $this->setVar('#mayor_suma_mes_remunerativo_semestre', 0);
+            }
             $this->setVar('#total_dias_ausencias_accidente_semestre', $this->Relacion->Ausencia->getAccidententAbsences($relationship['Relacion']['id'], $from, $to));
 
             foreach ($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
@@ -788,7 +791,7 @@ class Liquidacion extends AppModel {
                 }
 
                 $valor = $this->resolver($formula);
-				//debug($variable . ' = ' . $valor . ' ( ' . $formula . ' )');
+				debug($variable . ' = ' . $valor . ' ( ' . $formula . ' )');
                 
                 if ($valor === '#N/A') {
                     $valor = 0;
