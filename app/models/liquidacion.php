@@ -239,7 +239,7 @@ class Liquidacion extends AppModel {
                 $conditions['Liquidacion.mes <='] = 12;
                 $from = $period['ano'] . '-07-01';
                 $to = $period['ano'] . '-12-31';
-            } else {
+            } elseif ($type === 'sac') {
                 return array('error' => sprintf('Wrong period (%s). Only "1" for the first_half or "2" for the second_half allowed for type %s.', $options['period'], $type));
             }
             $fields = array('Liquidacion.mes', 'SUM(Liquidacion.remunerativo) AS total_remunerativo');
