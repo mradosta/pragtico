@@ -150,7 +150,7 @@ $appForm->addScript('
 			jQuery(".1s").show();
 			jQuery(".2s").show();
 			jQuery(".a").show();
-		} else if (type === "liquidacion_final") {
+		} else if (type === "final") {
 			jQuery("input.periodo").parent().hide();
 		}
 	}
