@@ -255,7 +255,10 @@ class Liquidacion extends AppModel {
             } else {
                 $this->setVar('#mayor_suma_mes_remunerativo_semestre', 0);
             }
-            $this->setVar('#total_dias_ausencias_accidente_semestre', $this->Relacion->Ausencia->getAccidententAbsences($relationship['Relacion']['id'], $from, $to));
+            $ausencias = $this->Relacion->Ausencia->getAbsencesByType(array('Accidente', 'Maternidad'), $relationship['Relacion']['id'], $from, $to);
+            //$this->setVar('#total_dias_ausencias_accidente_semestre', $this->Relacion->Ausencia->getAccidententAbsences($relationship['Relacion']['id'], $from, $to));
+            $this->setVar('#total_dias_ausencias_accidente_semestre', $ausencias['Accidente']);
+            $this->setVar('#total_dias_ausencias_maternidad_semestre', $ausencias['Maternidad']);
 
             foreach ($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
                     array(      'relacion'  => $relationship,
@@ -791,7 +794,7 @@ class Liquidacion extends AppModel {
                 }
 
                 $valor = $this->resolver($formula);
-				debug($variable . ' = ' . $valor . ' ( ' . $formula . ' )');
+				//debug($variable . ' = ' . $valor . ' ( ' . $formula . ' )');
                 
                 if ($valor === '#N/A') {
                     $valor = 0;

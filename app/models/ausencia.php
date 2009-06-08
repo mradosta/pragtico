@@ -148,10 +148,11 @@ class Ausencia extends AppModel {
 														'Ausencia.desde <='	=> $periodo['hasta']))))));
 		
 		$ausencias['Accidente'] = 0;
+        $ausencias['Maternidad'] = 0;
         $ausencias['Accidente ART'] = 0;
         $ausencias['Valor Dia Accidente Art'] = 0;
-		$ausencias['Justificada Enfermedad'] = 0;
-		$ausencias['Justificada Licencia'] = 0;
+		$ausencias['Enfermedad'] = 0;
+		$ausencias['Licencia'] = 0;
 		$ausencias['Injustificada'] = 0;
         $art = 0;
         $conceptos = $auxiliares = array();
@@ -219,7 +220,7 @@ class Ausencia extends AppModel {
             foreach (array_unique(Set::extract('/AusenciasMotivo/tipo', $r)) as $type) {
                 $conceptos[] = $Concepto->findConceptos('ConceptoPuntual',
                         array(  'relacion'          => $relacion,
-                                'codigoConcepto'    => 'ausencias_' . strtolower(str_replace(' ', 's_', $type))));
+                                'codigoConcepto'    => 'ausencias_' . strtolower($type)));
             }
                 
 
@@ -284,21 +285,23 @@ class Ausencia extends AppModel {
         }
 
 		return array('conceptos' 	=> $conceptos,
-					 'variables' 	=> array('#ausencias_accidentes' 				=> $ausencias['Accidente'],
-                                             '#ausencias_accidentes_art' 			=> $ausencias['Accidente ART'],
+					 'variables' 	=> array('#ausencias_accidente' 				=> $ausencias['Accidente'],
+                                             '#ausencias_maternidad'                => $ausencias['Maternidad'],
+                                             '#ausencias_accidente_art' 			=> $ausencias['Accidente ART'],
                                              '#valor_dia_accidente_art'             => $ausencias['Valor Dia Accidente Art'],
-											 '#ausencias_justificadas_enfermedad' 	=> $ausencias['Justificada Enfermedad'],
-											 '#ausencias_justificadas_licencia' 	=> $ausencias['Justificada Licencia'],
-										  	 '#ausencias_injustificadas' 			=> $ausencias['Injustificada']),
+											 '#ausencias_enfermedad' 	            => $ausencias['Enfermedad'],
+											 '#ausencias_licencia' 	                => $ausencias['Licencia'],
+										  	 '#ausencias_injustificada' 			=> $ausencias['Injustificada']),
 					 'auxiliar' 	=> $auxiliares);
 	}
 	
 
-    function getAccidententAbsences($relacionId, $from, $to) {
-        /** Try to find if the are accident absences before the period */
+    function getAbsencesByType($types, $relacionId, $from, $to) {
+        /** Try to find if the are absences before the period */
         $sql = "
             select      Ausencia.id,
                         Ausencia.desde,
+                        AusenciasMotivo.tipo,
                         AusenciasSeguimiento.dias
             from        ausencias Ausencia,
                         ausencias_motivos AusenciasMotivo,
@@ -306,12 +309,14 @@ class Ausencia extends AppModel {
             where       Ausencia.id = AusenciasSeguimiento.ausencia_id
             and         AusenciasMotivo.id = Ausencia.ausencia_motivo_id
             and         AusenciasSeguimiento.estado = 'Confirmado'
-            and         AusenciasMotivo.tipo = 'Accidente'
+            and         AusenciasMotivo.tipo in ('" . implode("', '", $types) . "')
             and         Ausencia.relacion_id = " . $relacionId . "
             and         Ausencia.desde <= '" . $to . "'";
         $r = $this->query($sql);
 
-        $ausencias = 0;
+        foreach ($types as $type) {
+            $ausencias[$type] = 0;
+        }        
         if (!empty($r)) {
             foreach ($r as $k => $ausencia) {
                 
@@ -323,15 +328,15 @@ class Ausencia extends AppModel {
 
                 foreach ($ausencia['AusenciasSeguimiento'] as $diasSeguimiento) {
                     if ($diasSeguimiento > $diff['dias']) {
-                        $ausencias += $diff['dias'];
+                        $ausencias[$ausencia['Ausencia']['tipo']] += $diff['dias'];
                     }
-                    $ausencias += $diasSeguimiento;
+                    $ausencias[$ausencia['Ausencia']['tipo']] += $diasSeguimiento;
                 }
             }
 
             $diff = $this->dateDiff($from, $to);
-            if ($ausencias > $diff['dias']) {
-                $ausencias = $diff['dias'];
+            if ($ausencias[$ausencia['Ausencia']['tipo']] > $diff['dias']) {
+                $ausencias[$ausencia['Ausencia']['tipo']] = $diff['dias'];
             }
         }
         return $ausencias;
