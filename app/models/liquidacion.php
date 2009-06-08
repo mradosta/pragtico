@@ -224,13 +224,13 @@ class Liquidacion extends AppModel {
                 $to = $relationship['Relacion']['egreso'];
                 $tmp = explode('-', $relationship['Relacion']['egreso']);
                 $period['ano'] = $tmp[0];
-                if ($tmp[1] <= 6) {
+                $period['mes'] = $tmp[1];
+                if ($period['mes'] <= 6) {
                     $period['periodo'] = '1S';
                 } else {
                     $period['periodo'] = '2S';
                 }
             }
-            
 			unset($options['variables']);
 			unset($options['informaciones']);
 
@@ -284,7 +284,6 @@ class Liquidacion extends AppModel {
                     $this->setConcept(array($cCod => $concepto));
                 }
             }
-            
             $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
                     array(  'relacion'          => $this->getRelationship(),
                             'codigoConcepto'    => 'sac')));

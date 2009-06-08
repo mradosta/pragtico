@@ -60,10 +60,12 @@ $cuerpo[] = $fila;
 $fila = null;
 if (!empty($this->data['Liquidacion']['mes'])) {
 	$fila[] = array("valor"=>$formato->format($this->data['Liquidacion']['ano'] . str_pad($this->data['Liquidacion']['mes'], 2, '0', STR_PAD_LEFT) . $this->data['Liquidacion']['periodo'], array('type' => 'periodoEnLetras', 'case' => 'ucfirst')), "class"=>"imitar_th_izquierda", "colspan"=>10);
-} else {
+    $cuerpo[] = $fila;
+} elseif ($this->data['Liquidacion']['tipo'] !== 'Final') {
 	$fila[] = array("valor"=>$formato->format($this->data['Liquidacion']['ano'] . $this->data['Liquidacion']['periodo'], array('type' => 'periodoEnLetras', 'case' => 'ucfirst')), "class"=>"imitar_th_izquierda", "colspan"=>10);
+    $cuerpo[] = $fila;
 }
-$cuerpo[] = $fila;
+
 $fila = null;
 $fila[] = array("valor"=>"Codigo", "class"=>"imitar_th_izquierda");
 $fila[] = array("valor"=>"Concepto", "class"=>"imitar_th_izquierda");
