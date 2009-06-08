@@ -130,6 +130,7 @@ class PermisosBehavior extends ModelBehavior {
     			$model->data[$model->name]['permissions'] = $model->getPermissions();
     		}
     	}
+        d($model->data);
     	return true;
     }
 
@@ -384,11 +385,14 @@ class PermisosBehavior extends ModelBehavior {
 		$roles = $usuario['Usuario']['roles'];
 		
 
+        /*
 		if ($acceso === 'delete') {
 			$resultPermissions = $this->__simplifiedPermissions;
 		} else {
 			$resultPermissions = $this->__permissions;
 		}
+        */
+        $resultPermissions = $this->__simplifiedPermissions;
 		/**
 		* Si se trata de un usuario perteneciente al rol administradores, que no tiene grupo (root), no verifico permisos.
 		*/
