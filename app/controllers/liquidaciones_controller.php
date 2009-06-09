@@ -714,9 +714,9 @@ class LiquidacionesController extends AppController {
 				$model = $v['LiquidacionesAuxiliar']['model'];
 				$idsAuxiliares[] = $v['LiquidacionesAuxiliar']['id'];
 				$save = unserialize($v['LiquidacionesAuxiliar']['save']);
-
-				foreach ($save as $campo => $valor) {
-					preg_match('/^##MACRO:([a-z_]+)##$/',$valor, $matches);
+				
+                foreach ($save as $campo => $valor) {
+					preg_match('/^##MACRO:([a-z_]+)##(.*)$/', $valor, $matches);
 					if (!empty($matches[1])) {
 						switch($matches[1]) {
 							case 'fecha_liquidacion':
@@ -730,21 +730,33 @@ class LiquidacionesController extends AppController {
 								$concepto = $this->Liquidacion->LiquidacionesDetalle->find('first',
 									array('conditions' => array('LiquidacionesDetalle.liquidacion_id' => $v['LiquidacionesAuxiliar']['liquidacion_id'],
 										  'LiquidacionesDetalle.concepto_id' => $save['concepto_id'])));
-								$save[$campo] = $concepto['LiquidacionesDetalle']['valor'];
+                                if (!empty($save['condition']) && !empty($matches[2])) {
+                                    $save[$campo] = $concepto['LiquidacionesDetalle']['valor'] . $matches[2];
+                                    unset($save['concepto_id']);
+                                } else {
+                                    $save[$campo] = $concepto['LiquidacionesDetalle']['valor'];
+                                }
 								break;
 						}
 					}
 				}
 
+                if (!empty($save['condition'])) {
+                    if ($this->Formulador->resolver('=if(' . $save['condition'] . ', true, false)') == false) {
+                        $c++;
+                        continue;
+                    }
+                    unset($save['condition']);
+                }
 				$modelSave = ClassRegistry::init($model);
 				$save = array($model => $save);
 				$modelSave->create($save);
 				if ($modelSave->save($save)) {
 					$c++;
-				}
+                }
 			}
 
-			/**
+            /**
 			 * Si lo anterior salio todo ok, continuo.
 			 */
 			if ($c === count($auxiliares)) {

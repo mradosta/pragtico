@@ -189,9 +189,17 @@ class Descuento extends AppModel {
 				$auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
 				$auxiliar['monto'] = '##MACRO:concepto_valor##';
 				$auxiliares[] = array('save' => serialize($auxiliar), 'model' => 'DescuentosDetalle');
+                if ($v['Descuento']['tipo'] !== 'Cuota Alimentaria') {
+                    $auxiliar = null;
+                    $auxiliar['id'] = $v['Descuento']['id'];
+                    $auxiliar['concepto_id'] = $conceptos[$k][$name]['id'];
+                    $auxiliar['estado'] = 'Finalizado';
+                    $auxiliar['condition'] = '##MACRO:concepto_valor##' . ' + ' . $variables['#total_descontado_' . $name] . ' >= ' . $variables['#monto_' . $name];
+                    $auxiliares[] = array('save' => serialize($auxiliar), 'model' => 'Descuento');
+                }
 			}
 		}
-
+        
         return array(
                     'conceptos'    => $conceptos,
                     'variables'    => $variables,
@@ -200,15 +208,17 @@ class Descuento extends AppModel {
 
 
     function beforeValidate($options = array()) {
-        if ($this->data['Descuento']['tipo'] === 'Cuota Alimentaria') {
-            if (empty($this->data['Descuento']['porcentaje'])) {
-                $this->invalidate('porcentaje', 'Debe ingresar el porcentaje a descontar para la cuota alimentaria.');
-                return false;
-            }
-        } else {
-            if (empty($this->data['Descuento']['monto'])) {
-                $this->invalidate('monto', 'Debe ingresar el monto a descontar.');
-                return false;
+        if (!empty($this->data['Descuento']['tipo'])) {
+            if ($this->data['Descuento']['tipo'] === 'Cuota Alimentaria') {
+                if (empty($this->data['Descuento']['porcentaje'])) {
+                    $this->invalidate('porcentaje', 'Debe ingresar el porcentaje a descontar para la cuota alimentaria.');
+                    return false;
+                }
+            } else {
+                if (empty($this->data['Descuento']['monto'])) {
+                    $this->invalidate('monto', 'Debe ingresar el monto a descontar.');
+                    return false;
+                }
             }
         }
         return parent::beforeValidate($options);
@@ -218,25 +228,27 @@ class Descuento extends AppModel {
  * descontar field is bitwise, must sum values then.
  */
 	function beforeSave($options = array()) {
-		if (isset($this->data['Descuento']['descontar']) && is_array($this->data['Descuento']['descontar'])) {
-			$this->data['Descuento']['descontar'] = array_sum($this->data['Descuento']['descontar']);
-		}
-		if ($this->data['Descuento']['tipo'] === 'Vale') {
-			$this->data['Descuento']['cuotas'] = 1;
-        } elseif ($this->data['Descuento']['tipo'] === 'Cuota Alimentaria') {
-            $this->data['Descuento']['monto'] = 0;
-            $this->data['Descuento']['cuotas'] = 0;
-        }
+        if (!empty($this->data['Descuento']['tipo'])) {
+            if (isset($this->data['Descuento']['descontar']) && is_array($this->data['Descuento']['descontar'])) {
+                $this->data['Descuento']['descontar'] = array_sum($this->data['Descuento']['descontar']);
+            }
+            if ($this->data['Descuento']['tipo'] === 'Vale') {
+                $this->data['Descuento']['cuotas'] = 1;
+            } elseif ($this->data['Descuento']['tipo'] === 'Cuota Alimentaria') {
+                $this->data['Descuento']['monto'] = 0;
+                $this->data['Descuento']['cuotas'] = 0;
+            }
 
-		/** Must create a pending peyment */
-		if (empty($this->data['Descuento']['id']) && in_array($this->data['Descuento']['tipo'], array('Vale', 'Prestamo'))) {
-			$this->data['Pago'][0]['fecha'] = $this->data['Descuento']['alta'];
-			$this->data['Pago'][0]['relacion_id'] = $this->data['Descuento']['alta'];
-			$this->data['Pago'][0]['relacion_id'] = $this->data['Descuento']['relacion_id'];
-			$this->data['Pago'][0]['monto'] = $this->data['Descuento']['monto'];
-			$this->data['Pago'][0]['moneda'] = 'Pesos';
-			$this->data['Pago'][0]['estado'] = 'Pendiente';
-		}
+            /** Must create a pending peyment */
+            if (empty($this->data['Descuento']['id']) && in_array($this->data['Descuento']['tipo'], array('Vale', 'Prestamo'))) {
+                $this->data['Pago'][0]['fecha'] = $this->data['Descuento']['alta'];
+                $this->data['Pago'][0]['relacion_id'] = $this->data['Descuento']['alta'];
+                $this->data['Pago'][0]['relacion_id'] = $this->data['Descuento']['relacion_id'];
+                $this->data['Pago'][0]['monto'] = $this->data['Descuento']['monto'];
+                $this->data['Pago'][0]['moneda'] = 'Pesos';
+                $this->data['Pago'][0]['estado'] = 'Pendiente';
+            }
+        }
 		return parent::beforeSave($options);
 	}
 

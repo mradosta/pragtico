@@ -274,13 +274,13 @@ class Liquidacion extends AppModel {
             $ausencias = $this->Relacion->Ausencia->getAbsencesByType(array('Accidente', 'Maternidad'), $relationship['Relacion']['id'], $from, $to);
             $this->setVar('#total_dias_ausencias_accidente_semestre', $ausencias['Accidente']);
             $this->setVar('#total_dias_ausencias_maternidad_semestre', $ausencias['Maternidad']);
-
+ 
             foreach ($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
                     array(      'relacion'  => $relationship,
                                 'desde'     => $this->getVarValue('#fecha_desde_liquidacion'),
                                 'hasta'     => $this->getVarValue('#fecha_hasta_liquidacion'))) as $cCod => $concepto) {
 
-                if ($concepto['tipo'] === 'Deduccion') {
+                if ($concepto['tipo'] === 'Deduccionx') {
                     $this->setConcept(array($cCod => $concepto));
                 }
             }
