@@ -59,17 +59,35 @@ class FormatoTest extends CakeTestCase {
 		$texto = null;
 		$texto['A12'] = '#*LiquidacionesDetalle.{n}.concepto_nombre*#';
         $texto['A13'] = '#*LiquidacionesDetalle.{n}.concepto_nombre*#';
+        $texto['A14'] = '#*LiquidacionesDetalle.{n}.concepto_nombre*#';
+        $texto['A15'] = '#*LiquidacionesDetalle.{n}.concepto_nombre*#';
+        $texto['A16'] = '#*LiquidacionesDetalle.{n}.concepto_nombre*#';
         $texto['D12'] = "#*if(LiquidacionesDetalle.{n}.valor_cantidad='0.01','')*#";
         $texto['D13'] = "#*if(LiquidacionesDetalle.{n}.valor_cantidad=0.00,'')*#";
+        $texto['D14'] = "#*if(LiquidacionesDetalle.{n}.valor_cantidad=0.00,'')*#";
+        $texto['D15'] = "#*if(LiquidacionesDetalle.{n}.valor_cantidad=0.00,'')*#";
+        $texto['D16'] = "#*if(LiquidacionesDetalle.{n}.valor_cantidad=0.00,'')*#";
         $texto['E12'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Remunerativo',LiquidacionesDetalle.{n}.valor,'')*#";
         $texto['E13'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Remunerativo',LiquidacionesDetalle.{n}.valor,'')*#";
+        $texto['E14'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Remunerativo',LiquidacionesDetalle.{n}.valor,'')*#";
+        $texto['E15'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Remunerativo',LiquidacionesDetalle.{n}.valor,'')*#";
+        $texto['E16'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Remunerativo',LiquidacionesDetalle.{n}.valor,'')*#";
         $texto['F12'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Deduccion',LiquidacionesDetalle.{n}.valor,'')*#";
         $texto['F13'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Deduccion',LiquidacionesDetalle.{n}.valor,'')*#";
+        $texto['F14'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Deduccion',LiquidacionesDetalle.{n}.valor,'')*#";
+        $texto['F15'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Deduccion',LiquidacionesDetalle.{n}.valor,'')*#";
+        $texto['F16'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='Deduccion',LiquidacionesDetalle.{n}.valor,'')*#";
         $texto['G12'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='No Remunerativo',LiquidacionesDetalle.{n}.valor,'')*#";
         $texto['G13'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='No Remunerativo',LiquidacionesDetalle.{n}.valor,'')*#";
+        $texto['G14'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='No Remunerativo',LiquidacionesDetalle.{n}.valor,'')*#";
+        $texto['G15'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='No Remunerativo',LiquidacionesDetalle.{n}.valor,'')*#";
+        $texto['G16'] = "#*if(LiquidacionesDetalle.{n}.concepto_tipo='No Remunerativo',LiquidacionesDetalle.{n}.valor,'')*#";
 		$reemplazos = array('LiquidacionesDetalle' => array(
 			array('concepto_tipo' => 'Remunerativo', 'concepto_nombre' => 'Basico', 'valor' => '700.60', 'valor_cantidad' => '0.00'),
-			array('concepto_tipo' => 'Remunerativo', 'concepto_nombre' => 'Antiguedad', 'valor' => '0.00', 'valor_cantidad' => '0.00')));
+			array('concepto_tipo' => 'Remunerativo', 'concepto_nombre' => 'Antiguedad', 'valor' => '0.00', 'valor_cantidad' => '0.00'),
+            array('concepto_tipo' => 'No Remunerativo', 'concepto_nombre' => 'No Rem Concepto', 'valor' => '11.00', 'valor_cantidad' => '0.00'),
+            array('concepto_tipo' => 'Deduccion', 'concepto_nombre' => 'Ded Concepto', 'valor' => '18.00', 'valor_cantidad' => '0.00'),
+            array('concepto_tipo' => 'No Remunerativo', 'concepto_nombre' => 'No Rem Concepto', 'valor' => '11.00', 'valor_cantidad' => '0.00')));
 		$this->formato->setCount(0);
 		$result = $this->formato->replace(null, $reemplazos, $texto);
 		$expected = null;
@@ -83,6 +101,21 @@ class FormatoTest extends CakeTestCase {
 		$expected['E13'] = '0.00';
 		$expected['F13'] = '';
 		$expected['G13'] = '';
+        $expected['A14'] = 'No Rem Concepto';
+        $expected['D14'] = '';
+        $expected['E14'] = '';
+        $expected['F14'] = '';
+        $expected['G14'] = '11.00';
+        $expected['A15'] = 'Ded Concepto';
+        $expected['D15'] = '';
+        $expected['E15'] = '';
+        $expected['F15'] = '18.00';
+        $expected['G15'] = '';
+        $expected['A16'] = 'No Rem Concepto';
+        $expected['D16'] = '';
+        $expected['E16'] = '';
+        $expected['F16'] = '';
+        $expected['G16'] = '11.00';
 		$this->assertEqual($expected, $result);
 
 		
