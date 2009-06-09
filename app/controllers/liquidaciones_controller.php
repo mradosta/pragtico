@@ -234,16 +234,21 @@ class LiquidacionesController extends AppController {
 			$opciones['variables'] = $variables;
 			$opciones['informaciones'] = $informaciones;
 			foreach ($relaciones as $relacion) {
+
+                $conveniosCategoriasHistoricoCondition['ConveniosCategoriasHistorico.convenios_categoria_id'] = $relacion['ConveniosCategoria']['id'];
+                if ($this->data['Condicion']['Liquidacion-tipo'] !== 'final') {
+                    $conveniosCategoriasHistoricoCondition['ConveniosCategoriasHistorico.desde <='] = $periodo['desde'];
+                    $conveniosCategoriasHistoricoCondition['OR'] = array(
+                        'ConveniosCategoriasHistorico.hasta >=' => $periodo['hasta'],
+                        'ConveniosCategoriasHistorico.hasta'    => '0000-00-00');                    
+                }
+                
 				$historico = $this->Liquidacion->Relacion->ConveniosCategoria->ConveniosCategoriasHistorico->find('first',
 					array(
 						'recursive'	 	=> -1,
 	  					'checkSecurity'	=> false,
-						'conditions' 	=>
-						array(
-							'ConveniosCategoriasHistorico.convenios_categoria_id' => $relacion['ConveniosCategoria']['id'],
-							'ConveniosCategoriasHistorico.desde <=' => $periodo['desde'],
-					  		array('OR' => array(	'ConveniosCategoriasHistorico.hasta >=' => $periodo['hasta'],
-											'ConveniosCategoriasHistorico.hasta' => '0000-00-00')))));
+                        'order'         => 'ConveniosCategoriasHistorico.id',
+						'conditions' 	=> $conveniosCategoriasHistoricoCondition));
 
 				if (!empty($historico)) {
 					$relacion['ConveniosCategoria']['costo'] = $historico['ConveniosCategoriasHistorico']['costo'];
