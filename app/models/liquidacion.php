@@ -257,6 +257,7 @@ class Liquidacion extends AppModel {
             } else {
                 return array('error' => sprintf('Wrong period (%s). Only "1" for the first_half or "2" for the second_half allowed for type %s.', $options['period'], $type));
             }
+                    
             $fields = array('Liquidacion.mes', 'SUM(Liquidacion.remunerativo) AS total_remunerativo');
             $groupBy = array('Liquidacion.mes');
             $r = $this->find('all', array(
@@ -271,6 +272,15 @@ class Liquidacion extends AppModel {
                 $this->setVar('#mayor_suma_mes_remunerativo_semestre', 0);
             }
 
+
+            if ($type === 'final') {
+                $this->setVar('#fecha_desde_liquidacion', $from);
+                $this->setVar('#fecha_hasta_liquidacion', $to);
+                $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
+                        array(  'relacion'          => $this->getRelationship(),
+                                'codigoConcepto'    => 'vacaciones_no_gozadas')));
+            }
+
             $ausencias = $this->Relacion->Ausencia->getAbsencesByType(array('Accidente', 'Maternidad'), $relationship['Relacion']['id'], $from, $to);
             $this->setVar('#total_dias_ausencias_accidente_semestre', $ausencias['Accidente']);
             $this->setVar('#total_dias_ausencias_maternidad_semestre', $ausencias['Maternidad']);
@@ -280,7 +290,7 @@ class Liquidacion extends AppModel {
                                 'desde'     => $this->getVarValue('#fecha_desde_liquidacion'),
                                 'hasta'     => $this->getVarValue('#fecha_hasta_liquidacion'))) as $cCod => $concepto) {
 
-                if ($concepto['tipo'] === 'Deduccionx') {
+                if ($concepto['tipo'] === 'Deduccion') {
                     $this->setConcept(array($cCod => $concepto));
                 }
             }
@@ -289,12 +299,6 @@ class Liquidacion extends AppModel {
                             'codigoConcepto'    => 'sac')));
             $this->__conceptos['sac'] = array_merge($this->__conceptos['sac'], $this->__getConceptValue($this->__conceptos['sac']));
 
-            if ($type === 'final') {
-                $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
-                        array(  'relacion'          => $this->getRelationship(),
-                                'codigoConcepto'    => 'vacaciones_no_gozadas')));
-                $this->__conceptos['vacaciones_no_gozadas'] = array_merge($this->__conceptos['vacaciones_no_gozadas'], $this->__getConceptValue($this->__conceptos['vacaciones_no_gozadas']));
-            }
         } elseif ($type === 'especial') {
             return $this->getReceipt($relationship, $period, 'normal', $options);
         }
