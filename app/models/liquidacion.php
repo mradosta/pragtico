@@ -688,7 +688,7 @@ class Liquidacion extends AppModel {
 														"recomendacion"			=> "Verifique la formula y que todos los conceptos que esta utiliza existan.",
 														"descripcion_adicional"	=> "verifique: " . $concepto['codigo']));
 						} else {
-							//$conceptoParaCalculo[$match]['imprimir'] = 'No';
+							$conceptoParaCalculo[$match]['imprimir'] = 'No';
 							$this->setConcept($conceptoParaCalculo);
 						}
 					}
