@@ -165,6 +165,13 @@ class Liquidacion extends AppModel {
 								'desde' 	=> $this->getVarValue('#fecha_desde_liquidacion'),
 								'hasta' 	=> $this->getVarValue('#fecha_hasta_liquidacion'))));
 
+            /** Always must be present basic salary */
+            if (empty($this->__conceptos['sueldo_basico'])) {
+                $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
+                        array(  'relacion'          => $this->getRelationship(),
+                                'codigoConcepto'    => 'sueldo_basico')));
+            }
+
 			/** Get novelties */
 			$novedades = $this->Relacion->Novedad->getNovedades($this->getRelationship(), $this->getPeriod());
 			foreach ($novedades['variables'] as $varName => $varValue) {
@@ -214,9 +221,6 @@ class Liquidacion extends AppModel {
 			$this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
 					array(	'relacion' 			=> $this->getRelationship(),
 							'codigoConcepto'	=> 'vacaciones')));
-
-			$this->__conceptos['vacaciones'] = array_merge($this->__conceptos['vacaciones'],
-						$this->__getConceptValue($this->__conceptos['vacaciones']));
 
 		} elseif (in_array($type,  array('final', 'sac'))) {
 
@@ -501,6 +505,7 @@ class Liquidacion extends AppModel {
 
 /** Before performing a SUM, must be sure that I have all involved concepts */
     function __getAllNecessaryConcepts() {
+
         foreach ($this->__conceptos as $k => $conceptoTmp) {
             if (!isset($this->__conceptos[$k]['checked'])) {
                 $this->__conceptos[$k]['checked'] = true;
@@ -516,7 +521,9 @@ class Liquidacion extends AppModel {
             $diff = array_diff($allNecesaryConcepts, array_keys($this->__conceptos));
             if (!empty($diff)) {
                 foreach ($diff as $concept) {
-                    $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $this->getRelationship(), 'codigoConcepto' => $concept)));
+                    $tmpConcept = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $this->getRelationship(), 'codigoConcepto' => $concept));
+                    $tmpConcept[$concept]['imprimir'] = 'No';
+                    $this->setConcept($tmpConcept);
                 }
                 $this->__getAllNecessaryConcepts();
             }
