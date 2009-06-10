@@ -246,6 +246,7 @@ class Liquidacion extends AppModel {
                 if (empty($to)) {
                     $to = $period['ano'] . '-06-30';
                 }
+                $period['hasta'] = $period['ano'] . '-06-30';
             } elseif ($period['periodo'] == '2S') {
 				$options['period'] = 2;
                 $conditions['Liquidacion.mes >='] = 7;
@@ -254,6 +255,7 @@ class Liquidacion extends AppModel {
                 if (empty($to)) {
                     $to = $period['ano'] . '-12-31';
                 }
+                $period['hasta'] = $period['ano'] . '-12-31';
             } else {
                 return array('error' => sprintf('Wrong period (%s). Only "1" for the first_half or "2" for the second_half allowed for type %s.', $options['period'], $type));
             }
@@ -275,7 +277,7 @@ class Liquidacion extends AppModel {
 
             if ($type === 'final') {
                 $this->setVar('#fecha_desde_liquidacion', $from);
-                $this->setVar('#fecha_hasta_liquidacion', $to);
+                $this->setVar('#fecha_hasta_liquidacion', $period['hasta']);
                 $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
                         array(  'relacion'          => $this->getRelationship(),
                                 'codigoConcepto'    => 'vacaciones_no_gozadas')));
