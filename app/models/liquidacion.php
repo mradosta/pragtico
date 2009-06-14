@@ -869,6 +869,9 @@ class Liquidacion extends AppModel {
                     case 'Mayuscula':
                         $valor = strtoupper($valor);
                     break;
+                    case 'Primera Mayuscula':
+                        $valor = ucfirst($valor);
+                    break;
                 }
                 //debug($variable . ': ' .$valor);
                 $this->setVar($variable, $valor);
