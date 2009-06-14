@@ -143,7 +143,7 @@
                 }
             }
 
-            $fila = $initialRow + 37;
+            $fila = $initialRow + 41;
             for ($ti = 0; $ti <= 21; $ti++) {
                 $documento->setCellValue($ti + ($i * 23) . ',' . $fila, '', $styleBorderBottom);
             }
