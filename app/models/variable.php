@@ -38,5 +38,8 @@ class Variable extends AppModel {
         )        
 	);
 
+    var $breadCrumb = array('fields'    => array('Variable.nombre'));
+    
+
 }
 ?>

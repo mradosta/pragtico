@@ -39,5 +39,9 @@ class ObrasSocial extends AppModel {
                         array('className'    => 'Empleador',
                               'foreignKey'   => 'empleador_id'));
 */
+
+    var $breadCrumb = array('format'    => '%s - %s',
+                            'fields'    => array('ObrasSocial.codigo', 'ObrasSocial.nombre'));
+
 }
 ?>

@@ -46,6 +46,8 @@ class Actividad extends AppModel {
         )
 	);
 
+    var $breadCrumb = array('format'    => '%s - %s',
+                            'fields'    => array('Actividad.codigo', 'Actividad.nombre'));
 
 }
 ?>

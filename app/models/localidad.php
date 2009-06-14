@@ -43,7 +43,9 @@ class Localidad extends AppModel {
         )
 	);
 
-	var $belongsTo = array('Provincia');
+    var $breadCrumb = array('format'    => '%s (%s)',
+                            'fields'    => array('Localidad.nombre', 'Provincia.nombre'));
+    var $belongsTo = array('Provincia');
 
 }
 ?>
