@@ -22,6 +22,7 @@
 $campos = null;
 $campos['Empleador.id'] = array();
 $campos['Empleador.cuit'] = array();
+$campos['Empleador.identificador'] = array('aclaracion' => 'Se refiere a un identificador externo. No se utilizara dentro del Sistema.');
 $campos['Empleador.alta'] = array();
 $campos['Empleador.nombre'] = array();
 $fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => "Identificacion", 'imagen' => 'identificacion.gif')));
