@@ -156,7 +156,7 @@ class Ausencia extends AppModel {
 		$ausencias['Injustificada'] = 0;
         $art = 0;
         $conceptos = $auxiliares = array();
-		
+        
         if (!empty($r)) {
 			$Concepto = ClassRegistry::init('Concepto');
 			
@@ -174,7 +174,6 @@ class Ausencia extends AppModel {
                         echo 'ERROR, mas de una ausencias de tipo accidente cargadas.';
                         die;
                     }
-                    $diffArt = $diff;
                     $ausenciasArt = $ausencia;
                 }
 
@@ -205,6 +204,7 @@ class Ausencia extends AppModel {
                                                 'model' => 'AusenciasSeguimiento');
                         break;
                     } else {
+                        
                         $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $seguimiento['dias'];
 
                         $auxiliar = null;
@@ -224,7 +224,7 @@ class Ausencia extends AppModel {
             }
                 
 
-            if (!empty($ausenciasArt) && !empty($diffArt)) {
+            if (!empty($ausenciasArt)) {
                 if ($ausenciasArt['Ausencia']['desde'] < $periodo['desde']) {
                     $diffTmp = $this->dateDiff($ausenciasArt['Ausencia']['desde'], $periodo['desde']);
                     $daysBeforePeriod = $diffTmp['dias'] - 1;
@@ -233,13 +233,13 @@ class Ausencia extends AppModel {
                 }
 
                 /** If more than 10 days, must create an ART accident and an accident */
-                if ($daysBeforePeriod + $diffArt['dias'] > 10) {
+                if ($daysBeforePeriod + $ausencias['Accidente'] > 10) {
                     if ($daysBeforePeriod > 10) {
-                        $ausencias['Accidente'] = 0;
                         $ausencias['Accidente ART'] = $diffArt['dias'];
+                        $ausencias['Accidente'] = 0;
                     } else {
+                        $ausencias['Accidente ART'] = $ausencias['Accidente'] - 10;
                         $ausencias['Accidente'] = 10 - $daysBeforePeriod;
-                        $ausencias['Accidente ART'] = $diffArt['dias'] - $ausencias['Accidente'];
                     }
 
                     $date = $this->dateAdd($ausenciasArt['Ausencia']['desde'], -365);
@@ -278,8 +278,6 @@ class Ausencia extends AppModel {
                             array(  'relacion'          => $relacion,
                                     'codigoConcepto'    => 'ausencias_accidente_art'));
 
-                } else {
-                    $ausencias['Accidente'] = $diffArt['dias'];
                 }
             }
         }
