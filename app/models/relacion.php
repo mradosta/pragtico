@@ -157,10 +157,11 @@ class Relacion extends AppModel {
 			$this->data['Relacion']['legajo'] = $trabajador['Trabajador']['numero_documento'];
 		}
 	
-		/** Update state when expiry date is set */
+		/** Update state when expiry date is set
 		if (!empty($this->data['Relacion']['egreso']) && $this->data['Relacion']['egreso'] !== '0000-00-00') {
 			$this->data['Relacion']['estado'] = 'Historica';
 		}
+        */
 		
 		return parent::beforeSave();
 	}

@@ -167,7 +167,7 @@ class LiquidacionesController extends AppController {
 			unset($condiciones['Liquidacion.periodo_largo']);
 			unset($condiciones['Liquidacion.periodo_vacacional']);
 			unset($condiciones['Liquidacion.estado']);
-            if ($this->data['Condicion']['Liquidacion-tipo'] !== 'final') {
+            //if ($this->data['Condicion']['Liquidacion-tipo'] !== 'final') {
                 $condiciones['Relacion.ingreso <='] = $periodo['hasta'];
                 $condiciones['Relacion.estado'] = 'Activa';
                 if ($this->data['Condicion']['Liquidacion-tipo'] !== 'especial') {
@@ -189,16 +189,16 @@ class LiquidacionesController extends AppController {
                         $condiciones['NOT'] = array('Relacion.id' => $confirmadas);
                     }
                 }
-            } else {
-                $condiciones['Relacion.estado'] = 'Historica';
-            }
+            //} else {
+            //    $condiciones['Relacion.estado'] = 'Historica';
+            //}
 
 			$relaciones = $this->Liquidacion->Relacion->find('all',
 					array(	'contain'		=> array(	'ConveniosCategoria',
 														'Trabajador.ObrasSocial',
 														'Empleador'),
 							'conditions'	=> $condiciones));
-			
+
 			if (empty($relaciones)) {
 				$this->Session->setFlash('No se encontraron relaciones para liquidar. Verifique que no se haya liquidado y confirmado previamente o los criterios de busqueda no son correctos.', 'error');
 				$this->redirect(array('action' => 'preliquidar'));
@@ -220,8 +220,7 @@ class LiquidacionesController extends AppController {
 			$informaciones = $this->Liquidacion->Relacion->ConveniosCategoria->Convenio->getInformacion(Set::extract('/ConveniosCategoria/convenio_id', $relaciones));
 
 			/** Find all vars */
-			$Variable = ClassRegistry::init('Variable');
-			$variables = Set::combine($Variable->find('all', array(
+			$variables = Set::combine(ClassRegistry::init('Variable')->find('all', array(
 					'recursive' => -1,
 	 				'order' => false)), '{n}.Variable.nombre', '{n}.Variable');
 			$variables['#tipo_liquidacion']['valor'] = $this->data['Condicion']['Liquidacion-tipo'];
@@ -234,7 +233,29 @@ class LiquidacionesController extends AppController {
 			$opciones['variables'] = $variables;
 			$opciones['informaciones'] = $informaciones;
 			foreach ($relaciones as $relacion) {
-
+                /** For finished relations, only allow last period receipt */
+                if (!empty($relacion['Relacion']['egreso'])) {
+                    $tmpPeriod = explode('-', $relacion['Relacion']['egreso']);
+                    if ($tmpPeriod[0] !== $periodo['ano'] || $tmpPeriod[1] !== $periodo['mes']) {
+                        continue;
+                    } else {
+                        if ($periodo['periodo'] === 'M') {
+                            $tmpPeriodHasta = $periodo['ano'] . '-' . $periodo['mes'] . '-31';
+                        } elseif ($periodo['periodo'] === '1Q') {
+                            $tmpPeriodHasta = $periodo['ano'] . '-' . $periodo['mes'] . '-15';
+                        } elseif ($periodo['periodo'] === '2Q') {
+                            if ($tmpPeriod[2] <= 15) {
+                                continue;
+                            }
+                            $tmpPeriodHasta = $periodo['ano'] . '-' . $periodo['mes'] . '-31';
+                        }
+                        if ($relacion['Relacion']['egreso'] > $tmpPeriodHasta) {
+                            continue;
+                        }
+                    }
+                    $periodo['hasta'] = $relacion['Relacion']['egreso'];
+                }
+                
                 $conveniosCategoriasHistoricoCondition['ConveniosCategoriasHistorico.convenios_categoria_id'] = $relacion['ConveniosCategoria']['id'];
                 if ($this->data['Condicion']['Liquidacion-tipo'] !== 'final') {
                     $conveniosCategoriasHistoricoCondition['ConveniosCategoriasHistorico.desde <='] = $periodo['desde'];
@@ -756,7 +777,7 @@ class LiquidacionesController extends AppController {
 				$modelSave = ClassRegistry::init($model);
 				$save = array($model => $save);
 				$modelSave->create($save);
-				if ($modelSave->save($save)) {
+				if ($modelSave->save($save, false)) {
 					$c++;
                 }
 			}
