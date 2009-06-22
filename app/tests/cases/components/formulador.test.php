@@ -72,7 +72,12 @@ class FormuladorComponentTestCase extends CakeTestCase {
     }
 
 	function testInformationFuncions() {
-		
+        
+		$formula = "=if(isblank(0),'2035-12-31', 1, 2)";
+        $result = $this->FormuladorComponentTest->resolver($formula);
+        $expected = '1';
+        $this->assertEqual($expected, $result);
+        
 		$formula = "=if(isblank(0000-00-00), 1, 2)";
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '1';
