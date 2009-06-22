@@ -34,19 +34,24 @@ class DocumentosController extends AppController {
  * Permite la generacion de un documento a partir de una plantilla rtf.
  */
 	function generar($id = null) {
-
-		if (!empty($this->data['Documento']['id'])) {
+        
+        if (!empty($this->data['Documento']['id'])) {
 			$documentos = $this->Documento->find('all',
 					array('conditions' => array('Documento.id' => $this->data['Documento']['id'])));
 		} elseif (!empty($this->params['named']['model'])) {
 			$documentos = $this->Documento->find('all',
 					array('conditions' => array('Documento.model' => $this->params['named']['model'])));
-		}
-		
+		} elseif (!empty($this->data['Formulario']['accion'])) {
+            $documentos = $this->Documento->find('all',
+                    array('conditions' => array('Documento.model' => $this->data['Formulario']['accion'])));
+        }
+
 		if (empty($id)) {
 			if (!empty($this->params['data']['seleccionMultiple'])) {
 				$id = $this->Util->extraerIds($this->params['data']['seleccionMultiple']);
-			}
+			} elseif (!empty($this->data['seleccionMultiple'])) {
+                $id = $this->Util->extraerIds($this->data['seleccionMultiple']);
+            }
 		}
 
 		if (!empty($documentos)) {
@@ -62,7 +67,7 @@ class DocumentosController extends AppController {
 				}
 
 				$data = $Model->find('all', array('conditions' => array($Model->name . '.' . $Model->primaryKey => $id)));
-
+                
 				$reemplazarTexto['texto'] = Set::combine($documentos[0]['DocumentosPatron'], '{n}.identificador', '{n}.patron');
 				$reemplazarTexto['reemplazos'] = $data;
 

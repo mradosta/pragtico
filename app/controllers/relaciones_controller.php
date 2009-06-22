@@ -24,6 +24,7 @@
  */
 class RelacionesController extends AppController {
 
+//var $components = array('DebugKit.Toolbar');
 
 	
 /**

@@ -19,6 +19,7 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
+//$condiciones['Condicion.ConveniosCategoriasHistorico-testui'] = array('id' => 'blabla', 'after' => '<div id="testui">testui</div>');
 $condiciones['Condicion.ConveniosCategoria-nombre'] = array();
 $condiciones['Condicion.ConveniosCategoria-convenio_id'] = array(	"lov"=>array("controller"	=>"convenios",
 																			"camposRetorno"	=>array(	"Convenio.numero",

@@ -1,6 +1,36 @@
 /*
  * GENERICOS
  */
+
+.seleccionar {
+    cursor:pointer;
+}
+#simplemodal-overlay {
+  background-color:#000;
+  cursor:wait;
+}
+
+#simplemodal-container {
+  1background-color:transparent;
+  background-color:#fff;
+  1border:3px solid #ccc;
+  border:0;
+  padding:0;
+  margin:0;
+}
+
+#simplemodal-container a.modalCloseImg {
+  background:url(img/cerrar.png) no-repeat;
+  width:25px;
+  height:29px;
+  display:inline;
+  z-index:3200;
+  position:absolute;
+  top:-14px;
+  right:-18px;
+  cursor:pointer;
+}
+ 
 body {
 	max-width: 1000px;
 	margin: 2px;
@@ -696,6 +726,24 @@ div.index textarea {
 	width: 196px;
 }
 
+.expand_text_area {
+    background: url(img/expand_text_area.png) no-repeat;
+    padding-left: 6px;
+    width: 15px;
+    height: 16px;
+    float: left;
+    cursor: pointer;
+}
+
+.colapse_text_area {
+    background: url(img/colapse_text_area.png) no-repeat;
+    padding-left: 6px;
+    width: 15px;
+    height: 16px;
+    float: left;
+    cursor: pointer;
+}
+
 div.add div.textarea {
  	padding: 3px 0 3px 0;
  	margin-left: 5px;
@@ -938,12 +986,15 @@ span.color_rojo {
 	padding-left: 2px;
 	color: #F49E23;
 }
+
 .lov {
-overflow: auto;
+    overflow: auto;
 }
+
 img.lupa_lov {
 	width: 20px;
 	height: 18px;
+    cursor: pointer;
 }
 
 img.fecha {

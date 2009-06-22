@@ -25,7 +25,12 @@
 class Manager2Service extends AppModel {
 
 	var $useTable = false;
-	
+
+
+
+    function xxxcc($idd) {
+        return '2';
+    }
 /**
  * Facturacion.
  *
@@ -69,7 +74,7 @@ class Manager2Service extends AppModel {
                     $Grupo = ClassRegistry::init('Grupo');
                     $Grupo->contain(array('GruposParametro.Parametro'));
                     $Grupo->Behaviors->detach('Permisos');
-                    $tmpGrupo = $Grupo->findById(4);
+                    $tmpGrupo = $Grupo->findById($registro['Factura']['group_id']);
                     foreach ($tmpGrupo['GruposParametro'] as $parametro) {
                         if ($parametro['Parametro']['nombre'] === 'cuit') {
                             $grupo->setAttribute('codigo', $parametro['valor']);

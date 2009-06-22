@@ -667,18 +667,17 @@ class AppFormHelper extends FormHelper {
 							if (isset($campo['nombreEncabezado'])) {
 								$nombre = $campo['nombreEncabezado'];
 							} else {
-								$nombre = inflector::humanize($nombreCampo);
+								$nombre = Inflector::humanize($nombreCampo);
 							}
 							
-							if (!($nombreCampo == "id" && !$opciones['mostrarIds'])) {
+							if (!($nombreCampo === 'id' && !$opciones['mostrarIds'])) {
 								if (isset($campo['orden']) && $campo['orden'] === false) {
 									$encabezados[] = $nombre;
 								}
 								else {
 									if ($opciones['ordenEnEncabezados']) {
 										$encabezados[] = $this->Paginador->sort($nombre, $nombreCampo, $params);
-									}
-									else {
+									} else {
 										$encabezados[] = $nombre;
 									}
 								}
@@ -729,67 +728,22 @@ class AppFormHelper extends FormHelper {
 							}
 						}
 						
-						if ($nombreCampo === "id") {
+						if ($nombreCampo === 'id') {
 							$id = $valor;
 
-							$controller = "";
+							$controller = '';
 							if (isset($this->params['url']['url'])) {
-								$parse = router::parse($this->params['url']['url']);
+								$parse = Router::parse($this->params['url']['url']);
 								$esController = strtolower(inflector::pluralize(inflector::underscore($campo['model'])));
 								if ($parse['controller'] != $esController) {
 									$controller = "../" . $esController . "/";
 								}
 							}
-							
-							if ($opciones['seleccionLov']) {
-								if (isset($opciones['seleccionLov']['camposRetorno']) && !empty($opciones['seleccionLov']['camposRetorno'])) {
-									$valoresRetorno = array();
-									foreach (explode("|", $opciones['seleccionLov']['camposRetorno']) as $campoRetorno) {
-										list($mRetorno, $cRetorno) = explode(".", $campoRetorno);
-										foreach ($v as $kk=>$vv){
-											if (isset($vv['model']) && isset($vv['field']) && $vv['model'] == $mRetorno && $vv['field'] == $cRetorno) {
-												$valoresRetorno[] = $vv['valor'];
-												break;
-											}
-										}
-									}
-									if (isset($opciones['seleccionLov']['separadorRetorno'])) {
-										$retono = implode($opciones['seleccionLov']['separadorRetorno'], $valoresRetorno);
-									}
-									else {
-										$retono = implode(" - ", $valoresRetorno);
-									}
-								}
-								else {
-									$retono = $id;
-								}
-								/*
-								if ($this->traerPreferencia("lov_apertura") == "popup") {
-									$padre = "opener";
-								}
-								else {
-									$padre = "";
-								}
-								array_unshift($acciones, $this->link($this->image('seleccionar.gif', array("alt" => "Selecciona este registro")), null, array("class" => "seleccionar jqmClose", "id" => "xsxs", "title"=>$retono, "onclick" => "retornoLov('" . $opciones['seleccionLov']['retornarA'] . "','" . $id . "', '" . str_replace("'", "\'", $retono) . "', '" . $padre . "');")));
-								*/
-								array_unshift($acciones, $this->link($this->image('seleccionar.gif', array("alt" => __('Select current record', true))), null, array("class" => "seleccionar jqmClose", "id" => "xsxs", "title"=>$retono, "onclick" => "retornoLov('" . $opciones['seleccionLov']['retornarA'] . "','" . $id . "', '" . str_replace("'", "\'", $retono) . "', 'opener');")));
-								/**
-								* Cuando se trata de una lov que viene de una busqueda y solo retorna un registro, se lo autoselecciono y cierro la lov.
-								*/
-								if (!empty($this->params['named']['layout']) && $this->params['named']['layout'] === "lov" && !empty($this->params['named']['accion']) && $this->params['named']['accion'] === "buscar" && count($datos['cuerpo']) === 1) {
-									$view =& ClassRegistry::getObject('view');
-									$view->jsCode[] = "jQuery('.jqmClose').trigger('click');";
-								}
-							}
 
-							/**
-							* Lo utilizo para saber cual fue el origen (desde donde viene) este request,
-							* asi evito agregarlo al history.
-							$origen = "";
-							if ($this->params['isAjax'] == "1") {
-								$origen = "/origenIsAjax:1";
-							}
-							*/
+                            /** Only when in lov would be an ajax request */
+                            if ($this->params['isAjax'] === true) {
+                                $acciones[] = $this->image('seleccionar.gif', array('class' => 'seleccionar', 'alt' => __('Select current record', true)));
+                            }
 							
 							if ($opciones['eliminar'] && (!(isset($opcionesFila['eliminar']) && $opcionesFila['eliminar'] === false))) {
 								if ($campo['delete']) {
@@ -798,8 +752,7 @@ class AppFormHelper extends FormHelper {
 										$urlLink = $detailUrls['delete'];
 									}
 									array_unshift($acciones, $this->link($this->image('delete.gif', array("alt" => "Elimina este registro")), $urlLink, array(), "Esta seguro que desea eliminar el registro?", false));
-								}
-								else {
+								} else {
 									array_unshift($acciones, $this->image('delete_disable.gif', array("alt" => "Elimina este registro")));
 								}
 							}
@@ -812,8 +765,7 @@ class AppFormHelper extends FormHelper {
 										$urlLink = $detailUrls['edit'];
 									}
 									array_unshift($acciones, $this->link($this->image('edit.gif', array("alt" => "Modifica este registro")), $urlLink));
-								}
-								else {
+								} else {
 									array_unshift($acciones, $this->image('edit_disable.gif', array("alt" => "Modifica este registro")));
 								}
 							}
@@ -825,7 +777,12 @@ class AppFormHelper extends FormHelper {
 								/**
 								* Si debo agregarlo, lo agrego al principio de todas las acciones.
 								*/
-								array_unshift($acciones, $this->input("seleccionMultiple.id_" . $id, array("type" => "checkbox", "label"=>false, 'div' => false)));
+								array_unshift($acciones,
+                                              $this->input("seleccionMultiple.id_" . $id, array(
+                                                        'type'  => 'checkbox',
+                                                        'label' => false,
+                                                        'class' => 'selection_lov',
+                                                        'div'   => false)));
 							}
 							
 							/**
@@ -847,6 +804,7 @@ class AppFormHelper extends FormHelper {
 					* Fuerzo $valor a string, porque si $valor = 0, no evaluara.
 					*/
 					if ($valor . "" !== "NO PINTAR") {
+                        $atributos['axis'] = $modelKey . '.' . $nombreCampo;
 						$cellsOut[] = array($valor, $atributos);
 					}
 				}
@@ -953,6 +911,7 @@ class AppFormHelper extends FormHelper {
 		* Escribo el codigo js (jquery) que me ayudara con las funciones de selecciona multiple.
 		*/
 		$jsSeleccionMultiple = '
+        /*
 			jQuery("table .seleccionarTodos").click(
 				function() {
 					jQuery(".tabla :checkbox").checkbox("seleccionar");
@@ -971,6 +930,7 @@ class AppFormHelper extends FormHelper {
 					return false;
 				}
 			);
+        */
 
 			
 			jQuery("#modificar").click(
@@ -1013,38 +973,16 @@ class AppFormHelper extends FormHelper {
 			);
 		';
 		
-		/**
-		* Escribo el codigo js (jquery) que hara el efecto zebra (alterativo en cada fila par).
-		*/
-		$jsZebra = '
-			jQuery(".grilla tr").click(
-				function() {
-					//jQuery(this).toggleClass("seleccionado");
-				});
-			jQuery(".fila_datos").mouseover(
-				function() {
-					jQuery(this).addClass("over");
-				});
-			jQuery(".fila_datos").mouseout(
-				function() {
-					jQuery(this).removeClass("over");
-				});
-			jQuery(".fila_datos:even").addClass("alternativo");
-		';
-
-		$jsZebra = "";
 		$jsTabla = "";
 		if (($opciones['zebra'] || $opciones['seleccionMultiple'] || !empty($jsDesglose)) && !empty($tabla)) {
 			//d($jsDesglose);
 			if (!empty($jsDesglose)) {
 				$jsTabla .= implode("\n", $jsDesglose);
 			}
-			if ($opciones['zebra']) {
-				$jsTabla .= $jsZebra;
-			}
 			if ($opciones['seleccionMultiple']) {
 				$jsTabla .= $jsSeleccionMultiple;
 			}
+            /*
 			if (!empty($opciones['seleccionLov'])) {
 				if (isset($padre) && $padre == "opener") {
 					$hidden = "opener.document.getElementById('" . $opciones['seleccionLov']['retornarA'] . "')";
@@ -1070,6 +1008,7 @@ class AppFormHelper extends FormHelper {
 				';
 				$jsTabla .= $jsSeleccionLov;
 			}
+            */
 			$this->addScript($jsTabla, "ready");
 		}
 
@@ -1092,6 +1031,8 @@ class AppFormHelper extends FormHelper {
 	}
 
 	function _fila($celdas, $trOptions = null) {
+
+        /** TODO: http://book.cakephp.org/bg/view/206/Inserting-Well-Formatted-elements */
 		
 		static $count = 0;
 		$out = null;
@@ -1882,93 +1823,63 @@ class AppFormHelper extends FormHelper {
 				$options = array_merge(array('after'=>$seleccionString, 'div'=>array('id' =>$id, 'class'=>'input'), 'type' => 'select', 'multiple' => 'checkbox'), $options);
 			}
 		
-			elseif ($tipoCampo === "lov"
-				&& isset($options['lov']['controller'])
+			elseif ($tipoCampo === 'lov'
 					&& !empty($options['lov']['controller'])
-						&& is_string($options['lov']['controller'])) {
+                    && is_string($options['lov']['controller'])) {
 
 				$rnd = intval(rand());
 				$id = $this->domId($tagName);
-				
+
 				/**
 				* Cargo nuevamente los valores.
 				*/
 				$value = array();
-				if (true || $this->action == "edit") {
-					foreach ($options['lov']['camposRetorno'] as $campoRetorno) {
-						list($mRetorno, $cRetorno) = explode(".", $campoRetorno);
-						if (isset($this->data[$mRetorno][$cRetorno])) {
-							$value[] = $this->data[$mRetorno][$cRetorno];
-						}
-						else {
-							/**
-							* Si aun no lo encontre, puede que este en recursive = 2.
-							* Trato de buscarlo mas adentro en el array.
-							*/
-							$modelParent = Inflector::classify($options['lov']['controller']);
-							if (isset($this->data[$modelParent][$mRetorno][$cRetorno])) {
-								$value[] = $this->data[$modelParent][$mRetorno][$cRetorno];
-							}
-						}
-					}
-				}
+                foreach ($options['lov']['camposRetorno'] as $campoRetorno) {
+                    list($mRetorno, $cRetorno) = explode(".", $campoRetorno);
+                    if (isset($this->data[$mRetorno][$cRetorno])) {
+                        $value[] = $this->data[$mRetorno][$cRetorno];
+                    } else {
+                        /**
+                        * Si aun no lo encontre, puede que este en recursive = 2.
+                        * Trato de buscarlo mas adentro en el array.
+                        */
+                        $modelParent = Inflector::classify($options['lov']['controller']);
+                        if (isset($this->data[$modelParent][$mRetorno][$cRetorno])) {
+                            $value[] = $this->data[$modelParent][$mRetorno][$cRetorno];
+                        }
+                    }
+                }
 				
-				$opcionesLov = array(	"action"			=> "index",
-										"layout"			=> "lov",
-										"separadorRetorno" 	=> "-",
-										"retornarA"			=> $id,
-										"targetId" 			=> "target_" . $rnd);
-										
-				$options['lov'] = array_merge($opcionesLov, $options['lov']);
-				$options['lov']['camposRetorno'] = implode("|", $options['lov']['camposRetorno']);
-				$url = strstr(Router::url($options['lov']), Router::url("/"));
+				$options['lov'] = array_merge(array(  'action'    => 'index',
+										              'retornarA' => $id), $options['lov']);
+                if (empty($options['lov']['mask'])) {
+                    $options['lov']['mask'] = trim(str_repeat('%s ', count($options['lov']['camposRetorno'])));
+                }
+				$options['lov']['camposRetorno'] = implode('|', $options['lov']['camposRetorno']);
 
 
-				/**
-				* Si permite seleccion multiple, pongo un textarea, sino un text comun.
-				*/
-				if (isset($options['lov']['seleccionMultiple']) && $options['lov']['seleccionMultiple'] == 0) {
-					$type = 'text';
-				} else {
-					$type = 'textarea';
-				}
+                $lovOptions = null;
+                foreach ($options['lov'] as $lovKey => $lovValue) {
+                    $lovOptions[] = $lovKey . ':' . $lovValue;
+                }
+                $lupa = $this->image('search.gif', array(   'alt'       => __('Search', true),
+                                                            'class'     => 'lupa_lov',
+                                                            'longdesc'  => implode(';', $lovOptions)));
 
-				$lupa = $this->image('search.gif', array(	'alt' 	=> __('Search', true),
-															'class' => 'lupa_lov',
-															'id'	=> 'lupa_' . $rnd));
+                /**
+                * Si permite seleccion multiple, pongo un textarea, sino un text comun.
+                */
+                if (isset($options['lov']['seleccionMultiple']) && $options['lov']['seleccionMultiple'] == 0) {
+                    $type = 'text';
+                } else {
+                    $type = 'textarea';
+                    $lupa .= '<p class="expand_text_area">&nbsp;</p>';
+                }
 
 				/**
 				* El control lov se abre en un popup o en un div, de acuerdo a las preferencias.
 				*/
-				$options['after'] = $this->link($lupa, null, array('onclick' => "abrirVentana('" . $rnd . "', '" . $url . "')")) . $options['after'];
-				/*
-				if ($this->traerPreferencia("lov_apertura") === "popup") {
-					$options['after'] = $this->link($lupa, null, array('onclick' => "abrirVentana('" . $rnd . "', '" . $url . "')")) . $options['after'];
-				}
-				else {
-					$idDiv = "div_" . $this->domId($tagName);
-					$cerrar = $this->link("", null, array("title" => "Cerrar", "class" => "jqmCloseEstilo jqmClose"));
-					$target = "target_" . $rnd;
-					$targetDiv = $this->bloque($this->image('cargando.gif', array("alt" => "Cargando...")) . "<h1>Aguarde por favor...</h1>", array('div' => array("id"=>$target)));
-					$divLov = $this->tag('div', $cerrar . $targetDiv, array("class" => "jqmWindow", 'id' => $idDiv));
-
-					
-					$divLov .= $this->codeBlock('
-						jQuery("#lupa_' . $rnd . '").bind("click",
-							function () {
-								jQuery("#' . $idDiv . '").jqm(
-															{
-																modal: 	true,
-																target: "#' . $target . '",
-																ajax: 	"' . $url . '"
-															}
-														).jqmShow();
-							}
-						);
-					');
-					$options['after'] = $this->link($lupa, null) . $divLov . $options['after'];
-				}
-				*/
+                $options['after'] = $lupa . $options['after'];
 
 				unset($options['type']);
 				unset($options['lov']);
@@ -1991,8 +1902,7 @@ class AppFormHelper extends FormHelper {
 					}
 					if (isset($options['lov']['separadorRetorno']) && !empty($options['lov']['separadorRetorno'])) {
 						$options['value'] = implode($options['lov']['separadorRetorno'], $value);
-					}
-					else {
+					} else {
 						$options['value'] = implode(" - ", $value);
 					}
 					$options['title'] = $options['value'];
@@ -2009,8 +1919,8 @@ class AppFormHelper extends FormHelper {
 					}
 				}
 				*/
-				
-				$options = array_merge($options, array(	'id'		=> $id . "__",
+
+				$options = array_merge($options, array(	'id'		=> $id . '__',
 														'readonly'	=> true,
 														'type'		=> $type,
 														'class'		=> 'izquierda'));
@@ -2019,12 +1929,13 @@ class AppFormHelper extends FormHelper {
 				if (!empty($this->data[$model][$field . '__'])) {
 					$options['value'] = $this->data[$model][$field . '__'];
 				}
-				return $this->input($tagName . "__", $options);
+				return $this->input($tagName . '__', $options);
 			}
 		}
-		$aclaracion = "";
+
+		$aclaracion = '';
 		if (!empty($options['aclaracion'])) {
-			$aclaracion = $this->tag("span", $options['aclaracion'], array("class" => "aclaracion"));
+			$aclaracion = $this->tag('span', $options['aclaracion'], array('class' => 'aclaracion'));
 			unset($options['aclaracion']);
 		}
 

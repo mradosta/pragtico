@@ -172,17 +172,18 @@ class PaginadorHelper extends AppHelper {
                 /**
                 TODO: Gran cambio en revi 563
                 */
+                $opciones['escape'] = false;
 				if ($this->Paginator->hasPrev()) {
-					$out[] = $this->Paginator->link($this->AppForm->image('primera.gif', array('alt' => __('Go to first page', true))), array('page' => 1), array_merge(array('escape' => false), $opciones));
-                    $out[] = $this->Paginator->prev($this->AppForm->image('anterior.gif', array('alt' => __('Go to previews page', true))), array('escape' => false));
+					$out[] = $this->Paginator->link($this->AppForm->image('primera.gif', array('alt' => __('Go to first page', true))), array('page' => 1), $opciones);
+                    $out[] = $this->Paginator->prev($this->AppForm->image('anterior.gif', array('alt' => __('Go to previews page', true))), $opciones);
 				} else {
                     $out[] = $this->AppForm->tag('div', $this->AppForm->image('primeraoff.gif'), array('class' => 'paginator_prev_disabled'));
                     $out[] = $this->AppForm->tag('div', $this->AppForm->image('anterioroff.gif'), array('class' => 'paginator_prev_disabled'));
 				}
 				
                 if ($this->Paginator->hasNext()) {
-                    $out[] = $this->Paginator->next($this->AppForm->image('siguiente.gif', array('alt' => __('Go to next page', true))), array('escape' => false));
-                    $out[] = $this->Paginator->link($this->AppForm->image('ultima.gif', array('alt' => __('Go to last page', true))), array('page' => $this->Paginator->params['paging'][$model]['pageCount']), array_merge(array('escape' => false), $opciones));
+                    $out[] = $this->Paginator->next($this->AppForm->image('siguiente.gif', array('alt' => __('Go to next page', true))), $opciones);
+                    $out[] = $this->Paginator->link($this->AppForm->image('ultima.gif', array('alt' => __('Go to last page', true))), array('page' => $this->Paginator->params['paging'][$model]['pageCount']), $opciones);
                 } else {
                     $out[] = $this->AppForm->tag('div', $this->AppForm->image('siguienteoff.gif'));
                     $out[] = $this->AppForm->tag('div', $this->AppForm->image('ultimaoff.gif'));

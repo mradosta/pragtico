@@ -1,88 +1,113 @@
 <?php
-/**
- * Crea el hidden que lleva la accion, esta accion puede ser buscar o limpiar.
- */
-$out[] = $appForm->input("Formulario.accion", array("type"=>"hidden", "id"=>"accion", "value"=>"buscar"));
+/** Crea el hidden que lleva la accion, esta accion puede ser buscar o limpiar.*/
+$out[] = $appForm->input('Formulario.accion', array('type' => 'hidden', 'id' => 'accion', 'value' => 'buscar'));
 
 /**
  * Si tengo el parametro de una seleccion multiple (cuando habro una lov), lo pongo en un hidden para no perderlo.
- */
- if(!empty($this->params['named'])) {
+ if (!empty($this->params['named'])) {
  	foreach($this->params['named'] as $k=>$v) {
  		if($k != "accion" && $k != "layout") {
  			$out[] = $appForm->input("Formulario." . $k, array("type"=>"hidden", "value"=>$v));
  		}
  	}
  }
+ */
 
 
-/**
-* Decido en base a la preferencia si hacer un request ajax o comun.
-*/
-//if($appForm->traerPreferencia("buscadores_posteo") == "ajax") {
-if(false) {
+if ($this->params['isAjax']) {
 
 	/**
 	* Creo los botones de los buscadores.
 	* El boton de Buscar y el de Limpiar.
 	*/
-	$out[] = $appForm->button(__("Clear", true), array("class"=>"buscador_ajax", "title"=>"Limpiar los criterios de busqueda"));
-	$out[] = $appForm->button(__("Search", true), array("class"=>"buscador_ajax", "title"=>"Realizar la busqueda"));
-	
-	/**
-	* Si esta seteado el valor retornarA y es un request AJAX, significa que es una lov (div).
-	* Si es una lov (div), debo actualizar el div #target, sino, el div #index ya que es una busqueda comun.
-	*/
-	if(!empty($this->params['isAjax']) && !empty($layout) && $layout == "lov") {
-		//array_pop($botones);
-		//$out[] = $appForm->button("Buscar", array("class"=>"buscador_ajax", "title"=>"Realizar la busqueda"));
-		$out[] = $appForm->input("Formulario.layout", array("type"=>"hidden", "id"=>"layout", "value"=>"lov"));
-
-		/**
-		 * Si tengo el parametro de un targetId (cuando habro una lov en un div), lo pongo en un hidden para no perderlo.
-		 */
-		if(isset($this->params['named']['targetId'])) {
-			//$out[] = $appForm->input("Formulario.targetId", array("type"=>"hidden", "value"=>$this->params['named']['targetId']));
-			$target = $this->params['named']['targetId'];
-		}
-		//$out[] = $appForm->input("Formulario.targetId", array("type"=>"hidden", "id"=>"targetId", "value"=>$this->viewVars['targetId']));
-		//$target = $this->viewVars['targetId'];
-	}
-	else {
-		$target = "index";
-	}
+	$out[] = $appForm->button(__('Clear', true), array('class' => 'buscador_ajax', 'title' => 'Limpiar los criterios de busqueda'));
+	$out[] = $appForm->button(__('Search', true), array('class' => 'buscador_ajax', 'title' => 'Realizar la busqueda'));
 	
 	$out[] = $appForm->codeBlock("
-		jQuery('#{$target} .buscador_ajax').click(function(){
+jQuery(document).ready(function($) {
 
-			/**
-			* Seteo la accion (buscar o limpiar).
-			*/
-			var accion = jQuery(this).val().toLowerCase();
-			jQuery('#{$target} #form #accion').val(accion);
-			/**
-			* Seteo las opciones para hacer el request ajax.
-			*/
-			var url = jQuery('#{$target} #form').attr('action');
-			var options = {
-				target: 	'#{$target}',
-				type: 		'POST',
-				url:		url
-			};
-			/**
-			* Hago el submit ajax.
-			*/
-			jQuery('#" . $target . " #form').ajaxSubmit(options);
+        jQuery.bindMultipleCheckBoxManipulation('#lov');
+    
+        /** When #opened_lov_options not empty, because I'm on a lov */
+        if (jQuery('#opened_lov_options').val() != '') {
+            /**Hides everything but select option */
+            jQuery('td.acciones > a', jQuery('#simplemodal-container')).hide();
+            jQuery('td.acciones > img:not(\'.seleccionar\')', jQuery('#simplemodal-container')).hide();
 
-		});
-	");
+            var params = jQuery.makeObject(jQuery('#opened_lov_options').val());
+            if (params['seleccionMultiple'] == 0) {
+                jQuery('input.selection_lov', jQuery('#simplemodal-container')).hide();
+            }
+
+            
+            jQuery('.seleccionar').click(function() {
+
+                var toReturn = params['camposRetorno'].split('|');
+    
+                /** Marks the checkbox associated as checked */
+                jQuery('.selection_lov', jQuery(this).parent()).attr('checked', true);
+
+                var selectedData = new Array();
+                var selectedIds = new Array();
+                jQuery('.selection_lov').filter(':checked').each(
+                    function() {
+                        var row = jQuery(this).parent().parent();
+                        var returnRowData = new Array();
+                        jQuery('td:not(\'.acciones\')', row).each(
+                            function() {
+                                if (jQuery.inArray(jQuery(this).attr('axis'), toReturn) >= 0) {
+                                    returnRowData.push(jQuery(this).html());
+                                }
+                            }
+                        );
+                        if (returnRowData.length > 0) {
+                            selectedData.push(jQuery.vsprintf(params['mask'], returnRowData));
+                        }
+
+                        selectedIds.push(jQuery(this).parent().parent().attr('charoff'));
+                    }
+                );
+                jQuery('#' + params['retornarA'] + '__').val(selectedData.join('\\n'));
+                jQuery('#' + params['retornarA']).val(selectedIds.join('**||**'));
+                jQuery('a.modalCloseImg').trigger('click');
+            });
+            
+        }
+            
+
+        /** Do ajax submit. */
+        jQuery('.buscador_ajax', jQuery('#lov')).click(function(){
+            /** Set action (clean or search) */
+            var accion = jQuery(this).val().toLowerCase();
+            jQuery('#accion', jQuery('#lov')).val(accion);
+            /** Seteo las opciones para hacer el request ajax. */
+            var url = jQuery('#form', jQuery('#lov')).attr('action');
+            var options = {
+                target:     '#lov',
+                type:       'POST',
+                url:        url
+            };
+            jQuery('#form', jQuery('#lov')).ajaxSubmit(options);
+        });
+    
+    
+        /** Finds wath is already selected and mark it */
+        var data = jQuery('#' + params['retornarA']).val().split('**||**')
+        jQuery('tr', jQuery('#lov')).each(
+            function() {
+                if (jQuery.inArray(jQuery(this).attr('charoff'), data) >= 0) {
+                    jQuery('input.selection_lov', jQuery(this)).attr('checked', true);
+                }
+            }
+        );
+    
+    });");
 	
-}
-else {
+} else {
 	/**
 	* hidden para no perder el layout en el que estoy ni si es permitido seleccion Multiple o no.
 	*/
-	$out[] = $appForm->input("Formulario.layout", array("type"=>"hidden", "value"=>$this->layout));
+	//$out[] = $appForm->input("Formulario.layout", array("type"=>"hidden", "value"=>$this->layout));
 	
 	$limpiar = $appForm->button(__("Clear", true), array("class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='limpiar';form.action='" . Router::url(array("controller" => $this->params['controller'], "action" => $opcionesForm['action'])) . "';form.submit();"));
 	$buscar = $appForm->submit(__("Search", true), array("onclick"=>"document.getElementById('accion').value='buscar'"));
@@ -101,8 +126,7 @@ else {
 					break;
 			}
 		}
-	}
-	else {
+	} else {
 		/**
 		* Creo los botones de los buscadores.
 		* El boton de Buscar y el de Limpiar.
@@ -115,9 +139,9 @@ else {
 /**
 * Creo un bloque con los botones y agrego el div clear antes para cerrar la caja redondeada.
 */
-$out[] = $appForm->tag("div", "", array("class"=>"clear"));
+$out[] = $appForm->tag('div', '', array('class' => 'clear'));
 
 
-echo $appForm->tag("div", $out, array("class"=>"buscadores"));
+echo $appForm->tag('div', $out, array('class' => 'buscadores'));
 
 ?>

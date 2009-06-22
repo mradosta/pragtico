@@ -110,6 +110,7 @@ class AppController extends Controller {
 		$this->__filasPorPagina();
 
 		/**
+         * TODO:Revisar si esto es necesario realmente
 		 * Me aseguro de no perder ningun parametro que venga como un post dentro edl Formulario.
 		 * Lo en vio nuevamente como un parametro.
 		 */
@@ -117,12 +118,6 @@ class AppController extends Controller {
 			foreach ($this->data['Formulario'] as $k=>$v) {
 				$this->params['named'][$k] = $v;
 			}
-		}
-		$this->layout = "default";
-		if (!empty($this->params['isAjax'])
-			|| (isset($this->params['named']['layout'])
-				&& $this->params['named']['layout'] == "lov")) {
-			$this->layout = "lov";
 		}
 
 		/**
@@ -213,7 +208,8 @@ class AppController extends Controller {
 			$opciones = array('limit' => $this->params['named']['filas_por_pagina']);
 		}
 		else {
-			$opciones = array('limit' => $this->Util->traerPreferencia("filas_por_pagina"));
+			//$opciones = array('limit' => $this->Util->traerPreferencia("filas_por_pagina"));
+            $opciones = array('limit' => 15);
 		}
 		$this->paginate = array_merge($this->paginate, $opciones);
 	}

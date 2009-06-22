@@ -28,10 +28,6 @@ if(!isset($pie)) {
 	$pie = array();
 }
 
-/**
- * Creo un bloque con caja redondeada entre las condiciones, los botones y las opciones lov (si las hubiese).
- */
-$lov = $this->element('index/lov');
 
 /**
  * Pongo el nombre del controller como un parametro, aunque no lo use, de modo de que el cache cree un archivo 
@@ -40,7 +36,7 @@ $lov = $this->element('index/lov');
 //$botones = $this->element('index/buscadores', array('cache'=>'+30 day', $this->name=>'name', 'botonesExtra'=>$botonesExtra, 'opcionesForm'=>$opcionesForm));
 $botones = $this->element('index/buscadores', array('botonesExtra' => $botonesExtra, 'opcionesForm' => $opcionesForm));
 
-$bloques[] = $appForm->tag('div', am($condiciones, $botones, $lov), array('class' => 'unica conditions_frame'));
+$bloques[] = $appForm->tag('div', $condiciones . $botones, array('class' => 'unica conditions_frame'));
 
 
 /**
@@ -54,28 +50,9 @@ $bloques[] = $appForm->tag('div', am($condiciones, $botones, $lov), array('class
 $acciones = $this->element('index/acciones', array('accionesExtra' => $accionesExtra));
 
 
-if(!isset($opcionesTabla)) {
+if (!isset($opcionesTabla)) {
 	//$opcionesTabla = array('tabla'=>array('permisos'=>false));
 	$opcionesTabla = array();
-}
-
-/**
-* Seteo las opcion para el caso que se comporte como una lov.
-*/
-if(!empty($this->params['named']['retornarA']) && !empty($this->params['named']['camposRetorno'])) {
-
-	$opcionesTabla =  array('tabla'=>
-								array(	'seleccionLov'		=> array('retornarA'		=> $this->params['named']['retornarA'],
-																	'separadorRetorno'	=> $this->params['named']['separadorRetorno'],
-																	'camposRetorno'		=> $this->params['named']['camposRetorno']),
-										'eliminar'			=> false,
-										'modificar'			=> false,
-										'seleccionMultiple'	=> true,
-										'mostrarEncabezados'=> true,
-										'zebra'				=> true,
-										'mostrarIds'		=> false));
-} elseif (empty($opcionesTabla)) {
-	$opcionesTabla =  array('tabla' => array('class' => 'index'));
 }
 
 /**
@@ -117,11 +94,7 @@ $form = $appForm->form($bloques, $opcionesForm);
 * Pongo todo dentro de un div (index) y muestro el resultado, siempre y cuando no sea un request ajax.
 * Si es ajax y creo el div, voy a meter un div, dentro de otro, dentro de otro, dentro de otro....
 */
-if ($this->params['isAjax']) {
-	echo $appForm->bloque($form);
-} else {
-	echo $appForm->tag('div', $form, array('class' => 'index', 'id' => 'index'));
-}	
+echo $appForm->tag('div', $form, array('class' => 'index', 'id' => 'index'));
 
 /** Add breakdown js code */
 $appForm->addScript('breakdowns', 'links', 100);

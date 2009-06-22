@@ -52,21 +52,26 @@ class ServiceController extends AppController {
 
 
 	function probar_consumir() {
+        /*
 		$client = new MSSoapClient("http://upsoft.dyndns.org/manager2Saldos/webservice.asmx?WSDL",
 			array("trace"=>1,
 					'uri'=>"http://localhost/servicioWeb"));
-		try{
+        */
+
+        $client = new MSSoapClient("http://192.168.1.151/WsManager2/webService.asmx?wsdl",
+            array("trace"=>1,
+                    'uri'=>"http://localhost/servicioWeb"));        
+		try {
 
 			//strGrupo
 			//strCodigo
 			//strCUIT
-			$request = new SoapVar(array( 'strCUIT'=>"30641966645"),SOAP_ENC_OBJECT);
-			$request = new SoapVar(array( 'strCUIT'=>"20131933992"),SOAP_ENC_OBJECT);
+			//$request = new SoapVar(array('strCUIT'=>"30641966645"), SOAP_ENC_OBJECT);
+			//$request = new SoapVar(array('strCUIT' => "20131933992"), SOAP_ENC_OBJECT);
+            $request = new SoapVar(array('strGrupo' => '3', 'strCodigo' => '2', 'strCUIT' => '30-80919358-5'), SOAP_ENC_OBJECT);
 		
-			$result = $client->limites($request);
-			d($result);
-		}
-		catch(SoapFault $soapFault) {
+			echo print_r($result->limitesResult);
+		} catch(SoapFault $soapFault) {
 			//d($soapFault);
 			//echo $client->__getLastRequest();
 			echo "Request :<br>", $client->__getLastRequest(), "<br>";
