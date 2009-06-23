@@ -422,6 +422,14 @@ class ValidacionesBehavior extends ModelBehavior {
 	* Si hay un campo que debe ser null y viene vacio, lo hago null.
 	*/
 	function __setDBFieldValue($fieldDescriptor, $value) {
+
+        if (in_array($fieldDescriptor['type'], array('datetime', 'date'))) {
+            if (empty($value)) {
+                return '0000-00-00';
+            }
+            return $this->__getMySqlDate($value);
+        }
+                        
 		if (isset($fieldDescriptor['null']) && !$fieldDescriptor['null']) {
 			if (!empty($fieldDescriptor['default']) && empty($value)) {
 				return $fieldDescriptor['default'];
