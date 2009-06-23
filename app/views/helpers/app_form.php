@@ -804,7 +804,9 @@ class AppFormHelper extends FormHelper {
 					* Fuerzo $valor a string, porque si $valor = 0, no evaluara.
 					*/
 					if ($valor . "" !== "NO PINTAR") {
-                        $atributos['axis'] = $modelKey . '.' . $nombreCampo;
+                        if (!empty($modelKey) && !empty($nombreCampo)) {
+                            $atributos['axis'] = $modelKey . '.' . $nombreCampo;
+                        }
 						$cellsOut[] = array($valor, $atributos);
 					}
 				}

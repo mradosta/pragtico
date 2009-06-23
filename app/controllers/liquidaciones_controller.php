@@ -167,8 +167,10 @@ class LiquidacionesController extends AppController {
 			unset($condiciones['Liquidacion.periodo_largo']);
 			unset($condiciones['Liquidacion.periodo_vacacional']);
 			unset($condiciones['Liquidacion.estado']);
-            //if ($this->data['Condicion']['Liquidacion-tipo'] !== 'final') {
+            if ($this->data['Condicion']['Liquidacion-tipo'] !== 'final') {
                 $condiciones['Relacion.ingreso <='] = $periodo['hasta'];
+            }
+            
                 $condiciones['Relacion.estado'] = 'Activa';
                 if ($this->data['Condicion']['Liquidacion-tipo'] !== 'especial') {
                     /**
@@ -234,7 +236,7 @@ class LiquidacionesController extends AppController {
 			$opciones['informaciones'] = $informaciones;
 			foreach ($relaciones as $relacion) {
                 /** For finished relations, only allow last period receipt */
-                if (!empty($relacion['Relacion']['egreso'])) {
+                if (!empty($relacion['Relacion']['egreso']) && $this->data['Condicion']['Liquidacion-tipo'] != 'final') {
                     $tmpPeriod = explode('-', $relacion['Relacion']['egreso']);
                     if ($tmpPeriod[0] !== $periodo['ano'] || $tmpPeriod[1] !== $periodo['mes']) {
                         continue;
