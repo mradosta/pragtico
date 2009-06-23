@@ -734,7 +734,7 @@ class LiquidacionesController extends AppController {
 			* por ejemplo, la fecha del dia que se confirma, y no la del dia que se pre-liquido.
 			*/
 			$auxiliares = $this->Liquidacion->LiquidacionesAuxiliar->find('all',
-					array('conditions' => array('LiquidacionesAuxiliar.liquidacion_id' => $ids)));
+					array('recursive' => -1, 'conditions' => array('LiquidacionesAuxiliar.liquidacion_id' => $ids)));
 			$c = 0;
 			$this->Liquidacion->begin();
 			$idsAuxiliares = null;

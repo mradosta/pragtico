@@ -233,6 +233,12 @@ class Liquidacion extends AppModel {
 		} elseif (in_array($type,  array('final', 'sac'))) {
 
             if ($type === 'final') {
+
+                $auxiliar = null;
+                $auxiliar['id'] = $relationship['Relacion']['id'];
+                $auxiliar['estado'] = 'Historica';
+                $this->__setAuxiliar(array('save' => serialize($auxiliar), 'model' => 'Relacion'));
+                
                 $to = $relationship['Relacion']['egreso'];
                 $tmp = explode('-', $relationship['Relacion']['egreso']);
                 $period['ano'] = $tmp[0];
