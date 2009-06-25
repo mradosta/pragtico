@@ -71,6 +71,7 @@ $js[] = 'jquery/jquery.form';
 $js[] = 'jquery/jquery.sprintf';
 $js[] = 'default';
 $js[] = 'datetimepicker';
+$js[] = 'jquery.flydom'; // lo usa en carga drapida de conceptos desde convenios
 $appForm->addScript($js, 'links');
 
 

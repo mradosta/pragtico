@@ -21,9 +21,12 @@
 */
 //$condiciones['Condicion.ConveniosCategoriasHistorico-testui'] = array('id' => 'blabla', 'after' => '<div id="testui">testui</div>');
 $condiciones['Condicion.ConveniosCategoria-nombre'] = array();
+/*
 $condiciones['Condicion.ConveniosCategoria-convenio_id'] = array(	"lov"=>array("controller"	=>"convenios",
 																			"camposRetorno"	=>array(	"Convenio.numero",
 																										"Convenio.nombre")));
+*/
+$condiciones['Condicion.Convenio-nombre'] = array('label' => 'Convenio');
 $condiciones['Condicion.ConveniosCategoria-jornada'] = array();
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "Categoria", 'imagen' => 'categorias.gif')));
