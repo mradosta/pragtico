@@ -55,7 +55,6 @@ class Empleador extends AppModel {
 			array(
 				'rule'		=> 'validCuitCuil',
 				'message'	=> 'El numero de Cuit ingresado no es valido.')
-				
         ),
         'alta' => array(
 			array(
@@ -80,16 +79,6 @@ class Empleador extends AppModel {
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe seleccionar la localidad.')
-        ),
-        'actividad_id' => array(
-			array(
-				'rule'		=> VALID_NOT_EMPTY,
-				'message'	=> 'Debe seleccionar la actividad.')
-        ),
-        'employers_type_id' => array(
-			array(
-				'rule'		=> VALID_NOT_EMPTY,
-				'message'	=> 'Debe seleccionar el tipo de empleador.')
         )
 	);
 
