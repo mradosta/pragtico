@@ -41,7 +41,6 @@ $condiciones['Condicion.Ausencia-ausencia_motivo_id'] = array(	'empty'			=> true
 																'groupField'	=> 'AusenciasMotivo.tipo',
 																'model'			=> 'AusenciasMotivo',
 																'label'			=> 'Motivo');
-																								
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'ausencias.gif')));
 
@@ -52,6 +51,7 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('ima
 $cuerpo = null;
 foreach ($registros as $k => $v) {
 	$fila = null;
+    $fila[] = array('tipo' => 'desglose', 'id' => $v['Ausencia']['id'], 'imagen' => array('nombre' => 'trabajadores.gif', 'alt' => "Trabajadores"), 'url' => 'trabajadores');
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Ausencia']['id'], 'imagen' => array('nombre' => 'seguimientos.gif', 'alt' => 'Seguimiento'), 'url' => 'seguimientos');
 	$fila[] = array('model' => 'Ausencia', 'field' => 'id', 'valor' => $v['Ausencia']['id'], 'write' => $v['Ausencia']['write'], 'delete' => $v['Ausencia']['delete']);
 	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], 'nombreEncabezado' => 'Empleador');

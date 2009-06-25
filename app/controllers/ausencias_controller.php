@@ -53,6 +53,17 @@ class AusenciasController extends AppController {
 		$this->data = $this->Ausencia->read(null, $id);
 	}
 
+    
+/**
+ * trabajadores.
+ * Muestra via desglose los trabajdores.
+ */
+    function trabajadores($id) {
+        $this->Ausencia->contain(array('Relacion.Trabajador.Localidad'));
+        $this->data = $this->Ausencia->read(null, $id);
+    }
+    
+
 /**
 * Imprimir.
 */    
