@@ -16,7 +16,7 @@
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
  
-if(!empty($data)) {
+if (!empty($data)) {
 	$documento->create();
 	$fila = $filaInicio = 8;
 
@@ -109,6 +109,29 @@ if(!empty($data)) {
 	}
 
     $documento->save('Excel5');
+} else {
+
+    if (!empty($grupos)) {
+        $condiciones['Condicion.Trabajador-grupo_id'] = array('options' => $grupos, 'empty' => true);
+    }
+
+    $fieldsets[] = array('campos' => $condiciones);
+    $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Generar Archivo para Solicitud Tarjetas de Debito','imagen' => 'archivo.gif')));
+    
+    $accionesExtra['opciones'] = array('acciones' => array());
+    $botonesExtra[] = 'limpiar';
+    $botonesExtra[] = $appForm->submit('Generar', array('title' => 'Generar el Archivo para Solicitud Tarjetas de Debito', 'onclick'=>'document.getElementById("accion").value="generar"'));
+
+    echo $this->element('index/index', array(
+                        'opcionesTabla' => array('tabla' => array('omitirMensajeVacio' => true)),
+                        'botonesExtra'  => array('opciones' => array('botones' => $botonesExtra)),
+                        'accionesExtra' => $accionesExtra,
+                        'opcionesForm'  => array('action' => 'solicitar_tarjetas_debito'),
+                        'condiciones'   => $fieldset,
+                        'cuerpo'        => null));
+    
+
+
 }
 
 ?>

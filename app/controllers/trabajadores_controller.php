@@ -25,25 +25,41 @@ class TrabajadoresController extends AppController {
 
 
 	var $helpers = array("Documento");
-	
-    function solicitar_tarjetas_debito() {
+
+
+    function __generateDebitCardFile($conditions) {
+
         $data = $this->Trabajador->find('all', array(
             'contain'       => array('Localidad.Provincia', 'Relacion'),
-            'conditions'    => array('Trabajador.solicitar_tarjeta_debito' => 'Si')));
-        
+            'conditions'    => $conditions));
+
         if (!empty($data)) {
-            
             $this->set('data', $data);
-            
             /** Update state to avoid selecting again next time */
             $this->Trabajador->updateAll(
                 array('Trabajador.solicitar_tarjeta_debito' => "'Solicitud en Proceso'"),
                 array('Trabajador.id' => Set::extract('/Trabajador/id', $data)));
 
-
         } else {
             $this->Session->setFlash('No se encontraron trabajadores a los cuales solicitar tarjeta de debito.', 'error');
             $this->History->goBack();
+        }
+    }
+
+    
+    function solicitar_tarjetas_debito() {
+
+
+        $groups = $this->Util->getUserGroups();
+        if (empty($groups)) {
+            $conditions['Trabajador.solicitar_tarjeta_debito'] = 'Si';
+            $this->__generateDebitCardFile($conditions);
+        } elseif (!empty($groups) && empty($this->data)) {
+            $this->set('grupos', $groups);
+        } elseif (!empty($this->data['Condicion']['Trabajador-grupo_id'])) {
+            $conditions['Trabajador.solicitar_tarjeta_debito'] = 'Si';
+            $conditions['(Trabajador.group_id & ' . $this->data['Condicion']['Trabajador-grupo_id'] . ') >'] = 0;
+            $this->__generateDebitCardFile($conditions);
         }
     }
 	
