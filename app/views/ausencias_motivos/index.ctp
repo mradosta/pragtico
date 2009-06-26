@@ -19,7 +19,8 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-$condiciones['Condicion.Banco-nombre'] = array();
+$condiciones['Condicion.AusenciasMotivo-motivo'] = array();
+$condiciones['Condicion.AusenciasMotivo-tipo'] = array();
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "Motivos de las Ausencias", 'imagen' => 'ausencias_motivos.gif')));
 

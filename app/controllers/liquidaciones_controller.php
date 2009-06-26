@@ -235,6 +235,11 @@ class LiquidacionesController extends AppController {
 			$opciones['variables'] = $variables;
 			$opciones['informaciones'] = $informaciones;
 			foreach ($relaciones as $relacion) {
+
+                if ($this->data['Condicion']['Liquidacion-tipo'] === 'final' && $relacion['Relacion']['liquidacion_final'] === 'No') {
+                    continue;
+                }
+                
                 /** For finished relations, only allow last period receipt */
                 if (!empty($relacion['Relacion']['egreso']) && $this->data['Condicion']['Liquidacion-tipo'] != 'final') {
                     $tmpPeriod = explode('-', $relacion['Relacion']['egreso']);

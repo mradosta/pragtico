@@ -30,7 +30,7 @@ $campos['AusenciasMotivo.situacion_id'] = array(	'aclaracion' => 	"Opcional: Se 
 																									"Situacion.nombre")));
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "Motivos de Ausencia", 'imagen' => 'motivos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "Motivos de Ausencia", 'imagen' => 'ausencias_motivos.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.

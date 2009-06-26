@@ -87,6 +87,13 @@ $fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array('cl
 */
 $campos = null;
 $campos['Relacion.egreso'] = array();
+$campos['Relacion.egresos_motivo_id'] = array( 'empty'         => true,
+                                                'options'       => 'listable',
+                                                'order'         => 'EgresosMotivo.motivo',
+                                                'displayField'  => 'EgresosMotivo.motivo',
+                                                'model'         => 'EgresosMotivo',
+                                                'label'         => 'Motivo');
+$campos['Relacion.liquidacion_final'] = array('aclaracion' => 'Indica si esta autorizado para realizarle la Liquidacion Final');
 $campos['Relacion.observacion'] = array();
 $fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array('class' => 'subset'), 'fieldset' => array('legend' => 'Desvinculacion', 'imagen' => 'fin_relacion_laboral.gif')));
 
