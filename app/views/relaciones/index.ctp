@@ -31,6 +31,7 @@ $condiciones['Condicion.Trabajador-apellido'] = array('label'=>'Apellido');
 $condiciones['Condicion.Trabajador-nombre'] = array();
 $condiciones['Condicion.Trabajador-numero_documento'] = array('label'=>'Documento');
 $condiciones['Condicion.Relacion-estado'] = array('type' => 'select', 'multiple' => 'checkbox');
+$condiciones['Condicion.Relacion-liquidacion_final'] = array();
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'relaciones.gif')));
 
