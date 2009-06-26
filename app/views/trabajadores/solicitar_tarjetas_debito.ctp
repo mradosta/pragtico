@@ -16,7 +16,7 @@
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
  
-if(!empty($registros)) {
+if(!empty($data)) {
 	$documento->create();
 	$fila = $filaInicio = 8;
 
@@ -40,6 +40,7 @@ if(!empty($registros)) {
 	$objDrawing->setWidth(260);
 	$objDrawing->getShadow()->setVisible(true);
 	$objDrawing->setWorksheet($documento->doc->getActiveSheet());
+
 
 	/**
 	* Pongo las columnas en auto ajuste del ancho.
@@ -73,150 +74,41 @@ if(!empty($registros)) {
 			)
 		);
 
-	$documento->setCellValue('A' . $fila, 'Sexo');
-	$documento->setCellValue('B' . $fila . ':B' . ($fila+1), 'Empleador', array('style'=>$estiloTituloColumna));
-	$documento->setCellValue('C' . $fila . ':C' . ($fila+1), 'Trabajador', array('style'=>$estiloTituloColumna));
-	$documento->setCellValue('D' . $fila . ':D' . ($fila+1), 'Categoria', array('style'=>$estiloTituloColumna));
-	$columna = $columnaInicioConceptosDinamicos = 3;
+	$documento->setCellValue('A' . $fila, 'Cuil', array('style' => $estiloTituloColumna));
+	$documento->setCellValue('B' . $fila, 'Tipo Documento', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('C' . $fila, 'Numero Documento', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('D' . $fila, 'Apellido', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('E' . $fila, 'Nombre', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('F' . $fila, 'Dicreccion', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('G' . $fila, 'Localidad', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('H' . $fila, 'Provincia', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('I' . $fila, 'Sexo', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('J' . $fila, 'Estado Civil', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('K' . $fila, 'Ingreso', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('L' . $fila, 'Nacimiento', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('M' . $fila, 'Codigo Postal', array('style' => $estiloTituloColumna));
 	
-	/**
-	* Las horas.
-	*/
-	if(in_array('Horas', $tipos)) {
-		$columna++;
-		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$documento->setCellValue($columna . ',' . ($fila+1), 'Normal', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$columna++;
-		$documento->setCellValue($columna . ',' . ($fila+1), '50%', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$columna++;
-		$documento->setCellValue($columna . ',' . ($fila+1), '100%', array('style'=>$estiloTituloColumna));
-		
-		$columna++;
-		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas Ajuste', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$documento->setCellValue($columna . ',' . ($fila+1), 'Normal', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$columna++;
-		$documento->setCellValue($columna . ',' . ($fila+1), '50%', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$columna++;
-		$documento->setCellValue($columna . ',' . ($fila+1), '100%', array('style'=>$estiloTituloColumna));
-		
-		$columna++;
-		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas Nocturna', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$documento->setCellValue($columna . ',' . ($fila+1), 'Normal', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$columna++;
-		$documento->setCellValue($columna . ',' . ($fila+1), '50%', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$columna++;
-		$documento->setCellValue($columna . ',' . ($fila+1), '100%', array('style'=>$estiloTituloColumna));
-		
-		$columna++;
-		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas Ajuste Nocturna', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$documento->setCellValue($columna . ',' . ($fila+1), 'Normal', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$columna++;
-		$documento->setCellValue($columna . ',' . ($fila+1), '50%', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$columna++;
-		$documento->setCellValue($columna . ',' . ($fila+1), '100%', array('style'=>$estiloTituloColumna));
+    
+	foreach($data as $record) {
+        $fila++;
+        
+        $documento->setCellValue('A' . $fila, $record['Trabajador']['cuil']);
+        $documento->setCellValue('B' . $fila, $record['Trabajador']['tipo_documento']);
+        $documento->setCellValue('C' . $fila, $record['Trabajador']['numero_documento']);
+        $documento->setCellValue('D' . $fila, $record['Trabajador']['apellido']);
+        $documento->setCellValue('E' . $fila, $record['Trabajador']['nombre']);
+        $documento->setCellValue('F' . $fila, $record['Trabajador']['direccion']);
+        $documento->setCellValue('G' . $fila, $record['Localidad']['nombre']);
+        $documento->setCellValue('H' . $fila, $record['Localidad']['Provincia']['nombre']);
+        $documento->setCellValue('I' . $fila, $record['Trabajador']['sexo']);
+        $documento->setCellValue('J' . $fila, $record['Trabajador']['estado_civil']);
+        $documento->setCellValue('K' . $fila, (!empty($record['Relacion']['ingreso']))?$formato->format($record['Relacion']['ingreso'], 'date'):'');
+        $documento->setCellValue('L' . $fila, $formato->format($record['Trabajador']['nacimiento'], 'date'));
+        $documento->setCellValue('M' . $fila, $record['Trabajador']['codigo_postal']);
+        
 	}
-	
-	/**
-	* Las ausencias.
-	*/
-	if(in_array('Ausencias', $tipos)) {
-		$columna++;
-		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+1) . ',' . $fila, 'Ausencias', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(27);
-		$documento->setCellValue($columna . ',' . ($fila+1), 'Motivo', array('style'=>$estiloTituloColumna));
-		$columnaMotivo = $columna;
-		$columna++;
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
-		$documento->setCellValue($columna . ',' . ($fila+1), 'Dias', array('style'=>$estiloTituloColumna));
-	}
-	
-	
-	/**
-	* Los vales.
-	*/
-	if(in_array('Vales', $tipos)) {
-		$columna++;
-		$documento->setCellValue($columna . ',' . $fila, 'Vales', array('style'=>$estiloTituloColumna));
-		$documento->setCellValue($columna . ',' . ($fila+1), '$', array('style'=>$estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(9);
-	}
-	
-	/**
-	* Trabajo con los genericos si hay alguno.
-	*/
-	foreach($tipos as $concepto) {
-		if(!in_array($concepto, $tiposPredefinidos)) {
-			$columna++;
-			$documento->setCellValue($columna . ',' . $fila . ':' . $columna . ',' . ($fila+1), $concepto, array('style'=>$estiloTituloColumna));
-		}
-	}
-	
-	/**
-	* Recorro cada registro ahora que yatengo los encabezados.
-	*/
-	$fila++;
-	foreach($registros as $registro) {
-		$fila++;
-		$documento->setCellValue('A' . $fila, $registro['Relacion']['id']);
-		$documento->setCellValue('B' . $fila, $registro['Empleador']['nombre']);
-		$documento->setCellValue('C' . $fila, $registro['Relacion']['legajo'] . ' - ' . $registro['Trabajador']['apellido'] . ' ' . $registro['Trabajador']['nombre']);
-		$documento->setCellValue('D' . $fila, $registro['ConveniosCategoria']['nombre']);
 
-
-		$last = PHPExcel_Cell::columnIndexFromString($documento->doc->getActiveSheet()->getHighestColumn());
-		for($i=$columnaInicioConceptosDinamicos; $i<$last; $i++) {
-			$documento->setDataValidation($i . ',' . $fila, 'decimal');
-		}
-		
-		/**
-		* El combo con los posibles motivos.
-		*/
-		if(isset($columnaMotivo)) {
-			$documento->setDataValidation($columnaMotivo . ',' . $fila, 'lista', array('valores'=>$motivos));
-		}
-	}
-	$documento->doc->getActiveSheet()->freezePane('B10');
-	$documento->save($formatoDocumento);
-}
-else {
-	/**
-	* Especifico los campos para ingresar las condiciones.
-	*/
-	$condiciones['Condicion.Relacion-trabajador_id'] = array(	
-			'lov'=>array(	'controller'		=>	'trabajadores',
-							'separadorRetorno'	=>	' ',
-	   						'camposRetorno'		=> array('Trabajador.apellido', 'Trabajador.nombre')));
-
-	$condiciones['Condicion.Relacion-empleador_id'] = array(	
-			'lov'=>array(	'controller'		=> 'empleadores',
-						 	'camposRetorno'		=> array('Empleador.nombre')));
-
-	$condiciones['Condicion.Relacion-id'] = array(	
-			'label'	=> 'Relacion',
-			'lov'	=> array(	'controller'	=> 'relaciones',
-								'camposRetorno'	=> array('Empleador.nombre', 'Trabajador.apellido')));
-	
-	$condiciones['Condicion.Novedad-tipo'] = array('type' => 'select', 'multiple' => 'checkbox', 'options'=>$tiposIngreso);
-	$condiciones['Condicion.Novedad-formato'] = array('type' => 'radio');
-	$fieldsets[] = array('campos' => $condiciones);
-	
-	$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Novedades', 'imagen' => 'novedades.gif')));
-	$opcionesTabla['tabla']['omitirMensajeVacio'] = true;
-	$accionesExtra['opciones'] = array('acciones'=>array($appForm->link('Generar', null, array('class' => 'link_boton', 'id' => 'confirmar', 'title' => 'Confirma las liquidaciones seleccionadas'))));
-	$botonesExtra['opciones'] = array('botones'=>array('limpiar', $appForm->submit('Generar', array('title' => 'Genera la planilla base para importar novedades'))));
-	echo $this->element('index/index', array('botonesExtra'=>$botonesExtra, 'condiciones'=>$fieldset, 'opcionesForm'=>array('action' => 'generar_planilla'), 'opcionesTabla'=>$opcionesTabla));
+    $documento->save('Excel5');
 }
 
 ?>

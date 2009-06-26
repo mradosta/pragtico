@@ -26,17 +26,25 @@ class TrabajadoresController extends AppController {
 
 	var $helpers = array("Documento");
 	
-    function solicitud_tarjetas_debito() {
+    function solicitar_tarjetas_debito() {
         $data = $this->Trabajador->find('all', array(
-            'Trabajador.solicitar_tarjeta_debito' => 'Si'
-        ));
+            'contain'       => array('Localidad.Provincia', 'Relacion'),
+            'conditions'    => array('Trabajador.solicitar_tarjeta_debito' => 'Si')));
         
         if (!empty($data)) {
-            d($data);
+            
+            $this->set('data', $data);
+            
+            /** Update state to avoid selecting again next time */
+            $this->Trabajador->updateAll(
+                array('Trabajador.solicitar_tarjeta_debito' => "'Solicitud en Proceso'"),
+                array('Trabajador.id' => Set::extract('/Trabajador/id', $data)));
+
+
         } else {
             $this->Session->setFlash('No se encontraron trabajadores a los cuales solicitar tarjeta de debito.', 'error');
+            $this->History->goBack();
         }
-        $this->History->goBack(1);
     }
 	
 
