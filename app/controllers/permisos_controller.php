@@ -28,12 +28,15 @@ class PermisosController extends AppController {
 	function asignar() {
 
 
-		$modelsListTmp = Configure::listObjects("model", APP . "models");
+		$modelsListTmp = Configure::listObjects('model', APP . 'models');
 		asort($modelsListTmp);
 		foreach ($modelsListTmp as $model) {
+            if (substr($model, -7) === 'Service') {
+                continue;
+            }
 			$modelsList[$model] = $model;
 		}
-		$modelsList['Todos'] = "Todos";
+		$modelsList['Todos'] = 'Todos';
 		$this->set("models", $modelsList);
 
 		if (!empty($this->data['Permisos']['model_id'])) {
@@ -43,64 +46,55 @@ class PermisosController extends AppController {
 			if (!empty($this->data['Permisos']['dl']) && $this->data['Permisos']['dl'] == 1) {
 				$total += 256;
 				$mensaje[] = "Permitir lectura al dueño";
-			}
-			else {
+			} else {
 				$mensaje[] = "Denegar lectura al dueño";
 			}
 			if (!empty($this->data['Permisos']['gl']) && $this->data['Permisos']['gl'] == 1) {
 				$total += 32;
 				$mensaje[] = "Permitir lectura al grupo";
-			}
-			else {
+			} else {
 				$mensaje[] = "Denegar lectura al grupo";
 			}
 			if (!empty($this->data['Permisos']['ol']) && $this->data['Permisos']['ol'] == 1) {
 				$total += 4;
 				$mensaje[] = "Permitir lectura a los otros";
-			}
-			else {
+			} else {
 				$mensaje[] = "Denegar lectura a los otros";
 			}
 			if (!empty($this->data['Permisos']['de']) && $this->data['Permisos']['de'] == 1) {
 				$total += 128;
 				$mensaje[] = "Permitir escritura al dueño";
-			}
-			else {
+			} else {
 				$mensaje[] = "Denegar escritura al dueño";
 			}
 			if (!empty($this->data['Permisos']['ge']) && $this->data['Permisos']['ge'] == 1) {
 				$total += 16;
 				$mensaje[] = "Permitir escritura al grupo";
-			}
-			else {
+			} else {
 				$mensaje[] = "Denegar escritura al grupo";
 			}
 			if (!empty($this->data['Permisos']['oe']) && $this->data['Permisos']['oe'] == 1) {
 				$total += 2;
 				$mensaje[] = "Permitir escritura a los otros";
-			}
-			else {
+			} else {
 				$mensaje[] = "Denegar escritura a los otros";
 			}
 			if (!empty($this->data['Permisos']['dd']) && $this->data['Permisos']['dd'] == 1) {
 				$total += 64;
 				$mensaje[] = "Permitir eliminar al dueño";
-			}
-			else {
+			} else {
 				$mensaje[] = "Denegar eliminar al dueño";
 			}
 			if (!empty($this->data['Permisos']['gd']) && $this->data['Permisos']['gd'] == 1) {
 				$total += 8;
 				$mensaje[] = "Permitir eliminar al grupo";
-			}
-			else {
+			} else {
 				$mensaje[] = "Denegar eliminar al grupo";
 			}
 			if (!empty($this->data['Permisos']['od']) && $this->data['Permisos']['od'] == 1) {
 				$total += 1;
 				$mensaje[] = "Permitir eliminar a los otros";
-			}
-			else {
+			} else {
 				$mensaje[] = "Denegar eliminar a los otros";
 			}
 
@@ -120,11 +114,18 @@ class PermisosController extends AppController {
 
 			$model = $this->data['Permisos']['model_id'];
 			if ($this->data['Formulario']['accion'] === "confirmado") {
-				if ($model === "Todos") {
+				if ($model === 'Todos') {
 					$c = 0;
+                    unset($modelsList['Todos']);
 					foreach ($modelsList as $v) {
 						App::import('Model', $v);
 						$modelParaUpdate = new $v();
+                        if ($modelParaUpdate->useTable === false) {
+                            continue;
+                        }
+                        
+                        $modelParaUpdate->unbindModel(array('belongsTo' => array_keys($modelParaUpdate->belongsTo)));
+
 						if ($c === 0) {
 							$modelParaUpdate->begin();
 						}
@@ -135,20 +136,18 @@ class PermisosController extends AppController {
 					
 					if ($c === count($modelsList)) {
 						$modelParaUpdate->commit();
-						$this->Session->setFlash("Los cambios a los registros se realizaron correctamente.", "ok");
-					}
-					else {
+						$this->Session->setFlash('Los cambios a los registros se realizaron correctamente.', 'ok');
+					} else {
 						$modelParaUpdate->rollback();
-						$this->Session->setFlash("No se pudieron realizar los cambios en los permisos.", "error");
+						$this->Session->setFlash('No se pudieron realizar los cambios en los permisos.', 'error');
 					}
-				}
-				else {
+				} else {
 					App::import('Model', $model);
 					$modelParaUpdate = new $model();
+                    $modelParaUpdate->unbindModel(array('belongsTo' => array_keys($modelParaUpdate->belongsTo)));
 					if ($modelParaUpdate->updateAll($update)) {
 						$this->Session->setFlash("Los cambios a los registros se realizaron correctamente.", "ok");
-					}
-					else {
+					} else {
 						$this->Session->setFlash("No se pudieron realizar los cambios en los permisos.", "error");
 					}
 				}
