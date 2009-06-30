@@ -859,9 +859,9 @@ class Liquidacion extends AppModel {
             */
             if (preg_match('/^\[([a-zA-Z]*)\]\[([a-zA-Z]*)\]\[([a-zA-Z_]*)\]$/', $this->__variables[$variable]['formula'], $matchesA) || preg_match('/^\[([a-zA-Z]*)\]\[([a-zA-Z_]*)\]$/', $this->__variables[$variable]['formula'], $matchesB)) {
                 $relationship = $this->getRelationship();
-                if (Set::check($relationship, $matchesA[1] . '.' . $matchesA[2] . '.' . $matchesA[3])) {
+                if (isset($matchesA[1]) && isset($matchesA[2]) && isset($matchesA[3]) && Set::check($relationship, $matchesA[1] . '.' . $matchesA[2] . '.' . $matchesA[3])) {
                     $valor = $relationship[$matchesA[1]][$matchesA[2]][$matchesA[3]];
-                } elseif (Set::check($relationship, $matchesB[1] . '.' . $matchesB[2])) {
+                } elseif (isset($matchesB[1]) && isset($matchesB[2]) && Set::check($relationship, $matchesB[1] . '.' . $matchesB[2])) {
                     $valor = $relationship[$matchesB[1]][$matchesB[2]];
                 } else {
                     $this->__setError(array(    'tipo'                  => 'Variable No Resuelta',
