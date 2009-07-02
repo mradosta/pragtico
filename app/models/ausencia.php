@@ -232,6 +232,40 @@ class Ausencia extends AppModel {
                     $daysBeforePeriod = 0;
                 }
 
+                $date = $this->dateAdd($ausenciasArt['Ausencia']['desde'], -365);
+                $dividendo = 365;
+                if ($date < $relacion['Relacion']['ingreso']) {
+                    $date = $relacion['Relacion']['ingreso'];
+                    $diffDividendo = $this->dateDiff($relacion['Relacion']['ingreso'], $ausenciasArt['Ausencia']['desde']);
+                    $dividendo = $diffDividendo['dias'];
+                }
+
+                if ($periodo['periodo'] === '2Q') {
+                    $dia = '15';
+                } else {
+                    $dia = '01';
+                }
+
+                list($year, $month) = explode('-', $date);
+                $data = $this->Relacion->Liquidacion->LiquidacionesDetalle->find('all', array(
+                    'checkSecurity' => false,
+                    'contain'       => array('Liquidacion'),
+                    'group'         => array('Liquidacion.id'),
+                    'fields'        => array('sum(LiquidacionesDetalle.valor) as valor'),
+                    'conditions'    =>
+                        array(  'Liquidacion.estado'                        => 'Confirmada',
+                                'Liquidacion.relacion_id'                   => $relacion['Relacion']['id'],
+                                'LiquidacionesDetalle.concepto_tipo'        => 'Remunerativo',
+                                'LiquidacionesDetalle.concepto_imprimir !=' => 'No',
+                                'Liquidacion.ano >='                        => $year,
+                                'Liquidacion.mes >='                        => $month,
+                                'date(concat(Liquidacion.ano, \'-\', Liquidacion.mes, \'-'.$dia.'\'))  <'
+                                        => $ausenciasArt['Ausencia']['desde']
+                                )));
+                
+                $ausencias['Valor Dia Accidente Art'] = array_sum(Set::extract('/LiquidacionesDetalle/valor', $data)) / $dividendo;
+                
+
                 /** If more than 10 days, must create an ART accident and an accident */
                 if ($daysBeforePeriod + $ausencias['Accidente'] > 10) {
                     if ($daysBeforePeriod > 10) {
@@ -242,42 +276,9 @@ class Ausencia extends AppModel {
                         $ausencias['Accidente'] = 10 - $daysBeforePeriod;
                     }
 
-                    $date = $this->dateAdd($ausenciasArt['Ausencia']['desde'], -365);
-                    $dividendo = 365;
-                    if ($date < $relacion['Relacion']['ingreso']) {
-                        $date = $relacion['Relacion']['ingreso'];
-                        $diffDividendo = $this->dateDiff($relacion['Relacion']['ingreso'], $ausenciasArt['Ausencia']['desde']);
-                        $dividendo = $diffDividendo['dias'];
-                    }
-
-                    if ($periodo['periodo'] === '2Q') {
-                        $dia = '15';
-                    } else {
-                        $dia = '01';
-                    }
-
-
-                    $data = $this->Relacion->Liquidacion->LiquidacionesDetalle->find('all', array(
-                        'checkSecurity' => false,
-                        'contain'       => array('Liquidacion'),
-                        'group'         => array('Liquidacion.id'),
-                        'fields'        => array('sum(LiquidacionesDetalle.valor) as valor'),
-                        'conditions'    =>
-                            array(  'Liquidacion.estado'                        => 'Confirmada',
-                                    'Liquidacion.relacion_id'                   => $relacion['Relacion']['id'],
-                                    'LiquidacionesDetalle.concepto_tipo'        => 'Remunerativo',
-                                    'LiquidacionesDetalle.concepto_imprimir !=' => 'No',
-                                    'date(concat(Liquidacion.ano, \'-\', Liquidacion.mes, \'-'.$dia.'\'))  >='
-                                            => $date,
-                                    'date(concat(Liquidacion.ano, \'-\', Liquidacion.mes, \'-'.$dia.'\'))  <'
-                                            => $ausenciasArt['Ausencia']['desde']
-                                 )));
-                    $ausencias['Valor Dia Accidente Art'] = array_sum(Set::extract('/LiquidacionesDetalle/valor', $data)) / $dividendo;
-                    
                     $conceptos[] = $Concepto->findConceptos('ConceptoPuntual',
                             array(  'relacion'          => $relacion,
                                     'codigoConcepto'    => 'ausencias_accidente_art'));
-
                 }
             }
         }
