@@ -150,7 +150,8 @@ class Ausencia extends AppModel {
 		$ausencias['Accidente'] = 0;
         $ausencias['Maternidad'] = 0;
         $ausencias['Accidente ART'] = 0;
-        $ausencias['Valor Dia Accidente Art'] = 0;
+        $ausencias['Acumulado Remunerativo Dia Accidente'] = 0;
+        $ausencias['Dias Anteriores Accidente'] = 0;
 		$ausencias['Enfermedad'] = 0;
 		$ausencias['Licencia'] = 0;
 		$ausencias['Injustificada'] = 0;
@@ -233,20 +234,16 @@ class Ausencia extends AppModel {
                 }
 
                 $date = $this->dateAdd($ausenciasArt['Ausencia']['desde'], -365);
-                $dividendo = 365;
+                $ausencias['Dias Accidentado'] = 365;
                 if ($date < $relacion['Relacion']['ingreso']) {
                     $date = $relacion['Relacion']['ingreso'];
                     $diffDividendo = $this->dateDiff($relacion['Relacion']['ingreso'], $ausenciasArt['Ausencia']['desde']);
-                    $dividendo = $diffDividendo['dias'];
+                    $ausencias['Dias Anteriores Accidente'] = $diffDividendo['dias'];
                 }
 
-                if ($periodo['periodo'] === '2Q') {
-                    $dia = '15';
-                } else {
-                    $dia = '01';
-                }
 
-                list($year, $month) = explode('-', $date);
+                list($yearFrom, $monthFrom) = explode('-', $date);
+                list($yearTo, $monthTo) = explode('-', $ausenciasArt['Ausencia']['desde']);
                 $data = $this->Relacion->Liquidacion->LiquidacionesDetalle->find('all', array(
                     'checkSecurity' => false,
                     'contain'       => array('Liquidacion'),
@@ -257,14 +254,13 @@ class Ausencia extends AppModel {
                                 'Liquidacion.relacion_id'                   => $relacion['Relacion']['id'],
                                 'LiquidacionesDetalle.concepto_tipo'        => 'Remunerativo',
                                 'LiquidacionesDetalle.concepto_imprimir !=' => 'No',
-                                'Liquidacion.ano >='                        => $year,
-                                'Liquidacion.mes >='                        => $month,
-                                'date(concat(Liquidacion.ano, \'-\', Liquidacion.mes, \'-'.$dia.'\'))  <'
-                                        => $ausenciasArt['Ausencia']['desde']
+                                'Liquidacion.ano >='                        => $yearFrom,
+                                'Liquidacion.mes >='                        => $monthFrom,
+                                'Liquidacion.ano <='                        => $yearTo,
+                                'Liquidacion.mes <='                        => $monthTo
                                 )));
-                
-                $ausencias['Valor Dia Accidente Art'] = array_sum(Set::extract('/LiquidacionesDetalle/valor', $data)) / $dividendo;
-                
+
+                $ausencias['Acumulado Remunerativo Dia Accidente'] = array_sum(Set::extract('/LiquidacionesDetalle/valor', $data));
 
                 /** If more than 10 days, must create an ART accident and an accident */
                 if ($daysBeforePeriod + $ausencias['Accidente'] > 10) {
@@ -287,7 +283,8 @@ class Ausencia extends AppModel {
 					 'variables' 	=> array('#ausencias_accidente' 				=> $ausencias['Accidente'],
                                              '#ausencias_maternidad'                => $ausencias['Maternidad'],
                                              '#ausencias_accidente_art' 			=> $ausencias['Accidente ART'],
-                                             '#valor_dia_accidente_art'             => $ausencias['Valor Dia Accidente Art'],
+                                             '#acumulado_remunerativo_dia_accidente'=> $ausencias['Acumulado Remunerativo Dia Accidente'],
+                                             '#dias_anteriores_accidente'           => $ausencias['Dias Anteriores Accidente'],
 											 '#ausencias_enfermedad' 	            => $ausencias['Enfermedad'],
 											 '#ausencias_licencia' 	                => $ausencias['Licencia'],
 										  	 '#ausencias_injustificada' 			=> $ausencias['Injustificada']),
