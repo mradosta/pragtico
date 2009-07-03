@@ -400,48 +400,6 @@ class AppController extends Controller {
 
 
 /**
- * DeleteMultiple.
- * Debe venir seteado seleccion multiple, recupera multiple registros a ser eliminados.
- *
- * @return void.
- * @access public 
- */
-   function deleteMultiple_deprecated() {
-   
-		$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
-		$this->{$this->modelClass}->begin();
-		if (!empty($ids)) {
-			if ($this->{$this->modelClass}->deleteAll(array($this->modelClass . "." . $this->{$this->modelClass}->primaryKey => $ids))) {
-				d("X");
-				$cantidad = count($ids);
-				if ($cantidad == 1) {
-					$mensaje = "Se elimino " . $cantidad . " registro correctamente.";
-				}
-				else {
-					$mensaje = "Se eliminaron " . $cantidad . " registros correctamente.";
-				}
-				$this->Session->setFlash($mensaje, "ok");
-			}
-			else {
-				d("Y");
-				/**
-				 * Si no se pudo borrar y no hay errores (no fue a causa de un error), significa que no se pudo borrar
-				 * por una cuestion de permisos.
-				 */
-				$errores = $this->{$this->modelClass}->getError();
-				if (empty($errores)) {
-					$this->Session->setFlash(null, 'permisos');
-				}
-				else {
-					$this->Session->setFlash('No fue posible eliminar los registro solicitados.', 'error', array("errores"=>$errores));
-				}
-			}
-		}
-		$this->History->goBack(1);
-	}
-
-
-/**
  * Muestra via desglose los permisos de un registro y permite via ajax la modificacion de los mismos.
  *
  * @param integer $id El identificador unico del registro del que se mostraran los permisos.
