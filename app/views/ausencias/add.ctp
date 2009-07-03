@@ -55,5 +55,8 @@ $miga = array('format' 	=> '%s %s (%s)',
 			  'content' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));
 echo $this->element("add/add", array('fieldset' => $fieldset, "opcionesForm"=>array("enctype"=>"multipart/form-data"), 'miga' => $miga));
 $ajax->jsPredefinido(array('tipo' => 'detalle', 'agregar' => true, 'quitar' => true));
+$appForm->addScript('
+    jQuery("#AusenciasSeguimientoEstadoLiquidado").attr("disabled", true);
+');
 
 ?>

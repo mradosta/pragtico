@@ -28,9 +28,9 @@ class AusenciasSeguimiento extends AppModel {
 	* 		Pendiente: Se cargo pero no se confirmo. No se tendra en cuenta para la liquidacion.
 	*		Confirmado: Se cargo y se confirmo. Se liquidara.
 	* 		Liquidado: Se cargo, se confirmo y se liquido. No se volvera a liquidar.
-	*/
 	var $opciones = array('estado'=> array(		'Confirmado'	=> 'Confirmado',
 												'Pendiente'		=> 'Pendiente'));
+    */
 	
 
 	/**
