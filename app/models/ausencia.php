@@ -305,7 +305,7 @@ class Ausencia extends AppModel {
                         ausencias_seguimientos AusenciasSeguimiento
             where       Ausencia.id = AusenciasSeguimiento.ausencia_id
             and         AusenciasMotivo.id = Ausencia.ausencia_motivo_id
-            and         AusenciasSeguimiento.estado = 'Confirmado'
+            and         AusenciasSeguimiento.estado = 'Liquidado'
             and         AusenciasMotivo.tipo in ('" . implode("', '", $types) . "')
             and         Ausencia.relacion_id = " . $relacionId . "
             and         Ausencia.desde <= '" . $to . "'";
