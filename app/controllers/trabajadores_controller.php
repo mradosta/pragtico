@@ -24,7 +24,46 @@
 class TrabajadoresController extends AppController {
 
 
-	var $helpers = array("Documento");
+	var $helpers = array('Documento');
+
+
+    function importar_cbus() {
+        if (!empty($this->data['Formulario']['accion'])) {
+            if ($this->data['Formulario']['accion'] === 'importar') {
+                if (!empty($this->data['Trabajador']['planilla']['tmp_name'])) {
+                    set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes');
+                    App::import('Vendor', 'IOFactory', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'IOFactory.php');
+                    
+                    if (preg_match("/.*\.xls$/", $this->data['Trabajador']['planilla']['name'])) {
+                        $objReader = PHPExcel_IOFactory::createReader('Excel5');
+                    } elseif (preg_match("/.*\.xlsx$/", $this->data['Trabajador']['planilla']['name'])) {
+                        $objReader = PHPExcel_IOFactory::createReader('Excel2007');
+                    }
+                    $objPHPExcel = $objReader->load($this->data['Trabajador']['planilla']['tmp_name']);
+
+                    $c = 0;
+                    $this->Trabajador->unbindModel(array('belongsTo' => array_keys($this->Trabajador->belongsTo)));
+                    for($i = 3; $i <= $objPHPExcel->getActiveSheet()->getHighestRow(); $i++) {
+                        if ($this->Trabajador->updateAll(array( 'Trabajador.cbu'    => "'" .
+                            str_replace('\'', '', $objPHPExcel->getActiveSheet()->getCell('i' . $i)->getValue()) . "'"),
+                                                            array("REPLACE(Trabajador.cuil, '-', '') like"   =>
+                            $objPHPExcel->getActiveSheet()->getCell('F' . $i)->getValue()))) {
+                                $c++;
+                            }
+                    }
+
+                    if ($c > 0) {
+                        $this->Session->setFlash('Se actualizaron ' . $c . ' Cbus.', 'ok');
+                    } else {
+                        $this->Session->setFlash('No fue posible actualizar ningun Cbu. Verifique la planilla', 'error');
+                    }
+                    $this->redirect('index');
+                }
+            } elseif ($this->data['Formulario']['accion'] === 'cancelar') {
+                $this->redirect('index');
+            }
+        }
+    }
 
 
     function __generateDebitCardFile($conditions) {
