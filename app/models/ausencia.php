@@ -293,6 +293,7 @@ class Ausencia extends AppModel {
 	
 
     function getAbsencesByType($types, $relacionId, $from, $to) {
+
         /** Try to find if the are absences before the period */
         $sql = "
             select      Ausencia.id,
@@ -315,7 +316,7 @@ class Ausencia extends AppModel {
         }        
         if (!empty($r)) {
             foreach ($r as $k => $ausencia) {
-                
+                        
                 if ($ausencia['Ausencia']['desde'] < $from) {
                     $diff = $this->dateDiff($from, $ausencia['Ausencia']['desde']);
                 } else {
@@ -326,13 +327,13 @@ class Ausencia extends AppModel {
                     if ($diasSeguimiento > $diff['dias']) {
                         $ausencias[$ausencia['Ausencia']['tipo']] += $diff['dias'];
                     }
-                    $ausencias[$ausencia['Ausencia']['tipo']] += $diasSeguimiento;
+                    $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $diasSeguimiento;
                 }
             }
 
             $diff = $this->dateDiff($from, $to);
-            if ($ausencias[$ausencia['Ausencia']['tipo']] > $diff['dias']) {
-                $ausencias[$ausencia['Ausencia']['tipo']] = $diff['dias'];
+            if ($ausencias[$ausencia['AusenciasMotivo']['tipo']] > $diff['dias']) {
+                $ausencias[$ausencia['AusenciasMotivo']['tipo']] = $diff['dias'];
             }
         }
         return $ausencias;
