@@ -41,7 +41,8 @@ foreach ($registros as $k => $v) {
 	$cuerpo[] = $fila;
 }
 
-$accionesExtra = $appForm->bloque($appForm->link('Act. Masiva', 'actualizar_controladores', array('class'=>'link_boton', 'title'=>'Actualiza automaticamente todos controladores y sus acciones')));
-echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, 'accionesExtra'=>$accionesExtra));
+$accionesExtra[] = $appForm->link('Act. Masiva', array('controller' => 'controladores', 'action' => 'actualizar_controladores'), array('class' => 'link_boton', 'title' => 'Actualiza automaticamente todos controladores y sus acciones'));
+
+echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, 'accionesExtra' => $accionesExtra));
 
 ?>
