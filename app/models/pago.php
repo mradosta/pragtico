@@ -72,14 +72,16 @@ class Pago extends AppModel {
 		} else {
 			$this->contain('PagosForma');
 		}
-		$pagosTmp = $this->find('all', array('conditions'=>array('Pago.id'=>$ids, 'Pago.estado' => 'Pendiente')));
+		$pagosTmp = $this->find('all',
+            array('conditions'=>array('Pago.id' => $ids, 'Pago.estado' => 'Pendiente')));
 
 		$ids = array();
 		foreach ($pagosTmp as $pago) {
 			$pagos[$pago['Pago']['id']] = $pago;
 			$ids[] = $pago['Pago']['id'];
 		}
-		$c=0;
+        
+		$c = 0;
 		foreach ($ids as $id) {
 			if (($pagos[$id]['Pago']['moneda'] === 'Beneficios' && $tipo === 'Beneficios')
 				|| ($pagos[$id]['Pago']['moneda'] === 'Pesos' && $tipo !== 'Beneficios')) {
@@ -118,9 +120,11 @@ class Pago extends AppModel {
 				$savePago['estado'] = 'Imputado';
 				$savePago['id'] = $id;
 				
-				return $this->appSave(	array('Pago' 		=> $savePago,
+				if ($this->appSave(	array('Pago' 		=> $savePago,
 					 						'PagosForma'	=> array($save)),
-										array('validate' => false));
+										array('validate' => false))) {
+                    $c++;
+                }
 			}
 		}
 		return $c;
