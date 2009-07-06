@@ -82,7 +82,15 @@ foreach ($registros as $k => $v) {
     $fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => $valor, 'nombreEncabezado' => 'Origen');
     
 	$fila[] = array('model' => 'Pago', 'field' => 'estado', 'valor' => $v['Pago']['estado']);
-    $fila[] = array('model' => 'Pago', 'field' => 'identificador', 'valor' => $v['Pago']['identificador']);
+    $fila[] = array('model' => 'Pago', 'field' => 'identificador', 'valor' => $v['Pago']['identificador'], 'nombreEncabezado' => 'Ident.');
+
+    if (!empty($v['Relacion']['Trabajador']['cbu'])) {
+        $fila[] = array('model' => 'Bar', 'field' => 'foo', 'valor' => $bancos[(int)substr($v['Relacion']['Trabajador']['cbu'], 0, 3)], 'nombreEncabezado' => 'Banco');
+    } else {
+        $fila[] = array('model' => 'Bar', 'field' => 'foo', 'valor' => '', 'nombreEncabezado' => 'Banco');
+    }
+
+
 	if ($v['Pago']['estado'] === 'Imputado' || $v['Pago']['estado'] === 'Cancelado') {
 		$cuerpo[] = array('contenido' 	=> $fila, 
 						  'opciones' 	=> array('seleccionMultiple'=>false));
@@ -107,6 +115,7 @@ $fila[] = array('model' => 'Pago', 'field' => 'saldo', 'valor' => '');
 $fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => '');
 $fila[] = array('model' => 'Pago', 'field' => 'estado', 'valor' => '');
 $fila[] = array('model' => 'Pago', 'field' => 'identificador', 'valor' => '');
+$fila[] = array('model' => 'Bar', 'field' => 'foo', 'valor' => '');
 $pie[] = $fila;
 
 

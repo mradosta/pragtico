@@ -57,6 +57,9 @@ class PagosController extends AppController {
 
 	function beforeRender() {
 		if ($this->action === 'index') {
+            $this->set('bancos', ClassRegistry::init('Banco')->find('list', array(
+                'recursive' => -1,
+                'fields'    => array('Banco.codigo', 'Banco.nombre'))));
 			$filters = $this->Session->read('filtros.' . $this->name . '.' . $this->action);
 			if (!empty($filters['condiciones']['Liquidacion.ano']) && !empty($filters['condiciones']['Liquidacion.mes']) && !empty($filters['condiciones']['Liquidacion.periodo like'])) {
 				$this->data['Condicion']['Liquidacion-periodo_completo'] = $filters['condiciones']['Liquidacion.ano'] . $filters['condiciones']['Liquidacion.mes'] . str_replace('%', '', $filters['condiciones']['Liquidacion.periodo like']);
