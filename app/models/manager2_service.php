@@ -27,10 +27,6 @@ class Manager2Service extends AppModel {
 	var $useTable = false;
 
 
-
-    function xxxcc($idd) {
-        return '2';
-    }
 /**
  * Facturacion.
  *
