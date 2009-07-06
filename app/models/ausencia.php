@@ -150,7 +150,7 @@ class Ausencia extends AppModel {
 		$ausencias['Accidente'] = 0;
         $ausencias['Maternidad'] = 0;
         $ausencias['Accidente ART'] = 0;
-        $ausencias['Acumulado Remunerativo Dia Accidente'] = 0;
+        $ausencias['Acumulado Remunerativo Accidente'] = 0;
         $ausencias['Dias Anteriores Accidente'] = 0;
 		$ausencias['Enfermedad'] = 0;
 		$ausencias['Licencia'] = 0;
@@ -260,7 +260,7 @@ class Ausencia extends AppModel {
                                 'Liquidacion.mes <='                        => $monthTo
                                 )));
 
-                $ausencias['Acumulado Remunerativo Dia Accidente'] = array_sum(Set::extract('/LiquidacionesDetalle/valor', $data));
+                $ausencias['Acumulado Remunerativo Accidente'] = array_sum(Set::extract('/LiquidacionesDetalle/valor', $data));
 
                 /** If more than 10 days, must create an ART accident and an accident */
                 if ($daysBeforePeriod + $ausencias['Accidente'] > 10) {
@@ -283,7 +283,7 @@ class Ausencia extends AppModel {
 					 'variables' 	=> array('#ausencias_accidente' 				=> $ausencias['Accidente'],
                                              '#ausencias_maternidad'                => $ausencias['Maternidad'],
                                              '#ausencias_accidente_art' 			=> $ausencias['Accidente ART'],
-                                             '#acumulado_remunerativo_dia_accidente'=> $ausencias['Acumulado Remunerativo Dia Accidente'],
+                                             '#acumulado_remunerativo_accidente'    => $ausencias['Acumulado Remunerativo Accidente'],
                                              '#dias_anteriores_accidente'           => $ausencias['Dias Anteriores Accidente'],
 											 '#ausencias_enfermedad' 	            => $ausencias['Enfermedad'],
 											 '#ausencias_licencia' 	                => $ausencias['Licencia'],
