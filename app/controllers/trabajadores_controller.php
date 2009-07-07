@@ -44,7 +44,9 @@ class TrabajadoresController extends AppController {
                     $c = 0;
                     $this->Trabajador->unbindModel(array('belongsTo' => array_keys($this->Trabajador->belongsTo)));
                     for($i = 3; $i <= $objPHPExcel->getActiveSheet()->getHighestRow(); $i++) {
-                        if ($this->Trabajador->updateAll(array( 'Trabajador.cbu'    => "'" .
+                        if ($this->Trabajador->updateAll(array(
+                            'Trabajador.solicitar_tarjeta_debito'   => 'No',
+                            'Trabajador.cbu'                        => "'" .
                             str_replace('\'', '', $objPHPExcel->getActiveSheet()->getCell('i' . $i)->getValue()) . "'"),
                                                             array("REPLACE(Trabajador.cuil, '-', '') like"   =>
                             $objPHPExcel->getActiveSheet()->getCell('F' . $i)->getValue()))) {
