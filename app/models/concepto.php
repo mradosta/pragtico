@@ -162,6 +162,7 @@ class Concepto extends AppModel {
 												"Coeficiente.tipo",
 												"Coeficiente.valor");
 		$fieldEmpleadoresCoeficiente = 	array(	"EmpleadoresCoeficiente.porcentaje");
+        $fieldAreasCoeficiente = array('Area.nombre', 'AreasCoefiente.porcentaje');
 		$order 		= "ORDER BY
 								CASE Concepto.tipo WHEN 'Remunerativo' THEN 0
 									WHEN 'No Remunerativo' THEN 1
@@ -169,8 +170,7 @@ class Concepto extends AppModel {
 								END";
 
 		if ($tipo === "Relacion") {
-			$fieldsPropios = array('Area.nombre', 'AreasCoefiente.porcentaje');
-			$fields = am($fieldsRelaciones, $fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente, $fieldsPropios);
+			$fields = am($fieldsRelaciones, $fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente, $fieldAreasCoeficiente);
 			$table 	= 	"relaciones_conceptos";
 			$joins	=	array(
 							array(
@@ -216,7 +216,7 @@ class Concepto extends AppModel {
 								"table" => "areas",
 								"type" 	=> "LEFT",
 								"conditions" => array(
-									array(	"Area.empleador_id" => $opciones['relacion']['Relacion']['empleador_id']))
+									array(	"Area.id" => $opciones['relacion']['Relacion']['area_id']))
 							),
 							array(
 								"alias" => "AreasCoefiente",
@@ -319,7 +319,7 @@ class Concepto extends AppModel {
 						);
 		}
 		elseif ($tipo === "ConceptoPuntual") {
-			$fields = am($fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente);
+			$fields = am($fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente, $fieldAreasCoeficiente);
 			$table 	= 	"conceptos";
 			$joins 	=	array(
 							array(
@@ -352,7 +352,22 @@ class Concepto extends AppModel {
 								"conditions" => array(
 									array(	"Coeficiente.id = EmpleadoresCoeficiente.coeficiente_id",
 											"EmpleadoresCoeficiente.empleador_id"	=> $opciones['relacion']['Relacion']['empleador_id']))
-							)							
+							),
+                            array(
+                                "alias" => "Area",
+                                "table" => "areas",
+                                "type"  => "LEFT",
+                                "conditions" => array(
+                                    array(  "Area.id" => $opciones['relacion']['Relacion']['area_id']))
+                            ),
+                            array(
+                                "alias" => "AreasCoefiente",
+                                "table" => "areas_coeficientes",
+                                "type"  => "LEFT",
+                                "conditions" => array(
+                                    array(  "Area.id = AreasCoefiente.area_id",
+                                            "Coeficiente.id = AreasCoefiente.coeficiente_id"))
+                            )							
 						);
 			$conditions = array(
 							"Concepto.codigo" => $opciones['codigoConcepto'],
@@ -380,6 +395,7 @@ class Concepto extends AppModel {
 		
 		$conceptos = array();
 		foreach ($r as $v) {
+            
 			/**
 			* En principio tomo el concepto como verdad, luego puede estar sobreescrito.
 			* La jerarquia es: 	Relacion,
@@ -489,7 +505,6 @@ class Concepto extends AppModel {
 				$conceptos[$v['Concepto']['codigo']]['id'] = $v['ConveniosConcepto']['id'];
 			}
 		}
-		
 		return $conceptos;
 	}
 
