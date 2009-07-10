@@ -28,7 +28,14 @@ foreach ($this->data['Concepto'] as $k=>$v) {
 	$fila[] = array('model' => 'ConveniosConcepto', 'field' => 'id', 'valor' => $v['ConveniosConcepto']['id'], 'write' => $v['ConveniosConcepto']['write'], 'delete' => $v['ConveniosConcepto']['delete']);
 	$fila[] = array('model' => 'ConveniosConcepto', 'field' => 'codigo', 'valor' => $v['codigo']);
 	$fila[] = array('model' => 'ConveniosConcepto', 'field' => 'nombre', 'valor' => $v['nombre']);
-	$fila[] = array('model' => 'ConveniosConcepto', 'field' => 'formula', 'valor' => $v['ConveniosConcepto']['formula']);
+	//$fila[] = array('model' => 'ConveniosConcepto', 'field' => 'formula', 'valor' => $v['ConveniosConcepto']['formula']);
+    if (!empty($v['ConveniosConcepto']['formula'])) {
+        $fila[] = array('model' => 'Bar', 'field' => 'foo', 'valor' => 'Convenio', 'nombreEncabezado' => 'Jerarquia', 'ordenEncabezado' => false);
+        $fila[] = array('model' => 'ConveniosConcepto', 'field' => 'formula', 'valor' => $v['ConveniosConcepto']['formula']);
+    } else {
+        $fila[] = array('model' => 'Bar', 'field' => 'foo', 'valor' => 'Concepto', 'nombreEncabezado' => 'Jerarquia', 'ordenEncabezado' => false);
+        $fila[] = array('model' => 'Concepto', 'field' => 'formula', 'valor' => $v['formula']);
+    }    
 	$cuerpo[] = $fila;
 }
 
