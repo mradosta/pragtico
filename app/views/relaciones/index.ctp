@@ -20,7 +20,7 @@
 * Especifico los campos para ingresar las condiciones.
 */
 $condiciones['Condicion.Relacion-empleador_id'] = array(	'lov'=>array('controller'	=> 'empleadores',
-                                                                        'mask'          =>  '%s, x%s',
+                                                                        'mask'          =>  '%s, %s',
 																		'camposRetorno'	=> array('Empleador.cuit', 'Empleador.nombre')));
 
 $condiciones['Condicion.Relacion-trabajador_id'] = array(	'lov'=>array('controller'	=>	'trabajadores',
