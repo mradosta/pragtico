@@ -191,12 +191,11 @@ class PaginadorComponent extends Object {
 				$sufix = substr(trim($k), -2);
 				$k = str_replace('.', '-', $this->__removerReemplazos($k));
 				if ($sufix === '>=') {
-					$this->controller->data['Condicion'][$k . '__desde'] = $this->Util->format($this->__removerReemplazos($v), array('type' => 'datetime'));
+                    $k .= '__desde';
 				} elseif ($sufix === '<=') {
-					$this->controller->data['Condicion'][$k . '__hasta'] = $this->Util->format($this->__removerReemplazos($v), array('type' => 'datetime'));
-				} else {
-					$this->controller->data['Condicion'][$k] = $this->__removerReemplazos($v);
+                    $k .= '__hasta';
 				}
+                $this->controller->data['Condicion'][$k] = $this->__removerReemplazos($v);
 			}
         }
 	}
@@ -320,12 +319,6 @@ class PaginadorComponent extends Object {
 						break;
 					case 'date':
 					case 'datetime':
-						if ($tipoDato === 'datetime') {
-							$v = $this->Util->format($v, array('type' => 'datetime'));
-						} else {
-							$v = $this->Util->format($v, array('type' => 'date'));
-						}
-
 						if (isset($extra)) {
 							if ($extra == 'desde') {
 								$valor = $v;

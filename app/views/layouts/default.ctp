@@ -51,6 +51,10 @@ $css[] = "jquery.autocomplete";
 //$css[] = "basic";
 $css = null;
 $css[] = 'aplicacion.default.screen';
+$css[] = 'jscal/jscal2';
+$css[] = 'jscal/border-radius.css';
+//$css[] = 'jscal/steel/steel.css';
+
 //$css[] = "theme/ui.all";
 //$css[] = "theme/ui.base";
 //$css[] = "theme/ui.core";
@@ -70,7 +74,9 @@ $js[] = 'jquery/jquery.simplemodal';
 $js[] = 'jquery/jquery.form';
 $js[] = 'jquery/jquery.sprintf';
 $js[] = 'default';
-$js[] = 'datetimepicker';
+//$js[] = 'datetimepicker';
+$js[] = 'jscal/jscal2';
+$js[] = 'jscal/es';
 $js[] = 'jquery.flydom'; // lo usa en carga drapida de conceptos desde convenios
 $appForm->addScript($js, 'links');
 
@@ -99,6 +105,14 @@ $appForm->addScript($js, 'links');
 //$session->read('__actualMenu')
 $appForm->addScript('
 
+/*
+      var cal = Calendar.setup({
+              cont     : "calendar-container",
+              weekNumbers   : true,
+              showTime      : 24,
+
+        });
+        */
     jQuery.extend({
         bindMultipleCheckBoxManipulation: function(scope) {
 
@@ -232,6 +246,7 @@ $appForm->addScript('
 $codigo_html[] = $asset->scripts_for_layout();
 $codigo_html[] = '</head>';
 $codigo_html[] = '<body>';
+
 $codigo_html[] = '<input id="base_url" type="hidden" value="' . Router::url('/') . '" />';
 $codigo_html[] = '<div id="lov" class="index"></div>';
 /** When opening a Lov Control, all necessary options are temporaly saved in this hidden text field */

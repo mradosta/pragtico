@@ -561,7 +561,7 @@ div.tabla {
 	max-width: 790px;
 }
 
-table {
+div.tabla table {
 	border-collapse: collapse;
 	background-color: #F7CD93;
 	font-size: 10px;
@@ -569,11 +569,11 @@ table {
 	width: 778px;
 }
 
-table tr.alternativo {
+div.tabla table tr.alternativo {
 	background-color: #FFFFFF;
 }
 
-table th, td.imitar_th_izquierda, td.imitar_th_derecha, td.imitar_th_centro {
+div.tabla table th, td.imitar_th_izquierda, td.imitar_th_derecha, td.imitar_th_centro {
 	white-space: nowrap;
 	background-color: #807F84;
     color: #FFFFFF;
@@ -581,68 +581,75 @@ table th, td.imitar_th_izquierda, td.imitar_th_derecha, td.imitar_th_centro {
     border: 1px solid #cccccc;
 }
 
-td.imitar_th_derecha {
+div.tabla td.imitar_th_derecha {
 	text-align: right;
 }
 
-td.imitar_th_centro {
+div.tabla td.imitar_th_centro {
 	text-align: center;
 }
 
-table th a {
+div.tabla table th a {
 	color: #FFFFFF;
 }
 
-table th div.acciones {
+div.tabla table th div.acciones {
 	font-weight: normal;
 	text-align: left;
 	margin-left: -3px;
 }
 
-table th .acciones span {
+div.tabla table th .acciones span {
 	font-weight: bold;
 	margin-left: 10px;
 }
 
-table td {
+div.tabla table th .hide_actions {
+    background: url(img/hide_actions.gif) no-repeat;
+    cursor:pointer;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+div.tabla table td {
 	padding: 3px 5px 3px 5px;
     border: 1px solid #cccccc;
 }
 
-table td.acciones {
+div.tabla table td.acciones {
 	white-space: nowrap;
 	padding-right: 13px;
 }
 
-table th.derecha, table td.derecha {
+div.tabla table th.derecha, table td.derecha {
 	text-align: right;
 	white-space: nowrap;
 }
 
-table th.izquierda, table td.izquierda {
+div.tabla table th.izquierda, table td.izquierda {
 	text-align: left;
 }
 
-table th.centro, table td.centro {
+div.tabla table th.centro, table td.centro {
 	text-align: center;
 }
 
-table a.sin_orden, table a.asc_orden, table a.desc_orden {
+div.tabla table a.sin_orden, table a.asc_orden, table a.desc_orden {
 	background-color: transparent;
 	background-repeat: no-repeat;
 	padding-left: 15px;
 	padding-top: 3px;
 }
 
-table a.sin_orden {
+div.tabla table a.sin_orden {
 	background-image: url(img/orden_0.gif);
 }
 
-table a.asc_orden {
+div.tabla table a.asc_orden {
 	background-image: url(img/orden_1.gif);
 }
 
-table a.desc_orden {
+div.tabla table a.desc_orden {
 	background-image: url(img/orden_2.gif);
 }
 

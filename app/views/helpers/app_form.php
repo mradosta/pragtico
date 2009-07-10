@@ -713,7 +713,7 @@ class AppFormHelper extends FormHelper {
 								case 'date':
 								case 'datetime':
 									$clase = 'centro';
-									$valor = $this->Formato->format($valor, $columnType);
+									//$valor = $this->Formato->format($valor, $columnType);
 									break;
 								case 'string':
 								case 'text':
@@ -852,9 +852,8 @@ class AppFormHelper extends FormHelper {
 					$seleccion[] = $this->link("T", null, array("class" => "seleccionarTodos")) . " ";
 					$seleccion[] = $this->link("N", null, array("class" => "deseleccionarTodos")) . " ";
 					$seleccion[] = $this->link("I", null, array("class" => "invertir"));
-					$accionesString = $this->tag("div", implode("", $seleccion) . $this->tag("span", "Acciones"), array("class" => "acciones"));
-				}
-				else {
+					$accionesString = $this->tag("div", implode("", $seleccion) . $this->tag('span', $this->tag('span', '', array('class' => 'hide_actions')) . 'Acciones'), array("class" => "acciones"));
+				} else {
 					$accionesString = "Acciones";
 				}
 				array_unshift($encabezados, $accionesString);
@@ -912,38 +911,22 @@ class AppFormHelper extends FormHelper {
 		/**
 		* Escribo el codigo js (jquery) que me ayudara con las funciones de selecciona multiple.
 		*/
-		$jsSeleccionMultiple = '
-        /*
-			jQuery("table .seleccionarTodos").click(
-				function() {
-					jQuery(".tabla :checkbox").checkbox("seleccionar");
-					return false;
-				}
-			);
-			jQuery("table .deseleccionarTodos").click(
-				function() {
-					jQuery(".tabla :checkbox").checkbox("deseleccionar");
-					return false;
-				}
-			);
-			jQuery("table .invertir").click(
-				function() {
-					jQuery(".tabla :checkbox").checkbox("invertir");
-					return false;
-				}
-			);
-        */
+        $jsHideActionColumn = '
+                jQuery(".hide_actions").click(function() {
+                    jQuery("td.acciones").remove();
+                    jQuery(this).parent().parent().parent().remove();
+                });
+        ';
 
-			
+		$jsSeleccionMultiple = '
 			jQuery("#modificar").click(
 				function() {
 					var c = jQuery(".tabla :checkbox").checkbox("contar");
-					if (c>0) {
-						var action = "' . $this->Html->url("/") . $this->params['controller'] . '/edit";
+					if (c > 0) {
+						var action = jQuery.url("' . $this->params['controller'] . '") + "/edit";
 						jQuery("#form")[0].action = action;
 						jQuery("#form")[0].submit();
-					}
-					else {
+					} else {
 						alert("Debe seleccionar al menos un registro.");
 					}
 					return false;
@@ -953,16 +936,15 @@ class AppFormHelper extends FormHelper {
 			jQuery("#eliminar").click(
 				function() {
 					var c = jQuery(".tabla :checkbox").checkbox("contar");
-					if (c>0) {
+					if (c > 0) {
 						var mensaje = "Esta seguro que desea eliminar " + c;
 						if (c==1) {
 							mensaje = mensaje + " registro?";
-						}
-						else {
+						} else {
 							mensaje = mensaje + " registros?";
 						}
 						if (confirm(mensaje)) {
-							var action = "' . $this->Html->url("/") . $this->params['controller'] . '/delete";
+							var action = jQuery.url("' . $this->params['controller'] . '") + "/delete";
 							jQuery("#form")[0].action = action;
 							jQuery("#form")[0].submit();
 						}
@@ -984,6 +966,7 @@ class AppFormHelper extends FormHelper {
 			if ($opciones['seleccionMultiple']) {
 				$jsTabla .= $jsSeleccionMultiple;
 			}
+            $jsTabla .= $jsHideActionColumn;
             /*
 			if (!empty($opciones['seleccionLov'])) {
 				if (isset($padre) && $padre == "opener") {
@@ -1428,35 +1411,20 @@ class AppFormHelper extends FormHelper {
 			* Manejo los tipos de datos date para que me arme el control seleccion de fechas.
 			*/
 			else if ($tipoCampo === "date") {
-				/**
-				* Cuando el campo ya tiene un valor y este es una fecha valida, no lo vuelvo a formatear.
-				* si lo mando al helper, me lo formatear para mysql. Esto puede darse durante un add al volver a insertar
-				* o cuando un edit no valida.
-				*/
-				if (preg_match(VALID_DATE, $valorCampo)) {
-					$options['value'] = $valorCampo;
-				}
-				else {
-					$options['value'] = $this->Formato->format($valorCampo, array("default"=>false, "type" => "date"));
-				}
+                $options['value'] = $valorCampo;
 				$options['type'] = "text";
 				$options['class'] = "fecha";
-				$options['after'] = $this->__inputFecha($tagName, $options) . $options['after'];
+				$options['after'] = $this->__inputFecha($tagName, $options, $tipoCampo) . $options['after'];
 			}
 
 			/**
 			* Manejo los tipos de datos datetime para que me arme el control seleccion de fechas con hora.
 			*/
 			elseif ($tipoCampo === "datetime") {
-				if (preg_match(VALID_DATE, $valorCampo)) {
-					$options['value'] = $valorCampo;
-				}
-				else {
-					$options['value'] = $this->Formato->format($valorCampo, array("default"=>false, "type" => "datetime"));
-				}
+                $options['value'] = $valorCampo;
 				$options['type'] = "text";
 				$options['class'] = "fecha";
-				$options['after'] = $this->__inputFecha($tagName, $options, true) . $options['after'];
+				$options['after'] = $this->__inputFecha($tagName, $options, $tipoCampo) . $options['after'];
 			}
 
 			/**
@@ -1897,11 +1865,11 @@ class AppFormHelper extends FormHelper {
 				* Busco el valor "descriptivo" para mostrarle al usuario.
 				*/
 				if (!empty($value)) {
-					foreach ($value as $k=>$v) {
-						if (preg_match(VALID_DATE_MYSQL, $v)) {
-							$value[$k] = $this->Formato->format($v, array("type" => "date"));
-						}
-					}
+					//foreach ($value as $k=>$v) {
+						//if (preg_match(VALID_DATE_MYSQL, $v)) {
+							//$value[$k] = $this->Formato->format($v, array("type" => "date"));
+						//}
+					//}
 					if (isset($options['lov']['separadorRetorno']) && !empty($options['lov']['separadorRetorno'])) {
 						$options['value'] = implode($options['lov']['separadorRetorno'], $value);
 					} else {
@@ -1984,17 +1952,53 @@ class AppFormHelper extends FormHelper {
 /**
  * TODO: Change by jquery alternative (http://ui.jquery.com/demos/datepicker)
  */		   
-	function __inputFecha($tagName, $options = array(), $seleccionarHora=false) {
+	function __inputFecha($tagName, $options = array(), $type = 'date') {
 		$this->setEntity($tagName);
 		$id = $this->domId(implode('.', array_filter(array($this->model(), $this->field()))));
 		$codigo_html = $this->image('calendar.gif', array('class'	=>'fecha', 'title' => __('Pick date', true)));
 
 
-		if ($seleccionarHora) {
-			$codigo_html = $this->link($codigo_html, "javascript:NewCal('".$id."', 'dd/mm/yyyy', true, 24, 'dropdown', true)", array('id' => $id));
+		if ($type == 'date') {
+            $codigo_html = $this->link($codigo_html, null, array('id' => 'trigger' . $id));
+            $this->addScript('
+                Calendar.setup({
+                    inputField      : "' . $id . '",
+                    trigger         : "trigger' . $id . '",
+                    weekNumbers     : true,
+                    onSelect        : function(cal) {
+                        var date = cal.selection.get();
+                        if (date) {
+                                date = Calendar.intToDate(date);
+                                jQuery("#' . $id . '").val(Calendar.printDate(date, "%Y-%m-%d"));
+                        }
+                        this.hide()
+                    }
+                });'
+            );
 		} else {
-			$codigo_html = $this->link($codigo_html, "javascript:NewCal('".$id."', 'dd/mm/yyyy')", array('id' => $id));
+            $codigo_html = $this->link($codigo_html, null, array('id' => 'trigger' . $id));
+            $this->addScript('
+                Calendar.setup({
+                    inputField      : "' . $id . '",
+                    trigger         : "trigger' . $id . '",
+                    weekNumbers     : true,
+                    showTime        : 24,
+                    onSelect        : function(cal) {
+                        var date = cal.selection.get();
+                        if (date) {
+                                var h = cal.getHours();
+                                var m = cal.getMinutes();
+                                if (h < 10) h = "0" + h;
+                                if (m < 10) m = "0" + m;
+                                date = Calendar.intToDate(date);
+                                jQuery("#' . $id . '").val(Calendar.printDate(date, "%Y-%m-%d " + h + ":" + m));
+                        }
+                        this.hide();
+                    }
+                });'
+            );
 		}
+        
 		return $codigo_html;
 	}
 
