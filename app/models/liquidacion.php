@@ -188,7 +188,7 @@ class Liquidacion extends AppModel {
 			}
 			$this->__setAuxiliar($novedades['auxiliar']);
 			$this->setConcept($novedades['conceptos']);
-			
+
 			/** Get hours */
 			$horas = $this->Relacion->Hora->getHoras($this->getRelationship(), $this->getPeriod());
 			foreach ($horas['variables'] as $horaTipo => $horaValor) {
