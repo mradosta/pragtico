@@ -61,7 +61,7 @@ class LiquidacionesController extends AppController {
                 $this->set('data', $this->Liquidacion->LiquidacionesDetalle->find('all', array(
                         'conditions'    => $condiciones,
                         'contain'       => 'Liquidacion',
-                        'order'         => 'Liquidacion.relacion_id',
+                        'order'         => 'Liquidacion.relacion_id, LiquidacionesDetalle.concepto_orden',
                         'fields'        => array('Liquidacion.trabajador_nombre',
                                                 'Liquidacion.trabajador_apellido',
                                                 'LiquidacionesDetalle.concepto_nombre',

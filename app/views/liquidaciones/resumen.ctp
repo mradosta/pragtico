@@ -116,6 +116,7 @@ if (!empty($data)) {
         $fila++;
         $documento->setCellValue('A' . $fila, 'Periodo: ' . $conditions['Liquidacion-periodo_largo'], $styleBold);
 
+        $fila+=2;
         if ($desagregado === 'Si') {
             $documento->setWidth('A', 65);
             $documento->setWidth('B', 65);
@@ -136,13 +137,20 @@ if (!empty($data)) {
          
         $fila = 7;
         $total = 0;
+        $flag = null;
 		foreach ($data as $detail) {
             $fila++;
             if ($detail['LiquidacionesDetalle']['concepto_tipo'] === 'Deduccion') {
                 $detail['LiquidacionesDetalle']['valor'] = $detail['LiquidacionesDetalle']['valor'] * -1;
             }
             if ($desagregado === 'Si') {
-                $documento->setCellValue('A' . $fila, $detail['Liquidacion']['trabajador_apellido'] . ', ' . $detail['Liquidacion']['trabajador_nombre']);
+                if ($flag !== $detail['Liquidacion']['id']) {
+                    if ($flag != null) {
+                        $fila++;
+                    }
+                    $flag = $detail['Liquidacion']['id'];
+                    $documento->setCellValue('A' . $fila, $detail['Liquidacion']['trabajador_apellido'] . ', ' . $detail['Liquidacion']['trabajador_nombre']);
+                }
                 $documento->setCellValue('B' . $fila, $detail['LiquidacionesDetalle']['concepto_nombre']);
                 $documento->setCellValue('C' . $fila, $detail['LiquidacionesDetalle']['suma_cantidad'], $styleRight);
                 $documento->activeSheet->getStyle('D' . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
