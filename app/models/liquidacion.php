@@ -1033,6 +1033,17 @@ class Liquidacion extends AppModel {
     }
 
 
+    function getConcept($conceptCode = null) {
+        if (empty($conceptCode)) {
+            return $this->__conceptos;
+        } elseif (!empty($this->__conceptos[$conceptCode])) {
+            return $this->__conceptos[$conceptCode];
+        } else {
+            return array();
+        }
+    }
+
+
     /**
     * Sets the concept been resolved.
     */

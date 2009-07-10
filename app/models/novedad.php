@@ -215,7 +215,7 @@ class Novedad extends AppModel {
 		} else {
 			$period[] = $periodo['periodoCompleto'];
 		}
-		
+
 		$novedades = $this->find('all',
 				array('conditions' 	=> array(
 					  		'Novedad.periodo' 		=> $period,
@@ -226,11 +226,14 @@ class Novedad extends AppModel {
 
 		$variables = $conceptos = $auxiliares = array();
 		if (!empty($novedades)) {
+            $conceptosQueYatengo = ClassRegistry::init('Liquidacion')->getConcept();
 			$Concepto = ClassRegistry::init('Concepto');
 			foreach ($novedades as $novedad) {
 				$conceptoCodigo = array_pop(explode(':', $novedad['Novedad']['subtipo']));
 				$variables['#' . $conceptoCodigo] = $novedad['Novedad']['data'];
-				$conceptos = array_merge($conceptos, $Concepto->findConceptos('ConceptoPuntual', array('relacion' => $relacion, 'codigoConcepto' => $conceptoCodigo)));
+                if (!isset($conceptosQueYatengo[$conceptoCodigo])) {
+				    $conceptos = array_merge($conceptos, $Concepto->findConceptos('ConceptoPuntual', array('relacion' => $relacion, 'codigoConcepto' => $conceptoCodigo)));
+                }
 
 				$auxiliar = null;
 				$auxiliar['id'] = $novedad['Novedad']['id'];
