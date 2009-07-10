@@ -30,7 +30,16 @@ class AreasController extends AppController {
 	function coeficientes($id) {
 		$this->Area->contain('Coeficiente');
 		$this->data = $this->Area->read(null, $id);
-	}	
+	}
+
+    function beforeRender() {
+        if (in_array($this->action, array('add', 'edit'))) {
+            $usuario = $this->Session->read('__Usuario');
+            if (!empty($usuario['Usuario']['preferencias']['grupo_default_id'])) {
+                $this->set('centrosDeCosto', ClassRegistry::init('Grupo')->getParams($usuario['Usuario']['preferencias']['grupo_default_id'], 'centro_de_costo'));
+            }
+        }
+    }
 	
 }
 ?>

@@ -62,23 +62,26 @@ class Grupo extends AppModel {
  * Finds parameters values.
  *
  * @param integer $groupId The group to find parameters to.
- * @param boolean $all If true, get all parameters even they're not set for the selected group.
- *					   If false, only get parameters for the selected group.
+ * @param string $paramName If 'all, get all parameters even they're not set for the selected group.
+ *					   If $paramName, only get a specific parameter for the selected group.
  * @return array key => value array.
  * @access public.
  */
-	function getParams($groupId, $all = true) {
+	function getParams($groupId, $paramName = 'all') {
 		$group = $this->find('first',
 			array(	'conditions' 	=> array('Grupo.id' => $groupId),
 					'contain'		=> array('GruposParametro.Parametro')));
 		if (!empty($group['GruposParametro'])) {
-			if ($all === true) {
+			if ($paramName === 'all') {
 				$params = Set::combine($this->GruposParametro->Parametro->find('all'), '{n}.Parametro.nombre', '');
+                
+                foreach ($group['GruposParametro'] as $groupParam) {
+                    $params[$groupParam['Parametro']['nombre']] = str_replace("\r", '', $groupParam['valor']);
+                }
 			} else {
-				$params = array();
-			}
-			foreach ($group['GruposParametro'] as $groupParam) {
-				$params[$groupParam['Parametro']['nombre']] = str_replace("\r", '', $groupParam['valor']);
+                $params = Set::combine(Set::extract('/GruposParametro/valor', $this->GruposParametro->find('all', array(
+                    'conditions'    => array(   'Parametro.nombre'  => $paramName,
+                                                'Grupo.id'          => $groupId)))), '{n}', '{n}');
 			}
 		} else {
 			return array();

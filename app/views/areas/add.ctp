@@ -22,7 +22,7 @@
 $campos = null;
 $campos['Area.id'] = array();
 $campos['Area.empleador_id'] = array('lov' => array(
-		'controller'		=>	'empleadores',
+		'controller'		=>  'empleadores',
 		'seleccionMultiple'	=> 	0,
 		'camposRetorno'		=>	array(	'Empleador.cuit',
 										'Empleador.nombre')));
@@ -35,6 +35,9 @@ $campos['Area.zone_id'] = array('label' => 'Zona',
 										'Zone.name')));
 $campos['Area.nombre'] = array();
 $campos['Area.identificador'] = array('aclaracion' => 'Se refiere a un identificador externo. No se utilizara dentro del Sistema.');
+if (!empty($centrosDeCosto)) {
+    $campos['Area.identificador_centro_costo'] = array('options' => $centrosDeCosto, 'aclaracion' => 'Se refiere a un identificador interno de centro de costo relacionado al grupo.');
+}
 $campos['Area.contacto'] = array();
 $campos['Area.direccion'] = array();
 $campos['Area.telefono'] = array();
