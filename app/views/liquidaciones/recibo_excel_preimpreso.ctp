@@ -103,7 +103,7 @@
                 $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('T') -1 + ($i * 23)) . ',' . $fila, $receipt['Banco']['nombre']);
             }
             $fila+=2;
-            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('P') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['pago'], 'date'));
+            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('P') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['pago'], 'date') . ' - CORDOBA');
         }
         
         $documento->activeSheet->setBreak('A' . $fila, PHPExcel_Worksheet::BREAK_ROW);
