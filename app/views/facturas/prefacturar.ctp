@@ -19,14 +19,13 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-if(!empty($grupos)) {																								
+if(!empty($grupos)) {	
 	$condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos, 'empty' => true);
 }
 $condiciones['Condicion.Liquidacion-empleador_id'] = array(
 		'lov'	=> array('controller'	=> 'empleadores',
 						'camposRetorno'	=> array('Empleador.cuit', 'Empleador.nombre')));
-
-$condiciones['Condicion.Liquidacion-periodo_completo'] = array('type' => 'periodo');
+$condiciones['Condicion.Liquidacion-periodo_completo'] = array('label' => 'Periodo Liquidado', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A'));
 $condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'type' => 'select');
 $condiciones['Condicion.Liquidacion-estado'] = array('aclaracion' => 'Se refiere a que liquidaciones tomar como base para la prefacturacion. Solo se podran confirmar prefacturaciones realizadas en base a liquidaciones Confirmadas');
 
@@ -44,7 +43,7 @@ foreach ($registros as $k => $v) {
 					'valor' => $appForm->link(
 						$appForm->image('resumen.gif', array('alt' => 'Reporte')),
 						array('action' => 'reporte', 'id' => $v['Factura']['id'])));
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Factura']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'detalles.gif', 'alt' => 'Detalles'), 'url' => 'detalles');
+	$fila[] = array('tipo' => 'desglose', 'id' => $v['Factura']['id'], 'imagen' => array('nombre' => 'detalles.gif', 'alt' => 'Detalles'), 'url' => 'detalles');
 	$fila[] = array('model' => 'Factura', 'field' => 'id', 'valor' => $v['Factura']['id'], 'write' => $v['Factura']['write'], 'delete' => $v['Factura']['delete']);
 	$fila[] = array('model' => 'Factura', 'field' => 'fecha', 'valor' => $v['Factura']['fecha']);
 	$fila[] = array('model' => 'Factura', 'field' => 'tipo', 'valor' => $v['Factura']['tipo']);
@@ -104,6 +103,50 @@ $appForm->addScript('
 				alert("Debe seleccionar al menos una pre-liquidacion para confirmar.");
 			}
 		}
-	);', 'ready');
+	);
+
+
+    /** Shows / Hides period options, depending receipt type */
+    function period(type) {
+
+        jQuery(".1q").hide();
+        jQuery(".2q").hide();
+        jQuery(".m").hide();
+        jQuery(".1s").hide();
+        jQuery(".2s").hide();
+        jQuery(".a").hide();
+        jQuery("input.periodo").parent().show();
+        jQuery("input.periodo_vacacional").parent().hide();
+        
+        if (type === "normal") {
+            jQuery(".1q").show();
+            jQuery(".2q").show();
+            jQuery(".m").show();
+        } else if (type === "sac") {
+            jQuery(".1s").show();
+            jQuery(".2s").show();
+        } else if (type === "vacaciones") {
+            jQuery(".m").show();
+            jQuery(".a", jQuery("input.periodo_vacacional").parent()).show();
+            jQuery("input.periodo_vacacional").parent().show();
+        } else if (type === "especial") {
+            jQuery(".1q").show();
+            jQuery(".2q").show();
+            jQuery(".m").show();
+            jQuery(".1s").show();
+            jQuery(".2s").show();
+            jQuery(".a").show();
+        } else if (type === "final") {
+            jQuery("input.periodo").parent().hide();
+        }
+    }
+    period(jQuery("#CondicionLiquidacion-tipo").find(":selected").val());
+
+    jQuery("#CondicionLiquidacion-tipo").change(
+        function() {
+            jQuery("input.periodo").val("");
+            period(jQuery(this).find(":selected").val());
+        }
+    );' , 'ready');
 
 ?>
