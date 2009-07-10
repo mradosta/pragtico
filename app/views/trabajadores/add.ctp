@@ -35,6 +35,7 @@ $fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array("cl
 
 $campos = null;
 $campos['Trabajador.direccion'] = array();
+$campos['Trabajador.numero'] = array();
 $campos['Trabajador.codigo_postal'] = array();
 $campos['Trabajador.barrio'] = array();
 $campos['Trabajador.ciudad'] = array();
