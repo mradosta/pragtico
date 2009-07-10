@@ -103,42 +103,75 @@ if (!empty($data)) {
 		$styleRight = array('style' => array(
 			'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT)));
 	
-		$documento->setWidth('A', 45);
-		$documento->setWidth('B', 11);
-		$documento->setWidth('C', 11);
-
         $fila = 1;
-        $documento->setCellValue('C' . $fila, date('d/m/Y'), $styleBold);
+        if ($desagregado === 'Si') {
+            $documento->setCellValue('D' . $fila, date('d/m/Y'), $styleBold);
+        } else {
+            $documento->setCellValue('C' . $fila, date('d/m/Y'), $styleBold);
+        }
         $fila = 3;
         $documento->setCellValue('A' . $fila, 'Listado de Totales por Concepto', $styleBold);
         $fila++;
         $documento->setCellValue('A' . $fila, 'Empresa: ' . $conditions['Liquidacion-empleador_id__'], $styleBold);
         $fila++;
         $documento->setCellValue('A' . $fila, 'Periodo: ' . $conditions['Liquidacion-periodo_largo'], $styleBold);
-        
+
+        if ($desagregado === 'Si') {
+            $documento->setWidth('A', 65);
+            $documento->setWidth('B', 65);
+            $documento->setWidth('C', 13);
+            $documento->setWidth('D', 13);
+            $documento->setCellValue('A' . $fila, 'Trabajador', $styleBoldCenter);
+            $documento->setCellValue('B' . $fila, 'Concepto', $styleBoldCenter);
+            $documento->setCellValue('C' . $fila, 'Cantidad', $styleBoldCenter);
+            $documento->setCellValue('D' . $fila, 'Total', $styleBoldCenter);
+        } else {
+            $documento->setWidth('A', 65);
+            $documento->setWidth('B', 13);
+            $documento->setWidth('C', 13);
+            $documento->setCellValue('A' . $fila, 'Concepto', $styleBoldCenter);
+            $documento->setCellValue('B' . $fila, 'Cantidad', $styleBoldCenter);
+            $documento->setCellValue('C' . $fila, 'Total', $styleBoldCenter);
+        }
+         
         $fila = 7;
-        $documento->setCellValue('A' . $fila, 'Concepto', $styleBoldCenter);
-        $documento->setCellValue('B' . $fila, 'Cantidad', $styleBoldCenter);
-        $documento->setCellValue('C' . $fila, 'Total', $styleBoldCenter);
         $total = 0;
 		foreach ($data as $detail) {
             $fila++;
-			$documento->setCellValue('A' . $fila, $detail['LiquidacionesDetalle']['concepto_nombre']);
-            $documento->setCellValue('B' . $fila, $detail['LiquidacionesDetalle']['suma_cantidad'], $styleRight);
-            $documento->activeSheet->getStyle('C' . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
-            $documento->setCellValue('C' . $fila, $detail['LiquidacionesDetalle']['valor'], $styleRight);
+
+            if ($desagregado === 'Si') {
+                $documento->setCellValue('A' . $fila, $detail['Liquidacion']['trabajador_apellido'] . ', ' . $detail['Liquidacion']['trabajador_nombre']);
+                $documento->setCellValue('B' . $fila, $detail['LiquidacionesDetalle']['concepto_nombre']);
+                $documento->setCellValue('C' . $fila, $detail['LiquidacionesDetalle']['suma_cantidad'], $styleRight);
+                $documento->activeSheet->getStyle('D' . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
+                $documento->setCellValue('D' . $fila, $detail['LiquidacionesDetalle']['valor'], $styleRight);
+            } else {
+                $documento->setCellValue('A' . $fila, $detail['LiquidacionesDetalle']['concepto_nombre']);
+                $documento->setCellValue('B' . $fila, $detail['LiquidacionesDetalle']['suma_cantidad'], $styleRight);
+                $documento->activeSheet->getStyle('C' . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
+                $documento->setCellValue('C' . $fila, $detail['LiquidacionesDetalle']['valor'], $styleRight);
+            }
             $total += $detail['LiquidacionesDetalle']['valor'];
 		}
 
 		$fila+=2;
 		$documento->setCellValue('A' . $fila . ':C' . $fila, 'TOTALES', $styleBoldCenter);
 		$fila++;
-		$documento->setCellValue('A' . $fila, 'Total', $styleBold);
-        $documento->activeSheet->getStyle('C' . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
-        $documento->setCellValue('C' . $fila, $total, $styleRight);
-        $fila++;
-        $documento->setCellValue('A' . $fila, 'Total de Empleados', $styleBold);
-        $documento->setCellValue('C' . $fila, $workers[0]['Liquidacion']['cantidad'], $styleRight);
+        if ($desagregado === 'Si') {
+            $documento->setCellValue('B' . $fila, 'Total', $styleBold);
+            $documento->activeSheet->getStyle('D' . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
+            $documento->setCellValue('D' . $fila, $total, $styleRight);
+            $fila++;
+            $documento->setCellValue('B' . $fila, 'Total de Empleados', $styleBold);
+            $documento->setCellValue('D' . $fila, $workers[0]['Liquidacion']['cantidad'], $styleRight);
+        } else {
+            $documento->setCellValue('A' . $fila, 'Total', $styleBold);
+            $documento->activeSheet->getStyle('C' . $fila)->getNumberFormat()->setFormatCode('"$ "0.00');
+            $documento->setCellValue('C' . $fila, $total, $styleRight);
+            $fila++;
+            $documento->setCellValue('A' . $fila, 'Total de Empleados', $styleBold);
+            $documento->setCellValue('C' . $fila, $workers[0]['Liquidacion']['cantidad'], $styleRight);
+        }
 
         $this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
         $documento->save($fileFormat);
@@ -158,7 +191,8 @@ if (!empty($data)) {
             'lov'   => array(   'controller'   => 'trabajadores',
                                 'seleccionMultiple'    => 0,
                                 'camposRetorno' => array('Trabajador.cuil', 'Trabajador.nombre', 'Trabajador.apellido')));
-        
+
+    $condiciones['Condicion.Liquidacion-desagregado'] = array('type' => 'radio', 'options' => array('Si' => 'Si', 'No' => 'No'));
     $condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'type' => 'select');
     $condiciones['Condicion.Liquidacion-periodo_largo'] = array('type' => 'periodo', 'label' => 'Periodo');
 	$condiciones['Condicion.Liquidacion-estado'] = array('type' => 'select', 'multiple' => 'checkbox');

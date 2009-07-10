@@ -31,6 +31,13 @@ class LiquidacionesController extends AppController {
     function resumen() {
 
         if (!empty($this->data)) {
+            if (!empty($this->data['Condicion']['Liquidacion-desagregado'])) {
+                $desagregado = $this->data['Condicion']['Liquidacion-desagregado'];
+            } else {
+                $desagregado = 'No';
+            }
+            $this->set('desagregado', $desagregado);
+            unset($this->data['Condicion']['Liquidacion-desagregado']);
             $condiciones = $this->Paginador->generarCondicion();
             $periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
             if ($periodo !== false) {
@@ -49,15 +56,31 @@ class LiquidacionesController extends AppController {
                     'recursive'     => -1)));
 
             $condiciones['LiquidacionesDetalle.concepto_imprimir !='] = 'No';
-            $this->set('data', $this->Liquidacion->LiquidacionesDetalle->find('all', array(
-                    'conditions'    => $condiciones,
-                    'order'         => 'concepto_orden',
-                    'fields'        => array('LiquidacionesDetalle.concepto_nombre',
-                                             'COUNT(LiquidacionesDetalle.concepto_nombre) AS cantidad',
-                                             'SUM(LiquidacionesDetalle.valor_cantidad) AS suma_cantidad',
-                                             'SUM(LiquidacionesDetalle.valor) AS valor'),
-                    'group'         => array('LiquidacionesDetalle.concepto_nombre'),
-                    'contain'       => array('Liquidacion'))));
+
+            if ($desagregado === 'Si') {
+                $this->set('data', $this->Liquidacion->LiquidacionesDetalle->find('all', array(
+                        'conditions'    => $condiciones,
+                        'contain'       => 'Liquidacion',
+                        'order'         => 'Liquidacion.relacion_id',
+                        'fields'        => array('Liquidacion.trabajador_nombre',
+                                                'Liquidacion.trabajador_apellido',
+                                                'LiquidacionesDetalle.concepto_nombre',
+                                                'COUNT(LiquidacionesDetalle.concepto_nombre) AS cantidad',
+                                                'SUM(LiquidacionesDetalle.valor_cantidad) AS suma_cantidad',
+                                                'SUM(LiquidacionesDetalle.valor) AS valor'),
+                        'group'         => array('Liquidacion.relacion_id', 'LiquidacionesDetalle.concepto_nombre'),
+                        'contain'       => array('Liquidacion'))));
+            } else {
+                $this->set('data', $this->Liquidacion->LiquidacionesDetalle->find('all', array(
+                        'conditions'    => $condiciones,
+                        'order'         => 'LiquidacionesDetalle.concepto_orden',
+                        'fields'        => array('LiquidacionesDetalle.concepto_nombre',
+                                                'COUNT(LiquidacionesDetalle.concepto_nombre) AS cantidad',
+                                                'SUM(LiquidacionesDetalle.valor_cantidad) AS suma_cantidad',
+                                                'SUM(LiquidacionesDetalle.valor) AS valor'),
+                        'group'         => array('LiquidacionesDetalle.concepto_nombre'),
+                        'contain'       => array('Liquidacion'))));
+            }
             $this->layout = 'ajax';
         }
     }
@@ -74,7 +97,9 @@ class LiquidacionesController extends AppController {
 				$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], 'periodo');
 				
 				$this->set('periodo', $periodo['periodoCompleto']);
-				$this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Liquidacion-grupo_id']));
+                if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
+				    $this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Liquidacion-grupo_id']));
+                }
 				$this->set('startPage', $this->data['Condicion']['Bar-start_page']);
 
                 
@@ -171,26 +196,26 @@ class LiquidacionesController extends AppController {
                 $condiciones['Relacion.ingreso <='] = $periodo['hasta'];
             }
             
-                $condiciones['Relacion.estado'] = 'Activa';
-                if ($this->data['Condicion']['Liquidacion-tipo'] !== 'especial') {
-                    /**
-                    * De las liquidaciones que he seleccionado para pre-liquidar, verifico que no sean
-                    * liquidaciones ya confirmadas para el mismo periodo del mismo tipo.
-                    */
-                    $condicionesLiquidacion['Liquidacion.mes'] = $periodo['mes'];
-                    $condicionesLiquidacion['Liquidacion.ano'] = $periodo['ano'];
-                    $condicionesLiquidacion['Liquidacion.periodo'] = $periodo['periodo'];
-                    $condicionesLiquidacion['Liquidacion.tipo'] = $this->data['Condicion']['Liquidacion-tipo'];
-                    $condicionesLiquidacion['Liquidacion.estado'] = 'Confirmada';
-                    $liquidaciones = $this->Liquidacion->find('all', array(
-                            'recursive'     => -1,
-                            'fields'        => 'relacion_id',
-                            'conditions'    => $condicionesLiquidacion));
-                    $confirmadas = Set::extract('/Liquidacion/relacion_id', $liquidaciones);
-                    if (!empty($confirmadas)) {
-                        $condiciones['NOT'] = array('Relacion.id' => $confirmadas);
-                    }
+            $condiciones['Relacion.estado'] = 'Activa';
+            if ($this->data['Condicion']['Liquidacion-tipo'] !== 'especial') {
+                /**
+                * De las liquidaciones que he seleccionado para pre-liquidar, verifico que no sean
+                * liquidaciones ya confirmadas para el mismo periodo del mismo tipo.
+                */
+                $condicionesLiquidacion['Liquidacion.mes'] = $periodo['mes'];
+                $condicionesLiquidacion['Liquidacion.ano'] = $periodo['ano'];
+                $condicionesLiquidacion['Liquidacion.periodo'] = $periodo['periodo'];
+                $condicionesLiquidacion['Liquidacion.tipo'] = $this->data['Condicion']['Liquidacion-tipo'];
+                $condicionesLiquidacion['Liquidacion.estado'] = 'Confirmada';
+                $liquidaciones = $this->Liquidacion->find('all', array(
+                        'recursive'     => -1,
+                        'fields'        => 'relacion_id',
+                        'conditions'    => $condicionesLiquidacion));
+                $confirmadas = Set::extract('/Liquidacion/relacion_id', $liquidaciones);
+                if (!empty($confirmadas)) {
+                    $condiciones['NOT'] = array('Relacion.id' => $confirmadas);
                 }
+            }
             //} else {
             //    $condiciones['Relacion.estado'] = 'Historica';
             //}
