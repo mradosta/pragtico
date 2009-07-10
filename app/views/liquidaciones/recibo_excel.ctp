@@ -82,9 +82,11 @@
             if ($receipt['Liquidacion']['tipo'] !== 'Final') {
                 $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('R') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['ano'] . str_pad($receipt['Liquidacion']['mes'], 2, '0', STR_PAD_LEFT) . $receipt['Liquidacion']['periodo'], array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), $styleLeftBold);
             }
-            
+
             $fila++;
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, $receipt['Liquidacion']['empleador_cuit'], $styleLeftBold);
+            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('N') -1 + ($i * 23)) . ',' . $fila, 'Fecha Pago:', $styleLeftBold);
+            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('R') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['pago'], 'date'));
 
             $fila++;
             for ($ti = 0; $ti <= 21; $ti++) {

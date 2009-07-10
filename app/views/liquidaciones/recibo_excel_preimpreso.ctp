@@ -31,7 +31,7 @@
 
     $pageMargins = $documento->activeSheet->getPageMargins();
     $pageMargins->setTop(0.2);
-    $pageMargins->setBottom(0.2);
+    $pageMargins->setBottom(0);
     $pageMargins->setLeft(0.05);
     $pageMargins->setRight(0.2);
 
@@ -102,6 +102,8 @@
                 $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('P') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Suss']['fecha'], 'date'));
                 $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('T') -1 + ($i * 23)) . ',' . $fila, $receipt['Banco']['nombre']);
             }
+            $fila+=2;
+            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('P') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['pago'], 'date'));
         }
         
         $documento->activeSheet->setBreak('A' . $fila, PHPExcel_Worksheet::BREAK_ROW);
