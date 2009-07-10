@@ -71,9 +71,9 @@ class TrabajadoresController extends AppController {
     function __generateDebitCardFile($conditions) {
 
         $data = $this->Trabajador->find('all', array(
-            'contain'       => array('Localidad.Provincia', 'Relacion'),
+            'contain'       => array('Localidad.Provincia', 'Empleador'),
             'conditions'    => $conditions));
-
+        
         if (!empty($data)) {
             $this->set('data', $data);
             /** Update state to avoid selecting again next time */
