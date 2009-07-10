@@ -109,7 +109,7 @@ if (!empty($data)) {
         $documento->setCellValue('M' . $fila, (!empty($record['Empleador'][0]['Relacion']['ingreso']))?$formato->format($record['Empleador'][0]['Relacion']['ingreso'], 'date'):'');
         $documento->setCellValue('N' . $fila, $formato->format($record['Trabajador']['nacimiento'], 'date'));
         $documento->setCellValue('O' . $fila, $record['Trabajador']['codigo_postal']);
-        $documento->setCellValue('M' . $fila, (!empty($record['Empleador'][0]['nombre']))?$record['Empleador'][0]['nombre']:'');
+        $documento->setCellValue('P' . $fila, (!empty($record['Empleador'][0]['nombre']))?$record['Empleador'][0]['nombre']:'');
         
 	}
 
