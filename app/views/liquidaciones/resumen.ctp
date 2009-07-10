@@ -138,7 +138,9 @@ if (!empty($data)) {
         $total = 0;
 		foreach ($data as $detail) {
             $fila++;
-
+            if ($detail['LiquidacionesDetalle']['concepto_tipo'] === 'Deduccion') {
+                $detail['LiquidacionesDetalle']['valor'] = $detail['LiquidacionesDetalle']['valor'] * -1;
+            }
             if ($desagregado === 'Si') {
                 $documento->setCellValue('A' . $fila, $detail['Liquidacion']['trabajador_apellido'] . ', ' . $detail['Liquidacion']['trabajador_nombre']);
                 $documento->setCellValue('B' . $fila, $detail['LiquidacionesDetalle']['concepto_nombre']);

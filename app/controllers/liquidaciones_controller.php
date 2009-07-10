@@ -54,8 +54,8 @@ class LiquidacionesController extends AppController {
                     'conditions'    => $condiciones,
                     'fields'        => array('COUNT(Liquidacion.trabajador_id) AS cantidad'),
                     'recursive'     => -1)));
-
             $condiciones['LiquidacionesDetalle.concepto_imprimir !='] = 'No';
+            $condiciones['LiquidacionesDetalle.valor >'] = 0;
 
             if ($desagregado === 'Si') {
                 $this->set('data', $this->Liquidacion->LiquidacionesDetalle->find('all', array(
@@ -65,6 +65,7 @@ class LiquidacionesController extends AppController {
                         'fields'        => array('Liquidacion.trabajador_nombre',
                                                 'Liquidacion.trabajador_apellido',
                                                 'LiquidacionesDetalle.concepto_nombre',
+                                                'LiquidacionesDetalle.concepto_tipo',
                                                 'COUNT(LiquidacionesDetalle.concepto_nombre) AS cantidad',
                                                 'SUM(LiquidacionesDetalle.valor_cantidad) AS suma_cantidad',
                                                 'SUM(LiquidacionesDetalle.valor) AS valor'),
@@ -75,6 +76,7 @@ class LiquidacionesController extends AppController {
                         'conditions'    => $condiciones,
                         'order'         => 'LiquidacionesDetalle.concepto_orden',
                         'fields'        => array('LiquidacionesDetalle.concepto_nombre',
+                                                'LiquidacionesDetalle.concepto_tipo',
                                                 'COUNT(LiquidacionesDetalle.concepto_nombre) AS cantidad',
                                                 'SUM(LiquidacionesDetalle.valor_cantidad) AS suma_cantidad',
                                                 'SUM(LiquidacionesDetalle.valor) AS valor'),
