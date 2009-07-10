@@ -24,8 +24,8 @@ $condiciones['Condicion.ConveniosCategoriasHistorico-convenios_categoria_id'] = 
 																				"lov"	=>array("controller"	=>"convenios_categorias",
 																				"camposRetorno"	=>array(	"Convenio.nombre",
 																											"ConveniosCategoria.nombre")));
-$condiciones['Condicion.ConveniosCategoriasHistorico-desde'] = array();
-$condiciones['Condicion.ConveniosCategoriasHistorico-hasta'] = array();
+$condiciones['Condicion.ConveniosCategoriasHistorico-desde__desde'] = array();
+$condiciones['Condicion.ConveniosCategoriasHistorico-hasta__hasta'] = array();
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "Historicos de Categorias", 'imagen' => 'historicos.gif')));
 
