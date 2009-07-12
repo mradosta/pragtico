@@ -713,7 +713,9 @@ class AppFormHelper extends FormHelper {
 								case 'date':
 								case 'datetime':
 									$clase = 'centro';
-									//$valor = $this->Formato->format($valor, $columnType);
+                                    if ($valor === '0000-00-00' || $valor === '0000-00-00 00:00:00') {
+                                        $valor = '';
+                                    }
 									break;
 								case 'string':
 								case 'text':
@@ -1410,20 +1412,28 @@ class AppFormHelper extends FormHelper {
 			/**
 			* Manejo los tipos de datos date para que me arme el control seleccion de fechas.
 			*/
-			else if ($tipoCampo === "date") {
-                $options['value'] = $valorCampo;
-				$options['type'] = "text";
-				$options['class'] = "fecha";
+			else if ($tipoCampo === 'date') {
+				$options['type'] = 'text';
+				$options['class'] = 'fecha';
+                if ($valorCampo === '0000-00-00') {
+                    $options['value'] = '';
+                } else {
+                    $options['value'] = $valorCampo;
+                }
 				$options['after'] = $this->__inputFecha($tagName, $options, $tipoCampo) . $options['after'];
 			}
 
 			/**
 			* Manejo los tipos de datos datetime para que me arme el control seleccion de fechas con hora.
 			*/
-			elseif ($tipoCampo === "datetime") {
-                $options['value'] = $valorCampo;
-				$options['type'] = "text";
-				$options['class'] = "fecha";
+			elseif ($tipoCampo === 'datetime') {
+				$options['type'] = 'text';
+				$options['class'] = 'fecha';
+                if ($valorCampo === '0000-00-00') {
+                    $options['value'] = '';
+                } else {
+                    $options['value'] = $valorCampo;
+                }
 				$options['after'] = $this->__inputFecha($tagName, $options, $tipoCampo) . $options['after'];
 			}
 
