@@ -40,7 +40,6 @@ class Manager2Service extends AppModel {
 			$Factura = ClassRegistry::init('Factura');
 			$Factura->Behaviors->detach('Permisos');
 			$registros = $Factura->find('all', array(
-				'limit'			=> 2,
 			  	'contain' 		=> array('Empleador', 'Area'),
 				'order'			=> array('Factura.group_id')));
 
@@ -103,6 +102,7 @@ class Manager2Service extends AppModel {
 					$child->setAttribute('nombre', $names[$codigo]);
 					$child->setAttribute('codigo', $codigo);
 					$child->setAttribute('importe', $valor);
+                    $child->setAttribute('pagado', $valor);
 					$child->setAttribute('cantidad', '1');
 					$child->setAttribute('textoAdicional', '');
 					$child = $coeficientes->appendChild($child);
@@ -129,7 +129,6 @@ class Manager2Service extends AppModel {
 			$registros = $Empleador->find('all',
 				array(	'conditions' 	=> array('Empleador.id >' => $id),
 	  					'contain'		=> array('Area'),
-	  					'limit'			=> 2,
 						'fields'		=>	array(	'Empleador.cuit',
 													'Empleador.nombre',
 													'Empleador.direccion',
@@ -163,7 +162,7 @@ class Manager2Service extends AppModel {
 				
 				foreach ($registro['Area'] as $area) {
 					$child = $doc->createElement('empleador');
-					$child->setAttribute('codigo', $area['id']);
+					$child->setAttribute('codigo', $area['identificador']);
 					foreach ($registro['Empleador'] as $k => $v) {
 						if ($k === 'cuit') {
 							$v = str_replace('-', '', $v);
