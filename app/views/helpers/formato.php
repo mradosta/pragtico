@@ -443,7 +443,6 @@ class FormatoHelper extends AppHelper {
 					$tmp['desde'] = $fechaDesde;
 					$tmp['hasta'] = $fechaHasta;
 					$return = $tmp;
-                    d($return);
 				}
 				else {
 					$return = false;
