@@ -174,12 +174,13 @@ class Liquidacion extends AppModel {
 								'desde' 	=> $this->getVarValue('#fecha_desde_liquidacion'),
 								'hasta' 	=> $this->getVarValue('#fecha_hasta_liquidacion'))));
 
-            /** Always must be present basic salary */
-            if (empty($this->__conceptos['sueldo_basico'])) {
+            /** Always must be present basic salary
+            if (empty($this->__conceptos['sueldo_basico']) || $type === 'normal') {
                 $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
                         array(  'relacion'          => $this->getRelationship(),
                                 'codigoConcepto'    => 'sueldo_basico')));
             }
+            */
 
 			/** Get novelties */
 			$novedades = $this->Relacion->Novedad->getNovedades($this->getRelationship(), $this->getPeriod());
@@ -571,7 +572,7 @@ class Liquidacion extends AppModel {
 			}
 		}
 
-		
+
 		/**
 		* Si en la cantidad hay una variable, la reemplazo.
 		*/
@@ -641,7 +642,7 @@ class Liquidacion extends AppModel {
 			$formula = str_replace('(,', '(', str_replace(str_replace(' ', '', $matches[0]), '', str_replace(' ', '', $formula)));
 		}
 		
-		
+
 		/**
 		* Veo si es una formula, que me indica la suma del remunerativo, de las deducciones o del no remunerativo.
 		*/
@@ -669,7 +670,7 @@ class Liquidacion extends AppModel {
 		* Lo se porque los codigos de los conceptos empiezan siempre con @.
 		*/
 		elseif (substr($formula, 0, 1) === "=") {
-			
+
 			/**
 			* Verifico que tenga calculado todos los conceptos que esta formula me pide.
 			* Si aun no lo tengo, lo calculo.
