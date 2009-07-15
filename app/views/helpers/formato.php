@@ -443,6 +443,7 @@ class FormatoHelper extends AppHelper {
 					$tmp['desde'] = $fechaDesde;
 					$tmp['hasta'] = $fechaHasta;
 					$return = $tmp;
+                    d($return);
 				}
 				else {
 					$return = false;
@@ -464,13 +465,13 @@ class FormatoHelper extends AppHelper {
 					$fecha = date('Y-m-d');
 				}
 
-				if (!empty($fecha)) {
+                if (!empty($fecha)) {
 					if (preg_match(VALID_DATE, $fecha, $matches)) {
 						$options['format'] = 'Y-m-d';
-						$return = $matches[3] . '-' . $matches[2] . '-' . $matches[1];
+						$return = $matches[1] . '-' . $matches[2] . '-' . $matches[3];
 					} elseif (preg_match(VALID_DATE_MYSQL, $fecha, $matches)) {
 						if (!isset($options['format'])) {
-							$options['format'] = 'd/m/Y';
+                            $options['format'] = 'Y-m-d';
 						}
 						$return = $this->Time->format($options['format'], $fecha);
 					} elseif ($fecha === '0000-00-00') {
