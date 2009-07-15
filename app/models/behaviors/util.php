@@ -434,13 +434,19 @@ class UtilBehavior extends ContainableBehavior {
  *								If array of dates is specified, they'll used instead.
  * @return date 
  **/
-	function dateAddWorkingDays(&$model, $startDate, $workingDays = 1, $nonWorkingDays = 'default') {
+	function dateAddWorkingDays(&$Model, $startDate, $workingDays = 1, $nonWorkingDays = 'default') {
 		App::import('Vendor', 'dates', 'pragmatia');
 		$Dates = new Dates();
 		return $Dates->dateAddWorkingDays($startDate, $workingDays, $nonWorkingDays);
 	}
 
 
+    function getNonWorkingDays(&$Model, $startDate, $endDate, $options = array()) {
+        App::import('Vendor', 'dates', 'pragmatia');
+        $Dates = new Dates();
+        return $Dates->dateAddWorkingDays($startDate, $endDate, $options);
+    }
+    
 /**
  * Genera una query.
  * En debug level > 0, tambien la formatea para una mejor visualizacion.

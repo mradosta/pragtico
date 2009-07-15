@@ -410,7 +410,7 @@ class ValidacionesBehavior extends ModelBehavior {
  *
  * @return boolean True if the operation should continue, false if it should abort
  */    
-    function beforeSave(&$model) {
+    function xbeforeSave(&$model) {
     	$this->setDBFieldValue($model);
     	return true;
 	}
