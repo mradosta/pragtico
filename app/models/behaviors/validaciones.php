@@ -410,7 +410,7 @@ class ValidacionesBehavior extends ModelBehavior {
  *
  * @return boolean True if the operation should continue, false if it should abort
  */    
-    function xbeforeSave(&$model) {
+    function beforeSave(&$model) {
     	$this->setDBFieldValue($model);
     	return true;
 	}
@@ -427,7 +427,8 @@ class ValidacionesBehavior extends ModelBehavior {
             if (empty($value)) {
                 return '0000-00-00';
             }
-            return $this->__getMySqlDate($value);
+            //return $this->__getMySqlDate($value);
+            return $value;
         }
                         
 		if (isset($fieldDescriptor['null']) && !$fieldDescriptor['null']) {
@@ -437,7 +438,8 @@ class ValidacionesBehavior extends ModelBehavior {
 				if (empty($value)) {
 					return '0000-00-00';
 				}
-				return $this->__getMySqlDate($value);
+				//return $this->__getMySqlDate($value);
+                return $value;
 			} elseif (in_array($fieldDescriptor['type'], array('float', 'integer', 'binary')) && empty($value)) {
 				return 0;
 			} elseif (in_array($fieldDescriptor['type'], array('string', 'text')) && strlen($value) === 0) {
