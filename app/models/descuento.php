@@ -32,8 +32,8 @@ class Descuento extends AppModel {
 								'edit'	=>
 			array('contain'	=> array('Relacion'	=> array('Empleador', 'Trabajador'))),
 								'add' 	=>
-			array('valoresDefault'	=> array('alta'		=> array('date' => 'd/m/Y'),
-											 'desde'	=> array('date' => 'd/m/Y'))));
+			array('valoresDefault'	=> array('alta'		=> array('date' => 'Y-m-d'),
+											 'desde'	=> array('date' => 'Y-m-d'))));
 
 	var $opciones = array('descontar'=> array(	'1'=>	'Con Cada Liquidacion',
 												'2'=>	'Primera Quincena',
