@@ -154,14 +154,6 @@ class Liquidacion extends AppModel {
 		
 		if ($type === 'normal' || $type === 'especial') {
 
-            if (!empty($relationship['Relacion']['egreso'])) {
-                $auxiliar = null;
-                $auxiliar['id'] = $relationship['Relacion']['id'];
-                $auxiliar['estado'] = 'Historica';
-                $this->__setAuxiliar(array( 'save'  => serialize($auxiliar),
-                                            'model' => 'Relacion'));
-            }
-            
 			$jornada = $this->getRelationship('ConveniosCategoria', 'jornada');
 			if (($period['periodo'] !== 'M' && $jornada === 'Mensual') || ($period['periodo'] === 'M' && $jornada === 'Por Hora')) {
 				return;
@@ -236,6 +228,12 @@ class Liquidacion extends AppModel {
 
             if ($type === 'final') {
 
+                $auxiliar = null;
+                $auxiliar['id'] = $relationship['Relacion']['id'];
+                $auxiliar['estado'] = 'Historica';
+                $this->__setAuxiliar(array( 'save'  => serialize($auxiliar),
+                                            'model' => 'Relacion'));
+                
                 $auxiliar = null;
                 $auxiliar['id'] = $relationship['Relacion']['id'];
                 $auxiliar['estado'] = 'Historica';
