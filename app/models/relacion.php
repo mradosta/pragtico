@@ -38,7 +38,7 @@ class Relacion extends AppModel {
 												'Area',
 												'ConveniosCategoria.Convenio')),
 								'add' => array(								
-										'valoresDefault' => array('ingreso' => array('date' => 'd/m/Y'),
+										'valoresDefault' => array('ingreso' => array('date' => 'Y-m-d'),
 																  'horas' => '8')));
 
 	var $breadCrumb = array('format' 	=> '%s %s (%s)',
@@ -72,6 +72,11 @@ class Relacion extends AppModel {
 			array(
 				'rule'		=> VALID_DATE,
 				'message'	=> 'Debe especificar una fecha valida.')
+        ),
+        'egreso' => array(
+            array(
+                'rule'      => VALID_DATE,
+                'message'   => 'Debe especificar una fecha valida.')
         ),
         'convenios_categoria_id' => array(
 			array(
