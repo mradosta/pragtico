@@ -266,28 +266,22 @@ class LiquidacionesController extends AppController {
                 if ($this->data['Condicion']['Liquidacion-tipo'] === 'final' && $relacion['Relacion']['liquidacion_final'] === 'No') {
                     continue;
                 }
+
                 /** For finished relations, only allow last period receipt */
-                if (!empty($relacion['Relacion']['egreso']) && $relacion['Relacion']['egreso'] !== '0000-00-00' && $this->data['Condicion']['Liquidacion-tipo'] !== 'final') {
-                    $tmpPeriod = explode('-', $relacion['Relacion']['egreso']);
-                    if ($tmpPeriod[0] !== $periodo['ano'] || $tmpPeriod[1] !== $periodo['mes']) {
-                        continue;
-                    } else {
+                if (!empty($relacion['Relacion']['egreso']) && $relacion['Relacion']['egreso'] !== '0000-00-00' && $this->data['Condicion']['Liquidacion-tipo'] === 'final') {
+                    $periodo['hasta'] = $relacion['Relacion']['egreso'];
+                        /*
+                        $tmpPeriod = explode('-', $relacion['Relacion']['egreso']);
+                        App::import('Vendor', 'dates', 'pragmatia');
                         if ($periodo['periodo'] === 'M') {
-                            $tmpPeriodHasta = $periodo['ano'] . '-' . $periodo['mes'] . '-31';
+                            $tmpPeriodHasta = $periodo['ano'] . '-' . $periodo['mes'] . '-' . Dates::daysInMonth($periodo['ano'], $periodo['mes']);
                         } elseif ($periodo['periodo'] === '1Q') {
                             $tmpPeriodHasta = $periodo['ano'] . '-' . $periodo['mes'] . '-15';
                         } elseif ($periodo['periodo'] === '2Q') {
-                            if ($tmpPeriod[2] <= 15) {
-                                continue;
-                            }
-                            $tmpPeriodHasta = $periodo['ano'] . '-' . $periodo['mes'] . '-31';
+                            $tmpPeriodHasta = $periodo['ano'] . '-' . $periodo['mes'] . '-' . Dates::daysInMonth($periodo['ano'], $periodo['mes']);
                         }
-                        //if ($relacion['Relacion']['egreso'] > $tmpPeriodHasta) {
-                        //    continue;
-                        //}
                         $periodo['hasta'] = $tmpPeriodHasta;
-                    }
-                    $periodo['hasta'] = $relacion['Relacion']['egreso'];
+                        */
                 }
                 
                 $conveniosCategoriasHistoricoCondition['ConveniosCategoriasHistorico.convenios_categoria_id'] = $relacion['ConveniosCategoria']['id'];
