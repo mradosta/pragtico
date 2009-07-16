@@ -266,7 +266,6 @@ class LiquidacionesController extends AppController {
                 if ($this->data['Condicion']['Liquidacion-tipo'] === 'final' && $relacion['Relacion']['liquidacion_final'] === 'No') {
                     continue;
                 }
-                
                 /** For finished relations, only allow last period receipt */
                 if (!empty($relacion['Relacion']['egreso']) && $relacion['Relacion']['egreso'] !== '0000-00-00' && $this->data['Condicion']['Liquidacion-tipo'] !== 'final') {
                     $tmpPeriod = explode('-', $relacion['Relacion']['egreso']);
@@ -283,9 +282,10 @@ class LiquidacionesController extends AppController {
                             }
                             $tmpPeriodHasta = $periodo['ano'] . '-' . $periodo['mes'] . '-31';
                         }
-                        if ($relacion['Relacion']['egreso'] > $tmpPeriodHasta) {
-                            continue;
-                        }
+                        //if ($relacion['Relacion']['egreso'] > $tmpPeriodHasta) {
+                        //    continue;
+                        //}
+                        $periodo['hasta'] = $tmpPeriodHasta;
                     }
                     $periodo['hasta'] = $relacion['Relacion']['egreso'];
                 }
