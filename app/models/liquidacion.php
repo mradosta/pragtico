@@ -231,12 +231,6 @@ class Liquidacion extends AppModel {
                 $auxiliar = null;
                 $auxiliar['id'] = $relationship['Relacion']['id'];
                 $auxiliar['estado'] = 'Historica';
-                $this->__setAuxiliar(array( 'save'  => serialize($auxiliar),
-                                            'model' => 'Relacion'));
-                
-                $auxiliar = null;
-                $auxiliar['id'] = $relationship['Relacion']['id'];
-                $auxiliar['estado'] = 'Historica';
                 $this->__setAuxiliar(array('save' => serialize($auxiliar), 'model' => 'Relacion'));
                 
                 $to = $relationship['Relacion']['egreso'];
