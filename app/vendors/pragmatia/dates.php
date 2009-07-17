@@ -31,6 +31,11 @@ class Dates {
  * @access public
  */
 	function __construct() {
+        
+        if (!defined('DAY_IN_SECONDS')) {
+            define('DAY_IN_SECONDS', 86400);
+        }
+        
 		if (!defined('VALID_DATE_MYSQL')) {
 			define('VALID_DATE_MYSQL', '/(19\d\d|20\d\d)[\-](0[1-9]|1[012])[\-](0[1-9]|[12][0-9]|3[01])|^$/');
 		}
@@ -45,14 +50,48 @@ class Dates {
 		return( date( "t", mktime( 0, 0, 0, $month, 1, $year) ) );
 	}
 
+
+/**
+ * Calculates non working days between two dates.
+ *
+ * @param string $fromDate Starting date.
+ * @param string $toDate End date. If empty, current date will be used instead.
+ * @param array $options
+ *          fromInclusive: (default: true). Means that lower limit will be included in calculations.         
+ *          toInclusive: (default: true). Means that upper limit will be included in calculations.
+ *
+ * @return int Number of non working days.
+ * @access public
+ */
+    function getNonWorkingDays($fromDate, $toDate = null, $options = array()) {
+
+        $defaults = array(  'fromInclusive' => true,
+                            'toInclusive'   => true);
+        $options = array_merge($defaults, $options);
+        
+        if (empty($toDate)) {
+            $toDate = date('Y-m-d');
+        }
+
+        $count = 0;
+        while ($fromDate <= $toDate) {
+            $dateInSeconds = strtotime($fromDate);
+            if (in_array(date('D', $dateInSeconds), array('Sat', 'Sun'))) {
+                $count++;
+            }
+            $fromDate = date('Y-m-d', strtotime($fromDate) + DAY_IN_SECONDS);
+        }
+        return $count;
+    }
+
 	
 /**
- * Calcula la diferencia entre dos fechas.
+ * Calculates difference between two dates.
  *
  * Las fechas deben estar en formato mysql (yyyy-mm-dd hh:mm:ss) aunque no completa (@see __getValidDateTime)
  *
- * @param string $fechaDesde La fecha desde la cual se tomara la diferencia.
- * @param string $fechaHasta La fecha hasta la cual se tomara la diferencia. Si no se pasa la fecha hasta,
+ * @param string $fromDate La fecha desde la cual se tomara la diferencia.
+ * @param string $toDate La fecha hasta la cual se tomara la diferencia. Si no se pasa la fecha hasta,
  * @param array $options
  * se tomara la fecha actual como segunda fecha.
  *
@@ -60,7 +99,7 @@ class Dates {
  * 					False en caso de que las fechas sean invalidas.
  * @access public
  */
-	function dateDiff($fechaDesde, $fechaHasta = null, $options = array()) {
+	function dateDiff($fromDate, $toDate = null, $options = array()) {
 
 		$defaults = array(	'fromInclusive' => true,
 						 	'toInclusive' 	=> true,
@@ -68,56 +107,32 @@ class Dates {
 		$options = array_merge($defaults, $options);
 
 		/** http://www.usenet-forums.com/php-language/373199-last-day-year-date-bug-2.html */
-		if (substr($fechaDesde, 0, 10) <= '2007-12-31' && substr($fechaHasta, 0, 10) >= '2007-12-31') {
+		if (substr($fromDate, 0, 10) <= '2007-12-31' && substr($toDate, 0, 10) >= '2007-12-31') {
 			$options['2007Bug'] = true;
 		}
 		
-		if ($fechaDesde = $this->__getValidDateTime($fechaDesde)) {
-			$fechaDesde = strtotime($fechaDesde);
+		if ($fromDate = Dates::__getValidDateTime($fromDate)) {
+			$fromDate = strtotime($fromDate);
 		} else {
 			return false;
 		}
 		
-		if ($fechaHasta = $this->__getValidDateTime($fechaHasta)) {
-			$fechaHasta = strtotime($fechaHasta);
+		if ($toDate = Dates::__getValidDateTime($toDate)) {
+			$toDate = strtotime($toDate);
 		} else {
 			return false;
 		}
 
 		if ($options['fromInclusive'] === true && $options['toInclusive'] === true) {
-			$fechaHasta += 86400;
+			$toDate += 86400;
 		}
 
-		/** Don't know why this
-		
-		*/
 		if ($options['2007Bug'] === true) {
-			$fechaHasta += 3600;
-			//SELECT UNIX_TIMESTAMP( '2007-12-31' ) ;
-			//1199066400
-			//SELECT UNIX_TIMESTAMP('2007-12-31 00:00:00');
-			//1199066400
-			//mktime(0,0,0,12,31,2007)
-			//1199066400
-
-			//SELECT UNIX_TIMESTAMP('2007-12-31 23:59:59');
-			//1199152799
-			//SELECT UNIX_TIMESTAMP('2007-12-31 00:00:00');
-			//0
-			//mktime(23,59,59,12,31,2007)
-			//1199152799
-
-			//SELECT UNIX_TIMESTAMP( '2007-01-01' ) ;
-			//1167620400
-			//mktime(0,0,0,1,1,2007)
-			//1167620400
-
-			//SELECT UNIX_TIMESTAMP('2007-01-01 00:00:00');
-			//1167620400
+			$toDate += 3600;
 		}
 
 
-		$diff = $fechaHasta-$fechaDesde;
+		$diff = $toDate-$fromDate;
 		$daysDiff = floor($diff/60/60/24);
 		$diff -= $daysDiff*86400;
 		$hrsDiff = floor($diff/60/60);
@@ -153,13 +168,21 @@ class Dates {
  * @return mixed La fecha en formato yyyy-mm-dd hh:mm:ss con el intervalo agregado, false si no fue posible realizar la operacion.
  * @access public
  */
-	function dateAdd($fecha = null, $cantidad = 1, $intervalo = 'd') {
+	function dateAdd($fecha = null, $cantidad = 1, $intervalo = 'd', $options = array()) {
+
+        $defaults = array('fromInclusive' => true);
+        $options = array_merge($defaults, $options);
+
+        if ($options['fromInclusive'] === true) {
+            $cantidad--;
+        }
+        
 		$validIntervalo = array('y', 'q', 'm', 'w', 'd', 'h', 'n', 's');
-		if(!in_array($intervalo, $validIntervalo) || !is_numeric($cantidad)) {
+		if (!in_array($intervalo, $validIntervalo) || !is_numeric($cantidad)) {
 			return false;
 		}
 		
-		if($fecha = $this->__getValidDateTime($fecha)) {
+		if ($fecha = Dates::__getValidDateTime($fecha)) {
 			$fecha = strtotime($fecha);
 		} else {
 			return false;
@@ -206,12 +229,10 @@ class Dates {
 	
 	
 /**
- * Generates a date based on a starting date plus N working days.
+ * Creates a date based on a starting date adding n working days.
  *
- * http://www.tundidor.com.ar/php/calcular-dias-habiles-con-php/
- * 
- * @param integer $workingDays The number of days to add.
  * @param date $startDate The starting date.
+ * @param integer $workingDays The number of days to add.
  * @param mixed $nonWorkingDays If string default, Argentina non working days will be used.
  *								If array of dates is specified, they'll used instead.
  * @return date 
