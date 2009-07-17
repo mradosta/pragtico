@@ -171,6 +171,7 @@ class NovedadesController extends AppController {
 					$conditions = $this->Paginador->generarCondicion();
 					$registros = $this->Novedad->Relacion->find('all',
 						array('contain'	=> array('ConveniosCategoria', 'Trabajador', 'Empleador'),
+                            'order'     => array('Trabajador.apellido', 'Trabajador.nombre'),
 							'conditions'=> $conditions));
 
 					if (!empty($registros)) {
