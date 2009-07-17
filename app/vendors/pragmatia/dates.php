@@ -51,6 +51,38 @@ class Dates {
 	}
 
 
+    function getDay($date) {
+        return array_pop(explode('-', $date));
+    }
+    
+    function getMonth($date) {
+        list(,$month) = explode('-', $date);
+        return $month;
+    }
+    
+    function getYear($date) {
+        return array_shift(explode('-', $date));
+    }
+    
+    function getPeriods($fromDate, $toDate = null, $options = array()) {
+        
+        $periods = array();
+        while ($fromDate < $toDate) {
+            $day = Dates::getDay($fromDate);
+            $month = Dates::getMonth($fromDate);
+            $year = Dates::getYear($fromDate);
+            if ($day <= 15) {
+                $periods[] = $year . $month . '1Q';
+                $fromDate = Dates::dateAdd($fromDate, 16);
+            } else {
+                $periods[] = $year . $month . '2Q';
+                $periods[] = $year . $month . 'M';
+                $fromDate = Dates::dateAdd($fromDate, Dates::daysInMonth($year, $month) - 14);
+            }
+        }
+        return $periods;
+    }
+
 /**
  * Calculates non working days between two dates.
  *
