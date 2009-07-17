@@ -142,6 +142,8 @@ class Novedad extends AppModel {
 			return false;
 		}
 		
+        App::import('Vendor', 'dates', 'pragmatia');
+        
 		$predefinidos = $this->getIngresosPosibles('predefinidos');
 		foreach ($datos as $relacion_id => $data) {
 			foreach ($data as $tipo => $registros) {
@@ -181,7 +183,7 @@ class Novedad extends AppModel {
 								$save['Novedad']['subtipo'] = '1:Justificada por Enfermedad';
 								if (!empty($registros['Desde'])) {
 									/** 25569 = Days between 1970-01-01 and 1900-01-01 */
-									$save['Novedad']['data'] = $this->format($this->dateAdd('1970-01-01', $registros['Desde'] - 25569), 'date') . '|' . $registros['Dias'];
+									$save['Novedad']['data'] = $this->format(Dates::dateAdd('1970-01-01', $registros['Desde'] - 25569, 'd', array('fromInclusive' => false)), 'date') . '|' . $registros['Dias'];
 								} else {
 									$save['Novedad']['data'] = $registros['Dias'];
 								}
