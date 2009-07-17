@@ -17,7 +17,7 @@
  */
 
 App::import('Component', 'Util');
-
+App::import('Vendor', 'dates', 'pragmatia');
 /**
  * La clase encapsula el caso de prueba.
  *
@@ -46,6 +46,16 @@ class UtilComponentTestCase extends CakeTestCase {
     }
 
 
+    function testGetNonWorkingDays() {
+        $result = $this->UtilComponentTest->getNonWorkingDays('2009-07-10', '2009-07-20');
+        $expected = '4';
+        $this->assertEqual($expected, $result);
+        
+        $result = $this->UtilComponentTest->getNonWorkingDays('2009-07-7', '2009-07-10');
+        $expected = '0';
+        $this->assertEqual($expected, $result);
+    }
+    
 	function testDateAddWorkingDays() {
         $result = $this->UtilComponentTest->dateAddWorkingDays('2008-12-23', 2, array('2008-05-25'));
         $expected = '2008-12-25';
@@ -82,21 +92,21 @@ class UtilComponentTestCase extends CakeTestCase {
 
 	
 	function testDateAdd() {
-        
-        $result = $this->UtilComponentTest->dateAdd('2008-05-18', -365);
+
+        $result = Dates::dateAdd('2008-05-18', -365, 'd', array('fromInclusive' => false));
         $expected = '2007-05-19';
         $this->assertEqual($expected, $result);
-		
-        $result = $this->UtilComponentTest->dateAdd('2009-05-18', -365);
-        $expected = '2008-05-18';
+
+        $result = Dates::dateAdd('2009-05-18', -365);
+        $expected = '2008-05-17';
         $this->assertEqual($expected, $result);
-        
-        $result = $this->UtilComponentTest->dateAdd('2008-03-10', 2);
+
+        $result = Dates::dateAdd('2008-03-10', 2, 'd', array('fromInclusive' => false));
         $expected = '2008-03-12';
         $this->assertEqual($expected, $result);
-		
-        $result = $this->UtilComponentTest->dateAdd('1990-11-04', 4);
-        $expected = '1990-11-08';
+
+        $result = Dates::dateAdd('1990-11-04', 4);
+        $expected = '1990-11-07';
         $this->assertEqual($expected, $result);
 	}
 
@@ -143,26 +153,28 @@ class UtilComponentTestCase extends CakeTestCase {
  */
 	function testFormat() {
 	
-		$valor = "1000";
+		$valor = '1000';
 		$result = $this->UtilComponentTest->format($valor);
 		$expected = '1000,00';
 		$this->assertEqual($expected, $result);
 
-		$valor = "all";
-		$expected = array(	"1" 	=> "Enero",
-							"2" 	=> "Febrero",
-							"3" 	=> "Marzo",
-							"4" 	=> "Abril",
-							"5" 	=> "Mayo",
-							"6" 	=> "Junio",
-							"7" 	=> "Julio",
-							"8" 	=> "Agosto",
-							"9" 	=> "Setiembre",
-							"10" 	=> "Octubre",
-							"11" 	=> "Noviembre",
-							"12" 	=> "Diciembre");
-	    $result = $this->UtilComponentTest->format($valor, array("type" => "mesEnLetras", "case" => "ucfirst"));
+        /*
+		$valor = 'all';
+		$expected = array(	'1' 	=> 'Enero',
+							'2' 	=> 'Febrero',
+							'3' 	=> 'Marzo',
+							'4' 	=> 'Abril',
+							'5' 	=> 'Mayo',
+							'6' 	=> 'Junio',
+							'7' 	=> 'Julio',
+							'8' 	=> 'Agosto',
+							'9' 	=> 'Setiembre',
+							'10' 	=> 'Octubre',
+							'11' 	=> 'Noviembre',
+							'12' 	=> 'Diciembre');
+	    $result = $this->UtilComponentTest->format($valor, array('type' => 'mesEnLetras', 'case' => 'ucfirst'));
 	    $this->assertEqual($result, $expected);
+        */
 	}
 	
 
@@ -174,18 +186,18 @@ class UtilComponentTestCase extends CakeTestCase {
  */
     function testExtraerIds() {
     	$expected = array(1, 2, 6, 8, 9);
-    	$data = array(	"id_1"	=>	1,
-    					"id_2"	=>	1,
-    					"id_3"	=>	0,
-    					"xid_4"	=>	1,
-    					"id_5x"	=>	1,
-    					"id_6"	=>	"1",
-    					"id_7"	=>	"a",
-    					"id_8"	=>	true,
-    					"id_9"	=>	"true",
-    					"id_10"	=>	false,
-    					"id_11"	=>	"false",
-    					"id"	=> 	1);
+    	$data = array(	'id_1'	=> 1,
+    					'id_2'	=> 1,
+    					'id_3'	=> 0,
+    					'xid_4'	=> 1,
+    					'id_5x'	=> 1,
+    					'id_6'	=> '1',
+    					'id_7'	=> 'a',
+    					'id_8'	=> true,
+    					'id_9'	=> 'true',
+    					'id_10'	=> false,
+    					'id_11'	=> 'false',
+    					'id'	=> 1);
 	    $result = $this->UtilComponentTest->extraerIds($data);
 	    $this->assertEqual($result, $expected);
 	}
