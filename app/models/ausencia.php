@@ -168,6 +168,7 @@ class Ausencia extends AppModel {
                         echo 'ERROR, mas de una ausencias de tipo accidente cargadas.';
                         die;
                     }
+                    $diffArt = $diff;
                     $ausenciasArt = $ausencia;
                 }
 
@@ -207,10 +208,12 @@ class Ausencia extends AppModel {
                     }
                 }
 
-                if ($ausencia['Ausencia']['desde'] < $periodo['desde']) {
-                    $nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']] += Dates::getNonWorkingDays($periodo['desde'], Dates::dateAdd($periodo['desde'], $acumulado));
-                } else {
-                    $nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']] += Dates::getNonWorkingDays($ausencia['Ausencia']['desde'], Dates::dateAdd($ausencia['Ausencia']['desde'], $acumulado));
+                if (isset($nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']])) {
+                    if ($ausencia['Ausencia']['desde'] < $periodo['desde']) {
+                        $nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']] += Dates::getNonWorkingDays($periodo['desde'], Dates::dateAdd($periodo['desde'], $acumulado));
+                    } else {
+                        $nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']] += Dates::getNonWorkingDays($ausencia['Ausencia']['desde'], Dates::dateAdd($ausencia['Ausencia']['desde'], $acumulado));
+                    }
                 }
 			}
 
@@ -229,6 +232,7 @@ class Ausencia extends AppModel {
                     $daysBeforePeriod = 0;
                 }
 
+                /*
                 $date = $this->dateAdd($ausenciasArt['Ausencia']['desde'], -365);
                 $ausencias['Dias Accidentado'] = 365;
                 if ($date < $relacion['Relacion']['ingreso']) {
@@ -236,25 +240,52 @@ class Ausencia extends AppModel {
                     $diffDividendo = $this->dateDiff($relacion['Relacion']['ingreso'], $ausenciasArt['Ausencia']['desde']);
                     $ausencias['Dias Anteriores Accidente'] = $diffDividendo['dias'];
                 }
-
-
                 list($yearFrom, $monthFrom) = explode('-', $date);
-                list($yearTo, $monthTo) = explode('-', $ausenciasArt['Ausencia']['desde']);
+                */
+
+                list($yearTo, $monthTo, $dayTo) = explode('-', $ausenciasArt['Ausencia']['desde']);
+                if ($periodo['periodo'] === '1Q') {
+                    $fromDate = ($yearTo - 1) . '-' . $monthTo . '-16';
+                    if ($monthTo > 1) {
+                        $toDate = $yearTo .'-' . str_pad(($monthTo - 1), 2, '0', STR_PAD_LEFT) . '-' . str_pad(Dates::daysInMonth($yearTo, ($monthTo - 1)), 2, '0', STR_PAD_LEFT);
+                    } else {
+                        $toDate = $yearTo .'-12-31';
+                    }
+                } elseif ($periodo['periodo'] === '2Q') {
+                    if ($monthTo === 12) {
+                        $fromDate = ($yearTo - 1) . '-01-01';
+                    } else {
+                        $fromDate = ($yearTo - 1) . '-' . str_pad(($monthTo + 1), 2, '0', STR_PAD_LEFT) . '-01';
+                    }
+                    $toDate = $yearTo . '-' . $monthTo . '-15';
+                } elseif ($periodo['periodo'] === 'M') {
+                    if ($monthTo === 12) {
+                        $fromDate = ($yearTo - 1) . '-01-01';
+                    } else {
+                        $fromDate = ($yearTo - 1) . '-' . str_pad(($monthTo + 1), 2, '0', STR_PAD_LEFT) . '-01';
+                    }
+                    $toDate = $yearTo . '-' . $monthTo . '-' . str_pad(Dates::daysInMonth($yearTo, $monthTo), 2, '0', STR_PAD_LEFT);
+                }
+                
+                if ($fromDate < $relacion['Relacion']['ingreso']) {
+                    $fromDate  = $relacion['Relacion']['ingreso'];
+                }
+                $diffDividendo = Dates::dateDiff($fromDate, $toDate);
+                $ausencias['Dias Anteriores Accidente'] = $diffDividendo['dias'];
+
+                $db =& ConnectionManager::getDataSource($this->useDbConfig);
+                $condition = str_replace('CONCAT(`Liquidacion`.`ano, Liquidacion`.`mes, Liquidacion`.`periodo`)', 'CONCAT(`Liquidacion`.`ano`, `Liquidacion`.`mes, `Liquidacion`.`periodo`)', $db->conditions(
+                  array(  'Liquidacion.estado'                      => 'Confirmada',
+                        'Liquidacion.relacion_id'                   => $relacion['Relacion']['id'],
+                        'LiquidacionesDetalle.concepto_tipo'        => 'Remunerativo',
+                        'LiquidacionesDetalle.concepto_imprimir !=' => 'No',
+                        "CONCAT(Liquidacion.ano, Liquidacion.mes, Liquidacion.periodo)" => Dates::getPeriods($fromDate, $toDate)), true, false));
                 $data = $this->Relacion->Liquidacion->LiquidacionesDetalle->find('all', array(
                     'checkSecurity' => false,
                     'contain'       => array('Liquidacion'),
                     'group'         => array('Liquidacion.id'),
                     'fields'        => array('sum(LiquidacionesDetalle.valor) as valor'),
-                    'conditions'    =>
-                        array(  'Liquidacion.estado'                        => 'Confirmada',
-                                'Liquidacion.relacion_id'                   => $relacion['Relacion']['id'],
-                                'LiquidacionesDetalle.concepto_tipo'        => 'Remunerativo',
-                                'LiquidacionesDetalle.concepto_imprimir !=' => 'No',
-                                'Liquidacion.ano >='                        => $yearFrom,
-                                'Liquidacion.mes >='                        => $monthFrom,
-                                'Liquidacion.ano <='                        => $yearTo,
-                                'Liquidacion.mes <='                        => $monthTo
-                                )));
+                    'conditions'    => array($condition)));
 
                 $ausencias['Acumulado Remunerativo Accidente'] = array_sum(Set::extract('/LiquidacionesDetalle/valor', $data));
 
