@@ -40,7 +40,6 @@ $fieldsets[] = 	array('campos' => $campos);
 $campos = null;
 $campos['AusenciasSeguimiento.id'] = array();
 $campos['AusenciasSeguimiento.dias'] = array();
-$campos['AusenciasSeguimiento.dias_habiles'] = array('aclaracion' => 'Si marca no, se descontaran dias no habiles.');
 $campos['AusenciasSeguimiento.comprobante'] = array("label"=>"Presento Comprobante");
 $campos['AusenciasSeguimiento.archivo'] = array("label"=>"Comprobante", "type"=>"file", "descargar"=>true, "mostrar"=>true);
 $campos['AusenciasSeguimiento.estado'] = array('type' => 'radio');
