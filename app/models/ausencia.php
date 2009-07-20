@@ -297,7 +297,7 @@ class Ausencia extends AppModel {
                 /** If more than 10 days, must create an ART accident and an accident */
                 if ($daysBeforePeriod + $ausencias['Accidente'] > 10) {
                     if ($daysBeforePeriod > 10) {
-                        $ausencias['Accidente ART'] = $diffArt['dias'];
+                        $ausencias['Accidente ART'] = $diffArt['dias'] - $daysBeforePeriod;
                         $ausencias['Accidente'] = 0;
                     } else {
                         $ausencias['Accidente ART'] = $ausencias['Accidente'] - 10;
