@@ -143,7 +143,7 @@ class Ausencia extends AppModel {
 														'Ausencia.id'		=> $ausenciaIds),
 												array(	'Ausencia.desde >='	=> $periodo['desde'],
 														'Ausencia.desde <='	=> $periodo['hasta']))))));
-		
+
 		$ausencias['Accidente'] = 0;
         $ausencias['Accidente ART'] = 0;
         $ausencias['Acumulado Remunerativo Accidente'] = 0;
@@ -160,15 +160,19 @@ class Ausencia extends AppModel {
 			$Concepto = ClassRegistry::init('Concepto');
 			
 			foreach ($r as $k => $ausencia) {
-                                
-                $diff = $this->dateDiff($ausencia['Ausencia']['desde'], $periodo['hasta']);
+
+                if ($ausencia['Ausencia']['desde'] < $periodo['desde']) {
+                    $diff = $this->dateDiff($periodo['desde'], $periodo['hasta']);
+                } else {
+                    $diff = $this->dateDiff($ausencia['Ausencia']['desde'], $periodo['hasta']);
+                }
                 if ($ausencia['AusenciasMotivo']['tipo'] === 'Accidente') {
                     if (count(Set::extract('/AusenciasMotivo[tipo=Accidente]/id', $ausencia)) > 1) {
                         /** TODO: Revisar esto y hacerlo de una forma mas elegante */
                         echo 'ERROR, mas de una ausencias de tipo accidente cargadas.';
                         die;
                     }
-                    $diffArt = $diff;
+                    //$diffArt = $diff;
                     $ausenciasArt = $ausencia;
                 }
 
@@ -266,7 +270,7 @@ class Ausencia extends AppModel {
                     }
                     $toDate = $yearTo . '-' . $monthTo . '-' . str_pad(Dates::daysInMonth($yearTo, $monthTo), 2, '0', STR_PAD_LEFT);
                 }
-                
+
                 if ($fromDate < $relacion['Relacion']['ingreso']) {
                     $fromDate  = $relacion['Relacion']['ingreso'];
                 }
@@ -295,9 +299,12 @@ class Ausencia extends AppModel {
                 $ausencias['Acumulado Remunerativo Accidente'] = array_sum(Set::extract('/LiquidacionesDetalle/valor', $data));
 
                 /** If more than 10 days, must create an ART accident and an accident */
+                //d($daysBeforePeriod);
+                //d($diffArt);
                 if ($daysBeforePeriod + $ausencias['Accidente'] > 10) {
                     if ($daysBeforePeriod > 10) {
-                        $ausencias['Accidente ART'] = $diffArt['dias'] - $daysBeforePeriod;
+                        //$ausencias['Accidente ART'] = $diffArt['dias'];
+                        $ausencias['Accidente ART'] = $acumulado;
                         $ausencias['Accidente'] = 0;
                     } else {
                         $ausencias['Accidente ART'] = $ausencias['Accidente'] - 10;
@@ -310,7 +317,23 @@ class Ausencia extends AppModel {
                 }
             }
         }
-
+/*
+        d(array('conceptos'    => $conceptos,
+                     'variables'    => array(
+        '#ausencias_accidente'                              => $ausencias['Accidente'],
+        '#ausencias_maternidad'                             => $ausencias['Maternidad'],
+        '#no_laborables_durante_ausencias_maternidad'       => $nonWorkingDays['Maternidad'],
+        '#ausencias_accidente_art'                          => $ausencias['Accidente ART'],
+        '#acumulado_remunerativo_accidente'                 => $ausencias['Acumulado Remunerativo Accidente'],
+        '#dias_anteriores_accidente'                        => $ausencias['Dias Anteriores Accidente'],
+        '#ausencias_enfermedad'                             => $ausencias['Enfermedad'],
+        '#no_laborables_durante_ausencias_enfermedad'       => $nonWorkingDays['Enfermedad'],
+        '#ausencias_licencia'                               => $ausencias['Licencia'],
+        '#no_laborables_durante_ausencias_licencia'         => $nonWorkingDays['Licencia'],
+        '#ausencias_injustificada'                          => $ausencias['Injustificada'],
+        '#no_laborables_durante_ausencias_injustificada'    => $nonWorkingDays['Injustificada']),
+                     'auxiliar'     => $auxiliares));
+*/
 		return array('conceptos' 	=> $conceptos,
 					 'variables' 	=> array(
         '#ausencias_accidente'                              => $ausencias['Accidente'],
