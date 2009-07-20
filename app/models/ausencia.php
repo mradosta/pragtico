@@ -279,7 +279,7 @@ class Ausencia extends AppModel {
                             https://trac.cakephp.org/ticket/6519
                 */
                 $db =& ConnectionManager::getDataSource($this->useDbConfig);
-                $condition = str_replace('CONCAT(`Liquidacion`.`ano, Liquidacion`.`mes, Liquidacion`.`periodo`)', 'CONCAT(`Liquidacion`.`ano`, `Liquidacion`.`mes, `Liquidacion`.`periodo`)', $db->conditions(
+                $condition = str_replace("CONCAT(`Liquidacion`.`ano, LPAD(`Liquidacion`.`mes, 2, '0'`), Liquidacion`.`periodo`)", "CONCAT(`Liquidacion`.`ano`, LPAD(`Liquidacion`.`mes`, 2, '0'), `Liquidacion`.`periodo`)", $db->conditions(
                   array(  'Liquidacion.estado'                      => 'Confirmada',
                         'Liquidacion.relacion_id'                   => $relacion['Relacion']['id'],
                         'LiquidacionesDetalle.concepto_tipo'        => 'Remunerativo',
