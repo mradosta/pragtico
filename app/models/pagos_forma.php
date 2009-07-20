@@ -27,8 +27,8 @@ class PagosForma extends AppModel {
 
 
 	var $modificadores = array(	'add'  	=> 
-			array('valoresDefault' => array(	'fecha' 		=> array('date' => 'd/m/Y'),
-										   		'fecha_pago' 	=> array('date' => 'd/m/Y'))));
+			array('valoresDefault' => array(	'fecha' 		=> array('date' => 'Y-m-d'),
+										   		'fecha_pago' 	=> array('date' => 'Y-m-d'))));
 	
 	var $validate = array(
         'fecha' => array(
@@ -103,9 +103,9 @@ class PagosForma extends AppModel {
 			case 'Efectivo':
 			case 'Beneficios':
 			case 'Otro':
-				$this->data['PagosForma']['cheque_numero'] = '0';
+				unset($this->data['PagosForma']['cheque_numero']);
 				$this->data['PagosForma']['cuenta_id'] = null;
-				$this->data['PagosForma']['cbu_numero'] = '0';
+                unset($this->data['PagosForma']['cbu_numero']);
 				break;
 			case 'Deposito':
 				if (empty($this->data['PagosForma']['cbu_numero'])) {
@@ -126,8 +126,7 @@ class PagosForma extends AppModel {
 				if (empty($this->data['PagosForma']['cuenta_id'])) {
 					$this->invalidate('cuenta_id', 'Debe seleccionar la Cuenta Emisora del Deposito.');
 				}
-				$this->data['PagosForma']['cheque_numero'] = '0';
-				d($this->data);
+				unset($this->data['PagosForma']['cheque_numero']);
 				break;
 			case 'Cheque':
 				if (empty($this->data['PagosForma']['fecha_pago'])) {
@@ -141,7 +140,7 @@ class PagosForma extends AppModel {
 				if (empty($this->data['PagosForma']['cuenta_id'])) {
 					$this->invalidate('cuenta_id', 'Debe seleccionar la Cuenta Emisora del Cheque.');
 				}
-				$this->data['PagosForma']['cbu_numero'] = '0';
+				unset($this->data['PagosForma']['cheque_numero']);
 				break;
 		}
 		if (($this->data['PagosForma']['pago_acumulado'] + $this->data['PagosForma']['monto']) > $this->data['PagosForma']['pago_monto']) {
@@ -150,7 +149,7 @@ class PagosForma extends AppModel {
 		}
 		else if (($this->data['PagosForma']['pago_acumulado'] + $this->data['PagosForma']['monto']) == $this->data['PagosForma']['pago_monto']) {
 			$save = array('id'=>$this->data['PagosForma']['pago_id'], 'estado' => 'Imputado', 'permissions' => '292');
-			if (!$this->Pago->save(array('Pago'=>$save))) {
+			if (!$this->Pago->save(array('Pago' => $save))) {
 				$this->dbError['errorDescripcion'] = 'No fue posible actualizar el estado del Pago.';
 				return false;
 			}
