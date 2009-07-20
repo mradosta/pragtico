@@ -118,7 +118,7 @@ class Ausencia extends AppModel {
  */
 	function getAusencias($relacion, $periodo) {
 
-		/** Try to find if the are accident absences before the period */
+		/** Try to find if there are accident absences before the period */
         $sql = "
             select      Ausencia.id
             from        ausencias Ausencia,
@@ -226,7 +226,7 @@ class Ausencia extends AppModel {
 
             if (!empty($ausenciasArt)) {
                 if ($ausenciasArt['Ausencia']['desde'] < $periodo['desde']) {
-                    $diffTmp = $this->dateDiff($ausenciasArt['Ausencia']['desde'], $periodo['desde']);
+                    $diffTmp = Dates::dateDiff($ausenciasArt['Ausencia']['desde'], $periodo['desde']);
                     $daysBeforePeriod = $diffTmp['dias'] - 1;
                 } else {
                     $daysBeforePeriod = 0;
@@ -270,16 +270,25 @@ class Ausencia extends AppModel {
                 if ($fromDate < $relacion['Relacion']['ingreso']) {
                     $fromDate  = $relacion['Relacion']['ingreso'];
                 }
+                debug($fromDate);
+                debug($toDate);
+                //d($relacion['Relacion']['id']);
+                //d(Dates::getPeriods($fromDate, $toDate));
                 $diffDividendo = Dates::dateDiff($fromDate, $toDate);
                 $ausencias['Dias Anteriores Accidente'] = $diffDividendo['dias'];
 
+
+                /** TODO:
+                    Follow bug:
+                            https://trac.cakephp.org/ticket/6519
+                */
                 $db =& ConnectionManager::getDataSource($this->useDbConfig);
                 $condition = str_replace('CONCAT(`Liquidacion`.`ano, Liquidacion`.`mes, Liquidacion`.`periodo`)', 'CONCAT(`Liquidacion`.`ano`, `Liquidacion`.`mes, `Liquidacion`.`periodo`)', $db->conditions(
                   array(  'Liquidacion.estado'                      => 'Confirmada',
                         'Liquidacion.relacion_id'                   => $relacion['Relacion']['id'],
                         'LiquidacionesDetalle.concepto_tipo'        => 'Remunerativo',
                         'LiquidacionesDetalle.concepto_imprimir !=' => 'No',
-                        "CONCAT(Liquidacion.ano, Liquidacion.mes, Liquidacion.periodo)" => Dates::getPeriods($fromDate, $toDate)), true, false));
+                        'CONCAT(Liquidacion.ano, LPAD(Liquidacion.mes, 2, \'0\'), Liquidacion.periodo)' => Dates::getPeriods($fromDate, $toDate)), true, false));
                 $data = $this->Relacion->Liquidacion->LiquidacionesDetalle->find('all', array(
                     'checkSecurity' => false,
                     'contain'       => array('Liquidacion'),
@@ -305,24 +314,6 @@ class Ausencia extends AppModel {
                 }
             }
         }
-
-        /*
-        d(array('conceptos'    => $conceptos,
-                     'variables'    => array(
-        '#ausencias_accidente'                              => $ausencias['Accidente'],
-        '#ausencias_maternidad'                             => $ausencias['Maternidad'],
-        '#no_laborables_durante_ausencias_maternidad'       => $nonWorkingDays['Maternidad'],
-        '#ausencias_accidente_art'                          => $ausencias['Accidente ART'],
-        '#acumulado_remunerativo_accidente'                 => $ausencias['Acumulado Remunerativo Accidente'],
-        '#dias_anteriores_accidente'                        => $ausencias['Dias Anteriores Accidente'],
-        '#ausencias_enfermedad'                             => $ausencias['Enfermedad'],
-        '#no_laborables_durante_ausencias_enfermedad'       => $nonWorkingDays['Enfermedad'],
-        '#ausencias_licencia'                               => $ausencias['Licencia'],
-        '#no_laborables_durante_ausencias_licencia'         => $nonWorkingDays['Licencia'],
-        '#ausencias_injustificada'                          => $ausencias['Injustificada'],
-        '#no_laborables_durante_ausencias_injustificada'    => $nonWorkingDays['Injustificada']),
-                     'auxiliar'     => $auxiliares));
-        */
 
 		return array('conceptos' 	=> $conceptos,
 					 'variables' 	=> array(
