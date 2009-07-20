@@ -629,9 +629,11 @@ class Liquidacion extends AppModel {
 		/**
 		* Veo si es una formula, hay un not, obtengo los conceptos y rearmo los formula eliminando la perte del not.
 		*/
-		if (preg_match('/not\(([^()]+)\)/', $formula, $matches)) {
+		if (preg_match('/not[\s]*\(([^()]+)\)/', $formula, $matches)) {
+            //debug($concepto['codigo']);
 			$conceptosNot = explode(',', str_replace('@', '', str_replace(' ', '', $matches[1])));
 			$formula = str_replace('(,', '(', str_replace(str_replace(' ', '', $matches[0]), '', str_replace(' ', '', $formula)));
+            //debug($conceptosNot);
 		}
 		
 
@@ -646,7 +648,9 @@ class Liquidacion extends AppModel {
             $valor = 0;
             $this->__getAllNecessaryConcepts();
 			foreach ($this->__conceptos as $conceptoTmp) {
-				if (!in_array($conceptoTmp['codigo'], $conceptosNot) && $conceptoTmp['tipo'] == $matches[1] && ($conceptoTmp['imprimir'] === "Si" || $conceptoTmp['imprimir'] === "Solo con valor")) {
+                
+				if (!in_array($conceptoTmp['codigo'], $conceptosNot) && $conceptoTmp['tipo'] == $matches[1] && in_array($conceptoTmp['imprimir'], array('Si', 'Solo con valor'))) {
+                    //debug($conceptoTmp['codigo']);
 					if (empty($conceptoTmp['valor'])) {
 						$resolucionCalculo = $this->__getConceptValue($conceptoTmp);
 						$this->__conceptos[$conceptoTmp['codigo']] = array_merge($resolucionCalculo, $this->__conceptos[$conceptoTmp['codigo']]);
