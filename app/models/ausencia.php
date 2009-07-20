@@ -270,10 +270,6 @@ class Ausencia extends AppModel {
                 if ($fromDate < $relacion['Relacion']['ingreso']) {
                     $fromDate  = $relacion['Relacion']['ingreso'];
                 }
-                debug($fromDate);
-                debug($toDate);
-                //d($relacion['Relacion']['id']);
-                //d(Dates::getPeriods($fromDate, $toDate));
                 $diffDividendo = Dates::dateDiff($fromDate, $toDate);
                 $ausencias['Dias Anteriores Accidente'] = $diffDividendo['dias'];
 
