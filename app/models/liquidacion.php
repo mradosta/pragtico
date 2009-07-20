@@ -542,7 +542,7 @@ class Liquidacion extends AppModel {
 * Dado un concepto, resuelve la formula.
 */
 	function __getConceptValue($concepto) {
-
+        //debug($concepto['nombre'] . ' ' . $concepto['formula']);
         $this->__setCurrentConcept($concepto);
         
         $valor = null;
@@ -1041,6 +1041,13 @@ class Liquidacion extends AppModel {
     * Sets the concept been resolved.
     */
     function __setCurrentConcept($concept) {
+        if (!$this->checkRecursivity($concept['codigo'])) {
+            arsort($this->__recursivityCounter);
+            foreach ($this->__recursivityCounter as $k => $v) {
+                debug($v . ') => @' . $k . ': ' . $this->__conceptos[$k]['formula'] . ' ('.$this->__conceptos[$k]['valor'].')');
+            }
+            d('Corto por recursividad');
+        }
         $this->__currentConcept = $concept;
     }
 
@@ -1064,7 +1071,7 @@ class Liquidacion extends AppModel {
             $this->__recursivityCounter[$match]++;
         }
 
-        if ($this->__recursivityCounter[$match] >= 10) {
+        if ($this->__recursivityCounter[$match] >= 30) {
             //d($match . ' ' . $this->__recursivityCounter[$match]);
             return false;
         }
