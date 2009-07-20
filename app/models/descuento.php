@@ -242,7 +242,6 @@ class Descuento extends AppModel {
             /** Must create a pending peyment */
             if (empty($this->data['Descuento']['id']) && in_array($this->data['Descuento']['tipo'], array('Vale', 'Prestamo'))) {
                 $this->data['Pago'][0]['fecha'] = $this->data['Descuento']['alta'];
-                $this->data['Pago'][0]['relacion_id'] = $this->data['Descuento']['alta'];
                 $this->data['Pago'][0]['relacion_id'] = $this->data['Descuento']['relacion_id'];
                 $this->data['Pago'][0]['monto'] = $this->data['Descuento']['monto'];
                 $this->data['Pago'][0]['moneda'] = 'Pesos';
