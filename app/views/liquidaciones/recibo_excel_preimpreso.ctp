@@ -56,11 +56,12 @@
             }
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('D') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['pago'], 'date'));
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('H') -1 + ($i * 23)) . ',' . $fila, sprintf('%s, %s', $receipt['Liquidacion']['trabajador_apellido'], $receipt['Liquidacion']['trabajador_nombre']));
+            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('N') -1 + ($i * 23)) . ',' . $fila, ' ');
             if (preg_match('/\d\d\-([0-9]+)\-\d/', $receipt['Liquidacion']['trabajador_cuil'], $matches)) {
-                $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('Q') -1 + ($i * 23)) . ',' . $fila, " " . $matches[1], $styleRight);
+                $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('Q') -1 + ($i * 23)) . ',' . $fila, ' ' . $matches[1], $styleRight);
             }
             if (!empty($receipt['Liquidacion']['relacion_legajo'])) {
-                $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('U') -1 + ($i * 23)) . ',' . $fila, " " . $receipt['Liquidacion']['relacion_legajo'], $styleRight);
+                $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('U') -1 + ($i * 23)) . ',' . $fila, ' ' . $receipt['Liquidacion']['relacion_legajo'], $styleRight);
             }
 
             $fila+=3;
@@ -77,6 +78,7 @@
                         $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, ' ' . $detail['valor_cantidad']);
                     }
                     $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('E') -1 + ($i * 23)) . ',' . $fila, $detail['concepto_nombre']);
+                    $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('P') -1 + ($i * 23)) . ',' . $fila, ' ');
                     if ($detail['concepto_tipo'] !== 'Deduccion') {
                         $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('S') -1 + ($i * 23)) . ',' . $fila, $formato->format($detail['valor'], 'currency'), $styleRight);
                     } else {
@@ -86,19 +88,19 @@
                 }
             }
 
-            $fila = $initialRow + 46;
+            $fila = $initialRow + 45;
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('K') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['no_remunerativo'], 'currency'), $styleRight);
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('O') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['remunerativo'], 'currency'), $styleRight);
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('S') -1 + ($i * 23)) . ',' . $fila, $formato->format(($receipt['Liquidacion']['remunerativo'] + $receipt['Liquidacion']['no_remunerativo']), 'currency'), $styleRight);
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('V') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['deduccion'], 'currency'), $styleRight);
             
-            $fila+=3;
+            $fila+=2;
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('V') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['total_pesos'], 'currency'), $styleRight);
 
             $fila+=3;
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('C') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['total_pesos'], array('type' => 'numeroEnLetras', 'case' => 'ucfirst')));
             
-            $fila+=4;
+            $fila+=5;
             if (!empty($receipt['Suss'])) {
                 $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('M') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Suss']['periodo'], array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')));
                 $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('P') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Suss']['fecha'], 'date'));
