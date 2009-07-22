@@ -172,7 +172,6 @@ class Ausencia extends AppModel {
                         echo 'ERROR, mas de una ausencias de tipo accidente cargadas.';
                         die;
                     }
-                    //$diffArt = $diff;
                     $ausenciasArt = $ausencia;
                 }
 
@@ -278,29 +277,21 @@ class Ausencia extends AppModel {
                 $ausencias['Dias Anteriores Accidente'] = $diffDividendo['dias'];
 
 
-                /** TODO:
-                    Follow bug:
-                            https://trac.cakephp.org/ticket/6519
-                */
-                $db =& ConnectionManager::getDataSource($this->useDbConfig);
-                $condition = str_replace("CONCAT(`Liquidacion`.`ano, LPAD(`Liquidacion`.`mes, 2, '0'`), Liquidacion`.`periodo`)", "CONCAT(`Liquidacion`.`ano`, LPAD(`Liquidacion`.`mes`, 2, '0'), `Liquidacion`.`periodo`)", $db->conditions(
-                  array(  'Liquidacion.estado'                      => 'Confirmada',
-                        'Liquidacion.relacion_id'                   => $relacion['Relacion']['id'],
-                        'LiquidacionesDetalle.concepto_tipo'        => 'Remunerativo',
-                        'LiquidacionesDetalle.concepto_imprimir !=' => 'No',
-                        'CONCAT(Liquidacion.ano, LPAD(Liquidacion.mes, 2, \'0\'), Liquidacion.periodo)' => Dates::getPeriods($fromDate, $toDate)), true, false));
                 $data = $this->Relacion->Liquidacion->LiquidacionesDetalle->find('all', array(
                     'checkSecurity' => false,
                     'contain'       => array('Liquidacion'),
                     'group'         => array('Liquidacion.id'),
                     'fields'        => array('sum(LiquidacionesDetalle.valor) as valor'),
-                    'conditions'    => array($condition)));
+                    'conditions'    => array(
+                        'Liquidacion.estado'                        => 'Confirmada',
+                        'Liquidacion.relacion_id'                   => $relacion['Relacion']['id'],
+                        'LiquidacionesDetalle.concepto_tipo'        => 'Remunerativo',
+                        'LiquidacionesDetalle.concepto_imprimir !=' => 'No',
+                        'CONCAT(Liquidacion.ano, LPAD(Liquidacion.mes, 2, \'0\'), Liquidacion.periodo)' => Dates::getPeriods($fromDate, $toDate))));
 
                 $ausencias['Acumulado Remunerativo Accidente'] = array_sum(Set::extract('/LiquidacionesDetalle/valor', $data));
 
                 /** If more than 10 days, must create an ART accident and an accident */
-                //d($daysBeforePeriod);
-                //d($diffArt);
                 if ($daysBeforePeriod + $ausencias['Accidente'] > 10) {
                     if ($daysBeforePeriod > 10) {
                         //$ausencias['Accidente ART'] = $diffArt['dias'];
