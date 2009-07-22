@@ -81,14 +81,14 @@ class Factura extends AppModel {
 			return false;
 		}
 
-        /*
+        
 		$conditions = array_merge($conditions,
 			array(	'OR' => array(
 				'Liquidacion.factura_id' 	=> null,
 					array(	'Factura.estado' 				=> 'Sin Confirmar',
 							'Liquidacion.factura_id !=' 	=> null))));
-		*/
-        $conditions = array_merge($conditions, array('Liquidacion.factura_id' => null));
+		
+        //$conditions = array_merge($conditions, array('Liquidacion.factura_id' => null));
         $data = $this->Liquidacion->find('all',
 			array(	'conditions' 	=> $conditions,
 					'order' 		=> array('Liquidacion.empleador_id', 'Liquidacion.relacion_area_id'),
