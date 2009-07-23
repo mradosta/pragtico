@@ -51,6 +51,7 @@ class PagosController extends AppController {
 				unset($this->data['Condicion']['Liquidacion-periodo_completo']);
 			}
 		}
+        $this->set('monto', $this->Pago->getTotal($this->Paginador->generarCondicion()));
 		parent::index();
 	}
 

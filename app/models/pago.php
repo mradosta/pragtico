@@ -28,10 +28,8 @@ class Pago extends AppModel {
 	
 	var $order = array('Pago.fecha' => 'desc');
 
-    var $totalizar = array('sum' => array('monto'));
-    
 	var $validate = array(
-        'fechax' => array(
+        'fecha' => array(
 			array(
 				'rule'		=> VALID_DATE, 
 				'message'	=> 'Debe especificar una fecha valida.')
@@ -57,7 +55,15 @@ class Pago extends AppModel {
 		return $results;
 	}
 	
-	
+
+    function getTotal($conditions = array()) {
+        $result = $this->find('first', array(
+            'conditions'    => $conditions,
+            'callbacks'     => false,
+            'fields'        => 'SUM(Pago.monto) as total',
+            ));
+        return $result[0]['total'];
+    }
 
 /**
  *

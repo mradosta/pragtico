@@ -110,7 +110,7 @@ $fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' 
 $fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => '');
 $fila[] = array('model' => 'Pago', 'field' => 'fecha', 'valor' => '');
 $fila[] = array('model' => 'Pago', 'field' => 'moneda', 'valor' => '');
-$fila[] = array('model' => 'Pago', 'field' => 'monto', 'valor'=>$totales['monto']);
+$fila[] = array('model' => 'Pago', 'field' => 'monto', 'valor' => $formato->format($monto, 'moneda'));
 $fila[] = array('model' => 'Pago', 'field' => 'saldo', 'valor' => '');
 $fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => '');
 $fila[] = array('model' => 'Pago', 'field' => 'estado', 'valor' => '');
