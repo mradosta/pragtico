@@ -52,11 +52,9 @@ class DocumentoHelper extends AppHelper {
  * @access private.
  */   
     function __construct() {
-		/**
-		 * Incluye al path los archivos de las clases de PHPExcel.
-		 */
-		set_include_path(get_include_path() . PATH_SEPARATOR . APP . "vendors" . DS . "PHPExcel" . DS . "Classes");
-		App::import('Vendor', "IOFactory", true, array(APP . "vendors" . DS . "PHPExcel" . DS . "Classes" . DS . "PHPExcel"), "IOFactory.php");
+		/** Include PHPExcel classes. */
+		set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes');
+		App::import('Vendor', 'IOFactory', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'IOFactory.php');
         $this->doc = new PHPExcel();
     }
 
@@ -72,18 +70,18 @@ class DocumentoHelper extends AppHelper {
  * @access public.	
  */
     function create($options = array()) {
-		$this->doc->getProperties()->setCreator("Pragtico");
-		$this->doc->getProperties()->setLastModifiedBy("Pragtico");
-		$this->doc->getProperties()->setTitle("Planilla para el Ingreso de Novedades - Pragtico");
-		$this->doc->getProperties()->setSubject("Planilla para el Ingreso de Novedades - Pragtico");
-		$this->doc->getProperties()->setDescription("Planilla para el Ingreso de Novedades. Pragtico permite el ingreso de las novedades al sistema de una manera rapida.");
-		$this->doc->getProperties()->setKeywords("novedades pragtico");
-		$this->doc->getProperties()->setCategory("novedades");
+		$this->doc->getProperties()->setCreator('Pragtico');
+		$this->doc->getProperties()->setLastModifiedBy('Pragtico');
+		$this->doc->getProperties()->setTitle('Pragtico');
+		$this->doc->getProperties()->setSubject('Pragtico');
+		$this->doc->getProperties()->setDescription('Pragtico');
+		$this->doc->getProperties()->setKeywords('Pragtico');
+		$this->doc->getProperties()->setCategory('Pragtico');
 		$this->doc->setActiveSheetIndex(0);
         $this->setActiveSheet(0);
 		$this->doc->getActiveSheet()->setShowGridlines(true);
 		$this->doc->getActiveSheet()->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
-    	if (isset($options['orientation']) && $options['orientation'] === "landscape") {
+    	if (isset($options['orientation']) && $options['orientation'] === 'landscape') {
 			$this->doc->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
 		}
 		
@@ -93,8 +91,7 @@ class DocumentoHelper extends AppHelper {
 		if (isset($options['password'])) {
 			if (empty($options['password'])) {
 				$options['password'] = substr(Configure::read('Security.salt'), 0, 10);
-			}
-			else {
+			} else {
 				$options['password'] = substr($options['password'], 0, 10);
 			}
 			$this->doc->getActiveSheet()->getProtection()->setPassword($options['password']);
@@ -123,22 +120,78 @@ class DocumentoHelper extends AppHelper {
 		/** Search for numbered named coll (zero indexed).*/
 		if (preg_match("/^([0-9]+)\,([0-9]+)$/", $cellName, $matches)) {
 			return PHPExcel_Cell::stringFromColumnIndex($matches[1]) . $matches[2];
-		}
-		elseif (preg_match("/^[A-Z]+[0-9]+$/", $cellName)) {
+		} elseif (preg_match("/^[A-Z]+[0-9]+$/", $cellName)) {
 			return $cellName;
-		}
-		elseif (is_null($cellName)) {
+		} elseif (is_null($cellName)) {
 			/**
 			* Busco la proxima columna y fila libre.
 			*/
 			return $this->doc->getActiveSheet()->getHighestColumn() . $this->doc->getActiveSheet()->getHighestRow();
-		}
-		else {
-			return "";
+		} else {
+			return '';
 		}
 	}
 
 
+    function getStyle($style) {
+
+        /** Alignments */
+        $styles['left'] =
+            array('alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT));
+        $styles['center'] =
+            array('alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER));
+        $styles['right'] =
+            array('alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT));
+
+        /** Fonts */
+        $styles['bold'] = array('font' => array('bold' => true));
+
+        /** Borders */
+        $styles['left'] =
+            array('left' => array('style' => PHPExcel_Style_Border::BORDER_THIN));
+        $styles['top'] =
+            array('top' => array('style' => PHPExcel_Style_Border::BORDER_THIN));
+        $styles['right'] =
+            array('right' => array('style' => PHPExcel_Style_Border::BORDER_THIN));
+        $styles['bottom'] =
+            array('bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN));
+
+
+
+    //array('bold', 'center', 'bottom')
+
+        
+        switch($style) {
+            case 'boldCenter':
+                $return = array('style' => array(
+                    'font'      => array('bold' => true),
+                    'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER)));
+            break;
+            case 'boldRight':
+                $return = array('style' => array(
+                'font'     => array('bold' => true),
+                'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT)));
+            break;
+            case 'boldLeft':
+                $return = array('style' => array(
+                    'font' => array('bold' => true)));
+            break;
+            case 'center':
+                $return = array('style' => array(
+                    'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER)));
+            break;
+            case 'right':
+                $return = array('style' => array(
+                    'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT)));
+            break;
+            case 'borderBottom':
+                $return = array('style' => array(
+                    'borders' => array('bottom' => array('style' => PHPExcel_Style_Border::BORDER_DASHDOT))));
+            break;
+        }
+    }
+
+    
 	function setWidth($cellName, $value) {
 		if (is_numeric($cellName)) {
 			return $this->doc->getActiveSheet()->getColumnDimensionByColumn($cellName)->setWidth($value);
