@@ -45,12 +45,9 @@ class PaginadorHelper extends AppHelper {
  */
 	function sort($title, $key = null, $options = array()) {
 		
-		
-		$options['url'] = array();
+        $options['url'] = array();
         $options['title'] = __('No order', true);
         $options['class'] = 'sin_orden';
-        //debug($options['model'] . '.' . $key);
-        //d($this->Paginator->sortKey());
         if ($options['model'] . '.' . $key == $this->Paginator->sortKey()) {
             $dir = $this->Paginator->sortDir();
             if (!empty($dir)) {
@@ -58,65 +55,6 @@ class PaginadorHelper extends AppHelper {
                 $options['title'] = __(ucfirst($dir) . 'ending order', true);
             }
         }
-        /*
-		$modelClass = Inflector::classify($this->params['controller']);
-		if (isset($this->params['paging'][$modelClass]['options']['order'])) {
-			if ($options['model'] . '.' . $this->Paginator->sortKey() === key($this->params['paging'][$modelClass]['options']['order'])) {
-				if ($key == $this->Paginator->sortKey()) {
-					if ($this->Paginator->sortDir() === 'asc') {
-						$options['class'] = 'asc_orden';
-						$options['title'] = __('Descending order', true);
-						$options['url'] = array('direction' => 'desc');
-					}
-					else {
-						$options['class'] = 'desc_orden';
-						$options['title'] = __('Ascending order', true);
-						$options['url'] = array('direction' => 'asc');
-					}
-				}
-			}
-		}
-		*/
-		/**
-		* Si no hay nada, puede que sea la primera vez que entra y puede que el model tenga un orden por defecto.
-		*/
-                /*
-		else {
-			$instanciaModel =& ClassRegistry::getObject($modelClass);
-			if (!empty($instanciaModel->order)) {
-				if (!empty($instanciaModel->order[$modelClass . '.' . $key])) {
-					if ($instanciaModel->order[$modelClass . '.' . $key] === 'desc') {
-						$options['class'] = 'desc_orden';
-						$options['title'] = __('Ascending order', true);
-						$options['url'] = array('direction' => 'asc');
-					}
-					elseif ($instanciaModel->order[$modelClass . '.' . $key] === 'asc') {
-						$options['class'] = 'asc_orden';
-						$options['title'] = __('Descending order', true);
-						$options['url'] = array('direction' => 'desc');
-					}
-				}
-				else {
-					$options['class'] = 'sin_orden';
-					$options['title'] = __('Ascending order', true);
-					$options['url'] = array('direction' => 'asc');
-				}
-			}
-		}
-		*/
-
-		/**
-		* Me aseguro de no perder ningun parametro que venga via url.
-		* Saco los propios del paginador.
-		foreach (array('named', 'pass') as $nombre) {
-			if (!empty($this->params[$nombre])) {
-				unset($this->params[$nombre]['direction']);
-				unset($this->params[$nombre]['sort']);
-				unset($this->params[$nombre]['page']);
-				$options['url'] = array_merge($options['url'], $this->params[$nombre]);
-			}
-		}
-        */
 		$model = $options['model'];
 		unset($options['model']);
 		return $this->Paginator->sort($title, $model . '.' . $key, $options);
@@ -151,27 +89,10 @@ class PaginadorHelper extends AppHelper {
 
 				$out = null;
 
-				/*
-				if ($this->traerPreferencia('paginacion') === 'ajax') {
-					$targetId = 'index';
-					//$targetId = 'contenido';
-					if ($this->traerPreferencia('lov_apertura') !== 'popup' && !empty($opciones['url']['targetId'])) {
-						$targetId = $opciones['url']['targetId'];
-					}
-					$this->Paginator->options(am(array('update'=>$targetId), $this->Paginator->options, $opciones));
-				}
-				*/
-
-                
                 if (!empty($this->Paginator->params['isAjax'])) {
                     $this->Paginator->options['update'] = 'lov';
-                }/* else {
-                    $this->Paginator->options['update'] = 'index';
-                }*/
+                }
                 
-                /**
-                TODO: Gran cambio en revi 563
-                */
                 $opciones['escape'] = false;
 				if ($this->Paginator->hasPrev()) {
 					$out[] = $this->Paginator->link($this->AppForm->image('primera.gif', array('alt' => __('Go to first page', true))), array('page' => 1), $opciones);
