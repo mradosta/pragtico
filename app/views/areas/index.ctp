@@ -38,7 +38,7 @@ foreach ($registros as $k => $v) {
 	$fila = null;
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Area']['id'], 'imagen' => array('nombre' => 'coeficientes.gif', 'alt' => 'Coeficientes'), 'url' => 'coeficientes');
 	$fila[] = array('model' => 'Area', 'field' => 'id', 'valor' => $v['Area']['id'], 'write' => $v['Area']['write'], 'delete' => $v['Area']['delete']);
-	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Empleador']['nombre']);
+	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Empleador']['nombre'], 'nombreEncabezado' => 'Empleador');
 	$fila[] = array('model' => 'Area', 'field' => 'identificador', 'valor' => $v['Area']['identificador']);
 	$fila[] = array('model' => 'Area', 'field' => 'nombre', 'valor' => $v['Area']['nombre']);
 	$fila[] = array('model' => 'Area', 'field' => 'direccion', 'valor' => $v['Area']['direccion']);
