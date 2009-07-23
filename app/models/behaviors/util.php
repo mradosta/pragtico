@@ -444,7 +444,7 @@ class UtilBehavior extends ContainableBehavior {
     function getNonWorkingDays(&$Model, $startDate, $endDate, $options = array()) {
         App::import('Vendor', 'dates', 'pragmatia');
         $Dates = new Dates();
-        return $Dates->dateAddWorkingDays($startDate, $endDate, $options);
+        return $Dates->getNonWorkingDays($startDate, $endDate, $options);
     }
     
 /**
