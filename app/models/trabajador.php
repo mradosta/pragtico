@@ -145,11 +145,14 @@ class Trabajador extends AppModel {
 		* Solo lo necesito mostrar con un edit.
 		*/
 		if ($primary === true && !empty($results[0]['Trabajador']['cbu'])) {
+            $Sucursal = ClassRegistry::init('Sucursal');
+            $Sucursal->contain('Banco');
 			foreach($results as $k => $result) {
 				$pattern = '/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d/';
 				if (preg_match($pattern, $result['Trabajador']['cbu'], $matches)) {
-					$Sucursal = ClassRegistry::init('Sucursal');
-					$sucursal = $Sucursal->findByCodigo($matches[2]);
+					$sucursal = $Sucursal->find('first', array('conditions' => array(
+                        'Sucursal.codigo'   => $matches[2],
+                        'Banco.codigo'      => $matches[1])));
 					$results[$k]['Trabajador']['banco'] = $sucursal['Banco']['nombre'];
 					$results[$k]['Trabajador']['sucursal'] = $sucursal['Sucursal']['direccion'];
 					$results[$k]['Trabajador']['cuenta'] = $matches[3];
