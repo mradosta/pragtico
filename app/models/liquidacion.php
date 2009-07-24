@@ -672,7 +672,20 @@ class Liquidacion extends AppModel {
 			* Si aun no lo tengo, lo calculo.
 			*/
 			if (preg_match_all("/(@[\w]+)/", $formula, $matches)) {
-				foreach (array_unique($matches[1]) as $match) {
+                
+                /** Must order array before replacing because of non exact replace of str_replace */
+                $tmp = null;
+                foreach (array_unique($matches[1]) as $match) {
+                    $tmp[strlen($match)][] = $match;
+                }
+                krsort($tmp);
+                foreach ($tmp as $tmpVals) {
+                    foreach ($tmpVals as $t) {
+                        $orderredMatches[] = $t;
+                    }
+                }
+                
+				foreach ($orderredMatches as $match) {
 					$match = substr($match, 1);
 					
 					/** Si no esta, lo busco */
@@ -719,7 +732,7 @@ class Liquidacion extends AppModel {
 					*/
 					if (isset($this->__conceptos[$match])) {
 						$resolucionCalculo['valor'] = $this->__conceptos[$match]['valor'];
-						$formula = preg_replace("/(@" . $match . ")([\)|\s|\*|\+\/\-|\=|\,]*[^_])/", $resolucionCalculo['valor'] . "$2", $formula);
+                        $formula = str_replace('@' . $match, $resolucionCalculo['valor'], $formula);
 						$resolucionCalculo['debug'] = $formula;
 					} else {
 						$this->__setError(array(	"tipo"					=> "Concepto Inexistente",
