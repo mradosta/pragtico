@@ -83,7 +83,11 @@ if (!empty($data)) {
 	$documento->setWidth('K', 10);
 
 
-	$fila = 0;
+    if (!empty($employer)) {
+        $fila = 2;
+    } else {
+        $fila = 0;
+    }
 	$employerFlag = null;
 	$pageCount = $startPage - 1;
     $recordCount = 0;
@@ -112,7 +116,7 @@ if (!empty($data)) {
 			$documento->setCellValue('A' . $fila, 'Direccion:');
 			$documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['direccion']);
 			
-			$fila+=3;
+            $fila+=3;
 		}
 		$recordCount++;
 		
