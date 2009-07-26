@@ -21,16 +21,16 @@
 */
 $campos = null;
 $campos['Concepto.id'] = array();
-$campos['Concepto.codigo'] = array('aclaracion' => "Utilizara este valor en las formulas.");
+$campos['Concepto.codigo'] = array('aclaracion' => 'Utilizara este valor en las formulas.');
 $campos['Concepto.nombre'] = array();
-$campos['Concepto.nombre_formula'] = array('aclaracion' => "Utilizara este valor en las impresiones.");
-$campos['Concepto.coeficiente_id'] = array(	"empty"			=> true,
-											"options"		=> "listable",
-											"recursive"		=> -1,
-											"order"			=> "Coeficiente.tipo desc, Coeficiente.nombre",
-											"displayField"	=> "Coeficiente.nombre",
-											"groupField"	=> "Coeficiente.tipo",
-											"model"			=> "Coeficiente");
+$campos['Concepto.nombre_formula'] = array('aclaracion' => 'Utilizara este valor en las impresiones.');
+$campos['Concepto.coeficiente_id'] = array(	'empty'			=> true,
+											'options'		=> 'listable',
+											'recursive'		=> -1,
+											'order'			=> 'Coeficiente.tipo desc, Coeficiente.nombre',
+											'displayField'	=> 'Coeficiente.nombre',
+											'groupField'	=> 'Coeficiente.tipo',
+											'model'			=> 'Coeficiente');
 
 $campos['Concepto.periodo'] = array();
 $campos['Concepto.tipo'] = array();
@@ -41,22 +41,21 @@ $campos['Concepto.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
 $campos = null;
-$campos['Concepto.sac'] = array();
-$campos['Concepto.antiguedad'] = array();
-$campos['Concepto.plus_vacacional'] = array();
-$fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => "Este concepto debe acumular", 'imagen' => 'acumula.gif')));
+$campos['Concepto.compone'] = array('type' => 'radio');
+$campos['Concepto.remuneracion'] = array('type' => 'select', 'multiple' => 'checkbox');
+$fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => 'Afip', 'imagen' => 'afip.gif')));
 
 $campos = null;
 $campos['Concepto.pago'] = array();
 $campos['Concepto.imprimir'] = array();
 $campos['Concepto.orden'] = array();
-$campos['Concepto.cantidad'] = array('aclaracion' => "Indica desde que variable se sacara la cantidad que se mostrara");
-$fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => "Visualizacion", 'imagen' => 'visualizacion.gif')));
+$campos['Concepto.cantidad'] = array('aclaracion' => 'Indica desde que variable se sacara la cantidad que se mostrara');
+$fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => 'Visualizacion', 'imagen' => 'visualizacion.gif')));
 
 $campos = null;
-$campos['Concepto.retencion_sindical'] = array('aclaracion' => "Indica si corresponde a una retencion sindical");
-$campos['Concepto.novedad'] = array('aclaracion' => "Indica si permite ser ingresado desde Planilla de Novedades");
-$fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => "Datos complementarios", 'imagen' => 'observaciones.gif')));
+$campos['Concepto.retencion_sindical'] = array('aclaracion' => 'Indica si corresponde a una retencion sindical');
+$campos['Concepto.novedad'] = array('aclaracion' => 'Indica si permite ser ingresado desde Planilla de Novedades');
+$fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => 'Datos complementarios', 'imagen' => 'observaciones.gif')));
 
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('imagen' => 'conceptos.gif')));
 

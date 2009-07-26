@@ -23,8 +23,6 @@
  */
 class Concepto extends AppModel {
 
-	var $order = array('Concepto.orden' => 'asc');
-
 	var $breadCrumb = array('format' 	=> '(%s) %s',
 							'fields' 	=> array('Concepto.codigo', 'Concepto.nombre'));
 	
@@ -81,6 +79,26 @@ class Concepto extends AppModel {
 								array('with' => 'EmpleadoresConcepto'),
 										'Relacion' =>
 								array('with' => 'RelacionesConcepto'));
+
+    var $opciones = array(
+        'remuneracion'      => array(
+            '1'     => 'Remuneracion 1',
+            '2'     => 'Remuneracion 2',
+            '4'     => 'Remuneracion 3',
+            '8'     => 'Remuneracion 4',
+            '16'    => 'Remuneracion 5',
+            '32'    => 'Remuneracion 6',
+            '64'    => 'Remuneracion 7',
+            '128'   => 'Remuneracion 8'),
+        'compone'           => array(
+            'Sueldo'                    => 'Sueldo',
+            'Adicionales'               => 'Adicionales',
+            'Premios'                   => 'Premios',
+            'Importe Horas Extras'      => 'Importe Horas Extras',
+            'SAC'                       => 'SAC',
+            'Vacaciones'                => 'Vacaciones',
+            'Plus Zona Desfavorable'    => 'Plus Zona Desfavorable'));
+    
 
 /**
  * Valida que el extremo superior del rango sea mayor al inferior
@@ -505,6 +523,7 @@ class Concepto extends AppModel {
 				$conceptos[$v['Concepto']['codigo']]['id'] = $v['ConveniosConcepto']['id'];
 			}
 		}
+        d($conceptos);
 		return $conceptos;
 	}
 
