@@ -83,18 +83,14 @@ if (!empty($data)) {
 	$documento->setWidth('K', 10);
 
 
-    if (!empty($employer)) {
-        $fila = 2;
-    } else {
-        $fila = 0;
-    }
+    $fila = 0;
 	$employerFlag = null;
 	$pageCount = $startPage - 1;
     $recordCount = 0;
 	foreach ($data as $k => $record) {
 
         /** Must print emplyer only when group is selected */
-		if (empty($employer) && $employerFlag !== $record['Relacion']['Empleador']['cuit']) {
+		if ($employerFlag !== $record['Relacion']['Empleador']['cuit']) {
 			$employerFlag = $record['Relacion']['Empleador']['cuit'];
 
 			$recordCount = 0;
@@ -102,21 +98,25 @@ if (!empty($data)) {
 			$fila++;
 			$pageCount++;
 			$documento->setCellValue('K' . $fila, 'Hoja ' . $pageCount);
-			
-			$fila+=2;
-			$documento->setCellValue('A' . $fila, 'Empresa Usuario:');
-			$documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['nombre'], $styleBold);
-			$documento->setCellValue('J' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), $styleBold);
-			
-			$fila++;
-			$documento->setCellValue('A' . $fila, 'CUIT:');
-			$documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['cuit'], $styleBold);
-			
-			$fila++;
-			$documento->setCellValue('A' . $fila, 'Direccion:');
-			$documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['direccion']);
-			
-            $fila+=3;
+
+            if (empty($employer)) {
+                $fila+=2;
+                $documento->setCellValue('A' . $fila, 'Empresa Usuario:');
+                $documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['nombre'], $styleBold);
+                $documento->setCellValue('J' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), $styleBold);
+                
+                $fila++;
+                $documento->setCellValue('A' . $fila, 'CUIT:');
+                $documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['cuit'], $styleBold);
+                
+                $fila++;
+                $documento->setCellValue('A' . $fila, 'Direccion:');
+                $documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['direccion']);
+                
+                $fila+=3;
+            } else {
+                $fila++;
+            }
 		}
 		$recordCount++;
 		
@@ -132,7 +132,10 @@ if (!empty($data)) {
 
 		$fila++;
 		$documento->setCellValue('A' . $fila, 'Ingreso: ' . $formato->format($record['Relacion']['ingreso'], 'date'));
-		$egreso = $formato->format($record['Relacion']['egreso'], 'date');
+        $egreso = '';
+        if (!empty($record['Relacion']['egreso']) && $record['Relacion']['egreso'] !== '0000-00-00') {
+            $egreso = $formato->format($record['Relacion']['egreso'], 'date');
+        }
 		$documento->setCellValue('E' . $fila, 'Baja: ' . $egreso);
 		if (empty($egreso)) {
 			$documento->setCellValue('I' . $fila, 'Estado: Activo');
