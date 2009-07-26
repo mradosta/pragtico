@@ -26,18 +26,21 @@ if (!empty($data)) {
 	$documento->doc->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_PORTRAIT);
 	$documento->doc->getActiveSheet()->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
 	
-	/**
-	* Issue reported
-	* http://phpexcel.codeplex.com/WorkItem/View.aspx?WorkItemId=9560
-	*/
 	$pageMargins = $documento->doc->getActiveSheet()->getPageMargins();
 	$pageMargins->setBottom(0.2);
 	$pageMargins->setLeft(0.2);
 	$pageMargins->setRight(0.2);
 
 	if (empty($groupParams)) {
-		$left = '';
-		$center = "&CLibro Especial de Sueldos - Art. 52 Ley 20744";
+        $left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s",
+            $employer['Empleador']['nombre'],
+            $employer['Empleador']['direccion'],
+            $employer['Empleador']['barrio'],
+            $employer['Empleador']['codigo_postal'],
+            $employer['Empleador']['ciudad'],
+            $employer['Empleador']['pais'],
+            $employer['Empleador']['cuit']);
+        $center = "&CLibro Especial de Sueldos - Art. 52 Ley 20744";
 	} else {
 		$left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s",
 			$groupParams['nombre_fantasia'],
@@ -49,7 +52,6 @@ if (!empty($data)) {
 			$groupParams['cuit']);
 		$center = "&CLibro Especial de Sueldos - Art. 52 Ley 20744" . $groupParams['libro_sueldos_encabezado'];
 	}
-	//$right = '&RHoja &P';
 	$documento->doc->getActiveSheet()->getHeaderFooter()->setOddHeader($left . $center);
 	
 	$styleBoldCenter = array('style' => array(
@@ -84,9 +86,11 @@ if (!empty($data)) {
 	$fila = 0;
 	$employerFlag = null;
 	$pageCount = $startPage - 1;
+    $recordCount = 0;
 	foreach ($data as $k => $record) {
-		
-		if ($employerFlag !== $record['Relacion']['Empleador']['cuit']) {
+
+        /** Must print emplyer only when group is selected */
+		if (empty($employer) && $employerFlag !== $record['Relacion']['Empleador']['cuit']) {
 			$employerFlag = $record['Relacion']['Empleador']['cuit'];
 
 			$recordCount = 0;
@@ -98,7 +102,7 @@ if (!empty($data)) {
 			$fila+=2;
 			$documento->setCellValue('A' . $fila, 'Empresa Usuario:');
 			$documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['nombre'], $styleBold);
-			$documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), $styleBold);
+			$documento->setCellValue('J' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), $styleBold);
 			
 			$fila++;
 			$documento->setCellValue('A' . $fila, 'CUIT:');
