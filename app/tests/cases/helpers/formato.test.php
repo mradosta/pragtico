@@ -755,6 +755,11 @@ class FormatoTest extends CakeTestCase {
 		$expected = '200712M';
 		$this->assertEqual($expected, $result);
 		
+        $valor = '20091S';
+        $result = $this->formato->format($valor, array('type' => 'periodoEnLetras', 'short' => true));
+        $expected = '1s 09';
+        $this->assertEqual($expected, $result);
+        
     	$valor = '2008111Q';
 		$result = $this->formato->format($valor, array('type' => 'periodoEnLetras', 'short' => true));
 		$expected = '1q nov 08';

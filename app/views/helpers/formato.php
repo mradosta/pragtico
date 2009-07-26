@@ -603,6 +603,7 @@ class FormatoHelper extends AppHelper {
 				} elseif (preg_match('/(\d\d\d\d)(\d)S/', strtoupper($valor), $matches)) {
 					$ano = $matches[1];
 					$mes = '';
+                    $beforeShort = $matches[2] . 's';
 					if ($matches[2] == 1) {
 						$before = $this->__getMonths(1) . ' a ' . $this->__getMonths(6);
 					} else {
@@ -718,21 +719,35 @@ class FormatoHelper extends AppHelper {
  * @access private.
  */
 	function __getMonths($mes = null, $keyStart = 1) {
-		
-		$meses[$keyStart++] = __('january', true);
-		$meses[$keyStart++] = __('february', true);
-		$meses[$keyStart++] = __('march', true);
-		$meses[$keyStart++] = __('april', true);
-		$meses[$keyStart++] = __('may', true);
-		$meses[$keyStart++] = __('june', true);
-		$meses[$keyStart++] = __('july', true);
-		$meses[$keyStart++] = __('august', true);
-		$meses[$keyStart++] = __('september', true);
-		$meses[$keyStart++] = __('october', true);
-		$meses[$keyStart++] = __('november', true);
-		$meses[$keyStart] = __('december', true);
 
-		/*
+        
+		$meses[$keyStart++] = __('enero', true);
+		$meses[$keyStart++] = __('febrero', true);
+		$meses[$keyStart++] = __('marzo', true);
+		$meses[$keyStart++] = __('abril', true);
+		$meses[$keyStart++] = __('mayo', true);
+		$meses[$keyStart++] = __('junio', true);
+		$meses[$keyStart++] = __('julio', true);
+		$meses[$keyStart++] = __('agosto', true);
+		$meses[$keyStart++] = __('septiembre', true);
+		$meses[$keyStart++] = __('octubre', true);
+		$meses[$keyStart++] = __('noviembre', true);
+		$meses[$keyStart] = __('diciembre', true);
+        
+        /*
+        $meses[$keyStart++] = __('january', true);
+        $meses[$keyStart++] = __('february', true);
+        $meses[$keyStart++] = __('march', true);
+        $meses[$keyStart++] = __('april', true);
+        $meses[$keyStart++] = __('may', true);
+        $meses[$keyStart++] = __('june', true);
+        $meses[$keyStart++] = __('july', true);
+        $meses[$keyStart++] = __('august', true);
+        $meses[$keyStart++] = __('september', true);
+        $meses[$keyStart++] = __('october', true);
+        $meses[$keyStart++] = __('november', true);
+        $meses[$keyStart] = __('december', true);
+        
 		$meses['1'] = 'enero';
 		$meses['2'] = 'febrero';
 		$meses['3'] = 'marzo';
