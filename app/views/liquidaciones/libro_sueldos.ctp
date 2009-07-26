@@ -103,7 +103,7 @@ if (!empty($data)) {
                 $fila+=2;
                 $documento->setCellValue('A' . $fila, 'Empresa Usuario:');
                 $documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['nombre'], $styleBold);
-                $documento->setCellValue('J' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), $styleBold);
+                $documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), $styleBold);
                 
                 $fila++;
                 $documento->setCellValue('A' . $fila, 'CUIT:');
@@ -115,6 +115,7 @@ if (!empty($data)) {
                 
                 $fila+=3;
             } else {
+                $documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), $styleBold);
                 $fila++;
             }
 		}
@@ -128,7 +129,13 @@ if (!empty($data)) {
 		$fila++;
 		$documento->setCellValue('A' . $fila, 'Legajo: ' . $record['Relacion']['legajo']);
 		$documento->setCellValue('E' . $fila, 'Contrato: ' . $record['Relacion']['Modalidad']['nombre']);
-		$documento->setCellValue('I' . $fila, 'Suel/Jorn.: $' . number_format($record['Relacion']['ConveniosCategoria']['costo'], 2, '.', ''));
+        if ($record['Relacion']['basico'] > 0) {
+            $salary = $record['Relacion']['basico'];
+        } else {
+            $salary = $record['Relacion']['ConveniosCategoria']['costo'];
+        }
+        $salary = $salary / 8 * $record['Relacion']['horas'];
+        $documento->setCellValue('I' . $fila, 'Suel/Jorn.: $' . number_format($salary, 2, '.', ''));
 
 		$fila++;
 		$documento->setCellValue('A' . $fila, 'Ingreso: ' . $formato->format($record['Relacion']['ingreso'], 'date'));
@@ -233,6 +240,7 @@ if (!empty($data)) {
 			$documento->doc->getActiveSheet()->setBreak('A' . $fila, PHPExcel_Worksheet::BREAK_ROW);
 			$fila++;
 			$pageCount++;
+            $documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), $styleBold);
 			$documento->setCellValue('K' . $fila, 'Hoja ' . $pageCount);
 			$fila++;
 		}
