@@ -107,7 +107,8 @@ class AppController extends Controller {
  * Index.
  */    
 	function index() {
-		$this->__filasPorPagina();
+        
+        $this->paginate = array_merge($this->paginate, array('limit' => 15));
 
 		/**
          * TODO:Revisar si esto es necesario realmente
@@ -186,34 +187,6 @@ class AppController extends Controller {
 			}
 		}
 	}
-	
-
-/**
- * Me setea la cantidad de filas por pagina que debe pintar el metodo paginate.
- *
- * @return void.
- * @access private
-*/
-	function __filasPorPagina() {
-		/**
-		* Verifico cuantas filas por pagina debo pintar.
-		*/
-		if (!empty($this->params['named']['filas_por_pagina']) && is_numeric($this->params['named']['filas_por_pagina'])) {
-			/**
-			* Dejo predeterminado para esta sesion el cambio.
-			*/
-			$usuario = $this->Session->read("__Usuario");
-			$usuario['Usuario']['preferencias']['filas_por_pagina'] = $this->params['named']['filas_por_pagina'];
-			$this->Session->write("__Usuario", $usuario);
-			$opciones = array('limit' => $this->params['named']['filas_por_pagina']);
-		}
-		else {
-			//$opciones = array('limit' => $this->Util->traerPreferencia("filas_por_pagina"));
-            $opciones = array('limit' => 15);
-		}
-		$this->paginate = array_merge($this->paginate, $opciones);
-	}
-
 
 
 /**
@@ -671,22 +644,16 @@ class AppController extends Controller {
  * @return void
  * @access public
  * TODO:
- * Utiliazr el auth component de cakePHP
+ * Utilizar el auth component de cakePHP
  */
     function beforeFilter() {
-		/**
-		 * Save selected menu (actualMenu) in a cookie.
-         */
+		/** Save selected menu (actualMenu) in a cookie */
 		if (isset($this->passedArgs['am'])) {
-            //d($this->passedArgs['am']);
             setcookie('menu_cookie', $this->passedArgs['am'], 0, '/');
-			//$this->Session->write('__actualMenu', $this->passedArgs['am']);
 		}
-		
 		
 		/**
 		* En accionesWhiteList llevo las acciones que no deben chquearse la seguridad.
-		*/
 		if (!$this->Session->check('__Seguridad.accionesWhiteList')) {
 			$Accion = ClassRegistry::init('Accion');
 			$data = $Accion->find("all", array("checkSecurity"=>false, "contain" => "Controlador", "conditions"=>array("Accion.seguridad" => "No")));
@@ -698,6 +665,12 @@ class AppController extends Controller {
 		} else {
 			$accionesWhiteList = $this->Session->read('__Seguridad.accionesWhiteList');
 		}
+        */
+        $accionesWhiteList = array(
+            'Usuarios.login',
+            'Usuarios.logout',
+            'Service.call',
+            'Service.wsdl');
 		
 		if (in_array($this->name . '.' . $this->action, $accionesWhiteList)) {
 			return true;

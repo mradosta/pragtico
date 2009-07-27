@@ -25,7 +25,7 @@ if(isset($paginador->params['paging'][Inflector::classify($paginador->params['co
    	&& $paginador->params['paging'][Inflector::classify($paginador->params['controller'])]['count'] > 0) {
 	
 	foreach (array(15, 25, 50) as $value) {
-		$show[$value] = $appForm->link($value, array_merge($options, array('filas_por_pagina'=> $value)), array('title'=>sprintf(__('Show %s records', true), $value)));
+		$show[$value] = $appForm->link($value, array_merge($options, array('limit' => $value)), array('title'=>sprintf(__('Show %s records', true), $value)));
 	}
 	
 	$show[1000] = $appForm->link(__('A', true), array_merge($options, array('filas_por_pagina' => '1000')), array('title'=>__('Show all records', true)));
