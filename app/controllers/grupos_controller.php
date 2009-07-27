@@ -38,7 +38,7 @@ class GruposController extends AppController {
  * Muestra via desglose usuarios pertenecientes a este grupo.
  */
 	function usuarios($id) {
-		$this->Grupo->contain(array("Usuario"));
+		$this->Grupo->contain(array('Usuario'));
 		$this->data = $this->Grupo->read(null, $id);
 	}
 
@@ -48,7 +48,7 @@ class GruposController extends AppController {
  * Muestra via desglose menus parametros a este grupo.
  */
 	function parametros($id) {
-		$this->Grupo->contain(array("GruposParametro.Parametro"));
+		$this->Grupo->contain(array('GruposParametro.Parametro'));
 		$this->data = $this->Grupo->read(null, $id);
 	}	
 	
@@ -61,10 +61,11 @@ class GruposController extends AppController {
  * @access public
  */
 	function setear_grupo_default($id, $background = false) {
-		$usuario = $this->Session->read("__Usuario");
+		$usuario = $this->Session->read('__Usuario');
 		if ($usuario['Usuario']['grupos'] & (int)$id) {
 			$usuario['Usuario']['preferencias']['grupo_default_id'] = $id;
-			$this->Session->write("__Usuario", $usuario);
+            $usuario['Usuario']['preferencias']['grupos_seleccionados'] += $id;
+			$this->Session->write('__Usuario', $usuario);
             if ($background === false) {
                 $this->Session->setFlash('El nuevo grupo por defecto se seteo correctamente.', 'ok');
             }
@@ -89,14 +90,14 @@ class GruposController extends AppController {
  */
 	function cambiar_grupo_activo() {
 		if (!empty($this->params['named']['accion']) && !empty($this->params['named']['grupo_id']) && is_numeric($this->params['named']['grupo_id'])) {
-			$usuario = $this->Session->read("__Usuario");
-			if ($this->params['named']['accion'] === "agregar") {
+			$usuario = $this->Session->read('__Usuario');
+			if ($this->params['named']['accion'] === 'agregar') {
 				$usuario['Usuario']['preferencias']['grupos_seleccionados'] = $usuario['Usuario']['preferencias']['grupos_seleccionados'] + $this->params['named']['grupo_id'];
 			}
-			elseif ($this->params['named']['accion'] === "quitar") {
+			elseif ($this->params['named']['accion'] === 'quitar') {
 				$usuario['Usuario']['preferencias']['grupos_seleccionados'] = $usuario['Usuario']['preferencias']['grupos_seleccionados'] - $this->params['named']['grupo_id'];
 			}
-			$this->Session->write("__Usuario", $usuario);
+			$this->Session->write('__Usuario', $usuario);
 		}
 		$this->History->goBack();
 	}

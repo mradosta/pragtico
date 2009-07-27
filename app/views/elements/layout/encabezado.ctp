@@ -19,9 +19,7 @@ foreach ($usuario['Grupo'] as $grupo) {
 	}
 
     if ($grupo['id'] === $usuario['Usuario']['preferencias']['grupo_default_id']) {
-        $defaultIcon = $appForm->image('default.gif', array('alt' => 'Grupo a utilizar por defecto')) . ' ' . $grupo['nombre'];
-        $defaultIcon = $appForm->tag('span', $defaultIcon, array('class' => 'default'));
-        $liDefault = $appForm->tag('li', $defaultIcon . ' ' . $p);
+        $liDefault = $appForm->tag('li', $appForm->tag('span', $grupo['nombre'], array('class' => 'default')));
     } else {
         $default = $appForm->link($grupo['nombre'], array(
                                   'controller'    => 'grupos',
