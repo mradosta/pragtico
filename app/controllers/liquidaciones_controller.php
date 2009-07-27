@@ -113,13 +113,13 @@ class LiquidacionesController extends AppController {
                     if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
                         $this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Liquidacion-grupo_id']));
                     }
-                    
-                    $this->layout = 'ajax';
+
                     $this->set('data', $data);
                     $this->set('workers', $workers);
                     $this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
                     $this->set('conditions', $this->data['Condicion']);
                     $this->set('desagregado', $desagregado);
+                    $this->History->skip();
                 }
             }
         }
@@ -174,7 +174,7 @@ class LiquidacionesController extends AppController {
                     $this->set('periodo', $periodo['periodoCompleto']);
 					$this->set('data', $liquidaciones);
 					$this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
-					$this->layout = 'ajax';
+                    $this->History->skip();
 				}
 			}
 		}

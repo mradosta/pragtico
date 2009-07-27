@@ -38,6 +38,15 @@ class HistoryComponent extends Object {
 	
 	
 /**
+ * If true, avoid saving in session.
+ *
+ * @var array
+ * @access private
+ */
+    private $__skip = false;
+    
+
+/**
  * Prevent the re-initialization of the component.
  *
  * @var boolean
@@ -64,17 +73,29 @@ class HistoryComponent extends Object {
  */
     function startup(&$controller) {
 
-        /**
-         * Prevent to be executed more than once.
-         */
+        /** Prevent to be executed more than once */
         if (!$this->__started) {
+            $this->__skip = false;
             $this->__started = true;
             $this->controller = $controller;
+        }
+    }
+
+
+/**
+ * Add url to history.
+ *
+ * @param object $controller A reference to the controller.
+ * @return void
+ * @access public
+ */
+    function beforeRender(&$controller) {
+        if (!$this->__started) {
 			$this->_addUrl();
         }
     }
 
-	
+
 /**
  * Goes to a previews visited page.
  *
@@ -82,11 +103,6 @@ class HistoryComponent extends Object {
  * @return void
  * @access public
  */
-
-    function log($text) {
-        file_put_contents('/tmp/log.txt', $text . "\n", FILE_APPEND);
-    }
-    
     function goBack($pos = 1) {
 	    $history = array_reverse($this->controller->Session->read('__history'));
 
@@ -99,7 +115,12 @@ class HistoryComponent extends Object {
         $this->controller->redirect($history[$pos], true);
     }
 
-    
+
+    function skip() {
+        $this->__skip = true;
+    }
+
+
 /**
  * Adds current url to history stack,
  *
@@ -109,12 +130,12 @@ class HistoryComponent extends Object {
 	function _addUrl() {
 
 		if (in_array($this->controller->action, $this->__blackListedActions)
+            || $this->__skip
 			|| $this->controller->params['isAjax'] === true
 		    || (isset($this->controller->params['named']['layout']) && $this->controller->params['named']['layout'] === 'lov')) {
 			return;
 		}
 		
-		//$url['controller'] = strtolower($this->controller->name);
 		$url['controller'] = $this->controller->name;
 		$url['action'] = $this->controller->action;
 		$url = array_merge($url, $this->controller->params['pass']);
@@ -148,5 +169,9 @@ class HistoryComponent extends Object {
 		}
     }
 
+
+    function log($text) {
+        file_put_contents('/tmp/log.txt', $text . "\n", FILE_APPEND);
+    }
 }
 ?>
