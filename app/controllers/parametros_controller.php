@@ -25,5 +25,13 @@
  */
 class ParametrosController extends AppController {
 
+
+    var $paginate = array(
+        'order' => array(
+            'Parametro.nombre' => 'asc'
+        )
+    );
+
+
 }
 ?>

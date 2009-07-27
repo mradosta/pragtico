@@ -26,8 +26,6 @@
  */
 class Menu extends AppModel {
 
-	var $order = array('Menu.orden' => 'asc');
-	
 	var $validate = array(
         'nombre' => array(
 			array(

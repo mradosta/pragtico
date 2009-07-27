@@ -23,8 +23,15 @@
  */
 class FacturasController extends AppController {
 
-	var $helpers = array('Documento');
+    var $paginate = array(
+        'order' => array(
+            'Factura.ano'       => 'desc',
+            'Factura.mes'       => 'desc',
+            'Factura.periodo'   => 'desc'
+        )
+    );
 
+	var $helpers = array('Documento');
 
 	function reporte($facturaId) {
 
@@ -33,7 +40,6 @@ class FacturasController extends AppController {
 			$this->Session->setFlash('No se han encontrado facturas para el periodo seleccioando segun los criterios especificados.', 'error');
 		} else {
 			$this->set('data', $records);
-			//$this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
 			$this->set('groupParams', ClassRegistry::init('Grupo')->getParams($records['invoice']['group_id']));
 			$this->layout = 'ajax';
 		}

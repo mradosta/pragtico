@@ -24,6 +24,12 @@
 class RolesController extends AppController {
 
 
+    var $paginate = array(
+        'order' => array(
+            'Rol.nombre' => 'asc'
+        )
+    );
+
 
 /**
  * acciones.

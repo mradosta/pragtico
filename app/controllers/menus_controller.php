@@ -27,6 +27,13 @@
 class MenusController extends AppController {
 
 
+    var $paginate = array(
+        'order' => array(
+            'Menu.orden' => 'asc'
+        )
+    );
+
+
 /**
  * roles.
  * Muestra via desglose roles asociados a este menu.

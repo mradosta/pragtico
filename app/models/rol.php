@@ -23,8 +23,6 @@
  */
 class Rol extends AppModel {
 
-	var $order = array('Rol.nombre' => 'asc');
-
 	var $validate = array(
         'nombre' => array(
 			array(

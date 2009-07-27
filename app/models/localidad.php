@@ -23,8 +23,6 @@
  */
 class Localidad extends AppModel {
 
-	var $order = array('Localidad.nombre' => 'asc');
-	
 	var $validate = array(
         'nombre' => array(
 			array(

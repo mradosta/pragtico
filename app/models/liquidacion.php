@@ -224,8 +224,8 @@ class Liquidacion extends AppModel {
 					array(	'relacion' 			=> $this->getRelationship(),
 							'codigoConcepto'	=> 'vacaciones')));
 
-            $this->LiquidacionesDetalle->Behaviors->detach('Permisos');
-            $this->LiquidacionesDetalle->Behaviors->detach('Util');
+            //$this->LiquidacionesDetalle->Behaviors->detach('Permisos');
+            //$this->LiquidacionesDetalle->Behaviors->detach('Util');
 
             App::import('Vendor', 'dates', 'pragmatia');
             $data = $this->Relacion->Liquidacion->LiquidacionesDetalle->find('all', array(

@@ -23,8 +23,6 @@
  */
 class Modalidad extends AppModel {
 
-	var $order = array('Modalidad.nombre' => 'asc');
-
 	var $validate = array(
         'nombre' => array(
 			array(

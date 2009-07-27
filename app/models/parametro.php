@@ -24,8 +24,6 @@
  */
 class Parametro extends AppModel {
 
-	var $order = array('Parametro.nombre' => 'asc');
-
 	var $validate = array(
         'nombre' => array(
 			array(
@@ -33,8 +31,7 @@ class Parametro extends AppModel {
 				'message'	=> 'Debe especificar el nombre de la parametro.')
         )        
 	);
-	
-	
+
 
 }
 ?>

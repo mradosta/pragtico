@@ -26,6 +26,12 @@
 class ModalidadesController extends AppController {
 
 
+    var $paginate = array(
+        'order' => array(
+            'Modalidad.nombre' => 'asc'
+        )
+    );
+
 
 }	
 ?>

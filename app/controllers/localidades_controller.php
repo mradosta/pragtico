@@ -24,5 +24,12 @@
 class LocalidadesController extends AppController {
 
 
+    var $paginate = array(
+        'order' => array(
+            'Provincia.nombre' => 'asc',
+            'Localidad.nombre' => 'asc'
+        )
+    );
+
 }	
 ?>

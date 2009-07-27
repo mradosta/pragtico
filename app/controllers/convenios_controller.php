@@ -26,6 +26,13 @@
 class ConveniosController extends AppController {
 
 
+    var $paginate = array(
+        'order' => array(
+            'Convenio.nombre' => 'asc'
+        )
+    );
+
+
 /**
  * Permite descargar el archivo del convenio colectivo.
  */

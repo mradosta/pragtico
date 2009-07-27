@@ -23,8 +23,6 @@
  */
 class Grupo extends AppModel {
 
-	var $order = array('Grupo.nombre asc');
-
 	var $validate = array(
         'nombre' => array(
 			array(

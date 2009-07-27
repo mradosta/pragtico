@@ -25,13 +25,6 @@
  */
 class Convenio extends AppModel {
 
-	/**
-	* Establece modificaciones al comportamiento estandar de app_controller.php
-	*/
-	//var $modificadores = array('index'=>array('contain'=>array('Convenio')));
-	
-	var $order = array('Convenio.nombre' => 'asc');
-
 	var $validate = array(
         'nombre' => array(
 			array(

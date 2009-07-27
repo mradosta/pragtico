@@ -24,6 +24,13 @@
 class UsuariosController extends AppController { 
 
 
+    var $paginate = array(
+        'order' => array(
+            'Usuario.nombre' => 'asc'
+        )
+    );
+
+
 	function add() {
 		
 		if (!empty($this->data['GruposUsuario']['grupo_id'])) {

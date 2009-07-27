@@ -25,6 +25,14 @@
  */
 class GruposController extends AppController {
 
+
+    var $paginate = array(
+        'order' => array(
+            'Grupo.nombre' => 'asc'
+        )
+    );
+
+
 /**
  * usuarios.
  * Muestra via desglose usuarios pertenecientes a este grupo.
