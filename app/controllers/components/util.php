@@ -187,6 +187,13 @@ class UtilComponent extends Object {
 		return $Dates->dateDiff($fechaDesde, $fechaHasta);
 	}
 
+
+    function getNonWorkingDays($fechaDesde, $fechaHasta = null, $options = array()) {
+        App::import('Vendor', 'dates', 'pragmatia');
+        $Dates = new Dates();
+        return $Dates->getNonWorkingDays($fechaDesde, $fechaHasta, $options);
+    }
+    
 	
 /**
  * Generates a date based on a starting date plus N working days.
