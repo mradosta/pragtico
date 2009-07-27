@@ -26,8 +26,6 @@ class Pago extends AppModel {
 	var $modificadores = array(	'index' =>
 			array('contain'	=> array('Descuento', 'Liquidacion', 'PagosForma', 'Relacion'	=> array('Empleador', 'Trabajador'))));
 	
-	var $order = array('Pago.fecha' => 'desc');
-
 	var $validate = array(
         'fecha' => array(
 			array(

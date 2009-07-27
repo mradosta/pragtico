@@ -23,8 +23,6 @@
  */
 class Area extends AppModel {
 
-	var $order = array('Area.nombre' => 'asc');
-	
 	var $validate = array(
         'nombre' => array(
 			array(

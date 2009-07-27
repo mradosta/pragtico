@@ -23,6 +23,14 @@
  */
 class AreasController extends AppController {
 
+
+    var $paginate = array(
+        'order' => array(
+            'Empleador.nombre'  => 'asc',
+            'Area.nombre'       => 'asc'
+        )
+    );
+
 /**
  * coeficientes.
  * Muestra via desglose los coeficientes de un area.

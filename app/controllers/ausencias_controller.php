@@ -26,6 +26,12 @@
  */
 class AusenciasController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Ausencia.desde' => 'desc'
+        )
+    );
+
 
 /**
 * Permite confirmar las ausencias.

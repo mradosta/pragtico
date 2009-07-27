@@ -26,8 +26,6 @@
  */
 class Ausencia extends AppModel {
 
-    var $order = array('Ausencia.desde' => 'desc');
-            
 	var $modificadores = array(	'index'=>array('contain'=>array('Relacion' => array('Empleador', 'Trabajador'),
 																'AusenciasMotivo',
 																'AusenciasSeguimiento')),

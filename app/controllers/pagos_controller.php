@@ -26,7 +26,11 @@
 class PagosController extends AppController {
 
 
-	var $helpers = array("Pdf");
+    var $paginate = array(
+        'order' => array(
+            'Pago.fecha' => 'desc'
+        )
+    );
 
 	function __seteos() {
 		/**

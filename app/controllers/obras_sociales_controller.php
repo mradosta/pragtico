@@ -1,6 +1,6 @@
 <?php
 /**
- * Este archivo contiene toda la logica de negocio asociada a las areas de los empleadores.
+ * Este archivo contiene toda la logica de negocio asociada a las obras sociales.
  *
  * PHP versions 5
  *
@@ -16,12 +16,19 @@
  * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
- * La clase encapsula la logica de negocio asociada a las areas de los empleadores.
+ * La clase encapsula la logica de negocio asociada a las obras sociales.
  *
  * @package     pragtico
  * @subpackage  app.controllers
  */
 class ObrasSocialesController extends AppController {
+
+
+    var $paginate = array(
+        'order' => array(
+            'ObrasSocial.nombre' => 'asc'
+        )
+    );    
 
 }
 ?>

@@ -25,6 +25,12 @@
  */
 class ConceptosController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Concepto.orden' => 'asc'
+        )
+    );
+
 
 /**
  * Rangos.

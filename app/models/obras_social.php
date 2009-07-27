@@ -23,24 +23,21 @@
  */
 class ObrasSocial extends AppModel {
 
-/*
-	var $order = array('Area.nombre' => 'asc');
-	var $unique = array('empleador_id', 'nombre');
-	
+
 	var $validate = array(
-        'nombre' => array(
+        'codigo' => array(
 			array(
 				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=> 'Debe especificar el nombre del area del empleador.')
+				'message'	=> 'Debe especificar el codigo de la obra social.')
+        ),
+        'nombre' => array(
+            array(
+                'rule'  => VALID_NOT_EMPTY,
+                'message'   => 'Debe especificar el nombre de la obra social.')
         )
 	);
 
-	var $belongsTo = array('Empleador' =>
-                        array('className'    => 'Empleador',
-                              'foreignKey'   => 'empleador_id'));
-*/
-
-    var $breadCrumb = array('format'    => '%s - %s',
+    var $breadCrumb = array('format'    => '(%s) - %s',
                             'fields'    => array('ObrasSocial.codigo', 'ObrasSocial.nombre'));
 
 }
