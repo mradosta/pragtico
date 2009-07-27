@@ -224,6 +224,35 @@ class Liquidacion extends AppModel {
 					array(	'relacion' 			=> $this->getRelationship(),
 							'codigoConcepto'	=> 'vacaciones')));
 
+            $this->LiquidacionesDetalle->Behaviors->detach('Permisos');
+            $this->LiquidacionesDetalle->Behaviors->detach('Util');
+
+            App::import('Vendor', 'dates', 'pragmatia');
+            $data = $this->Relacion->Liquidacion->LiquidacionesDetalle->find('all', array(
+                'contain'       => array('Liquidacion', 'Concepto'),
+                'group'         => array('CONCAT(Liquidacion.ano, LPAD(Liquidacion.mes, 2, \'0\'), Liquidacion.periodo)'),
+                'fields'        => array('CONCAT(Liquidacion.ano, LPAD(Liquidacion.mes, 2, \'0\'), Liquidacion.periodo) AS periodo', 'SUM(LiquidacionesDetalle.valor) as valor'),
+                'conditions'    => array(
+                    'Concepto.plus_vacacional'                  => 'Si',
+                    'Liquidacion.estado'                        => 'Confirmada',
+                    'Liquidacion.relacion_id'                   => $relationship['Relacion']['id'],
+                    'LiquidacionesDetalle.concepto_imprimir !=' => 'No',
+                    'CONCAT(Liquidacion.ano, LPAD(Liquidacion.mes, 2, \'0\'), Liquidacion.periodo)' => Dates::getPeriods(
+                        Dates::dateAdd($period['desde'], -365), $period['desde'],
+                            array('fromInclusive' => false, 'toInclusive' => false)))));
+
+            $this->setVar('#suma_conceptos_plus_vacacional_12_meses', array_sum(Set::extract('/LiquidacionesDetalle/valor')));
+            
+            $total = 0;
+            $data = Set::combine($data, '{n}.LiquidacionesDetalle.periodo', '{n}.LiquidacionesDetalle.valor');
+            $periods = Dates::getPeriods(null, $period['desde'],
+                            array('fromInclusive' => false, 'toInclusive' => false, 'month' => -6));
+            foreach ($data as $period => $value) {
+                if (in_array($period, $periods)) {
+                    $total += $value;
+                }
+            }
+            $this->setVar('#suma_conceptos_plus_vacacional_6_meses', $total);
 		} elseif (in_array($type,  array('final', 'sac'))) {
 
             if ($type === 'final') {
