@@ -54,6 +54,7 @@ $fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => arra
 
 $campos = null;
 $campos['Concepto.retencion_sindical'] = array('aclaracion' => 'Indica si corresponde a una retencion sindical');
+$campos['Concepto.plus_vacacional'] = array('aclaracion' => 'Indica si el concepto acumula para plus vacacional');
 $campos['Concepto.novedad'] = array('aclaracion' => 'Indica si permite ser ingresado desde Planilla de Novedades');
 $fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => 'Datos complementarios', 'imagen' => 'observaciones.gif')));
 
