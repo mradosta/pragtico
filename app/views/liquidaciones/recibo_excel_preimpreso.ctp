@@ -21,7 +21,6 @@
     $documento->activeSheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
     $documento->activeSheet->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
     
-    //$documento->activeSheet->getDefaultStyle()->getFont()->setName('Courier New');
     $documento->activeSheet->getDefaultStyle()->getFont()->setName('Arial');
     $documento->activeSheet->getDefaultStyle()->getFont()->setSize(8);
 
@@ -101,6 +100,12 @@
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('C') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['total_pesos'], array('type' => 'numeroEnLetras', 'case' => 'ucfirst')));
             
             $fila+=5;
+
+
+            if ($receipt['Liquidacion']['relacion_antiguedad_reconocida'] !== '0000-00-00') {
+                $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('D') -1 + ($i * 23)) . ',' . $fila, $receipt['Liquidacion']['relacion_antiguedad_reconocida']);
+            }
+            
             if (!empty($receipt['Suss'])) {
                 $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('M') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Suss']['periodo'], array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')));
                 $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('P') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Suss']['fecha'], 'date'));
