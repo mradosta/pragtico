@@ -24,86 +24,29 @@
  */
 class LiquidacionesController extends AppController {
 
-
+    var $paginate = array(
+        'order' => array(
+            'Liquidacion.ano'       => 'desc',
+            'Liquidacion.mes'       => 'desc',
+            'Liquidacion.periodo'   => 'desc'
+        )
+    );
+    
 	var $components = array('Formulador');
 	var $helpers = array('Documento');
 	
     function resumen() {
 
-        if (!empty($this->data)) {
-            if (!empty($this->data['Condicion']['Liquidacion-desagregado'])) {
-                $desagregado = $this->data['Condicion']['Liquidacion-desagregado'];
+        if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
+            if (empty($this->data['Condicion']['Liquidacion-empleador_id'])
+                && empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
+                $this->Session->setFlash('Debe seleccionar por lo menos un Empleador y/o un Grupo.', 'error');
+            } elseif (empty($this->data['Condicion']['Liquidacion-empleador_id'])) {
+                $this->Session->setFlash('Debe seleccionar un empleador.', 'error');
+            } elseif (empty($this->data['Condicion']['Liquidacion-periodo_largo']) || $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo') === false) {
+                $this->Session->setFlash('Debe especificar un periodo valido.', 'error');
             } else {
-                $desagregado = 'No';
-            }
-            $this->set('desagregado', $desagregado);
-            unset($this->data['Condicion']['Liquidacion-desagregado']);
-            $condiciones = $this->Paginador->generarCondicion();
-            $periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
-            if ($periodo !== false) {
-                $condiciones['Liquidacion.mes'] = $periodo['mes'];
-                $condiciones['Liquidacion.ano'] = $periodo['ano'];
-                $condiciones['Liquidacion.periodo'] = $periodo['periodo'];
-            }
-            unset($condiciones['Liquidacion.periodo_largo']);
-            $this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
-            unset($condiciones['Liquidacion.formato']);
-
-            $this->set('conditions', $this->data['Condicion']);
-            $this->set('workers', $this->Liquidacion->find('all', array(
-                    'conditions'    => $condiciones,
-                    'fields'        => array('COUNT(Liquidacion.trabajador_id) AS cantidad'),
-                    'recursive'     => -1)));
-            $condiciones['LiquidacionesDetalle.concepto_imprimir !='] = 'No';
-            $condiciones['LiquidacionesDetalle.valor >'] = 0;
-
-            if ($desagregado === 'Si') {
-                $this->set('data', $this->Liquidacion->LiquidacionesDetalle->find('all', array(
-                        'conditions'    => $condiciones,
-                        'contain'       => 'Liquidacion',
-                        'order'         => 'Liquidacion.relacion_id, LiquidacionesDetalle.concepto_orden',
-                        'fields'        => array('Liquidacion.trabajador_nombre',
-                                                'Liquidacion.trabajador_apellido',
-                                                'LiquidacionesDetalle.concepto_nombre',
-                                                'LiquidacionesDetalle.concepto_tipo',
-                                                'COUNT(LiquidacionesDetalle.concepto_nombre) AS cantidad',
-                                                'SUM(LiquidacionesDetalle.valor_cantidad) AS suma_cantidad',
-                                                'SUM(LiquidacionesDetalle.valor) AS valor'),
-                        'group'         => array('Liquidacion.relacion_id', 'LiquidacionesDetalle.concepto_nombre'),
-                        'contain'       => array('Liquidacion'))));
-            } else {
-                $this->set('data', $this->Liquidacion->LiquidacionesDetalle->find('all', array(
-                        'conditions'    => $condiciones,
-                        'order'         => 'LiquidacionesDetalle.concepto_orden',
-                        'fields'        => array('LiquidacionesDetalle.concepto_nombre',
-                                                'LiquidacionesDetalle.concepto_tipo',
-                                                'COUNT(LiquidacionesDetalle.concepto_nombre) AS cantidad',
-                                                'SUM(LiquidacionesDetalle.valor_cantidad) AS suma_cantidad',
-                                                'SUM(LiquidacionesDetalle.valor) AS valor'),
-                        'group'         => array('LiquidacionesDetalle.concepto_nombre'),
-                        'contain'       => array('Liquidacion'))));
-            }
-            $this->layout = 'ajax';
-        }
-    }
-
-
-	function libro_sueldos() {
-		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
-			if (empty($this->data['Condicion']['Liquidacion-empleador_id'])
-				&& empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
-				$this->Session->setFlash('Debe seleccionar por lo menos un Empleador y/o un Grupo.', 'error');
-			} elseif (empty($this->data['Condicion']['Liquidacion-periodo']) || $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], 'periodo') === false) {
-				$this->Session->setFlash('Debe especificar un periodo valido.', 'error');
-			} else {
-				$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo'], 'periodo');
-				
-				$this->set('periodo', $periodo['periodoCompleto']);
-                if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
-				    $this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Liquidacion-grupo_id']));
-                }
-				$this->set('startPage', $this->data['Condicion']['Bar-start_page']);
-
+                $periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
                 
                 $conditions = array('Liquidacion.estado'        => 'Confirmada',
                                     'Liquidacion.tipo'          => $this->data['Condicion']['Liquidacion-tipo'],
@@ -113,8 +56,95 @@ class LiquidacionesController extends AppController {
                 
                 if (!empty($this->data['Condicion']['Liquidacion-empleador_id'])) {
                     $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Liquidacion-empleador_id'];
-                    $this->Liquidacion->Relacion->Empleador->recursive = -1;
-                    $this->set('employer', $this->Liquidacion->Relacion->Empleador->findById($this->data['Condicion']['Liquidacion-empleador_id']));                    
+                }
+
+                if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
+                    $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Liquidacion-grupo_id'] . ') >'] = 0;
+                }
+
+                if (!empty($this->data['Condicion']['Liquidacion-desagregado'])) {
+                    $desagregado = $this->data['Condicion']['Liquidacion-desagregado'];
+                } else {
+                    $desagregado = 'No';
+                }
+
+
+                $this->Liquidacion->Behaviors->detach('Permisos');
+                $this->Liquidacion->Behaviors->detach('Util');
+                $workers = $this->Liquidacion->find('all', array(
+                        'conditions'    => $conditions,
+                        'fields'        => array('COUNT(Liquidacion.trabajador_id) AS cantidad'),
+                        'recursive'     => -1));
+
+                if (empty($workers[0]['Liquidacion']['cantidad'])) {
+                    $this->Session->setFlash('No se han encontrado liquidaciones confirmadas para el periodo seleccionado segun los criterios especificados.', 'error');
+                } else {
+
+                    $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
+                    $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Util');
+                    $conditions['LiquidacionesDetalle.concepto_imprimir !='] = 'No';
+                    if ($desagregado === 'Si') {
+                        $data = $this->Liquidacion->LiquidacionesDetalle->find('all', array(
+                                'conditions'    => $conditions,
+                                'contain'       => 'Liquidacion',
+                                'order'         => 'Liquidacion.relacion_id, LiquidacionesDetalle.concepto_orden',
+                                'fields'        => array('Liquidacion.trabajador_nombre',
+                                                        'Liquidacion.trabajador_apellido',
+                                                        'LiquidacionesDetalle.concepto_nombre',
+                                                        'LiquidacionesDetalle.concepto_tipo',
+                                                        'COUNT(LiquidacionesDetalle.concepto_nombre) AS cantidad',
+                                                        'SUM(LiquidacionesDetalle.valor_cantidad) AS suma_cantidad',
+                                                        'SUM(LiquidacionesDetalle.valor) AS valor'),
+                                'group'         => array('Liquidacion.relacion_id', 'LiquidacionesDetalle.concepto_nombre'),
+                                'contain'       => array('Liquidacion')));
+                    } else {
+                        $data = $this->Liquidacion->LiquidacionesDetalle->find('all', array(
+                                'conditions'    => $conditions,
+                                'order'         => 'LiquidacionesDetalle.concepto_orden',
+                                'fields'        => array('LiquidacionesDetalle.concepto_nombre',
+                                                        'LiquidacionesDetalle.concepto_tipo',
+                                                        'COUNT(LiquidacionesDetalle.concepto_nombre) AS cantidad',
+                                                        'SUM(LiquidacionesDetalle.valor_cantidad) AS suma_cantidad',
+                                                        'SUM(LiquidacionesDetalle.valor) AS valor'),
+                                'group'         => array('LiquidacionesDetalle.concepto_nombre'),
+                                'contain'       => array('Liquidacion')));
+                    }
+                    
+                    if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
+                        $this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Liquidacion-grupo_id']));
+                    }
+                    
+                    $this->layout = 'ajax';
+                    $this->set('data', $data);
+                    $this->set('workers', $workers);
+                    $this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
+                    $this->set('conditions', $this->data['Condicion']);
+                    $this->set('desagregado', $desagregado);
+                }
+            }
+        }
+        $this->set('grupos', $this->Util->getUserGroups());
+    }
+
+
+	function libro_sueldos() {
+		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
+			if (empty($this->data['Condicion']['Liquidacion-empleador_id'])
+				&& empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
+				$this->Session->setFlash('Debe seleccionar por lo menos un Empleador y/o un Grupo.', 'error');
+			} elseif (empty($this->data['Condicion']['Liquidacion-periodo_largo']) || $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo') === false) {
+				$this->Session->setFlash('Debe especificar un periodo valido.', 'error');
+			} else {
+				$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
+                
+                $conditions = array('Liquidacion.estado'        => 'Confirmada',
+                                    'Liquidacion.tipo'          => $this->data['Condicion']['Liquidacion-tipo'],
+                                    'Liquidacion.periodo'       => $periodo['periodo'],
+                                    'Liquidacion.ano'           => $periodo['ano'],
+                                    'Liquidacion.mes'           => $periodo['mes']);
+                
+                if (!empty($this->data['Condicion']['Liquidacion-empleador_id'])) {
+                    $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Liquidacion-empleador_id'];
                 }
 
                 if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
@@ -131,8 +161,17 @@ class LiquidacionesController extends AppController {
 							 	'order'			=> array('Liquidacion.empleador_nombre')));
 
 				if (empty($liquidaciones)) {
-					$this->Session->setFlash('No se han encontrado liquidaciones confirmadas para el periodo seleccioando segun los criterios especificados.', 'error');
+					$this->Session->setFlash('No se han encontrado liquidaciones confirmadas para el periodo seleccionado segun los criterios especificados.', 'error');
 				} else {
+                    if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
+                        $this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Liquidacion-grupo_id']));
+                    }
+                    if (!empty($this->data['Condicion']['Liquidacion-empleador_id'])) {
+                        $this->Liquidacion->Relacion->Empleador->recursive = -1;
+                        $this->set('employer', $this->Liquidacion->Relacion->Empleador->findById($this->data['Condicion']['Liquidacion-empleador_id']));                    
+                    }
+                    $this->set('startPage', $this->data['Condicion']['Bar-start_page']);
+                    $this->set('periodo', $periodo['periodoCompleto']);
 					$this->set('data', $liquidaciones);
 					$this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
 					$this->layout = 'ajax';
