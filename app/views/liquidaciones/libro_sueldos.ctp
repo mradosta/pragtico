@@ -54,17 +54,6 @@ if (!empty($data)) {
 	}
 	$documento->doc->getActiveSheet()->getHeaderFooter()->setOddHeader($left . $center);
 	
-	$styleBoldCenter = array('style' => array(
-		'font'		=> array('bold' => true),
-		'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
-		'borders' 	=> array( 'bottom'     => array('style' => PHPExcel_Style_Border::BORDER_DOTTED))));
-	$styleBoldRight = array('style' => array('font'		=> array(
-		'bold' 		=> true),
-		'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT)));
-	$styleBold = array('style' => array('font' => array(
-		'bold' 		=> true)));
-	$styleRight = array('style' => array(
-		'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT)));
 	$styleBorderBottom = array('style' => array(
 		'borders' => array( 'bottom'     => array('style' => PHPExcel_Style_Border::BORDER_DASHDOT))));
 	
@@ -82,7 +71,7 @@ if (!empty($data)) {
 	$documento->setWidth('J', 10);
 	$documento->setWidth('K', 10);
 
-
+        
     $fila = 0;
 	$employerFlag = null;
 	$pageCount = $startPage - 1;
@@ -102,12 +91,12 @@ if (!empty($data)) {
             if (empty($employer)) {
                 $fila+=2;
                 $documento->setCellValue('A' . $fila, 'Empresa Usuario:');
-                $documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['nombre'], $styleBold);
-                $documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), $styleBold);
+                $documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['nombre'], 'bold');
+                $documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), 'bold');
                 
                 $fila++;
                 $documento->setCellValue('A' . $fila, 'CUIT:');
-                $documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['cuit'], $styleBold);
+                $documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['cuit'], 'bold');
                 
                 $fila++;
                 $documento->setCellValue('A' . $fila, 'Direccion:');
@@ -115,7 +104,7 @@ if (!empty($data)) {
                 
                 $fila+=3;
             } else {
-                $documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), $styleBold);
+                $documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), 'bold');
                 $fila++;
             }
 		}
@@ -124,7 +113,7 @@ if (!empty($data)) {
 		$fila++;
 		$documento->setCellValue('A' . $fila, 'CUIL: ' . $record['Relacion']['Trabajador']['cuil']);
 		$documento->setCellValue('E' . $fila, 'Apellido y Nombre: ' . $record['Relacion']['Trabajador']['apellido'] . ' ' . $record['Relacion']['Trabajador']['nombre']);
-		$documento->setCellValue('I' . $fila, 'Categoria: ' . $record['Liquidacion']['convenio_categoria_nombre']);
+        $documento->setCellValue('I' . $fila, 'Ingreso: ' . $formato->format($record['Relacion']['ingreso'], 'date'));
 
 		$fila++;
 		$documento->setCellValue('A' . $fila, 'Legajo: ' . $record['Relacion']['legajo']);
@@ -138,7 +127,8 @@ if (!empty($data)) {
         $documento->setCellValue('I' . $fila, 'Suel/Jorn.: $' . number_format($salary, 2, '.', ''));
 
 		$fila++;
-		$documento->setCellValue('A' . $fila, 'Ingreso: ' . $formato->format($record['Relacion']['ingreso'], 'date'));
+        $documento->setCellValue('A' . $fila, 'Categoria: ' . $record['Liquidacion']['convenio_categoria_nombre']);
+
         $egreso = '';
         if (!empty($record['Relacion']['egreso']) && $record['Relacion']['egreso'] !== '0000-00-00') {
             $egreso = $formato->format($record['Relacion']['egreso'], 'date');
@@ -152,28 +142,28 @@ if (!empty($data)) {
 
 		
 		$fila++;
-		$documento->setCellValue('A' . $fila . ':C' . $fila, 'Remunerativo', $styleBoldCenter);
-		$documento->setCellValue('B' . $fila, '', $styleBoldCenter);
-		$documento->setCellValue('C' . $fila, '', $styleBoldCenter);
-		$documento->setCellValue('E' . $fila . ':G' . $fila, 'Deduccion', $styleBoldCenter);
-		$documento->setCellValue('F' . $fila, '', $styleBoldCenter);
-		$documento->setCellValue('G' . $fila, '', $styleBoldCenter);
-		$documento->setCellValue('I' . $fila . ':K' . $fila, 'No Remunerativo', $styleBoldCenter);
-		$documento->setCellValue('J' . $fila, '', $styleBoldCenter);
-		$documento->setCellValue('K' . $fila, '', $styleBoldCenter);
+		$documento->setCellValue('A' . $fila . ':C' . $fila, 'Remunerativo', 'title');
+		$documento->setCellValue('B' . $fila, '');
+		$documento->setCellValue('C' . $fila, '');
+		$documento->setCellValue('E' . $fila . ':G' . $fila, 'Deduccion', 'title');
+		$documento->setCellValue('F' . $fila, '');
+		$documento->setCellValue('G' . $fila, '');
+		$documento->setCellValue('I' . $fila . ':K' . $fila, 'No Remunerativo', 'title');
+		$documento->setCellValue('J' . $fila, '');
+		$documento->setCellValue('K' . $fila, '');
 		
 		$fila++;
 		$documento->setCellValue('A' . $fila, 'Descripcion');
-		$documento->setCellValue('B' . $fila, 'Cantidad', $styleRight);
-		$documento->setCellValue('C' . $fila, 'Importe', $styleRight);
+		$documento->setCellValue('B' . $fila, 'Cantidad', 'right');
+		$documento->setCellValue('C' . $fila, 'Importe', 'right');
 		
 		$documento->setCellValue('E' . $fila, 'Descripcion');
-		$documento->setCellValue('F' . $fila, 'Cantidad', $styleRight);
-		$documento->setCellValue('G' . $fila, 'Importe', $styleRight);
+		$documento->setCellValue('F' . $fila, 'Cantidad', 'right');
+		$documento->setCellValue('G' . $fila, 'Importe', 'right');
 		
 		$documento->setCellValue('I' . $fila, 'Descripcion');
-		$documento->setCellValue('J' . $fila, 'Cantidad', $styleRight);
-		$documento->setCellValue('K' . $fila, 'Importe', $styleRight);
+		$documento->setCellValue('J' . $fila, 'Cantidad', 'right');
+		$documento->setCellValue('K' . $fila, 'Importe', 'right');
 
 		$detailFlag = null;
 		$initialRow = $fila;
@@ -196,15 +186,15 @@ if (!empty($data)) {
 				if ($detail['concepto_tipo'] === 'Remunerativo') {
 					$documento->setCellValue('A' . $fila, $detail['concepto_nombre']);
 					$documento->setCellValue('B' . $fila, $detail['valor_cantidad']);
-					$documento->setCellValue('C' . $fila, '$' . $detail['valor'], $styleRight);
+					$documento->setCellValue('C' . $fila, $detail['valor'], 'right');
 				} elseif ($detail['concepto_tipo'] === 'Deduccion') {
 					$documento->setCellValue('E' . $fila, $detail['concepto_nombre']);
 					$documento->setCellValue('F' . $fila, $detail['valor_cantidad']);
-					$documento->setCellValue('G' . $fila, '$' . $detail['valor'], $styleRight);
+					$documento->setCellValue('G' . $fila, $detail['valor'], 'right');
 				} elseif ($detail['concepto_tipo'] === 'No Remunerativo') {
 					$documento->setCellValue('I' . $fila, $detail['concepto_nombre']);
 					$documento->setCellValue('J' . $fila, $detail['valor_cantidad']);
-					$documento->setCellValue('K' . $fila, '$' . $detail['valor'], $styleRight);
+					$documento->setCellValue('K' . $fila, $detail['valor'], 'right');
 				}
 			}
 		}
@@ -213,13 +203,13 @@ if (!empty($data)) {
 			$maxCount = $count;
 		}
 		$fila = $initialRow + $maxCount + 1;
-		$documento->setCellValue('A' . $fila, 'Totales');
-		$documento->setCellValue('C' . $fila, '$ ' . $record['Liquidacion']['remunerativo'], $styleBoldRight);
-		$documento->setCellValue('G' . $fila, '$ ' . $record['Liquidacion']['deduccion'], $styleBoldRight);
-		$documento->setCellValue('K' . $fila, '$ ' . $record['Liquidacion']['no_remunerativo'], $styleBoldRight);
+		$documento->setCellValue('A' . $fila, 'Totales', 'bold');
+		$documento->setCellValue('C' . $fila, $record['Liquidacion']['remunerativo'], array('bold', 'right'));
+		$documento->setCellValue('G' . $fila, $record['Liquidacion']['deduccion'], array('bold', 'right'));
+		$documento->setCellValue('K' . $fila, $record['Liquidacion']['no_remunerativo'], array('bold', 'right'));
 
 		$fila++;
-		$documento->setCellValue('K' . $fila, 'Total Neto $ ' . $record['Liquidacion']['total_pesos'], $styleBoldRight);
+		$documento->setCellValue('K' . $fila, 'Total Neto ' . $record['Liquidacion']['total_pesos'], array('bold', 'right'));
 
 		$fila++;
 		$documento->setCellValue('A' . $fila, '', $styleBorderBottom);
@@ -240,7 +230,7 @@ if (!empty($data)) {
 			$documento->doc->getActiveSheet()->setBreak('A' . $fila, PHPExcel_Worksheet::BREAK_ROW);
 			$fila++;
 			$pageCount++;
-            $documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), $styleBold);
+            $documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), 'bold');
 			$documento->setCellValue('K' . $fila, 'Hoja ' . $pageCount);
 			$fila++;
 		}
@@ -255,7 +245,7 @@ if (!empty($data)) {
 			'controller'		=>	'empleadores',
 			'seleccionMultiple' => false,
 			'camposRetorno'		=> array('Empleador.cuit', 'Empleador.nombre')));
-	$condiciones['Condicion.Liquidacion-periodo'] = array('type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S'));
+	$condiciones['Condicion.Liquidacion-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S'));
 	$condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'multiple' => 'checkbox', 'type' => 'select');
 	$condiciones['Condicion.Liquidacion-formato'] = array('type' => 'radio', 'options' => array('Excel5' => 'Excel', 'Excel2007' => 'Excel 2007'), 'value' => 'Excel2007');
 	$condiciones['Condicion.Bar-start_page'] = array('label' => 'Hoja Inicial', 'type' => 'text', 'value' => '1');
