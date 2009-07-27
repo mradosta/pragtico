@@ -152,7 +152,7 @@ class Novedad extends AppModel {
 					$save = null;
 					$save['Novedad']['id'] = null;
 					$save['Novedad']['periodo'] = $periodo;
-					$save['Novedad']['alta'] = date('d/m/Y');
+					$save['Novedad']['alta'] = date('Y-m-d');
 					$save['Novedad']['estado'] = 'Pendiente';
 					$save['Novedad']['relacion_id'] = $relacion_id;
 					
@@ -273,7 +273,7 @@ class Novedad extends AppModel {
 					$saves[$i]['Hora']['estado'] = 'Confirmada';
 					$saves[$i]['Hora']['relacion_id'] = $novedad['Novedad']['relacion_id'];
 					$saves[$i]['Hora']['periodo'] = $periodo['periodoCompleto'];
-					$saves[$i]['Hora']['observacion'] = 'Ingresado desde planilla. Confirmado el ' . date('d/m/Y');
+					$saves[$i]['Hora']['observacion'] = 'Ingresado desde planilla. Confirmado el ' . date('Y-m-d');
 				break;
 				case 'Ausencias':
 					$saves[$i]['Ausencia']['id'] = null;
@@ -287,7 +287,7 @@ class Novedad extends AppModel {
 					$saves[$i]['Ausencia']['ausencia_motivo_id'] = array_shift(explode(':', $novedad['Novedad']['subtipo']));
 					$saves[$i]['Ausencia']['relacion_id'] = $novedad['Novedad']['relacion_id'];
 					$saves[$i]['AusenciasSeguimiento'][$ii]['dias'] = $novedad['Novedad']['data'];
-					$saves[$i]['AusenciasSeguimiento'][$ii]['observacion'] = 'Ingresado desde planilla. Confirmado el ' . date('d/m/Y');
+					$saves[$i]['AusenciasSeguimiento'][$ii]['observacion'] = 'Ingresado desde planilla. Confirmado el ' . date('Y-m-d');
 					$saves[$i]['AusenciasSeguimiento'][$ii]['estado'] = 'Confirmado';
 					$ii++;
 				break;
@@ -301,7 +301,7 @@ class Novedad extends AppModel {
 					$saves[$i]['Descuento']['descontar'] = array('1');
 					$saves[$i]['Descuento']['concurrencia'] = 'Permite superponer';
 					$saves[$i]['Descuento']['estado'] = 'Activo';
-					$saves[$i]['Descuento']['observacion'] = 'Ingresado desde planilla. Confirmado el ' . date('d/m/Y');
+					$saves[$i]['Descuento']['observacion'] = 'Ingresado desde planilla. Confirmado el ' . date('Y-m-d');
 				break;
 				case 'Concepto':
 					$excludeIds[] = $novedad['Novedad']['id'];

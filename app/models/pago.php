@@ -103,8 +103,8 @@ class Pago extends AppModel {
 				$save['id'] = null;
 				$save['pago_id'] = $id;
 				$save['forma'] = $tipo;
-				$save['fecha'] = date('d/m/Y');
-				$save['fecha_pago'] = date('d/m/Y');
+				$save['fecha'] = date('Y-m-d');
+				$save['fecha_pago'] = date('Y-m-d');
 				$save['permissions'] = '292';
 				$save['monto'] = $pagos[$id]['Pago']['monto'] - $acumulado;
 				/**
@@ -193,7 +193,7 @@ class Pago extends AppModel {
 		$save['monto'] = $this->__getPartialPayments($id) * -1;
 		$save['forma'] = 'Efectivo';
 		$save['observacion'] = 'Este pago ha sido revertido';
-		$save['fecha'] = date('d/m/Y');
+		$save['fecha'] = date('Y-m-d');
 		$save['pago_id'] = $id;
 		
 		$this->begin();

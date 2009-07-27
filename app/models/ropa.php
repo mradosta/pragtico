@@ -31,7 +31,7 @@ class Ropa extends AppModel {
 	var $modificadores = array(	'index'	=>
 			array('contain'	=> array('Relacion'	=> array('Trabajador', 'Empleador'))),
 								'add' 	=>
-			array('valoresDefault'	=> array('fecha' => array('date' => 'd/m/Y'))),
+			array('valoresDefault'	=> array('fecha' => array('date' => 'Y-m-d'))),
 								'edit'	=>
 			array('contain'	=> array('Relacion'	=> array('Trabajador', 'Empleador'), 'RopasDetalle')));
 	

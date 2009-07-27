@@ -22,14 +22,15 @@
  * @subpackage  app.models
  */
 class Empleador extends AppModel {
-	
+
+
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
 	var $modificadores = array('index' 	=> array('contain' => array()),
 							   'edit'  	=> array('contain' => array('Localidad', 'Actividad', 'EmployersType')),
 								'add'  	=> array(								
-										'valoresDefault'=>array('alta' => array('date' => 'd/m/Y'),
+										'valoresDefault'=>array('alta' => array('date' => 'Y-m-d'),
 																'pais' => 'Argentina')));
 
 	var $breadCrumb = array('format' 	=> '(%s) %s',

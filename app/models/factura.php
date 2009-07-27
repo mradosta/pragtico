@@ -41,7 +41,7 @@ class Factura extends AppModel {
 		
 		$saveMaster['empleador_id'] = $employerId;
 		$saveMaster['area_id'] = $areaId;
-		$saveMaster['fecha'] = date('d/m/Y');
+		$saveMaster['fecha'] = date('Y-m-d');
 		$saveMaster['estado'] = 'Sin Confirmar';
 		$saveMaster['total'] = $total;
 		$saveMaster['confirmable'] = 'No';
