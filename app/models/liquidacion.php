@@ -493,10 +493,8 @@ class Liquidacion extends AppModel {
 			$detalle['concepto_nombre'] = $detalleLiquidacion['nombre'];
 			$detalle['concepto_tipo'] = $detalleLiquidacion['tipo'];
 			$detalle['concepto_periodo'] = $detalleLiquidacion['periodo'];
-			$detalle['concepto_sac'] = $detalleLiquidacion['sac'];
 			$detalle['concepto_pago'] = $detalleLiquidacion['pago'];
 			$detalle['concepto_imprimir'] = $detalleLiquidacion['imprimir'];
-			$detalle['concepto_antiguedad'] = $detalleLiquidacion['antiguedad'];
 			$detalle['concepto_formula'] = $detalleLiquidacion['formula'] . ' ===>RES:' . $detalleLiquidacion['valor'];
 			$detalle['concepto_cantidad'] = $detalleLiquidacion['cantidad'];
 			$detalle['concepto_orden'] = $detalleLiquidacion['orden'];

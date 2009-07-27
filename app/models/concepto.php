@@ -166,9 +166,7 @@ class Concepto extends AppModel {
 												"Concepto.nombre_formula",
 												"Concepto.tipo",
 												"Concepto.periodo",
-												"Concepto.sac",
 												"Concepto.imprimir",
-												"Concepto.antiguedad",
 												"Concepto.cantidad",
 												"Concepto.formula",
 												"Concepto.desde",
@@ -523,7 +521,6 @@ class Concepto extends AppModel {
 				$conceptos[$v['Concepto']['codigo']]['id'] = $v['ConveniosConcepto']['id'];
 			}
 		}
-        d($conceptos);
 		return $conceptos;
 	}
 
