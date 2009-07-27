@@ -63,11 +63,33 @@ class Dates {
     function getYear($date) {
         return array_shift(explode('-', $date));
     }
-    
-    function getPeriods($fromDate, $toDate = null, $options = array()) {
+
+
+/**
+ * Creates periods based in dates.
+ *
+ * if optional parameter month is specified, can create periods based in a date +/- months.
+ *
+ */
+    function getPeriods($fromDate = null, $toDate = null, $options = array()) {
         
+        $defaults = array(  'fromInclusive' => true,
+                            'toInclusive'   => true);
+        $options = array_merge($defaults, $options);
+
+        if (!empty($options['month'])) {
+            $fromDate = Dates::dateAdd($toDate, $options['month'], 'm', array('fromInclusive' => false));
+        }
+        
+        if ($options['fromInclusive'] === false) {
+            $fromDate = Dates::dateAdd($fromDate, 1, 'd', array('fromInclusive' => false));
+        }
+        if ($options['toInclusive'] === false) {
+            $toDate = Dates::dateAdd($toDate, -1, 'd', array('fromInclusive' => false));
+        }
+
         $periods = array();
-        while ($fromDate < $toDate) {
+        while ($fromDate <= $toDate) {
             $day = Dates::getDay($fromDate);
             $month = Dates::getMonth($fromDate);
             $year = Dates::getYear($fromDate);
