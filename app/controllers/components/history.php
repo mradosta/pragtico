@@ -90,9 +90,7 @@ class HistoryComponent extends Object {
  * @access public
  */
     function beforeRender(&$controller) {
-        if (!$this->__started) {
-			$this->_addUrl();
-        }
+        $this->_addUrl();
     }
 
 

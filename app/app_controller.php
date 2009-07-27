@@ -244,14 +244,13 @@ class AppController extends Controller {
 			}
 		}
 
+        $back = 1;
         if (isset($this->data['Form']['volverAInsertar'])) {
-			$back = 1;
             $this->action = 'add';
             if (!empty($this->data['Form']['volverAInsertar'])) {
                 $back = 0;
             }
         } else {
-			$back = 1;
             $this->action = 'edit';
         }
 
