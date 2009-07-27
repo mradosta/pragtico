@@ -23,8 +23,6 @@
  */
 class Rubro extends AppModel {
 
-	var $order = array('Rubro.nombre' => 'asc');
-
 	var $validate = array(
         'nombre' => array(
 			array(

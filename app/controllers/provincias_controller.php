@@ -23,6 +23,12 @@
  */
 class ProvinciasController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Provincia.nombre' => 'asc'
+        )
+    );
+
 /**
  * localidades.
  * Muestra via desglose las localidades relacionadas a esta provincia.

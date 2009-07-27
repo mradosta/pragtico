@@ -23,6 +23,11 @@
  */
 class RubrosController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Rubro.nombre' => 'asc'
+        )
+    );
 
 /**
  * empleadores.

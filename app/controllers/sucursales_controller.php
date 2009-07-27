@@ -23,6 +23,12 @@
  */
 class SucursalesController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Banco.nombre'      => 'asc',
+            'Sucursal.codigo'   => 'asc'
+        )
+    );
 
 }	
 ?>

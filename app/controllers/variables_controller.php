@@ -25,6 +25,11 @@
  */
 class VariablesController extends AppController {
 	
+    var $paginate = array(
+        'order' => array(
+            'Variable.nombre' => 'asc'
+        )
+    );
 
 }
 ?>
