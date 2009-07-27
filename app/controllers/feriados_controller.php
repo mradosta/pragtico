@@ -26,22 +26,55 @@
 class FeriadosController extends AppController {
 
 
-        function probar_consumir_min() {
-        $soapClient = new SoapClient("http://webservices.mininterior.gov.ar/feriados/Service.svc?wsdl",
-            array("trace"=>1,
-                    'uri'=>"http://tempuri.org/"));        
-        try {
+    var $paginate = array(
+        'order' => array(
+            'Feriado.fecha_origen' => 'asc'
+        )
+    );
 
-            $anio = 2009;
-$d1 = mktime(0, 0, 0, 1, 1, $anio);
-$d2 = mktime(0, 0, 0, 12, 31, $anio);
-$feriados = $soapClient->FeriadosEntreFechasAsXml(array('d1'=>$d1, 'd2'=>$d2));
-d($feriados);
+
+    function update_fron_ws() {
+        $soapClient = new SoapClient('http://webservices.mininterior.gov.ar/feriados/Service.svc?wsdl',
+            array('uri' => 'http://tempuri.org/'));
+        try {
+            $ano = date('Y');
+            $d1 = mktime(0, 0, 0, 1, 1, $ano);
+            $d2 = mktime(0, 0, 0, 12, 31, $ano);
+            $nonWorkingDaysObject = $soapClient->FeriadosEntreFechasAsXml(array('d1' => $d1, 'd2' => $d2));
+
+            /** Cargo desde un XML a un array */
+            App::import('Core', 'Xml');
+            $nonWorkingDays = Set::reverse(new Xml($nonWorkingDaysObject->FeriadosEntreFechasAsXmlResult));
+            if (!empty($nonWorkingDays['FeriadoDS']['Feriado'])) {
+                foreach ($nonWorkingDays['FeriadoDS']['Feriado'] as $nonWorkingDay) {
+                    $save = null;
+                    $save['fecha_origen'] = substr($nonWorkingDay['FechaOrigen'], 0, 10);
+                    $save['fecha_efectiva'] = substr($nonWorkingDay['FechaEfectiva'], 0, 10);
+                    $save['nombre'] = $nonWorkingDay['Nombre'];
+                    $save['descripcion'] = $nonWorkingDay['Descripcion'];
+                    $save['trasladable'] = ($nonWorkingDay['Trasladable'] === 'false')?'No':'Si';
+                    $save['tipo'] = $nonWorkingDay['TipoNombre'];
+                    $save['tipo_descripcion'] = (empty($nonWorkingDay['TipoDescripcion'])?'':$nonWorkingDay['TipoDescripcion']);
+
+                    $exists = $this->Feriado->findByNombre($save['nombre']);
+                    if (!empty($exists)) {
+                        $save['id'] = $exists['Feriado']['id'];
+                    }
+                    $saveAll[] = array('Feriado' => $save);
+                }
+                if (!empty($saveAll)) {
+                    if ($this->Feriado->saveAll($saveAll)) {
+                        $this->Session->setFlash('Se actualizaron correctamente los feriados.', 'ok');
+                    } else {
+                        $this->Session->setFlash('Ocurrio un error durante la actualizacion.', 'error');
+                    }
+                }
+            }
             
         } catch(SoapFault $soapFault) {
-            echo "Request :<br>", $soapClient->__getLastRequest(), "<br>";
-            echo "Response :<br>", $soapClient->__getLastResponse(), "<br>";
+            $this->Session->setFlash('Ocurrio un error al conectarse al WS del Ministerio del Interior. Intente mas tarde.', 'error');
         }
+        $this->redirect(array('action' => 'index'));
     }
 
 }

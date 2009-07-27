@@ -45,5 +45,8 @@ foreach ($registros as $k => $v) {
 	$cuerpo[] = $fila;
 }
 
-echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo));
+
+$actualizar = $appForm->link('Actualizar', 'update_fron_ws', array('title' => 'Actualizar desde el Ministerio del Interior', 'class' => 'link_boton'));
+$accionesExtra['opciones'] = array('acciones' => array('nuevo', 'modificar', 'eliminar', $actualizar));
+echo $this->element('index/index', array('condiciones' => $fieldset, 'accionesExtra' => $accionesExtra, 'cuerpo' => $cuerpo));
 ?>
