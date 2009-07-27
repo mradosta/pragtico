@@ -187,11 +187,6 @@ class LiquidacionesController extends AppController {
  */
 	function preliquidar() {
 
-		/**$this->__filasPorPagina();
-		$this->paginate = array_merge($this->paginate,
-				array('conditions' => array('Liquidacion.estado' => 'Sin Confirmar')));
-		*/
-
 		$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 			
@@ -373,7 +368,7 @@ class LiquidacionesController extends AppController {
 				'Relacion.Empleador',
 	 			'LiquidacionesError'));
         
-        $this->__filasPorPagina();
+        $this->paginate = array_merge($this->paginate, array('limit' => 15));
 		$resultados = $this->Paginador->paginar(
 			$condiciones,
 			array('Liquidacion.periodo_largo', 'Liquidacion.periodo_vacacional'));

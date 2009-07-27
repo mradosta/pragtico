@@ -23,7 +23,6 @@
  */
 class FacturasController extends AppController {
 
-	//var $uses = array("Factura", "Empleador");
 	var $helpers = array('Documento');
 
 
@@ -43,7 +42,6 @@ class FacturasController extends AppController {
 
 	function prefacturar() {
 
-        $this->__filasPorPagina();
 		if (!empty($this->data)) {
 			
 			if (!empty($this->data['Formulario']['accion'])) {
@@ -91,9 +89,11 @@ class FacturasController extends AppController {
 						unset($this->data['Condicion']['Liquidacion-tipo']);
 						$condiciones = $this->Paginador->generarCondicion($this->data);
 						$condiciones['Factura.estado'] = 'Sin Confirmar';
+                        $this->paginate = array_merge($this->paginate, array('limit' => 15));
 						$resultados = $this->Paginador->paginar($condiciones);
 
 					} elseif ($this->data['Formulario']['accion'] === 'limpiar') {
+                        $this->paginate = array_merge($this->paginate, array('limit' => 15));
 						$resultados = $this->Paginador->paginar(array('Factura.estado' => 'Sin Confirmar'));
 						$data = array();
 					}
