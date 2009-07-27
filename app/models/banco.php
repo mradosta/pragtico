@@ -23,8 +23,6 @@
  */
 class Banco extends AppModel {
 
-	var $order = array('Banco.nombre' => 'asc');
-
 	var $modificadores = array('index'	=> array('contain' => array()),
 								'edit'	=> array('contain' => array('Sucursal')));
 	

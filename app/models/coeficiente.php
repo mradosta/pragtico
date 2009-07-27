@@ -23,8 +23,6 @@
  */
 class Coeficiente extends AppModel {
 
-	var $order = array('Coeficiente.tipo' => 'desc');
-
 	var $validate = array(
         'nombre' => array(
 			array(

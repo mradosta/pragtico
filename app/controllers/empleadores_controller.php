@@ -23,6 +23,13 @@
  */
 class EmpleadoresController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Empleador.nombre' => 'asc'
+        )
+    );
+
+
 /**
  * Cuentas
  * Muestra via desglose las Cuentas de un empleador.

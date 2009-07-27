@@ -25,7 +25,13 @@
  */
 class BancosController extends AppController {
 
-	
+    var $paginate = array(
+        'order' => array(
+            'Banco.nombre' => 'asc'
+        )
+    );
+
+
 /**
  * sucursales.
  * Muestra via desglose las sucursales del banco.

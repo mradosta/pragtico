@@ -24,5 +24,11 @@
 class CoeficientesController extends AppController {
 
 
+    var $paginate = array(
+        'order' => array(
+            'Coeficiente.tipo' => 'desc'
+        )
+    );    
+
 }
 ?>
