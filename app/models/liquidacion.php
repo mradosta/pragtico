@@ -401,7 +401,6 @@ class Liquidacion extends AppModel {
 		$detalle = null;
 
 		foreach ($this->__conceptos as $detalleLiquidacion) {
-            d($detalleLiquidacion);
 			$v = $this->__agregarDetalle($detalleLiquidacion);
 			if (!empty($v)) {
 				$detalle[] = $v;
