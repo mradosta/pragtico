@@ -524,6 +524,8 @@ class Liquidacion extends AppModel {
 			$detalle['concepto_periodo'] = $detalleLiquidacion['periodo'];
 			$detalle['concepto_pago'] = $detalleLiquidacion['pago'];
 			$detalle['concepto_imprimir'] = $detalleLiquidacion['imprimir'];
+            $detalle['concepto_compone'] = $detalleLiquidacion['concepto_compone'];
+            $detalle['concepto_remuneracion'] = $detalleLiquidacion['concepto_remuneracion'];
 			$detalle['concepto_formula'] = $detalleLiquidacion['formula'] . ' ===>RES:' . $detalleLiquidacion['valor'];
 			$detalle['concepto_cantidad'] = $detalleLiquidacion['cantidad'];
 			$detalle['concepto_orden'] = $detalleLiquidacion['orden'];
