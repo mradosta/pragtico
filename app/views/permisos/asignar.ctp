@@ -119,10 +119,9 @@ $appForm->addScript('
 	jQuery("#todos").click(
 		function() {
 			if(jQuery(this).attr("checked")) {
-				jQuery(".tabla input[@type=\'checkbox\']").checkbox("seleccionar");
-			}
-			else {
-				jQuery(".tabla input[@type=\'checkbox\']").checkbox("deseleccionar");
+				jQuery(".tabla input:checkbox").checkbox("seleccionar");
+			} else {
+				jQuery(".tabla input:checkbox").checkbox("deseleccionar");
 			}
 		}
 	);
@@ -131,8 +130,7 @@ $appForm->addScript('
 		function() {
 			if(jQuery(this).attr("checked")) {
 				valor = true;
-			}
-			else {
+			} else {
 				valor = false;
 			}
 			jQuery("#PermisosDl").attr("checked", valor);
@@ -145,8 +143,7 @@ $appForm->addScript('
 		function() {
 			if(jQuery(this).attr("checked")) {
 				valor = true;
-			}
-			else {
+			} else {
 				valor = false;
 			}
 			jQuery("#PermisosDe").attr("checked", valor);
@@ -159,8 +156,7 @@ $appForm->addScript('
 		function() {
 			if(jQuery(this).attr("checked")) {
 				valor = true;
-			}
-			else {
+			} else {
 				valor = false;
 			}
 			jQuery("#PermisosDd").attr("checked", valor);
@@ -173,8 +169,7 @@ $appForm->addScript('
 		function() {
 			if(jQuery(this).attr("checked")) {
 				valor = true;
-			}
-			else {
+			} else {
 				valor = false;
 			}
 			jQuery("#PermisosDl").attr("checked", valor);
@@ -187,8 +182,7 @@ $appForm->addScript('
 		function() {
 			if(jQuery(this).attr("checked")) {
 				valor = true;
-			}
-			else {
+			} else {
 				valor = false;
 			}
 			jQuery("#PermisosGl").attr("checked", valor);
@@ -201,8 +195,7 @@ $appForm->addScript('
 		function() {
 			if(jQuery(this).attr("checked")) {
 				valor = true;
-			}
-			else {
+			} else {
 				valor = false;
 			}
 			jQuery("#PermisosOl").attr("checked", valor);
