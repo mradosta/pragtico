@@ -25,6 +25,46 @@
  */
 class AreasCoeficientesController extends AppController {
 
+    function add_rapido() {
+        $areasCoeficientes = Set::combine($this->AreasCoeficiente->find('all', array(
+          'recursive'   => -1,
+          'conditions'  => array('AreasCoeficiente.area_id' => $this->params['named']['AreasCoeficiente.area_id']))), '{n}.AreasCoeficiente.coeficiente_id', '{n}.AreasCoeficiente');
+        foreach ($this->AreasCoeficiente->Coeficiente->find('all', array(
+            'order' => array('Coeficiente.tipo', 'Coeficiente.nombre'))) as $v) {
+            $v['AreasCoeficiente']['id'] = null;
+            $v['AreasCoeficiente']['porcentaje'] = 0;
+            if (isset($areasCoeficientes[$v['Coeficiente']['id']])) {
+                $v['AreasCoeficiente']['id'] = $areasCoeficientes[$v['Coeficiente']['id']]['id'];
+                $v['AreasCoeficiente']['porcentaje'] = $areasCoeficientes[$v['Coeficiente']['id']]['porcentaje'];
+            }
+            $coefientes[] = $v;
+        }
+        $this->set('coefientes', $coefientes);
+        $this->AreasCoeficiente->Area->recursive = -1;
+        $this->set('area', $this->AreasCoeficiente->Area->findById($this->params['named']['AreasCoeficiente.area_id']));
+    }
 
+
+    function save() {
+        if (!empty($this->data['Form']['accion']) && $this->data['Form']['accion'] === 'grabar') {
+            foreach ($this->data as $k => $v) {
+                if (!empty($v['AreasCoeficiente']['delete']) && !empty($v['AreasCoeficiente']['id'])) {
+                    $delete[] = $v['AreasCoeficiente']['id'];
+                } elseif (!empty($v['AreasCoeficiente']['porcentaje'])) {
+                    $data[] = $v;
+                }
+            }
+            if (!empty($delete)) {
+                $this->AreasCoeficiente->deleteAll(array('AreasCoeficiente.id' => $delete));
+            }
+            $this->data['Form']['accion'] = 'grabar';
+        }
+        if (!empty($data)) {
+            return parent::save($data);
+        } else {
+            return parent::save();
+        }
+    }
+    
 }
 ?>

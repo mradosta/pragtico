@@ -41,6 +41,8 @@ class EmpleadoresCoeficientesController extends AppController {
             $coefientes[] = $v;
         }
         $this->set('coefientes', $coefientes);
+        $this->EmpleadoresCoeficiente->Empleador->recursive = -1;
+        $this->set('empleador', $this->EmpleadoresCoeficiente->Empleador->findById($this->params['named']['EmpleadoresCoeficiente.empleador_id']));
     }
 
     function save() {

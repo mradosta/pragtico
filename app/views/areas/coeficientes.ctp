@@ -30,7 +30,8 @@ foreach ($this->data['Coeficiente'] as $k=>$v) {
 	$cuerpo[] = $fila;
 }
 
-$url = array('controller' => 'areas_coeficientes', 'action' => 'add', 'AreasCoeficiente.area_id' => $this->data['Area']['id']);
+$url[] = array('controller' => 'areas_coeficientes', 'action' => 'add', 'AreasCoeficiente.area_id' => $this->data['Area']['id']);
+$url[] = array('controller' => 'areas_coeficientes', 'action' => 'add_rapido', 'AreasCoeficiente.area_id' => $this->data['Area']['id'], 'texto'=>'Carga Rapida');
 echo $this->element('desgloses/agregar', array('url' => $url, 'titulo' => 'Coeficiente', 'cuerpo' => $cuerpo));
 
 ?>

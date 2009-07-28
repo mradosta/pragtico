@@ -15,24 +15,24 @@
  * @lastmodified	$Date: 2009-01-27 11:26:49 -0200 (Tue, 27 Jan 2009) $
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
- 
+
 $appForm->addCrumb($this->name, 
         array('controller'  => $this->params['controller'], 
               'action'      => 'index'));
 $appForm->addCrumb(__('Edit', true));
-$appForm->addCrumb('Coefientes para <h5>' . $empleador['Empleador']['nombre'] . '</h5>');
+$appForm->addCrumb('Coefientes para <h5>' . $area['Area']['nombre'] . '</h5>');
  
-foreach($coefientes as $k => $v) {
+foreach ($coefientes as $k => $v) {
 	$fila = null;
     $fila[] = array('model' => 'Concepto', 'field' => 'tipo', 'valor' => $v['Coeficiente']['tipo']);
 	$fila[] = array('model' => 'Concepto', 'field' => 'nombre', 'valor' => $v['Coeficiente']['nombre']);
     $fila[] = array('model' => 'Concepto', 'field' => 'valor', 'valor' => $v['Coeficiente']['valor'], 'opciones' => array('class' => 'derecha'));
     $fila[] = array('model' => 'Concepto', 'field' => 'valor', 'valor' =>
-        $appForm->input($k . '.EmpleadoresCoeficiente.id', array('type' => 'hidden', 'value' => $v['EmpleadoresCoeficiente']['id'])) .
-        $appForm->input($k . '.EmpleadoresCoeficiente.coeficiente_id', array('type' => 'hidden', 'value' => $v['Coeficiente']['id'])) .
-        $appForm->input($k . '.EmpleadoresCoeficiente.empleador_id', array('type' => 'hidden', 'value' => $this->params['named']['EmpleadoresCoeficiente.empleador_id'])) .
-        $appForm->input($k . '.EmpleadoresCoeficiente.porcentaje', array('label' => false, 'class' => 'derecha', 'value' => $v['EmpleadoresCoeficiente']['porcentaje'], 'after' => '%')));
-    $fila[] = array('model' => 'Concepto', 'field' => 'delete', 'valor' => $appForm->input($k . '.EmpleadoresCoeficiente.delete', array('type' => 'checkbox', 'label' => false, 'div' => false)));
+        $appForm->input($k . '.AreasCoeficiente.id', array('type' => 'hidden', 'value' => $v['AreasCoeficiente']['id'])) .
+        $appForm->input($k . '.AreasCoeficiente.coeficiente_id', array('type' => 'hidden', 'value' => $v['Coeficiente']['id'])) .
+        $appForm->input($k . '.AreasCoeficiente.area_id', array('type' => 'hidden', 'value' => $this->params['named']['AreasCoeficiente.area_id'])) .
+        $appForm->input($k . '.AreasCoeficiente.porcentaje', array('label' => false, 'class' => 'derecha', 'value' => $v['AreasCoeficiente']['porcentaje'], 'after' => '%')));
+    $fila[] = array('model' => 'Concepto', 'field' => 'delete', 'valor' => $appForm->input($k . '.AreasCoeficiente.delete', array('type' => 'checkbox', 'label' => false, 'div' => false)));
 	$cuerpo[] = $fila;
 }
 $fila = null;
