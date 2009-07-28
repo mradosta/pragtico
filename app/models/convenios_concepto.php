@@ -25,7 +25,26 @@
  */
 class ConveniosConcepto extends AppModel {
 
-	//var $order = array('Concepto.codigo' => 'asc');
+    var $validate = array(
+        'convenio_id' => array(
+            array(
+                'rule'      => VALID_NOT_EMPTY,
+                'message'   => 'Debe seleccionar el convenio colectivo.')
+        ),
+        'concepto_id' => array(
+            array(
+                'rule'      => VALID_NOT_EMPTY,
+                'message'   => 'Debe seleccionar el concepto.')
+        ),
+        'formula' => array(
+            array(
+                'rule'      => 'validFormulaParenthesis',
+                'message'   => 'La formula no abre y cierra la misma cantidad de parentesis.'),
+            array(
+                'rule'      => 'validFormulaBrackets',
+                'message'   => 'La formula no abre y cierra la misma cantidad de corchetes.')
+        )
+    );
 	
 	var $belongsTo = array(	'Convenio' =>
                         array('className'    => 'Convenio',

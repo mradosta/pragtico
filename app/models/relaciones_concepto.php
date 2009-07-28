@@ -25,22 +25,31 @@
  */
 class RelacionesConcepto extends AppModel {
 
+    var $validate = array(
+        'relacion_id' => array(
+            array(
+                'rule'      => VALID_NOT_EMPTY,
+                'message'   => 'Debe seleccionar la relacion laboral.')
+        ),
+        'concepto_id' => array(
+            array(
+                'rule'      => VALID_NOT_EMPTY,
+                'message'   => 'Debe seleccionar el concepto.')
+        ),
+        'formula' => array(
+            array(
+                'rule'      => 'validFormulaParenthesis',
+                'message'   => 'La formula no abre y cierra la misma cantidad de parentesis.'),
+            array(
+                'rule'      => 'validFormulaBrackets',
+                'message'   => 'La formula no abre y cierra la misma cantidad de corchetes.')
+        )
+    );
+
 	var $modificadores = array(	'index'	=>
 			array('contain'	=> array('Relacion'	=> array('Empleador', 'Trabajador', 'ConveniosCategoria'), 'Concepto')),
 								'edit'	=>
 			array('contain'	=> array('Relacion'	=> array('Empleador', 'Trabajador', 'ConveniosCategoria'), 'Concepto')));
-	
-	var $validate = array(
-        'relacion_id__' => array(
-			array(
-				'rule'		=> VALID_NOT_EMPTY, 
-				'message'	=> 'Debe seleccionar la relacion laboral.'
-		)),
-        'concepto_id__' => array(
-			array(
-				'rule'		=> VALID_NOT_EMPTY, 
-				'message'	=> 'Debe seleccionar un concepto.'
-		)));
 	
 	var $belongsTo = array('Relacion', 'Concepto');
 

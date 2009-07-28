@@ -25,6 +25,28 @@
  */
 class EmpleadoresConcepto extends AppModel {
 
+    var $validate = array(
+        'empleador_id' => array(
+            array(
+                'rule'      => VALID_NOT_EMPTY,
+                'message'   => 'Debe seleccionar el empleador.')
+        ),
+        'concepto_id' => array(
+            array(
+                'rule'      => VALID_NOT_EMPTY,
+                'message'   => 'Debe seleccionar el concepto.')
+        ),
+        'formula' => array(
+            array(
+                'rule'      => 'validFormulaParenthesis',
+                'message'   => 'La formula no abre y cierra la misma cantidad de parentesis.'),
+            array(
+                'rule'      => 'validFormulaBrackets',
+                'message'   => 'La formula no abre y cierra la misma cantidad de corchetes.')
+        )
+    );
+
+
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/

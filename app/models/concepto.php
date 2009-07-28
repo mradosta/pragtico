@@ -68,7 +68,15 @@ class Concepto extends AppModel {
 			array(
 				'rule'		=> '__validarRango',
 				'message'	=> 'La vigencia hasta debe ser superior o igual a la vigencia desde.')
-        )        
+        ),
+        'formula' => array(
+            array(
+                'rule'      => 'validFormulaParenthesis',
+                'message'   => 'La formula no abre y cierra la misma cantidad de parentesis.'),
+            array(
+                'rule'      => 'validFormulaBrackets',
+                'message'   => 'La formula no abre y cierra la misma cantidad de corchetes.')
+        )
 	);
 
 	var $belongsTo = array('Coeficiente');

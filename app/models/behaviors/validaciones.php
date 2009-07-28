@@ -76,6 +76,25 @@ class ValidacionesBehavior extends ModelBehavior {
 	}
 
 
+    function validFormulaParenthesis(&$model, $rule, $ruleParams) {
+        $value = $this->__getValue($rule);
+        if (!empty($value) &&
+            count(explode('(', $value)) !== count(explode(')', $value))) {
+            return false;
+        }
+        return true;
+    }
+
+    function validFormulaBrackets(&$model, $rule, $ruleParams) {
+        $value = $this->__getValue($rule);
+        if (!empty($value) &&
+            count(explode('[', $value)) !== count(explode(']', $value))) {
+            return false;
+        }
+        return true;
+    }
+    
+
 /**
  * Valida que el extremo superior del rango sea mayor al inferior en caso de que ambos esten seteados.
  *
