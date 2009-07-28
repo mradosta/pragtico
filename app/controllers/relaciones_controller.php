@@ -122,8 +122,15 @@ class RelacionesController extends AppController {
  * Muestra via desglose los Conceptos asociados a la relacion laboral.
  */
 	function conceptos($id) {
-		$this->Relacion->contain(array('RelacionesConcepto.Concepto'));
-		$this->data = $this->Relacion->read(null, $id);
+		$this->Relacion->contain(array('RelacionesConcepto.Concepto', 'ConveniosCategoria.Convenio'));
+		$relacion = $this->Relacion->read(null, $id);
+
+        foreach ($relacion['RelacionesConcepto'] as $k => $concepto) {
+            $r = $this->Relacion->Concepto->findConceptos('ConceptoPuntual',
+                array('relacion' => $relacion, 'codigoConcepto' => $concepto['Concepto']['codigo']));
+            $relacion['RelacionesConcepto'][$k]['Concepto'] = array_pop($r);
+        }
+        $this->data = $relacion;
 	}
 
 
