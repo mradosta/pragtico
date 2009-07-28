@@ -64,7 +64,13 @@ class GruposController extends AppController {
 		$usuario = $this->Session->read('__Usuario');
 		if ($usuario['Usuario']['grupos'] & (int)$id) {
 			$usuario['Usuario']['preferencias']['grupo_default_id'] = $id;
-            $usuario['Usuario']['preferencias']['grupos_seleccionados'] += $id;
+            if (!empty($usuario['Usuario']['preferencias']['grupos_seleccionados'])) {
+                if (!($usuario['Usuario']['preferencias']['grupos_seleccionados'] & (int)$id)) {
+                    $usuario['Usuario']['preferencias']['grupos_seleccionados'] += $id;
+                }
+            } else {
+                $usuario['Usuario']['preferencias']['grupos_seleccionados'] = $id;
+            }
 			$this->Session->write('__Usuario', $usuario);
             if ($background === false) {
                 $this->Session->setFlash('El nuevo grupo por defecto se seteo correctamente.', 'ok');
@@ -93,8 +99,7 @@ class GruposController extends AppController {
 			$usuario = $this->Session->read('__Usuario');
 			if ($this->params['named']['accion'] === 'agregar') {
 				$usuario['Usuario']['preferencias']['grupos_seleccionados'] = $usuario['Usuario']['preferencias']['grupos_seleccionados'] + $this->params['named']['grupo_id'];
-			}
-			elseif ($this->params['named']['accion'] === 'quitar') {
+			} elseif ($this->params['named']['accion'] === 'quitar') {
 				$usuario['Usuario']['preferencias']['grupos_seleccionados'] = $usuario['Usuario']['preferencias']['grupos_seleccionados'] - $this->params['named']['grupo_id'];
 			}
 			$this->Session->write('__Usuario', $usuario);

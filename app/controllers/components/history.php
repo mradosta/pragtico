@@ -34,7 +34,7 @@ class HistoryComponent extends Object {
  * @var array
  * @access private
  */
-	private $__blackListedActions = array('listable', 'save', 'delete');
+	private $__blackListedActions = array('listable', 'save', 'delete', 'login');
 	
 	
 /**
@@ -101,7 +101,7 @@ class HistoryComponent extends Object {
  * @return void
  * @access public
  */
-    function goBack($pos = 1) {
+    function goBack($pos = 0) {
 	    $history = array_reverse($this->controller->Session->read('__history'));
 
         /*

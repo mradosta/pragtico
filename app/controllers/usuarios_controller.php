@@ -117,7 +117,11 @@ class UsuariosController extends AppController {
         }
         
         if (!empty($user) && !empty($password)) {
-            $usuario = $this->Usuario->verificarLogin(array('nombre' => $user, 'clave' => $password));
+            $selectedGroup = null;
+            if (!empty($this->data['Usuario']['loginGroup'])) {
+                $selectedGroup = $this->data['Usuario']['loginGroup'];
+            }
+            $usuario = $this->Usuario->verificarLogin(array('nombre' => $user, 'clave' => $password, 'selectedGroup' => $selectedGroup));
 
             if (!empty($usuario)) {
 
@@ -135,11 +139,11 @@ class UsuariosController extends AppController {
                     
                     if (!empty($this->data['Usuario']['loginGroup'])) {
                         $this->requestAction('grupos/setear_grupo_default/' . $this->data['Usuario']['loginGroup'] . '/true');
-                    } elseif (count($usuario['Grupo']) == 1) {
+                    } elseif (count($usuario['Grupo']) === 1) {
                         $this->requestAction('grupos/setear_grupo_default/' . $usuario['Grupo'][0]['id'] . '/true');
                     }
 
-                    $this->redirect('../relaciones/index', null, true);
+                    $this->redirect(array('controller' => 'relaciones', 'action' => 'index'), null, true);
                 }
                 
             } else {
