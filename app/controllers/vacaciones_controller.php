@@ -23,6 +23,11 @@
  */
 class VacacionesController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Vacacion.desde' => 'desc'
+        )
+    );
 
 }
 ?>

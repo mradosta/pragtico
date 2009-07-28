@@ -23,7 +23,6 @@
  */
 class Descuento extends AppModel {
 
-	var $order = array('Descuento.alta' => 'desc');
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/

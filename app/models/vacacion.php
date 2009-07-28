@@ -23,14 +23,24 @@
  */
 class Vacacion extends AppModel {
 
-	var $recursive = 2;
-	var $validate = array( 
+/**
+ * Los modificaciones al comportamiento estandar de app_controller.php
+ *
+ * @var array
+ * @access public
+*/
+    var $modificadores = array( 'index' => 
+            array('contain' => array('Relacion' => array('Empleador', 'Trabajador'))),
+                                'edit'  =>
+            array('contain' => array('Relacion' => array('Empleador', 'Trabajador'))));
+
+    var $validate = array(
         'desde' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe especificar la fecha de inicio de las vacaciones.'),
 			array(
-				'rule'	=> VALID_DATE, 
+				'rule'      => VALID_DATE,
 				'message'	=> 'Debe especificar una fecha valida.')
 				
         ),
@@ -39,14 +49,14 @@ class Vacacion extends AppModel {
 				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe especificar la fecha de fin de las vacaciones.'),
 			array(
-				'rule'	=> VALID_DATE, 
+				'rule'      => VALID_DATE,
 				'message'	=> 'Debe especificar una fecha valida.')
 				
         ),
-        'relacion_id__' => array(
+        'relacion_id' => array(
 			array(
-				'rule'	=> VALID_NOT_EMPTY,
-				'message'	=> 'Debe especificar la relacion laboral que toma las vacaciones.')
+				'rule'      => VALID_NOT_EMPTY,
+				'message'	=> 'Debe seleccionar la relacion laboral que toma las vacaciones.')
         )        
 	);
 	

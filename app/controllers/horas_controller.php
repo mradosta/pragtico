@@ -25,6 +25,11 @@
  */
 class HorasController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Hora.periodo' => 'desc'
+        )
+    );
 
 }
 

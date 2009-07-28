@@ -26,6 +26,12 @@
  */
 class DescuentosController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Descuento.alta' => 'desc'
+        )
+    );
+
 
 /**
  * detalles.

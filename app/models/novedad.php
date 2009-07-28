@@ -26,15 +26,6 @@
 class Novedad extends AppModel {
 
 /**
- * El orden por defecto.
- *
- * @var array
- * @access public
-*/
-	var $order = array('periodo', 'tipo');
-
-
-/**
  * Los modificaciones al comportamiento estandar de app_controller.php
  *
  * @var array

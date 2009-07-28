@@ -26,6 +26,13 @@
 
 class NovedadesController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Novedad.periodo' => 'desc',
+            'Novedad.tipo' => 'asc'
+        )
+    );
+
 	var $helpers = array('Documento');
 
 
