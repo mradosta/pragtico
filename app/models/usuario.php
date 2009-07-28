@@ -184,11 +184,15 @@ class Usuario extends AppModel {
 				$usuario['Usuario']['roles'] = array_sum(Set::extract($usuario, '/Rol/id'));
 				$usuario['Usuario']['grupos'] = array_sum(Set::extract($usuario, '/Grupo/id'));
 				$usuario['Usuario']['preferencias'] = $this->Preferencia->findPreferencias($usuario['Usuario']['id']);
-				$usuario['Usuario']['preferencias']['grupos_seleccionados'] = $usuario['Usuario']['grupos'];
+
 				if (!isset($usuario['Grupo'][0]['id'])) {
 					$usuario['Usuario']['preferencias']['grupo_default_id'] = 0;
 				} else {
-					$usuario['Usuario']['preferencias']['grupo_default_id'] = $usuario['Grupo'][0]['id'];
+                    if (!empty($condiciones['selectedGroup'])) {
+                        $usuario['Usuario']['preferencias']['grupo_default_id'] = $condiciones['selectedGroup'];
+                    } else {
+					   $usuario['Usuario']['preferencias']['grupo_default_id'] = $usuario['Grupo'][0]['id'];
+                    }
 				}
 				return $usuario;
 			}
