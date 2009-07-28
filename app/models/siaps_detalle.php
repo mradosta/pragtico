@@ -23,6 +23,13 @@
  */
 class SiapsDetalle extends AppModel {
 
+    var $paginate = array(
+        'order' => array(
+            'Siap.version'          => 'desc',
+            'SiapsDetalle.desde'    => 'asc'
+        )
+    );
+    
 	var $belongsTo = array('Siap');
 
 }
