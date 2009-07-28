@@ -216,7 +216,7 @@ class AppController extends Controller {
 				$this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
 			}
 
-            $this->{$this->modelClass}->access = 'write';
+            $this->{$this->modelClass}->setSecurityAccess('write');
 			$this->data = $this->{$this->modelClass}->find('all',
                     array('conditions' => array($this->modelClass . '.id' => $ids)));
             if (!empty($this->data)) {

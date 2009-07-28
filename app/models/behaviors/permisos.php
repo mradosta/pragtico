@@ -83,20 +83,6 @@ class PermisosBehavior extends ModelBehavior {
     private $__currentUser = null;
 	
 
-/**
- * Inicia el behavior para el model
- * Si no tengo instanciado el objeto session, lo instancio y lo dejo disponible.
- *
- * @return void..
- * @access public.
- */
-	function setup_deprecated(&$model, $settings = array()) {
-		if ($this->Session === null) {
-			$this->Session = &new SessionComponent();
-		}
-	}
-
-
     function __getCurrentUser() {
         if (empty($this->__currentUser)) {
             $Session = &new SessionComponent();
@@ -251,15 +237,15 @@ class PermisosBehavior extends ModelBehavior {
 	}
 
 	
-	function setSecurityAccess(&$model, $access) {
+	function setSecurityAccess(&$model, $access, $primaryModelOnly = true) {
 		if (in_array($access, array('read', 'write', 'delete'))) {
 			
-			/**
-			* Assign same security access to related models.
-			*/
-			foreach (array_merge($model->hasMany, $model->hasOne) as $assoc => $data) {
-				$model->{$assoc}->access = $access;
-			}
+			/** Assign same security access to related models */
+            if ($primaryModelOnly === false) {
+                foreach (array_merge($model->hasMany, $model->hasOne) as $assoc => $data) {
+                    $model->{$assoc}->access = $access;
+                }
+            }
 			$model->access = $access;
 			
 		} else {
@@ -268,11 +254,11 @@ class PermisosBehavior extends ModelBehavior {
 	}
 	
 
-	function getSecurityAccess(&$model) {
-		if (!empty($model->access)) {
-			return $model->access;
+	function getSecurityAccess(&$Model) {
+		if (!empty($Model->access)) {
+			return $Model->access;
 		}
-		return false;
+		return 'read';
 	}
 	
 	
@@ -315,7 +301,7 @@ class PermisosBehavior extends ModelBehavior {
 		* Verifico que se trate de alguno de los unicos 3 metodos soportados.
 		*/
 		if (in_array($securityAccess, array('read', 'write', 'delete'))) {
-			$seguridad = $this->__generarCondicionSeguridad($securityAccess, $model->name);
+			$seguridad = $this->__generarCondicionSeguridad($model, $securityAccess);
 		} else {
 			trigger_error('Metodo de seguridad no soportado.', E_USER_ERROR);
 		}
@@ -335,23 +321,6 @@ class PermisosBehavior extends ModelBehavior {
 		return $queryData;
 	}
 
-
-/**
- * Genera las condiciones de seguridad.
- *
- * @param object &$model Model que utiliza este behavior.
- * @param string $acceso Tipo de acceso que se desea realizar. Solo hay tres tipos permitidos:
- *						- read
- *						- write
- *						- delete
- * @return array Vacio si se trata de un usuario cuyo grupo primario sea el grupo de administradores donde
- * no se chequea seguridad. Array con las condiciones en cualquier otro caso.
- * @access public
- */
-	function generarCondicionSeguridad_deprecated(&$model, $acceso) {
-		return $this->__generarCondicionSeguridad($acceso, $model->name);
-	}
-
 	
 /**
  * Genera las condiciones de seguridad.
@@ -365,7 +334,7 @@ class PermisosBehavior extends ModelBehavior {
  * no se chequea seguridad. Array con las condiciones en cualquier otro caso.
  * @access private
  */
-	function __generarCondicionSeguridad($acceso, $modelName) {
+	function __generarCondicionSeguridad(&$Model, $acceso) {
 		
 		$usuario = $this->__getCurrentUser();
 		
@@ -402,22 +371,22 @@ class PermisosBehavior extends ModelBehavior {
 			* Si explicitamente no ha seleccionado ningun grupo, supongo que desea ver solo sus registros...
 			* Los registros de los cuales el es dueno.
 			*/
-			if (empty($grupos)) {
+			if (empty($grupos) || $Model->getSecurityAccess() !== 'read') {
 				$seguridad['OR'][] =
 					array(
-						$modelName . '.user_id' => $usuarioId,
-						'(' . $modelName . '.permissions) & ' . $this->__simplifiedPermissions['owner_' . $acceso] => $resultPermissions['owner_' . $acceso]
+						$Model->name . '.user_id' => $usuarioId,
+						'(' . $Model->name . '.permissions) & ' . $this->__simplifiedPermissions['owner_' . $acceso] => $resultPermissions['owner_' . $acceso]
 					);
 			} else {
 				$seguridad['OR'][] =
 					array('AND' => array(
 						array(
-							$modelName . '.user_id' => $usuarioId,
-							'(' . $modelName . '.permissions) & ' . $this->__simplifiedPermissions['owner_' . $acceso] => $resultPermissions['owner_' . $acceso]
+							$Model->name . '.user_id' => $usuarioId,
+							'(' . $Model->name . '.permissions) & ' . $this->__simplifiedPermissions['owner_' . $acceso] => $resultPermissions['owner_' . $acceso]
 						),
 						array(
-							'(' . $modelName . '.group_id) & ' . $grupos => $grupos,
-							'(' . $modelName . '.permissions) & ' . $this->__simplifiedPermissions['group_' . $acceso] => $resultPermissions['group_' . $acceso]
+							'(' . $Model->name . '.group_id) & ' . $grupos => $grupos,
+							'(' . $Model->name . '.permissions) & ' . $this->__simplifiedPermissions['group_' . $acceso] => $resultPermissions['group_' . $acceso]
 						)
 					));
 			}
@@ -425,18 +394,18 @@ class PermisosBehavior extends ModelBehavior {
 			$seguridad['OR'][] =
 				array('AND' => array(
 					array(
-						'(' . $modelName . '.role_id) & ' . $roles . ' >' => $modelName . '.role_id',
-						'(' . $modelName . '.permissions) & ' . $this->__simplifiedPermissions['group_' . $acceso] => $resultPermissions['group_' . $acceso]
+						'(' . $Model->name . '.role_id) & ' . $roles . ' >' => $Model->name . '.role_id',
+						'(' . $Model->name . '.permissions) & ' . $this->__simplifiedPermissions['group_' . $acceso] => $resultPermissions['group_' . $acceso]
 					),
 					array(
-						'(' . $modelName . '.group_id) & ' . $grupos . ' >' => $modelName . '.group_id',
-						'(' . $modelName . '.permissions) & ' . $this->__simplifiedPermissions['group_' . $acceso] => $resultPermissions['group_' . $acceso]
+						'(' . $Model->name . '.group_id) & ' . $grupos . ' >' => $Model->name . '.group_id',
+						'(' . $Model->name . '.permissions) & ' . $this->__simplifiedPermissions['group_' . $acceso] => $resultPermissions['group_' . $acceso]
 					)
 				));
 			
 			$seguridad['OR'][] =
 				array(
-					'(' . $modelName . '.permissions) & ' . $this->__simplifiedPermissions['other_' . $acceso] => $resultPermissions['other_' . $acceso]
+					'(' . $Model->name . '.permissions) & ' . $this->__simplifiedPermissions['other_' . $acceso] => $resultPermissions['other_' . $acceso]
 				);
 		}
 
