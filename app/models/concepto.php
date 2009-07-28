@@ -168,6 +168,7 @@ class Concepto extends AppModel {
 												"Concepto.periodo",
 												"Concepto.imprimir",
 												"Concepto.cantidad",
+                                                "Concepto.valor_unitario",
                                                 "Concepto.compone",
                                                 "Concepto.remuneracion",
 												"Concepto.formula",

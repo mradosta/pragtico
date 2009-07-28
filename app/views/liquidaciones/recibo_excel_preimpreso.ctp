@@ -77,7 +77,11 @@
                         $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, ' ' . $detail['valor_cantidad']);
                     }
                     $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('E') -1 + ($i * 23)) . ',' . $fila, $detail['concepto_nombre']);
-                    $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('P') -1 + ($i * 23)) . ',' . $fila, ' ');
+                    if (abs($detail['valor_unitario']) > 0) {
+                        $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('P') -1 + ($i * 23)) . ',' . $fila, $formato->format($detail['valor_unitario'], 'currency'), $styleRight);
+                    } else {
+                        $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('P') -1 + ($i * 23)) . ',' . $fila, ' ');
+                    }
                     if ($detail['concepto_tipo'] !== 'Deduccion') {
                         $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('S') -1 + ($i * 23)) . ',' . $fila, $formato->format($detail['valor'], 'currency'), $styleRight);
                     } else {

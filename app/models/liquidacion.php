@@ -536,6 +536,7 @@ class Liquidacion extends AppModel {
 			$detalle['debug'] = $detalleLiquidacion['debug'];
 			$detalle['valor'] = $detalleLiquidacion['valor'];
 			$detalle['valor_cantidad'] = $detalleLiquidacion['valor_cantidad'];
+            $detalle['valor_unitario'] = $detalleLiquidacion['valor_unitario'];
 		}
 		return $detalle;
 	}
@@ -626,6 +627,36 @@ class Liquidacion extends AppModel {
 			}
 		}
 
+        /**
+        * Si en el valor unitario hay una variable, la reemplazo.
+        */
+        $conceptoValorUnitario = 0;
+        if (!empty($concepto['valor_unitario'])) {
+            if (isset($this->__variables[$concepto['valor_unitario']])) {
+                $varValue = $this->getVarValue($concepto['valor_unitario']);
+                if ($varValue !== '#N/A') {
+                    $conceptoValorUnitario = $varValue;
+                } else {
+                    $this->__setError(array(
+                        'tipo'                  => 'Variable No Resuelta',
+                        'gravedad'              => 'Media',
+                        'variable'              => $concepto['valor_unitario'],
+                        'formula'               => $concepto['formula'],
+                        'descripcion'           => 'El valor unitario intenta usar una variable que no ha podido ser resuelta.',
+                        'recomendacion'         => 'Verifique que los datos hayan sido correctamente ingresados.',
+                        'descripcion_adicional' => ''));
+                }
+            } else {
+                $this->__setError(array(
+                        'tipo'                  => 'Variable Inexistente',
+                        'gravedad'              => 'Media',
+                        'variable'              => $concepto['valor_unitario'],
+                        'formula'               => $concepto['formula'],
+                        'descripcion'           => 'El valor unitario intenta usar una variable inexistente.',
+                        'recomendacion'         => 'Verifique que la cantidad este correctamente definida y que la variable que la cantidad utiliza exista en el sistema.',
+                        'descripcion_adicional' => ''));
+            }
+        }
 
 		/**
 		* Verifico si el nombre que se muestra del concepto es una formula, la resuelvo.
@@ -790,10 +821,16 @@ class Liquidacion extends AppModel {
 										"descripcion_adicional"	=> "Se asume como 0 (cero) el valor del concepto."));
 			$valor = 0;
 		} else {
-			$valor = "#N/A";
+			$valor = '#N/A';
 		}
 		
-		return array("valor"=>$valor, "debug"=>$formula, "valor_cantidad"=>$conceptoCantidad, "nombre"=>$nombreConcepto, "errores"=>$errores);
+		return array(
+            'valor'             => $valor,
+            'debug'             => $formula,
+            'valor_cantidad'    => $conceptoCantidad,
+            'valor_unitario'    => $conceptoValorUnitario,
+            'nombre'            => $nombreConcepto,
+            'errores' => $errores);
 	}
 	
 	

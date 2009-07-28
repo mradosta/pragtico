@@ -50,6 +50,7 @@ $campos['Concepto.pago'] = array();
 $campos['Concepto.imprimir'] = array();
 $campos['Concepto.orden'] = array();
 $campos['Concepto.cantidad'] = array('aclaracion' => 'Indica desde que variable se sacara la cantidad que se mostrara');
+$campos['Concepto.valor_unitario'] = array('aclaracion' => 'Indica desde que variable se sacara el valor_unitario que se mostrara');
 $fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => 'Visualizacion', 'imagen' => 'visualizacion.gif')));
 
 $campos = null;
