@@ -28,7 +28,7 @@ if(!empty($registros)) {
 	/**
 	* Pongo el titulo de la planilla.
 	*/
-	$documento->setCellValue('E1:M3', 'Novedades - ' . date('d/m/Y'),
+	$documento->setCellValue('E1:M3', 'Novedades - ' . date('Y-m-d'),
 		array('style' => array('font'		=> array('bold' => true, 'size' => 14),
 							'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER))
 			));
@@ -86,7 +86,7 @@ if(!empty($registros)) {
 	/**
 	* Las horas.
 	*/
-	if(in_array('Horas', $tipos)) {
+	if (in_array('Horas', $tipos)) {
 		$columna++;
 		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas', array('style' => $estiloTituloColumna));
 		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
@@ -135,7 +135,7 @@ if(!empty($registros)) {
 	/**
 	* Las ausencias.
 	*/
-	if(in_array('Ausencias', $tipos)) {
+	if (in_array('Ausencias', $tipos)) {
 		$columna++;
 		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Ausencias', array('style' => $estiloTituloColumna));
 		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(27);
@@ -153,7 +153,7 @@ if(!empty($registros)) {
 	/**
 	* Los vales.
 	*/
-	if(in_array('Vales', $tipos)) {
+	if (in_array('Vales', $tipos)) {
 		$columna++;
 		$documento->setCellValue($columna . ',' . $fila, 'Vales', array('style' => $estiloTituloColumna));
 		$documento->setCellValue($columna . ',' . ($fila+1), '$', array('style' => $estiloTituloColumna));
@@ -163,8 +163,8 @@ if(!empty($registros)) {
 	/**
 	* Trabajo con los genericos si hay alguno.
 	*/
-	foreach($tipos as $concepto) {
-		if(!in_array($concepto, $tiposPredefinidos)) {
+	foreach ($tipos as $concepto) {
+		if (!in_array($concepto, $tiposPredefinidos)) {
 			$columna++;
 			$documento->setCellValue($columna . ',' . $fila . ':' . $columna . ',' . ($fila+1), $concepto, array('style' => $estiloTituloColumna));
 		}
@@ -174,7 +174,7 @@ if(!empty($registros)) {
 	* Recorro cada registro ahora que yatengo los encabezados.
 	*/
 	$fila++;
-	foreach($registros as $registro) {
+	foreach ($registros as $registro) {
 		$fila++;
 		$documento->setCellValue('A' . $fila, $registro['Relacion']['id']);
 		$documento->setCellValue('B' . $fila, $registro['Empleador']['nombre']);
@@ -190,15 +190,14 @@ if(!empty($registros)) {
 		/**
 		* El combo con los posibles motivos.
 		*/
-		if(isset($columnaMotivo)) {
+		if (isset($columnaMotivo)) {
 			$documento->setDataValidation(($columnaMotivo+1) . ',' . $fila, 'date');
 			$documento->setDataValidation($columnaMotivo . ',' . $fila, 'list', array('valores'=>$motivos));
 		}
 	}
-	$documento->doc->getActiveSheet()->freezePane('B10');
+	$documento->doc->getActiveSheet()->freezePane('E10');
 	$documento->save($formatoDocumento);
-}
-else {
+} else {
 	/**
 	* Especifico los campos para ingresar las condiciones.
 	*/
