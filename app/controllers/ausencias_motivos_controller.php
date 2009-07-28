@@ -23,6 +23,12 @@
  */
 class AusenciasMotivosController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'AusenciasMotivo.tipo'      => 'asc',
+            'AusenciasMotivo.motivo'    => 'asc'
+        )
+    );
 	
 }
 ?>
