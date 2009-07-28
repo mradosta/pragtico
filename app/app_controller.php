@@ -218,7 +218,7 @@ class AppController extends Controller {
 
             $this->{$this->modelClass}->setSecurityAccess('write');
 			$this->data = $this->{$this->modelClass}->find('all',
-                    array('conditions' => array($this->modelClass . '.id' => $ids)));
+                    array('conditions' => array($this->modelClass . '.' . $this->{$this->modelClass}->primaryKey => $ids)));
             if (!empty($this->data)) {
                 $this->render('add');
             } else {
@@ -306,9 +306,9 @@ class AppController extends Controller {
                         }
                         
 						$this->{$this->modelClass}->Behaviors->attach('Crumbable');
+                        $this->{$this->modelClass}->setSecurityAccess('write');
                         $this->data = $this->{$this->modelClass}->find('all',
-                                array(  'acceso'    => 'write', 
-                                        'conditions'=> array($this->modelClass . '.' . $this->{$this->modelClass}->primaryKey => $ids)));
+                                array('conditions'=> array($this->modelClass . '.' . $this->{$this->modelClass}->primaryKey => $ids)));
 
                         if ($this->action === 'edit') {
                             foreach ($data as $k => $v) {
