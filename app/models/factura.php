@@ -94,7 +94,6 @@ class Factura extends AppModel {
 					'order' 		=> array('Liquidacion.empleador_id', 'Liquidacion.relacion_area_id'),
 				 	'contain'		=> array('Empleador', 'LiquidacionesDetalle', 'Factura')));
 
-        d($data);
 		if (!empty($data)) {
 			
 			$saveMaster = $saveDatails = null;
