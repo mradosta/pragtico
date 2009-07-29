@@ -613,6 +613,10 @@ class FormatoHelper extends AppHelper {
 					$before = '';
 					$ano = substr($valor, 0, 4);
 					$mes = $this->__getMonths((int)substr($valor, 4, 2));
+                } elseif (preg_match('/(\d\d\d\d)(\d\d)F/', strtoupper($valor), $matches)) {
+                    $ano = $matches[1];
+                    $mes = $this->__getMonths($matches[2]);
+                    $before = $beforeShort = 'final a ';
 				}
 				
 				if (!empty($options['short'])) {
@@ -762,6 +766,7 @@ class FormatoHelper extends AppHelper {
 		$meses['12'] = 'diciembre';
 		*/
 		if (is_numeric($mes)) {
+            $mes = (int)$mes;
 			if (isset($meses[$mes])) {
 				return $meses[$mes];
 			} else {
