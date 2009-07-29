@@ -399,6 +399,8 @@ class Liquidacion extends AppModel {
 		$liquidacion['convenio_categoria_nombre'] = $this->getRelationship('ConveniosCategoria', 'nombre');
 		$liquidacion['convenio_categoria_costo'] = $this->getRelationship('ConveniosCategoria', 'costo');
 		$liquidacion['convenio_categoria_jornada'] = $this->getRelationship('ConveniosCategoria', 'jornada');
+        /** Just the owner can read, write or delete a pre-receipt */
+        $liquidacion['permissions'] = '448';
 
 		$totales['remunerativo'] = 0;
 		$totales['no_remunerativo'] = 0;
@@ -544,6 +546,8 @@ class Liquidacion extends AppModel {
 			$detalle['valor'] = $detalleLiquidacion['valor'];
 			$detalle['valor_cantidad'] = $detalleLiquidacion['valor_cantidad'];
             $detalle['valor_unitario'] = $detalleLiquidacion['valor_unitario'];
+            /** Just the owner can read, write or delete a pre-receipt */
+            $detalle['permissions'] = '448';
 		}
 		return $detalle;
 	}
@@ -708,7 +712,7 @@ class Liquidacion extends AppModel {
 		/**
 		* Veo si es una formula, que me indica la suma del remunerativo, de las deducciones o del no remunerativo.
 		*/
-		if (preg_match("/^=sum[\s]*\([\s]*(Remunerativo|Deduccion|No\sRemunerativo)[\s]*\)$/i", $formula, $matches)) {
+		if (preg_match("/^=[\s]*sum[\s]*\([\s]*(Remunerativo|Deduccion|No\sRemunerativo)[\s]*\)$/i", $formula, $matches)) {
 			if (!isset($conceptosNot)) {
 				$conceptosNot = array();
 			}

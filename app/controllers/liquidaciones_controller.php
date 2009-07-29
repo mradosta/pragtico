@@ -886,6 +886,8 @@ class LiquidacionesController extends AppController {
                     unset($save['condition']);
                 }
 				$modelSave = ClassRegistry::init($model);
+                /** Just the owner and group can just read */
+                $save['permissions'] = '288';
 				$save = array($model => $save);
 				$modelSave->create($save);
 				if ($modelSave->save($save, false)) {
@@ -893,12 +895,14 @@ class LiquidacionesController extends AppController {
                 }
 			}
 
-            /**
-			 * Si lo anterior salio todo ok, continuo.
-			 */
+            /** If everything is ok, change state and permission so only owner and group can just read */
 			if ($c === count($auxiliares)) {
 				$this->Liquidacion->recursive = -1;
-				if ($this->Liquidacion->updateAll(array('estado' => "'Confirmada'"), array('Liquidacion.id' => $ids))) {
+				if ($this->Liquidacion->updateAll(array(
+                    'estado'        => "'Confirmada'",
+                    'permissions'   => "'288'",
+                    'modified'      => 'NOW()'),
+                        array('Liquidacion.id' => $ids))) {
 					/**
 					 * Borro de la tabla auxiliar.
 					 */
