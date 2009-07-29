@@ -25,6 +25,12 @@
  */
 class SiapsDetallesController extends AppController {
 	
+    var $paginate = array(
+        'order' => array(
+            'Siap.version'          => 'desc',
+            'SiapsDetalle.desde'    => 'asc'
+        )
+    );
 
 }
 ?>

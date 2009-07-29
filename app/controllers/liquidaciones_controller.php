@@ -531,13 +531,16 @@ class LiquidacionesController extends AppController {
 				$liquidaciones = $this->Liquidacion->find('all',
 						array(	'checkSecurity'	=> false,
 								'contain'		=> array(	'Empleador',
+                                        'LiquidacionesDetalle' => array('conditions' => array('LiquidacionesDetalle.concepto_imprimir !=' => 'No')),
 										'Relacion' 		=> array('Situacion', 'ConveniosCategoria', 'Modalidad', 'Ausencia' =>
 												array('conditions' => array('Ausencia.desde >=' => $periodo['desde'], 'Ausencia.desde <=' => $periodo['hasta']))),
 										'Trabajador' 	=> array('ObrasSocial', 'Condicion', 'Siniestrado', 'Localidad')),
 								'conditions'	=> $conditions));
 				
 				if (!empty($liquidaciones)) {
-					
+
+                    $opcionesConcepto = $this->Liquidacion->LiquidacionesDetalle->Concepto->opciones;
+                            
                     $ausenciasMotivo = $this->Liquidacion->Relacion->Ausencia->AusenciasMotivo->find('all', array('conditions' => array('NOT' => array('AusenciasMotivo.situacion_id' => null))));
                     $ausenciasMotivo = Set::combine($ausenciasMotivo, '{n}.AusenciasMotivo.id', '{n}.Situacion');
                     
@@ -547,9 +550,7 @@ class LiquidacionesController extends AppController {
                         $detalles[$v['elemento']] = $v;
                     }
                     
-					/**
-					* Must sumarize. Can't do in by query because of contain.
-					*/
+					/** Must sumarize. Can't do in by query because of contain. */
 					$all = Set::extract('/Liquidacion/relacion_id', $liquidaciones);
 					$unique = array_unique($all);
 					$duplicates = Set::diff($unique, $all);
@@ -563,22 +564,52 @@ class LiquidacionesController extends AppController {
 							$liquidaciones[$duplicateRelacionId]['Liquidacion'][$total] = 0;
 						}
 					}
-					
+
+                    $remuneraciones = null;
+                    $compone = null;
+                    $cantidadHorasExtras = null;
 					foreach ($liquidacionesOriginal as $liquidacion) {
+
+                        $cantidadHorasExtras[$liquidacion['Liquidacion']['id']] = 0;
+                        
+                        foreach ($opcionesConcepto['remuneracion'] as $k => $v) {
+                            $remuneraciones[$liquidacion['Liquidacion']['id']][$v] = 0;
+                        }
+                        foreach ($opcionesConcepto['compone'] as $k => $v) {
+                            $compone[$liquidacion['Liquidacion']['id']][$k] = 0;
+                        }
+
+                        foreach ($liquidacion['LiquidacionesDetalle'] as $detalle) {
+                            if (!empty($detalle['concepto_compone'])) {
+                                $compone[$liquidacion['Liquidacion']['id']][$detalle['concepto_compone']] += $detalle['valor'];
+                                if ($detalle['concepto_compone'] === 'Importe Horas Extras') {
+                                    $cantidadHorasExtras[$liquidacion['Liquidacion']['id']] += $detalle['valor_cantidad'];
+                                }
+
+                            }
+                            if (!empty($detalle['concepto_remuneracion'])) {
+                                foreach ($opcionesConcepto['remuneracion'] as $k => $v) {
+                                    if ($detalle['concepto_remuneracion'] & (int)$k) {
+                                        $remuneraciones[$liquidacion['Liquidacion']['id']][$v] += $detalle['valor'];
+                                    }
+                                }
+                            }
+                        }
+                        
 						if (!in_array($liquidacion['Liquidacion']['relacion_id'], $duplicates)) {
 							continue;
 						}
-						
+                            
 						foreach ($totales as $total) {
 							$liquidaciones[$liquidacion['Liquidacion']['relacion_id']]['Liquidacion'][$total] += $liquidacion['Liquidacion'][$total];
 						}
 					}
-					
+
 					$lineas = null;
 					foreach ($liquidaciones as $liquidacion) {
 						$campos = $detalles;
 						$campos['c1']['valor'] = str_replace("-", "", $liquidacion['Trabajador']['cuil']);
-						$campos['c2']['valor'] = $liquidacion['Trabajador']['apellido'] . " " . $liquidacion['Trabajador']['nombre'];
+						$campos['c2']['valor'] = $liquidacion['Trabajador']['apellido'] . ' ' . $liquidacion['Trabajador']['nombre'];
 						if (!empty($liquidacion['Relacion']['situacion_id'])) {
 							$campos['c5']['valor'] = $liquidacion['Relacion']['Situacion']['codigo'];
 						}
@@ -597,13 +628,13 @@ class LiquidacionesController extends AppController {
 						}
 						$campos['c12']['valor'] = $liquidacion['Trabajador']['adherentes_os'];
 						$campos['c13']['valor'] = $liquidacion['Liquidacion']['remunerativo'] + $liquidacion['Liquidacion']['no_remunerativo'];
-						$campos['c14']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
+                        $campos['c14']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['id']]['Remuneracion 1'];
 						$campos['c20']['valor'] = $liquidacion['Trabajador']['Localidad']['nombre'];
-						$campos['c21']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
-						$campos['c22']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
+                        $campos['c21']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['id']]['Remuneracion 2'];
+                        $campos['c22']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['id']]['Remuneracion 3'];
 						
 						/** Viene expresado como una formula. */
-						$campos['c23']['valor'] = $this->Formulador->resolver(str_replace("c23", $liquidacion['Liquidacion']['remunerativo'], $campos['c23']['valor']));
+                        $campos['c23']['valor'] = $this->Formulador->resolver(str_replace('c23', $remuneraciones[$liquidacion['Liquidacion']['id']]['Remuneracion 4'], $campos['c23']['valor']));
 						
 						if (!empty($liquidacion['Trabajador']['siniestrado_id'])) {
 							$campos['c24']['valor'] = $liquidacion['Trabajador']['Siniestrado']['codigo'];
@@ -652,22 +683,31 @@ class LiquidacionesController extends AppController {
 						}
 						
 						$campos['c36']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
-						$campos['c42']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
-						if ($liquidacion['Relacion']['ConveniosCategoria']['nombre'] === "Fuera de convenio") {
+                        $campos['c37']['valor'] = $compone[$liquidacion['Liquidacion']['id']]['SAC'];
+                        $campos['c38']['valor'] = $compone[$liquidacion['Liquidacion']['id']]['Importe Horas Extras'];
+                        $campos['c39']['valor'] = $compone[$liquidacion['Liquidacion']['id']]['Plus Zona Desfavorable'];
+                        $campos['c40']['valor'] = $compone[$liquidacion['Liquidacion']['id']]['Vacaciones'];
+                        $campos['c42']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['id']]['Remuneracion 5'];
+						if ($liquidacion['Relacion']['ConveniosCategoria']['nombre'] === 'Fuera de convenio') {
 							$campos['c43']['valor'] = '0';
 						} else {
 							$campos['c43']['valor'] = '1';
 						}
-						$campos['c48']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
+                        $campos['c44']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['id']]['Remuneracion 6'];
+                        $campos['c46']['valor'] = $compone[$liquidacion['Liquidacion']['id']]['Adicionales'];
+                        $campos['c47']['valor'] = $compone[$liquidacion['Liquidacion']['id']]['Premios'];
+                        $campos['c48']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['id']]['Remuneracion 8'];
+                        $campos['c49']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['id']]['Remuneracion 7'];
+                        $campos['c50']['valor'] = $cantidadHorasExtras[$liquidacion['Liquidacion']['id']];
 						$campos['c51']['valor'] = $liquidacion['Liquidacion']['no_remunerativo'];
 						$lineas[] = $this->__generarRegistro($campos);
 					}
 					$this->set('archivo', array(
                         'contenido' => implode("\r\n", $lineas),
-                        'nombre'    => 'SIAP-' . $periodo['ano'] . '-' . $periodo['mes'] . '.txt'));
+                        'nombre'    => 'SICOSS_' . $periodo['ano'] . '-' . $periodo['mes'] . '.txt'));
 					$this->render('..' . DS . 'elements' . DS . 'txt', 'txt');
 				} else {
-					$this->Session->setFlash("No se han encontrado liquidaciones confirmadas para el periodo seleccioando segun los criterios especificados.", "error");
+					$this->Session->setFlash('No se han encontrado liquidaciones confirmadas para el periodo seleccioando segun los criterios especificados.', 'error');
 				}
 			}
 		}
@@ -687,6 +727,9 @@ class LiquidacionesController extends AppController {
 		$v = array();
 		if (!empty($campos)) {
 			foreach ($campos as $campo) {
+                if ($campo['tipo'] === 'decimal') {
+                    $campo['valor'] = number_format($campo['valor'], 2, ',', '');
+                }
 				if ($campo['direccion_relleno'] === 'Derecha') {
 					$t = str_pad($campo['valor'], $campo['longitud'], $campo['caracter_relleno'], STR_PAD_RIGHT);
 				} elseif ($campo['direccion_relleno'] === 'Izquierda') {
@@ -701,9 +744,9 @@ class LiquidacionesController extends AppController {
 	}
 
 
-	function asignar_suss() {
+	function asignar_suss_deprecated() {
 		if (!empty($this->data['Formulario']['accion'])) {
-			if ($this->data['Formulario']['accion'] == "asignar") {
+			if ($this->data['Formulario']['accion'] === 'asignar') {
 				if (!empty($this->data['Condicion']['Suss-fecha']) && !empty($this->data['Condicion']['Suss-banco_id']) && !empty($this->data['Condicion']['Suss-periodo'])) {
 					if (preg_match("/^(20\d\d)(0[1-9]|1[012])$/", $this->data['Condicion']['Suss-periodo'], $periodo)) {
 						d($periodo);
