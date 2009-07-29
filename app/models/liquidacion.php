@@ -300,7 +300,7 @@ class Liquidacion extends AppModel {
             } else {
                 return array('error' => sprintf('Wrong period (%s). Only "1" for the first_half or "2" for the second_half allowed for type %s.', $options['period'], $type));
             }
-                    
+            
             $fields = array('Liquidacion.mes', 'SUM(Liquidacion.remunerativo) AS total_remunerativo');
             $groupBy = array('Liquidacion.mes');
             $r = $this->find('all', array(
@@ -351,13 +351,13 @@ class Liquidacion extends AppModel {
 			$this->__conceptos[$cCod] = array_merge($this->__conceptos[$cCod],
 					$this->__getConceptValue($concepto));
 		}
-		return $this->__getSaveArray();
+		return $this->__getSaveArray($type);
     }
     
 
 
 
-	function __getSaveArray() {
+	function __getSaveArray($type) {
 		/**
 		* Preparo el array para guardar la pre-liquidacion.
 		* Lo guardo como una liquidacion con estado "Sin Confirmar".
@@ -365,14 +365,22 @@ class Liquidacion extends AppModel {
 		*/
 		$liquidacion = null;
 		$liquidacion['fecha'] = date('Y-m-d');
-		$liquidacion['ano'] = $this->getPeriod('ano');
-		$liquidacion['mes'] = $this->getPeriod('mes');
-		$liquidacion['periodo'] = $this->getPeriod('periodo');
-		$liquidacion['pago'] = $this->dateAddWorkingDays($this->getPeriod('hasta'), $this->getRelationship('Empleador', 'pago'));
+        if ($type === 'final') {
+            list($liquidacion['ano'], $liquidacion['mes'], ) = explode('-', $this->getRelationship('Relacion', 'egreso'));
+            $liquidacion['periodo'] = 'F';
+            /**When final receipt, must pay whether two next days */
+            $liquidacion['pago'] = $this->dateAddWorkingDays($this->getRelationship('Relacion', 'egreso'), 2);
+        } else {
+            $liquidacion['ano'] = $this->getPeriod('ano');
+            $liquidacion['mes'] = $this->getPeriod('mes');
+            $liquidacion['periodo'] = $this->getPeriod('periodo');
+            $liquidacion['pago'] = $this->dateAddWorkingDays($this->getPeriod('hasta'), $this->getRelationship('Empleador', 'pago'));
+        }
 		$liquidacion['tipo'] = $this->getVarValue('#tipo_liquidacion');
 		$liquidacion['estado'] = 'Sin Confirmar';
 		$liquidacion['relacion_id'] = $this->getRelationship('Relacion', 'id');
 		$liquidacion['relacion_ingreso'] = $this->getRelationship('Relacion', 'ingreso');
+        $liquidacion['relacion_egreso'] = $this->getRelationship('Relacion', 'egreso');
 		$liquidacion['relacion_legajo'] = $this->getRelationship('Relacion', 'legajo');
 		$liquidacion['relacion_horas'] = $this->getRelationship('Relacion', 'horas');
 		$liquidacion['relacion_basico'] = $this->getRelationship('Relacion', 'basico');
@@ -506,6 +514,7 @@ class Liquidacion extends AppModel {
 		$save['Liquidacion']			= array_merge($liquidacion, $totales);
 		$save['LiquidacionesDetalle']	= $detalle;
 		$this->create();
+        d($save);
 		return $this->saveAll($save);
 	}
 
@@ -1018,10 +1027,13 @@ class Liquidacion extends AppModel {
     }
     
     function getPeriod($option = '') {
+        
         if (isset($this->__period[$option])) {
             return $this->__period[$option];
-        } else {
+        } elseif (empty($option)) {
             return $this->__period;
+        } else {
+            return '';
         }
     }
 
