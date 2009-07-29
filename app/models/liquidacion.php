@@ -400,7 +400,8 @@ class Liquidacion extends AppModel {
 		$liquidacion['convenio_categoria_costo'] = $this->getRelationship('ConveniosCategoria', 'costo');
 		$liquidacion['convenio_categoria_jornada'] = $this->getRelationship('ConveniosCategoria', 'jornada');
         /** Just the owner can read, write or delete a pre-receipt */
-        $liquidacion['permissions'] = '448';
+        //$liquidacion['permissions'] = '448';
+        $liquidacion['permissions'] = '480';
 
 		$totales['remunerativo'] = 0;
 		$totales['no_remunerativo'] = 0;
@@ -547,7 +548,8 @@ class Liquidacion extends AppModel {
 			$detalle['valor_cantidad'] = $detalleLiquidacion['valor_cantidad'];
             $detalle['valor_unitario'] = $detalleLiquidacion['valor_unitario'];
             /** Just the owner can read, write or delete a pre-receipt */
-            $detalle['permissions'] = '448';
+            //$detalle['permissions'] = '448';
+            $detalle['permissions'] = '480';
 		}
 		return $detalle;
 	}
