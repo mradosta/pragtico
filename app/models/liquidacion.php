@@ -301,13 +301,12 @@ class Liquidacion extends AppModel {
                 return array('error' => sprintf('Wrong period (%s). Only "1" for the first_half or "2" for the second_half allowed for type %s.', $options['period'], $type));
             }
             
-            $fields = array('Liquidacion.mes', 'SUM(Liquidacion.remunerativo) AS total_remunerativo');
-            $groupBy = array('Liquidacion.mes');
             $r = $this->find('all', array(
                     'recursive'     => -1,
-                    'fields'        => $fields,
+                    'checkSecurity' => false,
+                    'fields'        => array('Liquidacion.mes', 'SUM(Liquidacion.remunerativo) AS total_remunerativo'),
                     'conditions'    => $conditions,
-                    'group'         => $groupBy));
+                    'group'         => array('Liquidacion.mes')));
             if (!empty($r)) {
                 $this->setVar('#mayor_suma_mes_remunerativo_semestre', max(Set::combine($r, '{n}.Liquidacion.mes',
                           '{n}.Liquidacion.total_remunerativo')));
