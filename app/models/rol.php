@@ -40,19 +40,21 @@ class Rol extends AppModel {
 						array('with' => 'RolesUsuario'));
 						
 
-	function beforeSave() {
-		/**
-		* Es un add.
-		* Como uso matematica binaria, el proximo ID debe ser generado por mi como potencia de 2 del anterior.
-		*/
-		if (empty($this->data['Rol']['id'])) {
-			$this->recursive = -1;
-			$rol = $this->find('first', array('checkSecurity'=>false, 'fields'=>array('MAX(Rol.id) AS maximo')));
-			$ultimoRol = $rol[0]['maximo'];
-			$this->data['Rol']['id'] = $ultimoRol * 2;
-		}
-		return parent::beforeSave();
-	}
+    function beforeValidate() {
+        /**
+        * Es un add.
+        * Como uso matematica binaria, el proximo ID debe ser generado por mi como potencia de 2 del anterior.
+        */
+        if (empty($this->data['Rol']['id'])) {
+            $this->Behaviors->detach('Permisos');
+            $group = $this->find('first', array(
+                    'fields'        => array('MAX(Rol.id) AS last'),
+                    'recursive'     => -1));
+            $this->data['Rol']['id'] = $group['Rol']['last'] * 2;
+            $this->Behaviors->attach('Permisos');
+        }
+        return parent::beforeValidate();
+    }
 
 
 }
