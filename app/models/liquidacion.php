@@ -514,7 +514,6 @@ class Liquidacion extends AppModel {
 		$save['Liquidacion']			= array_merge($liquidacion, $totales);
 		$save['LiquidacionesDetalle']	= $detalle;
 		$this->create();
-        d($save);
 		return $this->saveAll($save);
 	}
 
