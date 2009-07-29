@@ -62,7 +62,12 @@ class GruposController extends AppController {
  */
 	function setear_grupo_default($id, $background = false) {
 		$usuario = $this->Session->read('__Usuario');
-		if ($usuario['Usuario']['grupos'] & (int)$id) {
+        if ($usuario['Usuario']['grupos'] & (int)$id) {
+            
+            if (!empty($usuario['Usuario']['preferencias']['grupo_default_id']) && $usuario['Usuario']['preferencias']['grupos_seleccionados'] & (int)$usuario['Usuario']['preferencias']['grupo_default_id']) {
+                $usuario['Usuario']['preferencias']['grupos_seleccionados'] -= $usuario['Usuario']['preferencias']['grupo_default_id'];
+            }
+            
 			$usuario['Usuario']['preferencias']['grupo_default_id'] = $id;
             if (!empty($usuario['Usuario']['preferencias']['grupos_seleccionados'])) {
                 if (!($usuario['Usuario']['preferencias']['grupos_seleccionados'] & (int)$id)) {
