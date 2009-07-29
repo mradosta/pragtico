@@ -616,7 +616,8 @@ class FormatoHelper extends AppHelper {
                 } elseif (preg_match('/(\d\d\d\d)(\d\d)F/', strtoupper($valor), $matches)) {
                     $ano = $matches[1];
                     $mes = $this->__getMonths($matches[2]);
-                    $before = $beforeShort = 'final a ';
+                    $beforeShort = '';
+                    $before = 'final a ';
 				}
 				
 				if (!empty($options['short'])) {
