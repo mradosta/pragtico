@@ -74,6 +74,8 @@ class Liquidacion extends AppModel {
  * 		when the relation has a dependant relation, this method will not delete that relation.
  */	
 	function deleteAll($conditions, $cascade = true, $callbacks = false) {
+       
+        $this->setSecurityAccess('readOwnerOnly');
 		$ids = Set::extract(
 			$this->find('all', array_merge(array(
 							'fields' 	=> $this->alias . '.' . $this->primaryKey,
@@ -98,17 +100,14 @@ class Liquidacion extends AppModel {
 		if (count($this->hasMany) === $c) {
 			$sql = sprintf('DELETE FROM %s %s', $db->name($this->useTable), $db->conditions(array($this->primaryKey => $ids)));
 			$this->query($sql);
-			//$this->__buscarError();
 			if (empty($this->dbError)) {
 				$db->commit($this);
 				return true;
-			}
-			else {
+			} else {
 				$db->rollback($this);
 				return false;
 			}
-		}
-		else {
+		} else {
 			$db->rollback($this);
 			return false;
 		}
@@ -400,8 +399,8 @@ class Liquidacion extends AppModel {
 		$liquidacion['convenio_categoria_costo'] = $this->getRelationship('ConveniosCategoria', 'costo');
 		$liquidacion['convenio_categoria_jornada'] = $this->getRelationship('ConveniosCategoria', 'jornada');
         /** Just the owner can read, write or delete a pre-receipt */
-        //$liquidacion['permissions'] = '448';
-        $liquidacion['permissions'] = '480';
+        $liquidacion['permissions'] = '448';
+        //$liquidacion['permissions'] = '480';
 
 		$totales['remunerativo'] = 0;
 		$totales['no_remunerativo'] = 0;
@@ -548,8 +547,8 @@ class Liquidacion extends AppModel {
 			$detalle['valor_cantidad'] = $detalleLiquidacion['valor_cantidad'];
             $detalle['valor_unitario'] = $detalleLiquidacion['valor_unitario'];
             /** Just the owner can read, write or delete a pre-receipt */
-            //$detalle['permissions'] = '448';
-            $detalle['permissions'] = '480';
+            $detalle['permissions'] = '448';
+            //$detalle['permissions'] = '480';
 		}
 		return $detalle;
 	}
@@ -574,7 +573,11 @@ class Liquidacion extends AppModel {
             if (!empty($diff)) {
                 foreach ($diff as $concept) {
                     $tmpConcept = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $this->getRelationship(), 'codigoConcepto' => $concept));
-                    $tmpConcept[$concept]['imprimir'] = 'No';
+                    if (substr($tmpConcept[$concept]['imprimir'], -9) === '[Forzado]') {
+                        $tmpConcept[$concept]['imprimir'] = str_replace(' [Forzado]', '', $tmpConcept[$concept]['imprimir']);
+                    } else {
+                        $tmpConcept[$concept]['imprimir'] = 'No';
+                    }
                     $this->setConcept($tmpConcept);
                 }
                 $this->__getAllNecessaryConcepts();
@@ -681,6 +684,7 @@ class Liquidacion extends AppModel {
 			* Si en el nombre hay variables, busco primero estos valores.
 			*/
 			if (preg_match_all("/(#[a-z0-9_]+)/", $nombreConcepto, $variablesTmp)) {
+                d($variablesTmp);
 				foreach (array_unique($variablesTmp[1]) as $k=>$v) {
 					/**
 					* Debe buscar la variable para reemplazarla dentro de la formula.
@@ -779,7 +783,11 @@ class Liquidacion extends AppModel {
 														'recomendacion'			=> "Verifique la formula y que todos los conceptos que esta utiliza existan.",
 														'descripcion_adicional'	=> "verifique: " . $concepto['codigo']));
 						} else {
-							$conceptoParaCalculo[$match]['imprimir'] = 'No';
+                            if (substr($conceptoParaCalculo[$match]['imprimir'], -9) === '[Forzado]') {
+                                $conceptoParaCalculo[$match]['imprimir'] = str_replace(' [Forzado]', '', $conceptoParaCalculo[$match]['imprimir']);
+                            } else {
+                                $conceptoParaCalculo[$match]['imprimir'] = 'No';
+                            }
 							$this->setConcept($conceptoParaCalculo);
 						}
 					}
