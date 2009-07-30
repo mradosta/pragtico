@@ -55,11 +55,15 @@ class Pago extends AppModel {
 	
 
     function getTotal($conditions = array()) {
+        $this->unbindModel(array(
+            'hasMany'             => array('PagosForma')));
         $result = $this->find('first', array(
             'conditions'    => $conditions,
             'callbacks'     => false,
             'fields'        => 'SUM(Pago.monto) as total',
             ));
+        $this->bindModel(array(
+            'hasMany'             => array('PagosForma')));
         return $result[0]['total'];
     }
 
