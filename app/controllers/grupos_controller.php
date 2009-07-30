@@ -64,7 +64,7 @@ class GruposController extends AppController {
 		$usuario = $this->Session->read('__Usuario');
         if ($usuario['Usuario']['grupos'] & (int)$id) {
             
-            if (!empty($usuario['Usuario']['preferencias']['grupo_default_id']) && $usuario['Usuario']['preferencias']['grupos_seleccionados'] & (int)$usuario['Usuario']['preferencias']['grupo_default_id']) {
+            if (!empty($usuario['Usuario']['preferencias']['grupo_default_id']) && !empty($usuario['Usuario']['preferencias']['grupos_seleccionados']) && $usuario['Usuario']['preferencias']['grupos_seleccionados'] & (int)$usuario['Usuario']['preferencias']['grupo_default_id']) {
                 $usuario['Usuario']['preferencias']['grupos_seleccionados'] -= $usuario['Usuario']['preferencias']['grupo_default_id'];
             }
             
