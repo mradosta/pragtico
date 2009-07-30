@@ -200,40 +200,37 @@ class PermisosBehavior extends ModelBehavior {
  * del registro, retorno los permisos correspondiente a los otros.
  */ 
 	function __puede($usuario, $registro, $acceso) {
-		
-		/**
-		* Verifico si es el root.
-		*/
+
+        /** If root user, can do everything */
 		if ((int)$usuario['Usuario']['id'] === 1) {
 			return true;
 		}
 		
-		/**
-		* Verifico lo que puede hacer el dueno.
-		*/
+		/** Check for owner permissions */
 		if (($usuario['Usuario']['id'] === $registro['user_id'])
 			&& ((int)$registro['permissions'] & (int)$this->__permissions['owner_' . $acceso])) {
 			return true;
 		}
 
-		/**
-		* Verifico lo que pueden hacer el grupo en funcion del rol.
-		*/
+        /** Check for group permissions */
 		if ((((int)$usuario['Usuario']['grupos'] & (int)$registro['group_id'])
-			&& ((int)$registro['permissions'] & (int)$this->__permissions['group_' . $acceso])) &&
-		   (((int)$usuario['Usuario']['roles'] & (int)$registro['role_id'])
 			&& ((int)$registro['permissions'] & (int)$this->__permissions['group_' . $acceso]))) {
 			return true;
 		}
 
-		/**
-		* Verifico lo que pueden hacer los otros.
-		*/
+        /** Check for role permissions */
+        if (((int)$usuario['Usuario']['roles'] & (int)$registro['role_id'])
+            && ((int)$registro['permissions'] & (int)$this->__permissions['group_' . $acceso])) {
+            return true;
+        }
+        
+        /** Check for other permissions */
 		if ($usuario['Usuario']['id'] !== $registro['user_id'] &&
 			((int)$usuario['Usuario']['grupos'] & (int)$registro['group_id'] === 0) &&
 			((int)$registro['permissions'] & (int)$this->__permissions['other_' . $acceso])) {
 			return true;
 		}
+
 		return false;
 	}
 
