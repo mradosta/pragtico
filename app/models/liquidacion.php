@@ -684,7 +684,6 @@ class Liquidacion extends AppModel {
 			* Si en el nombre hay variables, busco primero estos valores.
 			*/
 			if (preg_match_all("/(#[a-z0-9_]+)/", $nombreConcepto, $variablesTmp)) {
-                d($variablesTmp);
 				foreach (array_unique($variablesTmp[1]) as $k=>$v) {
 					/**
 					* Debe buscar la variable para reemplazarla dentro de la formula.
