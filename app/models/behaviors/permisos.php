@@ -46,6 +46,7 @@ class PermisosBehavior extends ModelBehavior {
 	   	'other_delete' => 1
 	);
 
+    private $__access = array('read', 'readOwnerOnly', 'write', 'delete');
 
 /**
  * Numeric equivalents to owner, group or role and others permissions 
@@ -238,7 +239,7 @@ class PermisosBehavior extends ModelBehavior {
 
 	
 	function setSecurityAccess(&$model, $access, $primaryModelOnly = true) {
-		if (in_array($access, array('read', 'write', 'delete'))) {
+		if (in_array($access, $this->__access)) {
 			
 			/** Assign same security access to related models */
             if ($primaryModelOnly === false) {
@@ -249,7 +250,7 @@ class PermisosBehavior extends ModelBehavior {
 			$model->access = $access;
 			
 		} else {
-			trigger_error(__('Security access method not supported. Please use one of this: "read", "write" or "delete"', true), E_USER_ERROR);
+			trigger_error(__('Security access method not supported. Please use one of this: "read", "readOwnerOnly", "write" or "delete"', true), E_USER_ERROR);
 		}
 	}
 	
@@ -300,10 +301,10 @@ class PermisosBehavior extends ModelBehavior {
 		/**
 		* Verifico que se trate de alguno de los unicos 3 metodos soportados.
 		*/
-		if (in_array($securityAccess, array('read', 'write', 'delete'))) {
+		if (in_array($securityAccess, $this->__access)) {
 			$seguridad = $this->__generarCondicionSeguridad($model, $securityAccess);
 		} else {
-			trigger_error('Metodo de seguridad no soportado.', E_USER_ERROR);
+			trigger_error(__('Security access method not supported. Please use one of this: "read", "readOwnerOnly", "write" or "delete"', true), E_USER_ERROR);
 		}
 
 		if (!empty($seguridad)) {
@@ -371,7 +372,8 @@ class PermisosBehavior extends ModelBehavior {
 			* Si explicitamente no ha seleccionado ningun grupo, supongo que desea ver solo sus registros...
 			* Los registros de los cuales el es dueno.
 			*/
-			if (empty($grupos) || $Model->getSecurityAccess() !== 'read') {
+            if (empty($grupos) || $acceso !== 'read') {
+                $acceso = str_replace('readOwnerOnly', 'read', $acceso);
 				$seguridad['OR'][] =
 					array(
 						$Model->name . '.user_id' => $usuarioId,
@@ -390,7 +392,8 @@ class PermisosBehavior extends ModelBehavior {
 						)
 					));
 			}
-			
+
+            /** Check for group and role permissions together. Means than to be true, must have permissions both, group and role */
 			$seguridad['OR'][] =
 				array('AND' => array(
 					array(
@@ -402,7 +405,8 @@ class PermisosBehavior extends ModelBehavior {
 						'(' . $Model->name . '.permissions) & ' . $this->__simplifiedPermissions['group_' . $acceso] => $resultPermissions['group_' . $acceso]
 					)
 				));
-			
+
+            /** Check for others permissions */
 			$seguridad['OR'][] =
 				array(
 					'(' . $Model->name . '.permissions) & ' . $this->__simplifiedPermissions['other_' . $acceso] => $resultPermissions['other_' . $acceso]
