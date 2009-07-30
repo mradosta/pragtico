@@ -61,15 +61,15 @@ class LiquidacionesController extends AppController {
                     $desagregado = 'No';
                 }
                 
-                if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
-                    $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Liquidacion-grupo_id'] . ') >'] = 0;
-                    unset($this->data['Condicion']['Liquidacion-grupo_id']);
-                }
-                
                 $conditions = array_merge($this->Paginador->generarCondicion(false),
                     array(  'Liquidacion.periodo'       => $periodo['periodo'],
                             'Liquidacion.ano'           => $periodo['ano'],
                             'Liquidacion.mes'           => $periodo['mes']));
+                if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
+                    $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Liquidacion-grupo_id'] . ') >'] = 0;
+                    unset($conditions['Liquidacion.grupo_id']);
+                    unset($this->data['Condicion']['Liquidacion-grupo_id']);
+                }
 
                 $this->Liquidacion->Behaviors->detach('Permisos');
                 $this->Liquidacion->Behaviors->detach('Util');
