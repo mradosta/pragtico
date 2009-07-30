@@ -46,28 +46,30 @@ class LiquidacionesController extends AppController {
             } elseif (empty($this->data['Condicion']['Liquidacion-periodo_largo']) || $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo') === false) {
                 $this->Session->setFlash('Debe especificar un periodo valido.', 'error');
             } else {
-                $periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
-                
-                $conditions = array('Liquidacion.estado'        => 'Confirmada',
-                                    'Liquidacion.tipo'          => $this->data['Condicion']['Liquidacion-tipo'],
-                                    'Liquidacion.periodo'       => $periodo['periodo'],
-                                    'Liquidacion.ano'           => $periodo['ano'],
-                                    'Liquidacion.mes'           => $periodo['mes']);
-                
-                if (!empty($this->data['Condicion']['Liquidacion-empleador_id'])) {
-                    $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Liquidacion-empleador_id'];
-                }
+                $saveConditions = $this->data['Condicion'];
 
-                if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
-                    $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Liquidacion-grupo_id'] . ') >'] = 0;
-                }
+                $fileFormat = $this->data['Condicion']['Liquidacion-formato'];
+                unset($this->data['Condicion']['Liquidacion-formato']);
+
+                $periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
+                unset($this->data['Condicion']['Liquidacion-periodo_largo']);
 
                 if (!empty($this->data['Condicion']['Liquidacion-desagregado'])) {
                     $desagregado = $this->data['Condicion']['Liquidacion-desagregado'];
+                    unset($this->data['Condicion']['Liquidacion-desagregado']);
                 } else {
                     $desagregado = 'No';
                 }
-
+                
+                if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
+                    $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Liquidacion-grupo_id'] . ') >'] = 0;
+                    unset($this->data['Condicion']['Liquidacion-grupo_id']);
+                }
+                
+                $conditions = array_merge($this->Paginador->generarCondicion(false),
+                    array(  'Liquidacion.periodo'       => $periodo['periodo'],
+                            'Liquidacion.ano'           => $periodo['ano'],
+                            'Liquidacion.mes'           => $periodo['mes']));
 
                 $this->Liquidacion->Behaviors->detach('Permisos');
                 $this->Liquidacion->Behaviors->detach('Util');
@@ -76,6 +78,7 @@ class LiquidacionesController extends AppController {
                         'fields'        => array('COUNT(Liquidacion.trabajador_id) AS cantidad'),
                         'recursive'     => -1));
 
+                $this->data['Condicion'] = $saveConditions;
                 if (empty($workers[0]['Liquidacion']['cantidad'])) {
                     $this->Session->setFlash('No se han encontrado liquidaciones confirmadas para el periodo seleccionado segun los criterios especificados.', 'error');
                 } else {
@@ -116,7 +119,7 @@ class LiquidacionesController extends AppController {
 
                     $this->set('data', $data);
                     $this->set('workers', $workers);
-                    $this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
+                    $this->set('fileFormat', $fileFormat);
                     $this->set('conditions', $this->data['Condicion']);
                     $this->set('desagregado', $desagregado);
                     $this->History->skip();
@@ -125,7 +128,6 @@ class LiquidacionesController extends AppController {
         }
         $this->set('grupos', $this->Util->getUserGroups());
     }
-
 
 	function libro_sueldos() {
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
