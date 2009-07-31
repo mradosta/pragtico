@@ -92,29 +92,58 @@ class PermisosBehavior extends ModelBehavior {
         return $this->__currentUser;
     }
 
+
+/**
+ * Sets permissions.
+ *
+ * @param object $Model.
+ * @param integer $permissions The permissions to be used to save record.
+ * @return boolean True if valid permission could be saved, false otherwise.
+ * @access public
+ */
+    function setPermissions(&$Model, $permissions) {
+        if (is_numeric($permissions) && $permissions >= 0 && $permissions <= 511) {
+            $Model->__permissions = $permissions;
+            return true;
+        }
+        return false;
+    }
+
+
+/**
+ * Returns permissions used to save records in this model.
+ *
+ * @return integer Permissions numeric value used to save records for this model.
+ * @access public
+ */
+    function getPermissions(&$Model) {
+        return $Model->__permissions;
+    }    
+
+
 /**
  * Before save callback
  * Set default user_id, group_id, role_id and permissions when creating a new record.
  *
- * @return boolean True si la operacion puede continua, false si debe abortarse.
+ * @return boolean True if can continue, false otherwise.
  * @access public.
  */    
-    function beforeSave(&$model) {
+    function beforeSave(&$Model) {
 		
 		$usuario = $this->__getCurrentUser();
 		
-    	if (empty($model->id)) {
-			if (!isset($model->data[$model->name]['user_id'])) {
-    			$model->data[$model->name]['user_id'] = $usuario['Usuario']['id'];
+    	if (empty($Model->id)) {
+			if (!isset($Model->data[$Model->name]['user_id'])) {
+    			$Model->data[$Model->name]['user_id'] = $usuario['Usuario']['id'];
     		}
-    		if (!isset($model->data[$model->name]['role_id'])) {
-    			$model->data[$model->name]['role_id'] = $usuario['Usuario']['roles'];
+    		if (!isset($Model->data[$Model->name]['role_id'])) {
+    			$Model->data[$Model->name]['role_id'] = $usuario['Usuario']['roles'];
     		}
-    		if (!isset($model->data[$model->name]['group_id'])) {
-    			$model->data[$model->name]['group_id'] = $usuario['Usuario']['preferencias']['grupo_default_id'];
+    		if (!isset($Model->data[$Model->name]['group_id'])) {
+    			$Model->data[$Model->name]['group_id'] = $usuario['Usuario']['preferencias']['grupo_default_id'];
     		}
-    		if (!isset($model->data[$model->name]['permissions'])) {
-    			$model->data[$model->name]['permissions'] = $model->getPermissions();
+    		if (!isset($Model->data[$Model->name]['permissions'])) {
+    			$Model->data[$Model->name]['permissions'] = $this->getPermissions($Model);
     		}
     	}
     	return true;

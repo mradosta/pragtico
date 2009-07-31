@@ -377,33 +377,6 @@ class AppModel extends Model {
 
 
 /**
- * Setea los permisos con los que se guardaran los registros.
- *
- * @param integer $permisos con los que se guardaran los datos.
- * @return boolean True si puedieron setearse los permisos, false en cualquier otro caso.
- * @access public
- */
-    function setPermissions($permissions) {
-        if (is_numeric($permissions) && $permissions >= 0 && $permissions <= 511) {
-            $this->__permissions = $permissions;
-            return true;
-        }
-        return false;
-    }
-
-
-/**
- * Returns permissions used to save records in this model.
- *
- * @return integer Permissions numeric value used to save records for this model.
- * @access public
- */
-    function getPermissions() {
-        return $this->__permissions;
-    }
-    
-    
-/**
  * Carga la variable (array) $this->dbError de la clase con los errores.
  * Si un mensaje especifico para el motor no ha sido definido, retorna el mensaje de error que genero la DB.
  *
