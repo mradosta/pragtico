@@ -24,7 +24,12 @@
  * @subpackage  app.controllers
  */
 class AseguradorasController extends AppController {
-	
+
+    var $paginate = array(
+        'order' => array(
+            'Aseguradora.nombre' => 'asc'
+        )
+    );    
 
 }
 ?>

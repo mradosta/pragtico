@@ -24,10 +24,6 @@
  */
 class Informacion extends AppModel {
 
-
-
-	var $order = array('Informacion.nombre' => 'asc');
-
 	var $validate = array(
         'nombre' => array(
 			array(

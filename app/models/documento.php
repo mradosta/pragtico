@@ -23,9 +23,6 @@
  */
 class Documento extends AppModel {
 
-
-	var $order = array('Documento.nombre' => 'asc');
-	
 	var $validate = array(
         'nombre' => array(
 			array(

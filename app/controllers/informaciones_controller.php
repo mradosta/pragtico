@@ -23,5 +23,11 @@
  */
 class InformacionesController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Informacion.nombre' => 'asc'
+        )
+    );
+
 }
 ?>

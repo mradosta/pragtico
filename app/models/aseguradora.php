@@ -23,9 +23,7 @@
  */
 class Aseguradora extends AppModel {
 
-	var $order = array('Aseguradora.nombre' => 'asc');
-	
-	var $validate = array( 
+	var $validate = array(
         'nombre' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY, 

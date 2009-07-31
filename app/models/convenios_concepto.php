@@ -25,6 +25,8 @@
  */
 class ConveniosConcepto extends AppModel {
 
+    protected $__permissions = '452';
+    
     var $validate = array(
         'convenio_id' => array(
             array(
@@ -46,12 +48,7 @@ class ConveniosConcepto extends AppModel {
         )
     );
 	
-	var $belongsTo = array(	'Convenio' =>
-                        array('className'    => 'Convenio',
-                              'foreignKey'   => 'convenio_id'),
-							'Concepto' =>
-                        array('className'    => 'Concepto',
-                              'foreignKey'   => 'concepto_id'));
+	var $belongsTo = array('Convenio', 'Concepto');
 
 }
 ?>

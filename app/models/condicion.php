@@ -1,6 +1,6 @@
 <?php
 /**
- * Este archivo contiene toda la logica de acceso a datos asociada a las condiciones (AFIP).
+ * Este archivo contiene toda la logica de acceso a datos asociada a las condiciones (SICOSS).
  *
  * PHP versions 5
  *
@@ -16,14 +16,12 @@
  * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
- * La clase encapsula la logica de acceso a datos asociada a las condiciones.
+ * La clase encapsula la logica de acceso a datos asociada a las condiciones (SICOSS).
  *
  * @package     pragtico
  * @subpackage  app.models
  */
 class Condicion extends AppModel {
-
-	var $order = array('Condicion.nombre' => 'asc');
 
 	var $validate = array(
         'nombre' => array(

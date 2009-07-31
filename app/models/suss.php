@@ -23,8 +23,6 @@
  */
 class Suss extends AppModel {
 
-	var $order = array('Suss.fecha' => 'desc');
-
 	var $validate = array(
         'periodo' => array(
 			array(

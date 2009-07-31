@@ -26,9 +26,7 @@
 class Accion extends AppModel {
 
 	
-	var $unique = array('controlador_id', 'nombre');
-
-	var $order = array('Accion.nombre' => 'asc');
+	protected $__permissions = '484';
 
 	var $validate = array(
         'nombre' => array(

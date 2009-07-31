@@ -25,6 +25,11 @@
  */
 class ControladoresController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Controlador.nombre'  => 'asc'
+        )
+    );
 
 /**
  * actualiazar_controladores.

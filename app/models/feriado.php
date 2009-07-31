@@ -23,9 +23,6 @@
  */
 class Feriado extends AppModel {
 
-    
-    var $order = array('Feriado.fecha_origen' => 'asc');
-
     var $validate = array(
         'nombre' => array(
             array(

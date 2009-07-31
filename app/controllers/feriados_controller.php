@@ -25,6 +25,11 @@
  */
 class FeriadosController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Feriado.fecha_origen' => 'asc'
+        )
+    );
 
     var $paginate = array(
         'order' => array(

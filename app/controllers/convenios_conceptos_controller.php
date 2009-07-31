@@ -25,6 +25,13 @@
  */
 class ConveniosConceptosController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Convenio.nombre'   => 'asc',
+            'Concepto.nombre'   => 'asc'
+        )
+    );
+
 	function add() {
 		/**
 		* Detecto si viene de un addRapido.

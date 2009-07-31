@@ -23,6 +23,11 @@
  */
 class DocumentosController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Documento.nombre' => 'asc'
+        )
+    );
 
     function patterns($id) {
         $this->Documento->contain("DocumentosPatron");

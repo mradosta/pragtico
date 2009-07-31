@@ -1,6 +1,6 @@
 <?php
 /**
- * Este archivo contiene toda la logica de acceso a datos asociada a las situaciones (SIAP).
+ * Este archivo contiene toda la logica de acceso a datos asociada a las situaciones (SICOSS).
  *
  * PHP versions 5
  *
@@ -16,14 +16,12 @@
  * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
- * La clase encapsula la logica de acceso a datos asociada a las situaciones (SIAP).
+ * La clase encapsula la logica de acceso a datos asociada a las situaciones (SICOSS).
  *
  * @package     pragtico
  * @subpackage  app.models
  */
 class Situacion extends AppModel {
-
-	var $order = array('Situacion.nombre' => 'asc');
 
 	var $validate = array(
         'nombre' => array(

@@ -23,6 +23,8 @@
  */
 class Concepto extends AppModel {
 
+    protected $__permissions = '486';
+    
 	var $breadCrumb = array('format' 	=> '(%s) %s',
 							'fields' 	=> array('Concepto.codigo', 'Concepto.nombre'));
 	

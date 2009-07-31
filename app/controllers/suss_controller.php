@@ -25,6 +25,12 @@
  */
 class SussController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Suss.fecha' => 'desc'
+        )
+    );
+
 	function save($data = array()) {
 		
 		if (!empty($this->data['Form']['accion']) && $this->data['Form']['accion'] === 'grabar') {

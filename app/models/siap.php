@@ -23,8 +23,6 @@
  */
 class Siap extends AppModel {
 
-	var $order = array('Siap.created' => 'asc');
-
 	var $validate = array(
         'version' => array(
 			array(

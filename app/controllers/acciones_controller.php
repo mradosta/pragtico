@@ -25,6 +25,12 @@
  */
 class AccionesController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Controlador.nombre'    => 'asc',
+            'Accion.nombre'         => 'asc'
+        )
+    );
 
 }
 ?>

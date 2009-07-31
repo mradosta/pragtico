@@ -26,9 +26,9 @@
  */
 class Actividad extends AppModel {
 
-	var $order = array('Actividad.codigo' => 'asc');
-	
-	var $validate = array( 
+    protected $__permissions = '484';
+    
+	var $validate = array(
         'codigo' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY, 

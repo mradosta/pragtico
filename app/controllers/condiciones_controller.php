@@ -23,6 +23,11 @@
  */
 class CondicionesController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Condicion.nombre' => 'asc'
+        )
+    );
 
 }	
 ?>

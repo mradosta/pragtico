@@ -25,8 +25,9 @@
  */
 class Controlador extends AppModel {
 
-	var $order = array('Controlador.nombre' => 'asc');
 
+    protected $__permissions = '484';
+    
 	var $validate = array(
         'nombre' => array(
 			array(

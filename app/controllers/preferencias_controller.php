@@ -25,6 +25,11 @@
  */
 class PreferenciasController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Preferencia.nombre' => 'asc'
+        )
+    );
 
 /**
  * valores.

@@ -1,6 +1,6 @@
 <?php
 /**
- * Este archivo contiene toda la logica de negocio asociada a las situaciones.
+ * Este archivo contiene toda la logica de negocio asociada a las situaciones (SICOSS).
  *
  * PHP versions 5
  *
@@ -16,15 +16,19 @@
  * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 /**
- * La clase encapsula la logica de negocio asociada a las situaciones.
- *
- * Se refiere a las situaciones de SIAP.
+ * La clase encapsula la logica de negocio asociada a las situaciones (SICOSS).
  *
  * @package     pragtico
  * @subpackage  app.controllers
  */
 class SituacionesController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Situacion.nombre' => 'asc'
+        )
+    );
+    
 /**
  * ausencias_motivos.
  * Muestra via desglose los motivos de ausencias relacionados a esta situacion.

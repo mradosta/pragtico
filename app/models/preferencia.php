@@ -24,8 +24,6 @@
  */
 class Preferencia extends AppModel {
 
-	var $order = array('Preferencia.nombre' => 'asc');
-
 	var $validate = array(
         'id' => array(
 			array(

@@ -26,6 +26,11 @@
  */
 class ActividadesController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Actividad.codigo' => 'asc'
+        )
+    );
 
 	function index() {
 		/**
