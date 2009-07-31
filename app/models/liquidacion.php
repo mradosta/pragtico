@@ -76,7 +76,7 @@ class Liquidacion extends AppModel {
  * 		when the relation has a dependant relation, this method will not delete that relation.
  */	
 	function deleteAll($conditions, $cascade = true, $callbacks = false) {
-       
+
         $this->setSecurityAccess('readOwnerOnly');
 		$ids = Set::extract(
 			$this->find('all', array_merge(array(
@@ -88,21 +88,22 @@ class Liquidacion extends AppModel {
 		$db = ConnectionManager::getDataSource($this->useDbConfig);
 		$c = 0;
 		$db->begin($this);
+        $relatedConditions = $db->conditions($conditions);
 		foreach ($this->hasMany as $assoc => $data) {
 			$table = $db->name(Inflector::tableize($assoc));
 			$conditions = array($data['foreignKey'] => $ids);
 			$sql = sprintf('DELETE FROM %s %s', $table, $db->conditions($conditions));
-			$this->query($sql);
+			$db->query($sql);
 
-			if (empty($this->dbError)) {
+			if (empty($db->error)) {
 				$c++;
 			}
 		}
 		
 		if (count($this->hasMany) === $c) {
 			$sql = sprintf('DELETE FROM %s %s', $db->name($this->useTable), $db->conditions(array($this->primaryKey => $ids)));
-			$this->query($sql);
-			if (empty($this->dbError)) {
+			$db->query($sql);
+			if (empty($db->dbError)) {
 				$db->commit($this);
 				return true;
 			} else {
@@ -518,7 +519,11 @@ class Liquidacion extends AppModel {
 		
 		$save['Liquidacion']			= array_merge($liquidacion, $totales);
 		$save['LiquidacionesDetalle']	= $detalle;
-		$this->create();
+		//$this->create();
+        //$save['Liquidacion']['relacion_id'] = 'asas';
+        //$save['LiquidacionesDetalle']['concepto_id'] = 'asas';
+        //$this->saveAll($save);
+        //d('xxxxxxxxx');
 		return $this->saveAll($save);
 	}
 

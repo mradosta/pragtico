@@ -524,7 +524,7 @@ class PermisosBehavior extends ModelBehavior {
  * @return void.
  * @access public.
  */    
-	function afterSave(&$model, $created) {
+	function xafterSave(&$model, $created) {
 		/**
 		* Evito que entre en loop infinito.
 		*/
@@ -552,7 +552,7 @@ class PermisosBehavior extends ModelBehavior {
  * @return void.
  * @access public.
  */
-	function afterDelete(&$model) {
+	function xafterDelete(&$model) {
 		//App::import('model', 'Auditoria');
 		//$Auditoria = new Auditoria();
 		$Auditoria = ClassRegistry::init('Auditoria');
