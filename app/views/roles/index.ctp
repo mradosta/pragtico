@@ -35,6 +35,7 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Rol']['id'], 'imagen' => array('nombre' => 'acciones.gif', 'alt' => "Acciones"), 'url' => 'acciones');
 	$fila[] = array('model' => 'Rol', 'field' => 'id', 'valor' => $v['Rol']['id'], 'write' => $v['Rol']['write'], 'delete' => $v['Rol']['delete']);
 	$fila[] = array('model' => 'Rol', 'field' => 'nombre', 'valor' => $v['Rol']['nombre']);
+    $fila[] = array('model' => 'Rol', 'field' => 'prioridad', 'valor' => $v['Rol']['prioridad']);
 	$fila[] = array('model' => 'Rol', 'field' => 'estado', 'valor' => $v['Rol']['estado']);
 	$cuerpo[] = $fila;
 }

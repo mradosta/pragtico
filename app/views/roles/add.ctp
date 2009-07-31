@@ -22,6 +22,7 @@
 $campos = null;
 $campos['Rol.id'] = array();
 $campos['Rol.nombre'] = array();
+$campos['Rol.prioridad'] = array();
 $campos['Rol.estado'] = array();
 $campos['Rol.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
