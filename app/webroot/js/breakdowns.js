@@ -72,9 +72,13 @@ jQuery(document).ready(function($) {
     var breakDownsCookie = jQuery.cookie("breakDownsCookie");
     if (breakDownsCookie != null) {
         breakDowns = breakDownsCookie.split("|").clean("");
+        var openedBreakDowns = 0;
+        var openedBreakDownLongDesc = "";
         jQuery(".breakdown_icon").each(
-            function() {
+            function(index) {
                 if (jQuery.inArray(this.getAttribute("longdesc"), breakDowns) >= 0) {
+                    openedBreakDowns++;
+                    openedBreakDownLongDesc = this.getAttribute("longdesc");
                     clickedRowId = this.getAttribute("longdesc").split("/").pop();
                     buildTable(clickedRowId, this.getAttribute("longdesc"));
                 }
@@ -82,10 +86,10 @@ jQuery(document).ready(function($) {
         );
 
         jQuery(".bread_crumb_class").remove();
-        if (breakDowns.length == 1) {
-            var span = jQuery("<span/>").addClass("bread_crumb_class").text(" » " + jQuery("img[longdesc=\'" + breakDowns[0] + "\']").attr("alt"));
+        if (openedBreakDowns == 1) {
+            var span = jQuery("<span/>").addClass("bread_crumb_class").text(" » " + jQuery("img[longdesc=\'" + openedBreakDownLongDesc + "\']").attr("alt"));
             jQuery("div.banda_izquierda > p").append(span);
-        } else if (breakDowns.length > 1){
+        } else if (openedBreakDowns > 1){
             var span = jQuery("<span/>").addClass("bread_crumb_class").text(" » " + breakDowns.length + " Desgloses abiertos");
             jQuery("div.banda_izquierda > p").append(span);
         }
