@@ -25,7 +25,7 @@
  */
 class EmpleadoresCoeficiente extends AppModel {
 
-    var $permissions = array('permissions' => 448, 'group' => 'default', 'role' => 'all');
+    var $permissions = array('permissions' => 496, 'group' => 'default', 'role' => 'all');
 
 	var $modificadores = array(	'index' => array('contain' => array('Empleador', 'Coeficiente')),
 							  	'add' => array('contain' => array()));

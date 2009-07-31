@@ -23,7 +23,7 @@
  */
 class Empleador extends AppModel {
 
-    var $permissions = array('permissions' => 448, 'group' => 'default', 'role' => 'all');
+    var $permissions = array('permissions' => 496, 'group' => 'default', 'role' => 'all');
 
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
