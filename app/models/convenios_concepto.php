@@ -25,7 +25,10 @@
  */
 class ConveniosConcepto extends AppModel {
 
-    protected $__permissions = '452';
+    protected $__permissions = '508';
+
+    var $breadCrumb = array('format'    => '%s de %s',
+                            'fields'    => array('Concepto.nombre', 'Convenio.nombre'));
     
     var $validate = array(
         'convenio_id' => array(

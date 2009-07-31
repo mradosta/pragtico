@@ -25,6 +25,9 @@
  */
 class Convenio extends AppModel {
 
+    var $breadCrumb = array('format'    => '%s',
+                            'fields'    => array('Convenio.nombre'));
+    
 	var $validate = array(
         'nombre' => array(
 			array(

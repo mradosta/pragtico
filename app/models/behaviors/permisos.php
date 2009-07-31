@@ -426,10 +426,13 @@ class PermisosBehavior extends ModelBehavior {
 						'(' . $Model->name . '.role_id) & ' . $roles . ' >' => $Model->name . '.role_id',
 						'(' . $Model->name . '.permissions) & ' . $this->__simplifiedPermissions['group_' . $acceso] => $resultPermissions['group_' . $acceso]
 					),
-					array(
-						'(' . $Model->name . '.group_id) & ' . $grupos . ' >' => $Model->name . '.group_id',
-						'(' . $Model->name . '.permissions) & ' . $this->__simplifiedPermissions['group_' . $acceso] => $resultPermissions['group_' . $acceso]
-					)
+                    array('OR' =>
+                        array(
+                            '(' . $Model->name . '.group_id) & ' . $grupos . ' >' => $Model->name . '.group_id',
+                            '(' . $Model->name . '.permissions) & ' . $this->__simplifiedPermissions['group_' . $acceso] => $resultPermissions['group_' . $acceso]
+                        ),
+                        $Model->name . '.group_id' => 0
+                    )
 				));
 
             /** Check for others permissions */
@@ -446,6 +449,7 @@ class PermisosBehavior extends ModelBehavior {
 			unset($seguridad['OR'][0]['AND'][1]);
 		}
 		//return array();
+        //d($seguridad);
 		return $seguridad;
 	}
 

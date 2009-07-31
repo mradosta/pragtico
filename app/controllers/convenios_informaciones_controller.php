@@ -23,6 +23,12 @@
  */
 class ConveniosInformacionesController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Convenio.nombre'       => 'asc',
+            'Informacion.nombre'    => 'asc'
+        )
+    );
 
 }
 ?>

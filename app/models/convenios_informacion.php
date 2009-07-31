@@ -23,6 +23,9 @@
  */
 class ConveniosInformacion extends AppModel {
 
+    var $breadCrumb = array('format'    => '%s de %s',
+                            'fields'    => array('Informacion.nombre', 'Convenio.nombre'));
+    
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/

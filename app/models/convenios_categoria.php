@@ -24,14 +24,14 @@
  * @subpackage  app.models
  */
 class ConveniosCategoria extends AppModel {
+    
+    var $breadCrumb = array('format'    => '%s de %s',
+                            'fields'    => array('ConveniosCategoria.nombre', 'Convenio.nombre'));
 
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/
 	var $modificadores = array('index'=>array('contain'=>array('Convenio', 'ConveniosCategoriasHistorico')));
-	
-	var $breadCrumb = array('format' 	=> '%s (%s)',
-							'fields' 	=> array('ConveniosCategoria.nombre', 'Convenio.nombre'));
 	
 	var $validate = array(
         'nombre' => array(
@@ -39,7 +39,7 @@ class ConveniosCategoria extends AppModel {
 				'rule'		=> VALID_NOT_EMPTY, 
 				'message'	=> 'Debe especificar el nombre de la categoria.')
         ),
-        'convenio_id__' => array(
+        'convenio_id' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY, 
 				'message'	=> 'Debe seleciconar un conveio.')
@@ -51,9 +51,7 @@ class ConveniosCategoria extends AppModel {
         )        
 	);
 
-	var $belongsTo = array(	'Convenio' =>
-                        array('className'    => 'Convenio',
-                              'foreignKey'   => 'convenio_id'));
+	var $belongsTo = array('Convenio');
 	
 	var $hasMany = array(	'Relacion' =>
                         array('className'    => 'Relacion',

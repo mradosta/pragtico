@@ -25,6 +25,13 @@
  */
 class ConveniosCategoriasController extends AppController {
 
+    var $paginate = array(
+        'order' => array(
+            'Convenio.nombre'           => 'asc',
+            'ConveniosCategoria.nombre' => 'asc'
+        )
+    );
+
 /**
  * historicos.
  * Muestra via desglose los historicos.
