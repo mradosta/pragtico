@@ -24,6 +24,8 @@
  */
 class Auditoria extends AppModel {
 
+    var $permissions = array('permissions' => 508, 'group' => 'none', 'role' => 'higher');
+
 /**
  * Retorna la direccion IP de un cliente.
  *
@@ -31,12 +33,13 @@ class Auditoria extends AppModel {
  * @access private
  */
     function __getIp() {
-    	if (getenv('HTTP_CLIENT_IP'))
-        	return getenv('HTTP_CLIENT_IP'); 
-    	elseif (getenv('HTTP_X_FORWARDED_FOR'))
-			return getenv('HTTP_X_FORWARDED_FOR');
-	else
-		return getenv('REMOTE_ADDR');
+    	if (getenv('HTTP_CLIENT_IP')) {
+            return getenv('HTTP_CLIENT_IP');
+        } elseif (getenv('HTTP_X_FORWARDED_FOR')) {
+            return getenv('HTTP_X_FORWARDED_FOR');
+        } else {
+            return getenv('REMOTE_ADDR');
+        }
     }
 
 

@@ -23,7 +23,7 @@
  */
 class ConveniosCategoriasHistorico extends AppModel {
 
-	var $unique = array('convenios_categoria_id', 'desde');
+	var $permissions = array('permissions' => 508, 'group' => 'none', 'role' => 'higher');
 	
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php

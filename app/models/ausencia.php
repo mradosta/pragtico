@@ -26,6 +26,8 @@
  */
 class Ausencia extends AppModel {
 
+    var $permissions = array('permissions' => 496, 'group' => 'default', 'role' => 'all');
+
 	var $modificadores = array(	'index'=>array('contain'=>array('Relacion' => array('Empleador', 'Trabajador'),
 																'AusenciasMotivo',
 																'AusenciasSeguimiento')),

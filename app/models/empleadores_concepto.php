@@ -25,6 +25,8 @@
  */
 class EmpleadoresConcepto extends AppModel {
 
+    var $permissions = array('permissions' => 448, 'group' => 'default', 'role' => 'all');
+
     var $validate = array(
         'empleador_id' => array(
             array(

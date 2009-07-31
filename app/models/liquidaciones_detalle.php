@@ -23,7 +23,7 @@
  */
 class LiquidacionesDetalle extends AppModel {
 
-	var $unique = array('liquidacion_id', 'concepto_id');
+	var $permissions = array('permissions' => 448, 'group' => 'default', 'role' => 'all');
 
 	var $belongsTo = array('Liquidacion', 'Concepto');
 

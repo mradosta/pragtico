@@ -23,6 +23,8 @@
  */
 class Pago extends AppModel {
 
+    var $permissions = array('permissions' => 288, 'group' => 'default', 'role' => 'all');
+
 	var $modificadores = array(	'index' =>
 			array('contain'	=> array('Descuento', 'Liquidacion', 'PagosForma', 'Relacion'	=> array('Empleador', 'Trabajador'))));
 	

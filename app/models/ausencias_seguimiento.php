@@ -23,6 +23,8 @@
  */
 class AusenciasSeguimiento extends AppModel {
 
+    var $permissions = array('permissions' => 496, 'group' => 'default', 'role' => 'all');
+
 	/**
 	* Estados:
 	* 		Pendiente: Se cargo pero no se confirmo. No se tendra en cuenta para la liquidacion.

@@ -25,6 +25,8 @@
  */
 class Relacion extends AppModel {
 
+    var $permissions = array('permissions' => 448, 'group' => 'default', 'role' => 'all');
+
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/

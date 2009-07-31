@@ -23,6 +23,8 @@
  */
 class RolesMenu extends AppModel {
 
+    var $permissions = array('permissions' => 508, 'group' => 'none', 'role' => 'higher');
+
 	var $belongsTo = array('Rol', 'Menu');
 }
 ?>

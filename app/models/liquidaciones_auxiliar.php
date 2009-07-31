@@ -25,7 +25,7 @@
  */
 class LiquidacionesAuxiliar extends AppModel {
 
-	var $unique = array('liquidacion_id', 'save');
+    var $permissions = array('permissions' => 448, 'group' => 'default', 'role' => 'all');
 
     var $belongsTo = array('Liquidacion');
 }

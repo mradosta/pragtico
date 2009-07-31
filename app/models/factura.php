@@ -23,6 +23,7 @@
  */
 class Factura extends AppModel {
 
+    var $permissions = array('permissions' => 448, 'group' => 'default', 'role' => 'all');
 
 	var $hasMany = array(	'Liquidacion',
 							'FacturasDetalle' =>

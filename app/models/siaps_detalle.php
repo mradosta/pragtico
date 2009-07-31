@@ -23,6 +23,8 @@
  */
 class SiapsDetalle extends AppModel {
 
+    var $permissions = array('permissions' => 508, 'group' => 'none', 'role' => 'higher');
+
 	var $belongsTo = array('Siap');
 
     var $opciones = array(

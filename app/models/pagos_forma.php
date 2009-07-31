@@ -25,6 +25,7 @@
  */
 class PagosForma extends AppModel {
 
+    var $permissions = array('permissions' => 288, 'group' => 'default', 'role' => 'all');
 
 	var $modificadores = array(	'add'  	=> 
 			array('valoresDefault' => array(	'fecha' 		=> array('date' => 'Y-m-d'),

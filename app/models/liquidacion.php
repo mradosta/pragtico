@@ -23,6 +23,8 @@
  */
 class Liquidacion extends AppModel {
 
+    var $permissions = array('permissions' => 448, 'group' => 'default', 'role' => 'all');
+
 	/**
 	* Seteo los tipos posibles de liquidaciones que podre realizar.
 	*/
@@ -172,7 +174,12 @@ class Liquidacion extends AppModel {
                                 'codigoConcepto'    => 'sueldo_basico')));
             }
             */
-
+            if (empty($this->__conceptos['antiguedad']) || $type === 'normal') {
+                $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
+                        array(  'relacion'          => $this->getRelationship(),
+                                'codigoConcepto'    => 'antiguedad')));
+            }
+            
 			/** Get novelties */
 			$novedades = $this->Relacion->Novedad->getNovedades($this->getRelationship(), $this->getPeriod());
 			foreach ($novedades['variables'] as $varName => $varValue) {
@@ -346,8 +353,6 @@ class Liquidacion extends AppModel {
 
 		/** Resolv */
 		foreach ($this->__conceptos as $cCod => $concepto) {
-            /** If concept in relation, must ignore forzed imprision */
-            $this->__conceptos[$cCod]['imprimir'] = str_replace(' [Forzado]', '', $this->__conceptos[$cCod]['imprimir']);
 			$this->__conceptos[$cCod] = array_merge($this->__conceptos[$cCod],
 					$this->__getConceptValue($concepto));
 		}
@@ -400,9 +405,6 @@ class Liquidacion extends AppModel {
 		$liquidacion['convenio_categoria_nombre'] = $this->getRelationship('ConveniosCategoria', 'nombre');
 		$liquidacion['convenio_categoria_costo'] = $this->getRelationship('ConveniosCategoria', 'costo');
 		$liquidacion['convenio_categoria_jornada'] = $this->getRelationship('ConveniosCategoria', 'jornada');
-        /** Just the owner can read, write or delete a pre-receipt */
-        $liquidacion['permissions'] = '448';
-        //$liquidacion['permissions'] = '480';
 
 		$totales['remunerativo'] = 0;
 		$totales['no_remunerativo'] = 0;
@@ -548,9 +550,6 @@ class Liquidacion extends AppModel {
 			$detalle['valor'] = $detalleLiquidacion['valor'];
 			$detalle['valor_cantidad'] = $detalleLiquidacion['valor_cantidad'];
             $detalle['valor_unitario'] = $detalleLiquidacion['valor_unitario'];
-            /** Just the owner can read, write or delete a pre-receipt */
-            $detalle['permissions'] = '448';
-            //$detalle['permissions'] = '480';
 		}
 		return $detalle;
 	}
@@ -1118,6 +1117,8 @@ class Liquidacion extends AppModel {
 		if (!empty($conceptos)) {
 			if (isset($conceptos[0])) {
 				foreach ($conceptos as $concepto) {
+                    /** If concept in relation, must ignore forzed printting */
+                    $concepto['imprimir'] = str_replace(' [Forzado]', '', $concepto['imprimir']);
 					if (empty($this->__conceptos)) {
 						$this->__conceptos = $concepto;
 					} else {
@@ -1125,6 +1126,8 @@ class Liquidacion extends AppModel {
 					}
 				}
 			} else {
+                /** If concept in relation, must ignore forzed printting */
+                $conceptos['imprimir'] = str_replace(' [Forzado]', '', $conceptos['imprimir']);
 				if (empty($this->__conceptos)) {
 					$this->__conceptos = $conceptos;
 				} else {

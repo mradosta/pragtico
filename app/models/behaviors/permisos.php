@@ -93,6 +93,12 @@ class PermisosBehavior extends ModelBehavior {
     }
 
 
+    function setup(&$Model, $settings = array()) {
+        if (!isset($Model->permissions)) {
+            $Model->permissions['permissions'] = 496;
+        }
+    }
+    
 /**
  * Sets permissions.
  *
@@ -103,7 +109,7 @@ class PermisosBehavior extends ModelBehavior {
  */
     function setPermissions(&$Model, $permissions) {
         if (is_numeric($permissions) && $permissions >= 0 && $permissions <= 511) {
-            $Model->__permissions = $permissions;
+            $Model->permissions['permissions'] = $permissions;
             return true;
         }
         return false;
@@ -111,16 +117,74 @@ class PermisosBehavior extends ModelBehavior {
 
 
 /**
- * Returns permissions used to save records in this model.
+ * Returns permissions to be used to save the records.
  *
  * @return integer Permissions numeric value used to save records for this model.
  * @access public
  */
     function getPermissions(&$Model) {
-        return $Model->__permissions;
+        return $Model->permissions['permissions'];
     }    
 
 
+/**
+ * Returns role to be used to save the record.
+ *
+ * @return integer Role or sum of role ids (bitwise).
+ * @access public
+ */
+    function getRole(&$Model) {
+        if (isset($Model->permissions['role'])) {
+            if ($Model->permissions['role'] === 'higher') {
+                return User::get('higher_role');
+            } elseif ($Model->permissions['role'] === 'lower') {
+                return User::get('lower_role');
+            } elseif ($Model->permissions['role'] === 'all') {
+                return User::get('roles');
+            } elseif ($Model->permissions['role'] === 'none' || $Model->permissions['role'] === false) {
+                return 0;
+            } else {
+                trigger_error(__('Role option not supported.', true), E_USER_WARNING);
+            }
+        } else {
+            return User::get('roles');
+        }
+    }
+
+
+/**
+ * Returns group to be used to save the record.
+ *
+ * @return integer Group or sum of groups ids (bitwise).
+ * @access public
+ */
+    function getGroup($Model) {
+        if (isset($Model->permissions['group'])) {
+            if ($Model->permissions['group'] === 'all') {
+                return User::get('grupos');
+            } elseif ($Model->permissions['group'] === 'default') {
+                return User::get('preferencias/grupo_default_id');
+            } elseif ($Model->permissions['group'] === 'none' || $Model->permissions['group'] === false) {
+                return 0;
+            } else {
+                trigger_error(__('Group option not supported.', true), E_USER_WARNING);
+            }
+        } else {
+            return User::get('grupos');
+        }
+    }
+    
+    
+/**
+ * Returns user to be used to save the record.
+ *
+ * @return integer User id.
+ * @access public
+ */
+    function getUser() {
+        return User::get('id');
+    }
+    
 /**
  * Before save callback
  * Set default user_id, group_id, role_id and permissions when creating a new record.
@@ -130,17 +194,15 @@ class PermisosBehavior extends ModelBehavior {
  */    
     function beforeSave(&$Model) {
 		
-		$usuario = $this->__getCurrentUser();
-		
     	if (empty($Model->id)) {
 			if (!isset($Model->data[$Model->name]['user_id'])) {
-    			$Model->data[$Model->name]['user_id'] = $usuario['Usuario']['id'];
+    			$Model->data[$Model->name]['user_id'] = $this->getUser();
     		}
     		if (!isset($Model->data[$Model->name]['role_id'])) {
-    			$Model->data[$Model->name]['role_id'] = $usuario['Usuario']['roles'];
+    			$Model->data[$Model->name]['role_id'] = $this->getRole($Model);
     		}
     		if (!isset($Model->data[$Model->name]['group_id'])) {
-    			$Model->data[$Model->name]['group_id'] = $usuario['Usuario']['preferencias']['grupo_default_id'];
+    			$Model->data[$Model->name]['group_id'] = $this->getGroup($Model);
     		}
     		if (!isset($Model->data[$Model->name]['permissions'])) {
     			$Model->data[$Model->name]['permissions'] = $this->getPermissions($Model);
@@ -391,6 +453,7 @@ class PermisosBehavior extends ModelBehavior {
 		/**
 		* Si se trata de un usuario perteneciente al rol administradores, que no tiene grupo (root), no verifico permisos.
 		*/
+        //return array();
 		if (empty($usuario['Grupo']) && (int)$usuario['Usuario']['roles'] & 1) {
 			return array();
 		} else {
@@ -423,15 +486,14 @@ class PermisosBehavior extends ModelBehavior {
 			$seguridad['OR'][] =
 				array('AND' => array(
 					array(
-						'(' . $Model->name . '.role_id) & ' . $roles . ' >' => $Model->name . '.role_id',
+						'(' . $Model->name . '.role_id) & ' . $roles . ' >=' => $Model->name . '.role_id',
 						'(' . $Model->name . '.permissions) & ' . $this->__simplifiedPermissions['group_' . $acceso] => $resultPermissions['group_' . $acceso]
 					),
                     array('OR' =>
-                        array(
+                        array('AND' => array(
                             '(' . $Model->name . '.group_id) & ' . $grupos . ' >' => $Model->name . '.group_id',
                             '(' . $Model->name . '.permissions) & ' . $this->__simplifiedPermissions['group_' . $acceso] => $resultPermissions['group_' . $acceso]
-                        ),
-                        $Model->name . '.group_id' => 0
+                        ), $Model->name . '.group_id' => 0),
                     )
 				));
 
@@ -474,8 +536,7 @@ class PermisosBehavior extends ModelBehavior {
 			$save['data'] = $model->data;
 			if ($created) {
 				$save['tipo'] = 'Alta';
-			}
-			else {
+			} else {
 				$save['tipo'] = 'Modificacion';
 			}
 			$Auditoria->auditar($save);

@@ -22,7 +22,9 @@
  * @subpackage  app.models
  */
 class Usuario extends AppModel { 
-	
+
+    var $permissions = array('permissions' => 508, 'group' => 'none', 'role' => 'higher');
+    
 	var $validate = array(
         'nombre' => array(
 			array(
@@ -174,15 +176,18 @@ class Usuario extends AppModel {
 					array('Grupo'=>
 						array('conditions'=>
 							array(	'GruposUsuario.estado' => 'Activo',
-									'Grupo.estado' => 'Activo')),
+									'Grupo.estado'         => 'Activo')),
 						'Rol'=>
-						array('conditions'=>
-							array(	'RolesUsuario.estado' => 'Activo',
-									'Rol.estado' => 'Activo')))));
+						array('order'       => 'Rol.prioridad',
+                              'conditions'  =>
+							array(	'RolesUsuario.estado'  => 'Activo',
+									'Rol.estado'           => 'Activo')))));
 
 			if (!empty($usuario) && $this->__actualizarUltimoIngreso($usuario['Usuario']['id'])) {
 				$usuario['Usuario']['roles'] = array_sum(Set::extract($usuario, '/Rol/id'));
 				$usuario['Usuario']['grupos'] = array_sum(Set::extract($usuario, '/Grupo/id'));
+                $usuario['Usuario']['lower_role'] = array_sum(Set::extract($usuario, '/Rol[:last]/id'));
+                $usuario['Usuario']['higher_role'] = array_sum(Set::extract($usuario, '/Rol[:first]/id'));
 				$usuario['Usuario']['preferencias'] = $this->Preferencia->findPreferencias($usuario['Usuario']['id']);
 
 				if (!isset($usuario['Grupo'][0]['id'])) {

@@ -26,7 +26,7 @@
  */
 class Actividad extends AppModel {
 
-    protected $__permissions = '484';
+    var $permissions = array('permissions' => 508, 'group' => 'none', 'role' => 'higher');
     
 	var $validate = array(
         'codigo' => array(

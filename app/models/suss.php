@@ -23,6 +23,8 @@
  */
 class Suss extends AppModel {
 
+    var $permissions = array('permissions' => 480, 'group' => 'default', 'role' => 'higher');
+
 	var $validate = array(
         'periodo' => array(
 			array(

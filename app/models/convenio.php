@@ -25,6 +25,8 @@
  */
 class Convenio extends AppModel {
 
+    var $permissions = array('permissions' => 508, 'group' => 'none', 'role' => 'higher');
+    
     var $breadCrumb = array('format'    => '%s',
                             'fields'    => array('Convenio.nombre'));
     

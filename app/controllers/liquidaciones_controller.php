@@ -368,7 +368,6 @@ class LiquidacionesController extends AppController {
 				'Relacion.Trabajador',
 				'Relacion.Empleador',
 	 			'LiquidacionesError'));
-        
         $this->paginate = array_merge($this->paginate, array('limit' => 15));
 		$resultados = $this->Paginador->paginar(
 			$condiciones,
@@ -409,6 +408,7 @@ class LiquidacionesController extends AppController {
  * Muestra via desglose el recibo (detalle) de la preliquidacion.
  */
 	function recibo_html($id = null) {
+        $this->Liquidacion->setSecurityAccess('readOwnerOnly');
 		$this->Liquidacion->contain('LiquidacionesDetalle');
 		$this->data = $this->Liquidacion->read(null, $id);
 	}
@@ -468,7 +468,8 @@ class LiquidacionesController extends AppController {
  * Muestra via desglose el recibo (detalle) de la preliquidacion con informacion de debug.
  */
 	function recibo_html_debug($id) {
-		$this->Liquidacion->contain(array("LiquidacionesDetalle"));
+        $this->Liquidacion->setSecurityAccess('readOwnerOnly');
+		$this->Liquidacion->contain(array('LiquidacionesDetalle'));
 		$this->data = $this->Liquidacion->read(null, $id);
 	}
 
@@ -887,7 +888,7 @@ class LiquidacionesController extends AppController {
                     unset($save['condition']);
                 }
 				$modelSave = ClassRegistry::init($model);
-                /** Just the owner and group can just read */
+                /** Just the owner and group can just read. Nobody can edit or delete it */
                 $save['permissions'] = '288';
 				$save = array($model => $save);
 				$modelSave->create($save);

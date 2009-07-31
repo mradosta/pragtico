@@ -23,15 +23,12 @@
  */
 class RolesAccion extends AppModel {
 
+    var $permissions = array('permissions' => 508, 'group' => 'none', 'role' => 'higher');
+
 	var $modificadores = array(	'edit'	=>array('contain'=>array(	'Accion.Controlador')),
 								'add'	=>array('contain'=>array(	'Accion.Controlador')));
 
-	var $belongsTo = array(	'Rol' =>
-                        array('className'    => 'Rol',
-                              'foreignKey'   => 'rol_id'),
-							'Accion' =>
-                        array('className'    => 'Accion',
-                              'foreignKey'   => 'accion_id'));
+	var $belongsTo = array('Rol', 'Accion');
 
 }
 ?>

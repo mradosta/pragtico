@@ -23,10 +23,9 @@
  */
 class DescuentosDetalle extends AppModel {
 	
-
-	var $belongsTo = array(	'Descuento' =>
-                        array('className'    => 'Descuento',
-                              'foreignKey'   => 'descuento_id'));
+    var $permissions = array('permissions' => 496, 'group' => 'default', 'role' => 'all');
+    
+	var $belongsTo = array('Descuento');
 	
 }
 ?>

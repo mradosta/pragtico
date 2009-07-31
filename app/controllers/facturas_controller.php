@@ -160,7 +160,8 @@ class FacturasController extends AppController {
  * Muestra via desglose los detalles de una factura.
  */
 	function detalles($id) {
-		$this->Factura->contain("FacturasDetalle.Coeficiente");
+        $this->Factura->setSecurityAccess('readOwnerOnly');
+		$this->Factura->contain('FacturasDetalle.Coeficiente');
 		$this->data = $this->Factura->read(null, $id);
 	}
 
@@ -170,7 +171,7 @@ class FacturasController extends AppController {
 		
 		if (!empty($ids)) {
 			$this->Factura->unbindModel(array('belongsTo' => array('Empleador')));
-			if ($this->Factura->updateAll(array('Factura.estado' => "'Confirmada'"), array('Factura.id' => $ids, 'Factura.confirmable' => 'Si'))) {
+			if ($this->Factura->updateAll(array('Factura.permissions' => "'288'", 'Factura.estado' => "'Confirmada'"), array('Factura.id' => $ids, 'Factura.confirmable' => 'Si'))) {
 				$this->Session->setFlash('Las facturas seleccionadas se confirmaron correctamente', 'ok');
 			} else {
 				$this->Session->setFlash('No pudieron confirmarse las facturas. Verifique.', 'error');

@@ -25,6 +25,8 @@
  */
 class AreasCoeficiente extends AppModel {
 
+    var $permissions = array('permissions' => 448, 'group' => 'default', 'role' => 'all');
+
 	var $modificadores = array(	'index' => array('contain' => array('Area', 'Coeficiente')),
 							  	'add' => array('contain' => array()));
 	

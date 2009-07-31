@@ -646,6 +646,7 @@ class AppController extends Controller {
  * Utilizar el auth component de cakePHP
  */
     function beforeFilter() {
+       
 		/** Save selected menu (actualMenu) in a cookie */
 		if (isset($this->passedArgs['am'])) {
             setcookie('menu_cookie', $this->passedArgs['am'], 0, '/');
@@ -665,25 +666,29 @@ class AppController extends Controller {
 			$accionesWhiteList = $this->Session->read('__Seguridad.accionesWhiteList');
 		}
         */
+
         $accionesWhiteList = array(
             'Usuarios.login',
             'Usuarios.logout',
             'Service.call',
             'Service.wsdl');
-		
-		if (in_array($this->name . '.' . $this->action, $accionesWhiteList)) {
-			return true;
-		} elseif (!$this->Session->check('__Usuario')) {
-    		$this->redirect(array(	'controller' 	=> 'usuarios',
-									'action'		=> 'login'));
-    	}
-    	
-		/**
-		 * Agrego soporte para que retorne json.
-		 */
-		$this->RequestHandler->setContent('json', 'text/x-json');
-    	
-    	return true;
+
+        if (in_array($this->name . '.' . $this->action, $accionesWhiteList)) {
+            return true;
+        } else {
+
+            App::import('Model', 'User');
+            if (User::store($this->Session->read('__Usuario'))) {
+
+                /** Agrego soporte para que retorne json.*/
+                $this->RequestHandler->setContent('json', 'text/x-json');
+                
+                return true;
+            } else {
+                $this->redirect(array(  'controller'    => 'usuarios',
+                                        'action'        => 'login'));
+            }
+        }
     }
 
 

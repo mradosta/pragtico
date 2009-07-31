@@ -23,7 +23,7 @@
  */
 class PreferenciasValor extends AppModel {
 
-	var $unique = array('preferencia_id', 'valor');
+	var $permissions = array('permissions' => 508, 'group' => 'none', 'role' => 'higher');
 	
 	var $validate = array( 
         'valor' => array(

@@ -25,6 +25,8 @@
  */
 class GruposParametro extends AppModel {
 
+    var $permissions = array('permissions' => 508, 'group' => 'none', 'role' => 'higher');
+
 	var $modificadores = array('edit' => array('contain' => array(
 											  	'Grupo',
 												'Parametro')));

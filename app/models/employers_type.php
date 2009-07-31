@@ -23,6 +23,8 @@
  */
 class EmployersType extends AppModel {
 
+    var $permissions = array('permissions' => 508, 'group' => 'none', 'role' => 'higher');
+
 	var $validate = array(
         'name' => array(
 			array(

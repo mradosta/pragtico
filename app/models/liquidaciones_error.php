@@ -24,7 +24,7 @@
  */
 class LiquidacionesError extends AppModel {
 
-	var $unique = array('liquidacion_id');
+    var $permissions = array('permissions' => 448, 'group' => 'default', 'role' => 'all');
 
 }
 ?>

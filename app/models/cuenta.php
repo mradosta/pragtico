@@ -23,6 +23,8 @@
  */
 class Cuenta extends AppModel {
 
+    var $permissions = array('permissions' => 508, 'group' => 'none', 'role' => 'higher');
+
 	/**
 	* Establece modificaciones al comportamiento estandar de app_controller.php
 	*/

@@ -23,6 +23,8 @@
  */
 class Recibo extends AppModel {
 
+    var $permissions = array('permissions' => 448, 'group' => 'default', 'role' => 'all');
+
 	var $validate = array(
         'nombre' => array(
 			array(

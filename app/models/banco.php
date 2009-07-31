@@ -23,6 +23,8 @@
  */
 class Banco extends AppModel {
 
+    var $permissions = array('permissions' => 508, 'group' => 'none', 'role' => 'higher');
+    
 	var $modificadores = array('index'	=> array('contain' => array()),
 								'edit'	=> array('contain' => array('Sucursal')));
 	

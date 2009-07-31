@@ -25,6 +25,8 @@
  */
 class Novedad extends AppModel {
 
+    var $permissions = array('permissions' => 496, 'group' => 'default', 'role' => 'all');
+
 /**
  * Los modificaciones al comportamiento estandar de app_controller.php
  *
