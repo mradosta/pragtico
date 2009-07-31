@@ -1114,27 +1114,31 @@ class Liquidacion extends AppModel {
  * @access private.
  */
     function setConcept($conceptos) {
-		if (!empty($conceptos)) {
-			if (isset($conceptos[0])) {
-				foreach ($conceptos as $concepto) {
+        if (!empty($conceptos)) {
+            if (isset($conceptos[0])) {
+                foreach ($conceptos as $concepto) {
                     /** If concept in relation, must ignore forzed printting */
-                    $concepto['imprimir'] = str_replace(' [Forzado]', '', $concepto['imprimir']);
-					if (empty($this->__conceptos)) {
-						$this->__conceptos = $concepto;
-					} else {
-						$this->__conceptos = array_merge($this->__conceptos, $concepto);
-					}
-				}
-			} else {
+                    foreach ($concepto as $k => $c) {
+                        $concepto[$k]['imprimir'] = str_replace(' [Forzado]', '', $concepto[$k]['imprimir']);
+                    }
+                    if (empty($this->__conceptos)) {
+                        $this->__conceptos = $concepto;
+                    } else {
+                        $this->__conceptos = array_merge($this->__conceptos, $concepto);
+                    }
+                }
+            } else {
                 /** If concept in relation, must ignore forzed printting */
-                $conceptos['imprimir'] = str_replace(' [Forzado]', '', $conceptos['imprimir']);
-				if (empty($this->__conceptos)) {
-					$this->__conceptos = $conceptos;
-				} else {
-					$this->__conceptos = array_merge($this->__conceptos, $conceptos);
-				}
-			}
-		}
+                foreach ($conceptos as $k => $concepto) {
+                    $conceptos[$k]['imprimir'] = str_replace(' [Forzado]', '', $conceptos[$k]['imprimir']);
+                }
+                if (empty($this->__conceptos)) {
+                    $this->__conceptos = $conceptos;
+                } else {
+                    $this->__conceptos = array_merge($this->__conceptos, $conceptos);
+                }
+            }
+        }
     }
 
 
