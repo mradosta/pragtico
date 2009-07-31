@@ -346,6 +346,8 @@ class Liquidacion extends AppModel {
 
 		/** Resolv */
 		foreach ($this->__conceptos as $cCod => $concepto) {
+            /** If concept in relation, must ignore forzed imprision */
+            $this->__conceptos[$cCod]['imprimir'] = str_replace(' [Forzado]', '', $this->__conceptos[$cCod]['imprimir']);
 			$this->__conceptos[$cCod] = array_merge($this->__conceptos[$cCod],
 					$this->__getConceptValue($concepto));
 		}
