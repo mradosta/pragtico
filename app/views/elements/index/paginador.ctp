@@ -28,7 +28,7 @@ if(isset($paginador->params['paging'][Inflector::classify($paginador->params['co
 		$show[$value] = $appForm->link($value, array_merge($options, array('limit' => $value)), array('title'=>sprintf(__('Show %s records', true), $value)));
 	}
 	
-	$show[1000] = $appForm->link(__('A', true), array_merge($options, array('filas_por_pagina' => '1000')), array('title'=>__('Show all records', true)));
+	$show[1000] = $appForm->link(__('A', true), array_merge($options, array('limit' => '1000')), array('title'=>__('Show all records', true)));
 	$cantidadActual = $this->params['paging'][Inflector::classify($this->name)]['options']['limit'];
 	if ($cantidadActual < 1000) {
 		$show[$cantidadActual] = $appForm->tag('span', $cantidadActual);
