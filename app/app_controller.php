@@ -333,7 +333,7 @@ class AppController extends Controller {
                     }
                 }
             } elseif ($this->data['Form']['accion'] === 'cancelar') {
-                $this->History->goBack();
+                $this->History->goBack(1);
             }
         }
         $this->render('add');
