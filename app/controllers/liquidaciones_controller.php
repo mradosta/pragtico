@@ -846,10 +846,11 @@ class LiquidacionesController extends AppController {
 			* Puede haber campos que deben ser guardados y no tienen valor, estos debo ponerle valor actual,
 			* por ejemplo, la fecha del dia que se confirma, y no la del dia que se pre-liquido.
 			*/
+            $this->Liquidacion->LiquidacionesAuxiliar->setSecurityAccess('readOwnerOnly');
 			$auxiliares = $this->Liquidacion->LiquidacionesAuxiliar->find('all',
 					array('recursive' => -1, 'conditions' => array('LiquidacionesAuxiliar.liquidacion_id' => $ids)));
-			$c = 0;
 
+			$c = 0;
             $db = ConnectionManager::getDataSource($this->Liquidacion->useDbConfig);
             $db->begin($this);
 			$idsAuxiliares = null;
@@ -870,6 +871,7 @@ class LiquidacionesController extends AppController {
 								break;
 							case 'concepto_valor':
 								$this->Liquidacion->LiquidacionesDetalle->recursive = -1;
+                                $this->Liquidacion->LiquidacionesDetalle->setSecurityAccess('readOwnerOnly');
 								$concepto = $this->Liquidacion->LiquidacionesDetalle->find('first',
 									array('conditions' => array('LiquidacionesDetalle.liquidacion_id' => $v['LiquidacionesAuxiliar']['liquidacion_id'],
 										  'LiquidacionesDetalle.concepto_id' => $save['concepto_id'])));
