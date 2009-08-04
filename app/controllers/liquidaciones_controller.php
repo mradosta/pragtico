@@ -849,7 +849,9 @@ class LiquidacionesController extends AppController {
 			$auxiliares = $this->Liquidacion->LiquidacionesAuxiliar->find('all',
 					array('recursive' => -1, 'conditions' => array('LiquidacionesAuxiliar.liquidacion_id' => $ids)));
 			$c = 0;
-			$this->Liquidacion->begin();
+
+            $db = ConnectionManager::getDataSource($this->Liquidacion->useDbConfig);
+            $db->begin($this);
 			$idsAuxiliares = null;
 			foreach ($auxiliares as $v) {
 				$model = $v['LiquidacionesAuxiliar']['model'];
@@ -898,7 +900,7 @@ class LiquidacionesController extends AppController {
 					$c++;
                 }
 			}
-
+                    
             /** If everything is ok, change state and permission so only owner and group can just read */
 			if ($c === count($auxiliares)) {
 				$this->Liquidacion->recursive = -1;
@@ -914,15 +916,15 @@ class LiquidacionesController extends AppController {
 						$this->Liquidacion->LiquidacionesAuxiliar->recursive = -1;;
 						$this->Liquidacion->LiquidacionesAuxiliar->deleteAll(array('LiquidacionesAuxiliar.id' => $idsAuxiliares));
 					}
-					$this->Liquidacion->commit();
+					$db->commit($this);
 					$this->Session->setFlash('Se confirmaron correctamente ' . count($ids) . ' liquidacion/es.', 'ok');
 				} else {
-					$this->Liquidacion->rollback();
+					$db->rollback($this);
 					$this->Liquidacion->__buscarError();
 					$this->Session->setFlash('Ocurrio un error al intentar confirmar las liquidaciones.', 'error');
 				}
 			} else {
-				$this->Liquidacion->rollback();
+				$db->rollback($this);
 				$this->Session->setFlash('Ocurrio un error al intentar confirmar las liquidaciones. No se puedieron actualizar los registros relacionados.', 'error');
 			}
 		}
