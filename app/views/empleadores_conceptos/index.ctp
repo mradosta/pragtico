@@ -19,7 +19,7 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-$condiciones['Condicion.Relacion-empleador_id'] = array(	'lov'=>array('controller'	=>	'empleadores',
+$condiciones['Condicion.EmpleadoresConcepto-empleador_id'] = array(	'lov'=>array('controller'	=>	'empleadores',
 																		'camposRetorno'	=>array('Empleador.cuit',
 																								'Empleador.nombre')));
 $condiciones['Condicion.Concepto-codigo'] = array();
