@@ -254,10 +254,8 @@ class LiquidacionesController extends AppController {
                     $condiciones['NOT'] = array('Relacion.id' => $confirmadas);
                 }
             }
-            //} else {
-            //    $condiciones['Relacion.estado'] = 'Historica';
-            //}
 
+            $condiciones['(Relacion.group_id & ' . User::get('preferencias/grupo_default_id') . ') >'] = 0;
 			$relaciones = $this->Liquidacion->Relacion->find('all',
 					array(	'contain'		=> array(	'ConveniosCategoria',
 														'Trabajador.ObrasSocial',
@@ -841,6 +839,18 @@ class LiquidacionesController extends AppController {
 		$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
 		
 		if (!empty($ids)) {
+
+            if ($this->Liquidacion->find('count', array(
+                'conditions'    => array(
+                    'Liquidacion.id'        => $ids,
+                    'Liquidacion.estado'    => array('Sin Confirmar', 'Guardada'),
+                    'Liquidacion.total >='  => 0))) != count($ids)) {
+                    
+                $this->Session->setFlash('Ha seleccionado liquidaciones para confirmar que no pueden ser confirmadas.', 'error');
+                $this->History->goBack();
+            }
+            
+            
 			/**
 			* En la tabla auxiliares tengo un array de los datos listos para guardar.
 			* Puede haber campos que deben ser guardados y no tienen valor, estos debo ponerle valor actual,
