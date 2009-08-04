@@ -270,8 +270,10 @@ class LiquidacionesController extends AppController {
 			}
 
 			/** Delete user's unconfirmed liquidations */
-			$usuario = $this->Session->read('__Usuario');
-			if (!$this->Liquidacion->deleteAll(array('Liquidacion.user_id' => $usuario['Usuario']['id'], 'Liquidacion.estado' => 'Sin Confirmar'))) {
+            $this->Liquidacion->setSecurityAccess('readOwnerOnly');
+			if (!$this->Liquidacion->deleteAll(array(
+                'Liquidacion.user_id'   => User::get('id'),
+                'Liquidacion.estado'    => 'Sin Confirmar'), true, false, true)) {
 				$this->Session->setFlash(__('Can\'t delete previous liquidations. Call Administrator', true), 'error');
 				$this->redirect(array('action' => 'preliquidar'));
 			}

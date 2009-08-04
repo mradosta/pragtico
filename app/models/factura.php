@@ -33,7 +33,7 @@ class Factura extends AppModel {
 
 
 
-	function __preSave($employerId, $receiptIds, $areaId, $saveDatailsTmp, $conditions) {
+	function __createAndSave($employerId, $receiptIds, $areaId, $saveDatailsTmp, $conditions, $groupId) {
 		$total = 0;
 		foreach ($saveDatailsTmp as $tmp) {
 			$saveDatails[] = $tmp;
@@ -57,8 +57,14 @@ class Factura extends AppModel {
 		}
 		$saveMaster['tipo'] = Inflector::humanize($conditions['Liquidacion.tipo']);
 
+        if (!empty($groupId)) {
+            $saveMaster['group_id'] = $groupId;
+            foreach ($saveDatails as $k => $detail) {
+                $saveDatails[$k]['group_id'] = $groupId;
+            }
+        }
+
 		$save = array_merge(array('Factura' => $saveMaster), array('FacturasDetalle' => $saveDatails));
-		$this->create($save);
 		if ($this->saveAll($save)) {
 			return $this->Liquidacion->updateAll(array('Liquidacion.factura_id' => $this->id), array('Liquidacion.id' => $receiptIds));
 		} else {
@@ -76,7 +82,7 @@ class Factura extends AppModel {
         return false;
     }
     
-	function getInvoice($conditions = null) {
+	function getInvoice($conditions = null, $groupId = null) {
 
 		if (empty($conditions)) {
 			return false;
@@ -88,14 +94,13 @@ class Factura extends AppModel {
 				'Liquidacion.factura_id' 	=> null,
 					array(	'Factura.estado' 				=> 'Sin Confirmar',
 							'Liquidacion.factura_id !=' 	=> null))));
-		
-        //$conditions = array_merge($conditions, array('Liquidacion.factura_id' => null));
+
         $data = $this->Liquidacion->find('all',
 			array(	'conditions' 	=> $conditions,
 					'order' 		=> array('Liquidacion.empleador_id', 'Liquidacion.relacion_area_id'),
 				 	'contain'		=> array('Empleador', 'LiquidacionesDetalle', 'Factura')));
-
-		if (!empty($data)) {
+		
+        if (!empty($data)) {
 			
 			$saveMaster = $saveDatails = null;
 			$employerId = null;
@@ -109,14 +114,14 @@ class Factura extends AppModel {
 					$employerId = $receipt['Liquidacion']['empleador_id'];
 					$areaId = null;
                     if ($k > 0) {
-						$this->__preSave($employerId, $receiptIds, $areaId, $saveDatails, $conditions);
-						$saveMaster = $saveDatails = $receiptIds = null;;
+						$this->__createAndSave($employerId, $receiptIds, $areaId, $saveDatails, $conditions, $groupId);
+						$saveMaster = $saveDatails = $receiptIds = null;
 					}
 				} else if ($receipt['Empleador']['facturar_por_area'] === 'Si'
                     && $areaId !== $receipt['Liquidacion']['relacion_area_id']) {
                     if ($areaId !== null && !empty($saveDatails)) {
-                        $this->__preSave($employerId, $receiptIds, $areaId, $saveDatails, $conditions);
-                        $saveMaster = $saveDatails = $receiptIds = null;;
+                        $this->__createAndSave($employerId, $receiptIds, $areaId, $saveDatails, $conditions, $groupId);
+                        $saveMaster = $saveDatails = $receiptIds = null;
                     }
                     $employerId = $receipt['Liquidacion']['empleador_id'];
                     $areaId = $receipt['Liquidacion']['relacion_area_id'];
@@ -140,7 +145,8 @@ class Factura extends AppModel {
                 }
 
                 if ($count === $k && !empty($saveDatails)) {
-                    $this->__preSave($employerId, $receiptIds, $areaId, $saveDatails, $conditions);
+                    $this->__createAndSave($employerId, $receiptIds, $areaId, $saveDatails, $conditions, $groupId);
+                    $saveMaster = $saveDatails = $receiptIds = null;
                 }
             }
 			return true;

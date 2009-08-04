@@ -19,8 +19,8 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-if(!empty($grupos)) {	
-	$condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos, 'empty' => true);
+if (!empty($grupos)) {
+	$condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos, 'empty' => false);
 }
 $condiciones['Condicion.Liquidacion-empleador_id'] = array(
 		'lov'	=> array('controller'	=> 'empleadores',
@@ -57,6 +57,7 @@ foreach ($registros as $k => $v) {
 	if ($v['Factura']['confirmable'] === 'No') {
 		$cuerpo[] = array('contenido' 	=> $fila,
 						  'opciones' 	=> array(
+            'seleccionMultiple' => false,
 			'title' 			=> 'No podra confirmar esta Factura por haber sido realizada desde Liquidaciones "Sin Confirmar"',
 			'class' 			=> 'fila_resaltada'));
 	} else {
@@ -100,7 +101,7 @@ $appForm->addScript('
 				}
 				jQuery("#form")[0].submit();
 			} else {
-				alert("Debe seleccionar al menos una pre-liquidacion para confirmar.");
+				alert("Debe seleccionar al menos una pre-facturacion para confirmar.");
 			}
 		}
 	);

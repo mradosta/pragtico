@@ -75,7 +75,7 @@ class Liquidacion extends AppModel {
  * TODO:
  * 		when the relation has a dependant relation, this method will not delete that relation.
  */	
-	function deleteAll($conditions, $cascade = true, $callbacks = false) {
+	function deleteAll_deprecated($conditions, $cascade = true, $callbacks = false) {
 
         $this->setSecurityAccess('readOwnerOnly');
 		$ids = Set::extract(
@@ -429,6 +429,8 @@ class Liquidacion extends AppModel {
 						$totales['remunerativo'] += $detalleLiquidacion['valor'];
 						break;
 					case "No Remunerativo":
+                        //debug($detalleLiquidacion);
+                        //d($totales);
 						$totales[$pago] += $detalleLiquidacion['valor'];
 						$totales['no_remunerativo'] += $detalleLiquidacion['valor'];
 						break;

@@ -294,8 +294,59 @@ class AppModel extends Model {
         }
     }
     
-    
-    function deleteAll($conditions, $cascade = true, $callbacks = false) {
+
+/**
+ * I must overwrite default cakePHP deleteAll method because it's not performant when there're many 
+ * relations and many records.
+ * I also add transaccional behavior and a better error check.
+ * TODO:
+ *      when the relation has a dependant relation, this method will not delete that relation.
+ */ 
+    function deleteAll($conditions, $cascade = true, $callbacks = false, $fkSave = false) {
+
+       if ($fkSave === true) {
+            $ids = Set::extract(
+                $this->find('all', array_merge(array(
+                                'fields'    => $this->alias . '.' . $this->primaryKey,
+                                'recursive' => 0), compact('conditions'))),
+                '{n}.' . $this->alias . '.' . $this->primaryKey
+            );
+            
+            $db = ConnectionManager::getDataSource($this->useDbConfig);
+            $c = 0;
+            $db->begin($this);
+            $relatedConditions = $db->conditions($conditions);
+            foreach ($this->hasMany as $assoc => $data) {
+                $table = $db->name(Inflector::tableize($assoc));
+                $conditions = array($data['foreignKey'] => $ids);
+                $sql = sprintf('DELETE FROM %s %s', $table, $db->conditions($conditions));
+                $db->query($sql);
+
+                if (empty($db->error)) {
+                    $c++;
+                }
+            }
+            
+            if (count($this->hasMany) === $c) {
+                $sql = sprintf('DELETE FROM %s %s', $db->name($this->useTable), $db->conditions(array($this->primaryKey => $ids)));
+                $db->query($sql);
+                if (empty($db->dbError)) {
+                    $db->commit($this);
+                    return true;
+                } else {
+                    $db->rollback($this);
+                    return false;
+                }
+            } else {
+                $db->rollback($this);
+                return false;
+            }
+       } else {
+           return parent::deleteAll($conditions, $cascade, $callbacks);
+       }
+    }
+        
+    function deleteAll_deprecated($conditions, $cascade = true, $callbacks = false) {
         
         $this->begin();
         if (parent::deleteAll($conditions, $cascade, $callbacks)) {

@@ -65,18 +65,36 @@ class FacturasController extends AppController {
 							$this->data['Condicion']['Liquidacion-periodo'] = $period['periodo'];
 						}
 
+                        $condiciones = array();
+                        $groupId = null;
 						if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
 							$condiciones['(Liquidacion.group_id & ' . $this->data['Condicion']['Liquidacion-grupo_id'] . ') >'] = 0;
-							$this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Liquidacion-grupo_id']));
+                            $groupId = $this->data['Condicion']['Liquidacion-grupo_id'];
 							unset($this->data['Condicion']['Liquidacion-grupo_id']);
 						}
 
-						$condiciones = $this->Paginador->generarCondicion($this->data);
+						$condiciones = array_merge($condiciones, $this->Paginador->generarCondicion($this->data));
 
 						/** Delete user's unconfirmed Invoices */
-						//$usuario = $this->Session->read('__Usuario');
-						//$this->Factura->deleteAll(array('Factura.user_id' => $usuario['Usuario']['id'], 'Factura.estado' => 'Sin Confirmar'));
-						if (!$this->Factura->getInvoice($condiciones)) {
+                        $this->Factura->setSecurityAccess('readOwnerOnly');
+                        $this->Factura->Liquidacion->updateAll(
+                            array('Liquidacion.factura_id' => null),
+                            array('Liquidacion.factura_id' => 
+                                Set::extract('/Factura/id',
+                                    $this->Factura->find('all', array(
+                                        'recursive'     => -1,
+                                        'conditions'    => array(
+                                            'Factura.user_id'   => User::get('id'),
+                                            'Factura.estado'    => 'Sin Confirmar'))))));
+                        
+                        if (!$this->Factura->deleteAll(array(
+                            'Factura.user_id'   => User::get('id'),
+                            'Factura.estado'    => 'Sin Confirmar'), true, false, true)) {
+                            $this->Session->setFlash(__('Can\'t delete previous invoices. Call Administrator', true), 'error');
+                            $this->redirect(array('action' => 'prefecturar'));
+                        }
+                        
+						if (!$this->Factura->getInvoice($condiciones, $groupId)) {
 							$this->Session->setFlash(__('Can\'t create invoices. Check search criterias', true), 'error');
 							$resultados['registros'] = array();
 						}
@@ -95,11 +113,9 @@ class FacturasController extends AppController {
 						unset($this->data['Condicion']['Liquidacion-tipo']);
 						$condiciones = $this->Paginador->generarCondicion($this->data);
 						$condiciones['Factura.estado'] = 'Sin Confirmar';
-                        $this->paginate = array_merge($this->paginate, array('limit' => 15));
 						$resultados = $this->Paginador->paginar($condiciones);
 
 					} elseif ($this->data['Formulario']['accion'] === 'limpiar') {
-                        $this->paginate = array_merge($this->paginate, array('limit' => 15));
 						$resultados = $this->Paginador->paginar(array('Factura.estado' => 'Sin Confirmar'));
 						$data = array();
 					}
@@ -115,10 +131,11 @@ class FacturasController extends AppController {
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'limpiar') {
 			$this->data = array();
 		}
-		$this->data['Condicion']['Liquidacion-estado'] = 'Confirmada';
 		
-		$this->Factura->contain(array('Empleador', 'Area'));
 		if (!isset($resultados)) {
+            $this->Factura->contain(array('Empleador', 'Area'));
+            $this->Factura->setSecurityAccess('readOwnerOnly');
+            $this->paginate = array_merge($this->paginate, array('limit' => 15));
 			$resultados = $this->Paginador->paginar(array('Factura.estado' => 'Sin Confirmar'), array(), false);
 		}
 		
