@@ -305,7 +305,8 @@ class Novedad extends AppModel {
 			$i++;
 		}
 		
-		$this->begin();
+        $db = ConnectionManager::getDataSource($this->useDbConfig);
+        $db->begin($this);
 		foreach ($saves as $save) {
 			$keys = array_keys($save);
 			if ($this->Relacion->{$keys[0]}->appSave($save)) {
@@ -315,10 +316,10 @@ class Novedad extends AppModel {
 		
 		if ($i === $c) {
 			$this->deleteAll(array('Novedad.id' => array_diff($ids, $excludeIds)), false, false, false);
-			$this->commit();
+			$db->commit($this);
 			return $i;
 		} else {
-			$this->rollback();
+			$db->rollback($this);
 			return false;
 		}
 	}
