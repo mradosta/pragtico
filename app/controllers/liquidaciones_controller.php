@@ -907,7 +907,7 @@ class LiquidacionesController extends AppController {
 					if (!empty($matches[1])) {
 						switch($matches[1]) {
 							case 'fecha_liquidacion':
-								$save[$campo] = date("d/m/Y");
+								$save[$campo] = date('Y-m-d');
 								break;
 							case 'liquidacion_id':
 								$save[$campo] = $v['LiquidacionesAuxiliar']['liquidacion_id'];
