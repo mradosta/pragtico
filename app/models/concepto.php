@@ -348,9 +348,17 @@ class Concepto extends AppModel {
 						);
 		}
 		elseif ($tipo === "ConceptoPuntual") {
-			$fields = am($fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente, $fieldAreasCoeficiente);
+			$fields = am($fieldsRelaciones, $fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente, $fieldAreasCoeficiente);
 			$table 	= 	"conceptos";
 			$joins 	=	array(
+                            array(
+                                "alias" => "RelacionesConcepto",
+                                "table" => "relaciones_conceptos",
+                                "type"  => "LEFT",
+                                "conditions" => array(
+                                    array(  "RelacionesConcepto.concepto_id = Concepto.id",
+                                            "RelacionesConcepto.relacion_id" => $opciones['relacion']['Relacion']['id']))
+                            ),
 							array(
 								"alias" => "ConveniosConcepto",
 								"table" => "convenios_conceptos",
