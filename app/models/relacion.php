@@ -111,6 +111,9 @@ class Relacion extends AppModel {
 							'Area' =>
                         array('className'    => 'Area',
                               'foreignKey'   => 'area_id'),
+                            'Recibo' =>
+                        array('className'    => 'Recibo',
+                              'foreignKey'   => 'recibo_id'),
 							'Situacion' =>
                         array('className'    => 'Situacion',
                               'foreignKey'   => 'situacion_id'),

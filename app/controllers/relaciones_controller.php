@@ -80,7 +80,7 @@ class RelacionesController extends AppController {
         	foreach ($recibo['RecibosConcepto'] as $v) {
         		$relacionesConcepto[] = array('concepto_id' => $v['concepto_id']);
         	}
-        	unset($this->data['Relacion']['recibo_id']);
+            unset($this->Relacion->RelacionesConcepto->validate['relacion_id']);
 	        $this->data = array_merge($this->data, array('RelacionesConcepto' => $relacionesConcepto));
         }
         return parent::save();
