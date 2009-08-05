@@ -66,14 +66,16 @@ class PaginadorComponent extends Object {
  * @return array Un array con las condiciones de la forma que exije el framework para el metodo find.
  * @access public
  */
-    function generarCondicion($useSession = true) {
+    function generarCondicion($useSession = true, $whiteList = array()) {
+
+        //$this->controller->Session->del('filtros.' . $this->controller->name . '.' . $this->controller->action);
 		if (isset($this->controller->data['Formulario']['accion']) && $this->controller->data['Formulario']['accion'] == 'limpiar') {
 			$this->controller->Session->del('filtros.' . $this->controller->name . '.' . $this->controller->action);
 			unset($this->controller->data['Condicion']);
 			return array();
 		}
-
-		if ($useSession === true) {
+        
+        if ($useSession === true) {
 			$filter = $this->controller->Session->read('filtros.' . $this->controller->name . '.' . $this->controller->action);
 		} else {
 			$filter = array();
@@ -86,8 +88,15 @@ class PaginadorComponent extends Object {
     		$condiciones = $valoresLov = array();
 		}
 
-		if (!empty($this->controller->data['Condicion']) && is_array($this->controller->data['Condicion'])) {
+        $keys = array_keys($this->controller->{$this->controller->modelClass}->schema());
+		if (!empty($this->controller->data['Condicion'])) {
 			foreach ($this->controller->data['Condicion'] as $k => $v) {
+
+                list($model, $field) = explode('-', $this->__removerReemplazos($k));
+                if (($model === $this->controller->modelClass && !in_array($field, $keys)) ||
+                    in_array($model . '.' . $field, $whiteList)) {
+                    continue;
+                }
 
 				/** Remove session data that's posted empty */
 				$tmp = $this->__reemplazos(str_replace('-', '.', $k), '');
@@ -99,7 +108,7 @@ class PaginadorComponent extends Object {
 					$v = implode('**||**', $v);
 				}
 
-				if (strpos($k, '-') !== false && !empty($v)) {
+				if (strpos($k, '-') !== false && (!empty($v) || is_null($v))) {
 					$t = explode('-', $k);
 					if (count($t) == 2) {
 						if (substr($t[1], -2) !== '__') {
@@ -157,7 +166,7 @@ class PaginadorComponent extends Object {
 				$this->controller->Session->write('filtros.' . $this->controller->name . '.' . $this->controller->action, array('condiciones' => $condiciones, 'valoresLov' => $valoresLov));
 			}
 		}
-		
+
 		return $condiciones;
     }
 
@@ -217,7 +226,7 @@ class PaginadorComponent extends Object {
 	function paginar($condicion = array(), $whiteList = array(), $useSession = true) {
 		
 		if ($useSession === true) {
-			$condiciones = array_merge($this->generarCondicion(), $condicion);
+			$condiciones = array_merge($this->generarCondicion($useSession, $whiteList), $condicion);
 		} else {
 			$condiciones = $condicion;
 		}
@@ -225,7 +234,8 @@ class PaginadorComponent extends Object {
 		if (!empty($this->controller->paginate['conditions'])) {
 			$condiciones = array_merge($this->controller->paginate['conditions'], $condiciones);
 		}
-		$this->controller->paginate['conditions'] = array_diff_key($condiciones, array_flip($whiteList));
+		//$this->controller->paginate['conditions'] = array_diff_key($condiciones, array_flip($whiteList));
+        $this->controller->paginate['conditions'] = $condiciones;
 
 		$model = Inflector::classify($this->controller->name);
 
@@ -350,7 +360,7 @@ class PaginadorComponent extends Object {
  */
 	function __removerReemplazos($valor) {
 		if (is_string($valor)) {
-			return trim(str_replace(array('like', '%', '>=', '<='), '', $valor));
+			return trim(str_replace(array('!=', 'like', '%', '>=', '<='), '', $valor));
 		} else {
 			return $valor;
 		}

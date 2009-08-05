@@ -32,31 +32,37 @@ class PagosController extends AppController {
         )
     );
 
-	function __seteos() {
-		/**
-		* El periodo viene de la forma completa (YYYYMM1Q), para entrar a la query lo deje de la forma reducida,
-		* ahora vuelvo a dejar lo de la forma completa.
-		*/
-		$tmp = $this->Session->read("filtros.Pagos.index.condiciones");
-		if (!empty($tmp['Liquidacion.periodo like']) && !empty($tmp['Liquidacion.ano']) && !empty($tmp['Liquidacion.mes'])) {
-			$this->data['Condicion']['Liquidacion-periodo'] = $tmp['Liquidacion.ano'] . $tmp['Liquidacion.mes'] . str_replace("%", "", $tmp['Liquidacion.periodo like']);
-		}
-	}
 
-
-	
 	function index() {
-		if (!empty($this->data['Condicion']['Liquidacion-periodo_completo'])) {
+
+        //d($this->Paginador->generarCondicion(true, array('Liquidacion.periodo_completo')));
+        if (!empty($this->data['Condicion']['Pago-origen'])) {
+            
+            if ($this->data['Condicion']['Pago-origen'] === 'receipt') {
+                $this->data['Condicion']['Pago-liquidacion_id !='] = null;
+                $this->data['Condicion']['Pago-descuento_id'] = null;
+            } else {
+                $this->data['Condicion']['Pago-descuento_id !='] = null;
+                $this->data['Condicion']['Pago-liquidacion_id'] = null;
+            }
+        }
+
+        if (!empty($this->data['Condicion']['Liquidacion-periodo_completo'])) {
 			$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_completo'], 'periodo');
 			if (!empty($periodo)) {
 				$this->data['Condicion']['Liquidacion-ano'] = $periodo['ano'];
 				$this->data['Condicion']['Liquidacion-mes'] = $periodo['mes'];
 				$this->data['Condicion']['Liquidacion-periodo'] = $periodo['periodo'];
-				unset($this->data['Condicion']['Liquidacion-periodo_completo']);
 			}
-		}
-        $this->set('monto', $this->Pago->getTotal($this->Paginador->generarCondicion()));
-		parent::index();
+        }
+
+        $this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
+        $conditions = $this->Paginador->generarCondicion(false, array('Liquidacion.periodo_completo'));
+        $this->paginate = array_merge($this->paginate, array('limit' => 15, 'conditions' => $conditions));
+        $resultados = $this->Paginador->paginar(array(), array(), false);
+        $this->set('registros', $resultados['registros']);
+        $this->set('origen', array('receipt' => 'Liquidacion', 'discount' => 'Descuento'));
+        $this->set('monto', $this->Pago->getTotal($conditions));
 	}
 
 
