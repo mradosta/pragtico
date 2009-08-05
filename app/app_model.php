@@ -311,35 +311,39 @@ class AppModel extends Model {
                                 'recursive' => 0), compact('conditions'))),
                 '{n}.' . $this->alias . '.' . $this->primaryKey
             );
-            
-            $db = ConnectionManager::getDataSource($this->useDbConfig);
-            $c = 0;
-            $db->begin($this);
-            $relatedConditions = $db->conditions($conditions);
-            foreach ($this->hasMany as $assoc => $data) {
-                $table = $db->name(Inflector::tableize($assoc));
-                $conditions = array($data['foreignKey'] => $ids);
-                $sql = sprintf('DELETE FROM %s %s', $table, $db->conditions($conditions));
-                $db->query($sql);
 
-                if (empty($db->error)) {
-                    $c++;
+            if (!empty($ids)) {
+                $db = ConnectionManager::getDataSource($this->useDbConfig);
+                $c = 0;
+                $db->begin($this);
+                $relatedConditions = $db->conditions($conditions);
+                foreach ($this->hasMany as $assoc => $data) {
+                    $table = $db->name(Inflector::tableize($assoc));
+                    $conditions = array($data['foreignKey'] => $ids);
+                    $sql = sprintf('DELETE FROM %s %s', $table, $db->conditions($conditions));
+                    $db->query($sql);
+
+                    if (empty($db->error)) {
+                        $c++;
+                    }
                 }
-            }
-            
-            if (count($this->hasMany) === $c) {
-                $sql = sprintf('DELETE FROM %s %s', $db->name($this->useTable), $db->conditions(array($this->primaryKey => $ids)));
-                $db->query($sql);
-                if (empty($db->dbError)) {
-                    $db->commit($this);
-                    return true;
+                
+                if (count($this->hasMany) === $c) {
+                    $sql = sprintf('DELETE FROM %s %s', $db->name($this->useTable), $db->conditions(array($this->primaryKey => $ids)));
+                    $db->query($sql);
+                    if (empty($db->dbError)) {
+                        $db->commit($this);
+                        return true;
+                    } else {
+                        $db->rollback($this);
+                        return false;
+                    }
                 } else {
                     $db->rollback($this);
                     return false;
                 }
             } else {
-                $db->rollback($this);
-                return false;
+                return true;
             }
        } else {
            return parent::deleteAll($conditions, $cascade, $callbacks);

@@ -57,7 +57,6 @@ foreach ($registros as $k => $v) {
 	if ($v['Factura']['confirmable'] === 'No') {
 		$cuerpo[] = array('contenido' 	=> $fila,
 						  'opciones' 	=> array(
-            'seleccionMultiple' => false,
 			'title' 			=> 'No podra confirmar esta Factura por haber sido realizada desde Liquidaciones "Sin Confirmar"',
 			'class' 			=> 'fila_resaltada'));
 	} else {
@@ -68,7 +67,7 @@ foreach ($registros as $k => $v) {
 $opcionesTabla =  array('tabla' => array(	'ordenEnEncabezados'=> false,
 											'modificar'			=> false,
 											'seleccionMultiple'	=> true,
-											'eliminar'			=> false,
+											'eliminar'			=> true,
 											'permisos'			=> false));
 $accionesExtra['opciones'] = array('acciones' => array($appForm->link('Confirmar', null, array('class' => 'link_boton', 'id' => 'confirmar', 'title' => 'Confirma las preliquidaciones seleccionadas')), $appForm->link('Guardar', null, array('class' => 'link_boton', 'id' => 'guardar', 'title' => 'Guarda las preliquidaciones seleccionadas')), $appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas')), 'eliminar'));
 $botonesExtra[] = 'limpiar';

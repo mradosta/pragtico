@@ -33,6 +33,27 @@ class Factura extends AppModel {
 
 
 
+    function deleteAll($conditions, $cascade = true, $callbacks = false) {
+
+        $this->setSecurityAccess('readOwnerOnly');
+        $InvoiceIds = Set::extract('/Factura/id',
+            $this->find('all', array(
+                'recursive'     => -1,
+                'conditions'    => array(
+                    'Factura.user_id'   => User::get('id'),
+                    'Factura.estado'    => 'Sin Confirmar'))));
+        if (!empty($InvoiceIds)) {
+            $this->Liquidacion->updateAll(
+                array('Liquidacion.factura_id' => null),
+                array('Liquidacion.factura_id' => $InvoiceIds));
+        }
+        
+        $this->unbindModel(array('hasMany' => array('Liquidacion')), false);
+        $return = parent::deleteAll($conditions, $cascade, $callbacks, true);
+        $this->bindModel(array('hasMany' => array('Liquidacion')));
+        return $return;
+    }
+
 	function __createAndSave($employerId, $receiptIds, $areaId, $saveDatailsTmp, $conditions, $groupId) {
 		$total = 0;
 		foreach ($saveDatailsTmp as $tmp) {

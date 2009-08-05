@@ -79,27 +79,16 @@ class FacturasController extends AppController {
 
 						$condiciones = array_merge($condiciones, $this->Paginador->generarCondicion($this->data));
 
-						/** Delete user's unconfirmed Invoices
-                        $this->Factura->setSecurityAccess('readOwnerOnly');
-                        $this->Factura->Liquidacion->updateAll(
-                            array('Liquidacion.factura_id' => null),
-                            array('Liquidacion.factura_id' => 
-                                Set::extract('/Factura/id',
-                                    $this->Factura->find('all', array(
-                                        'recursive'     => -1,
-                                        'conditions'    => array(
-                                            'Factura.user_id'   => User::get('id'),
-                                            'Factura.estado'    => 'Sin Confirmar'))))));
-                        
+						/** Delete user's unconfirmed Invoices */
                         if (!$this->Factura->deleteAll(array(
                             'Factura.user_id'   => User::get('id'),
-                            'Factura.estado'    => 'Sin Confirmar'), true, false, true)) {
+                            'Factura.estado'    => 'Sin Confirmar'), true, false)) {
                             $this->Session->setFlash(__('Can\'t delete previous invoices. Call Administrator', true), 'error');
                             $this->redirect(array('action' => 'prefecturar'));
                         }
-                         */
+                        
                         if (in_array($condiciones['Liquidacion.estado'], array('Sin Confirmar', 'Guardada'))) {
-                            $this->Factura->setSecurityAccess('readOwnerOnly');
+                            $this->Factura->Liquidacion->setSecurityAccess('readOwnerOnly');
                         }
 
 						if (!$this->Factura->getInvoice($condiciones, $groupId)) {

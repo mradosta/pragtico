@@ -35,36 +35,7 @@ class LiquidacionesController extends AppController {
 	var $components = array('Formulador');
 	var $helpers = array('Documento');
 	
-/**
- * Delete.
- *
- * @param integer $id The record id to delete.
- * @param integer $goBack How many steps back shouls return.
- * @return void.
- * @access public
- */
-    function delete($id = null, $goBack = 0) {
-        if (!empty($id) && is_numeric($id)) {
-            $ids[] = $id;
-        } else {
-            $ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
-        }
-
-        if ($this->{$this->modelClass}->deleteAll(array($this->modelClass . '.' . $this->{$this->modelClass}->primaryKey => $ids), true, false, true)) {
-            $cantidad = count($ids);
-            if ($cantidad === 1) {
-                $mensaje = __('Record deleted', true);
-            } else {
-                $mensaje = sprintf(__('%s records deleted', true), $cantidad);
-            }
-            $this->Session->setFlash($mensaje, 'ok', array('warnings' => $this->{$this->modelClass}->getWarning()));
-        } else {
-            $this->Session->setFlash(__('The record could not be deleted', true), 'error');
-        }
-        $this->History->goBack($goBack);
-    }
     
-
     function resumen() {
 
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
@@ -417,20 +388,21 @@ class LiquidacionesController extends AppController {
  * @access private.
  */
 	function guardar($id = null) {
+
 		if (empty($id)) {
 			if (!empty($this->params['data']['seleccionMultiple'])) {
 				$id = $this->Util->extraerIds($this->params['data']['seleccionMultiple']);
 			}
 		}
 		$this->Liquidacion->unbindModel(array('belongsTo' => array('Trabajador', 'Empleador', 'Relacion', 'Factura')));
-		if ($this->Liquidacion->updateAll(
+        if ($this->Liquidacion->updateAll(
 				array('Liquidacion.estado' => "'Guardada'"),
 				array('Liquidacion.id' => $id))) {
 			$this->Session->setFlash(sprintf('Se guardaron correctamente %s liquidacion/es', count($id)), 'ok');
 		} else {
 			$this->Session->setFlash('No fue posible guardar las liquidaciones seleccionadas', 'error');
 		}
-		$this->autorender = false;
+		$this->redirect(array('action' => 'preliquidar'));
 	}
 
 
