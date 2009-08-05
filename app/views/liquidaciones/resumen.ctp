@@ -91,11 +91,11 @@ if (!empty($data)) {
                     $documento->setCellValue('A' . $fila, $detail['Liquidacion']['trabajador_apellido'] . ', ' . $detail['Liquidacion']['trabajador_nombre']);
                 }
                 $documento->setCellValue('B' . $fila, $detail['LiquidacionesDetalle']['concepto_nombre']);
-                $documento->setCellValue('C' . $fila, $detail['LiquidacionesDetalle']['suma_cantidad'], 'right');
+                $documento->setCellValue('C' . $fila, $detail['LiquidacionesDetalle']['suma_cantidad'], 'decimal');
                 $documento->setCellValue('D' . $fila, $detail['LiquidacionesDetalle']['valor'], 'currency');
             } else {
                 $documento->setCellValue('A' . $fila, $detail['LiquidacionesDetalle']['concepto_nombre']);
-                $documento->setCellValue('B' . $fila, $detail['LiquidacionesDetalle']['suma_cantidad'], 'right');
+                $documento->setCellValue('B' . $fila, $detail['LiquidacionesDetalle']['suma_cantidad'], 'decimal');
                 $documento->setCellValue('C' . $fila, $detail['LiquidacionesDetalle']['valor'], 'currency');
             }
             $total += $detail['LiquidacionesDetalle']['valor'];

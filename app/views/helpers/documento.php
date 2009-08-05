@@ -214,6 +214,11 @@ class DocumentoHelper extends AppHelper {
                                 'borders'   => array('bottom'     => array(
                                     'style' => PHPExcel_Style_Border::BORDER_DOTTED)));
                         break;
+                        case 'decimal':
+                            $this->activeSheet->getStyle($cellName)->getNumberFormat()->setFormatCode('0.00');
+                            $style = array('alignment' => array(
+                                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT));
+                        break;
                         case 'currency':
                             if ($value >= 0) {
                                 $format = '"$ "0.00';
