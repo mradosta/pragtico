@@ -39,7 +39,7 @@ class NovedadesController extends AppController {
 /**
  * Set default search condition to pending novelties.
  */
-	function index() {
+	function index_deprecated() {
 		if (empty($this->data)) {
 			$this->data['Condicion']['Novedad-estado'] = 'Pendiente';
 		}
