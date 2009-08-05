@@ -363,7 +363,8 @@ class LiquidacionesController extends AppController {
 			$condiciones = array_merge($condiciones, array('Liquidacion.estado' => array('Guardada', 'Sin Confirmar')));
 			$this->data['Condicion']['Liquidacion-estado'] = array('Guardada', 'Sin Confirmar');
 		}
-		
+
+        $this->Liquidacion->setSecurityAccess('readOwnerOnly');
 		$this->Liquidacion->contain(array(
 				'Relacion.Trabajador',
 				'Relacion.Empleador',
@@ -479,7 +480,8 @@ class LiquidacionesController extends AppController {
  * Muestra via desglose los errores de la preliquidacion.
  */
 	function errores($id) {
-		$this->Liquidacion->contain(array("LiquidacionesError"));
+        $this->Liquidacion->setSecurityAccess('readOwnerOnly');
+		$this->Liquidacion->contain(array('LiquidacionesError'));
 		$this->data = $this->Liquidacion->read(null, $id);
 	}
 	
@@ -840,6 +842,7 @@ class LiquidacionesController extends AppController {
 		
 		if (!empty($ids)) {
 
+            $this->Liquidacion->setSecurityAccess('readOwnerOnly');
             if ($this->Liquidacion->find('count', array(
                 'conditions'    => array(
                     'Liquidacion.id'        => $ids,

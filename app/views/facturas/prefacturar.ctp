@@ -42,7 +42,7 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('tipo' => 'accion', 'id' => $v['Factura']['id'],
 					'valor' => $appForm->link(
 						$appForm->image('resumen.gif', array('alt' => 'Reporte')),
-						array('action' => 'reporte', 'id' => $v['Factura']['id'])));
+						array('action' => 'reporte', 'id' => $v['Factura']['id'], $v['Factura']['estado'])));
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Factura']['id'], 'imagen' => array('nombre' => 'detalles.gif', 'alt' => 'Detalles'), 'url' => 'detalles');
 	$fila[] = array('model' => 'Factura', 'field' => 'id', 'valor' => $v['Factura']['id'], 'write' => $v['Factura']['write'], 'delete' => $v['Factura']['delete']);
 	$fila[] = array('model' => 'Factura', 'field' => 'fecha', 'valor' => $v['Factura']['fecha']);

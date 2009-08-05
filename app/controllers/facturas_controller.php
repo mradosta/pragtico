@@ -33,8 +33,12 @@ class FacturasController extends AppController {
 
 	var $helpers = array('Documento');
 
-	function reporte($facturaId) {
+	function reporte($facturaId, $state = 'Confirmada') {
 
+        if ($state == 'Sin Confirmar') {
+            $this->Factura->setSecurityAccess('readOwnerOnly');
+        }
+        
 		$records = $this->Factura->report($facturaId);
 		if (empty($records)) {
 			$this->Session->setFlash('No se han encontrado facturas para el periodo seleccioando segun los criterios especificados.', 'error');
@@ -75,7 +79,7 @@ class FacturasController extends AppController {
 
 						$condiciones = array_merge($condiciones, $this->Paginador->generarCondicion($this->data));
 
-						/** Delete user's unconfirmed Invoices */
+						/** Delete user's unconfirmed Invoices
                         $this->Factura->setSecurityAccess('readOwnerOnly');
                         $this->Factura->Liquidacion->updateAll(
                             array('Liquidacion.factura_id' => null),
@@ -93,7 +97,11 @@ class FacturasController extends AppController {
                             $this->Session->setFlash(__('Can\'t delete previous invoices. Call Administrator', true), 'error');
                             $this->redirect(array('action' => 'prefecturar'));
                         }
-                        
+                         */
+                        if (in_array($condiciones['Liquidacion.estado'], array('Sin Confirmar', 'Guardada'))) {
+                            $this->Factura->setSecurityAccess('readOwnerOnly');
+                        }
+
 						if (!$this->Factura->getInvoice($condiciones, $groupId)) {
 							$this->Session->setFlash(__('Can\'t create invoices. Check search criterias', true), 'error');
 							$resultados['registros'] = array();
