@@ -36,7 +36,6 @@ class Manager2Service extends AppModel {
     function facturacion($id) {
 
         if (is_numeric($id)) {
-            $Pago = ClassRegistry::init('Pago');
             $Factura = ClassRegistry::init('Factura');
             $Factura->Behaviors->detach('Permisos');
             $registros = $Factura->find('all', array(
@@ -109,7 +108,6 @@ class Manager2Service extends AppModel {
                     $child = $coeficientes->appendChild($child);
                 }
             }
-            //d('<textarea cols="50" rows="50">' . $doc->saveXML() . '</textarea>');
             return $doc->saveXML();
         } else {
             return '';
@@ -196,82 +194,6 @@ class Manager2Service extends AppModel {
 
 
 /**
- * Pagos.
- *
- * @param integer $id El ultimo id que Manager2 ha recibido.
- * @return string El xml con el formato establecido.
- */
-    function pagos_deprecated($id) {
-
-        if (is_numeric($id)) {
-            $Pago = ClassRegistry::init('Pago');
-            $Pago->Behaviors->detach('Permisos');
-            $registros = $Pago->find('all', array(  'contain'   =>array('Relacion.Trabajador',
-                                                                        'PagosForma.Cuenta'),
-                                                    'conditions'=>array('Pago.id >'     => $id,
-                                                                        'Pago.monto >'  => 0),
-                                                    'order'     =>'Pago.id'));
-            $tmp = $registros;
-            $ultimo = array_pop($tmp);
-            
-            $doc = new DomDocument('1.0');
-            $root = $doc->createElement('datos');
-            $root->setAttribute ('firstId', $id);
-            $root->setAttribute ('lastId', $ultimo['Pago']['id']);
-            $root = $doc->appendChild($root);
-            
-            $pagos = $doc->createElement('pagos');
-            $pagos = $root->appendChild($pagos);
-
-            $prevGroup = null;
-            foreach ($registros as $registro) {
-
-                if ($registro['Pago']['group_id'] !== $prevGroup) {
-                    $prevGroup = $registro['Pago']['group_id'];
-                    $grupo = $doc->createElement('grupo');
-
-                    $Grupo = ClassRegistry::init('Grupo');
-                    $Grupo->contain(array('GruposParametro.Parametro'));
-                    $Grupo->Behaviors->detach('Permisos');
-                    $tmpGrupo = $Grupo->findById($registro['Pago']['group_id']);
-                    foreach ($tmpGrupo['GruposParametro'] as $parametro) {
-                        if ($parametro['Parametro']['nombre'] === 'cuit') {
-                            $grupo->setAttribute('codigo', $parametro['valor']);
-                            break;
-                        }
-                    }
-                    $grupo = $pagos->appendChild($grupo);
-                }
-                
-                $child = $doc->createElement('pago');
-                $child->setAttribute('cuil', str_replace('-', '', $registro['Relacion']['Trabajador']['cuil']));
-                $child->setAttribute('nombre', $registro['Relacion']['Trabajador']['apellido'] . ' ' . $registro['Relacion']['Trabajador']['nombre']);
-                $child->setAttribute('cuenta', $registro['Relacion']['Trabajador']['cbu']);
-                $pago = $grupo->appendChild($child);
-                foreach ($registro['PagosForma'] as $forma) {
-                    $child = $doc->createElement('medio');
-                    $child->setAttribute('comprobante', $forma['cheque_numero']);
-                    $child->setAttribute('tipo', $forma['forma']);
-                    if (!empty($forma['Cuenta']['cbu'])) {
-                        $child->setAttribute('cbuOrigen', $forma['Cuenta']['cbu']);
-                    } else {
-                        $child->setAttribute('cbuOrigen', '');
-                    }
-                    $child->setAttribute('monto', $forma['monto']);
-                    $child->setAttribute('fechaEmision', $forma['fecha']);
-                    $child->setAttribute('fechaPago', $forma['fecha_pago']);
-                    $pago->appendChild($child);
-                }
-            }
-            //d('<textarea cols="50" rows="50">' . $doc->saveXML() . '</textarea>');
-            return $doc->saveXML();
-        } else {
-            return '';
-        }
-    }
-
-
-/**
  * Anulaciones de Pagos.
  *
  * @param integer $id El ultimo id que Manager2 ha recibido.
@@ -337,7 +259,6 @@ class Manager2Service extends AppModel {
                     $pago->appendChild($forma_pago);
                 }
             }
-            //d('<textarea cols="50" rows="50">' . $doc->saveXML() . '</textarea>');
             return $doc->saveXML();
         } else {
             return '';
@@ -412,7 +333,6 @@ class Manager2Service extends AppModel {
                     $pago->appendChild($forma_pago);
                 }
             }
-            //d('<textarea cols="50" rows="50">' . $doc->saveXML() . '</textarea>');
             return $doc->saveXML();
         } else {
             return '';
