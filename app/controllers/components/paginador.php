@@ -93,8 +93,8 @@ class PaginadorComponent extends Object {
 			foreach ($this->controller->data['Condicion'] as $k => $v) {
 
                 list($model, $field) = explode('-', $this->__removerReemplazos($k));
-                if (($model === $this->controller->modelClass && !in_array($field, $keys)) ||
-                    in_array($model . '.' . $field, $whiteList)) {
+                if (substr($field, -2) !== '__' && (($model === $this->controller->modelClass && !in_array($field, $keys)) ||
+                    in_array($model . '.' . $field, $whiteList))) {
                     continue;
                 }
 
