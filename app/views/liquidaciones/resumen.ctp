@@ -61,6 +61,8 @@ if (!empty($data)) {
         $documento->setCellValue('B' . $fila, 'Concepto', 'title');
         $documento->setCellValue('C' . $fila, 'Cantidad', 'title');
         $documento->setCellValue('D' . $fila, 'Total', 'title');
+        $documento->setCellValue('E' . $fila, 'Coeficiente', 'title');
+        $documento->setCellValue('F' . $fila, 'Total', 'title');
     } else {
         $documento->setWidth('A', 65);
         $documento->setWidth('B', 13);
@@ -68,6 +70,8 @@ if (!empty($data)) {
         $documento->setCellValue('A' . $fila, 'Concepto', 'title');
         $documento->setCellValue('B' . $fila, 'Cantidad', 'title');
         $documento->setCellValue('C' . $fila, 'Total', 'title');
+        $documento->setCellValue('D' . $fila, 'Coeficiente', 'title');
+        $documento->setCellValue('E' . $fila, 'Total', 'title');
     }
 
     $fila = 7;
@@ -93,10 +97,14 @@ if (!empty($data)) {
                 $documento->setCellValue('B' . $fila, $detail['LiquidacionesDetalle']['concepto_nombre']);
                 $documento->setCellValue('C' . $fila, $detail['LiquidacionesDetalle']['suma_cantidad'], 'decimal');
                 $documento->setCellValue('D' . $fila, $detail['LiquidacionesDetalle']['valor'], 'currency');
+                $documento->setCellValue('E' . $fila, $detail['LiquidacionesDetalle']['coeficiente_valor'], 'decimal');
+                $documento->setCellValue('F' . $fila, $detail['LiquidacionesDetalle']['suma_cantidad'] * $detail['LiquidacionesDetalle']['coeficiente_valor'], 'currency');
             } else {
                 $documento->setCellValue('A' . $fila, $detail['LiquidacionesDetalle']['concepto_nombre']);
                 $documento->setCellValue('B' . $fila, $detail['LiquidacionesDetalle']['suma_cantidad'], 'decimal');
                 $documento->setCellValue('C' . $fila, $detail['LiquidacionesDetalle']['valor'], 'currency');
+                $documento->setCellValue('D' . $fila, $detail['LiquidacionesDetalle']['coeficiente_valor'], 'decimal');
+                $documento->setCellValue('E' . $fila, $detail['LiquidacionesDetalle']['suma_cantidad'] * $detail['LiquidacionesDetalle']['coeficiente_valor'], 'currency');
             }
             $total += $detail['LiquidacionesDetalle']['valor'];
         }
