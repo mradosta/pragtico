@@ -109,7 +109,15 @@ class Concepto extends AppModel {
             'Vacaciones'                => 'Vacaciones',
             'Plus Zona Desfavorable'    => 'Plus Zona Desfavorable'));
     
-
+/**
+ * descontar field is bitwise, must sum values then.
+ */
+    function beforeSave($options = array()) {
+        if (isset($this->data['Concepto']['remuneracion']) && is_array($this->data['Concepto']['remuneracion'])) {
+            $this->data['Concepto']['remuneracion'] = array_sum($this->data['Concepto']['remuneracion']);
+        }
+        return parent::beforeSave($options);
+    }
 /**
  * Valida que el extremo superior del rango sea mayor al inferior
  * en caso de que ambos esten seteados.
