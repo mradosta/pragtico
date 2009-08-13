@@ -39,7 +39,7 @@ class Manager2Service extends AppModel {
             $Factura = ClassRegistry::init('Factura');
             $Factura->Behaviors->detach('Permisos');
             $registros = $Factura->find('all', array(
-                'conditions'    => array('Factura.id >' => $id),
+                'conditions'    => array('Factura.modified >' => date('Y-m-d H:i:s', $id)),
                 'contain'       => array('Empleador', 'Area'),
                 'order'         => array('Factura.id', 'Factura.group_id')));
 
@@ -50,7 +50,9 @@ class Manager2Service extends AppModel {
             
             $root = $doc->createElement('datos');
             $root->setAttribute('firstId', $id);
-            $root->setAttribute('lastId', $ultimo['Factura']['id']);
+            $root->setAttribute('initialTime', date('Y-m-d H:i:s', $id));
+            $root->setAttribute('lastId', strtotime($ultimo['Factura']['modified']));
+            $root->setAttribute('finalTime', $ultimo['Factura']['modified']);
             $root = $doc->appendChild($root);
             $empleadores = $root->appendChild($doc->createElement('empleadores'));
             
@@ -126,7 +128,7 @@ class Manager2Service extends AppModel {
             $Empleador = ClassRegistry::init('Empleador');
             $Empleador->Behaviors->detach('Permisos');
             $registros = $Empleador->find('all',
-                array(  'conditions'    => array('Empleador.id >' => $id),
+                array(  'conditions'    => array('Empleador.modified >' => date('Y-m-d H:i:s', $id)),
                         'contain'       => array('Area'),
                         'fields'        =>  array(  'Empleador.cuit',
                                                     'Empleador.nombre',
@@ -146,7 +148,9 @@ class Manager2Service extends AppModel {
             
             $root = $doc->createElement('datos');
             $root->setAttribute('firstId', $id);
-            $root->setAttribute('lastId', $ultimo['Empleador']['id']);
+            $root->setAttribute('initialTime', date('Y-m-d H:i:s', $id));
+            $root->setAttribute('lastId', strtotime($ultimo['Empleador']['modified']));
+            $root->setAttribute('finalTime', $ultimo['Empleador']['modified']);
             $root = $doc->appendChild($root);
             $empleadores = $root->appendChild($doc->createElement('empleadores'));
             
@@ -207,13 +211,15 @@ class Manager2Service extends AppModel {
             $registros = $PagosForma->find('all', array(    'contain'       => 'Pago.Relacion.Trabajador',
                                                             'order'     =>'PagosForma.id',
                                                             'conditions'=>array(    'PagosForma.monto <'    => 0,
-                                                                                    'PagosForma.id >'       => $id)));
+                                                                                    'PagosForma.modified >'       => date('Y-m-d H:i:s', $id))));
             $tmp = $registros;
             $ultimo = array_pop($tmp);
             $doc = new DomDocument('1.0');
             $root = $doc->createElement('datos');
-            $root->setAttribute ('firstId', $id);
-            $root->setAttribute ('lastId', $ultimo['PagosForma']['id']);
+            $root->setAttribute('firstId', $id);
+            $root->setAttribute('initialTime', date('Y-m-d H:i:s', $id));
+            $root->setAttribute('lastId', strtotime($ultimo['PagosForma']['modified']));
+            $root->setAttribute('finalTime', $ultimo['PagosForma']['modified']);
             $root = $doc->appendChild($root);
             
             $pagos = $doc->createElement('pagos');
@@ -280,14 +286,15 @@ class Manager2Service extends AppModel {
             $registros = $PagosForma->find('all', array(    'contain'       => array('Cuenta', 'Pago.Relacion.Trabajador'),
                                                             'order'     =>'PagosForma.id',
                                                             'conditions'=>array(    'PagosForma.monto >'    => 0,
-                                                                                    'PagosForma.id >'       => $id)));
+                                                                                    'PagosForma.modified >'       => date('Y-m-d H:i:s', $id))));
             $tmp = $registros;
-            //d($tmp);
             $ultimo = array_pop($tmp);
             $doc = new DomDocument('1.0');
             $root = $doc->createElement('datos');
-            $root->setAttribute ('firstId', $id);
-            $root->setAttribute ('lastId', $ultimo['PagosForma']['id']);
+            $root->setAttribute('firstId', $id);
+            $root->setAttribute('initialTime', date('Y-m-d H:i:s', $id));
+            $root->setAttribute('lastId', strtotime($ultimo['PagosForma']['modified']));
+            $root->setAttribute('finalTime', $ultimo['PagosForma']['modified']);
             $root = $doc->appendChild($root);
             
             $pagos = $doc->createElement('pagos');

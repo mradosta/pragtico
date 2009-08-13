@@ -80,28 +80,34 @@ class ServiceController extends AppController {
         d($myArray);
     }
 
-    function probar_cliente() {
+    //http://localhost/pragtico/trunk/service/test/manager2/facturacion/71
+    //http://localhost/pragtico/trunk/service/test/manager2/facturacion/71
+    //http://localhost/pragtico/trunk/service/test/manager2/pagos/71
+    //http://localhost/pragtico/trunk/service/test/manager2/anulaciones_pagos/71
+    function test($provider, $service, $params = null) {
         $soapClient = new
             SoapClient(
-                router::url("/", true) . "service/wsdl/manager2", array('trace'=> 1)
-            );
+                Router::url(array(
+                    'controller'    => 'service',
+                    'action'        => 'wsdl',
+                    $provider), true),
+                array('trace'=> 1));
         try {
-            $retorno['wsdl'] = $this->Soap->getWSDL("manager2", 'call');
-            $retorno['retorno'] = $soapClient->empleadores(0);
-            //$retorno['retorno'] = $soapClient->facturacion(71);
-            //$retorno['retorno'] = $soapClient->pagos(347);
-            //$retorno['retorno'] = $soapClient->anulaciones_pagos(0);
+            $return['wsdl'] = $this->Soap->getWSDL($provider, 'call');
+            $return['data'] = $soapClient->{$service}($params);
+        } catch (SoapFault $soapFault) {
+            debug('Request');
+            debug($soapClient->__getLastRequest());
+            debug('Response');
+            d($soapClient->__getLastResponse());
+            
         }
-        catch (SoapFault $soapFault) {
-            echo "Request :<br>", $soapClient->__getLastRequest(), "<br>";
-            echo "Response :<br>", $soapClient->__getLastResponse(), "<br>";
-        }
-        $this->set("pruebas", $retorno);
+        $this->set('data', $return);
     }
 
 
 /**
- * Se encarga de administrar cada llamada SOAP.
+ * Makes the SOAP call.
  */
     function call($model) {
         $this->autoRender = false;
@@ -109,14 +115,12 @@ class ServiceController extends AppController {
     }
 
 
-    
-    
 /**
- * Genera un WSDL para el model en cuestion.
+ * Creates wsdl.
  */
     function wsdl($model) {
-        $this->layout = "wsdl";
-        $this->set("data", $this->Soap->getWSDL($model, 'call'));
+        $this->layout = 'wsdl';
+        $this->set('data', $this->Soap->getWSDL($model, 'call'));
     }
 }
 ?>
