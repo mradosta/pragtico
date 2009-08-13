@@ -94,10 +94,10 @@ class Manager2Service extends AppModel {
                 $coeficientes = $empleador->appendChild($doc->createElement('coeficientes'));
 
                 $totals = $Factura->report($registro['Factura']['id']);
-                $totales[3] = $totals['totals']['Facturado Remunerativo']; //Remunerativo
-                $totales[4] = $totals['totals']['Facturado No Remunerativo']; //No Remunerativo
-                $totales[5] = $totals['totals']['Facturado Beneficios']; //Beneficios
-                $totales[7] = $totals['totals']['Liquidado Remunerativo']; //Liquidado Remunerativo
+                $totales[3]  = $totals['totals']['Facturado Remunerativo']; //Remunerativo
+                $totales[4]  = $totals['totals']['Facturado No Remunerativo']; //No Remunerativo
+                $totales[5]  = $totals['totals']['Facturado Beneficios']; //Beneficios
+                $totales[49] = $totals['totals']['Liquidado Remunerativo']; //Liquidado Remunerativo
                 
                 foreach ($totales as $codigo => $valor) {
                     $child = $doc->createElement('coeficiente');
