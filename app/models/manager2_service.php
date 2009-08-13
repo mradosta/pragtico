@@ -58,10 +58,10 @@ class Manager2Service extends AppModel {
             
             $prevGroup = null;
             
-            $names = array( 3 => 'Facturado Remunerativo',
-                            4 => 'Facturado No Remunerativo',
-                            5 => 'Facturado Beneficios',
-                            7 => 'Liquidado No Remunerativo');
+            $names = array( 3  => 'Facturado Remunerativo',
+                            4  => 'Facturado No Remunerativo',
+                            5  => 'Facturado Beneficios',
+                            49 => 'Liquidado No Remunerativo');
             foreach ($registros as $registro) {
 
                 if ($registro['Factura']['group_id'] !== $prevGroup) {
