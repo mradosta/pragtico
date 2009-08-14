@@ -139,7 +139,7 @@ class Liquidacion extends AppModel {
                                 'codigoConcepto'    => 'sueldo_basico')));
             }
             */
-            if (empty($this->__conceptos['antiguedad']) || $type === 'normal') {
+            if (empty($this->__conceptos['antiguedad']) && $type === 'normal') {
                 $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
                         array(  'relacion'          => $this->getRelationship(),
                                 'codigoConcepto'    => 'antiguedad')));
