@@ -47,30 +47,28 @@ class LiquidacionesController extends AppController {
             } elseif (empty($this->data['Condicion']['Liquidacion-periodo_largo']) || $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo') === false) {
                 $this->Session->setFlash('Debe especificar un periodo valido.', 'error');
             } else {
-                $saveConditions = $this->data['Condicion'];
-
-                $fileFormat = $this->data['Condicion']['Liquidacion-formato'];
-                unset($this->data['Condicion']['Liquidacion-formato']);
-
                 $periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
-                unset($this->data['Condicion']['Liquidacion-periodo_largo']);
-
-                if (!empty($this->data['Condicion']['Liquidacion-desagregado'])) {
-                    $desagregado = $this->data['Condicion']['Liquidacion-desagregado'];
-                    unset($this->data['Condicion']['Liquidacion-desagregado']);
-                } else {
-                    $desagregado = 'No';
-                }
                 
-                $conditions = array_merge($this->Paginador->generarCondicion(false),
-                    array(  'Liquidacion.periodo'       => $periodo['periodo'],
-                            'Liquidacion.ano'           => $periodo['ano'],
-                            'Liquidacion.mes'           => $periodo['mes']));
+                $conditions = array('Liquidacion.estado'        => 'Confirmada',
+                                    'Liquidacion.tipo'          => $this->data['Condicion']['Liquidacion-tipo'],
+                                    'Liquidacion.periodo'       => $periodo['periodo'],
+                                    'Liquidacion.ano'           => $periodo['ano'],
+                                    'Liquidacion.mes'           => $periodo['mes']);
+                
+                if (!empty($this->data['Condicion']['Liquidacion-empleador_id'])) {
+                    $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Liquidacion-empleador_id'];
+                }
+
                 if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
                     $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Liquidacion-grupo_id'] . ') >'] = 0;
-                    unset($conditions['Liquidacion.grupo_id']);
-                    unset($this->data['Condicion']['Liquidacion-grupo_id']);
                 }
+
+                if (!empty($this->data['Condicion']['Liquidacion-group_option'])) {
+                    $group_option = $this->data['Condicion']['Liquidacion-group_option'];
+                } else {
+                    $group_option = 'coeficient';
+                }
+
 
                 $this->Liquidacion->Behaviors->detach('Permisos');
                 $this->Liquidacion->Behaviors->detach('Util');
@@ -79,7 +77,6 @@ class LiquidacionesController extends AppController {
                         'fields'        => array('COUNT(Liquidacion.trabajador_id) AS cantidad'),
                         'recursive'     => -1));
 
-                $this->data['Condicion'] = $saveConditions;
                 if (empty($workers[0]['Liquidacion']['cantidad'])) {
                     $this->Session->setFlash('No se han encontrado liquidaciones confirmadas para el periodo seleccionado segun los criterios especificados.', 'error');
                 } else {
@@ -87,8 +84,8 @@ class LiquidacionesController extends AppController {
                     $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
                     $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Util');
                     $conditions['LiquidacionesDetalle.concepto_imprimir !='] = 'No';
-                    if ($desagregado === 'Si') {
-                        $data = $this->Liquidacion->LiquidacionesDetalle->find('all', array(
+                    if ($group_option === 'worker') {
+                        $r = $this->Liquidacion->LiquidacionesDetalle->find('all', array(
                                 'conditions'    => $conditions,
                                 'contain'       => 'Liquidacion',
                                 'order'         => 'Liquidacion.relacion_id, LiquidacionesDetalle.concepto_orden',
@@ -96,22 +93,33 @@ class LiquidacionesController extends AppController {
                                                         'Liquidacion.trabajador_apellido',
                                                         'LiquidacionesDetalle.concepto_nombre',
                                                         'LiquidacionesDetalle.concepto_tipo',
+                                                        'LiquidacionesDetalle.coeficiente_valor',
+                                                        'LiquidacionesDetalle.coeficiente_nombre',
                                                         'COUNT(LiquidacionesDetalle.concepto_nombre) AS cantidad',
                                                         'SUM(LiquidacionesDetalle.valor_cantidad) AS suma_cantidad',
                                                         'SUM(LiquidacionesDetalle.valor) AS valor'),
-                                'group'         => array('Liquidacion.relacion_id', 'LiquidacionesDetalle.concepto_nombre'),
-                                'contain'       => array('Liquidacion')));
+                                'group'         => array('Liquidacion.relacion_id', 'LiquidacionesDetalle.concepto_nombre')));
+                        foreach ($r as $record) {
+                            $data[$record['Liquidacion']['trabajador_apellido'] . ', ' . $record['Liquidacion']['trabajador_nombre']][] = $record;
+                        }
                     } else {
-                        $data = $this->Liquidacion->LiquidacionesDetalle->find('all', array(
+                        $r = $this->Liquidacion->LiquidacionesDetalle->find('all', array(
                                 'conditions'    => $conditions,
                                 'order'         => 'LiquidacionesDetalle.concepto_orden',
                                 'fields'        => array('LiquidacionesDetalle.concepto_nombre',
                                                         'LiquidacionesDetalle.concepto_tipo',
+                                                        'LiquidacionesDetalle.coeficiente_valor',
+                                                        'LiquidacionesDetalle.coeficiente_nombre',
                                                         'COUNT(LiquidacionesDetalle.concepto_nombre) AS cantidad',
                                                         'SUM(LiquidacionesDetalle.valor_cantidad) AS suma_cantidad',
                                                         'SUM(LiquidacionesDetalle.valor) AS valor'),
-                                'group'         => array('LiquidacionesDetalle.concepto_nombre'),
-                                'contain'       => array('Liquidacion')));
+                                'group'         => array('LiquidacionesDetalle.concepto_nombre',
+                                                        'LiquidacionesDetalle.concepto_tipo',
+                                                        'LiquidacionesDetalle.coeficiente_valor',
+                                                        'LiquidacionesDetalle.coeficiente_nombre')));
+                        foreach ($r as $record) {
+                            $data[$record['LiquidacionesDetalle']['coeficiente_nombre']][] = $record;
+                        }
                     }
                     
                     if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
@@ -119,14 +127,15 @@ class LiquidacionesController extends AppController {
                     }
 
                     $this->set('data', $data);
-                    $this->set('workers', $workers);
-                    $this->set('fileFormat', $fileFormat);
+                    $this->set('totalWorkers', $workers[0]['Liquidacion']['cantidad']);
+                    $this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
                     $this->set('conditions', $this->data['Condicion']);
-                    $this->set('desagregado', $desagregado);
+                    $this->set('group_option', $group_option);
                     $this->History->skip();
                 }
             }
         }
+        $this->set('options', array('coeficient' => 'Coeficiente', 'worker' => 'Trabajador'));
         $this->set('grupos', $this->Util->getUserGroups());
     }
 
