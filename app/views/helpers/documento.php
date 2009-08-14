@@ -145,6 +145,26 @@ class DocumentoHelper extends AppHelper {
         }
     }
 
+/**
+            array(  '2,' . $fila =>
+                array('value' => '=SUM(C' . $beginRow . ':C' . ($fila - 1) . ')', 'options' => 'total'),
+                    '4,' . $fila =>
+                array('value' => '=SUM(E' . $beginRow . ':E' . ($fila - 1) . ')', 'options' => 'total');
+ * @return void.
+ * @access public.  
+ */
+    function setCellValueFromArray($data) {
+        $defaults = array('value' => '', 'options' => array());
+        foreach ($data as $cell => $value) {
+            if (is_array($value)) {
+                $value = array_merge($defaults, (array)$value);
+                $this->setCellValue($cell, $value['value'], $value['options']);
+            } else {
+                $this->setCellValue($cell, $value);
+            }
+        }
+    }
+
 
 /**
  * Setea un valor y opcionalmente el formato en una celda o rango.
