@@ -33,7 +33,13 @@ class PagosController extends AppController {
     );
 
 
-	function index() {
+    function index() {
+        //$this->set('monto', $this->Pago->getTotal($conditions));
+        $this->set('monto', '0');
+        return parent::index();
+    }
+
+	function index_bak() {
 
         //d($this->Paginador->generarCondicion(true, array('Liquidacion.periodo_completo')));
         if (!empty($this->data['Condicion']['Pago-origen'])) {
