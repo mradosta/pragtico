@@ -83,7 +83,7 @@ class Usuario extends AppModel {
 
 
 /**
- * Before saving must encrypt password.
+ * Before saving encrypt password.
  */
 	function beforeSave($options = array()) {
 		if (empty($this->data['Usuario']['id'])) {
@@ -109,8 +109,7 @@ class Usuario extends AppModel {
 		$MenuItems = array();
 		if ((int)$usuario['Usuario']['roles'] & 1) {
 			$MenuItems = $this->RolesUsuario->Rol->RolesMenu->Menu->findAllThreaded(array('checkSecurity'=>false), null, 'Menu.orden');
-		}
-		else {
+		} else {
 			$queryData = array(
 				'conditions'	=> array(	'Menu.estado'=> 'Activo'),
 				'checkSecurity'	=> false,
@@ -217,21 +216,6 @@ class Usuario extends AppModel {
 		return $this->save(array('Usuario'=>array('ultimo_ingreso'=>date('Y-m-d H:i:s'), 'id'=>$usuarioId)));
 	}
 
-
-/**
- * Una vez guardado, en caso de ser un nuevo registro, genero el registro en roles_usuarios, para que por lo menos,
- * el usuario tenga un rol.
- */
-	function xafterSave($created) {
-		if ($created) {
-			$save['rol_id'] = $this->data['Usuario']['rol_id'];
-			$save['usuario_id'] = $this->getLastInsertID();
-			$save['estado'] = 'Activo';
-			$this->RolesUsuario->save(array('RolesUsuario'=>$save));
-		}
-		return parent::afterSave($created);
-	}
-	
 	
 /**
  * Valida que la clave actual ingresada, sea efectivamente la clave actual correcta.
@@ -246,8 +230,7 @@ class Usuario extends AppModel {
 		$usuario = $session->read('__Usuario');
 		if ($usuario['Usuario']['clave'] === md5($valores['clave_anterior'])) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -264,14 +247,12 @@ class Usuario extends AppModel {
 	function __clave_nueva($valores, $params=array()) {
 		if (key($valores) === 'clave_nueva') {
 			$otra = $this->data['Usuario']['clave_nueva_reingreso'];
-		}
-		elseif (key($valores) === 'clave_nueva_reingreso') {
+		} elseif (key($valores) === 'clave_nueva_reingreso') {
 			$otra = $this->data['Usuario']['clave_nueva'];
 		}
 		if ($otra == $valores[key($valores)]) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}

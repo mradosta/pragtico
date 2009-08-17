@@ -29,8 +29,8 @@ $campos['Usuario.nombre_completo'] = array();
 $campos['Usuario.email'] = array('label' => 'E-Mail');
 $campos['Usuario.estado'] = array();
 if($this->action === 'add') {
-	$campos['Rol.id'] = array('type' => 'select', 'multiple' => 'checkbox', 'options' => 'listable', 'model' => 'Rol', 'displayField' => array('Rol.nombre'), 'order' => array('Rol.nombre'));
-	$campos['Grupo.id'] = array('type' => 'select', 'multiple' => 'checkbox', 'options' => 'listable', 'model' => 'Grupo', 'displayField' => array('Grupo.nombre'), 'order' => array('Grupo.nombre'));
+	$campos['Rol.id'] = array('type' => 'select', 'multiple' => 'checkbox', 'options' => 'listable', 'model' => 'Rol', 'displayField' => array('Rol.nombre'), 'order' => array('Rol.nombre'), 'label' => 'Rol');
+	$campos['Grupo.id'] = array('type' => 'select', 'multiple' => 'checkbox', 'options' => 'listable', 'model' => 'Grupo', 'displayField' => array('Grupo.nombre'), 'order' => array('Grupo.nombre'), 'label' => 'Grupo');
 }
 $fieldsets[] = array('campos' => $campos);
 
