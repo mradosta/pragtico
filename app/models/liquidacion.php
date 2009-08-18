@@ -62,6 +62,9 @@ class Liquidacion extends AppModel {
 							'Empleador' =>
                         array('className'    => 'Empleador',
                               'foreignKey'   => 'empleador_id'),
+                            'Convenio' =>
+                        array('className'    => 'Convenio',
+                              'foreignKey'   => 'convenio_categoria_convenio_id'),
 							'Factura' =>
                         array('className'    => 'Factura',
                               'foreignKey'   => 'factura_id'));
@@ -370,6 +373,8 @@ class Liquidacion extends AppModel {
 		$liquidacion['convenio_categoria_nombre'] = $this->getRelationship('ConveniosCategoria', 'nombre');
 		$liquidacion['convenio_categoria_costo'] = $this->getRelationship('ConveniosCategoria', 'costo');
 		$liquidacion['convenio_categoria_jornada'] = $this->getRelationship('ConveniosCategoria', 'jornada');
+        /** Ensure that receipt get's same group than relation */
+        $liquidacion['group_id'] = $this->getRelationship('Relacion', 'group_id');
 
 		$totales['remunerativo'] = 0;
 		$totales['no_remunerativo'] = 0;
@@ -485,11 +490,6 @@ class Liquidacion extends AppModel {
 		
 		$save['Liquidacion']			= array_merge($liquidacion, $totales);
 		$save['LiquidacionesDetalle']	= $detalle;
-		//$this->create();
-        //$save['Liquidacion']['relacion_id'] = 'asas';
-        //$save['LiquidacionesDetalle']['concepto_id'] = 'asas';
-        //$this->saveAll($save);
-        //d('xxxxxxxxx');
 		return $this->saveAll($save);
 	}
 
@@ -513,6 +513,7 @@ class Liquidacion extends AppModel {
 			$detalle['concepto_formula'] = $detalleLiquidacion['formula'] . ' ===>RES:' . $detalleLiquidacion['valor'];
 			$detalle['concepto_cantidad'] = $detalleLiquidacion['cantidad'];
 			$detalle['concepto_orden'] = $detalleLiquidacion['orden'];
+            $detalle['concepto_retencion_sindical'] = $detalleLiquidacion['retencion_sindical'];
 			$detalle['coeficiente_id'] = $detalleLiquidacion['coeficiente_id'];
 			$detalle['coeficiente_nombre'] = $detalleLiquidacion['coeficiente_nombre'];
 			$detalle['coeficiente_tipo'] = $detalleLiquidacion['coeficiente_tipo'];

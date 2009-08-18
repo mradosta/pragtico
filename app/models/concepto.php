@@ -154,61 +154,61 @@ class Concepto extends AppModel {
 		
 		
 		if (!empty($opciones['condicionAdicional'])) {
-			$condicionAdicional = " and " . $opciones['condicionAdicional'] . " ";
-		}
-		else {
-			$condicionAdicional = "";
+			$condicionAdicional = ' and ' . $opciones['condicionAdicional'] . ' ';
+		} else {
+			$condicionAdicional = '';
 		}
 		
-		$fieldsRelaciones =				array(	"RelacionesConcepto.id",
-												"RelacionesConcepto.relacion_id",
-												"RelacionesConcepto.concepto_id",
-												"RelacionesConcepto.desde",
-												"RelacionesConcepto.hasta",
+		$fieldsRelaciones =				array(	'RelacionesConcepto.id',
+												'RelacionesConcepto.relacion_id',
+												'RelacionesConcepto.concepto_id',
+												'RelacionesConcepto.desde',
+												'RelacionesConcepto.hasta',
 												"REPLACE(RelacionesConcepto.formula, '#valor_novedad:', '') AS formula");
-		$fieldsEmpleadoresConcepto =	array(	"EmpleadoresConcepto.id",
-												"EmpleadoresConcepto.empleador_id",
-												"EmpleadoresConcepto.concepto_id",
-												"EmpleadoresConcepto.desde",
-												"EmpleadoresConcepto.hasta",
-												"EmpleadoresConcepto.formula");
-		$fieldsConveniosConcepto = 		array(	"ConveniosConcepto.id",
-												"ConveniosConcepto.convenio_id",
-												"ConveniosConcepto.concepto_id",
-												"ConveniosConcepto.desde",
-												"ConveniosConcepto.hasta",
-												"ConveniosConcepto.formula");
-		$fieldsConceptos = 				array(	"Concepto.id",
-												"Concepto.codigo",
-												"Concepto.nombre",
-												"Concepto.nombre_formula",
-												"Concepto.tipo",
-												"Concepto.periodo",
-												"Concepto.imprimir",
-												"Concepto.cantidad",
-                                                "Concepto.valor_unitario",
-                                                "Concepto.compone",
-                                                "Concepto.remuneracion",
-												"Concepto.formula",
-												"Concepto.desde",
-												"Concepto.hasta",
-												"Concepto.pago",
-												"Concepto.orden");
-		$fieldCoeficientes = 			array(	"Coeficiente.id",
-												"Coeficiente.nombre",
-												"Coeficiente.tipo",
-												"Coeficiente.valor");
+		$fieldsEmpleadoresConcepto =	array(	'EmpleadoresConcepto.id',
+												'EmpleadoresConcepto.empleador_id',
+												'EmpleadoresConcepto.concepto_id',
+												'EmpleadoresConcepto.desde',
+												'EmpleadoresConcepto.hasta',
+												'EmpleadoresConcepto.formula');
+		$fieldsConveniosConcepto = 		array(	'ConveniosConcepto.id',
+												'ConveniosConcepto.convenio_id',
+												'ConveniosConcepto.concepto_id',
+												'ConveniosConcepto.desde',
+												'ConveniosConcepto.hasta',
+												'ConveniosConcepto.formula');
+		$fieldsConceptos = 				array(	'Concepto.id',
+												'Concepto.codigo',
+												'Concepto.nombre',
+												'Concepto.nombre_formula',
+												'Concepto.tipo',
+												'Concepto.periodo',
+												'Concepto.imprimir',
+												'Concepto.cantidad',
+                                                'Concepto.valor_unitario',
+                                                'Concepto.compone',
+                                                'Concepto.remuneracion',
+												'Concepto.formula',
+												'Concepto.desde',
+												'Concepto.hasta',
+												'Concepto.pago',
+												'Concepto.orden',
+                                                'Concepto.retencion_sindical');
+		$fieldCoeficientes = 			array(	'Coeficiente.id',
+												'Coeficiente.nombre',
+												'Coeficiente.tipo',
+												'Coeficiente.valor');
 		$fieldEmpleadoresCoeficiente = 	array(	"EmpleadoresCoeficiente.porcentaje");
         $fieldAreasCoeficiente = array('Area.nombre', 'AreasCoefiente.porcentaje');
 		$order 		= "ORDER BY
-								CASE Concepto.tipo WHEN 'Remunerativo' THEN 0
-									WHEN 'No Remunerativo' THEN 1
-									WHEN 'Deduccion' THEN 2
-								END";
+							CASE Concepto.tipo WHEN 'Remunerativo' THEN 0
+                                WHEN 'No Remunerativo' THEN 1
+								WHEN 'Deduccion' THEN 2
+                            END";
 
-		if ($tipo === "Relacion") {
+		if ($tipo === 'Relacion') {
 			$fields = am($fieldsRelaciones, $fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente, $fieldAreasCoeficiente);
-			$table 	= 	"relaciones_conceptos";
+			$table 	= 	'relaciones_conceptos';
 			$joins	=	array(
 							array(
 								"alias" => "EmpleadoresConcepto",
