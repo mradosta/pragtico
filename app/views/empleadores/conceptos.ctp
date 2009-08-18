@@ -21,10 +21,10 @@
 * Creo el cuerpo de la tabla.
 */
 $cuerpo = null;
-foreach ($this->data['Concepto'] as $k=>$v) {
+foreach ($this->data['Concepto'] as $v) {
 	$fila = null;
-	$fila[] = array("tipo"=>"accion", "valor"=>$appForm->link($appForm->image('asignar.gif', array('alt' => "Asignar este concepto a todos los Trabajadores", "title"=>"Asignar este concepto a todos los Trabajadores")), array("action"=>"manipular_concepto/agregar", "empleador_id"=>$this->data['Empleador']['id'], "concepto_id"=>$v['id']), array(), "Asignara este concepto a todos los trabajadores del empleador '" . $this->data['Empleador']['nombre'] . "'. Desea continuar?"));
-	$fila[] = array("tipo"=>"accion", "valor"=>$appForm->link($appForm->image('quitar.gif', array('alt' => "Asignar este concepto a todos los Trabajadores", "title"=>"Asignar este concepto a todos los Trabajadores")), array("action"=>"manipular_concepto/quitar", "empleador_id"=>$this->data['Empleador']['id'], "concepto_id"=>$v['id']), array(), "Quitara este concepto de todos los trabajadores del empleador '" . $this->data['Empleador']['nombre'] . "'. Desea continuar?"));
+	$fila[] = array('tipo' => 'accion', 'valor' => $appForm->link($appForm->image('asignar.gif', array('alt' => 'Asignar este concepto a todos los Trabajadores', 'title' => 'Asignar este concepto a todos los Trabajadores')), array('action' => 'manipular_concepto/agregar', 'empleador_id' => $this->data['Empleador']['id'], 'concepto_id' => $v['id']), array(), 'Asignara este concepto a todos los trabajadores del empleador ' . $this->data['Empleador']['nombre'] . '. Desea continuar?'));
+	$fila[] = array('tipo' => 'accion', 'valor' => $appForm->link($appForm->image('quitar.gif', array('alt' => 'Asignar este concepto a todos los Trabajadores', 'title' => 'Quitar este concepto de todos los Trabajadores')), array('action' => 'manipular_concepto/quitar', 'empleador_id' => $this->data['Empleador']['id'], 'concepto_id' => $v['id']), array(), 'Quitara este concepto de todos los trabajadores del empleador ' . $this->data['Empleador']['nombre'] . '. Desea continuar?'));
 	$fila[] = array('model' => 'EmpleadoresConcepto', 'field' => 'id', 'valor' => $v['EmpleadoresConcepto']['id'], 'write' => $v['EmpleadoresConcepto']['write'], 'delete' => $v['EmpleadoresConcepto']['delete']);
 	$fila[] = array('model' => 'EmpleadoresConcepto', 'field' => 'codigo', 'valor' => $v['codigo']);
 	$fila[] = array('model' => 'EmpleadoresConcepto', 'field' => 'nombre', 'valor' => $v['nombre']);
@@ -38,9 +38,9 @@ foreach ($this->data['Concepto'] as $k=>$v) {
 	$cuerpo[] = $fila;
 }
 
-$url[] = array('controller' => "empleadores_conceptos", 'action' => 'add', "EmpleadoresConcepto.empleador_id"=>$this->data['Empleador']['id']);
-$url[] = array('controller' => "empleadores_conceptos", 'action' => "add_rapido", "EmpleadoresConcepto.empleador_id"=>$this->data['Empleador']['id'], "texto"=>"Carga Rapida");
+$url[] = array('controller' => 'empleadores_conceptos', 'action' => 'add', 'EmpleadoresConcepto.empleador_id' => $this->data['Empleador']['id']);
+$url[] = array('controller' => 'empleadores_conceptos', 'action' => 'add_rapido', 'EmpleadoresConcepto.empleador_id' => $this->data['Empleador']['id'], 'texto' => 'Carga Rapida');
 
-echo $this->element('desgloses/agregar', array('url' => $url, 'titulo' => "Concepto", 'cuerpo' => $cuerpo));
+echo $this->element('desgloses/agregar', array('url' => $url, 'titulo' => 'Concepto', 'cuerpo' => $cuerpo));
 
 ?>
