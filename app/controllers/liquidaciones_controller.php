@@ -60,10 +60,8 @@ class LiquidacionesController extends AppController {
                     array('Liquidacion' => array('Convenio', 'Relacion', 'Trabajador', 'Empleador')));
             $this->set('data', $this->Liquidacion->LiquidacionesDetalle->find('all', array('conditions' => $conditions)));
         }
-        $this->set('options', array('title' => 'Sindicatos', 'periodo_largo' => array('M')));
+        
         $this->set('groups', $this->Util->getUserGroups());
-        //$this->render('../elements/reports/conditions');
-        //return parent::reports();
     }
 
     function resumen() {
@@ -78,13 +76,16 @@ class LiquidacionesController extends AppController {
                 $this->Session->setFlash('Debe especificar un periodo valido.', 'error');
             } else {
                 $periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
-                
-                $conditions = array('Liquidacion.estado'        => 'Confirmada',
-                                    'Liquidacion.tipo'          => $this->data['Condicion']['Liquidacion-tipo'],
+
+                $conditions = array('Liquidacion.tipo'          => $this->data['Condicion']['Liquidacion-tipo'],
                                     'Liquidacion.periodo'       => $periodo['periodo'],
                                     'Liquidacion.ano'           => $periodo['ano'],
                                     'Liquidacion.mes'           => $periodo['mes']);
                 
+                if (!empty($this->data['Condicion']['Liquidacion-estado'])) {
+                    $conditions['Liquidacion.estado'] = $this->data['Condicion']['Liquidacion-estado'];
+                }
+
                 if (!empty($this->data['Condicion']['Liquidacion-empleador_id'])) {
                     $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Liquidacion-empleador_id'];
                 }
@@ -108,7 +109,7 @@ class LiquidacionesController extends AppController {
                         'recursive'     => -1));
 
                 if (empty($workers[0]['Liquidacion']['cantidad'])) {
-                    $this->Session->setFlash('No se han encontrado liquidaciones confirmadas para el periodo seleccionado segun los criterios especificados.', 'error');
+                    $this->Session->setFlash('No se han encontrado liquidaciones segun los criterios especificados.', 'error');
                 } else {
 
                     $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
