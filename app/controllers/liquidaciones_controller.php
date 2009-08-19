@@ -114,7 +114,9 @@ class LiquidacionesController extends AppController {
 
                     $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
                     $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Util');
-                    $conditions['LiquidacionesDetalle.concepto_imprimir !='] = 'No';
+                    //$conditions['LiquidacionesDetalle.concepto_imprimir !='] = 'No';
+                    $conditions['OR'] = array('LiquidacionesDetalle.concepto_imprimir' => 'Si', array('LiquidacionesDetalle.concepto_imprimir' => 'Solo con valor', 'ABS(LiquidacionesDetalle.valor) >' => 0));
+                    
                     if ($group_option === 'worker') {
                         $r = $this->Liquidacion->LiquidacionesDetalle->find('all', array(
                                 'conditions'    => $conditions,

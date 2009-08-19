@@ -41,7 +41,7 @@ if (!empty($data)) {
 
     /** Set array with definitios values. */
     $definitions = array(   array(  'width' => 55,
-                                    'title' => ($group_option == 'worker')?'Trabajador':'Coeficiente',
+                                    'title' => ($group_option == 'worker')?'Trabajador':'Coeficiente' . ' / Concepto',
                                     'option' => null),
                             array(  'width' => 15,
                                     'title' => 'Cantidad',
