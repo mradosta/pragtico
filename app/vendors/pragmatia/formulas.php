@@ -104,6 +104,9 @@ class Formulas {
 		$this->__cellId++;
 		$formula = str_replace('\'', '"', $formula);
         $formula = str_replace('#N/E', '0', $formula);
+        $formula = str_replace('#N/A', '0', $formula);
+        $formula = str_replace('#NUM!', '0', $formula);
+        $formula = str_replace('#DIV/0!', '0', $formula);
 		$this->__objPHPExcel->getActiveSheet()->setCellValue('ZZ' . $this->__cellId, $formula);
 		return $this->__objPHPExcel->getActiveSheet()->getCell('ZZ' . $this->__cellId)->getCalculatedValue();
 	}
