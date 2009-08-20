@@ -71,11 +71,17 @@ class FormuladorComponentTestCase extends CakeTestCase {
 
     }
 
+    
 	function testInformationFuncions() {
         
-		$formula = "=if(isblank(0),'2035-12-31', 1, 2)";
+        $formula = "=if(isblank('2035-12-31'),'1', 2)";
         $result = $this->FormuladorComponentTest->resolver($formula);
-        $expected = '1';
+        $expected = '2';
+        $this->assertEqual($expected, $result);
+
+		$formula = "=if(isblank(0000-00-00),'2035-12-31', 1)";
+        $result = $this->FormuladorComponentTest->resolver($formula);
+        $expected = '2035-12-31';
         $this->assertEqual($expected, $result);
         
 		$formula = "=if(isblank(0000-00-00), 1, 2)";
@@ -87,15 +93,10 @@ class FormuladorComponentTestCase extends CakeTestCase {
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '1';
 		$this->assertEqual($expected, $result);
-
-		$formula = "=if(isblank(H23), 1, 2)";
-		$result = $this->FormuladorComponentTest->resolver($formula);
-		$expected = '1';
-		$this->assertEqual($expected, $result);
 	}
 
 	function testDivisionByZero() {
-		
+
 		$formula = "=if('mensual' = 'xxxx', 1/0, 1319)";
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '1319';
@@ -113,12 +114,12 @@ class FormuladorComponentTestCase extends CakeTestCase {
 		
 		$formula = "=if('mensual' = 'mensual', (1319.56 / 0), 1319.56)";
 		$result = $this->FormuladorComponentTest->resolver($formula);
-		$expected = '#N/A';
+		$expected = '#DIV/0!';
 		$this->assertEqual($expected, $result);
 		
 		$formula = "=1319   /    0";
 		$result = $this->FormuladorComponentTest->resolver($formula);
-		$expected = '#N/A';
+		$expected = '#DIV/0!';
 		$this->assertEqual($expected, $result);
 	}
 	
@@ -139,7 +140,7 @@ class FormuladorComponentTestCase extends CakeTestCase {
 		$expected = 'Basico';
 		$this->assertEqual($expected, $result);
 		
-		$formula = "=if('mensual'='mensual',if ('test'='test1','test','test1'),'Horas')";
+		$formula = "if('mensual'='mensual',if ('test'='test1','test','test1'),'Horas')";
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = 'test1';
 		$this->assertEqual($expected, $result);
@@ -172,12 +173,12 @@ class FormuladorComponentTestCase extends CakeTestCase {
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '6';
 		$this->assertEqual($expected, $result);
-		
+
 		$formula = "=if('2009-03-31' = '2009-03-31', 1, datedif(if('2009-03-31' > '2009-03-01', '2009-03-31'), if('2010-02-28' < '2009-03-31', '2010-02-29', '2009-03-31')))";
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '1';
 		$this->assertEqual($expected, $result);
-		
+
 		$formula = "=datedif(if('2008-02-10' > '2008-02-01', '2008-02-10'), if('2010-02-28' < '2008-02-29', '2010-02-29', '2008-02-29'))";
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '19';
@@ -188,41 +189,36 @@ class FormuladorComponentTestCase extends CakeTestCase {
 		$expected = '18';
 		$this->assertEqual($expected, $result);
 
-		$formula = '=if(and((2008-01-01 >= 2007-01-01), (2008-01-31 <= 2008-01-28)), 30, 1)';
+        $formula = '=if(and(("2008-01-01" >= "2007-01-01"), ("2008-01-31" <= "2008-01-28")), 30, 1)';
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '1';
 		$this->assertEqual($expected, $result);
-		
-		$formula = '=if(and((2008-01-01 >= 2007-01-01), (2008-01-31 <= 2009-01-28)), 30, 1)';
+
+		$formula = 'if(and((2008-01-01 >= 2007-01-01), (2008-01-31 <= 2009-01-28)), 30, 1)';
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '30';
 		$this->assertEqual($expected, $result);
-		
-		$formula = "=IF(AND(MONTH(date('2008-07-07'))>6,YEAR(date('2008-07-07'))=YEAR(date('2008-12-31');DAY(A2)>1)),INT(NETWORKDAYS(date('2008-07-07'),date('2008-12-31'))/20),IF(AND(MONTH(date('2008-07-07'))<6,YEAR(date('2008-07-07'))=YEAR(date('2008-12-31'))),14,IF((YEAR(date('2008-12-31'))-YEAR(date('2008-07-07')))<=5,14,IF((YEAR(date('2008-12-31'))-YEAR(date('2008-07-07')))<=10,21,IF((YEAR(date('2008-12-31'))-YEAR(date('2008-07-07')))<=15,28,35)))))";
-		$result = $this->FormuladorComponentTest->resolver($formula);
-		$expected = '14';
-		$this->assertEqual($expected, $result);
-		
+
 		$formula = "=date ( '2008-11-01')";
 		$result = $this->FormuladorComponentTest->resolver($formula);
-		$expected = '1225497600';
+		$expected = '39753';
 		$this->assertEqual($expected, $result);
-		
-		$formula = '=if (month(date(2008, 11, 01)) = 11, 1, 0)';
+
+        $formula = '=if (month(date(2008, 11, 01)) = 11, 1, 0)';
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '1';
 		$this->assertEqual($expected, $result);
-		
-		$formula = '=date(2007, 12, 21)';
-		$result = $this->FormuladorComponentTest->resolver($formula);
-		$expected = '1198195200';
-		$this->assertEqual($expected, $result);
+
+        $formula = 'date(2007, 12, 21)';
+        $result = $this->FormuladorComponentTest->resolver($formula);
+        $expected = '39437';
+        $this->assertEqual($expected, $result);
 
 		$formula = "=datedif ('2007-12-18', '2007-12-22')";
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '4';
 		$this->assertEqual($expected, $result);
-		
+
 		$formula = '=datedif (date(2007, 12, 18), date(2007, 12, 22), "D")';
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '4';
