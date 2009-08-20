@@ -93,16 +93,17 @@ class Formulas {
         
 		if (preg_match_all("/date\(\'?(\d\d\d\d)-(\d\d)-(\d\d)\'?\)/", $formula, $strings)) {
             foreach (array_unique($strings[0]) as $k => $string) {
-                $formula = str_replace($string, sprintf('date(%d, %d, %d)', $strings[1][$k], $strings[2][$k], $strings[3][$k]), $formula);
+                $formula = str_replace($string, sprintf('date(%s, %s, %s)', $strings[1][$k], $strings[2][$k], $strings[3][$k]), $formula);
             }
 		} elseif (preg_match_all("/\'?(?!\")(\d\d\d\d)-(\d\d)-(\d\d)\'?(?!\")/", $formula, $strings)) {
             foreach (array_unique($strings[0]) as $k => $string) {
-                $formula = str_replace($string, sprintf('"%d-%d-%d"', $strings[1][$k], $strings[2][$k], $strings[3][$k]), $formula);
+                $formula = str_replace($string, sprintf('"%s-%s-%s"', $strings[1][$k], $strings[2][$k], $strings[3][$k]), $formula);
             }
 		}
 
 		$this->__cellId++;
 		$formula = str_replace('\'', '"', $formula);
+        $formula = str_replace('#N/E', '0', $formula);
 		$this->__objPHPExcel->getActiveSheet()->setCellValue('ZZ' . $this->__cellId, $formula);
 		return $this->__objPHPExcel->getActiveSheet()->getCell('ZZ' . $this->__cellId)->getCalculatedValue();
 	}
