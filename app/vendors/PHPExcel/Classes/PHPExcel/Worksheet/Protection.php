@@ -22,12 +22,20 @@
  * @package    PHPExcel_Worksheet
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
+}
+
 /** PHPExcel_Shared_PasswordHasher */
-require_once 'PHPExcel/Shared/PasswordHasher.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/PasswordHasher.php';
 
 
 /**
@@ -220,9 +228,11 @@ class PHPExcel_Worksheet_Protection
      * Set Sheet
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_Protection
      */
     function setSheet($pValue = false) {
     	$this->_sheet = $pValue;
+    	return $this;
     }
 
     /**
@@ -238,9 +248,11 @@ class PHPExcel_Worksheet_Protection
      * Set Objects
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_Protection
      */
     function setObjects($pValue = false) {
     	$this->_objects = $pValue;
+    	return $this;
     }
 
     /**
@@ -256,9 +268,11 @@ class PHPExcel_Worksheet_Protection
      * Set Scenarios
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_Protection
      */
     function setScenarios($pValue = false) {
     	$this->_scenarios = $pValue;
+    	return $this;
     }
 
     /**
@@ -274,9 +288,11 @@ class PHPExcel_Worksheet_Protection
      * Set FormatCells
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_Protection
      */
     function setFormatCells($pValue = false) {
     	$this->_formatCells = $pValue;
+    	return $this;
     }
 
     /**
@@ -292,9 +308,11 @@ class PHPExcel_Worksheet_Protection
      * Set FormatColumns
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_Protection
      */
     function setFormatColumns($pValue = false) {
     	$this->_formatColumns = $pValue;
+    	return $this;
     }
 
     /**
@@ -310,9 +328,11 @@ class PHPExcel_Worksheet_Protection
      * Set FormatRows
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_Protection
      */
     function setFormatRows($pValue = false) {
     	$this->_formatRows = $pValue;
+    	return $this;
     }
 
     /**
@@ -328,9 +348,11 @@ class PHPExcel_Worksheet_Protection
      * Set InsertColumns
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_Protection
      */
     function setInsertColumns($pValue = false) {
     	$this->_insertColumns = $pValue;
+    	return $this;
     }
 
     /**
@@ -346,9 +368,11 @@ class PHPExcel_Worksheet_Protection
      * Set InsertRows
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_Protection
      */
     function setInsertRows($pValue = false) {
     	$this->_insertRows = $pValue;
+    	return $this;
     }
 
     /**
@@ -364,9 +388,11 @@ class PHPExcel_Worksheet_Protection
      * Set InsertHyperlinks
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_Protection
      */
     function setInsertHyperlinks($pValue = false) {
     	$this->_insertHyperlinks = $pValue;
+    	return $this;
     }
 
     /**
@@ -382,9 +408,11 @@ class PHPExcel_Worksheet_Protection
      * Set DeleteColumns
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_Protection
      */
     function setDeleteColumns($pValue = false) {
     	$this->_deleteColumns = $pValue;
+    	return $this;
     }
 
     /**
@@ -400,9 +428,11 @@ class PHPExcel_Worksheet_Protection
      * Set DeleteRows
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_Protection
      */
     function setDeleteRows($pValue = false) {
     	$this->_deleteRows = $pValue;
+    	return $this;
     }
 
     /**
@@ -418,9 +448,11 @@ class PHPExcel_Worksheet_Protection
      * Set SelectLockedCells
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_Protection
      */
     function setSelectLockedCells($pValue = false) {
     	$this->_selectLockedCells = $pValue;
+    	return $this;
     }
 
     /**
@@ -436,9 +468,11 @@ class PHPExcel_Worksheet_Protection
      * Set Sort
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_Protection
      */
     function setSort($pValue = false) {
     	$this->_sort = $pValue;
+    	return $this;
     }
 
     /**
@@ -454,9 +488,11 @@ class PHPExcel_Worksheet_Protection
      * Set AutoFilter
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_Protection
      */
     function setAutoFilter($pValue = false) {
     	$this->_autoFilter = $pValue;
+    	return $this;
     }
 
     /**
@@ -472,9 +508,11 @@ class PHPExcel_Worksheet_Protection
      * Set PivotTables
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_Protection
      */
     function setPivotTables($pValue = false) {
     	$this->_pivotTables = $pValue;
+    	return $this;
     }
 
     /**
@@ -490,9 +528,11 @@ class PHPExcel_Worksheet_Protection
      * Set SelectUnlockedCells
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_Protection
      */
     function setSelectUnlockedCells($pValue = false) {
     	$this->_selectUnlockedCells = $pValue;
+    	return $this;
     }
     
     /**
@@ -509,12 +549,14 @@ class PHPExcel_Worksheet_Protection
      *
      * @param string 	$pValue
      * @param boolean 	$pAlreadyHashed If the password has already been hashed, set this to true
+     * @return PHPExcel_Worksheet_Protection
      */
     function setPassword($pValue = '', $pAlreadyHashed = false) {
     	if (!$pAlreadyHashed) {
     		$pValue = PHPExcel_Shared_PasswordHasher::hashPassword($pValue);
     	}
 		$this->_password = $pValue;
+		return $this;
     }
 
 	/**

@@ -22,11 +22,22 @@
  * @package    PHPExcel_Shared
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
+}
+
 /** PHPExcel_Cell */
-require_once 'PHPExcel/Cell.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Cell.php';
+
+/** PHPExcel_Shared_Drawing */
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Drawing.php';
 
 /**
  * PHPExcel_Shared_Excel5
@@ -48,6 +59,9 @@ class PHPExcel_Shared_Excel5
 	*/
 	public static function sizeCol($sheet, $col = 'A')
 	{
+		// default font size of workbook
+		$fontSize = $sheet->getParent()->getDefaultStyle()->getFont()->getSize();
+
 		$columnDimensions = $sheet->getColumnDimensions();
 
 		// first find the true column width in pixels (uncollapsed and unhidden)
@@ -56,17 +70,17 @@ class PHPExcel_Shared_Excel5
 			// then we have column dimension with explicit width
 			$columnDimension = $columnDimensions[$col];
 			$width = $columnDimension->getWidth();
-			$pixelWidth = (int) ceil(7 * $width); // here we assume Arial 10
+			$pixelWidth = PHPExcel_Shared_Drawing::cellDimensionToPixels($width, $fontSize);
 
 		} else if ($sheet->getDefaultColumnDimension()->getWidth() != -1) {
 
 			// then we have default column dimension with explicit width
 			$defaultColumnDimension = $sheet->getDefaultColumnDimension();
 			$width = $defaultColumnDimension->getWidth();
-			$pixelWidth = (int) ceil(7 * $width); // here we assume Arial 10
+			$pixelWidth = PHPExcel_Shared_Drawing::cellDimensionToPixels($width, $fontSize);
 
 		} else {
-			$pixelWidth = 64; // here we assume Arial 10
+			$pixelWidth = (int) 64 * $fontSize / 11; // here we interpolate from Calibri 11
 		}
 
 		// now find the effective column width in pixels
@@ -105,10 +119,10 @@ class PHPExcel_Shared_Excel5
 			// then we have a default row dimension with explicit height
 			$defaultRowDimension = $sheet->getDefaultRowDimension();
 			$rowHeight = $defaultRowDimension->getRowHeight();
-			$pixelRowHeight = (int) ceil(4 * $rowHeight / 3); // here we assume Arial 10
+			$pixelRowHeight = PHPExcel_Shared_Drawing::pointsToPixels($rowHeight);
 
 		} else {
-			$pixelRowHeight = 17; // here we assume Arial 10
+			$pixelRowHeight = 20; // here we assume Calibri 11
 		}
 
 		// now find the effective row height in pixels

@@ -22,20 +22,17 @@
  * @package    PHPExcel
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 /** Error reporting */
 error_reporting(E_ALL);
 
-/** Include path **/
-set_include_path(get_include_path() . PATH_SEPARATOR . '../Classes/');
-
 /** PHPExcel */
-require_once 'PHPExcel.php';
+require_once dirname(__FILE__) . '/../Classes/PHPExcel.php';
 
 /** PHPExcel_RichText */
-require_once 'PHPExcel/RichText.php';
+require_once dirname(__FILE__) . '/../Classes/PHPExcel/RichText.php';
 
 // Create new PHPExcel object
 echo date('H:i:s') . " Create new PHPExcel object\n";
@@ -43,21 +40,21 @@ $objPHPExcel = new PHPExcel();
 
 // Set properties
 echo date('H:i:s') . " Set properties\n";
-$objPHPExcel->getProperties()->setCreator("Maarten Balliauw");
-$objPHPExcel->getProperties()->setLastModifiedBy("Maarten Balliauw");
-$objPHPExcel->getProperties()->setTitle("Office 2007 XLSX Test Document");
-$objPHPExcel->getProperties()->setSubject("Office 2007 XLSX Test Document");
-$objPHPExcel->getProperties()->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.");
-$objPHPExcel->getProperties()->setKeywords("office 2007 openxml php");
-$objPHPExcel->getProperties()->setCategory("Test result file");
+$objPHPExcel->getProperties()->setCreator("Maarten Balliauw")
+							 ->setLastModifiedBy("Maarten Balliauw")
+							 ->setTitle("Office 2007 XLSX Test Document")
+							 ->setSubject("Office 2007 XLSX Test Document")
+							 ->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
+							 ->setKeywords("office 2007 openxml php")
+							 ->setCategory("Test result file");
 
 
 // Create a first sheet, representing sales data
 echo date('H:i:s') . " Add some data\n";
 $objPHPExcel->setActiveSheetIndex(0);
 $objPHPExcel->getActiveSheet()->setCellValue('B1', 'Invoice');
-$objPHPExcel->getActiveSheet()->setCellValue('D1', time());
-$objPHPExcel->getActiveSheet()->getStyle('D1')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_YYYYMMDDSLASH);
+$objPHPExcel->getActiveSheet()->setCellValue('D1', PHPExcel_Shared_Date::PHPToExcel( gmmktime(0,0,0,date('m'),date('d'),date('Y')) ));
+$objPHPExcel->getActiveSheet()->getStyle('D1')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_XLSX15);
 $objPHPExcel->getActiveSheet()->setCellValue('E1', '#12566');
 
 $objPHPExcel->getActiveSheet()->setCellValue('A3', 'Product Id');
@@ -143,8 +140,7 @@ $objPHPExcel->getActiveSheet()->protectCells('A3:E13', 'PHPExcel');
 
 // Set cell number formats
 echo date('H:i:s') . " Set cell number formats\n";
-$objPHPExcel->getActiveSheet()->getStyle('E4')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_CURRENCY_EUR_SIMPLE);
-$objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle('E4'), 'E5:E13' );
+$objPHPExcel->getActiveSheet()->getStyle('E4:E13')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_CURRENCY_EUR_SIMPLE);
 
 // Set column widths
 echo date('H:i:s') . " Set column widths\n";
@@ -177,74 +173,39 @@ $objPHPExcel->getActiveSheet()->getStyle('A18')->getAlignment()->setVertical(PHP
 
 $objPHPExcel->getActiveSheet()->getStyle('B5')->getAlignment()->setShrinkToFit(true);
 
-// Set column borders
-echo date('H:i:s') . " Set column borders\n";
-$objPHPExcel->getActiveSheet()->getStyle('A4')->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('B4')->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('C4')->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('D4')->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('E4')->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+// Set thin black border outline around column
+echo date('H:i:s') . " Set thin black border outline around column\n";
+$styleThinBlackBorderOutline = array(
+	'borders' => array(
+		'outline' => array(
+			'style' => PHPExcel_Style_Border::BORDER_THIN,
+			'color' => array('argb' => 'FF000000'),
+		),
+	),
+);
+$objPHPExcel->getActiveSheet()->getStyle('A4:E10')->applyFromArray($styleThinBlackBorderOutline);
 
-$objPHPExcel->getActiveSheet()->getStyle('A11')->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('B11')->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('C11')->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('D11')->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('E11')->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
-$objPHPExcel->getActiveSheet()->getStyle('A4')->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('A5')->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('A6')->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('A7')->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('A8')->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('A9')->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('A10')->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-
-$objPHPExcel->getActiveSheet()->getStyle('E4')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('E5')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('E6')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('E7')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('E8')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('E9')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('E10')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-
-$objPHPExcel->getActiveSheet()->getStyle('D11')->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('D12')->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('D13')->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THICK);
-
-$objPHPExcel->getActiveSheet()->getStyle('E11')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('E12')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-$objPHPExcel->getActiveSheet()->getStyle('E13')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THICK);
-
-$objPHPExcel->getActiveSheet()->getStyle('D13')->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THICK);
-$objPHPExcel->getActiveSheet()->getStyle('E13')->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THICK);
-$objPHPExcel->getActiveSheet()->getStyle('D13')->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THICK);
-$objPHPExcel->getActiveSheet()->getStyle('E13')->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THICK);
-
-// Set border colors
-echo date('H:i:s') . " Set border colors\n";
-$objPHPExcel->getActiveSheet()->getStyle('D13')->getBorders()->getLeft()->getColor()->setARGB('FF993300');
-$objPHPExcel->getActiveSheet()->getStyle('D13')->getBorders()->getTop()->getColor()->setARGB('FF993300');
-$objPHPExcel->getActiveSheet()->getStyle('D13')->getBorders()->getBottom()->getColor()->setARGB('FF993300');
-$objPHPExcel->getActiveSheet()->getStyle('E13')->getBorders()->getTop()->getColor()->setARGB('FF993300');
-$objPHPExcel->getActiveSheet()->getStyle('E13')->getBorders()->getBottom()->getColor()->setARGB('FF993300');
-$objPHPExcel->getActiveSheet()->getStyle('E13')->getBorders()->getRight()->getColor()->setARGB('FF993300');
+// Set thick brown border outline around "Total"
+echo date('H:i:s') . " Set thick brown border outline around Total\n";
+$styleThickBrownBorderOutline = array(
+	'borders' => array(
+		'outline' => array(
+			'style' => PHPExcel_Style_Border::BORDER_THICK,
+			'color' => array('argb' => 'FF993300'),
+		),
+	),
+);
+$objPHPExcel->getActiveSheet()->getStyle('D13:E13')->applyFromArray($styleThickBrownBorderOutline);
 
 // Set fills
 echo date('H:i:s') . " Set fills\n";
-$objPHPExcel->getActiveSheet()->getStyle('A1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-$objPHPExcel->getActiveSheet()->getStyle('A1')->getFill()->getStartColor()->setARGB('FF808080');
-$objPHPExcel->getActiveSheet()->getStyle('B1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-$objPHPExcel->getActiveSheet()->getStyle('B1')->getFill()->getStartColor()->setARGB('FF808080');
-$objPHPExcel->getActiveSheet()->getStyle('C1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-$objPHPExcel->getActiveSheet()->getStyle('C1')->getFill()->getStartColor()->setARGB('FF808080');
-$objPHPExcel->getActiveSheet()->getStyle('D1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-$objPHPExcel->getActiveSheet()->getStyle('D1')->getFill()->getStartColor()->setARGB('FF808080');
-$objPHPExcel->getActiveSheet()->getStyle('E1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-$objPHPExcel->getActiveSheet()->getStyle('E1')->getFill()->getStartColor()->setARGB('FF808080');
+$objPHPExcel->getActiveSheet()->getStyle('A1:E1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+$objPHPExcel->getActiveSheet()->getStyle('A1:E1')->getFill()->getStartColor()->setARGB('FF808080');
 
 // Set style for header row using alternative method
 echo date('H:i:s') . " Set style for header row using alternative method\n";
-$objPHPExcel->getActiveSheet()->duplicateStyleArray(
+$objPHPExcel->getActiveSheet()->getStyle('A3:E3')->applyFromArray(
 		array(
 			'font'    => array(
 				'bold'      => true
@@ -267,8 +228,7 @@ $objPHPExcel->getActiveSheet()->duplicateStyleArray(
 	 				'argb' => 'FFFFFFFF'
 	 			)
 	 		)
-		),
-		'A3:E3'
+		)
 );
 		
 $objPHPExcel->getActiveSheet()->getStyle('A3')->applyFromArray(
@@ -348,7 +308,7 @@ $objDrawing->setDescription('PHPExcel logo');
 $objDrawing->setPath('./images/phpexcel_logo.gif');
 $objDrawing->setHeight(36);
 $objDrawing->setCoordinates('D24');
-$objDrawing->setOffsetX(-10);
+$objDrawing->setOffsetX(10);
 $objDrawing->setWorksheet($objPHPExcel->getActiveSheet());
 
 // Play around with inserting and removing rows and columns
@@ -391,10 +351,7 @@ $objPHPExcel->getActiveSheet()->setCellValue('A6', $sLloremIpsum);
 
 // Set alignments
 echo date('H:i:s') . " Set alignments\n";
-$objPHPExcel->getActiveSheet()->getStyle('A3')->getAlignment()->setWrapText(true);
-$objPHPExcel->getActiveSheet()->getStyle('A4')->getAlignment()->setWrapText(true);
-$objPHPExcel->getActiveSheet()->getStyle('A5')->getAlignment()->setWrapText(true);
-$objPHPExcel->getActiveSheet()->getStyle('A6')->getAlignment()->setWrapText(true);
+$objPHPExcel->getActiveSheet()->getStyle('A3:A6')->getAlignment()->setWrapText(true);
 
 // Set column widths
 echo date('H:i:s') . " Set column widths\n";
@@ -407,10 +364,7 @@ $objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
 $objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
 $objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setUnderline(PHPExcel_Style_Font::UNDERLINE_SINGLE);
 
-$objPHPExcel->getActiveSheet()->getStyle('A3')->getFont()->setSize(8);
-$objPHPExcel->getActiveSheet()->getStyle('A4')->getFont()->setSize(8);
-$objPHPExcel->getActiveSheet()->getStyle('A5')->getFont()->setSize(8);
-$objPHPExcel->getActiveSheet()->getStyle('A6')->getFont()->setSize(8);
+$objPHPExcel->getActiveSheet()->getStyle('A3:A6')->getFont()->setSize(8);
 
 // Add a drawing to the worksheet
 echo date('H:i:s') . " Add a drawing to the worksheet\n";

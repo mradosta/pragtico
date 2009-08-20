@@ -22,12 +22,20 @@
  * @package    PHPExcel_Worksheet
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
+}
+
 /** PHPExcel_Worksheet_HeaderFooterDrawing */
-require_once 'PHPExcel/Worksheet/HeaderFooterDrawing.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Worksheet/HeaderFooterDrawing.php';
 
 
 /**
@@ -216,9 +224,11 @@ class PHPExcel_Worksheet_HeaderFooter
      * Set OddHeader
      *
      * @param string $pValue
+     * @return PHPExcel_Worksheet_HeaderFooter
      */
     public function setOddHeader($pValue) {
     	$this->_oddHeader = $pValue;
+    	return $this;
     }
     
     /**
@@ -234,9 +244,11 @@ class PHPExcel_Worksheet_HeaderFooter
      * Set OddFooter
      *
      * @param string $pValue
+     * @return PHPExcel_Worksheet_HeaderFooter
      */
     public function setOddFooter($pValue) {
     	$this->_oddFooter = $pValue;
+    	return $this;
     }
     
     /**
@@ -252,9 +264,11 @@ class PHPExcel_Worksheet_HeaderFooter
      * Set EvenHeader
      *
      * @param string $pValue
+     * @return PHPExcel_Worksheet_HeaderFooter
      */
     public function setEvenHeader($pValue) {
     	$this->_evenHeader = $pValue;
+    	return $this;
     }
     
     /**
@@ -270,9 +284,11 @@ class PHPExcel_Worksheet_HeaderFooter
      * Set EvenFooter
      *
      * @param string $pValue
+     * @return PHPExcel_Worksheet_HeaderFooter
      */
     public function setEvenFooter($pValue) {
     	$this->_evenFooter = $pValue;
+    	return $this;
     }
     
     /**
@@ -288,9 +304,11 @@ class PHPExcel_Worksheet_HeaderFooter
      * Set FirstHeader
      *
      * @param string $pValue
+     * @return PHPExcel_Worksheet_HeaderFooter
      */
     public function setFirstHeader($pValue) {
     	$this->_firstHeader = $pValue;
+    	return $this;
     }
     
     /**
@@ -306,9 +324,11 @@ class PHPExcel_Worksheet_HeaderFooter
      * Set FirstFooter
      *
      * @param string $pValue
+     * @return PHPExcel_Worksheet_HeaderFooter
      */
     public function setFirstFooter($pValue) {
     	$this->_firstFooter = $pValue;
+    	return $this;
     }
     
     /**
@@ -324,9 +344,11 @@ class PHPExcel_Worksheet_HeaderFooter
      * Set DifferentOddEven
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_HeaderFooter
      */
     public function setDifferentOddEven($pValue = false) {
     	$this->_differentOddEven = $pValue;
+    	return $this;
     }
     
     /**
@@ -342,9 +364,11 @@ class PHPExcel_Worksheet_HeaderFooter
      * Set DifferentFirst
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_HeaderFooter
      */
     public function setDifferentFirst($pValue = false) {
     	$this->_differentFirst = $pValue;
+    	return $this;
     }
     
     /**
@@ -360,9 +384,11 @@ class PHPExcel_Worksheet_HeaderFooter
      * Set ScaleWithDocument
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_HeaderFooter
      */
     public function setScaleWithDocument($pValue = true) {
     	$this->_scaleWithDocument = $pValue;
+    	return $this;
     }
     
     /**
@@ -378,9 +404,11 @@ class PHPExcel_Worksheet_HeaderFooter
      * Set AlignWithMargins
      *
      * @param boolean $pValue
+     * @return PHPExcel_Worksheet_HeaderFooter
      */
     public function setAlignWithMargins($pValue = true) {
     	$this->_alignWithMargins = $pValue;
+    	return $this;
     }
     
     /**
@@ -389,9 +417,11 @@ class PHPExcel_Worksheet_HeaderFooter
      * @param PHPExcel_Worksheet_HeaderFooterDrawing $image
      * @param string $location
      * @throws Exception
+     * @return PHPExcel_Worksheet_HeaderFooter
      */
     public function addImage(PHPExcel_Worksheet_HeaderFooterDrawing $image = null, $location = self::IMAGE_HEADER_LEFT) {
     	$this->_headerFooterImages[$location] = $image;
+    	return $this;
     }
     
     /**
@@ -399,11 +429,13 @@ class PHPExcel_Worksheet_HeaderFooter
      *
      * @param string $location
      * @throws Exception
+     * @return PHPExcel_Worksheet_HeaderFooter
      */
     public function removeImage($location = self::IMAGE_HEADER_LEFT) {
     	if (isset($this->_headerFooterImages[$location])) {
     		unset($this->_headerFooterImages[$location]);
     	}
+    	return $this;
     }
     
     /**
@@ -411,6 +443,7 @@ class PHPExcel_Worksheet_HeaderFooter
      *
      * @param PHPExcel_Worksheet_HeaderFooterDrawing[] $images
      * @throws Exception
+     * @return PHPExcel_Worksheet_HeaderFooter
      */
     public function setImages($images) {
     	if (!is_array($images)) {
@@ -418,6 +451,7 @@ class PHPExcel_Worksheet_HeaderFooter
     	}
     	
     	$this->_headerFooterImages = $images;
+    	return $this;
     }
     
     /**

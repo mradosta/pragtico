@@ -2,7 +2,7 @@
 /**
  * PHPExcel
  *
- * Copyright (c) 2006 - 2008 PHPExcel
+ * Copyright (c) 2006 - 2009 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,14 +20,22 @@
  *
  * @category   PHPExcel
  * @package    PHPExcel_Shared_Best_Fit
- * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
-include_once('PHPExcel/Shared/trend/bestFitClass.php');
-include_once('PHPExcel/Shared/JAMA/Matrix.php');
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../../');
+}
+
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/trend/bestFitClass.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/JAMA/Matrix.php';
 
 
 /**
@@ -35,7 +43,7 @@ include_once('PHPExcel/Shared/JAMA/Matrix.php');
  *
  * @category   PHPExcel
  * @package    PHPExcel_Shared_Best_Fit
- * @copyright  Copyright (c) 2006 - 2008 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
 class PHPExcel_Polynomial_Best_Fit extends PHPExcel_Best_Fit
 {
@@ -123,7 +131,7 @@ class PHPExcel_Polynomial_Best_Fit extends PHPExcel_Best_Fit
 				$A[$i][$j] = pow($xValues[$i], $j);
 			}
 		}
-		for ($i=0; $i < $this->_valueCount; $i++) {
+		for ($i=0; $i < $this->_valueCount; ++$i) {
 			$B[$i] = array($yValues[$i]);
 		}
 		$matrixA = new Matrix($A);

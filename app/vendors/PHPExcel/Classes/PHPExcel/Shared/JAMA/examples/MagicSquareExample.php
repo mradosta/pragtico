@@ -1,12 +1,12 @@
 <?php
-/** 
+/**
 * @package JAMA
 */
 
 require_once "../Matrix.php";
 
-/** 
-* Example of use of Matrix Class, featuring magic squares. 
+/**
+* Example of use of Matrix Class, featuring magic squares.
 */
 class MagicSquareExample {
 
@@ -15,38 +15,38 @@ class MagicSquareExample {
   * @param int n dimension of matrix
   */
   function magic($n) {
-    
-    // Odd order    
-    
-    if (($n % 2) == 1) {    
+
+    // Odd order
+
+    if (($n % 2) == 1) {
       $a = ($n+1)/2;
       $b = ($n+1);
-      for ($j = 0; $j < $n; $j++) 
-        for ($i = 0; $i < $n; $i++) 
+      for ($j = 0; $j < $n; ++$j)
+        for ($i = 0; $i < $n; ++$i)
           $M[$i][$j] = $n*(($i+$j+$a) % $n) + (($i+2*$j+$b) % $n) + 1;
-    
+
     // Doubly Even Order
-    
+
     } else if (($n % 4) == 0) {
-      for ($j = 0; $j < $n; $j++) {
-        for ($i = 0; $i < $n; $i++) {
-          if ((($i+1)/2)%2 == (($j+1)/2)%2) 
+      for ($j = 0; $j < $n; ++$j) {
+        for ($i = 0; $i < $n; ++$i) {
+          if ((($i+1)/2)%2 == (($j+1)/2)%2)
             $M[$i][$j] = $n*$n-$n*$i-$j;
-          else 
+          else
             $M[$i][$j] = $n*$i+$j+1;
         }
-      }    
-      
-    // Singly Even Order      
+      }
 
-    } else {                 
+    // Singly Even Order
 
-      $p = $n/2;  
-      $k = ($n-2)/4;  
+    } else {
+
+      $p = $n/2;
+      $k = ($n-2)/4;
       $A = $this->magic($p);
       $M = array();
-      for ($j = 0; $j < $p; $j++) {
-        for ($i = 0; $i < $p; $i++) {
+      for ($j = 0; $j < $p; ++$j) {
+        for ($i = 0; $i < $p; ++$i) {
           $aij = $A->get($i,$j);
           $M[$i][$j]       = $aij;
           $M[$i][$j+$p]    = $aij + 2*$p*$p;
@@ -55,24 +55,24 @@ class MagicSquareExample {
         }
       }
 
-      for ($i = 0; $i < $p; $i++) {
-        for ($j = 0; $j < $k; $j++) { 
-          $t = $M[$i][$j]; 
-          $M[$i][$j] = $M[$i+$p][$j]; 
+      for ($i = 0; $i < $p; ++$i) {
+        for ($j = 0; $j < $k; ++$j) {
+          $t = $M[$i][$j];
+          $M[$i][$j] = $M[$i+$p][$j];
           $M[$i+$p][$j] = $t;
         }
-        for ($j = $n-$k+1; $j < $n; $j++) {
-          $t = $M[$i][$j]; 
-          $M[$i][$j] = $M[$i+$p][$j]; 
+        for ($j = $n-$k+1; $j < $n; ++$j) {
+          $t = $M[$i][$j];
+          $M[$i][$j] = $M[$i+$p][$j];
           $M[$i+$p][$j] = $t;
         }
       }
-      
+
       $t = $M[$k][0];  $M[$k][0]  = $M[$k+$p][0];  $M[$k+$p][0]  = $t;
       $t = $M[$k][$k]; $M[$k][$k] = $M[$k+$p][$k]; $M[$k+$p][$k] = $t;
-    
+
     }
-    
+
     return new Matrix($M);
 
   }
@@ -80,12 +80,12 @@ class MagicSquareExample {
   /**
   * Simple function to replicate PHP 5 behaviour
   */
-  function microtime_float() { 
-    list($usec, $sec) = explode(" ", microtime()); 
-    return ((float)$usec + (float)$sec); 
-  } 
+  function microtime_float() {
+    list($usec, $sec) = explode(" ", microtime());
+    return ((float)$usec + (float)$sec);
+  }
 
-  /** 
+  /**
   * Tests LU, QR, SVD and symmetric Eig decompositions.
   *
   *   n       = order of magic square.
@@ -100,58 +100,57 @@ class MagicSquareExample {
   function main() {
     ?>
     <p>Test of Matrix Class, using magic squares.</p>
-    <p>See MagicSquareExample.main() for an explanation.</p>          
+    <p>See MagicSquareExample.main() for an explanation.</p>
     <table border='1' cellspacing='0' cellpadding='4'>
       <tr>
-        <th>n</th>     
-        <th>trace</th>       
-        <th>max_eig</th>   
-        <th>rank</th>        
-        <th>cond</th>      
-        <th>lu_res</th>           
+        <th>n</th>
+        <th>trace</th>
+        <th>max_eig</th>
+        <th>rank</th>
+        <th>cond</th>
+        <th>lu_res</th>
         <th>qr_res</th>
       </tr>
       <?php
-      $start_time = $this->microtime_float();       
+      $start_time = $this->microtime_float();
       $eps = pow(2.0,-52.0);
-      for ($n = 3; $n <= 6; $n++) {
-        
-        echo "<tr>";        
-        
-        echo "<td align='right'>$n</td>";        
+      for ($n = 3; $n <= 6; ++$n) {
+        echo "<tr>";
+
+        echo "<td align='right'>$n</td>";
 
         $M = $this->magic($n);
-        $t = (int) $M->trace();                 
-        
-        echo "<td align='right'>$t</td>";  
-        
+        $t = (int) $M->trace();
+
+        echo "<td align='right'>$t</td>";
+
         $O = $M->plus($M->transpose());
-        $E = new EigenvalueDecomposition($O->times(0.5));       
+        $E = new EigenvalueDecomposition($O->times(0.5));
         $d = $E->getRealEigenvalues();
-        
+
         echo "<td align='right'>".$d[$n-1]."</td>";
-        
+
         $r = $M->rank();
-        
-        echo "<td align='right'>".$r."</td>";        
-        
+
+        echo "<td align='right'>".$r."</td>";
+
         $c = $M->cond();
-        
-        if ($c < 1/$eps) 
-          echo "<td align='right'>".sprintf("%.3f",$c)."</td>";                
-        else           
-          echo "<td align='right'>Inf</td>";                        
+
+        if ($c < 1/$eps)
+          echo "<td align='right'>".sprintf("%.3f",$c)."</td>";
+        else
+          echo "<td align='right'>Inf</td>";
 
         $LU = new LUDecomposition($M);
         $L = $LU->getL();
         $U = $LU->getU();
         $p = $LU->getPivot();
-        // Java version: R = L.times(U).minus(M.getMatrix(p,0,n-1));                
-        $S = $L->times($U);        
-        $R = $S->minus($M->getMatrix($p,0,$n-1));                
+        // Java version: R = L.times(U).minus(M.getMatrix(p,0,n-1));
+        $S = $L->times($U);
+        $R = $S->minus($M->getMatrix($p,0,$n-1));
         $res = $R->norm1()/($n*$eps);
-        
-        echo "<td align='right'>".sprintf("%.3f",$res)."</td>";                
+
+        echo "<td align='right'>".sprintf("%.3f",$res)."</td>";
 
         $QR = new QRDecomposition($M);
         $Q = $QR->getQ();
@@ -159,16 +158,16 @@ class MagicSquareExample {
         $S = $Q->times($R);
         $R = $S->minus($M);
         $res = $R->norm1()/($n*$eps);
-        
-        echo "<td align='right'>".sprintf("%.3f",$res)."</td>";                         
-        
-        echo "</tr>";        
-     
+
+        echo "<td align='right'>".sprintf("%.3f",$res)."</td>";
+
+        echo "</tr>";
+
      }
-     echo "<table>";     
+     echo "<table>";
      echo "<br />";
 
-     $stop_time = $this->microtime_float();       
+     $stop_time = $this->microtime_float();
      $etime = $stop_time - $start_time;
 
      echo "<p>Elapsed time is ". sprintf("%.4f",$etime) ." seconds.</p>";

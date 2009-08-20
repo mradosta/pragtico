@@ -22,24 +22,20 @@
  * @package    PHPExcel
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 error_reporting(E_ALL);
 
-/** Include path **/
-set_include_path(get_include_path() . PATH_SEPARATOR . '../Classes/');
-
 /** PHPExcel_IOFactory */
-include 'PHPExcel/IOFactory.php';
+require_once '../Classes/PHPExcel/IOFactory.php';
 
 if (!file_exists("05featuredemo.xlsx")) {
 	exit("Please run 05featuredemo.php first.\n");
 }
 
 echo date('H:i:s') . " Load from Excel2007 file\n";
-$objReader = PHPExcel_IOFactory::createReader('Excel2007');
-$objPHPExcel = $objReader->load("05featuredemo.xlsx");
+$objPHPExcel = PHPExcel_IOFactory::load("05featuredemo.xlsx");
 
 echo date('H:i:s') . " Write to Excel2007 format\n";
 $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');

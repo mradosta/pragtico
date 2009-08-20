@@ -22,7 +22,7 @@
  * @package    PHPExcel_Reader
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
@@ -35,6 +35,14 @@
  */
 interface PHPExcel_Reader_IReader
 {
+	/**
+	 * Can the current PHPExcel_Reader_IReader read the file?
+	 *
+	 * @param 	string 		$pFileName
+	 * @return 	boolean
+	 */	
+	public function canRead($pFilename);
+	
 	/**
 	 * Loads PHPExcel from file
 	 *

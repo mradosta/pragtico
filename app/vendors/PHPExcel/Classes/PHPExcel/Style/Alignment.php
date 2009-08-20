@@ -22,12 +22,20 @@
  * @package    PHPExcel_Style
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
+}
+
 /** PHPExcel_IComparable */
-require_once 'PHPExcel/IComparable.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/IComparable.php';
 
 
 /**
@@ -44,6 +52,7 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
 	const HORIZONTAL_LEFT					= 'left';
 	const HORIZONTAL_RIGHT					= 'right';
 	const HORIZONTAL_CENTER					= 'center';
+	const HORIZONTAL_CENTER_CONTINUOUS		= 'centerContinuous';
 	const HORIZONTAL_JUSTIFY				= 'justify';
 	
 	/* Vertical alignment styles */
@@ -95,25 +104,34 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
 	private $_indent;
 	
 	/**
-	 * Parent Style
-	 *
-	 * @var PHPExcel_Style
-	 */
-	 
-	private $_parent;
-	
-	/**
 	 * Parent Borders
 	 *
 	 * @var _parentPropertyName string
 	 */
 	private $_parentPropertyName;
-		
+
+	/**
+	 * Supervisor?
+	 *
+	 * @var boolean
+	 */
+	private $_isSupervisor;
+
+	/**
+	 * Parent. Only used for supervisor
+	 *
+	 * @var PHPExcel_Style
+	 */
+	private $_parent;
+
     /**
      * Create a new PHPExcel_Style_Alignment
      */
-    public function __construct()
+    public function __construct($isSupervisor = false)
     {
+    	// Supervisor?
+		$this->_isSupervisor = $isSupervisor;
+
     	// Initialise values
     	$this->_horizontal			= PHPExcel_Style_Alignment::HORIZONTAL_GENERAL;
     	$this->_vertical			= PHPExcel_Style_Alignment::VERTICAL_BOTTOM;
@@ -124,58 +142,81 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
     }
 
 	/**
-	 * Property Prepare bind
+	 * Bind parent. Only used for supervisor
 	 *
-	 * Configures this object for late binding as a property of a parent object
-	 *	 
-	 * @param $parent
-	 * @param $parentPropertyName
+	 * @param PHPExcel $parent
+	 * @return PHPExcel_Style_Alignment
 	 */
-	public function propertyPrepareBind($parent, $parentPropertyName)
+	public function bindParent($parent)
 	{
-		// Initialize parent PHPExcel_Style for late binding. This relationship purposely ends immediately when this object
-		// is bound to the PHPExcel_Style object pointed to so as to prevent circular references.
-		$this->_parent				= $parent;
-		$this->_parentPropertyName	= $parentPropertyName;
-	}
-	
-    /**
-     * Property Get Bound
-     *
-     * Returns the PHPExcel_Style_Alignment that is actual bound to PHPExcel_Style
-	 *
-	 * @return PHPExcel_Style_Alignment
-     */
-	private function propertyGetBound() {
-		if(!isset($this->_parent))
-			return $this;																// I am bound
-
-		if($this->_parent->propertyIsBound($this->_parentPropertyName))
-			return $this->_parent->getAlignment();										// Another one is bound
-
-		return $this;																	// No one is bound yet
-	}
-	
-    /**
-     * Property Begin Bind
-     *
-     * If no PHPExcel_Style_Alignment has been bound to PHPExcel_Style then bind this one. Return the actual bound one.
-	 *
-	 * @return PHPExcel_Style_Alignment
-     */
-	private function propertyBeginBind() {
-		if(!isset($this->_parent))
-			return $this;																// I am already bound
-
-		if($this->_parent->propertyIsBound($this->_parentPropertyName))
-			return $this->_parent->getAlignment();										// Another one is already bound
-			
-		$this->_parent->propertyCompleteBind($this, $this->_parentPropertyName);		// Bind myself
-		$this->_parent = null;
-		
+		$this->_parent = $parent;
 		return $this;
 	}
-	
+
+	/**
+	 * Is this a supervisor or a real style component?
+	 *
+	 * @return boolean
+	 */
+	public function getIsSupervisor()
+	{
+		return $this->_isSupervisor;
+	}
+
+	/**
+	 * Get the shared style component for the currently active cell in currently active sheet.
+	 * Only used for style supervisor
+	 *
+	 * @return PHPExcel_Style_Alignment
+	 */
+	public function getSharedComponent()
+	{
+		return $this->_parent->getSharedComponent()->getAlignment();
+	}
+
+	/**
+	 * Get the currently active sheet. Only used for supervisor
+	 *
+	 * @return PHPExcel_Worksheet
+	 */
+	public function getActiveSheet()
+	{
+		return $this->_parent->getActiveSheet();
+	}
+
+	/**
+	 * Get the currently active cell coordinate in currently active sheet.
+	 * Only used for supervisor
+	 *
+	 * @return string E.g. 'A1'
+	 */
+	public function getXSelectedCells()
+	{
+		return $this->getActiveSheet()->getXSelectedCells();
+	}
+
+	/**
+	 * Get the currently active cell coordinate in currently active sheet.
+	 * Only used for supervisor
+	 *
+	 * @return string E.g. 'A1'
+	 */
+	public function getXActiveCell()
+	{
+		return $this->getActiveSheet()->getXActiveCell();
+	}
+
+	/**
+	 * Build style array from subcomponents
+	 *
+	 * @param array $array
+	 * @return array
+	 */
+	public function getStyleArray($array)
+	{
+		return array('alignment' => $array);
+	}
+
     /**
      * Apply styles from array
      * 
@@ -192,31 +233,37 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
      * 
      * @param	array	$pStyles	Array containing style information
      * @throws	Exception
+     * @return PHPExcel_Style_Alignment
      */
-    public function applyFromArray($pStyles = null) {
-        if (is_array($pStyles)) {
-        	if (array_key_exists('horizontal', $pStyles)) {
-    			$this->setHorizontal($pStyles['horizontal']);
-    		}
-        	if (array_key_exists('vertical', $pStyles)) {
-    			$this->setVertical($pStyles['vertical']);
-    		}
-        	if (array_key_exists('rotation', $pStyles)) {
-    			$this->setTextRotation($pStyles['rotation']);
-    		}
-        	if (array_key_exists('wrap', $pStyles)) {
-    			$this->setWrapText($pStyles['wrap']);
-    		}
-        	if (array_key_exists('shrinkToFit', $pStyles)) {
-    			$this->setShrinkToFit($pStyles['shrinkToFit']);
-    		}
-        	if (array_key_exists('indent', $pStyles)) {
-    			$this->setIndent($pStyles['indent']);
-    		}
-    	} else {
-    		throw new Exception("Invalid style array passed.");
-    	}
-    }
+	public function applyFromArray($pStyles = null) {
+		if (is_array($pStyles)) {
+			if ($this->_isSupervisor) {
+				$this->getActiveSheet()->getStyle($this->getXSelectedCells())->applyFromArray($this->getStyleArray($pStyles));
+			} else {
+				if (array_key_exists('horizontal', $pStyles)) {
+					$this->setHorizontal($pStyles['horizontal']);
+				}
+				if (array_key_exists('vertical', $pStyles)) {
+					$this->setVertical($pStyles['vertical']);
+				}
+				if (array_key_exists('rotation', $pStyles)) {
+					$this->setTextRotation($pStyles['rotation']);
+				}
+				if (array_key_exists('wrap', $pStyles)) {
+					$this->setWrapText($pStyles['wrap']);
+				}
+				if (array_key_exists('shrinkToFit', $pStyles)) {
+					$this->setShrinkToFit($pStyles['shrinkToFit']);
+				}
+				if (array_key_exists('indent', $pStyles)) {
+					$this->setIndent($pStyles['indent']);
+				}
+			}
+		} else {
+			throw new Exception("Invalid style array passed.");
+		}
+		return $this;
+	}
     
     /**
      * Get Horizontal
@@ -224,19 +271,31 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
      * @return string
      */
     public function getHorizontal() {
-    	return $this->propertyGetBound()->_horizontal;
+		if ($this->_isSupervisor) {
+			return $this->getSharedComponent()->getHorizontal();
+		}
+    	return $this->_horizontal;
     }
     
     /**
      * Set Horizontal
      *
      * @param string $pValue
+     * @return PHPExcel_Style_Alignment
      */
     public function setHorizontal($pValue = PHPExcel_Style_Alignment::HORIZONTAL_GENERAL) {
         if ($pValue == '') {
     		$pValue = PHPExcel_Style_Alignment::HORIZONTAL_GENERAL;
     	}
-    	$this->propertyBeginBind()->_horizontal = $pValue;
+		
+		if ($this->_isSupervisor) {
+			$styleArray = $this->getStyleArray(array('horizontal' => $pValue));
+			$this->getActiveSheet()->getStyle($this->getXSelectedCells())->applyFromArray($styleArray);
+		}
+		else {
+			$this->_horizontal = $pValue;
+		}
+		return $this;
     }
     
     /**
@@ -245,19 +304,30 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
      * @return string
      */
     public function getVertical() {
-    	return $this->propertyGetBound()->_vertical;
+		if ($this->_isSupervisor) {
+			return $this->getSharedComponent()->getVertical();
+		}
+    	return $this->_vertical;
     }
     
     /**
      * Set Vertical
      *
      * @param string $pValue
+     * @return PHPExcel_Style_Alignment
      */
     public function setVertical($pValue = PHPExcel_Style_Alignment::VERTICAL_BOTTOM) {
     	if ($pValue == '') {
     		$pValue = PHPExcel_Style_Alignment::VERTICAL_BOTTOM;
     	}
-    	$this->propertyBeginBind()->_vertical = $pValue;
+		
+		if ($this->_isSupervisor) {
+			$styleArray = $this->getStyleArray(array('vertical' => $pValue));
+			$this->getActiveSheet()->getStyle($this->getXSelectedCells())->applyFromArray($styleArray);
+		} else {
+			$this->_vertical = $pValue;
+		}
+		return $this;
     }
     
     /**
@@ -266,7 +336,10 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
      * @return int
      */
     public function getTextRotation() {
-    	return $this->propertyGetBound()->_textRotation;
+		if ($this->_isSupervisor) {
+			return $this->getSharedComponent()->getTextRotation();
+		}
+    	return $this->_textRotation;
     }
     
     /**
@@ -274,19 +347,27 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
      *
      * @param int $pValue
      * @throws Exception
+     * @return PHPExcel_Style_Alignment
      */
     public function setTextRotation($pValue = 0) {
-	// Excel2007 value 255 => PHPExcel value -165
+		// Excel2007 value 255 => PHPExcel value -165
     	if ($pValue == 255) {
     		$pValue = -165;
     	}
 
-	// Set rotation
+		// Set rotation
     	if ( ($pValue >= -90 && $pValue <= 90) || $pValue == -165 ) {
-    		$this->propertyBeginBind()->_textRotation = $pValue;
+			if ($this->_isSupervisor) {
+				$styleArray = $this->getStyleArray(array('rotation' => $pValue));
+				$this->getActiveSheet()->getStyle($this->getXSelectedCells())->applyFromArray($styleArray);
+			} else {
+				$this->_textRotation = $pValue;
+			}
     	} else {
     		throw new Exception("Text rotation should be a value between -90 and 90.");
     	}
+    	
+    	return $this;
     }
     
     /**
@@ -295,19 +376,29 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
      * @return boolean
      */
     public function getWrapText() {
-    	return $this->propertyGetBound()->_wrapText;
+		if ($this->_isSupervisor) {
+			return $this->getSharedComponent()->getWrapText();
+		}
+    	return $this->_wrapText;
     }
     
     /**
      * Set Wrap Text
      *
      * @param boolean $pValue
+     * @return PHPExcel_Style_Alignment
      */
     public function setWrapText($pValue = false) {
     	if ($pValue == '') {
     		$pValue = false;
     	}
-    	$this->propertyBeginBind()->_wrapText = $pValue;
+		if ($this->_isSupervisor) {
+			$styleArray = $this->getStyleArray(array('wrap' => $pValue));
+			$this->getActiveSheet()->getStyle($this->getXSelectedCells())->applyFromArray($styleArray);
+		} else {
+			$this->_wrapText = $pValue;
+		}
+		return $this;
     }
 	
     /**
@@ -316,19 +407,29 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
      * @return boolean
      */
     public function getShrinkToFit() {
-    	return $this->propertyGetBound()->_shrinkToFit;
+		if ($this->_isSupervisor) {
+			return $this->getSharedComponent()->getShrinkToFit();
+		}
+    	return $this->_shrinkToFit;
     }
     
     /**
      * Set Shrink to fit
      *
      * @param boolean $pValue
+     * @return PHPExcel_Style_Alignment
      */
     public function setShrinkToFit($pValue = false) {
     	if ($pValue == '') {
     		$pValue = false;
     	}
-    	$this->propertyBeginBind()->_shrinkToFit = $pValue;
+		if ($this->_isSupervisor) {
+			$styleArray = $this->getStyleArray(array('shrinkToFit' => $pValue));
+			$this->getActiveSheet()->getStyle($this->getXSelectedCells())->applyFromArray($styleArray);
+		} else {
+			$this->_shrinkToFit = $pValue;
+		}
+		return $this;
     }
 
     /**
@@ -337,13 +438,17 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
      * @return int
      */
     public function getIndent() {
-    	return $this->propertyGetBound()->_indent;
+		if ($this->_isSupervisor) {
+			return $this->getSharedComponent()->getIndent();
+		}
+    	return $this->_indent;
     }
     
     /**
      * Set indent
      *
      * @param int $pValue
+     * @return PHPExcel_Style_Alignment
      */
     public function setIndent($pValue = 0) {
 		if ($pValue > 0) {
@@ -351,8 +456,13 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
 				$pValue = 0; // indent not supported
 			}
 		}
-		
-		$this->propertyBeginBind()->_indent = $pValue;
+		if ($this->_isSupervisor) {
+			$styleArray = $this->getStyleArray(array('indent' => $pValue));
+			$this->getActiveSheet()->getStyle($this->getXSelectedCells())->applyFromArray($styleArray);
+		} else {
+			$this->_indent = $pValue;
+		}
+		return $this;
     }
 	
 	/**
@@ -361,14 +471,16 @@ class PHPExcel_Style_Alignment implements PHPExcel_IComparable
 	 * @return string	Hash code
 	 */	
 	public function getHashCode() {
-		$property = $this->propertyGetBound();
+		if ($this->_isSupervisor) {
+			return $this->getSharedComponent()->getHashCode();
+		}
     	return md5(
-    		  $property->_horizontal
-    		. $property->_vertical
-    		. $property->_textRotation
-    		. ($property->_wrapText ? 't' : 'f')
-    		. ($property->_shrinkToFit ? 't' : 'f')
-			. $property->_indent
+    		  $this->_horizontal
+    		. $this->_vertical
+    		. $this->_textRotation
+    		. ($this->_wrapText ? 't' : 'f')
+    		. ($this->_shrinkToFit ? 't' : 'f')
+			. $this->_indent
     		. __CLASS__
     	);
     }

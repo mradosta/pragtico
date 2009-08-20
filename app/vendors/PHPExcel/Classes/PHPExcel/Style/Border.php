@@ -22,15 +22,23 @@
  * @package    PHPExcel_Style
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
+}
+
 /** PHPExcel_Style_Color */
-require_once 'PHPExcel/Style/Color.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Style/Color.php';
 
 /** PHPExcel_IComparable */
-require_once 'PHPExcel/IComparable.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/IComparable.php';
 
 
 /**
@@ -70,133 +78,196 @@ class PHPExcel_Style_Border implements PHPExcel_IComparable
 	 * 
 	 * @var PHPExcel_Style_Color
 	 */
-	private $_borderColor;
-	
+	private $_color;
+
 	/**
-	 * Parent
+	 * Supervisor?
+	 *
+	 * @var boolean
+	 */
+	private $_isSupervisor;
+
+	/**
+	 * Parent. Only used for supervisor
 	 *
 	 * @var PHPExcel_Style_Borders
 	 */
 	private $_parent;
-	
+
 	/**
-	 * Parent Property Name
+	 * Parent property name
 	 *
 	 * @var string
 	 */
 	private $_parentPropertyName;
-		
+
     /**
      * Create a new PHPExcel_Style_Border
      */
-    public function __construct()
+    public function __construct($isSupervisor = false)
     {
+    	// Supervisor?
+		$this->_isSupervisor = $isSupervisor;
+
     	// Initialise values
 		$this->_borderStyle			= PHPExcel_Style_Border::BORDER_NONE;
-		$this->_borderColor			= new PHPExcel_Style_Color(PHPExcel_Style_Color::COLOR_BLACK);
+		$this->_color			= new PHPExcel_Style_Color(PHPExcel_Style_Color::COLOR_BLACK, $isSupervisor);
+
+		// bind parent if we are a supervisor
+		if ($isSupervisor) {
+			$this->_color->bindParent($this, '_color');
+		}
     }
 
 	/**
-	 * Property Prepare bind
+	 * Bind parent. Only used for supervisor
 	 *
-	 * Configures this object for late binding as a property of a parent object
-	 *	 
-	 * @param $parent
-	 * @param $parentPropertyName
+	 * @param PHPExcel_Style_Borders $parent
+	 * @param string $parentPropertyName
+	 * @return PHPExcel_Style_Border
 	 */
-	public function propertyPrepareBind($parent, $parentPropertyName)
+	public function bindParent($parent, $parentPropertyName)
 	{
-		// Initialize parent PHPExcel_Style for late binding. This relationship purposely ends immediately when this object
-		// is bound to the PHPExcel_Style object pointed to so as to prevent circular references.
-		$this->_parent		 		= $parent;
-		$this->_parentPropertyName	= $parentPropertyName;
-	}
-    
-    /**
-     * Property Get Bound
-     *
-     * Returns the PHPExcel_Style_Border that is actual bound to PHPExcel_Style_Borders
-	 *
-	 * @return PHPExcel_Style_Border
-     */
-	private function propertyGetBound() {
-		if(!isset($this->_parent))
-			return $this;																// I am bound
-
-		if($this->_parent->propertyIsBound($this->_parentPropertyName))
-		{
-			switch($this->_parentPropertyName)											// Another one is bound
-			{
-				case "_left":
-					return $this->_parent->getLeft();		
-
-				case "_right":
-					return $this->_parent->getRight();		
-
-				case "_top":
-					return $this->_parent->getTop();	
-					
-				case "_bottom":
-					return $this->_parent->getBottom();
-
-				case "_diagonal":
-					return $this->_parent->getDiagonal();	
-
-				case "_vertical":
-					return $this->_parent->getVertical();
-
-				case "_horizontal":
-					return $this->_parent->getHorizontal();
-			}
-		}
-
-		return $this;																	// No one is bound yet
-	}
-	
-	/**
-     * Property Begin Bind
-     *
-     * If no PHPExcel_Style_Border has been bound to PHPExcel_Style_Borders then bind this one. Return the actual bound one.
-	 *
-	 * @return PHPExcel_Style_Border
-     */
-	private function propertyBeginBind() {
-	
-		if(!isset($this->_parent))
-			return $this;																// I am already bound
-
-		if($this->_parent->propertyIsBound($this->_parentPropertyName))
-		{
-			switch($this->_parentPropertyName)											// Another one is already bound
-			{
-				case "_left":
-					return $this->_parent->getLeft();		
-
-				case "_right":
-					return $this->_parent->getRight();		
-
-				case "_top":
-					return $this->_parent->getTop();	
-					
-				case "_bottom":
-					return $this->_parent->getBottom();
-
-				case "_diagonal":
-					return $this->_parent->getDiagonal();	
-
-				case "_vertical":
-					return $this->_parent->getVertical();
-
-				case "_horizontal":
-					return $this->_parent->getHorizontal();
-			}
-		}
-			
-		$this->_parent->propertyCompleteBind($this, $this->_parentPropertyName);		// Bind myself
-		$this->_parent = null;
+		$this->_parent = $parent;
+		$this->_parentPropertyName = $parentPropertyName;
 		return $this;
 	}
-        
+ 
+	/**
+	 * Is this a supervisor or a real style component?
+	 *
+	 * @return boolean
+	 */
+	public function getIsSupervisor()
+	{
+		return $this->_isSupervisor;
+	}
+
+	/**
+	 * Get the shared style component for the currently active cell in currently active sheet.
+	 * Only used for style supervisor
+	 *
+	 * @return PHPExcel_Style_Border
+	 * @throws Exception
+	 */
+	public function getSharedComponent()
+	{
+		switch ($this->_parentPropertyName) {
+			case '_allBorders':
+			case '_horizontal':
+			case '_inside':
+			case '_outline':
+			case '_vertical':
+				throw new Exception('Cannot get shared component for a pseudo-border.');
+				break;
+
+			case '_bottom':
+				return $this->_parent->getSharedComponent()->getBottom();
+				break;
+
+			case '_diagonal':
+				return $this->_parent->getSharedComponent()->getDiagonal();
+				break;
+
+			case '_left':
+				return $this->_parent->getSharedComponent()->getLeft();
+				break;
+
+			case '_right':
+				return $this->_parent->getSharedComponent()->getRight();
+				break;
+
+			case '_top':
+				return $this->_parent->getSharedComponent()->getTop();
+				break;
+
+		}
+	}
+
+	/**
+	 * Get the currently active sheet. Only used for supervisor
+	 *
+	 * @return PHPExcel_Worksheet
+	 */
+	public function getActiveSheet()
+	{
+		return $this->_parent->getActiveSheet();
+	}
+
+	/**
+	 * Get the currently active cell coordinate in currently active sheet.
+	 * Only used for supervisor
+	 *
+	 * @return string E.g. 'A1'
+	 */
+	public function getXSelectedCells()
+	{
+		return $this->getActiveSheet()->getXSelectedCells();
+	}
+
+	/**
+	 * Get the currently active cell coordinate in currently active sheet.
+	 * Only used for supervisor
+	 *
+	 * @return string E.g. 'A1'
+	 */
+	public function getXActiveCell()
+	{
+		return $this->getActiveSheet()->getXActiveCell();
+	}
+
+	/**
+	 * Build style array from subcomponents
+	 *
+	 * @param array $array
+	 * @return array
+	 */
+	public function getStyleArray($array)
+	{
+		switch ($this->_parentPropertyName) {
+		case '_allBorders':
+			$key = 'allborders';
+			break;
+
+		case '_bottom':
+			$key = 'bottom';
+			break;
+
+		case '_diagonal':
+			$key = 'diagonal';
+			break;
+
+		case '_horizontal':
+			$key = 'horizontal';
+			break;
+
+		case '_inside':
+			$key = 'inside';
+			break;
+
+		case '_left':
+			$key = 'left';
+			break;
+
+		case '_outline':
+			$key = 'outline';
+			break;
+
+		case '_right':
+			$key = 'right';
+			break;
+
+		case '_top':
+			$key = 'top';
+			break;
+
+		case '_vertical':
+			$key = 'vertical';
+			break;
+		}
+		return $this->_parent->getStyleArray(array($key => $array));
+	}
+
     /**
      * Apply styles from array
      * 
@@ -213,19 +284,25 @@ class PHPExcel_Style_Border implements PHPExcel_IComparable
      * 
      * @param	array	$pStyles	Array containing style information
      * @throws	Exception
+     * @return PHPExcel_Style_Border
      */
-    public function applyFromArray($pStyles = null) {
-    	if (is_array($pStyles)) {
-    		if (array_key_exists('style', $pStyles)) {
-    			$this->setBorderStyle($pStyles['style']);
-    		}
-    	    if (array_key_exists('color', $pStyles)) {
-    			$this->getColor()->applyFromArray($pStyles['color']);
-    		}
-    	} else {
-    		throw new Exception("Invalid style array passed.");
-    	}
-    }
+	public function applyFromArray($pStyles = null) {
+		if (is_array($pStyles)) {
+			if ($this->_isSupervisor) {
+				$this->getActiveSheet()->getStyle($this->getXSelectedCells())->applyFromArray($this->getStyleArray($pStyles));
+			} else {
+				if (array_key_exists('style', $pStyles)) {
+					$this->setBorderStyle($pStyles['style']);
+				}
+				if (array_key_exists('color', $pStyles)) {
+					$this->getColor()->applyFromArray($pStyles['color']);
+				}
+			}
+		} else {
+			throw new Exception("Invalid style array passed.");
+		}
+		return $this;
+	}
     
     /**
      * Get Border style
@@ -233,20 +310,30 @@ class PHPExcel_Style_Border implements PHPExcel_IComparable
      * @return string
      */
     public function getBorderStyle() {
-    	return $this->propertyGetBound()->_borderStyle;
+		if ($this->_isSupervisor) {
+			return $this->getSharedComponent()->getBorderStyle();
+		}
+    	return $this->_borderStyle;
     }
     
     /**
      * Set Border style
      *
      * @param string $pValue
+     * @return PHPExcel_Style_Border
      */
     public function setBorderStyle($pValue = PHPExcel_Style_Border::BORDER_NONE) {
     
         if ($pValue == '') {
     		$pValue = PHPExcel_Style_Border::BORDER_NONE;
     	}
-    	$this->propertyBeginBind()->_borderStyle = $pValue;
+		if ($this->_isSupervisor) {
+			$styleArray = $this->getStyleArray(array('style' => $pValue));
+			$this->getActiveSheet()->getStyle($this->getXSelectedCells())->applyFromArray($styleArray);
+		} else {
+			$this->_borderStyle = $pValue;
+		}
+		return $this;
     }
     
     /**
@@ -255,9 +342,7 @@ class PHPExcel_Style_Border implements PHPExcel_IComparable
      * @return PHPExcel_Style_Color
      */
     public function getColor() {
-    	// It's a get but it may lead to a modified color which we won't detect but in which case we must bind.
-    	// So bind as an assurance.
-    	return $this->propertyBeginBind()->_borderColor;
+    	return $this->_color;
     }
     
     /**
@@ -265,9 +350,19 @@ class PHPExcel_Style_Border implements PHPExcel_IComparable
      *
      * @param 	PHPExcel_Style_Color $pValue
      * @throws 	Exception
+     * @return PHPExcel_Style_Border
      */
     public function setColor(PHPExcel_Style_Color $pValue = null) {
-   		$this->propertyBeginBind()->_borderColor = $pValue;
+		// make sure parameter is a real color and not a supervisor
+		$color = $pValue->getIsSupervisor() ? $pValue->getSharedComponent() : $pValue;
+		
+		if ($this->_isSupervisor) {
+			$styleArray = $this->getColor()->getStyleArray(array('argb' => $color->getARGB()));
+			$this->getActiveSheet()->getStyle($this->getXSelectedCells())->applyFromArray($styleArray);
+		} else {
+			$this->_color = $color;
+		}
+		return $this;
     }
     
 	/**
@@ -276,10 +371,12 @@ class PHPExcel_Style_Border implements PHPExcel_IComparable
 	 * @return string	Hash code
 	 */	
 	public function getHashCode() {
-		$property = $this->propertyGetBound();
+		if ($this->_isSupervisor) {
+			return $this->getSharedComponent()->getHashCode();
+		}
     	return md5(
-    		  $property->_borderStyle
-    		. $property->_borderColor->getHashCode()
+    		  $this->_borderStyle
+    		. $this->_color->getHashCode()
     		. __CLASS__
     	);
     }

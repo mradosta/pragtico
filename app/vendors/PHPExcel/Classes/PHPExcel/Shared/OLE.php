@@ -19,11 +19,19 @@
 //
 // $Id: OLE.php,v 1.13 2007/03/07 14:38:25 schmidt Exp $
 
-require_once 'PHPExcel/Shared/OLE.php';
-require_once 'PHPExcel/Shared/OLE/OLE_PPS.php';
-require_once 'PHPExcel/Shared/OLE/OLE_File.php';
-require_once 'PHPExcel/Shared/OLE/OLE_Root.php';
-require_once 'PHPExcel/Shared/OLE/ChainedBlockStream.php';
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
+}
+
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/OLE.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/OLE/OLE_PPS.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/OLE/OLE_File.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/OLE/OLE_Root.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/OLE/ChainedBlockStream.php';
 
 /**
 * Array for storing OLE instances that are accessed from

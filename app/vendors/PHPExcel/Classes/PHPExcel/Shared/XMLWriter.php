@@ -22,7 +22,7 @@
  * @package    PHPExcel_Shared
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 if (!defined('DATE_W3C')) {
@@ -133,7 +133,7 @@ class PHPExcel_Shared_XMLWriter {
     public function writeRaw($text)
     {
     	if (isset($this->_xmlWriter) && is_object($this->_xmlWriter) && (method_exists($this->_xmlWriter, 'writeRaw'))) {
-    		return $this->_xmlWriter->writeRaw($text);
+            return $this->_xmlWriter->writeRaw(htmlspecialchars($text));
     	}
 
     	return $this->text($text);

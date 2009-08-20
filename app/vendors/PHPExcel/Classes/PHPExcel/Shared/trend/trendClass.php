@@ -1,10 +1,18 @@
 <?php
 
-include_once('PHPExcel/Shared/trend/linearBestFitClass.php');
-include_once('PHPExcel/Shared/trend/logarithmicBestFitClass.php');
-include_once('PHPExcel/Shared/trend/exponentialBestFitClass.php');
-include_once('PHPExcel/Shared/trend/powerBestFitClass.php');
-include_once('PHPExcel/Shared/trend/polynomialBestFitClass.php');
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../../');
+}
+
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/trend/linearBestFitClass.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/trend/logarithmicBestFitClass.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/trend/exponentialBestFitClass.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/trend/powerBestFitClass.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/trend/polynomialBestFitClass.php';
 
 
 class trendClass

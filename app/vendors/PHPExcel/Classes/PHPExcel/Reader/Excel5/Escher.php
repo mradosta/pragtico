@@ -22,32 +22,40 @@
  * @package    PHPExcel_Reader_Excel5
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../../');
+}
+
 /** PHPExcel_Cell */
-require_once 'PHPExcel/Cell.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Cell.php';
 
 /** PHPExcel_Shared_Escher_DggContainer */
-require_once 'PHPExcel/Shared/Escher/DggContainer.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DggContainer.php';
 
 /** PHPExcel_Shared_Escher_DggContainer_BstoreContainer */
-require_once 'PHPExcel/Shared/Escher/DggContainer/BstoreContainer.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DggContainer/BstoreContainer.php';
 
 /** PHPExcel_Shared_Escher_DggContainer_BstoreContainer_BSE */
-require_once 'PHPExcel/Shared/Escher/DggContainer/BstoreContainer/BSE.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DggContainer/BstoreContainer/BSE.php';
 
 /** PHPExcel_Shared_Escher_DggContainer_BstoreContainer_BSE_Blip */
-require_once 'PHPExcel/Shared/Escher/DggContainer/BstoreContainer/BSE/Blip.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DggContainer/BstoreContainer/BSE/Blip.php';
 
 /** PHPExcel_Shared_Escher_DgContainer */
-require_once 'PHPExcel/Shared/Escher/DgContainer.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DgContainer.php';
 
 /** PHPExcel_Shared_Escher_DgContainer_SpgrContainer */
-require_once 'PHPExcel/Shared/Escher/DgContainer/SpgrContainer.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DgContainer/SpgrContainer.php';
 
 /** PHPExcel_Shared_Escher_DgContainer_SpgrContainer_SpContainer */
-require_once 'PHPExcel/Shared/Escher/DgContainer/SpgrContainer/SpContainer.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Escher/DgContainer/SpgrContainer/SpContainer.php';
 
 /**
  * PHPExcel_Reader_Excel5_Escher

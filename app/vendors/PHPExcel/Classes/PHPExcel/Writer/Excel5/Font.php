@@ -22,14 +22,24 @@
  * @package    PHPExcel_Writer_Excel5
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
+ 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../../');
+}
+
 /** PHPExcel_Shared_String */
-require_once 'PHPExcel/Shared/String.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/String.php';
 
 /** PHPExcel_Style_Font */
-require_once 'PHPExcel/Style/Font.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Style/Font.php';
+
 
 /**
  * PHPExcel_Writer_Excel5_Font
@@ -66,7 +76,7 @@ class PHPExcel_Writer_Excel5_Font
 	 *
 	 * @param PHPExcel_Style_Font $font
 	 */
-	public function __construct($font)
+	public function __construct(PHPExcel_Style_Font $font = null)
 	{
 		$this->_BIFFVersion = 0x0600;
 		$this->_colorIndex = 0x7FFF;
@@ -102,7 +112,7 @@ class PHPExcel_Writer_Excel5_Font
 			$sss = 0;
 		}
 		$bFamily = 0; // Font family
-		$bCharSet = 0; // Character set
+		$bCharSet = PHPExcel_Shared_Font::getCharsetFromFontName($this->_font->getName()); // Character set
 
 		$record = 0x31; // Record identifier
 		$reserved = 0x00; // Reserved
@@ -110,7 +120,7 @@ class PHPExcel_Writer_Excel5_Font
 		if ($this->_font->getItalic()) {
 			$grbit |= 0x02;
 		}
-		if ($this->_font->getStriketrough()) {
+		if ($this->_font->getStrikethrough()) {
 			$grbit |= 0x08;
 		}
 		if ($font_outline) {

@@ -22,18 +22,26 @@
  * @package    PHPExcel
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../');
+}
+
 /** PHPExcel */
-require_once 'PHPExcel.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel.php';
 
 /** PHPExcel_IWriter */
-require_once 'PHPExcel/Writer/IWriter.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/IWriter.php';
 
 /** PHPExcel_IReader */
-require_once 'PHPExcel/Reader/IReader.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Reader/IReader.php';
 
 
 /**
@@ -53,6 +61,18 @@ class PHPExcel_IOFactory
 	private static $_searchLocations = array(
 		array( 'type' => 'IWriter', 'path' => 'PHPExcel/Writer/{0}.php', 'class' => 'PHPExcel_Writer_{0}' ),
 		array( 'type' => 'IReader', 'path' => 'PHPExcel/Reader/{0}.php', 'class' => 'PHPExcel_Reader_{0}' )
+	);
+	
+	/**
+	 * Autoresolve classes
+	 * 
+	 * @var array
+	 */
+	private static $_autoResolveClasses = array(
+		'Excel2007',
+		'Excel5',
+		'Serialized',
+		'CSV'
 	);
 	
     /**
@@ -112,7 +132,7 @@ class PHPExcel_IOFactory
 				$classFile = str_replace('{0}', $writerType, $searchLocation['path']);
 				
 				if (!class_exists($className)) {
-					self::requireFile($classFile);
+					require_once PHPEXCEL_ROOT . $classFile;
 				}
 				
 				$instance = new $className($phpExcel);
@@ -143,7 +163,7 @@ class PHPExcel_IOFactory
 				$classFile = str_replace('{0}', $readerType, $searchLocation['path']);
 				
 				if (!class_exists($className)) {
-					self::requireFile($classFile);
+					require_once PHPEXCEL_ROOT . $classFile;
 				}
 				
 				$instance = new $className();
@@ -158,18 +178,32 @@ class PHPExcel_IOFactory
 	}
 	
 	/**
-	 * Require_once file
+	 * Loads PHPExcel from file using automatic PHPExcel_Reader_IReader resolution
 	 *
-	 * @param string $filename
-	 */
-	private static function requireFile($filename) {
-		$includePath = get_include_path();
-		$includeTokens = explode(PATH_SEPARATOR, $includePath);
-					
-		foreach ($includeTokens as $includeToken) {
-			if (file_exists($includeToken . '/' . $filename)) {
-				require_once( $filename );
+	 * @param 	string 		$pFileName
+	 * @return	PHPExcel
+	 */	
+	public static function load($pFilename) {
+		$reader = self::createReaderForFile($pFilename);
+		return $reader->load($pFilename);
+	}
+
+	/**
+	 * Create PHPExcel_Reader_IReader for file using automatic PHPExcel_Reader_IReader resolution
+	 *
+	 * @param 	string 		$pFileName
+	 * @return	PHPExcel_Reader_IReader
+	 * @throws 	Exception
+	 */	
+	public static function createReaderForFile($pFilename) {
+		// Try loading using self::$_autoResolveClasses
+		foreach (self::$_autoResolveClasses as $autoResolveClass) {
+			$reader = self::createReader($autoResolveClass);
+			if ($reader->canRead($pFilename)) {
+				return $reader;
 			}
 		}
+
+		throw new Exception("Could not automatically determine PHPExcel_Reader_IReader for file.");
 	}
 }

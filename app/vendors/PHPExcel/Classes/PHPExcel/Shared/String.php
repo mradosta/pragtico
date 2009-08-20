@@ -22,7 +22,7 @@
  * @package    PHPExcel_Shared
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
@@ -148,6 +148,28 @@ class PHPExcel_Shared_String
 	}
 
 	/**
+	 * Try to sanitize UTF8, stripping invalid byte sequences. Not perfect. Does not surrogate characters.
+	 *
+	 * @param string $value
+	 * @return string
+	 */
+	public static function SanitizeUTF8($value)
+	{
+		if (self::getIsIconvEnabled()) {
+			$value = @iconv('UTF-8', 'UTF-8', $value);
+			return $value;
+		}
+
+		if (self::getIsMbstringEnabled()) {
+			$value = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+			return $value;
+		}
+
+		// else, no conversion
+		return $value;
+	}
+	
+	/**
 	 * Check if a string contains UTF8 data
 	 *
 	 * @param string $value
@@ -158,13 +180,17 @@ class PHPExcel_Shared_String
 	}
 
 	/**
-	 * Formats a numeric value as a string for output in various output writers
+	 * Formats a numeric value as a string for output in various output writers forcing
+	 * point as decimal separator in case locale is other than English.
 	 *
 	 * @param mixed $value
 	 * @return string
 	 */
 	public static function FormatNumber($value) {
-		return number_format($value, 2, '.', '');
+		if (is_float($value)) {
+			return str_replace(',', '.', $value);
+		}
+		return (string) $value;
 	}
 
 	/**
@@ -183,7 +209,7 @@ class PHPExcel_Shared_String
 		$ln = self::CountCharacters($value, 'UTF-8');
 
 		// option flags
-		$opt = (self::getIsMbstringEnabled() || self::getIsIconvEnabled()) ? 
+		$opt = (self::getIsIconvEnabled() || self::getIsMbstringEnabled()) ? 
 			0x0001 : 0x0000;
 
 		// characters
@@ -209,7 +235,7 @@ class PHPExcel_Shared_String
 		$ln = self::CountCharacters($value, 'UTF-8');
 
 		// option flags
-		$opt = (self::getIsMbstringEnabled() || self::getIsIconvEnabled()) ? 
+		$opt = (self::getIsIconvEnabled() || self::getIsMbstringEnabled()) ? 
 			0x0001 : 0x0000;
 
 		// characters
@@ -229,13 +255,13 @@ class PHPExcel_Shared_String
 	 */
 	public static function ConvertEncoding($value, $to, $from)
 	{
-		if (self::getIsMbstringEnabled()) {
-			$value = mb_convert_encoding($value, $to, $from);
+		if (self::getIsIconvEnabled()) {
+			$value = iconv($from, $to, $value);
 			return $value;
 		}
 
-		if (self::getIsIconvEnabled()) {
-			$value = iconv($from, $to, $value);
+		if (self::getIsMbstringEnabled()) {
+			$value = mb_convert_encoding($value, $to, $from);
 			return $value;
 		}
 
@@ -250,21 +276,46 @@ class PHPExcel_Shared_String
 	 * @param string $enc Encoding
 	 * @return int Character count
 	 */
-	public static function CountCharacters($value, $enc)
+	public static function CountCharacters($value, $enc = 'UTF-8')
 	{
-		if (self::getIsMbstringEnabled()) {
-			$count = mb_strlen($value, $enc);
+		if (self::getIsIconvEnabled()) {
+			$count = iconv_strlen($value, $enc);
 			return $count;
 		}
 
-		if (self::getIsIconvEnabled()) {
-			$count = iconv_strlen($value, $enc);
+		if (self::getIsMbstringEnabled()) {
+			$count = mb_strlen($value, $enc);
 			return $count;
 		}
 
 		// else strlen
 		$count = strlen($value);
 		return $count;
+	}
+
+	/**
+	 * Get a substring of a UTF-8 encoded string
+	 *
+	 * @param string $pValue UTF-8 encoded string
+	 * @param int $start Start offset
+	 * @param int $length Maximum number of characters in substring
+	 * @return string
+	 */
+	public static function Substring($pValue = '', $pStart = 0, $pLength = 0)
+	{
+		if (self::getIsIconvEnabled()) {
+			$string = iconv_substr($pValue, $pStart, $pLength, 'UTF-8');
+			return $string;
+		}
+
+		if (self::getIsMbstringEnabled()) {
+			$string = mb_substr($pValue, $pStart, $pLength, 'UTF-8');
+			return $string;
+		}
+
+		// else substr
+		$string = substr($pValue, $pStart, $pLength);
+		return $string;
 	}
 
 }

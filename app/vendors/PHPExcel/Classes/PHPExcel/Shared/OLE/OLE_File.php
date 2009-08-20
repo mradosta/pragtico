@@ -20,7 +20,15 @@
 // $Id: File.php,v 1.11 2007/02/13 21:00:42 schmidt Exp $
 
 
-require_once 'PHPExcel/Shared/OLE/OLE_PPS.php';
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../../');
+}
+
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/OLE/OLE_PPS.php';
 
 /**
 * Class for creating File PPS's for OLE containers

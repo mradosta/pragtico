@@ -22,24 +22,35 @@
  * @package    PHPExcel_Cell
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
+}
+
 /** PHPExcel_Cell */
-require_once 'PHPExcel/Cell.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Cell.php';
 
 /** PHPExcel_Cell_IValueBinder */
-require_once 'PHPExcel/Cell/IValueBinder.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Cell/IValueBinder.php';
 
 /** PHPExcel_Cell_DefaultValueBinder */
-require_once 'PHPExcel/Cell/DefaultValueBinder.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Cell/DefaultValueBinder.php';
 
 /** PHPExcel_Style_NumberFormat */
-require_once 'PHPExcel/Style/NumberFormat.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Style/NumberFormat.php';
 
 /** PHPExcel_Shared_Date */
-require_once 'PHPExcel/Shared/Date.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Date.php';
+
+/** PHPExcel_Shared_String */
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/String.php';
 
 
 /**
@@ -60,6 +71,11 @@ class PHPExcel_Cell_AdvancedValueBinder extends PHPExcel_Cell_DefaultValueBinder
 	 */
 	public function bindValue(PHPExcel_Cell $cell, $value = null)
 	{
+		// sanitize UTF-8 strings
+		if (is_string($value)) {
+			$value = PHPExcel_Shared_String::SanitizeUTF8($value);
+		}
+
 		// Find out data type
 		$dataType = parent::dataTypeForValue($value);
 		
@@ -76,13 +92,34 @@ class PHPExcel_Cell_AdvancedValueBinder extends PHPExcel_Cell_DefaultValueBinder
 				return true;
 			}
 			
+			// Check for time e.g. '9:45', '09:45'
+			if (preg_match('/^(\d|[0-1]\d|2[0-3]):[0-5]\d$/', $value)) {
+				list($h, $m) = explode(':', $value);
+				$days = $h / 24 + $m / 1440;
+				
+				// Convert value to number
+				$cell->setValueExplicit($days, PHPExcel_Cell_DataType::TYPE_NUMERIC);
+				
+				// Set style
+				$cell->getParent()->getStyle( $cell->getCoordinate() )->getNumberFormat()->setFormatCode( PHPExcel_Style_NumberFormat::FORMAT_DATE_TIME3 );
+				
+				return true;
+			}
+			
 			// Check for date
 			if (strtotime($value) !== false) {
+				// make sure we have UTC for the sake of strtotime
+				$saveTimeZone = date_default_timezone_get();
+				date_default_timezone_set('UTC');
+				
 				// Convert value to Excel date
 				$cell->setValueExplicit( PHPExcel_Shared_Date::PHPToExcel(strtotime($value)), PHPExcel_Cell_DataType::TYPE_NUMERIC);
 				
 				// Set style
 				$cell->getParent()->getStyle( $cell->getCoordinate() )->getNumberFormat()->setFormatCode( PHPExcel_Style_NumberFormat::FORMAT_DATE_YYYYMMDD2 );
+				
+				// restore original value for timezone
+				date_default_timezone_set($saveTimeZone);
 				
 				return true;
 			}

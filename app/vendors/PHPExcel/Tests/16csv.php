@@ -22,28 +22,28 @@
  * @package    PHPExcel
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 include "05featuredemo.inc.php";
 
 /** PHPExcel_IOFactory */
-include 'PHPExcel/IOFactory.php';
+require_once '../Classes/PHPExcel/IOFactory.php';
 
 echo date('H:i:s') . " Write to CSV format\n";
-$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV');
-$objWriter->setDelimiter(';');
-$objWriter->setEnclosure('');
-$objWriter->setLineEnding("\r\n");
-$objWriter->setSheetIndex(0);
-$objWriter->save(str_replace('.php', '.csv', __FILE__));
+$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV')
+    ->setDelimiter(';')
+    ->setEnclosure('')
+    ->setLineEnding("\r\n")
+    ->setSheetIndex(0)
+    ->save(str_replace('.php', '.csv', __FILE__));
 
 echo date('H:i:s') . " Read from CSV format\n";
-$objReader = PHPExcel_IOFactory::createReader('CSV');
-$objReader->setDelimiter(';');
-$objReader->setEnclosure('');
-$objReader->setLineEnding("\r\n");
-$objReader->setSheetIndex(0);
+$objReader = PHPExcel_IOFactory::createReader('CSV')
+    ->setDelimiter(';')
+    ->setEnclosure('')
+    ->setLineEnding("\r\n")
+    ->setSheetIndex(0);
 $objPHPExcelFromCSV = $objReader->load(str_replace('.php', '.csv', __FILE__));
 
 echo date('H:i:s') . " Write to Excel2007 format\n";

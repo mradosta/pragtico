@@ -22,7 +22,7 @@
  * @package    PHPExcel_Worksheet
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
@@ -108,9 +108,11 @@ class PHPExcel_Worksheet_ColumnDimension
      * Set ColumnIndex
      *
      * @param string $pValue
+     * @return PHPExcel_Worksheet_ColumnDimension
      */
     public function setColumnIndex($pValue) {
     	$this->_columnIndex = $pValue;
+    	return $this;
     }
     
     /**
@@ -126,9 +128,11 @@ class PHPExcel_Worksheet_ColumnDimension
      * Set Width
      *
      * @param double $pValue
+     * @return PHPExcel_Worksheet_ColumnDimension
      */
     public function setWidth($pValue = -1) {
     	$this->_width = $pValue;
+    	return $this;
     }
     
     /**
@@ -144,9 +148,11 @@ class PHPExcel_Worksheet_ColumnDimension
      * Set Auto Size
      *
      * @param bool $pValue
+     * @return PHPExcel_Worksheet_ColumnDimension
      */
     public function setAutoSize($pValue = false) {
     	$this->_autoSize = $pValue;
+    	return $this;
     }
     
     /**
@@ -162,9 +168,11 @@ class PHPExcel_Worksheet_ColumnDimension
      * Set Visible
      *
      * @param bool $pValue
+     * @return PHPExcel_Worksheet_ColumnDimension
      */
     public function setVisible($pValue = true) {
     	$this->_visible = $pValue;
+    	return $this;
     }
     
     /**
@@ -183,6 +191,7 @@ class PHPExcel_Worksheet_ColumnDimension
      *
      * @param int $pValue
      * @throws Exception
+     * @return PHPExcel_Worksheet_ColumnDimension
      */
     public function setOutlineLevel($pValue) {
     	if ($pValue < 0 || $pValue > 7) {
@@ -190,6 +199,7 @@ class PHPExcel_Worksheet_ColumnDimension
     	}
     	
     	$this->_outlineLevel = $pValue;
+    	return $this;
     }
     
     /**
@@ -205,9 +215,11 @@ class PHPExcel_Worksheet_ColumnDimension
      * Set Collapsed
      *
      * @param bool $pValue
+     * @return PHPExcel_Worksheet_ColumnDimension
      */
     public function setCollapsed($pValue = true) {
     	$this->_collapsed = $pValue;
+    	return $this;
     }
         
 	/**

@@ -118,7 +118,7 @@ define('STATS_USE_NULL_AS_ZERO', -3);
 */
 class Base {/*{{{*/
     // properties /*{{{*/
-    
+
     /**
      * The simple or cummulative data set.
      * Null by default.
@@ -165,7 +165,7 @@ class Base {/*{{{*/
     var $_calculatedValues = array();
 
     /*}}}*/
-    
+
     /**
      * Constructor for the class
      *
@@ -311,7 +311,7 @@ class Base {/*{{{*/
         }
         return $this->setData($arr, $this->_dataOption);
     }/*}}}*/
-       
+
     /**
      * Calculates the basic or full statistics for the data set
      *
@@ -468,7 +468,7 @@ class Base {/*{{{*/
      * Handles cummulative data sets correctly
      *
      * @access  public
-     * @return  mixed   the sum on success, a PEAR_Error object otherwise   
+     * @return  mixed   the sum on success, a PEAR_Error object otherwise
      * @see calc()
      * @see sum2()
      * @see sumN()
@@ -490,7 +490,7 @@ class Base {/*{{{*/
      * Handles cummulative data sets correctly
      *
      * @access  public
-     * @return  mixed   the sum on success, a PEAR_Error object otherwise   
+     * @return  mixed   the sum on success, a PEAR_Error object otherwise
      * @see calc()
      * @see sum()
      * @see sumN()
@@ -513,7 +513,7 @@ class Base {/*{{{*/
      *
      * @access  public
      * @param   numeric $n  the exponent
-     * @return  mixed   the sum on success, a PEAR_Error object otherwise   
+     * @return  mixed   the sum on success, a PEAR_Error object otherwise
      * @see calc()
      * @see sum()
      * @see sum2()
@@ -540,7 +540,7 @@ class Base {/*{{{*/
      * Handles cummulative data sets correctly
      *
      * @access  public
-     * @return  mixed   the product on success, a PEAR_Error object otherwise   
+     * @return  mixed   the product on success, a PEAR_Error object otherwise
      * @see productN()
      */
     function product() {/*{{{*/
@@ -561,7 +561,7 @@ class Base {/*{{{*/
      *
      * @access  public
      * @param   numeric $n  the exponent
-     * @return  mixed   the product on success, a PEAR_Error object otherwise   
+     * @return  mixed   the product on success, a PEAR_Error object otherwise
      * @see product()
      */
     function productN($n) {/*{{{*/
@@ -616,7 +616,7 @@ class Base {/*{{{*/
      * Handles cummulative data sets correctly
      *
      * @access  public
-     * @return  mixed   the mean value on success, a PEAR_Error object otherwise    
+     * @return  mixed   the mean value on success, a PEAR_Error object otherwise
      * @see calc()
      * @see sum()
      * @see count()
@@ -663,7 +663,7 @@ class Base {/*{{{*/
      * Handles cummulative data sets correctly
      *
      * @access  public
-     * @return  mixed   the variance value on success, a PEAR_Error object otherwise    
+     * @return  mixed   the variance value on success, a PEAR_Error object otherwise
      * @see calc()
      * @see __sumdiff()
      * @see count()
@@ -684,7 +684,7 @@ class Base {/*{{{*/
      * Handles cummulative data sets correctly
      *
      * @access  public
-     * @return  mixed   the standard deviation on success, a PEAR_Error object otherwise    
+     * @return  mixed   the standard deviation on success, a PEAR_Error object otherwise
      * @see calc()
      * @see variance()
      */
@@ -707,7 +707,7 @@ class Base {/*{{{*/
      *
      * @access  public
      * @param   numeric $mean   the fixed mean value
-     * @return  mixed   the variance on success, a PEAR_Error object otherwise  
+     * @return  mixed   the variance on success, a PEAR_Error object otherwise
      * @see __sumdiff()
      * @see count()
      * @see variance()
@@ -715,7 +715,7 @@ class Base {/*{{{*/
     function varianceWithMean($mean) {/*{{{*/
         return $this->__calcVariance($mean);
     }/*}}}*/
-    
+
     /**
      * Calculates the standard deviation (unbiased) of the data points in the set
      * given a fixed mean (average) value. Not used in calcBasic(), calcFull()
@@ -724,7 +724,7 @@ class Base {/*{{{*/
      *
      * @access  public
      * @param   numeric $mean   the fixed mean value
-     * @return  mixed   the standard deviation on success, a PEAR_Error object otherwise    
+     * @return  mixed   the standard deviation on success, a PEAR_Error object otherwise
      * @see varianceWithMean()
      * @see stDev()
      */
@@ -741,7 +741,7 @@ class Base {/*{{{*/
      * Handles cummulative data sets correctly
      *
      * @access  public
-     * @return  mixed   the absolute deviation on success, a PEAR_Error object otherwise    
+     * @return  mixed   the absolute deviation on success, a PEAR_Error object otherwise
      * @see calc()
      * @see __sumabsdev()
      * @see count()
@@ -766,7 +766,7 @@ class Base {/*{{{*/
      *
      * @access  public
      * @param   numeric $mean   the fixed mean value
-     * @return  mixed   the absolute deviation on success, a PEAR_Error object otherwise    
+     * @return  mixed   the absolute deviation on success, a PEAR_Error object otherwise
      * @see __sumabsdev()
      * @see absDev()
      */
@@ -786,7 +786,7 @@ class Base {/*{{{*/
      * Handles cummulative data sets correctly
      *
      * @access  public
-     * @return  mixed   the skewness value on success, a PEAR_Error object otherwise    
+     * @return  mixed   the skewness value on success, a PEAR_Error object otherwise
      * @see __sumdiff()
      * @see count()
      * @see stDev()
@@ -823,7 +823,7 @@ class Base {/*{{{*/
      * Handles cummulative data sets correctly
      *
      * @access  public
-     * @return  mixed   the kurtosis value on success, a PEAR_Error object otherwise    
+     * @return  mixed   the kurtosis value on success, a PEAR_Error object otherwise
      * @see __sumdiff()
      * @see count()
      * @see stDev()
@@ -857,7 +857,7 @@ class Base {/*{{{*/
      * Handles cummulative data sets correctly
      *
      * @access  public
-     * @return  mixed   the median value on success, a PEAR_Error object otherwise  
+     * @return  mixed   the median value on success, a PEAR_Error object otherwise
      * @see count()
      * @see calc()
      */
@@ -893,7 +893,7 @@ class Base {/*{{{*/
      * Handles cummulative data sets correctly
      *
      * @access  public
-     * @return  mixed   an array of mode value on success, a PEAR_Error object otherwise    
+     * @return  mixed   an array of mode value on success, a PEAR_Error object otherwise
      * @see frequency()
      * @see calc()
      */
@@ -913,7 +913,7 @@ class Base {/*{{{*/
                 if ($mcount == 1) {
                     $mode = array($val);
                     $mfreq = $freq;
-                    $mcount++;
+                    ++$mcount;
                     continue;
                 }
                 if ($mfreq == $freq)
@@ -932,7 +932,7 @@ class Base {/*{{{*/
      * Handles cummulative data sets correctly
      *
      * @access  public
-     * @return  mixed   the midrange value on success, a PEAR_Error object otherwise    
+     * @return  mixed   the midrange value on success, a PEAR_Error object otherwise
      * @see min()
      * @see max()
      * @see calc()
@@ -951,13 +951,13 @@ class Base {/*{{{*/
         }
         return $this->_calculatedValues['midrange'];
     }/*}}}*/
-  
+
     /**
      * Calculates the geometrical mean of the data points in the set
      * Handles cummulative data sets correctly
      *
      * @access public
-     * @return mixed the geometrical mean value on success, a PEAR_Error object otherwise    
+     * @return mixed the geometrical mean value on success, a PEAR_Error object otherwise
      * @see calc()
      * @see product()
      * @see count()
@@ -988,7 +988,7 @@ class Base {/*{{{*/
      * Handles cummulative data sets correctly
      *
      * @access public
-     * @return mixed the harmonic mean value on success, a PEAR_Error object otherwise    
+     * @return mixed the harmonic mean value on success, a PEAR_Error object otherwise
      * @see calc()
      * @see count()
      */
@@ -1041,7 +1041,7 @@ class Base {/*{{{*/
         if (!is_int($n) || $n < 1) {
             return PEAR::isError('moment must be a positive integer >= 1.');
         }
-        
+
         if ($n == 1) {
             return 0;
         }
@@ -1077,7 +1077,7 @@ class Base {/*{{{*/
         if (!is_int($n) || $n < 1) {
             return PEAR::isError('moment must be a positive integer >= 1.');
         }
-        
+
         $count = $this->count();
         if (PEAR::isError($count)) {
             return $count;
@@ -1101,7 +1101,7 @@ class Base {/*{{{*/
      * Handles cummulative data sets correctly
      *
      * @access  public
-     * @return  mixed   the coefficient of variation on success, a PEAR_Error object otherwise  
+     * @return  mixed   the coefficient of variation on success, a PEAR_Error object otherwise
      * @see stDev()
      * @see mean()
      * @see calc()
@@ -1138,7 +1138,7 @@ class Base {/*{{{*/
      * proportional to the square root of the sample size.
      *
      * @access  public
-     * @return  mixed   the standard error of the mean on success, a PEAR_Error object otherwise  
+     * @return  mixed   the standard error of the mean on success, a PEAR_Error object otherwise
      * @see stDev()
      * @see count()
      * @see calc()
@@ -1163,7 +1163,7 @@ class Base {/*{{{*/
      * Handles cummulative data sets correctly
      *
      * @access  public
-     * @return  mixed   an associative array of value=>frequency items on success, a PEAR_Error object otherwise    
+     * @return  mixed   an associative array of value=>frequency items on success, a PEAR_Error object otherwise
      * @see min()
      * @see max()
      * @see calc()
@@ -1218,7 +1218,7 @@ class Base {/*{{{*/
         }
         return $this->_calculatedValues['quartiles'];
     }/*}}}*/
-    
+
     /**
      * The interquartile mean is defined as the mean of the values left
      * after discarding the lower 25% and top 25% ranked values, i.e.:
@@ -1245,7 +1245,7 @@ class Base {/*{{{*/
             foreach ($this->getData(true) as $val) {
                 if ($val >= $q1 && $val <= $q3) {
                     $sum += $val;
-                    $n++;
+                    ++$n;
                 }
             }
             if ($n == 0) {
@@ -1282,14 +1282,14 @@ class Base {/*{{{*/
         }
         return $this->_calculatedValues['interquartileRange'];
     }/*}}}*/
-    
+
     /**
      * The quartile deviation is half of the interquartile range value
      *
      *  quart dev = (P(75) - P(25)) / 2
      *
      *  where: P = percentile
-     *  
+     *
      * @access public
      * @return mixed a numeric value on success, a PEAR_Error otherwise
      * @see quartiles()
@@ -1602,4 +1602,4 @@ class Base {/*{{{*/
 // vim: ts=4:sw=4:et:
 // vim6: fdl=1: fdm=marker:
 
-?> 
+?>

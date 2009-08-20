@@ -22,10 +22,18 @@
  * @package    PHPExcel_Shared_OLE
  * @copyright  Copyright (c) 2006 - 2007 Christian Schmidt
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version 1.6.6, 2009-03-02
+ * @version 1.7.0, 2009-08-10
  */
 
-require_once 'PHPExcel/Shared/OLE.php';
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../../');
+}
+
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/OLE.php';
 
 /**
  * PHPExcel_Shared_OLE_ChainedBlockStream

@@ -8,12 +8,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -22,18 +22,26 @@
  * @package    PHPExcel
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../');
+}
+
 /** PHPExcel */
-require_once 'PHPExcel.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel.php';
 
 /** PHPExcel_Worksheet */
-require_once 'PHPExcel/Worksheet.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Worksheet.php';
 
 /** PHPExcel_ReferenceHelper */
-require_once 'PHPExcel/ReferenceHelper.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/ReferenceHelper.php';
 
 
 /**
@@ -51,28 +59,28 @@ class PHPExcel_NamedRange
 	 * @var string
 	 */
 	private $_name;
-	
+
 	/**
 	 * Worksheet on which the named range can be resolved
 	 *
 	 * @var PHPExcel_Worksheet
 	 */
 	private $_worksheet;
-	
+
 	/**
 	 * Range of the referenced cells
 	 *
 	 * @var string
 	 */
 	private $_range;
-	
+
 	/**
 	 * Is the named range local? (i.e. can only be used on $this->_worksheet)
 	 *
 	 * @var bool
 	 */
 	private $_localOnly;
-    
+
     /**
      * Create a new NamedRange
      *
@@ -87,14 +95,14 @@ class PHPExcel_NamedRange
     	if (is_null($pName) || is_null($pWorksheet)|| is_null($pRange)) {
     		throw new Exception('Parameters can not be null.');
     	}
-    	
+
     	// Set local members
     	$this->_name 		= $pName;
     	$this->_worksheet 	= $pWorksheet;
     	$this->_range 		= $pRange;
     	$this->_localOnly 	= $pLocalOnly;
     }
-    
+
     /**
      * Get name
      *
@@ -103,32 +111,35 @@ class PHPExcel_NamedRange
     public function getName() {
     	return $this->_name;
     }
-    
+
     /**
      * Set name
      *
      * @param string $value
+     * @return PHPExcel_NamedRange
      */
     public function setName($value = null) {
     	if (!is_null($value)) {
     		// Old title
     		$oldTitle = $this->_name;
-    		
+
     		// Re-attach
     		if (!is_null($this->_worksheet)) {
-    			$this->_worksheet->getParent()->removeNamedRange($this->_name);
+    			$this->_worksheet->getParent()->removeNamedRange($this->_name,$this->_worksheet);
     		}
     		$this->_name = $value;
+
     		if (!is_null($this->_worksheet)) {
     			$this->_worksheet->getParent()->addNamedRange($this);
     		}
-    		
+
 	    	// New title
 	    	$newTitle = $this->_name;
 	    	PHPExcel_ReferenceHelper::getInstance()->updateNamedFormulas($this->_worksheet->getParent(), $oldTitle, $newTitle);
     	}
+    	return $this;
     }
-    
+
     /**
      * Get worksheet
      *
@@ -137,18 +148,20 @@ class PHPExcel_NamedRange
     public function getWorksheet() {
     	return $this->_worksheet;
     }
-    
+
     /**
      * Set worksheet
      *
      * @param PHPExcel_Worksheet $value
+     * @return PHPExcel_NamedRange
      */
     public function setWorksheet(PHPExcel_Worksheet $value = null) {
     	if (!is_null($value)) {
     		$this->_worksheet = $value;
     	}
+    	return $this;
     }
-    
+
     /**
      * Get range
      *
@@ -157,18 +170,20 @@ class PHPExcel_NamedRange
     public function getRange() {
     	return $this->_range;
     }
-    
+
     /**
      * Set range
      *
      * @param string $value
+     * @return PHPExcel_NamedRange
      */
     public function setRange($value = null) {
     	if (!is_null($value)) {
     		$this->_range = $value;
     	}
+    	return $this;
     }
-    
+
     /**
      * Get localOnly
      *
@@ -177,16 +192,18 @@ class PHPExcel_NamedRange
     public function getLocalOnly() {
     	return $this->_localOnly;
     }
-    
+
     /**
      * Set localOnly
      *
      * @param bool $value
+     * @return PHPExcel_NamedRange
      */
     public function setLocalOnly($value = false) {
     	$this->_localOnly = $value;
+    	return $this;
     }
-    
+
     /**
      * Resolve a named range to a regular cell range
      *
@@ -195,9 +212,9 @@ class PHPExcel_NamedRange
      * @return PHPExcel_NamedRange
      */
     public static function resolveRange($pNamedRange = '', PHPExcel_Worksheet $pSheet) {
-		return $pSheet->getParent()->getNamedRange($pNamedRange);
+		return $pSheet->getParent()->getNamedRange($pNamedRange, $pSheet);
     }
-	    
+
 	/**
 	 * Implement PHP __clone to create a deep clone, not just a shallow copy.
 	 */

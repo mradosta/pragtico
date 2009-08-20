@@ -22,24 +22,32 @@
  * @package    PHPExcel_Writer_Excel2007
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../../');
+}
+
 /** PHPExcel_Writer_Excel2007 */
-require_once 'PHPExcel/Writer/Excel2007.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007.php';
 
 /** PHPExcel_Writer_Excel2007_WriterPart */
-require_once 'PHPExcel/Writer/Excel2007/WriterPart.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007/WriterPart.php';
 
 /** PHPExcel_Cell_DataType */
-require_once 'PHPExcel/Cell/DataType.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Cell/DataType.php';
 
 /** PHPExcel_Shared_XMLWriter */
-require_once 'PHPExcel/Shared/XMLWriter.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/XMLWriter.php';
 
 /** PHPExcel_Shared_String */
-require_once 'PHPExcel/Shared/String.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/String.php';
 
 
 /**
@@ -134,7 +142,13 @@ class PHPExcel_Writer_Excel2007_StringTable extends PHPExcel_Writer_Excel2007_Wr
 					$objWriter->startElement('si');
 					
 						if (! $textElement instanceof PHPExcel_RichText) {
-							$objWriter->writeElement('t', PHPExcel_Shared_String::ControlCharacterPHP2OOXML( $textElement ));
+							$textToWrite = PHPExcel_Shared_String::ControlCharacterPHP2OOXML( $textElement );
+							$objWriter->startElement('t');
+							if ($textToWrite !== trim($textToWrite)) {
+								$objWriter->writeAttribute('xml:space', 'preserve');
+							}
+							$objWriter->writeRaw($textToWrite);
+							$objWriter->endElement();
 						} else if ($textElement instanceof PHPExcel_RichText) {
 							$this->writeRichText($objWriter, $textElement);
 						}
@@ -197,9 +211,9 @@ class PHPExcel_Writer_Excel2007_StringTable extends PHPExcel_Writer_Excel2007_Wr
 							$objWriter->endElement();
 						}
 							
-						// Striketrough
+						// Strikethrough
 						$objWriter->startElement('strike');
-						$objWriter->writeAttribute('val', ($element->getFont()->getStriketrough() ? 'true' : 'false'));
+						$objWriter->writeAttribute('val', ($element->getFont()->getStrikethrough() ? 'true' : 'false'));
 						$objWriter->endElement();			
 							
 						// Color

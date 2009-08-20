@@ -22,42 +22,50 @@
  * @package	PHPExcel_Writer_Excel2007
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license	http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version	1.6.6, 2009-03-02
+ * @version	1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../../');
+}
+
 /** PHPExcel_Writer_Excel2007 */
-require_once 'PHPExcel/Writer/Excel2007.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007.php';
 
 /** PHPExcel_Writer_Excel2007_WriterPart */
-require_once 'PHPExcel/Writer/Excel2007/WriterPart.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007/WriterPart.php';
 
 /** PHPExcel_Cell */
-require_once 'PHPExcel/Cell.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Cell.php';
 
 /** PHPExcel_Worksheet */
-require_once 'PHPExcel/Worksheet.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Worksheet.php';
 
 /** PHPExcel_Style_Conditional */
-require_once 'PHPExcel/Style/Conditional.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Style/Conditional.php';
 
 /** PHPExcel_Style_NumberFormat */
-require_once 'PHPExcel/Style/NumberFormat.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Style/NumberFormat.php';
 
 /** PHPExcel_Shared_Font */
-require_once 'PHPExcel/Shared/Font.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Font.php';
 
 /** PHPExcel_Shared_Date */
-require_once 'PHPExcel/Shared/Date.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Date.php';
 
 /** PHPExcel_Shared_String */
-require_once 'PHPExcel/Shared/String.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/String.php';
 
 /** PHPExcel_RichText */
-require_once 'PHPExcel/RichText.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/RichText.php';
 
 /** PHPExcel_Shared_XMLWriter */
-require_once 'PHPExcel/Shared/XMLWriter.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/XMLWriter.php';
 
 
 /**
@@ -180,7 +188,7 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
 	{
 		// sheetPr
 		$objWriter->startElement('sheetPr');
-		$objWriter->writeAttribute('codeName',		$pSheet->getTitle());
+		//$objWriter->writeAttribute('codeName',		$pSheet->getTitle());
 
 			// outlinePr
 			$objWriter->startElement('outlinePr');
@@ -249,6 +257,11 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
 					$objWriter->writeAttribute('showGridLines',	'true');
 				} else {
 					$objWriter->writeAttribute('showGridLines',	'false');
+				}
+				
+				// Right-to-left
+				if ($pSheet->getRightToLeft()) {
+					$objWriter->writeAttribute('rightToLeft',	'true');
 				}
 
 				// Pane
@@ -392,10 +405,7 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
 				}
 
 				// Style
-				$styleIndex = $this->getParentWriter()->getStylesHashTable()->getIndexForHashCode( $pSheet->getDefaultStyle()->getHashCode() );
-				if ($styleIndex != '') {
-					$objWriter->writeAttribute('style', $styleIndex);
-				}
+				$objWriter->writeAttribute('style', 0);
 
 				$objWriter->endElement();
 			}
@@ -451,50 +461,48 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
 		$id = 1;
 
 		// Loop trough styles in the current worksheet
-		foreach ($pSheet->getStyles() as $cellCoordinate => $style) {
-			if (count($style->getConditionalStyles()) > 0) {
-				foreach ($style->getConditionalStyles() as $conditional) {
-					// WHY was this again?
-					// if ($this->getParentWriter()->getStylesConditionalHashTable()->getIndexForHashCode( $conditional->getHashCode() ) == '') {
-					//	continue;
-					// }
+		foreach ($pSheet->getConditionalStylesCollection() as $cellCoordinate => $conditionalStyles) {
+			foreach ($conditionalStyles as $conditional) {
+				// WHY was this again?
+				// if ($this->getParentWriter()->getStylesConditionalHashTable()->getIndexForHashCode( $conditional->getHashCode() ) == '') {
+				//	continue;
+				// }
 
-					if ($conditional->getConditionType() != PHPExcel_Style_Conditional::CONDITION_NONE) {
-						// conditionalFormatting
-						$objWriter->startElement('conditionalFormatting');
-						$objWriter->writeAttribute('sqref',	$cellCoordinate);
+				if ($conditional->getConditionType() != PHPExcel_Style_Conditional::CONDITION_NONE) {
+					// conditionalFormatting
+					$objWriter->startElement('conditionalFormatting');
+					$objWriter->writeAttribute('sqref',	$cellCoordinate);
 
-							// cfRule
-							$objWriter->startElement('cfRule');
-							$objWriter->writeAttribute('type',		$conditional->getConditionType());
-							$objWriter->writeAttribute('dxfId',		$this->getParentWriter()->getStylesConditionalHashTable()->getIndexForHashCode( $conditional->getHashCode() ));
-							$objWriter->writeAttribute('priority',	$id++);
+						// cfRule
+						$objWriter->startElement('cfRule');
+						$objWriter->writeAttribute('type',		$conditional->getConditionType());
+						$objWriter->writeAttribute('dxfId',		$this->getParentWriter()->getStylesConditionalHashTable()->getIndexForHashCode( $conditional->getHashCode() ));
+						$objWriter->writeAttribute('priority',	$id++);
 
-							if (($conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_CELLIS
-							        ||
-							     $conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_CONTAINSTEXT)
-								&& $conditional->getOperatorType() != PHPExcel_Style_Conditional::OPERATOR_NONE) {
-								$objWriter->writeAttribute('operator',	$conditional->getOperatorType());
+						if (($conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_CELLIS
+								||
+							 $conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_CONTAINSTEXT)
+							&& $conditional->getOperatorType() != PHPExcel_Style_Conditional::OPERATOR_NONE) {
+							$objWriter->writeAttribute('operator',	$conditional->getOperatorType());
+						}
+						
+						if ($conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_CONTAINSTEXT
+							&& !is_null($conditional->getText())) {
+							$objWriter->writeAttribute('text',	$conditional->getText());
+						}
+
+						if ($conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_CELLIS
+							|| $conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_CONTAINSTEXT
+							|| $conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_EXPRESSION) {
+							foreach ($conditional->getConditions() as $formula) {
+								// Formula
+								$objWriter->writeElement('formula',	$formula);
 							}
-							
-							if ($conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_CONTAINSTEXT
-							    && !is_null($conditional->getText())) {
-							    $objWriter->writeAttribute('text',	$conditional->getText());
-							}
-
-							if ($conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_CELLIS
-								|| $conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_CONTAINSTEXT
-								|| $conditional->getConditionType() == PHPExcel_Style_Conditional::CONDITION_EXPRESSION) {
-								foreach ($conditional->getConditions() as $formula) {
-									// Formula
-									$objWriter->writeElement('formula',	$formula);
-								}
-							}
-
-							$objWriter->endElement();
+						}
 
 						$objWriter->endElement();
-					}
+
+					$objWriter->endElement();
 				}
 			}
 		}
@@ -896,7 +904,7 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
 						// Row dimensions
 						if ($rowDimension->getRowHeight() >= 0) {
 							$objWriter->writeAttribute('customHeight',	'1');
-							$objWriter->writeAttribute('ht',			$rowDimension->getRowHeight());
+							$objWriter->writeAttribute('ht',			PHPExcel_Shared_String::FormatNumber($rowDimension->getRowHeight()));
 						}
 	
 						// Row visibility
@@ -951,16 +959,8 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
 			$objWriter->writeAttribute('r', $pCell->getCoordinate());
 
 			// Sheet styles
-			$aStyles 		= $pSheet->getStyles();
-			$styleIndex 	= '';
-			if (isset($aStyles[$pCell->getCoordinate()])) {
-				$styleIndex = $aStyles[$pCell->getCoordinate()]->getHashIndex();
-			} else {
-				$styleIndex = $pSheet->getDefaultStyle()->getHashIndex();
-			}
-
-			if ($styleIndex != '') {
-				$objWriter->writeAttribute('s', $styleIndex);
+			if ($pCell->getXfIndex() != '') {
+				$objWriter->writeAttribute('s', $pCell->getXfIndex());
 			}
 
 			// If cell value is supplied, write cell value
@@ -1022,7 +1022,8 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
 							if ($this->getParentWriter()->getPreCalculateFormulas()) {
 								$calculatedValue = $pCell->getCalculatedValue();
 								if (!is_array($calculatedValue) && substr($calculatedValue, 0, 1) != '#') {
-									$objWriter->writeElement('v', $calculatedValue);
+									$v = PHPExcel_Shared_String::FormatNumber($calculatedValue);
+									$objWriter->writeElement('v', $v);
 								} else {
 									$objWriter->writeElement('v', '0');
 								}
@@ -1032,21 +1033,9 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
 						}
 						break;
 					case 'n':			// Numeric
-						if (PHPExcel_Shared_Date::isDateTime($pCell)) {
-							$dateValue = $pCell->getValue();
-							if (is_string($dateValue)) {
-								//	Error string
-								$objWriter->writeElement('v', $pFlippedStringTable[$dateValue]);
-							} elseif (!is_float($dateValue)) {
-								//	PHP serialized date/time or date/time object
-								$objWriter->writeElement('v', PHPExcel_Shared_Date::PHPToExcel($dateValue));
-							} else {
-								//	Excel serialized date/time
-								$objWriter->writeElement('v', $dateValue);
-							}
-						} else {
-							$objWriter->writeElement('v', $pCell->getValue());
-						}
+						// force point as decimal separator in case current locale uses comma
+						$v = str_replace(',', '.', $pCell->getValue());
+						$objWriter->writeElement('v', $v);
 						break;
 					case 'b':			// Boolean
 						$objWriter->writeElement('v', ($pCell->getValue() ? '1' : '0'));

@@ -22,63 +22,71 @@
  * @package    PHPExcel_Writer_Excel2007
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
+}
+
 /** PHPExcel */
-require_once 'PHPExcel.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel.php';
 
 /** PHPExcel_HashTable */
-require_once 'PHPExcel/HashTable.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/HashTable.php';
 
 /** PHPExcel_IComparable */
-require_once 'PHPExcel/IComparable.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/IComparable.php';
 
 /** PHPExcel_Worksheet */
-require_once 'PHPExcel/Worksheet.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Worksheet.php';
 
 /** PHPExcel_Cell */
-require_once 'PHPExcel/Cell.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Cell.php';
 
 /** PHPExcel_IWriter */
-require_once 'PHPExcel/Writer/IWriter.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/IWriter.php';
 
 /** PHPExcel_Shared_XMLWriter */
-require_once 'PHPExcel/Shared/XMLWriter.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/XMLWriter.php';
 
 /** PHPExcel_Writer_Excel2007_WriterPart */
-require_once 'PHPExcel/Writer/Excel2007/WriterPart.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007/WriterPart.php';
 
 /** PHPExcel_Writer_Excel2007_StringTable */
-require_once 'PHPExcel/Writer/Excel2007/StringTable.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007/StringTable.php';
 
 /** PHPExcel_Writer_Excel2007_ContentTypes */
-require_once 'PHPExcel/Writer/Excel2007/ContentTypes.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007/ContentTypes.php';
 
 /** PHPExcel_Writer_Excel2007_DocProps */
-require_once 'PHPExcel/Writer/Excel2007/DocProps.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007/DocProps.php';
 
 /** PHPExcel_Writer_Excel2007_Rels */
-require_once 'PHPExcel/Writer/Excel2007/Rels.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007/Rels.php';
 
 /** PHPExcel_Writer_Excel2007_Theme */
-require_once 'PHPExcel/Writer/Excel2007/Theme.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007/Theme.php';
 
 /** PHPExcel_Writer_Excel2007_Style */
-require_once 'PHPExcel/Writer/Excel2007/Style.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007/Style.php';
 
 /** PHPExcel_Writer_Excel2007_Workbook */
-require_once 'PHPExcel/Writer/Excel2007/Workbook.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007/Workbook.php';
 
 /** PHPExcel_Writer_Excel2007_Worksheet */
-require_once 'PHPExcel/Writer/Excel2007/Worksheet.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007/Worksheet.php';
 
 /** PHPExcel_Writer_Excel2007_Drawing */
-require_once 'PHPExcel/Writer/Excel2007/Drawing.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007/Drawing.php';
 
 /** PHPExcel_Writer_Excel2007_Comments */
-require_once 'PHPExcel/Writer/Excel2007/Comments.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007/Comments.php';
 
 
 /**
@@ -124,13 +132,6 @@ class PHPExcel_Writer_Excel2007 implements PHPExcel_Writer_IWriter
 	 * @var string[]
 	 */
 	private $_stringTable;
-
-	/**
-	 * Private unique PHPExcel_Style HashTable
-	 *
-	 * @var PHPExcel_HashTable
-	 */
-	private $_stylesHashTable;
 
 	/**
 	 * Private unique PHPExcel_Style_Conditional HashTable
@@ -220,16 +221,12 @@ class PHPExcel_Writer_Excel2007 implements PHPExcel_Writer_IWriter
 
 		// Set HashTable variables
 		$this->_stringTable					= array();
-		$this->_stylesHashTable 			= new PHPExcel_HashTable();
 		$this->_stylesConditionalHashTable 	= new PHPExcel_HashTable();
 		$this->_fillHashTable 				= new PHPExcel_HashTable();
 		$this->_fontHashTable 				= new PHPExcel_HashTable();
 		$this->_bordersHashTable 			= new PHPExcel_HashTable();
 		$this->_numFmtHashTable 			= new PHPExcel_HashTable();
 		$this->_drawingHashTable 			= new PHPExcel_HashTable();
-
-		// Other initializations
-		$this->_serializePHPExcel			= false;
     }
 
 	/**
@@ -255,10 +252,13 @@ class PHPExcel_Writer_Excel2007 implements PHPExcel_Writer_IWriter
 	public function save($pFilename = null)
 	{
 		if (!is_null($this->_spreadSheet)) {
+			// garbage collect
+			$this->_spreadSheet->garbageCollect();
+
 			// If $pFilename is php://output or php://stdout, make it a temporary file...
 			$originalFilename = $pFilename;
 			if (strtolower($pFilename) == 'php://output' || strtolower($pFilename) == 'php://stdout') {
-				$pFilename = @tempnam('./', 'phpxl');
+				$pFilename = @tempnam('./', 'phpxltmp');
 				if ($pFilename == '') {
 					$pFilename = $originalFilename;
 				}
@@ -274,7 +274,6 @@ class PHPExcel_Writer_Excel2007 implements PHPExcel_Writer_IWriter
 			}
 
 			// Create styles dictionaries
-			$this->_stylesHashTable->addFromSource( 			$this->getWriterPart('Style')->allStyles($this->_spreadSheet) 			);
 			$this->_stylesConditionalHashTable->addFromSource( 	$this->getWriterPart('Style')->allConditionalStyles($this->_spreadSheet) 			);
 			$this->_fillHashTable->addFromSource( 				$this->getWriterPart('Style')->allFills($this->_spreadSheet) 			);
 			$this->_fontHashTable->addFromSource( 				$this->getWriterPart('Style')->allFonts($this->_spreadSheet) 			);
@@ -428,13 +427,15 @@ class PHPExcel_Writer_Excel2007 implements PHPExcel_Writer_IWriter
 	}
 
 	/**
-	 * Get PHPExcel object
+	 * Set PHPExcel object
 	 *
 	 * @param 	PHPExcel 	$pPHPExcel	PHPExcel object
 	 * @throws	Exception
+	 * @return PHPExcel_Writer_Excel2007
 	 */
 	public function setPHPExcel(PHPExcel $pPHPExcel = null) {
 		$this->_spreadSheet = $pPHPExcel;
+		return $this;
 	}
 
     /**
@@ -444,15 +445,6 @@ class PHPExcel_Writer_Excel2007 implements PHPExcel_Writer_IWriter
      */
     public function getStringTable() {
     	return $this->_stringTable;
-    }
-
-    /**
-     * Get PHPExcel_Style HashTable
-     *
-     * @return PHPExcel_HashTable
-     */
-    public function getStylesHashTable() {
-    	return $this->_stylesHashTable;
     }
 
     /**
@@ -540,9 +532,11 @@ class PHPExcel_Writer_Excel2007 implements PHPExcel_Writer_IWriter
      * Set Pre-Calculate Formulas
      *
      * @param boolean $pValue	Office2003 compatibility?
+     * @return PHPExcel_Writer_Excel2007
      */
     public function setOffice2003Compatibility($pValue = false) {
     	$this->_office2003compatibility = $pValue;
+    	return $this;
     }
 
 	/**
@@ -560,6 +554,7 @@ class PHPExcel_Writer_Excel2007 implements PHPExcel_Writer_IWriter
 	 * @param 	boolean 	$pValue
 	 * @param	string		$pDirectory		Disk caching directory
 	 * @throws	Exception	Exception when directory does not exist
+	 * @return PHPExcel_Writer_Excel2007
 	 */
 	public function setUseDiskCaching($pValue = false, $pDirectory = null) {
 		$this->_useDiskCaching = $pValue;
@@ -571,6 +566,7 @@ class PHPExcel_Writer_Excel2007 implements PHPExcel_Writer_IWriter
     			throw new Exception("Directory does not exist: $pDirectory");
     		}
 		}
+		return $this;
 	}
 	    
 	/**

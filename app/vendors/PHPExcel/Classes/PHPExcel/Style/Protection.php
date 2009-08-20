@@ -26,8 +26,16 @@
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
+}
+
 /** PHPExcel_IComparable */
-require_once 'PHPExcel/IComparable.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/IComparable.php';
 
 
 /**
@@ -59,81 +67,113 @@ class PHPExcel_Style_Protection implements PHPExcel_IComparable
 	private $_hidden;
 
 	/**
-	 * Parent Style
-	 *
-	 * @var PHPExcel_Style
-	 */
-
-	private $_parent;
-
-	/**
 	 * Parent Borders
 	 *
 	 * @var _parentPropertyName string
 	 */
 	private $_parentPropertyName;
 
+	/**
+	 * Supervisor?
+	 *
+	 * @var boolean
+	 */
+	private $_isSupervisor;
+
+	/**
+	 * Parent. Only used for supervisor
+	 *
+	 * @var PHPExcel_Style
+	 */
+	private $_parent;
+
     /**
      * Create a new PHPExcel_Style_Protection
      */
-    public function __construct()
+    public function __construct($isSupervisor = false)
     {
+    	// Supervisor?
+		$this->_isSupervisor = $isSupervisor;
+
     	// Initialise values
     	$this->_locked			= self::PROTECTION_INHERIT;
     	$this->_hidden			= self::PROTECTION_INHERIT;
     }
 
 	/**
-	 * Property Prepare bind
+	 * Bind parent. Only used for supervisor
 	 *
-	 * Configures this object for late binding as a property of a parent object
-	 *
-	 * @param $parent
-	 * @param $parentPropertyName
+	 * @param PHPExcel_Style $parent
+	 * @return PHPExcel_Style_Protection
 	 */
-	public function propertyPrepareBind($parent, $parentPropertyName)
+	public function bindParent($parent)
 	{
-		// Initialize parent PHPExcel_Style for late binding. This relationship purposely ends immediately when this object
-		// is bound to the PHPExcel_Style object pointed to so as to prevent circular references.
-		$this->_parent		 		= $parent;
-		$this->_parentPropertyName	= $parentPropertyName;
-	}
-
-    /**
-     * Property Get Bound
-     *
-     * Returns the PHPExcel_Style_Protection that is actual bound to PHPExcel_Style
-	 *
-	 * @return PHPExcel_Style_Protection
-     */
-	private function propertyGetBound() {
-		if(!isset($this->_parent))
-			return $this;																// I am bound
-
-		if($this->_parent->propertyIsBound($this->_parentPropertyName))
-			return $this->_parent->getProtection();										// Another one is bound
-
-		return $this;																	// No one is bound yet
-	}
-
-    /**
-     * Property Begin Bind
-     *
-     * If no PHPExcel_Style_Protection has been bound to PHPExcel_Style then bind this one. Return the actual bound one.
-	 *
-	 * @return PHPExcel_Style_Protection
-     */
-	private function propertyBeginBind() {
-		if(!isset($this->_parent))
-			return $this;																// I am already bound
-
-		if($this->_parent->propertyIsBound($this->_parentPropertyName))
-			return $this->_parent->getProtection();										// Another one is already bound
-
-		$this->_parent->propertyCompleteBind($this, $this->_parentPropertyName);		// Bind myself
-		$this->_parent = null;
-
+		$this->_parent = $parent;
 		return $this;
+	}
+
+	/**
+	 * Is this a supervisor or a real style component?
+	 *
+	 * @return boolean
+	 */
+	public function getIsSupervisor()
+	{
+		return $this->_isSupervisor;
+	}
+
+	/**
+	 * Get the shared style component for the currently active cell in currently active sheet.
+	 * Only used for style supervisor
+	 *
+	 * @return PHPExcel_Style_Protection
+	 */
+	public function getSharedComponent()
+	{
+		return $this->_parent->getSharedComponent()->getProtection();
+	}
+
+	/**
+	 * Get the currently active sheet. Only used for supervisor
+	 *
+	 * @return PHPExcel_Worksheet
+	 */
+	public function getActiveSheet()
+	{
+		return $this->_parent->getActiveSheet();
+	}
+
+	/**
+	 * Get the currently active cell coordinate in currently active sheet.
+	 * Only used for supervisor
+	 *
+	 * @return string E.g. 'A1'
+	 */
+	public function getXSelectedCells()
+	{
+		return $this->getActiveSheet()->getXSelectedCells();
+	}
+
+	/**
+	 * Get the currently active cell coordinate in currently active sheet.
+	 * Only used for supervisor
+	 *
+	 * @return string E.g. 'A1'
+	 */
+	public function getXActiveCell()
+	{
+		return $this->getActiveSheet()->getXActiveCell();
+	}
+
+	/**
+	 * Build style array from subcomponents
+	 *
+	 * @param array $array
+	 * @return array
+	 */
+	public function getStyleArray($array)
+	{
+		return array('protection' => $array);
 	}
 
     /**
@@ -145,19 +185,25 @@ class PHPExcel_Style_Protection implements PHPExcel_IComparable
      *
      * @param	array	$pStyles	Array containing style information
      * @throws	Exception
+     * @return PHPExcel_Style_Protection
      */
-    public function applyFromArray($pStyles = null) {
-    	if (is_array($pStyles)) {
-    	    if (array_key_exists('locked', $pStyles)) {
-    			$this->setLocked($pStyles['locked']);
-    		}
-    	    if (array_key_exists('hidden', $pStyles)) {
-    			$this->setHidden($pStyles['hidden']);
-    		}
-    	} else {
-    		throw new Exception("Invalid style array passed.");
-    	}
-    }
+	public function applyFromArray($pStyles = null) {
+		if (is_array($pStyles)) {
+			if ($this->_isSupervisor) {
+				$this->getActiveSheet()->getStyle($this->getXSelectedCells())->applyFromArray($this->getStyleArray($pStyles));
+			} else {
+				if (array_key_exists('locked', $pStyles)) {
+					$this->setLocked($pStyles['locked']);
+				}
+				if (array_key_exists('hidden', $pStyles)) {
+					$this->setHidden($pStyles['hidden']);
+				}
+			}
+		} else {
+			throw new Exception("Invalid style array passed.");
+		}
+		return $this;
+	}
 
     /**
      * Get locked
@@ -165,16 +211,26 @@ class PHPExcel_Style_Protection implements PHPExcel_IComparable
      * @return string
      */
     public function getLocked() {
-    	return $this->propertyGetBound()->_locked;
+		if ($this->_isSupervisor) {
+			return $this->getSharedComponent()->getLocked();
+		}
+    	return $this->_locked;
     }
 
     /**
      * Set locked
      *
      * @param string $pValue
+     * @return PHPExcel_Style_Protection
      */
     public function setLocked($pValue = self::PROTECTION_INHERIT) {
-    	$this->propertyBeginBind()->_locked = $pValue;
+		if ($this->_isSupervisor) {
+			$styleArray = $this->getStyleArray(array('locked' => $pValue));
+			$this->getActiveSheet()->getStyle($this->getXSelectedCells())->applyFromArray($styleArray);
+		} else {
+			$this->_locked = $pValue;
+		}
+		return $this;
     }
 
     /**
@@ -183,16 +239,26 @@ class PHPExcel_Style_Protection implements PHPExcel_IComparable
      * @return string
      */
     public function getHidden() {
-    	return $this->propertyGetBound()->_hidden;
+		if ($this->_isSupervisor) {
+			return $this->getSharedComponent()->getHidden();
+		}
+    	return $this->_hidden;
     }
 
     /**
      * Set hidden
      *
      * @param string $pValue
+     * @return PHPExcel_Style_Protection
      */
     public function setHidden($pValue = self::PROTECTION_INHERIT) {
-    	$this->propertyBeginBind()->_hidden = $pValue;
+		if ($this->_isSupervisor) {
+			$styleArray = $this->getStyleArray(array('hidden' => $pValue));
+			$this->getActiveSheet()->getStyle($this->getXSelectedCells())->applyFromArray($styleArray);
+		} else {
+			$this->_hidden = $pValue;
+		}
+		return $this;
     }
 
 	/**
@@ -201,10 +267,12 @@ class PHPExcel_Style_Protection implements PHPExcel_IComparable
 	 * @return string	Hash code
 	 */
 	public function getHashCode() {
-		$property = $this->propertyGetBound();
+		if ($this->_isSupervisor) {
+			return $this->getSharedComponent()->getHashCode();
+		}
     	return md5(
-    		  $property->_locked
-    		. $property->_hidden
+    		  $this->_locked
+    		. $this->_hidden
     		. __CLASS__
     	);
     }

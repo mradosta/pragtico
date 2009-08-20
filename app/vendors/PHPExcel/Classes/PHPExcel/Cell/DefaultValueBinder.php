@@ -22,18 +22,29 @@
  * @package    PHPExcel_Cell
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
+}
+
 /** PHPExcel_Cell */
-require_once 'PHPExcel/Cell.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Cell.php';
 
 /** PHPExcel_Cell_IValueBinder */
-require_once 'PHPExcel/Cell/IValueBinder.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Cell/IValueBinder.php';
 
 /** PHPExcel_Cell_DataType */
-require_once 'PHPExcel/Cell/DataType.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Cell/DataType.php';
+
+/** PHPExcel_Shared_String */
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/String.php';
 
 
 /**
@@ -54,6 +65,11 @@ class PHPExcel_Cell_DefaultValueBinder implements PHPExcel_Cell_IValueBinder
 	 */
 	public function bindValue(PHPExcel_Cell $cell, $value = null)
 	{
+		// sanitize UTF-8 strings
+		if (is_string($value)) {
+			$value = PHPExcel_Shared_String::SanitizeUTF8($value);
+		}
+
 		// Set value explicit
 		$cell->setValueExplicit( $value, PHPExcel_Cell_DataType::dataTypeForValue($value) );
 		
@@ -79,9 +95,11 @@ class PHPExcel_Cell_DefaultValueBinder implements PHPExcel_Cell_IValueBinder
 			return PHPExcel_Cell_DataType::TYPE_FORMULA;
 		} elseif (is_bool($pValue)) {
 			return PHPExcel_Cell_DataType::TYPE_BOOL;
-		} elseif (preg_match('/^\-?[0-9]*\.?[0-9]*$/', $pValue)) {
+		} elseif (is_float($pValue) || is_int($pValue)) {
 			return PHPExcel_Cell_DataType::TYPE_NUMERIC;
-		} elseif (array_key_exists($pValue, PHPExcel_Cell_DataType::getErrorCodes())) {
+		} elseif (preg_match('/^\-?[0-9]*\\.?[0-9]*$/', $pValue)) {
+			return PHPExcel_Cell_DataType::TYPE_NUMERIC;
+		} elseif (is_string($pValue) && array_key_exists($pValue, PHPExcel_Cell_DataType::getErrorCodes())) {
 			return PHPExcel_Cell_DataType::TYPE_ERROR;
 		} else {
 			return PHPExcel_Cell_DataType::TYPE_STRING;

@@ -22,7 +22,7 @@
  * @package    PHPExcel_Shared
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
@@ -35,6 +35,27 @@
  */
 class PHPExcel_Shared_Font
 {
+	/** Character set codes used by BIFF5-8 in Font records */
+	const CHARSET_ANSI_LATIN				= 0x00;
+	const CHARSET_SYSTEM_DEFAULT			= 0x01;
+	const CHARSET_SYMBOL					= 0x02;
+	const CHARSET_APPLE_ROMAN				= 0x4D;
+	const CHARSET_ANSI_JAPANESE_SHIFTJIS	= 0x80;
+	const CHARSET_ANSI_KOREAN_HANGUL		= 0x81;
+	const CHARSET_ANSI_KOREAN_JOHAB			= 0x82;
+	const CHARSET_ANSI_CHINESE_SIMIPLIFIED	= 0x86;
+	const CHARSET_ANSI_CHINESE_TRADITIONAL	= 0x88;
+	const CHARSET_ANSI_GREEK				= 0xA1;
+	const CHARSET_ANSI_TURKISH				= 0xA2;
+	const CHARSET_ANSI_VIETNAMESE			= 0xA3;
+	const CHARSET_ANSI_HEBREW				= 0xB1;
+	const CHARSET_ANSI_ARABIC				= 0xB2;
+	const CHARSET_ANSI_BALTIC				= 0xBA;
+	const CHARSET_ANSI_CYRILLIC				= 0xCC;
+	const CHARSET_ANSI_THAI					= 0xDE;
+	const CHARSET_ANSI_LATIN_II				= 0xEE;
+	const CHARSET_OEM_LATIN_I				= 0xFF;
+	
 	/**
 	 * Calculate an (approximate) OpenXML column width, based on font size and text contained
 	 *
@@ -64,7 +85,9 @@ class PHPExcel_Shared_Font
 		}
 		
 		// Calculate column width
-		$columnWidth = ((strlen($columnText) * $fontSize + 5) / $fontSize * 256 ) / 256;
+		// values 1.025 and 0.584 found via interpolation by inspecting real Excel files with
+		// Calibri font. May need further adjustment
+		$columnWidth = 1.025 * strlen($columnText) + 0.584; // Excel adds some padding
 
 		// Calculate approximate rotated column width
 		if ($rotation !== 0) {
@@ -111,4 +134,22 @@ class PHPExcel_Shared_Font
 	public static function centimeterSizeToPixels($sizeInCm = 1) {
 		return ($sizeInCm * 37.795275591);
 	}
+
+	/**
+	 * Returns the associated charset for the font name.
+	 *
+	 * @param string $name Font name
+	 * @return int Character set code
+	 */
+	public static function getCharsetFromFontName($name)
+	{
+		switch ($name) {
+			// Add more cases. Check FONT records in real Excel files.
+			case 'Wingdings':		return self::CHARSET_SYMBOL;
+			case 'Wingdings 2':		return self::CHARSET_SYMBOL;
+			case 'Wingdings 3':		return self::CHARSET_SYMBOL;
+			default:				return self::CHARSET_ANSI_LATIN;
+		}
+	}
+
 }

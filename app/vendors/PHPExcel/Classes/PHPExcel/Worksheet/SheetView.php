@@ -22,7 +22,7 @@
  * @package    PHPExcel_Worksheet
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
@@ -79,6 +79,7 @@ class PHPExcel_Worksheet_SheetView
 	 *
 	 * @param 	int 	$pValue
 	 * @throws 	Exception
+	 * @return PHPExcel_Worksheet_SheetView
 	 */
 	public function setZoomScale($pValue = 100) {
 		if (($pValue >= 10 && $pValue <= 400) || is_null($pValue)) {
@@ -86,6 +87,7 @@ class PHPExcel_Worksheet_SheetView
 		} else {
 			throw new Exception("Valid scale is between 10 and 400.");
 		}
+		return $this;
 	}
 	
 	/**
@@ -104,6 +106,7 @@ class PHPExcel_Worksheet_SheetView
 	 *
 	 * @param 	int 	$pValue
 	 * @throws 	Exception
+	 * @return PHPExcel_Worksheet_SheetView
 	 */
 	public function setZoomScaleNormal($pValue = 100) {
 		if (($pValue >= 10 && $pValue <= 400) || is_null($pValue)) {
@@ -111,6 +114,7 @@ class PHPExcel_Worksheet_SheetView
 		} else {
 			throw new Exception("Valid scale is between 10 and 400.");
 		}
+		return $this;
 	}
 
 	/**

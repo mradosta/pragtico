@@ -22,21 +22,29 @@
  * @package    PHPExcel_Writer
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
+}
+
 /** PHPExcel_IWriter */
-require_once 'PHPExcel/Writer/IWriter.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/IWriter.php';
 
 /** PHPExcel_Cell */
-require_once 'PHPExcel/Cell.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Cell.php';
 
 /** PHPExcel_RichText */
-require_once 'PHPExcel/RichText.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/RichText.php';
 
 /** PHPExcel_Shared_String */
-require_once 'PHPExcel/Shared/String.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/String.php';
 
 
 /**
@@ -160,9 +168,11 @@ class PHPExcel_Writer_CSV implements PHPExcel_Writer_IWriter {
 	 * Set delimiter
 	 *
 	 * @param	string	$pValue		Delimiter, defaults to ,
+	 * @return PHPExcel_Writer_CSV
 	 */
 	public function setDelimiter($pValue = ',') {
 		$this->_delimiter = $pValue;
+		return $this;
 	}
 
 	/**
@@ -178,12 +188,14 @@ class PHPExcel_Writer_CSV implements PHPExcel_Writer_IWriter {
 	 * Set enclosure
 	 *
 	 * @param	string	$pValue		Enclosure, defaults to "
+	 * @return PHPExcel_Writer_CSV
 	 */
 	public function setEnclosure($pValue = '"') {
 		if ($pValue == '') {
 			$pValue = null;
 		}
 		$this->_enclosure = $pValue;
+		return $this;
 	}
 
 	/**
@@ -199,9 +211,11 @@ class PHPExcel_Writer_CSV implements PHPExcel_Writer_IWriter {
 	 * Set line ending
 	 *
 	 * @param	string	$pValue		Line ending, defaults to OS line ending (PHP_EOL)
+	 * @return PHPExcel_Writer_CSV
 	 */
 	public function setLineEnding($pValue = PHP_EOL) {
 		$this->_lineEnding = $pValue;
+		return $this;
 	}
 
 	/**
@@ -217,9 +231,11 @@ class PHPExcel_Writer_CSV implements PHPExcel_Writer_IWriter {
 	 * Set whether BOM should be used
 	 *
 	 * @param	boolean	$pValue		Use UTF-8 byte-order mark? Defaults to false
+	 * @return PHPExcel_Writer_CSV
 	 */
 	public function setUseBOM($pValue = false) {
 		$this->_useBOM = $pValue;
+		return $this;
 	}
 
 	/**
@@ -235,9 +251,11 @@ class PHPExcel_Writer_CSV implements PHPExcel_Writer_IWriter {
 	 * Set sheet index
 	 *
 	 * @param	int		$pValue		Sheet index
+	 * @return PHPExcel_Writer_CSV
 	 */
 	public function setSheetIndex($pValue = 0) {
 		$this->_sheetIndex = $pValue;
+		return $this;
 	}
 
 	/**
@@ -293,8 +311,10 @@ class PHPExcel_Writer_CSV implements PHPExcel_Writer_IWriter {
      * Set Pre-Calculate Formulas
      *
      * @param boolean $pValue	Pre-Calculate Formulas?
+     * @return PHPExcel_Writer_CSV
      */
     public function setPreCalculateFormulas($pValue = true) {
     	$this->_preCalculateFormulas = $pValue;
+    	return $this;
     }
 }

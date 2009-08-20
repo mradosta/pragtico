@@ -1,10 +1,10 @@
-﻿<?php
+<?php
 
 include "../Matrix.php";
 
 /**
-* Tiling of matrix X in [rowWise by colWise] dimension. Tiling 
-* creates a larger matrix than the original data X. Example, if 
+* Tiling of matrix X in [rowWise by colWise] dimension. Tiling
+* creates a larger matrix than the original data X. Example, if
 * X is to be tiled in a [3 x 4] manner, then:
 *
 *     /            \
@@ -20,13 +20,13 @@ include "../Matrix.php";
 */
 
 function tile(&$X, $rowWise, $colWise){
-  
+
   $xArray = $X->getArray();
   print_r($xArray);
-  
+
   $countRow    = 0;
   $countColumn = 0;
-  
+
   $m = $X->getRowDimension();
   $n = $X->getColumnDimension();
 
@@ -36,31 +36,31 @@ function tile(&$X, $rowWise, $colWise){
 
   $newRowDim = $m*$rowWise;
   $newColDim = $n*$colWise;
-  
+
   $result = array();
 
-  for($i=0 ; $i<$newRowDim; $i++){
+  for($i=0 ; $i<$newRowDim; ++$i) {
 
     $holder = array();
 
-    for($j=0 ; $j<$newColDim ; $j++){
+    for($j=0 ; $j<$newColDim ; ++$j) {
 
       $holder[$j] = $xArray[$countRow][$countColumn++];
-       
+
       // reset the column-index to zero to avoid reference to out-of-bound index in xArray[][]
-      
+
       if($countColumn == $n) { $countColumn = 0; }
-      
+
     } // end for
-    
-    $countRow++;
-    
+
+    ++$countRow;
+
     // reset the row-index to zero to avoid reference to out-of-bound index in xArray[][]
-    
+
     if($countRow == $m) { $countRow = 0; }
-    
+
     $result[$i] = $holder;
-  
+
   } // end for
 
   return new Matrix($result);

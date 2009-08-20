@@ -22,12 +22,20 @@
  * @package    PHPExcel
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../');
+}
+
 /** PHPExcel_Shared_PasswordHasher */
-require_once 'PHPExcel/Shared/PasswordHasher.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/PasswordHasher.php';
 
 
 /**
@@ -111,9 +119,11 @@ class PHPExcel_DocumentSecurity
      * Set LockRevision
      *
      * @param boolean $pValue
+     * @return PHPExcel_DocumentSecurity
      */
     function setLockRevision($pValue = false) {
     	$this->_lockRevision = $pValue;
+    	return $this;
     }
     
     /**
@@ -129,9 +139,11 @@ class PHPExcel_DocumentSecurity
      * Set LockStructure
      *
      * @param boolean $pValue
+     * @return PHPExcel_DocumentSecurity
      */
     function setLockStructure($pValue = false) {
 		$this->_lockStructure = $pValue;
+		return $this;
     }
     
     /**
@@ -147,9 +159,11 @@ class PHPExcel_DocumentSecurity
      * Set LockWindows
      *
      * @param boolean $pValue
+     * @return PHPExcel_DocumentSecurity
      */
     function setLockWindows($pValue = false) {
     	$this->_lockWindows = $pValue;
+    	return $this;
     }
     
     /**
@@ -166,12 +180,14 @@ class PHPExcel_DocumentSecurity
      *
      * @param string 	$pValue
      * @param boolean 	$pAlreadyHashed If the password has already been hashed, set this to true
+     * @return PHPExcel_DocumentSecurity
      */
     function setRevisionsPassword($pValue = '', $pAlreadyHashed = false) {
     	if (!$pAlreadyHashed) {
     		$pValue = PHPExcel_Shared_PasswordHasher::hashPassword($pValue);
     	}
     	$this->_revisionsPassword = $pValue;
+    	return $this;
     }
     
     /**
@@ -188,12 +204,14 @@ class PHPExcel_DocumentSecurity
      *
      * @param string 	$pValue
      * @param boolean 	$pAlreadyHashed If the password has already been hashed, set this to true
+     * @return PHPExcel_DocumentSecurity
      */
     function setWorkbookPassword($pValue = '', $pAlreadyHashed = false) {
     	if (!$pAlreadyHashed) {
     		$pValue = PHPExcel_Shared_PasswordHasher::hashPassword($pValue);
     	}
 		$this->_workbookPassword = $pValue;
+		return $this;
     }
 
 	/**

@@ -20,15 +20,23 @@
  * @package    PHPExcel_RichText
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
+}
+
 /** PHPExcel_RichText_ITextElement */
-require_once 'PHPExcel/RichText/ITextElement.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/RichText/ITextElement.php';
 
 /** PHPExcel_Style_Font */
-require_once 'PHPExcel/Style/Font.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Style/Font.php';
 
 
 /**
@@ -71,9 +79,11 @@ class PHPExcel_RichText_TextElement implements PHPExcel_RichText_ITextElement
 	 * Set text
 	 *
 	 * @param 	$pText string	Text
+	 * @return PHPExcel_RichText_ITextElement
 	 */	
 	public function setText($pText = '') {
 		$this->_text = $pText;
+		return $this;
 	}
 	
 	/**

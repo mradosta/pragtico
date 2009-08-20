@@ -22,21 +22,38 @@
  * @package    PHPExcel_Writer_Excel5
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license	http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version	1.6.6, 2009-03-02
+ * @version	1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
+}
+
 /** PHPExcel_IWriter */
-require_once 'PHPExcel/Writer/IWriter.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/IWriter.php';
 
 /** PHPExcel_Cell */
-require_once 'PHPExcel/Cell.php';
-
-/** PHPExcel_Writer_Excel5_Workbook */
-require_once 'PHPExcel/Writer/Excel5/Workbook.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Cell.php';
 
 /** PHPExcel_HashTable */
-require_once 'PHPExcel/HashTable.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/HashTable.php';
+
+/** PHPExcel_Shared_OLE_PPS_Root */
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/OLE/OLE_Root.php';
+
+/** PHPExcel_Shared_OLE_PPS_File */
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/OLE/OLE_File.php';
+
+/** PHPExcel_Writer_Excel5_Parser */
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel5/Parser.php';
+
+/** PHPExcel_Writer_Excel5_Workbook */
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel5/Workbook.php';
 
 
 /**
@@ -46,13 +63,21 @@ require_once 'PHPExcel/HashTable.php';
  * @package    PHPExcel_Writer_Excel5
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
-class PHPExcel_Writer_Excel5 implements PHPExcel_Writer_IWriter {
+class PHPExcel_Writer_Excel5 implements PHPExcel_Writer_IWriter
+{
 	/**
 	 * PHPExcel object
 	 *
 	 * @var PHPExcel
 	 */
 	private $_phpExcel;
+
+	/**
+	 * The BIFF version of the written Excel file, BIFF5 = 0x0500, BIFF8 = 0x0600
+	 *
+	 * @var integer
+	 */
+	private $_BIFF_version;
 
 	/**
 	 * Temporary storage directory
@@ -62,13 +87,49 @@ class PHPExcel_Writer_Excel5 implements PHPExcel_Writer_IWriter {
 	private $_tempDir = '';
 
 	/**
+	 * Total number of shared strings in workbook
+	 *
+	 * @var int
+	 */
+	private $_str_total;
+
+	/**
+	 * Number of unique shared strings in workbook
+	 *
+	 * @var int
+	 */
+	private $_str_unique;
+
+	/**
+	 * Array of unique shared strings in workbook
+	 *
+	 * @var array
+	 */
+	private $_str_table;
+
+	/**
+	 * Formula parser
+	 *
+	 * @var PHPExcel_Writer_Excel5_Parser
+	 */
+	private $_parser;
+
+
+	/**
 	 * Create a new PHPExcel_Writer_Excel5
 	 *
 	 * @param	PHPExcel	$phpExcel	PHPExcel object
 	 */
 	public function __construct(PHPExcel $phpExcel) {
-		$this->_phpExcel	= $phpExcel;
-		$this->_tempDir		= '';
+		$this->_phpExcel		= $phpExcel;
+		$this->_BIFF_version	= 0x0600;
+		$this->_tempDir			= '';
+		
+		$this->_str_total       = 0;
+		$this->_str_unique      = 0;
+		$this->_str_table       = array();
+		$this->_parser          = new PHPExcel_Writer_Excel5_Parser($this->_BIFF_version);
+		
 	}
 
 	/**
@@ -79,78 +140,87 @@ class PHPExcel_Writer_Excel5 implements PHPExcel_Writer_IWriter {
 	 */
 	public function save($pFilename = null) {
 
-		// check for iconv support
-		if (!function_exists('iconv')) {
-			throw new Exception("Cannot write .xls file without PHP support for iconv");
+		// check mbstring.func_overload
+		if (ini_get('mbstring.func_overload') != 0) {
+			throw new Exception('Multibyte string function overloading in PHP must be disabled.');
 		}
 
-		$phpExcel = $this->_phpExcel;
-		$workbook = new PHPExcel_Writer_Excel5_Workbook($pFilename, $phpExcel);
-		$workbook->setVersion(8);
-
-		// Set temp dir
-		if ($this->_tempDir != '') {
-			$workbook->setTempDir($this->_tempDir);
-		}
+		// garbage collect
+		$this->_phpExcel->garbageCollect();
 
 		$saveDateReturnType = PHPExcel_Calculation_Functions::getReturnDateType();
 		PHPExcel_Calculation_Functions::setReturnDateType(PHPExcel_Calculation_Functions::RETURNDATE_EXCEL);
 
-		// Add 15 style Xf's plus 1 cell Xf. Why?
-		for ($i = 0; $i < 15; ++$i) {
-			$workbook->addXfWriter($phpExcel->getSheet(0)->getDefaultStyle(), true);
-		}
-		$workbook->addXfWriter($phpExcel->getSheet(0)->getDefaultStyle());
+		// Initialise workbook writer
+		$this->_writerWorkbook = new PHPExcel_Writer_Excel5_Workbook($this->_phpExcel, $this->_BIFF_version,
+					$this->_str_total, $this->_str_unique, $this->_str_table, $this->_parser, $this->_tempDir);
 
-		// Style dictionary
-		$xfIndexes = array();
-
-		$allStyles = $this->_allStyles($this->_phpExcel);
-		$cellStyleHashes = new PHPExcel_HashTable();
-		$cellStyleHashes->addFromSource( $allStyles );
-
-		$addedStyles = array();
-		foreach ($allStyles as $style) {
-			$styleHashIndex = $style->getHashIndex();
-
-			if(isset($addedStyles[$styleHashIndex])) continue;
+		// Initialise worksheet writers
+		$countSheets = count($this->_phpExcel->getAllSheets());
+		for ($i = 0; $i < $countSheets; ++$i) {
+			$phpSheet  = $this->_phpExcel->getSheet($i);
 			
-			// mapping between PHPExcel style hash index and BIFF XF index
-			$xfIndexes[$styleHashIndex] = $workbook->addXfWriter($style);
-
-			$addedStyles[$style->getHashIndex()] = true;
+			$writerWorksheet = new PHPExcel_Writer_Excel5_Worksheet($this->_BIFF_version,
+									   $this->_str_total, $this->_str_unique,
+									   $this->_str_table,
+									   $this->_parser, $this->_tempDir,
+									   $phpSheet);
+			$this->_writerWorksheets[$i] = $writerWorksheet;
 		}
 
-		// Add empty sheets
-		foreach ($phpExcel->getSheetNames() as $sheetIndex => $sheetName) {
-			$phpSheet  = $phpExcel->getSheet($sheetIndex);
-			$worksheet = $workbook->addWorksheet($phpSheet, $xfIndexes);
+		// add 15 identical cell style Xfs
+		// for now, we use the first cellXf instead of cellStyleXf
+		$cellXfCollection = $this->_phpExcel->getCellXfCollection();
+		for ($i = 0; $i < 15; ++$i) {
+			$this->_writerWorkbook->addXfWriter($cellXfCollection[0], true);
 		}
 
-		PHPExcel_Calculation_Functions::setReturnDateType($saveDateReturnType);
+		// add all the cell Xfs
+		foreach ($this->_phpExcel->getCellXfCollection() as $style) {
+			$this->_writerWorkbook->addXfWriter($style, false);
+		}
 
-		$workbook->close();
-	}
+		// initialize OLE file
+		$workbookStreamName = ($this->_BIFF_version == 0x0600) ? 'Workbook' : 'Book';
+		$OLE = new PHPExcel_Shared_OLE_PPS_File(PHPExcel_Shared_OLE::Asc2Ucs($workbookStreamName));
 
-	/**
-	 * Get an array of all styles
-	 *
-	 * @param	PHPExcel				$pPHPExcel
-	 * @return	PHPExcel_Style[]		All styles in PHPExcel
-	 * @throws	Exception
-	 */
-	private function _allStyles(PHPExcel $pPHPExcel = null)
-	{
-		// Get an array of all styles
-		$aStyles		= array();
+		if ($this->_tempDir != '') {
+			$OLE->setTempDir($this->_tempDir);
+		}
+		$res = $OLE->init();
 
-		for ($i = 0; $i < $pPHPExcel->getSheetCount(); ++$i) {
-			foreach ($pPHPExcel->getSheet($i)->getStyles() as $style) {
-				$aStyles[] = $style;
+		// Write the worksheet streams before the global workbook stream,
+		// because the byte sizes of these are needed in the global workbook stream
+		$worksheetSizes = array();
+		for ($i = 0; $i < $countSheets; ++$i) {
+			$this->_writerWorksheets[$i]->close();
+			$worksheetSizes[] = $this->_writerWorksheets[$i]->_datasize;
+		}
+
+		// add binary data for global workbook stream
+		$OLE->append( $this->_writerWorkbook->writeWorkbook($worksheetSizes) );
+
+		// add binary data for sheet streams
+		for ($i = 0; $i < $countSheets; ++$i) {
+			while ( ($tmp = $this->_writerWorksheets[$i]->getData()) !== false ) {
+				$OLE->append($tmp);
 			}
 		}
 
-		return $aStyles;
+		$root = new PHPExcel_Shared_OLE_PPS_Root(time(), time(), array($OLE));
+		if ($this->_tempDir != '') {
+			$root->setTempDir($this->_tempDir);
+		}
+
+		// save the OLE file
+		$res = $root->save($pFilename);
+
+		PHPExcel_Calculation_Functions::setReturnDateType($saveDateReturnType);
+
+		// clean up
+		foreach ($this->_writerWorksheets as $sheet) {
+			$sheet->cleanup();
+		}
 	}
 
 	/**
@@ -167,6 +237,7 @@ class PHPExcel_Writer_Excel5 implements PHPExcel_Writer_IWriter {
 	 *
 	 * @param	string	$pValue		Temporary storage directory
 	 * @throws	Exception	Exception when directory does not exist
+	 * @return PHPExcel_Writer_Excel5
 	 */
 	public function setTempDir($pValue = '') {
 		if (is_dir($pValue)) {
@@ -174,5 +245,7 @@ class PHPExcel_Writer_Excel5 implements PHPExcel_Writer_IWriter {
 		} else {
 			throw new Exception("Directory does not exist: $pValue");
 		}
+		return $this;
 	}
+
 }

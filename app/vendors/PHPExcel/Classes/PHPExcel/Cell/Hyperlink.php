@@ -22,7 +22,7 @@
  * @package    PHPExcel_Cell
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
@@ -87,9 +87,11 @@ class PHPExcel_Cell_Hyperlink
 	 * Set URL
 	 *
 	 * @param	string	$value
+	 * @return PHPExcel_Cell_Hyperlink
 	 */
 	public function setUrl($value = '') {
 		$this->_url = $value;
+		return $this;
 	}
 	
 	/**
@@ -105,9 +107,11 @@ class PHPExcel_Cell_Hyperlink
 	 * Set tooltip
 	 *
 	 * @param	string	$value
+	 * @return PHPExcel_Cell_Hyperlink
 	 */
 	public function setTooltip($value = '') {
 		$this->_tooltip = $value;
+		return $this;
 	}
 	
 	/**
@@ -132,9 +136,11 @@ class PHPExcel_Cell_Hyperlink
 	 * Set Parent
 	 *
 	 * @param	PHPExcel_Cell	$value
+	 * @return PHPExcel_Cell_Hyperlink
 	 */
 	public function setParent($value = null) {
 		$this->_parent = $value;
+		return $this;
 	}
 	
 	/**

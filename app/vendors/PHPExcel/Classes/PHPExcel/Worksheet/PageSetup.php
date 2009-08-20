@@ -22,7 +22,7 @@
  * @package    PHPExcel_Worksheet
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
@@ -285,9 +285,11 @@ class PHPExcel_Worksheet_PageSetup
      * Set Paper Size
      *
      * @param int $pValue
+     * @return PHPExcel_Worksheet_PageSetup
      */
     public function setPaperSize($pValue = PHPExcel_Worksheet_PageSetup::PAPERSIZE_LETTER) {
     	$this->_paperSize = $pValue;
+    	return $this;
     }
 
     /**
@@ -303,9 +305,11 @@ class PHPExcel_Worksheet_PageSetup
      * Set Orientation
      *
      * @param string $pValue
+     * @return PHPExcel_Worksheet_PageSetup
      */
     public function setOrientation($pValue = PHPExcel_Worksheet_PageSetup::ORIENTATION_DEFAULT) {
     	$this->_orientation = $pValue;
+    	return $this;
     }
 
 	/**
@@ -325,13 +329,17 @@ class PHPExcel_Worksheet_PageSetup
 	 *
 	 * @param 	int? 	$pValue
 	 * @throws 	Exception
+	 * @return PHPExcel_Worksheet_PageSetup
 	 */
 	public function setScale($pValue = 100) {
-		if (($pValue >= 10 && $pValue <= 400) || is_null($pValue)) {
+		// Microsoft Office Excel 2007 only allows setting a scale between 10 and 400 via the user interface,
+		// but it is apparently still able to handle any scale >= 0, where 0 results in 100
+		if (($pValue >= 0) || is_null($pValue)) {
 			$this->_scale = $pValue;
 		} else {
-			throw new Exception("Valid scale is between 10 and 400.");
+			throw new Exception("Scale must not be negative");
 		}
+		return $this;
 	}
 
 	/**
@@ -347,11 +355,13 @@ class PHPExcel_Worksheet_PageSetup
 	 * Set Fit To Height
 	 *
 	 * @param int? $pValue
+	 * @return PHPExcel_Worksheet_PageSetup
 	 */
 	public function setFitToHeight($pValue = 1) {
 		if ($pValue != '') {
 			$this->_fitToHeight = $pValue;
 		}
+		return $this;
 	}
 
 	/**
@@ -367,11 +377,13 @@ class PHPExcel_Worksheet_PageSetup
 	 * Set Fit To Width
 	 *
 	 * @param int? $pValue
+	 * @return PHPExcel_Worksheet_PageSetup
 	 */
 	public function setFitToWidth($pValue = 1) {
 		if ($pValue != '') {
 			$this->_fitToWidth = $pValue;
 		}
+		return $this;
 	}
 
 	/**
@@ -402,11 +414,13 @@ class PHPExcel_Worksheet_PageSetup
 	 * Set Columns to repeat at left
 	 *
 	 * @param array $pValue Containing start column and end column, empty array if option unset
+	 * @return PHPExcel_Worksheet_PageSetup
 	 */
 	public function setColumnsToRepeatAtLeft($pValue = null) {
 		if (is_array($pValue)) {
 			$this->_columnsToRepeatAtLeft = $pValue;
 		}
+		return $this;
 	}
 
 	/**
@@ -414,9 +428,11 @@ class PHPExcel_Worksheet_PageSetup
 	 *
 	 * @param string $pStart
 	 * @param string $pEnd
+	 * @return PHPExcel_Worksheet_PageSetup
 	 */
 	public function setColumnsToRepeatAtLeftByStartAndEnd($pStart = 'A', $pEnd = 'A') {
 		$this->_columnsToRepeatAtLeft = array($pStart, $pEnd);
+		return $this;
 	}
 
 	/**
@@ -447,11 +463,13 @@ class PHPExcel_Worksheet_PageSetup
 	 * Set Rows to repeat at top
 	 *
 	 * @param array $pValue Containing start column and end column, empty array if option unset
+	 * @return PHPExcel_Worksheet_PageSetup
 	 */
 	public function setRowsToRepeatAtTop($pValue = null) {
 		if (is_array($pValue)) {
 			$this->_rowsToRepeatAtTop = $pValue;
 		}
+		return $this;
 	}
 
 	/**
@@ -459,9 +477,11 @@ class PHPExcel_Worksheet_PageSetup
 	 *
 	 * @param int $pStart
 	 * @param int $pEnd
+	 * @return PHPExcel_Worksheet_PageSetup
 	 */
 	public function setRowsToRepeatAtTopByStartAndEnd($pStart = 1, $pEnd = 1) {
 		$this->_rowsToRepeatAtTop = array($pStart, $pEnd);
+		return $this;
 	}
 
 	/**
@@ -477,9 +497,11 @@ class PHPExcel_Worksheet_PageSetup
 	 * Set center page horizontally
 	 *
 	 * @param bool $value
+	 * @return PHPExcel_Worksheet_PageSetup
 	 */
 	public function setHorizontalCentered($value = false) {
 		$this->_horizontalCentered = $value;
+		return $this;
 	}
 
 	/**
@@ -495,9 +517,11 @@ class PHPExcel_Worksheet_PageSetup
 	 * Set center page vertically
 	 *
 	 * @param bool $value
+	 * @return PHPExcel_Worksheet_PageSetup
 	 */
 	public function setVerticalCentered($value = false) {
 		$this->_verticalCentered = $value;
+		return $this;
 	}
 
 	/**
@@ -523,6 +547,7 @@ class PHPExcel_Worksheet_PageSetup
 	 *
 	 * @param string $value
 	 * @throws Exception
+	 * @return PHPExcel_Worksheet_PageSetup
 	 */
 	public function setPrintArea($value) {
     	if (strpos($value,':') === false) {
@@ -532,6 +557,7 @@ class PHPExcel_Worksheet_PageSetup
     	} else {
 			$this->_printArea = strtoupper($value);
     	}
+    	return $this;
 	}
 
 	/**
@@ -541,10 +567,11 @@ class PHPExcel_Worksheet_PageSetup
 	 * @param int $row1			Row 1
 	 * @param int $column2		Column 2
 	 * @param int $row2			Row 2
+	 * @return PHPExcel_Worksheet_PageSetup
 	 */
     public function setPrintAreaByColumnAndRow($column1, $row1, $column2, $row2)
     {
-    	$this->setPrintArea(PHPExcel_Cell::stringFromColumnIndex($column1) . $row1 . ':' . PHPExcel_Cell::stringFromColumnIndex($column2) . $row2);
+    	return $this->setPrintArea(PHPExcel_Cell::stringFromColumnIndex($column1) . $row1 . ':' . PHPExcel_Cell::stringFromColumnIndex($column2) . $row2);
     }
 
 	/**

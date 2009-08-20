@@ -22,21 +22,29 @@
  * @package    PHPExcel_Worksheet_Drawing
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
+}
+
 /** PHPExcel_IComparable */
-require_once 'PHPExcel/IComparable.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/IComparable.php';
 
 /** PHPExcel_Worksheet */
-require_once 'PHPExcel/Worksheet.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Worksheet.php';
 
 /** PHPExcel_Worksheet_BaseDrawing */
-require_once 'PHPExcel/Worksheet/BaseDrawing.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Worksheet/BaseDrawing.php';
 
 /** PHPExcel_Worksheet_Drawing_Shadow */
-require_once 'PHPExcel/Worksheet/Drawing/Shadow.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Worksheet/Drawing/Shadow.php';
 
 
 /**
@@ -82,7 +90,9 @@ class PHPExcel_Worksheet_Drawing extends PHPExcel_Worksheet_BaseDrawing implemen
      * @return string
      */
     public function getIndexedFilename() {
-    	return str_replace('.' . $this->getExtension(), '', $this->getFilename()) . $this->getImageIndex() . '.' . $this->getExtension();
+    	$fileName = $this->getFilename();
+    	$fileName = str_replace(' ', '_', $fileName);
+    	return str_replace('.' . $this->getExtension(), '', $fileName) . $this->getImageIndex() . '.' . $this->getExtension();
     }
     
     /**
@@ -110,6 +120,7 @@ class PHPExcel_Worksheet_Drawing extends PHPExcel_Worksheet_BaseDrawing implemen
      * @param 	string 		$pValue			File path
      * @param 	boolean		$pVerifyFile	Verify file
      * @throws 	Exception
+     * @return PHPExcel_Worksheet_Drawing
      */
     public function setPath($pValue = '', $pVerifyFile = true) {
     	if ($pVerifyFile) {
@@ -126,6 +137,7 @@ class PHPExcel_Worksheet_Drawing extends PHPExcel_Worksheet_BaseDrawing implemen
     	} else {
     		$this->_path = $pValue;
     	}
+    	return $this;
     }
 
 	/**

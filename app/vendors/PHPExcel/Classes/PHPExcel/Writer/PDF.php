@@ -22,30 +22,38 @@
  * @package    PHPExcel_Writer
  * @copyright  Copyright (c) 2006 - 2009 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.6.6, 2009-03-02
+ * @version    1.7.0, 2009-08-10
  */
 
 
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+	/**
+	 * @ignore
+	 */
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
+}
+
 /** PHPExcel_IWriter */
-require_once 'PHPExcel/Writer/IWriter.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/IWriter.php';
 
 /** PHPExcel_Writer_HTML */
-require_once 'PHPExcel/Writer/HTML.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/HTML.php';
 
 /** PHPExcel_Cell */
-require_once 'PHPExcel/Cell.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Cell.php';
 
 /** PHPExcel_RichText */
-require_once 'PHPExcel/RichText.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/RichText.php';
 
 /** PHPExcel_Shared_Drawing */
-require_once 'PHPExcel/Shared/Drawing.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Drawing.php';
 
 /** PHPExcel_HashTable */
-require_once 'PHPExcel/HashTable.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/HashTable.php';
 
 /** PHPExcel_Shared_PDF */
-require_once 'PHPExcel/Shared/PDF.php';
+require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/PDF.php';
 
 
 /**
@@ -81,6 +89,9 @@ class PHPExcel_Writer_PDF extends PHPExcel_Writer_HTML implements PHPExcel_Write
 	 * @throws 	Exception
 	 */
 	public function save($pFilename = null) {
+		// garbage collect
+		$this->_phpExcel->garbageCollect();
+
 		$saveArrayReturnType = PHPExcel_Calculation::getArrayReturnType();
 		PHPExcel_Calculation::setArrayReturnType(PHPExcel_Calculation::RETURN_ARRAY_AS_VALUE);
 
@@ -89,6 +100,9 @@ class PHPExcel_Writer_PDF extends PHPExcel_Writer_HTML implements PHPExcel_Write
 		if ($fileHandle === false) {
 			throw new Exception("Could not open file $pFilename for writing.");
 		}
+		
+		// Set PDF
+		$this->_isPdf = true;
 
 		// Build CSS
 		$this->buildCSS(true);
@@ -112,7 +126,10 @@ class PHPExcel_Writer_PDF extends PHPExcel_Writer_HTML implements PHPExcel_Write
 
 		// Create PDF
 		$pdf = new TCPDF($orientation, 'pt', $paperSize);
+		$pdf->setPrintHeader(false);
+		$pdf->setPrintFooter(false);
 		$pdf->AddPage();
+		$pdf->SetFont('freesans');
 		$pdf->writeHTML($html);
 
 		// Document info
@@ -145,6 +162,7 @@ class PHPExcel_Writer_PDF extends PHPExcel_Writer_HTML implements PHPExcel_Write
 	 *
 	 * @param 	string	$pValue		Temporary storage directory
 	 * @throws 	Exception	Exception when directory does not exist
+	 * @return PHPExcel_Writer_PDF
 	 */
 	public function setTempDir($pValue = '') {
 		if (is_dir($pValue)) {
@@ -152,5 +170,6 @@ class PHPExcel_Writer_PDF extends PHPExcel_Writer_HTML implements PHPExcel_Write
 		} else {
 			throw new Exception("Directory does not exist: $pValue");
 		}
+		return $this;
 	}
 }
