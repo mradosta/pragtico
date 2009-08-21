@@ -1352,6 +1352,11 @@ class AppFormHelper extends FormHelper {
 			$options['options'] = $this->requestAction("/" . $this->params['controller'] . "/" . $options['options'] . "/" . implode("/", $condiciones));
 		}
 
+        /** Sets default value for input field */
+        if (empty($this->data[$model][$field]) && !empty($options['default'])) {
+            $options['value'] = $options['default'];
+        }
+
 		if ($verificarRequerido === "forzado") {
 			$requerido = $this->tag("span", "(*)", array("class" => "color_rojo"));
 		}
