@@ -133,7 +133,7 @@ class Dates {
             if (in_array(date('D', $dateInSeconds), array('Sat', 'Sun'))) {
                 $count++;
             }
-            $fromDate = date('Y-m-d', strtotime($fromDate) + DAY_IN_SECONDS);
+            $fromDate = date('Y-m-d', strtotime($fromDate) + 86400);
         }
         return $count;
     }
