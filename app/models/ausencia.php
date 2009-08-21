@@ -161,7 +161,7 @@ class Ausencia extends AppModel {
         if (!empty($r)) {
             App::import('Vendor', 'dates', 'pragmatia');
 			$Concepto = ClassRegistry::init('Concepto');
-			
+
 			foreach ($r as $k => $ausencia) {
 
                 /*
@@ -309,7 +309,7 @@ class Ausencia extends AppModel {
                 /** If more than 10 days, must create an ART accident and an accident */
                 if ($daysBeforePeriod + $ausencias['Accidente'] > 10) {
                     if ($daysBeforePeriod > 10) {
-                        $ausencias['Accidente ART'] = $acumulado;
+                        $ausencias['Accidente ART'] = $ausencias['Accidente'];
                         $ausencias['Accidente'] = 0;
                     } else {
                         $ausencias['Accidente ART'] = $ausencias['Accidente'] - 10;
@@ -323,7 +323,7 @@ class Ausencia extends AppModel {
             }
         }
 
-        /*
+/*
         d(array('conceptos'    => $conceptos,
                      'variables'    => array(
         '#ausencias_accidente'                              => $ausencias['Accidente'],
@@ -339,7 +339,7 @@ class Ausencia extends AppModel {
         '#ausencias_injustificada'                          => $ausencias['Injustificada'],
         '#no_laborables_durante_ausencias_injustificada'    => $nonWorkingDays['Injustificada']),
                      'auxiliar'     => $auxiliares));
-        */
+*/
 		return array('conceptos' 	=> $conceptos,
 					 'variables' 	=> array(
         '#ausencias_accidente'                              => $ausencias['Accidente'],
