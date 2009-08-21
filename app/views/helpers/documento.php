@@ -240,13 +240,7 @@ class DocumentoHelper extends AppHelper {
                                 'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT));
                         break;
                         case 'currency':
-                            if ($value >= 0) {
-                                $format = '"$ "0.00';
-                            } else {
-                                $format = '"$ -"0.00';
-                                $value = $value * -1;
-                            }
-                            $this->activeSheet->getStyle($cellName)->getNumberFormat()->setFormatCode($format);
+                            $this->activeSheet->getStyle($cellName)->getNumberFormat()->setFormatCode('"$ "0.00;"$ -"0.00');
                             $style = array('alignment' => array(
                                 'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT));
                         break;

@@ -85,7 +85,7 @@ if (!empty($data)) {
     $flag = null;
     $inicio = 0;
     $flagCoeficiente = null;    
-//d($data);
+
     /** Body */
     foreach ($data as $k => $detail) {
 
@@ -99,7 +99,7 @@ if (!empty($data)) {
                         '1,' . $fila => $r['LiquidacionesDetalle']['suma_cantidad'],
                         '2,' . $fila => array('value' => $r['LiquidacionesDetalle']['valor'], 'options' => 'currency'),
                         '3,' . $fila => $r['LiquidacionesDetalle']['coeficiente_valor'],
-                        '4,' . $fila => '=C' . $fila . '*' . 'D' . $fila));
+                        '4,' . $fila => array('value' => '=C' . $fila . '*' . 'D' . $fila, 'options' => 'currency')));
         }
         $fila++;
         $totals['C'][] = 'C' . $fila;
