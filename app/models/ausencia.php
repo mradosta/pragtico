@@ -189,7 +189,7 @@ class Ausencia extends AppModel {
                     $acumulado += $seguimiento['dias'];
                     if ($seguimiento['estado'] === 'Confirmado') {
                         if (Dates::dateAdd($ausencia['Ausencia']['desde'], $acumulado) > $periodo['hasta']) {
-
+d('xxxx');
                             $diff = Dates::dateDiff(Dates::dateAdd($ausencia['Ausencia']['desde'], ($acumulado - $seguimiento['dias'])), $periodo['hasta']);
                             $diff['dias']--;
                                     
@@ -226,6 +226,8 @@ class Ausencia extends AppModel {
                     }
                 }
 
+/**
+TODO: REVISAR
                 if (isset($nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']])) {
                     if ($ausencia['Ausencia']['desde'] < $periodo['desde']) {
                         $nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']] += Dates::getNonWorkingDays($periodo['desde'], Dates::dateAdd($periodo['desde'], $acumulado));
@@ -233,6 +235,7 @@ class Ausencia extends AppModel {
                         $nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']] += Dates::getNonWorkingDays($ausencia['Ausencia']['desde'], Dates::dateAdd($ausencia['Ausencia']['desde'], $acumulado));
                     }
                 }
+*/
 			}
 
             foreach (array_unique(Set::extract('/AusenciasMotivo/tipo', $r)) as $type) {
