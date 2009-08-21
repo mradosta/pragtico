@@ -40,8 +40,7 @@ class Manager2Service extends AppModel {
             $Factura->Behaviors->detach('Permisos');
             $registros = $Factura->find('all', array(
                 'conditions'    => array('Factura.modified >' => date('Y-m-d H:i:s', $id)),
-                'contain'       => array('Empleador', 'Area'),
-                'order'         => array('Factura.id', 'Factura.group_id')));
+                'contain'       => array('Empleador', 'Area')));
 
 
             $tmp = $registros;
@@ -67,16 +66,10 @@ class Manager2Service extends AppModel {
                 if ($registro['Factura']['group_id'] !== $prevGroup) {
                     $prevGroup = $registro['Factura']['group_id'];
                     $grupo = $doc->createElement('grupo');
-
-                    $Grupo = ClassRegistry::init('Grupo');
-                    $Grupo->contain(array('GruposParametro.Parametro'));
-                    $Grupo->Behaviors->detach('Permisos');
-                    $tmpGrupo = $Grupo->findById($registro['Factura']['group_id']);
-                    foreach ($tmpGrupo['GruposParametro'] as $parametro) {
-                        if ($parametro['Parametro']['nombre'] === 'cuit') {
-                            $grupo->setAttribute('codigo', $parametro['valor']);
-                            break;
-                        }
+                    if (!empty($registro['Area'])) {
+                        $grupo->setAttribute('codigo', $registro['Area']['grupo_id']);
+                    } else {
+                        $grupo->setAttribute('codigo', $registro['Empleador']['grupo_id']);
                     }
                     $empleadores->appendChild($grupo);
                 }
@@ -128,7 +121,7 @@ class Manager2Service extends AppModel {
             $Area = ClassRegistry::init('Area');
             $Area->Behaviors->detach('Permisos');
             $registros = $Area->find('all',
-                array(  'conditions'    => array('Area.modified >' => date('Y-m-d H:i:s', $id), 'Area.empleador_id' => 130),
+                array(  'conditions'    => array('Area.modified >' => date('Y-m-d H:i:s', $id)),
                         'fields'        =>  array(  'Area.group_id',
                                                     'Area.identificador',
                                                     'Area.nombre',
@@ -233,7 +226,6 @@ class Manager2Service extends AppModel {
             $PagosForma = ClassRegistry::init('PagosForma');
             $PagosForma->Behaviors->detach('Permisos');
             $registros = $PagosForma->find('all', array(    'contain'       => 'Pago.Relacion.Trabajador',
-                                                            'order'     =>'PagosForma.id',
                                                             'conditions'=>array(    'PagosForma.monto <'    => 0,
                                                                                     'PagosForma.modified >'       => date('Y-m-d H:i:s', $id))));
             $tmp = $registros;
@@ -256,17 +248,7 @@ class Manager2Service extends AppModel {
                     if ($registro['PagosForma']['group_id'] !== $prevGroup) {
                         $prevGroup = $registro['PagosForma']['group_id'];
                         $grupo = $doc->createElement('grupo');
-
-                        $Grupo = ClassRegistry::init('Grupo');
-                        $Grupo->contain(array('GruposParametro.Parametro'));
-                        $Grupo->Behaviors->detach('Permisos');
-                        $tmpGrupo = $Grupo->findById($registro['PagosForma']['group_id']);
-                        foreach ($tmpGrupo['GruposParametro'] as $parametro) {
-                            if ($parametro['Parametro']['nombre'] === 'cuit') {
-                                $grupo->setAttribute('codigo', $parametro['valor']);
-                                break;
-                            }
-                        }
+                        $grupo->setAttribute('codigo', $registro['Pago']['Relacion']['group_id']);
                         $grupo = $pagos->appendChild($grupo);
                     }
 
@@ -308,7 +290,6 @@ class Manager2Service extends AppModel {
             $PagosForma = ClassRegistry::init('PagosForma');
             $PagosForma->Behaviors->detach('Permisos');
             $registros = $PagosForma->find('all', array(    'contain'       => array('Cuenta', 'Pago.Relacion.Trabajador'),
-                                                            'order'     =>'PagosForma.id',
                                                             'conditions'=>array(    'PagosForma.monto >'    => 0,
                                                                                     'PagosForma.modified >'       => date('Y-m-d H:i:s', $id))));
             $tmp = $registros;
@@ -331,17 +312,7 @@ class Manager2Service extends AppModel {
                     if ($registro['PagosForma']['group_id'] !== $prevGroup) {
                         $prevGroup = $registro['PagosForma']['group_id'];
                         $grupo = $doc->createElement('grupo');
-
-                        $Grupo = ClassRegistry::init('Grupo');
-                        $Grupo->contain(array('GruposParametro.Parametro'));
-                        $Grupo->Behaviors->detach('Permisos');
-                        $tmpGrupo = $Grupo->findById($registro['PagosForma']['group_id']);
-                        foreach ($tmpGrupo['GruposParametro'] as $parametro) {
-                            if ($parametro['Parametro']['nombre'] === 'cuit') {
-                                $grupo->setAttribute('codigo', $parametro['valor']);
-                                break;
-                            }
-                        }
+                        $grupo->setAttribute('codigo', $registro['Pago']['Relacion']['group_id']);
                         $grupo = $pagos->appendChild($grupo);
                     }
 
