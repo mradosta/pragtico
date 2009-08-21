@@ -93,6 +93,11 @@ if (!empty($data)) {
         $documento->setCellValue('A' . $fila, $k, 'bold');
         $beginRow = $fila;
         foreach ($detail as $r) {
+            
+            if ($r['LiquidacionesDetalle']['concepto_tipo'] === 'Deduccion') {
+                $r['LiquidacionesDetalle']['valor'] = $r['LiquidacionesDetalle']['valor'] * -1;
+            }
+            
             $fila++;
             $documento->setCellValueFromArray(
                 array(  '0,' . $fila => '    ' . $r['LiquidacionesDetalle']['concepto_nombre'],
@@ -111,7 +116,7 @@ if (!empty($data)) {
                 array('value' => '=SUM(E' . $beginRow . ':E' . ($fila - 1) . ')', 'options' => 'total')));
     }
 
-    $fila+3;
+    $fila+=3;
     $documento->setCellValue('A' . $fila . ':E' . $fila, 'TOTALES', 'title');
     $fila++;
     $documento->setCellValue('A' . $fila, 'Trabajadores', 'bold');
