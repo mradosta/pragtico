@@ -134,15 +134,18 @@ class Ausencia extends AppModel {
 		$ausenciaIds = Set::extract('/Ausencia/id', $this->query($sql));
 							
 		$r = $this->find('all', array(
-				'contain'		=> array(	'AusenciasMotivo',
-											'AusenciasSeguimiento'	=> array(
-													'conditions' => array(	'AusenciasSeguimiento.estado' => 'Confirmado'))),
-				'conditions'	=> array(	'Ausencia.relacion_id' 	=> $relacion['Relacion']['id'],
-											array('OR' => array(
-												array(	'Ausencia.desde <='	=> $periodo['hasta'],
-														'Ausencia.id'		=> $ausenciaIds),
-												array(	'Ausencia.desde >='	=> $periodo['desde'],
-														'Ausencia.desde <='	=> $periodo['hasta']))))));
+            'contain'		=> array(
+                'AusenciasMotivo',
+				'AusenciasSeguimiento'	=> array(
+                    'conditions' => array(
+                        'AusenciasSeguimiento.estado' => array('Confirmado', 'Liquidado')))),
+            'conditions'	=> array(
+                'Ausencia.relacion_id' 	=> $relacion['Relacion']['id'],
+                array('OR' => array(
+                    array(	'Ausencia.desde <='	=> $periodo['hasta'],
+                            'Ausencia.id'		=> $ausenciaIds),
+                    array(	'Ausencia.desde >='	=> $periodo['desde'],
+                            'Ausencia.desde <='	=> $periodo['hasta']))))));
 
 		$ausencias['Accidente'] = 0;
         $ausencias['Accidente ART'] = 0;
@@ -161,11 +164,16 @@ class Ausencia extends AppModel {
 			
 			foreach ($r as $k => $ausencia) {
 
+                /*
                 if ($ausencia['Ausencia']['desde'] < $periodo['desde']) {
                     $diff = $this->dateDiff($periodo['desde'], $periodo['hasta']);
                 } else {
                     $diff = $this->dateDiff($ausencia['Ausencia']['desde'], $periodo['hasta']);
                 }
+                */
+                //$diff = $this->dateDiff($ausencia['Ausencia']['desde'], $periodo['hasta']);
+                //d($diff);
+                //$ausencia['AusenciasSeguimiento'][] = array('estado' => 'Confirmado', 'dias' => 10, 'id' => 1000);
                 if ($ausencia['AusenciasMotivo']['tipo'] === 'Accidente') {
                     if (count(Set::extract('/AusenciasMotivo[tipo=Accidente]/id', $ausencia)) > 1) {
                         /** TODO: Revisar esto y hacerlo de una forma mas elegante */
@@ -178,36 +186,43 @@ class Ausencia extends AppModel {
                 $acumulado = 0;
                 foreach ($ausencia['AusenciasSeguimiento'] as $seguimiento) {
 
-                    if (($seguimiento['dias'] + $acumulado) > $diff['dias']) {
+                    $acumulado += $seguimiento['dias'];
+                    if ($seguimiento['estado'] === 'Confirmado') {
+                        if (Dates::dateAdd($ausencia['Ausencia']['desde'], $acumulado) > $periodo['hasta']) {
 
-                        $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $diff['dias'] - $acumulado;
-                        $auxiliar = null;
-                        $auxiliar['id'] = $seguimiento['id'];
-                        $auxiliar['estado'] = 'Liquidado';
-                        $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
-                        $auxiliar['dias'] = $diff['dias'] - $acumulado;
-                        $auxiliares[] = array(	'save' 	=> serialize($auxiliar),
-                                                'model' => 'AusenciasSeguimiento');
+                            $diff = Dates::dateDiff(Dates::dateAdd($ausencia['Ausencia']['desde'], ($acumulado - $seguimiento['dias'])), $periodo['hasta']);
+                            $diff['dias']--;
+                                    
+                            $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $diff['dias'];
+                            $auxiliar = null;
+                            $auxiliar['id'] = $seguimiento['id'];
+                            $auxiliar['estado'] = 'Liquidado';
+                            $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
+                            
+                            $auxiliar['dias'] = $seguimiento['dias'] - $diff['dias'];
+                            $auxiliares[] = array(	'save' 	=> serialize($auxiliar),
+                                                    'model' => 'AusenciasSeguimiento');
 
-                        /** Debo desdoblar el seguimiento en dos partes:
-                        *  una ya liquidada (esta) y genero una nueva exactamente igual
-                        * con los dias que queron pendientes de este */
-                        $seguimiento['id'] = null;
-                        $seguimiento['dias'] = $seguimiento['dias'] - $auxiliar['dias'];
-                        $auxiliares[] = array(	'save' 	=> serialize($seguimiento),
-                                                'model' => 'AusenciasSeguimiento');
-                        $acumulado += $auxiliar['dias'];
-                        break;
-                    } else {
-                        $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $seguimiento['dias'];
-                        $acumulado += $seguimiento['dias'];
-                        
-                        $auxiliar = null;
-                        $auxiliar['id'] = $seguimiento['id'];
-                        $auxiliar['estado'] = 'Liquidado';
-                        $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
-                        $auxiliares[] = array(	'save' 	=> serialize($auxiliar),
-                                                'model' => 'AusenciasSeguimiento');
+                            /** Debo desdoblar el seguimiento en dos partes:
+                            *  una ya liquidada (esta) y genero una nueva exactamente igual
+                            * con los dias que queron pendientes de este */
+                            $seguimiento['id'] = null;
+                            $seguimiento['dias'] = $seguimiento['dias'] - $auxiliar['dias'];
+                            $auxiliares[] = array(	'save' 	=> serialize($seguimiento),
+                                                    'model' => 'AusenciasSeguimiento');
+                            //$acumulado += $auxiliar['dias'];
+                            break;
+                        } else {
+                            $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $seguimiento['dias'];
+                            //$acumulado += $seguimiento['dias'];
+                            
+                            $auxiliar = null;
+                            $auxiliar['id'] = $seguimiento['id'];
+                            $auxiliar['estado'] = 'Liquidado';
+                            $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
+                            $auxiliares[] = array(	'save' 	=> serialize($auxiliar),
+                                                    'model' => 'AusenciasSeguimiento');
+                        }
                     }
                 }
 
@@ -294,7 +309,6 @@ class Ausencia extends AppModel {
                 /** If more than 10 days, must create an ART accident and an accident */
                 if ($daysBeforePeriod + $ausencias['Accidente'] > 10) {
                     if ($daysBeforePeriod > 10) {
-                        //$ausencias['Accidente ART'] = $diffArt['dias'];
                         $ausencias['Accidente ART'] = $acumulado;
                         $ausencias['Accidente'] = 0;
                     } else {
@@ -308,7 +322,8 @@ class Ausencia extends AppModel {
                 }
             }
         }
-/*
+
+        /*
         d(array('conceptos'    => $conceptos,
                      'variables'    => array(
         '#ausencias_accidente'                              => $ausencias['Accidente'],
@@ -324,7 +339,7 @@ class Ausencia extends AppModel {
         '#ausencias_injustificada'                          => $ausencias['Injustificada'],
         '#no_laborables_durante_ausencias_injustificada'    => $nonWorkingDays['Injustificada']),
                      'auxiliar'     => $auxiliares));
-*/
+        */
 		return array('conceptos' 	=> $conceptos,
 					 'variables' 	=> array(
         '#ausencias_accidente'                              => $ausencias['Accidente'],
