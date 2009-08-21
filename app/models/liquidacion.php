@@ -1159,7 +1159,7 @@ class Liquidacion extends AppModel {
             $this->__recursivityCounter[$match]++;
         }
 
-        if ($this->__recursivityCounter[$match] >= 30) {
+        if ($this->__recursivityCounter[$match] >= 10) {
             //d($match . ' ' . $this->__recursivityCounter[$match]);
             return false;
         }
