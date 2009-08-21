@@ -125,6 +125,29 @@ class Manager2Service extends AppModel {
     function empleadores($id) {
     
         if (is_numeric($id)) {
+            $Area = ClassRegistry::init('Area');
+            $Area->Behaviors->detach('Permisos');
+            $registros = $Area->find('all',
+                array(  'conditions'    => array('Area.modified >' => date('Y-m-d H:i:s', $id), 'Area.empleador_id' => 130),
+                        'fields'        =>  array(  'Area.group_id',
+                                                    'Area.identificador',
+                                                    'Area.nombre',
+                                                    'Area.modified',
+                                                    'Empleador.cuit',
+                                                    'Empleador.nombre',
+                                                    'Empleador.direccion',
+                                                    'Empleador.barrio',
+                                                    'Empleador.ciudad',
+                                                    'Empleador.pais',
+                                                    'Empleador.telefono',
+                                                    'Empleador.fax',
+                                                    'Empleador.pagina_web',
+                                                    'Empleador.group_id'),
+                        'contain'       => array('Empleador'),
+                        'order'         => array('Area.group_id')));
+            /*
+            d($registros);
+            
             $Empleador = ClassRegistry::init('Empleador');
             $Empleador->Behaviors->detach('Permisos');
             $registros = $Empleador->find('all',
@@ -141,7 +164,7 @@ class Manager2Service extends AppModel {
                                                     'Empleador.pagina_web',
                                                     'Empleador.group_id'),
                         'order'         => array('Empleador.id', 'Empleador.group_id')));
-
+            */
             $tmp = $registros;
             $ultimo = array_pop($tmp);
             $doc = new DomDocument('1.0');
@@ -149,21 +172,23 @@ class Manager2Service extends AppModel {
             $root = $doc->createElement('datos');
             $root->setAttribute('firstId', $id);
             $root->setAttribute('initialTime', date('Y-m-d H:i:s', $id));
-            $root->setAttribute('lastId', strtotime($ultimo['Empleador']['modified']));
-            $root->setAttribute('finalTime', $ultimo['Empleador']['modified']);
+            $root->setAttribute('lastId', strtotime($ultimo['Area']['modified']));
+            $root->setAttribute('finalTime', $ultimo['Area']['modified']);
             $root = $doc->appendChild($root);
             $empleadores = $root->appendChild($doc->createElement('empleadores'));
             
             $prevGroup = null;
             foreach ($registros as $registro) {
-                if ($registro['Empleador']['group_id'] !== $prevGroup) {
-                    $prevGroup = $registro['Empleador']['group_id'];
+                if ($registro['Area']['group_id'] !== $prevGroup) {
+                    $prevGroup = $registro['Area']['group_id'];
                     $grupo = $doc->createElement('grupo');
-
+                    $grupo->setAttribute('codigo', $registro['Area']['group_id']);
+                    $grupo = $empleadores->appendChild($grupo);
+                    /*
                     $Grupo = ClassRegistry::init('Grupo');
                     $Grupo->contain(array('GruposParametro.Parametro'));
                     $Grupo->Behaviors->detach('Permisos');
-                    $tmpGrupo = $Grupo->findById($registro['Empleador']['group_id']);
+                    $tmpGrupo = $Grupo->findById($registro['Area']['group_id']);
                     foreach ($tmpGrupo['GruposParametro'] as $parametro) {
                         if ($parametro['Parametro']['nombre'] === 'cuit') {
                             $grupo->setAttribute('codigo', $parametro['valor']);
@@ -171,23 +196,22 @@ class Manager2Service extends AppModel {
                         }
                     }
                     $grupo = $empleadores->appendChild($grupo);
+                    */
                 }
-                
-                foreach ($registro['Area'] as $area) {
-                    $child = $doc->createElement('empleador');
-                    $child->setAttribute('codigo', $area['identificador']);
-                    foreach ($registro['Empleador'] as $k => $v) {
-                        if ($k === 'cuit') {
-                            $v = str_replace('-', '', $v);
-                        } elseif ($k === 'pagina_web') {
-                            $k = 'paginaWeb';
-                        } elseif ($k === 'group_id') {
-                            continue;
-                        }
-                        $child->setAttribute($k, $v);
+
+                $child = $doc->createElement('empleador');
+                $child->setAttribute('codigo', $registro['Area']['identificador']);
+                foreach ($registro['Empleador'] as $k => $v) {
+                    if ($k === 'cuit') {
+                        $v = str_replace('-', '', $v);
+                    } elseif ($k === 'pagina_web') {
+                        $k = 'paginaWeb';
+                    } elseif ($k === 'group_id') {
+                        continue;
                     }
-                    $grupo->appendChild($child);
+                    $child->setAttribute($k, $v);
                 }
+                $grupo->appendChild($child);
             }
             return $doc->saveXML();
         } else {
