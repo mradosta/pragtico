@@ -579,7 +579,7 @@ class LiquidacionesController extends AppController {
 				$liquidaciones = $this->Liquidacion->find('all',
 						array(	'checkSecurity'	=> false,
 								'contain'		=> array(	'Empleador',
-                                        'LiquidacionesDetalle' => array('conditions' => array('LiquidacionesDetalle.concepto_imprimir !=' => 'No')),
+                                        'LiquidacionesDetalle' => array('conditions' => array('OR' => array('LiquidacionesDetalle.concepto_imprimir' => 'Si', array('LiquidacionesDetalle.concepto_imprimir' => 'Solo con valor', 'ABS(LiquidacionesDetalle.valor) >' => 0)))),
 										'Relacion' 		=> array('Situacion', 'ConveniosCategoria', 'Modalidad', 'Ausencia' =>
 												array('conditions' => array('Ausencia.desde >=' => $periodo['desde'], 'Ausencia.desde <=' => $periodo['hasta']))),
 										'Trabajador' 	=> array('ObrasSocial', 'Condicion', 'Siniestrado', 'Localidad')),
@@ -730,7 +730,7 @@ class LiquidacionesController extends AppController {
 							}
 						}
 						
-						$campos['c36']['valor'] = $liquidacion['Liquidacion']['remunerativo'];
+						$campos['c36']['valor'] = $compone[$liquidacion['Liquidacion']['id']]['Sueldo'];
                         $campos['c37']['valor'] = $compone[$liquidacion['Liquidacion']['id']]['SAC'];
                         $campos['c38']['valor'] = $compone[$liquidacion['Liquidacion']['id']]['Importe Horas Extras'];
                         $campos['c39']['valor'] = $compone[$liquidacion['Liquidacion']['id']]['Plus Zona Desfavorable'];
