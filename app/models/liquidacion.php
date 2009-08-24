@@ -128,7 +128,7 @@ class Liquidacion extends AppModel {
 				return;
 			}
 			
-			$opcionesFindConcepto = null;
+			//$opcionesFindConcepto = null;
 			$this->setConcept(
 				$this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
 					array(		'relacion' 	=> $relationship,
@@ -420,28 +420,29 @@ class Liquidacion extends AppModel {
 		if ($this->getRelationship('Empleador', 'redondear') === 'Si') {
 			$redondeo = round($totales['total']) - $totales['total'];
 			if ($redondeo !== 0) {
-				$opcionesFindConcepto['codigoConcepto'] = "redondeo";
+				//$opcionesFindConcepto['codigoConcepto'] = 'redondeo';
 				$conceptoRedondeo = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
 						array(	'relacion' 			=> $this->getRelationship(),
 								'codigoConcepto' 	=> 'redondeo'));
-				$conceptoRedondeo['redondeo']['debug'] = "=" . round($totales['total']) . " - " . $totales['total'];
-				$conceptoRedondeo['redondeo']['valor_cantidad'] = "0";
+				$conceptoRedondeo['redondeo']['debug'] = '=' . round($totales['total']) . ' - ' . $totales['total'];
+				$conceptoRedondeo['redondeo']['valor_cantidad'] = '0';
 
 				/** Modify total */
 				$totales['total'] += $redondeo;
 				$totales['total_pesos'] += $redondeo;
 
 				/**
-				* Dependiendo del signo, lo meto como un concepto Remunerativo o una Deduccion.
+				* Dependiendo del signo, lo meto como un concepto No Remunerativo o una Deduccion.
 				*/
 				if ($redondeo > 0) {
-					$totales['remunerativo'] += $redondeo;
+					$totales['no_remunerativo'] += $redondeo;
 					$conceptoRedondeo['redondeo']['tipo'] = 'No Remunerativo';
 					$conceptoRedondeo['redondeo']['valor'] = $redondeo;
 				} else {
+                    $redondeo = $redondeo * -1;
 					$totales['deduccion'] += $redondeo;
 					$conceptoRedondeo['redondeo']['tipo'] = 'Deduccion';
-					$conceptoRedondeo['redondeo']['valor'] = ($redondeo * -1);
+					$conceptoRedondeo['redondeo']['valor'] = $redondeo;
 				}
 				$detalle[] = $this->__agregarDetalle($conceptoRedondeo['redondeo']);
 			}
@@ -802,6 +803,10 @@ class Liquidacion extends AppModel {
 			}
 
 			/** Resolv formula */
+            //debug($concepto['codigo']);
+            //debug($concepto['formula']);
+            //debug($formula);
+            
 			$valor = $this->resolver($formula);
 		} elseif (empty($formula)) {
 			$this->__setError(array(	"tipo"					=> "Formula de Concepto Inexistente",
