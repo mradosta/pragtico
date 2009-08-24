@@ -66,10 +66,10 @@ class Manager2Service extends AppModel {
                 if ($registro['Factura']['group_id'] !== $prevGroup) {
                     $prevGroup = $registro['Factura']['group_id'];
                     $grupo = $doc->createElement('grupo');
-                    if (!empty($registro['Area'])) {
-                        $grupo->setAttribute('codigo', $registro['Area']['grupo_id']);
+                    if (!empty($registro['Area']['group_id'])) {
+                        $grupo->setAttribute('codigo', $registro['Area']['group_id']);
                     } else {
-                        $grupo->setAttribute('codigo', $registro['Empleador']['grupo_id']);
+                        $grupo->setAttribute('codigo', $registro['Empleador']['group_id']);
                     }
                     $empleadores->appendChild($grupo);
                 }
