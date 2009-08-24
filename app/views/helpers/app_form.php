@@ -1621,6 +1621,9 @@ class AppFormHelper extends FormHelper {
 							case "A":
 								$after .= $this->link($this->image('a.gif', array('class' => 'periodo a')), null, array("title" => "Año Anterior", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array("type" => "anoAnterior")) . "');"));
 								break;
+                            case "F":
+                                $after .= $this->link($this->image('f.gif', array('class' => 'periodo f')), null, array("title" => "Final", "onclick" => "jQuery('#" . $rnd . "').attr('value', '" . $this->Formato->format(null, array("type" => "final")) . "');"));
+                                break;
 							case "M":
 								$after .= $m;
 								break;

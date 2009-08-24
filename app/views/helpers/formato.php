@@ -392,17 +392,18 @@ class FormatoHelper extends AppHelper {
 		switch($type) {
 			case 'periodo':
 				$valor = strtoupper($valor);
+                preg_match(VALID_PERIODO, $valor, $matches);
 				if (!empty($valor) &&
 						(preg_match(VALID_PERIODO, $valor, $matches)
 						|| preg_match('/^(20\d\d)(0[1-9]|1[012])$/', $valor, $matches)
 						|| preg_match('/^(20\d\d)([12]S)$/', $valor, $matches)
-						|| preg_match('/^(20\d\d)(A)$/', $valor, $matches))) {
+						|| preg_match('/^(20\d\d)([A|F])$/', $valor, $matches))) {
 					$tmp = null;
 					$tmp['periodoCompleto'] = $matches[0];
 					$tmp['ano'] = $matches[1];
 					$tmp['mes'] = $matches[2];
 					$tmp['periodo'] = (!empty($matches[3]))?$matches[3]:'M';
-					if ($matches[2] === '1S' || $matches[2] === '2S' || $matches[2] === 'A') {
+					if (in_array($matches[2], array('1S', '2S', 'A', 'F'))) {
 						$tmp['mes'] = '00';
 						$tmp['periodo'] = $matches[2];
 					}
@@ -429,7 +430,7 @@ class FormatoHelper extends AppHelper {
 						$fechaDesde = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
 						$value = array_merge($value, array('dia' => '31', 'mes' => '12'));
 						$fechaHasta = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
-					} elseif ($tmp['periodo'] === 'M') {
+					} elseif ($tmp['periodo'] === 'M' || $tmp['periodo'] === 'F') {
 						$value = array_merge($value, array('dia' => '01'));
 						$fechaDesde = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
 						$value = array_merge($value, array('dia'=>$this->format($value, array('type' => 'ultimoDiaDelMes'))));
@@ -443,8 +444,7 @@ class FormatoHelper extends AppHelper {
 					$tmp['desde'] = $fechaDesde;
 					$tmp['hasta'] = $fechaHasta;
 					$return = $tmp;
-				}
-				else {
+				} else {
 					$return = false;
 				}
 				break;		
@@ -586,6 +586,15 @@ class FormatoHelper extends AppHelper {
 				}
 				$return = $ano . $mes . 'M';
 				break;
+            case 'final':
+                $mes = $this->format($valor, array('type' => 'mesAnterior'));
+                if ($mes == 12) {
+                    $ano = $this->format($valor, array('type' => 'anoAnterior'));
+                } else {
+                    $ano = $this->format($valor, array('type' => 'ano'));
+                }
+                $return = $ano . $mes . 'F';
+                break;
 			case 'periodoEnLetras':
 				$options = array_merge(array('case' => 'lower'), $options);
 				$beforeShort = '';
