@@ -19,23 +19,24 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
+$condiciones['Condicion.Relacion-empleador_id'] = array('lov' =>
+        array(  'controller'        => 'empleadores',
+                'camposRetorno'     => array('Empleador.nombre')));
+
 $condiciones['Condicion.Relacion-trabajador_id'] = array('lov' =>
 		array(	'controller'		=> 'trabajadores',
 				'separadorRetorno'	=> ' ',
 				'camposRetorno'		=> array('Trabajador.apellido', 'Trabajador.nombre')));
 
-$condiciones['Condicion.Relacion-empleador_id'] = array('lov' =>
-		array(	'controller'		=> 'empleadores',
-				'camposRetorno'		=> array('Empleador.nombre')));
-
+/*
 $condiciones['Condicion.Pago-relacion_id'] = array('lov' =>
 		array('controller'			=> 'relaciones',
 			  'camposRetorno'		=> array('Empleador.nombre', 'Trabajador.apellido')));
-
+*/
 $condiciones['Condicion.Pago-fecha__desde'] = array('label' => 'Desde', 'type' => 'date');
 $condiciones['Condicion.Pago-fecha__hasta'] = array('label' => 'Hasta', 'type' => 'date');
-$condiciones['Condicion.Liquidacion-periodo_completo'] = array('type' => 'periodo');
-$condiciones['Condicion.Pago-origen'] = array('type' => 'radio', 'options' => $origen);
+//$condiciones['Condicion.Liquidacion-periodo_completo'] = array('type' => 'periodo');
+//$condiciones['Condicion.Pago-origen'] = array('type' => 'select', 'multiple' => 'checkbox', 'options' => array('liquidaciones' => 'Liquidaciones', 'descuentos' => 'Descuentos'));
 $condiciones['Condicion.Pago-estado'] = array('type' => 'select', 'multiple' => 'checkbox');
 $condiciones['Condicion.Pago-identificador'] = array();
 $fieldsets[] = array('campos' => $condiciones);
@@ -65,6 +66,7 @@ foreach ($registros as $k => $v) {
 	  					array('title' => 'Revertir Pago')));
 	}
 	$fila[] = array('model' => 'Pago', 'field' => 'id', 'valor' => $v['Pago']['id'], 'write' => $v['Pago']['write'], 'delete' => $v['Pago']['delete']);
+    $fila[] = array('model' => 'Pago', 'field' => 'estado', 'valor' => $v['Pago']['estado']);
 	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], 'nombreEncabezado' => 'Empleador');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], 'class' => 'derecha', 'nombreEncabezado' => 'Documento');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . ' ' . $v['Relacion']['Trabajador']['nombre'], 'nombreEncabezado' => 'Trabajador');
@@ -82,7 +84,6 @@ foreach ($registros as $k => $v) {
     }
     $fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => $valor, 'nombreEncabezado' => 'Origen');
     
-	$fila[] = array('model' => 'Pago', 'field' => 'estado', 'valor' => $v['Pago']['estado']);
     $fila[] = array('model' => 'Pago', 'field' => 'identificador', 'valor' => $v['Pago']['identificador'], 'nombreEncabezado' => 'Ident.');
 
     if (!empty($v['Relacion']['Trabajador']['cbu'])) {

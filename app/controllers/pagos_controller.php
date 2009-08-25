@@ -34,8 +34,8 @@ class PagosController extends AppController {
 
 
     function index() {
-        //$this->set('monto', $this->Pago->getTotal($conditions));
-        $this->set('monto', '0');
+        $this->set('monto', $this->Pago->getTotal($this->Paginador->generarCondicion()));
+        //$this->set('monto', '0');
         return parent::index();
     }
 
