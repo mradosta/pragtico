@@ -129,7 +129,7 @@ if (!empty($data)) {
             $receiptId = $detail['LiquidacionesDetalle']['liquidacion_id'];
         }
     }
-    $fileFormat = 'Excel2007';
+    $fileFormat = 'Excel5';
     $documento->save($fileFormat);
 } else {
 
