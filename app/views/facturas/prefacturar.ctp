@@ -25,7 +25,7 @@ if (!empty($grupos)) {
 $condiciones['Condicion.Liquidacion-empleador_id'] = array(
 		'lov'	=> array('controller'	=> 'empleadores',
 						'camposRetorno'	=> array('Empleador.cuit', 'Empleador.nombre')));
-$condiciones['Condicion.Liquidacion-periodo_completo'] = array('label' => 'Periodo Liquidado', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A'));
+$condiciones['Condicion.Liquidacion-periodo_completo'] = array('label' => 'Periodo Liquidado', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A', 'F'));
 $condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'type' => 'select');
 $condiciones['Condicion.Liquidacion-estado'] = array('aclaracion' => 'Se refiere a que liquidaciones tomar como base para la prefacturacion. Solo se podran confirmar prefacturaciones realizadas en base a liquidaciones Confirmadas');
 
@@ -112,10 +112,11 @@ $appForm->addScript('
         jQuery(".1q").hide();
         jQuery(".2q").hide();
         jQuery(".m").hide();
+        jQuery(".f").hide();
         jQuery(".1s").hide();
         jQuery(".2s").hide();
         jQuery(".a").hide();
-        jQuery("input.periodo").parent().show();
+        //jQuery("input.periodo").parent().show();
         jQuery("input.periodo_vacacional").parent().hide();
         
         if (type === "normal") {
@@ -137,7 +138,8 @@ $appForm->addScript('
             jQuery(".2s").show();
             jQuery(".a").show();
         } else if (type === "final") {
-            jQuery("input.periodo").parent().hide();
+            //jQuery("input.periodo").parent().hide();
+            jQuery(".f").show();
         }
     }
     period(jQuery("#CondicionLiquidacion-tipo").find(":selected").val());
