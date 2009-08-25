@@ -132,7 +132,15 @@ if (!empty($data)) {
     $fileFormat = 'Excel2007';
     $documento->save($fileFormat);
 } else {
-    echo $this->element('reports/conditions');
+
+    $conditions['Condicion.Bar-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('soloAAAAMM'));
+    $conditions['Condicion.Bar-convenio_id'] = array( 'lov' => array(
+            'controller'        => 'convenios',
+            'seleccionMultiple' => true,
+            'camposRetorno'     => array('Convenio.numero', 'Convenio.nombre')));
+    
+    $options = array('title' => 'Sindicatos');
+    echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));
 }
  
 ?>

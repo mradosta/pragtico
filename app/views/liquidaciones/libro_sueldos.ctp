@@ -245,7 +245,7 @@ if (!empty($data)) {
 			'controller'		=>	'empleadores',
 			'seleccionMultiple' => false,
 			'camposRetorno'		=> array('Empleador.cuit', 'Empleador.nombre')));
-	$condiciones['Condicion.Liquidacion-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S'));
+	$condiciones['Condicion.Liquidacion-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'F'));
 	$condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'multiple' => 'checkbox', 'type' => 'select');
 	$condiciones['Condicion.Liquidacion-formato'] = array('type' => 'radio', 'options' => array('Excel5' => 'Excel', 'Excel2007' => 'Excel 2007'), 'value' => 'Excel2007');
 	$condiciones['Condicion.Bar-start_page'] = array('label' => 'Hoja Inicial', 'type' => 'text', 'value' => '1');
