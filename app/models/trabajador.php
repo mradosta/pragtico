@@ -50,6 +50,21 @@ class Trabajador extends AppModel {
                 'rule'      => VALID_NOT_EMPTY,
                 'message'   => 'Debe seleccionar la localidad del trabajador.')
         ),
+        'condicion_id' => array(
+            array(
+                'rule'      => VALID_NOT_EMPTY,
+                'message'   => 'Debe seleccionar la condicion del trabajador.')
+        ),
+        'siniestrado_id' => array(
+            array(
+                'rule'      => VALID_NOT_EMPTY,
+                'message'   => 'Debe seleccionar el siniestrado del trabajador.')
+        ),
+        'obra_social_id' => array(
+            array(
+                'rule'      => VALID_NOT_EMPTY,
+                'message'   => 'Debe seleccionar la obra social del trabajador.')
+        ),
         'nombre' => array(
 			array(
 				'rule'	=> VALID_NOT_EMPTY,
