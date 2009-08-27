@@ -147,7 +147,7 @@ class RecibosConceptosController extends AppController {
 		else {
 			$acciones = $this->RecibosConcepto->Concepto->find("all", array("conditions"=>array("Concepto.id"=>$this->params['named']['selectedId']), "order"=>array("Concepto.nombre")));
 		}
-		$data = $this->Util->combine($acciones, "{n}.Concepto.id", "{n}.Concepto.nombre");
+		$data = Set::combine($acciones, "{n}.Concepto.id", "{n}.Concepto.nombre");
 		$tablaSiemple = $this->Util->generarCuerpoTablaSimple($data);
 		$this->set("cuerpo", $tablaSiemple['cuerpo']);
 		$this->set("encabezados", $tablaSiemple['encabezados']);

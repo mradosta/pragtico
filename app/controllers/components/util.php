@@ -121,32 +121,6 @@ class UtilComponent extends Object {
 	
 	
 /**
- * Creates an associative array using a $path1 as the path to build its keys, and optionally
- * $path2 as path to get the values. If $path2 is not specified, all values will be initialized
- * to null (useful for Set::merge). You can optionally group the values by what is obtained when
- * following the path specified in $groupPath.
- *
- * Si el array $data esta vacio, retorno un array vacio en lugar de un 
- *
- * @param array $data Array from where to extract keys and values
- * @param mixed $path1 As an array, or as a dot-separated string.
- * @param mixed $path2 As an array, or as a dot-separated string.
- * @param string $groupPath As an array, or as a dot-separated string.
- * @return array Combined array
- * @access public
- */
-
-	function combine($data, $path1 = null, $path2 = null, $groupPath = null) {
-		if (!empty($data)) {
-			return Set::combine($data, $path1, $path2, $groupPath);
-		}
-		else {
-			return array();
-		}
-	}
- 	
-
-/**
  * Formatea un valor de acuerdo a un formato.
  *
  * @param string $valor Un valor a formatear.

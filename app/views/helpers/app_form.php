@@ -1472,7 +1472,7 @@ class AppFormHelper extends FormHelper {
 			*
 			*	function autocompleteBuscar() {
 			*		$acciones = $this->RecibosConcepto->Concepto->find("all", array("conditions"=>array("Concepto.nombre like"=>str_replace("[EXPANSOR]", "%", $this->params['named']['partialText'])), "order"=>array("Concepto.nombre")));
-			*		$acciones = $this->Util->combine($acciones, '{n}.Concepto.id', '{n}.Concepto.nombre');
+			*		$acciones = Set::combine($acciones, '{n}.Concepto.id', '{n}.Concepto.nombre');
 			*		$this->set("data", $this->Util->generarAutocomplete($acciones));
 			*		$this->render("../elements/autocomplete");
 			*	}

@@ -113,7 +113,7 @@ class ControladoresController extends AppController {
 			$controllersBaseFlip = array_flip($controllersBase);
 			if (isset($controllersBaseFlip[$controllerFs['archivo']])) {
 				$controlador_id = $controllersBaseFlip[$controllerFs['archivo']];
-				$actionsBase = $this->Util->combine($this->Controlador->Accion->find("all", array("conditions"=>array("Accion.controlador_id"=>$controlador_id))), "{n}.Accion.id", "{n}.Accion.nombre");
+				$actionsBase = Set::combine($this->Controlador->Accion->find("all", array("conditions"=>array("Accion.controlador_id"=>$controlador_id))), "{n}.Accion.id", "{n}.Accion.nombre");
 				foreach ($controllerFs['acciones'] as $accion) {
 					/**
 					* Si la accion esta en el FS y no en la DB, la agrego.

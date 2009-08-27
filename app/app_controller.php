@@ -95,9 +95,9 @@ class AppController extends Controller {
 		array_unshift($display, implode(" - ", $exp));
 		$data = $model->find("all", $condiciones);
 		if (isset($group)) {
-			$data = $this->Util->combine($data, "{n}." . $model->name . "." . $model->primaryKey, $display, "{n}." . $group);
+			$data = Set::combine($data, "{n}." . $model->name . "." . $model->primaryKey, $display, "{n}." . $group);
 		} else {
-			$data = $this->Util->combine($data, "{n}." . $model->name . "." . $model->primaryKey, $display);
+			$data = Set::combine($data, "{n}." . $model->name . "." . $model->primaryKey, $display);
 		}
 		return $data;
 	}
