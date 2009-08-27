@@ -298,7 +298,7 @@ class LiquidacionesController extends AppController {
                 }
             }
 
-            $condiciones['(Relacion.group_id & ' . User::get('preferencias/grupo_default_id') . ') >'] = 0;
+            $condiciones['(Relacion.group_id & ' . User::get('/Usuario/preferencias/grupo_default_id') . ') >'] = 0;
 			$relaciones = $this->Liquidacion->Relacion->find('all',
 					array(	'contain'		=> array(	'ConveniosCategoria',
 														'Trabajador.ObrasSocial',
@@ -313,7 +313,7 @@ class LiquidacionesController extends AppController {
 			/** Delete user's unconfirmed liquidations */
             $this->Liquidacion->setSecurityAccess('readOwnerOnly');
 			if (!$this->Liquidacion->deleteAll(array(
-                'Liquidacion.user_id'   => User::get('id'),
+                'Liquidacion.user_id'   => User::get('/Usuario/id'),
                 'Liquidacion.estado'    => 'Sin Confirmar'), true, false, true)) {
 				$this->Session->setFlash(__('Can\'t delete previous liquidations. Call Administrator', true), 'error');
 				$this->redirect(array('action' => 'preliquidar'));

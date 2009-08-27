@@ -46,25 +46,59 @@ public function store($user) {
   return true;
 }
  
-function get($path) {
-  $_user =& User::getInstance();
+/**
+ * Get data related to current logged in user.
+ *
+ * @param string $path An absolute XPath 2.0 path
+ * @param string $options Currently only supports 'flatten' which reduce the array to a single value if there is only one numeric value after Set:extract filter.
+ * @return mixed An array of matched items or single value
+ * @access public
+ * @static
+ */ 
+    function get($path, $options = array()) {
  
-  $path = str_replace('.', '/', $path);
-  if (strpos($path, 'Usuario') !== 0) {
-    $path = sprintf('Usuario/%s', $path);
-  }
- 
-  if (strpos($path, '/') !== 0) {
-    $path = sprintf('/%s', $path);
-  }
- 
-  $value = Set::extract($path, $_user);
- 
-  if (!$value) {
-    return false;
-  }
- 
-  return $value[0];
-}
+        $options = array_merge(array('flatten' => true), $options);
+
+        $data = Set::extract($path, User::getInstance());
+        if ($options['flatten'] === true && count($data) === 1 && !empty($data[0])) {
+            return $data[0];
+        } else {
+            return $data;
+        }
+    }
+
+/**
+ * Gets current logged in user's groups.
+ *
+ * @param integer $filter Filter groups based on bitwise math.
+ * @param mixed $filter If integer, filter groups based on bitwise math.
+ *                      If 'selected', filters based on currently selected group.
+ *                      If 'all', return all user's groups.    
+ * @return array GroupId => GroupName, empty array if the user has no groups.
+ * @access public
+ */
+    function getUserGroups($filter = 'selected') {
+
+        if ($filter === 'selected') {
+            /** If more than one group is selected, return array of groups, else just selected one */
+            $filter = User::get('/Usuario/preferencias/grupos_seleccionados');
+        } elseif ($filter === 'all') {
+            return Set::combine(User::get('/Grupo'), '{n}.Grupo.id', '{n}.Grupo.nombre');
+        } elseif (!is_numeric($filter)) {
+            trigger_error(__('Invalid filter option.', true), E_USER_WARNING);
+        }
+        
+        foreach (User::get('/Grupo') as $group) {
+            if ($group['Grupo']['id'] & $filter) {
+                $filteredGroups[] = $group;
+            }
+        }
+        if (!empty($filteredGroups)) {
+            return Set::combine($filteredGroups, '{n}.Grupo.id', '{n}.Grupo.nombre');
+        } else {
+            return array();
+        }
+    }
+    
  }
 ?>

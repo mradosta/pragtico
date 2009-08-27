@@ -136,18 +136,18 @@ class PermisosBehavior extends ModelBehavior {
     function getRole(&$Model) {
         if (isset($Model->permissions['role'])) {
             if ($Model->permissions['role'] === 'higher') {
-                return User::get('higher_role');
+                return User::get('/Usuario/higher_role');
             } elseif ($Model->permissions['role'] === 'lower') {
-                return User::get('lower_role');
+                return User::get('/Usuario/lower_role');
             } elseif ($Model->permissions['role'] === 'all') {
-                return User::get('roles');
+                return User::get('/Usuario/roles');
             } elseif ($Model->permissions['role'] === 'none' || $Model->permissions['role'] === false) {
                 return 0;
             } else {
                 trigger_error(__('Role option not supported.', true), E_USER_WARNING);
             }
         } else {
-            return User::get('roles');
+            return User::get('/Usuario/roles');
         }
     }
 
@@ -161,16 +161,16 @@ class PermisosBehavior extends ModelBehavior {
     function getGroup($Model) {
         if (isset($Model->permissions['group'])) {
             if ($Model->permissions['group'] === 'all') {
-                return User::get('grupos');
+                return User::get('/Usuario/grupos');
             } elseif ($Model->permissions['group'] === 'default') {
-                return User::get('preferencias/grupo_default_id');
+                return User::get('/Usuario/preferencias/grupo_default_id');
             } elseif ($Model->permissions['group'] === 'none' || $Model->permissions['group'] === false) {
                 return 0;
             } else {
                 trigger_error(__('Group option not supported.', true), E_USER_WARNING);
             }
         } else {
-            return User::get('grupos');
+            return User::get('/Usuario/grupos');
         }
     }
     
@@ -182,7 +182,7 @@ class PermisosBehavior extends ModelBehavior {
  * @access public
  */
     function getUser() {
-        return User::get('id');
+        return User::get('/Usuario/id');
     }
     
 /**

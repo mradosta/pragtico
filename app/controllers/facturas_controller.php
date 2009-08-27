@@ -81,7 +81,7 @@ class FacturasController extends AppController {
 
 						/** Delete user's unconfirmed Invoices */
                         if (!$this->Factura->deleteAll(array(
-                            'Factura.user_id'   => User::get('id'),
+                            'Factura.user_id'   => User::get('/Usuario/id'),
                             'Factura.estado'    => 'Sin Confirmar'), true, false)) {
                             $this->Session->setFlash(__('Can\'t delete previous invoices. Call Administrator', true), 'error');
                             $this->redirect(array('action' => 'prefecturar'));

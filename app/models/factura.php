@@ -40,7 +40,7 @@ class Factura extends AppModel {
             $this->find('all', array(
                 'recursive'     => -1,
                 'conditions'    => array(
-                    'Factura.user_id'   => User::get('id'),
+                    'Factura.user_id'   => User::get('/Usuario/id'),
                     'Factura.estado'    => 'Sin Confirmar'))));
         if (!empty($InvoiceIds)) {
             $this->Liquidacion->updateAll(
