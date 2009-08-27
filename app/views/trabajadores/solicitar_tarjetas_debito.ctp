@@ -92,6 +92,7 @@ if (!empty($data)) {
 	
     
 	foreach($data as $record) {
+
         $fila++;
 
         $documento->setCellValue('A' . $fila, $record['Trabajador']['cuil']);
@@ -101,42 +102,23 @@ if (!empty($data)) {
         $documento->setCellValue('E' . $fila, $record['Trabajador']['nombre']);
         $documento->setCellValue('F' . $fila, $record['Trabajador']['direccion']);
         $documento->setCellValue('G' . $fila, $record['Trabajador']['numero']);
-        $documento->setCellValue('H' . $fila, $record['Localidad']['nombre']);
-        $documento->setCellValue('I' . $fila, $record['Localidad']['Provincia']['nombre']);
+        $documento->setCellValue('H' . $fila, $record['Trabajador']['Localidad']['nombre']);
+        $documento->setCellValue('I' . $fila, $record['Trabajador']['Localidad']['Provincia']['nombre']);
         $documento->setCellValue('J' . $fila, (!empty($record['Trabajador']['telefono']))?$record['Trabajador']['telefono']:'');
         $documento->setCellValue('K' . $fila, $record['Trabajador']['sexo']);
         $documento->setCellValue('L' . $fila, $record['Trabajador']['estado_civil']);
-        $documento->setCellValue('M' . $fila, (!empty($record['Empleador'][0]['Relacion']['ingreso']))?$formato->format($record['Empleador'][0]['Relacion']['ingreso'], 'date'):'');
+        $documento->setCellValue('M' . $fila, (!empty($record['Relacion']['ingreso']))?$formato->format($record['Relacion']['ingreso'], 'date'):'');
         $documento->setCellValue('N' . $fila, $formato->format($record['Trabajador']['nacimiento'], 'date'));
         $documento->setCellValue('O' . $fila, $record['Trabajador']['codigo_postal']);
-        $documento->setCellValue('P' . $fila, (!empty($record['Empleador'][0]['nombre']))?$record['Empleador'][0]['nombre']:'');
+        $documento->setCellValue('P' . $fila, (!empty($record['Empleador']['nombre']))?$record['Empleador']['nombre']:'');
         
 	}
 
-    $documento->save('Excel5');
+    $documento->save($fileFormat);
 } else {
 
-    if (!empty($grupos)) {
-        $condiciones['Condicion.Trabajador-grupo_id'] = array('options' => $grupos, 'empty' => true);
-    }
-
-    $fieldsets[] = array('campos' => $condiciones);
-    $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Generar Archivo para Solicitud Tarjetas de Debito','imagen' => 'archivo.gif')));
-    
-    $accionesExtra['opciones'] = array('acciones' => array());
-    $botonesExtra[] = 'limpiar';
-    $botonesExtra[] = $appForm->submit('Generar', array('title' => 'Generar el Archivo para Solicitud Tarjetas de Debito', 'onclick'=>'document.getElementById("accion").value="generar"'));
-
-    echo $this->element('index/index', array(
-                        'opcionesTabla' => array('tabla' => array('omitirMensajeVacio' => true)),
-                        'botonesExtra'  => array('opciones' => array('botones' => $botonesExtra)),
-                        'accionesExtra' => $accionesExtra,
-                        'opcionesForm'  => array('action' => 'solicitar_tarjetas_debito'),
-                        'condiciones'   => $fieldset,
-                        'cuerpo'        => null));
-    
-
-
+    $options = array('title' => 'Solicitud Tarjetas de Debito');
+    echo $this->element('reports/conditions', array('options' => $options));
 }
 
 ?>
