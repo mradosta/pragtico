@@ -391,62 +391,70 @@ class FormatoHelper extends AppHelper {
 		
 		switch($type) {
 			case 'periodo':
-				$valor = strtoupper($valor);
-                preg_match(VALID_PERIODO, $valor, $matches);
-				if (!empty($valor) &&
-						(preg_match(VALID_PERIODO, $valor, $matches)
-						|| preg_match('/^(20\d\d)(0[1-9]|1[012])$/', $valor, $matches)
-						|| preg_match('/^(20\d\d)([12]S)$/', $valor, $matches)
-						|| preg_match('/^(20\d\d)([A|F])$/', $valor, $matches))) {
-					$tmp = null;
-					$tmp['periodoCompleto'] = $matches[0];
-					$tmp['ano'] = $matches[1];
-					$tmp['mes'] = $matches[2];
-					$tmp['periodo'] = (!empty($matches[3]))?$matches[3]:'M';
-					if (in_array($matches[2], array('1S', '2S', 'A', 'F'))) {
-						$tmp['mes'] = '00';
-						$tmp['periodo'] = $matches[2];
-					}
-					$value = array(	'mes'	=> $tmp['mes'],
-									'ano'	=> $tmp['ano']);
+                if (is_array($valor)) {
+                    if (isset($valor['ano']) && isset($valor['mes']) && isset($valor['periodo'])) {
+                        $return = strtoupper($valor['ano'] . str_pad($valor['mes'], 2, '0', STR_PAD_LEFT) . $valor['periodo']);
+                    } else {
+                        $return = false;
+                    }
+                } else {
+                    $valor = strtoupper($valor);
+                    preg_match(VALID_PERIODO, $valor, $matches);
+                    if (!empty($valor) &&
+                            (preg_match(VALID_PERIODO, $valor, $matches)
+                            || preg_match('/^(20\d\d)(0[1-9]|1[012])$/', $valor, $matches)
+                            || preg_match('/^(20\d\d)([12]S)$/', $valor, $matches)
+                            || preg_match('/^(20\d\d)([A|F])$/', $valor, $matches))) {
+                        $tmp = null;
+                        $tmp['periodoCompleto'] = $matches[0];
+                        $tmp['ano'] = $matches[1];
+                        $tmp['mes'] = $matches[2];
+                        $tmp['periodo'] = (!empty($matches[3]))?$matches[3]:'M';
+                        if (in_array($matches[2], array('1S', '2S', 'A', 'F'))) {
+                            $tmp['mes'] = '00';
+                            $tmp['periodo'] = $matches[2];
+                        }
+                        $value = array(	'mes'	=> $tmp['mes'],
+                                        'ano'	=> $tmp['ano']);
 
-					if ($tmp['periodo'] === '1Q') {
-						$value = array_merge($value, array('dia' => '01'));
-						$fechaDesde = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
-						$value = array_merge($value, array('dia' => '15'));
-						$fechaHasta = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
-					} elseif ($tmp['periodo'] === '2Q') {
-						$value = array_merge($value, array('dia' => '16'));
-						$fechaDesde = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
-						$value = array_merge($value, array('dia' => $this->format($value, array('type' => 'ultimoDiaDelMes'))));
-						$fechaHasta = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
-					} elseif ($tmp['periodo'] === '1S') {
-						$value = array_merge($value, array('dia' => '01', 'mes' => '01'));
-						$fechaDesde = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
-						$value = array_merge($value, array('dia' => '30', 'mes' => '06'));
-						$fechaHasta = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
-					} elseif ($tmp['periodo'] === '2S') {
-						$value = array_merge($value, array('dia' => '01', 'mes' => '07'));
-						$fechaDesde = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
-						$value = array_merge($value, array('dia' => '31', 'mes' => '12'));
-						$fechaHasta = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
-					} elseif ($tmp['periodo'] === 'M' || $tmp['periodo'] === 'F') {
-						$value = array_merge($value, array('dia' => '01'));
-						$fechaDesde = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
-						$value = array_merge($value, array('dia'=>$this->format($value, array('type' => 'ultimoDiaDelMes'))));
-						$fechaHasta = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
-					} elseif ($tmp['periodo'] === 'A') {
-						$value = array_merge($value, array('dia' => '01', 'mes' => '01'));
-						$fechaDesde = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
-						$value = array_merge($value, array('dia' => '31', 'mes' => '12'));
-						$fechaHasta = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
-					}
-					$tmp['desde'] = $fechaDesde;
-					$tmp['hasta'] = $fechaHasta;
-					$return = $tmp;
-				} else {
-					$return = false;
-				}
+                        if ($tmp['periodo'] === '1Q') {
+                            $value = array_merge($value, array('dia' => '01'));
+                            $fechaDesde = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
+                            $value = array_merge($value, array('dia' => '15'));
+                            $fechaHasta = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
+                        } elseif ($tmp['periodo'] === '2Q') {
+                            $value = array_merge($value, array('dia' => '16'));
+                            $fechaDesde = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
+                            $value = array_merge($value, array('dia' => $this->format($value, array('type' => 'ultimoDiaDelMes'))));
+                            $fechaHasta = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
+                        } elseif ($tmp['periodo'] === '1S') {
+                            $value = array_merge($value, array('dia' => '01', 'mes' => '01'));
+                            $fechaDesde = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
+                            $value = array_merge($value, array('dia' => '30', 'mes' => '06'));
+                            $fechaHasta = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
+                        } elseif ($tmp['periodo'] === '2S') {
+                            $value = array_merge($value, array('dia' => '01', 'mes' => '07'));
+                            $fechaDesde = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
+                            $value = array_merge($value, array('dia' => '31', 'mes' => '12'));
+                            $fechaHasta = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
+                        } elseif ($tmp['periodo'] === 'M' || $tmp['periodo'] === 'F') {
+                            $value = array_merge($value, array('dia' => '01'));
+                            $fechaDesde = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
+                            $value = array_merge($value, array('dia'=>$this->format($value, array('type' => 'ultimoDiaDelMes'))));
+                            $fechaHasta = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
+                        } elseif ($tmp['periodo'] === 'A') {
+                            $value = array_merge($value, array('dia' => '01', 'mes' => '01'));
+                            $fechaDesde = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
+                            $value = array_merge($value, array('dia' => '31', 'mes' => '12'));
+                            $fechaHasta = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
+                        }
+                        $tmp['desde'] = $fechaDesde;
+                        $tmp['hasta'] = $fechaHasta;
+                        $return = $tmp;
+                    } else {
+                        $return = false;
+                    }
+                }
 				break;		
 			case 'date':
 				if (is_array($valor) && !empty($valor['dia']) && !empty($valor['mes']) && !empty($valor['ano']) && is_numeric($valor['dia']) && is_numeric($valor['mes']) && is_numeric($valor['ano'])) {
