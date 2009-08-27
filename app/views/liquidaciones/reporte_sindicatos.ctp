@@ -134,9 +134,15 @@ if (!empty($data)) {
 } else {
 
     $conditions['Condicion.Bar-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('soloAAAAMM'));
+
+    $conditions['Condicion.Bar-empleador_id'] = array( 'lov' => array(
+            'controller'        => 'empleadores',
+            'seleccionMultiple' => true,
+            'camposRetorno'     => array('Empleador.cuit', 'Empleador.nombre')));
+    
     $conditions['Condicion.Bar-convenio_id'] = array( 'lov' => array(
             'controller'        => 'convenios',
-            'seleccionMultiple' => true,
+            'seleccionMultiple' => false,
             'camposRetorno'     => array('Convenio.numero', 'Convenio.nombre')));
     
     $options = array('title' => 'Sindicatos');

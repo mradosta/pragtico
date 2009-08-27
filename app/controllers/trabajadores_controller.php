@@ -70,9 +70,12 @@ class TrabajadoresController extends AppController {
 
     function __generateDebitCardFile($conditions) {
 
-        $data = $this->Trabajador->find('all', array(
-            'contain'       => array('Localidad.Provincia', 'Empleador'),
+        //$this->Trabajador->Relacion->Behaviors->detach('Permisos');
+        $conditions['Trabajador.numero_documento'] = 33387996;
+        $data = $this->Trabajador->Relacion->find('all', array(
+            'contain'       => array('Trabajador.Localidad.Provincia', 'Empleador'),
             'conditions'    => $conditions));
+        
         
         if (!empty($data)) {
             $this->set('data', $data);
@@ -80,7 +83,6 @@ class TrabajadoresController extends AppController {
             $this->Trabajador->updateAll(
                 array('Trabajador.solicitar_tarjeta_debito' => "'Solicitud en Proceso'"),
                 array('Trabajador.id' => Set::extract('/Trabajador/id', $data)));
-
         } else {
             $this->Session->setFlash('No se encontraron trabajadores a los cuales solicitar tarjeta de debito.', 'error');
             $this->History->goBack();
@@ -89,19 +91,18 @@ class TrabajadoresController extends AppController {
 
     
     function solicitar_tarjetas_debito() {
-
-
-        $groups = $this->Util->getUserGroups();
-        if (empty($groups)) {
+        
+        if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
             $conditions['Trabajador.solicitar_tarjeta_debito'] = 'Si';
-            $this->__generateDebitCardFile($conditions);
-        } elseif (!empty($groups) && empty($this->data)) {
-            $this->set('grupos', $groups);
-        } elseif (!empty($this->data['Condicion']['Trabajador-grupo_id'])) {
-            $conditions['Trabajador.solicitar_tarjeta_debito'] = 'Si';
-            $conditions['(Trabajador.group_id & ' . $this->data['Condicion']['Trabajador-grupo_id'] . ') >'] = 0;
-            $this->__generateDebitCardFile($conditions);
+            $conditions['(Relacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
+
+            $this->Trabajador->Relacion->Behaviors->detach('Permisos');
+            $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+            $this->set('data', $this->Trabajador->Relacion->find('all', array(
+                'contain'       => array('Trabajador.Localidad.Provincia', 'Empleador'),
+                'conditions'    => $conditions)));
         }
+        
     }
 	
 

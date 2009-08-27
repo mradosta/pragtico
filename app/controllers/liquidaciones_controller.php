@@ -38,30 +38,26 @@ class LiquidacionesController extends AppController {
     function reporte_sindicatos() {
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 
-            if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
-                $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
-            }
+            $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
+            
             if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
                 $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
             }
             if (!empty($this->data['Condicion']['Bar-convenio_id'])) {
                 $conditions['Liquidacion.convenio_categoria_convenio_id'] = $this->data['Condicion']['Bar-convenio_id'];
             }
-
             if (!empty($this->data['Condicion']['Bar-periodo_largo'])) {
                 $period = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
-                $conditions['Liquidacion.periodo'] = array('M', '1Q', '2Q');
                 $conditions['Liquidacion.ano'] = $period['ano'];
                 $conditions['Liquidacion.mes'] = $period['mes'];
             }
-
-            $conditions['LiquidacionesDetalle.concepto_retencion_sindical'] = 'Si'; 
+            $conditions['LiquidacionesDetalle.concepto_retencion_sindical'] = 'Si';
+            
+            $this->Liquidacion->Behaviors->detach('Permisos');
             $this->Liquidacion->LiquidacionesDetalle->contain(
                     array('Liquidacion' => array('Convenio', 'Relacion', 'Trabajador', 'Empleador')));
             $this->set('data', $this->Liquidacion->LiquidacionesDetalle->find('all', array('conditions' => $conditions)));
         }
-        
-        $this->set('groups', $this->Util->getUserGroups());
     }
 
     function resumen() {
