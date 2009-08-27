@@ -209,6 +209,11 @@ class Descuento extends AppModel {
 
 
     function beforeValidate($options = array()) {
+        if (empty($this->data['Descuento']['descontar'])) {
+            $this->invalidate('descontar', 'Debe seleccionar con que liquidacion se debe descontar.');
+            return false;
+        }
+        
         if (!empty($this->data['Descuento']['tipo'])) {
             if ($this->data['Descuento']['tipo'] === 'Cuota Alimentaria') {
                 if (empty($this->data['Descuento']['porcentaje'])) {
