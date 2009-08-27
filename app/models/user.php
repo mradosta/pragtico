@@ -17,35 +17,35 @@
 //App::import('Model', 'User');
 //User::store($this->Auth->user());
 
- class User extends AppModel {
+class User extends AppModel {
+
     var $useTable = false;
     
-function &getInstance($user=null) {
-    
-    
-  static $instance = array();
+    function &getInstance($user = null) {
+        
+        static $instance = array();
 
-  if ($user) {
-    $instance[0] =& $user;
-  }
+        if ($user !== null) {
+            $instance[0] =& $user;
+        }
  
-  if (!$instance) {
-    trigger_error(__("User not set.", true), E_USER_WARNING);
-    return false;
-  }
- 
-  return $instance[0];
-}
- 
-public function store($user) {
-  if (empty($user)) {
-    return false;
-  }
- 
-  User::getInstance($user);
-  return true;
-}
- 
+        if (!$instance) {
+            trigger_error(__("User not set.", true), E_USER_WARNING);
+            return false;
+        }
+        return $instance[0];
+    }
+
+
+    public function store($user) {
+        if (empty($user)) {
+            return false;
+        }
+        User::getInstance($user);
+        return true;
+    }
+
+
 /**
  * Get data related to current logged in user.
  *
@@ -87,9 +87,9 @@ public function store($user) {
         } elseif (!is_numeric($filter)) {
             trigger_error(__('Invalid filter option.', true), E_USER_WARNING);
         }
-        
+
         foreach (User::get('/Grupo') as $group) {
-            if ($group['Grupo']['id'] & $filter) {
+            if (($group['Grupo']['id'] & (int)$filter) > 0) {
                 $filteredGroups[] = $group;
             }
         }
