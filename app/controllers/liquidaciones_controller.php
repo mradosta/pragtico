@@ -972,7 +972,14 @@ class LiquidacionesController extends AppController {
 						$this->Liquidacion->LiquidacionesAuxiliar->deleteAll(array('LiquidacionesAuxiliar.id' => $idsAuxiliares));
 					}
 					$db->commit($this);
-					$this->Session->setFlash('Se confirmaron correctamente ' . count($ids) . ' liquidacion/es.', 'ok');
+                    
+                    $data = $this->Liquidacion->find('all', array(
+                        'conditions'    => array('Liquidacion.id' => $ids),
+                        'recursive'     => -1));
+                    $this->set('data', $data);
+                    $this->render('reporte_liquidaciones_confirmadas');
+                    
+					//$this->Session->setFlash('Se confirmaron correctamente ' . count($ids) . ' liquidacion/es.', 'ok');
 				} else {
 					$db->rollback($this);
 					$this->Liquidacion->__buscarError();
