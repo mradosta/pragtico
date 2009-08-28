@@ -301,9 +301,9 @@ class Pago extends AppModel {
 							case '011': //Nacion
 
                                 if (!empty($opciones['fecha_acreditacion']) && preg_match(VALID_DATE, $opciones['fecha_acreditacion'], $matchesDate)) {
-                                    $fechaAcreditacion = substr($matchesDate[1], -2) . $matchesDate[2] . $matchesDate[3];
+                                    $fechaAcreditacion = $matchesDate[3] . $matchesDate[2] . substr($matchesDate[1], -2);
                                 } else {
-                                    $fechaAcreditacion = date('ymd');
+                                    $fechaAcreditacion = date('dmy');
                                 }
 								$c = null;
                                 
@@ -362,7 +362,6 @@ class Pago extends AppModel {
 							break;
 					}
 				}
-                d($contenido);
                 $this->unbindModel(array(
                     'belongsTo' => array_keys($this->belongsTo)
                 ));
