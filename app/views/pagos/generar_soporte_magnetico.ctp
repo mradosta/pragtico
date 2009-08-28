@@ -21,78 +21,25 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-$condiciones['Soporte.empleador_id'] =  array(	"lov"	=>array("controller"		=> 	"empleadores",
-																"seleccionMultiple"	=> 	0,
-																"camposRetorno"		=> 	array(	"Empleador.cuit",
-																								"Empleador.nombre")));
-$condiciones['Soporte.cuenta_id'] = array("label"=>"Cuenta", "type"=>"relacionado", "relacion"=>"Soporte.empleador_id", "url"=>"pagos/cuentas_relacionado");
-$condiciones['Soporte.fecha_acreditacion'] = array("value"=>date("d/m/Y"), "type"=>"date", "label"=>"Acreditacion", 'aclaracion' => "Fecha opcional de acreditacion.");
+$condiciones['Soporte.empleador_id'] =  array(	'lov'	=>array('controller'		=> 'empleadores',
+																'seleccionMultiple'	=> 0,
+																'camposRetorno'		=> array(	'Empleador.cuit',
+																								'Empleador.nombre')));
+$condiciones['Soporte.cuenta_id'] = array('label' => 'Cuenta', 'type' => 'relacionado', 'relacion' => 'Soporte.empleador_id', 'url' => 'pagos/cuentas_relacionado');
+$condiciones['Soporte.fecha_acreditacion'] = array('value'=>date('Y-m-d'), 'type' => 'date', 'label' => 'Acreditacion', 'aclaracion' => 'Fecha opcional de acreditacion.');
 
 if (!empty($ids)) {
-	$condiciones['Soporte.pago_id'] = array("type"=>"hidden", "value"=>$ids);
+	$condiciones['Soporte.pago_id'] = array('type' => 'hidden', 'value' => $ids);
 }
 
 
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "Seleccione la cuenta",'imagen' => 'bancos.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Seleccione la cuenta','imagen' => 'bancos.gif')));
 
-$accionesExtra['opciones'] = array("acciones"=>array());
-$botonesExtra[] = $appForm->button("Cancelar", array("title"=>"Cancelar", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='cancelar';form.submit();"));
-$botonesExtra[] = $appForm->submit("Generar", array("title"=>"Importar la PLanilla", "onclick"=>"document.getElementById('accion').value='generar'"));
+$accionesExtra['opciones'] = array('acciones'=>array());
+$botonesExtra[] = $appForm->button('Cancelar', array('title' => 'Cancelar', 'class' => 'limpiar', 'onclick' => "document.getElementById('accion').value='cancelar';form.submit();"));
+$botonesExtra[] = $appForm->submit('Generar', array('title' => 'Generar archivo de Soporte', 'onclick' => "document.getElementById('accion').value='generar'"));
 
-$miga = 'Generar soporte magnetico';
-echo $this->element("index/index", array("opcionesTabla"=>array("tabla"=>array("omitirMensajeVacio"=>true)), "botonesExtra"=>array('opciones' => array("botones"=>$botonesExtra)), "accionesExtra"=>$accionesExtra, "opcionesForm"=>array("action"=>"generar_soporte_magnetico"), "condiciones"=>$fieldset, "cuerpo"=>null, 'miga'=>$miga));
+echo $this->element('index/index', array('opcionesTabla'=>array('tabla'=>array('omitirMensajeVacio' => true)), 'botonesExtra'=>array('opciones' => array('botones' => $botonesExtra)), 'accionesExtra' => $accionesExtra, 'opcionesForm'=>array('action' => 'generar_soporte_magnetico'), 'condiciones' => $fieldset, 'cuerpo' => null));
 
-
-
-
-//$opciones .= $appForm->input("Soporte.modo", array("options"=>$modos, "type"=>"radio"));
-//$opciones .= $appForm->input("Soporte.modo", array("options"=>$modos, "empty"=>true));
-//$opciones .= $appForm->input("Soporte.grupo_id", array("options"=>$grupos, "empty"=>true));
-
-//$codigoHtml = $appForm->bloque($opciones, array('fieldset' => array('legend' => "Opciones", 'imagen' => 'ok.gif')));
-
-
-
-/*
-$bancos = "";
-$bancos .= $appForm->bloque(
-	$appForm->link($appForm->image('propios" . DS . "santander-rio.jpg",
-	array("title"=>"Generar archivo para envio el Banco Santader-Rio",
-			'alt' => "Generar archivo para envio el Banco Santader-Rio")), "#", array("title"=>"Santander-Rio", "class"=>"seleccion_bancos_link")),
-				array('div' => array("class"=>"seleccion_bancos")));
-$bancos .= $appForm->bloque(
-	$appForm->link($appForm->image('propios" . DS . "galicia.jpg",
-	array("title"=>"Generar archivo para envio el Banco Galicia",
-			'alt' => "Generar archivo para envio el Banco Galicia")), "#", array("title"=>"Galicia", "class"=>"seleccion_bancos_link")),
-				array('div' => array("class"=>"seleccion_bancos")));
-$bancos .= $appForm->bloque(
-	$appForm->link($appForm->image('propios" . DS . "nacion.jpg",
-	array("title"=>"Generar archivo para envio el Banco Nacion",
-	'alt' => "Generar archivo para envio el Banco Nacion")), "#", array("title"=>"Nacion", "class"=>"seleccion_bancos_link")),
-		array('div' => array("class"=>"seleccion_bancos")));
-*/
-
-
-//$bancos = $appForm->input("Banco.id", array("options"=>$bancos, "type"=>"radio", "label"=>"Banco"));
-//$bancos = $appForm->input("Banco.id", array("options"=>$bancos, "label"=>"Banco", "empty"=>true));
-/*
-$opciones .= $appForm->input("Soporte.empleador_id", array("aclaracion" 	=> 	"Solo se tendra en cuenta este campo si el tipo es 'Por Empleador'.",
-										"lov"	=>array("controller"		=> 	"empleadores",
-														"seleccionMultiple"	=> 	0,
-														"camposRetorno"		=> 	array(	"Empleador.cuit",
-																						"Empleador.nombre"))));
-$opciones .= $appForm->input('Banco.id', array("label"=>"Cuenta", "type"=>"relacionado", "relacion"=>"Soporte.empleador_id", "url"=>"pagos/cuentas_relacionado"));
-$codigoHtml = $appForm->bloque($opciones, array('fieldset' => array('legend' => "Seleccione la cuenta", 'imagen' => 'bancos.gif')));
-
-
-*/
-/*
-echo $appForm->create(null, array("id"=>"form", 'action' => "generar_soporte_magnetico"));
-if(!empty($ids)) {
-	echo $appForm->input("Pago.ids", array("type"=>"hidden", "value"=>$ids));
-}
-echo $appForm->bloque($codigoHtml, array('fieldset' => array('legend' => "Generar archivo para deposito de haberes", 'imagen' => 'archivo.gif')));
-echo $appForm->end();
-*/
 ?>

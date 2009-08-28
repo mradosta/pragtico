@@ -227,15 +227,11 @@ class Pago extends AppModel {
  * @access public
  */
 	function generarSoporteMagnetico($opciones) {
-	
-		$contenido = $banco = false;
+
+		$contenido = false;
 		
 		if (!empty($opciones['cuenta_id']) && !empty($opciones['pago_id']) && !empty($opciones['empleador_id'])) {
 
-			$this->Relacion->Empleador->Cuenta->contain(array('Empleador', 'Sucursal.Banco'));
-			$cuenta = $this->Relacion->Empleador->Cuenta->findById($opciones['cuenta_id']);
-			$banco = $cuenta['Sucursal']['Banco']['codigo'];
-			
 			$conditions = array(
 					'Pago.estado'		=> 'Pendiente',
 	 				'Pago.id'			=> $opciones['pago_id'],
@@ -246,17 +242,26 @@ class Pago extends AppModel {
 						  	'conditions' 	=> $conditions));
 			
 			if (!empty($pagos)) {
+
+                $this->Relacion->Empleador->Cuenta->contain(array('Empleador', 'Sucursal.Banco'));
+                $cuenta = $this->Relacion->Empleador->Cuenta->findById($opciones['cuenta_id']);
+                $bankCode = str_pad($cuenta['Sucursal']['Banco']['codigo'], 3, '0', STR_PAD_LEFT);
+                
 				$total = 0;
 				$pagosIds = null;
 				foreach ($pagos as $pago) {
-                    $pagosIds[] = $pago['Pago']['id'];
                     
-					preg_match('/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d$/', $pago['Relacion']['Trabajador']['cbu'], $matches);
-					if (!empty($matches[2]) && !empty($matches[3])) {
-					
+                    $pagosIds[] = $pago['Pago']['id'];
+					if (preg_match('/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d$/', $pago['Relacion']['Trabajador']['cbu'], $matches)) {
+
+                        /** Avoid creating a deposit where origin and target accounts are fron different banks */
+                        if ($matches[1] != $bankCode) {
+                            continue;
+                        }
+                        
 						$total += number_format($pago['Pago']['monto'], 2, '.', '');					
-						switch ($banco) {
-							case '72':
+						switch ($bankCode) {
+							case '072': //Rio
 								if ($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Cta. Cte.') {
 									$tipoCuentaTrabajador = '2';
 								} elseif ($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Caja de Ahorro') {
@@ -272,13 +277,12 @@ class Pago extends AppModel {
 								$c[] = str_pad(number_format($pago['Pago']['monto'], 2, '', ''), 15, '0', STR_PAD_LEFT); // importe
 								$rds[] = implode(';', $c);
 								break;
-							case '7':
+							case '007': //Galicia
 								if ($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Cta. Cte.') {
 									$tipoCuentaTrabajador = '0';
 								} elseif ($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Caja de Ahorro') {
 									$tipoCuentaTrabajador = '4';
 								}
-								$pago['Relacion']['Trabajador']['cbu'] = '0070278430004005946351';
 								
 								$rd = null;												
 								$rd[] = 'D';
@@ -294,17 +298,17 @@ class Pago extends AppModel {
 								$rd[] = str_pad('', 11, ' ', STR_PAD_RIGHT); //libre
 								$rds[] = implode('', $rd);
 								break;
-							case '11':
-								$fechaAcreditacion = date('Ymd');
-								if (!empty($opciones['fecha_acreditacion'])) {
-									preg_match('/(\d\d)\/(\d\d)\/\d\d(\d\d)$/', $opciones['fecha_acreditacion'], $matches);
-									if (!empty($matches[1]) && !empty($matches[2]) && !empty($matches[3])) {
-										$fechaAcreditacion = $matches[1] . $matches[2] . $matches[3];
-									}
-								}
+							case '011': //Nacion
+
+                                if (!empty($opciones['fecha_acreditacion']) && preg_match(VALID_DATE, $opciones['fecha_acreditacion'], $matchesDate)) {
+                                    $fechaAcreditacion = substr($matchesDate[1], -2) . $matchesDate[2] . $matchesDate[3];
+                                } else {
+                                    $fechaAcreditacion = date('ymd');
+                                }
 								$c = null;
-								$c[] = str_pad($matches[2], 4, '0', STR_PAD_LEFT); // Sucursal
-								$c[] = str_pad($matches[3], 10, '0', STR_PAD_LEFT); // Nro cuenta
+                                
+                                $c[] = $matches[2]; // Sucursal
+                                $c[] = substr($matches[3], -10); // Nro cuenta
 								$c[] = '141'; // nadie sabe que es, pero debe ir este valor
 								$c[] = $fechaAcreditacion; // fecha de acreditacion
 								$c[] = 'CTRE0'; // nadie sabe que es, pero debe ir este valor
@@ -320,12 +324,12 @@ class Pago extends AppModel {
 				}
 				
 				if (!empty($rds)) {
-					switch ($banco) {
-						case '72':
-						case '11':
+					switch ($bankCode) {
+						case '072':
+						case '011':
 							$contenido = implode("\r\n", $rds);
 							break;
-						case '7':
+						case '007':
 							$fechaAcreditacion = date('Ymd');
 							if (!empty($opciones['fecha_acreditacion'])) {
 								preg_match('/(\d\d)\/(\d\d)\/(\d\d\d\d)$/', $opciones['fecha_acreditacion'], $matches);
@@ -369,7 +373,7 @@ class Pago extends AppModel {
 				return false;
 			}
 		}
-		return array('contenido' => $contenido, 'banco' => $banco);
+		return array('contenido' => $contenido, 'banco' => $bankCode);
 	}
 
 }

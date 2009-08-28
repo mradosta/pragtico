@@ -219,8 +219,7 @@ class PagosController extends AppController {
 			&& !empty($this->data['Soporte']['cuenta_id'])
 			&& !empty($this->data['Soporte']['empleador_id'])) {
 			
-			$pagosIds = unserialize($this->data['Soporte']['pago_id']);
-			$opciones = array(	"pago_id"				=> $pagosIds,
+			$opciones = array(	"pago_id"				=> unserialize($this->data['Soporte']['pago_id']),
 								"fecha_acreditacion"	=> "",
 								"cuenta_id"				=> $this->data['Soporte']['cuenta_id'],
 								"empleador_id"			=> $this->data['Soporte']['empleador_id']);
