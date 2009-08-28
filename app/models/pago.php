@@ -251,14 +251,14 @@ class Pago extends AppModel {
 				$pagosIds = null;
 				foreach ($pagos as $pago) {
                     
-                    $pagosIds[] = $pago['Pago']['id'];
 					if (preg_match('/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d$/', $pago['Relacion']['Trabajador']['cbu'], $matches)) {
 
                         /** Avoid creating a deposit where origin and target accounts are fron different banks */
                         if ($matches[1] != $bankCode) {
-                            continue;
+                            //continue;
                         }
                         
+                        $pagosIds[] = $pago['Pago']['id'];
 						$total += number_format($pago['Pago']['monto'], 2, '.', '');					
 						switch ($bankCode) {
 							case '072': //Rio
@@ -362,6 +362,7 @@ class Pago extends AppModel {
 							break;
 					}
 				}
+                d($contenido);
                 $this->unbindModel(array(
                     'belongsTo' => array_keys($this->belongsTo)
                 ));
