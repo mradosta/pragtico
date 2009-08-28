@@ -18,23 +18,11 @@
  
 if (!empty($data)) {
     $documento->create(array('password' => 'PaXXHttBXG66'));
-    $documento->doc->getActiveSheet()->getDefaultStyle()->getFont()->setName('Courier New');
-    $documento->doc->getActiveSheet()->getDefaultStyle()->getFont()->setSize(6);
-
-    $documento->doc->getActiveSheet()->getDefaultRowDimension()->setRowHeight(10);
-    $documento->doc->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_PORTRAIT);
-    $documento->doc->getActiveSheet()->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
-
 
     $fila = 1;
-    $documento->setCellValue('E' . $fila, date('Y-m-d'), 'bold');
+    $documento->setCellValue('I' . $fila, date('Y-m-d'), array('bold', 'right'));
     $fila+=2;
     $documento->setCellValue('A' . $fila, 'Listado de Liquidaciones Confirmadas', 'bold');
-    $fila++;
-    //$documento->setCellValue('A' . $fila, 'Empresa: ' . $conditions['Liquidacion-empleador_id__'], 'bold');
-    $fila++;
-    //$documento->setCellValue('A' . $fila, 'Periodo: ' . $conditions['Liquidacion-periodo_largo'], 'bold');
-
 
     $fila = 7;
     $total = 0;
@@ -45,21 +33,23 @@ if (!empty($data)) {
 
     $documento->setWidth('A', 30);
     $documento->setWidth('B', 15);
-    $documento->setWidth('C', 20);
-    $documento->setWidth('D', 20);
-    $documento->setWidth('E', 15);
+    $documento->setWidth('C', 15);
+    $documento->setWidth('D', 30);
+    $documento->setWidth('E', 30);
     $documento->setWidth('F', 15);
     $documento->setWidth('G', 15);
-    $documento->setWidth('H', 30);
+    $documento->setWidth('H', 15);
+    $documento->setWidth('I', 30);
     
     $documento->setCellValue('A' . $fila, 'Empleador', 'title');
-    $documento->setCellValue('B' . $fila, 'Cuil', 'title');
-    $documento->setCellValue('C' . $fila, 'Apellido', 'title');
-    $documento->setCellValue('D' . $fila, 'Nombre', 'title');
-    $documento->setCellValue('E' . $fila, 'Pesos', 'title');
-    $documento->setCellValue('F' . $fila, 'Beneficios', 'title');
-    $documento->setCellValue('G' . $fila, 'Total', 'title');
-    $documento->setCellValue('H' . $fila, 'Cuenta', 'title');
+    $documento->setCellValue('B' . $fila, 'Periodo', 'title');
+    $documento->setCellValue('C' . $fila, 'Cuil', 'title');
+    $documento->setCellValue('D' . $fila, 'Apellido', 'title');
+    $documento->setCellValue('E' . $fila, 'Nombre', 'title');
+    $documento->setCellValue('F' . $fila, 'Pesos', 'title');
+    $documento->setCellValue('G' . $fila, 'Beneficios', 'title');
+    $documento->setCellValue('H' . $fila, 'Total', 'title');
+    $documento->setCellValue('I' . $fila, 'Cuenta', 'title');
             
     /** Body */
     $startRow = $fila + 1;
@@ -74,34 +64,40 @@ if (!empty($data)) {
 
         $documento->setCellValueFromArray(
             array(  '0,' . $fila => $detail['Liquidacion']['empleador_nombre'],
-                    '1,' . $fila => $detail['Liquidacion']['trabajador_cuil'],
-                    '2,' . $fila => $detail['Liquidacion']['trabajador_apellido'],
-                    '3,' . $fila => $detail['Liquidacion']['trabajador_nombre'],
-                    '4,' . $fila => array('value'      => $detail['Liquidacion']['total_pesos'],
-                                           'options'    => 'currency'),
-                    '5,' . $fila => array('value'      => $detail['Liquidacion']['total_beneficios'],
-                                           'options'    => 'currency'),
-                    '6,' . $fila => array('value'      => $detail['Liquidacion']['total'],
-                                           'options'    => 'currency'),
-                    '7,' . $fila => $account));
+                    '1,' . $fila => array('value'      => $formato->format($detail['Liquidacion'], 'periodo'),
+                                          'options'    => 'center'),
+                    '2,' . $fila => array('value'      => $detail['Liquidacion']['trabajador_cuil'],
+                                          'options'    => 'center'),
+                    '3,' . $fila => $detail['Liquidacion']['trabajador_apellido'],
+                    '4,' . $fila => $detail['Liquidacion']['trabajador_nombre'],
+                    '5,' . $fila => array('value'      => $detail['Liquidacion']['total_pesos'],
+                                           'options'   => 'currency'),
+                    '6,' . $fila => array('value'      => $detail['Liquidacion']['total_beneficios'],
+                                           'options'   => 'currency'),
+                    '7,' . $fila => array('value'      => $detail['Liquidacion']['total'],
+                                           'options'   => 'currency'),
+                    '8,' . $fila => array('value'      => $account,
+                                           'options'   => 'center')));
     }
     $endRow = $fila;
     
     $fila+=3;
-    $documento->setCellValue('A' . $fila . ':H' . $fila, 'TOTALES', 'title');
+    $documento->setCellValue('A' . $fila . ':I' . $fila, 'TOTALES', 'title');
     $fila++;
-    $documento->setCellValue('A' . $fila, 'Liquidaciones', 'bold');
-    $documento->setCellValue('H' . $fila, count($data), 'bold');
+    $documento->setCellValue('B' . $fila, 'Liquidaciones:', array('bold', 'right'));
+    $documento->setCellValue('D' . $fila, count($data), 'bold');
     $fila++;
-    $documento->setCellValue('A' . $fila, 'Pesos', 'bold');
-    $documento->setCellValue('H' . $fila, sprintf('=SUM(E%s:E%s)', $startRow, $endRow), 'total');
+    $documento->setCellValue('B' . $fila, 'Pesos:', array('bold', 'right'));
+    $documento->setCellValue('D' . $fila, sprintf('=SUM(F%s:F%s)', $startRow, $endRow), 'total');
     $fila++;
-    $documento->setCellValue('A' . $fila, 'Beneficios', 'bold');
-    $documento->setCellValue('H' . $fila, sprintf('=SUM(F%s:F%s)', $startRow, $endRow), 'total');
+    $documento->setCellValue('B' . $fila, 'Beneficios:', array('bold', 'right'));
+    $documento->setCellValue('D' . $fila, sprintf('=SUM(G%s:G%s)', $startRow, $endRow), 'total');
     $fila++;
-    $documento->setCellValue('A' . $fila, 'Total', 'bold');
-    $documento->setCellValue('H' . $fila, sprintf('=SUM(G%s:G%s)', $startRow, $endRow), 'total');
+    $documento->setCellValue('B' . $fila, 'Total:', array('bold', 'right'));
+    $documento->setCellValue('D' . $fila, sprintf('=SUM(H%s:H%s)', $startRow, $endRow), 'total');
     
+    $appForm->addScript('console.log("xxxxxxxx");');
     $documento->save('Excel5');
+
 }
 ?>
