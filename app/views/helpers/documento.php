@@ -70,6 +70,7 @@ class DocumentoHelper extends AppHelper {
  * @access public.  
  */
     function create($options = array()) {
+
         $this->doc->getProperties()->setCreator('Pragtico');
         $this->doc->getProperties()->setLastModifiedBy('Pragtico');
         $this->doc->getProperties()->setTitle('Pragtico');
@@ -79,10 +80,12 @@ class DocumentoHelper extends AppHelper {
         $this->doc->getProperties()->setCategory('Pragtico');
         $this->doc->setActiveSheetIndex(0);
         $this->setActiveSheet(0);
-        $this->doc->getActiveSheet()->setShowGridlines(true);
-        $this->doc->getActiveSheet()->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
+        $this->activeSheet->setShowGridlines(true);
+        $this->activeSheet->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
         if (isset($options['orientation']) && $options['orientation'] === 'landscape') {
-            $this->doc->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
+            $this->activeSheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
+        } else {
+            $this->activeSheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_PORTRAIT);
         }
         
         /**
@@ -94,9 +97,18 @@ class DocumentoHelper extends AppHelper {
             } else {
                 $options['password'] = substr($options['password'], 0, 10);
             }
-            $this->doc->getActiveSheet()->getProtection()->setPassword($options['password']);
-            $this->doc->getActiveSheet()->getProtection()->setSheet(true);
+            $this->activeSheet->getProtection()->setPassword($options['password']);
+            $this->activeSheet->getProtection()->setSheet(true);
         }
+
+
+        $this->activeSheet->getDefaultStyle()->getFont()->setName('Courier New');
+        $this->activeSheet->getDefaultStyle()->getFont()->setSize(6);
+
+        $this->activeSheet->getDefaultRowDimension()->setRowHeight(10);
+        $this->activeSheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_PORTRAIT);
+        $this->activeSheet->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
+        
     }
     
 
