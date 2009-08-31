@@ -52,11 +52,12 @@ class LiquidacionesController extends AppController {
                 $conditions['Liquidacion.mes'] = $period['mes'];
             }
             $conditions['LiquidacionesDetalle.concepto_retencion_sindical'] = 'Si';
+            $conditions['LiquidacionesDetalle.valor >'] = 0;
             
             $this->Liquidacion->Behaviors->detach('Permisos');
-            $this->Liquidacion->LiquidacionesDetalle->contain(
-                    array('Liquidacion' => array('Convenio', 'Relacion', 'Trabajador', 'Empleador')));
+            $this->Liquidacion->LiquidacionesDetalle->contain(array('Liquidacion' => array('Trabajador')));
             $this->set('data', $this->Liquidacion->LiquidacionesDetalle->find('all', array('conditions' => $conditions)));
+            $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
         }
     }
 
