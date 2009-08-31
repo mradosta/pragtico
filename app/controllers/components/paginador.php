@@ -29,9 +29,9 @@ class PaginadorComponent extends Object {
  * Controller associate to the component.
  *
  * @var array
- * @access public
+ * @access private
  */
-    var $controller;
+    private $__controller;
 
 
 /**
@@ -40,7 +40,7 @@ class PaginadorComponent extends Object {
  * @var array
  * @access private
  */
-    var $__whiteListFields = array();
+    private $__whiteListFields = array();
 
 
 /**
@@ -49,7 +49,7 @@ class PaginadorComponent extends Object {
  * @var array
  * @access private
  */
-    var $__conditions = array();
+    private $__conditions = array();
 
 
 /**
@@ -58,7 +58,7 @@ class PaginadorComponent extends Object {
  * @var array
  * @access private
  */
-    var $__conditionsToRemove = array();
+    private $__conditionsToRemove = array();
 
 
 /**
@@ -69,7 +69,7 @@ class PaginadorComponent extends Object {
  * @access public
  */
     function startup($controller) {
-        $this->controller = $controller;
+        $this->__controller = $controller;
     }
 
 
@@ -88,9 +88,9 @@ class PaginadorComponent extends Object {
     function generarCondicion($useSession = true, $whiteListFields = array()) {
 
         /** Delete filters */
-        if (isset($this->controller->data['Formulario']['accion']) && $this->controller->data['Formulario']['accion'] == 'limpiar') {
-            $this->controller->Session->del('filtros.' . $this->controller->name . '.' . $this->controller->action);
-            unset($this->controller->data['Condicion']);
+        if (isset($this->__controller->data['Formulario']['accion']) && $this->__controller->data['Formulario']['accion'] == 'limpiar') {
+            $this->__controller->Session->del('filtros.' . $this->__controller->name . '.' . $this->__controller->action);
+            unset($this->__controller->data['Condicion']);
             return array();
         }
 
@@ -99,7 +99,7 @@ class PaginadorComponent extends Object {
         $conditions = $this->__conditions;
         $valoresLov = array();
         if ($useSession === true) {
-            $filter = $this->controller->Session->read('filtros.' . $this->controller->name . '.' . $this->controller->action);
+            $filter = $this->__controller->Session->read('filtros.' . $this->__controller->name . '.' . $this->__controller->action);
             if (!empty($filter)) {
                 $conditions = array_merge($filter['condiciones'], $conditions);
                 $valoresLov = $filter['valoresLov'];
@@ -107,8 +107,8 @@ class PaginadorComponent extends Object {
         }
 
 
-        if (!empty($this->controller->data['Condicion'])) {
-            foreach ($this->controller->data['Condicion'] as $k => $v) {
+        if (!empty($this->__controller->data['Condicion'])) {
+            foreach ($this->__controller->data['Condicion'] as $k => $v) {
 
                 list($model, $field) = explode('-', $k);
                 $modelField = $model . '.' . $field;
@@ -130,9 +130,7 @@ class PaginadorComponent extends Object {
                 $modelField = str_replace('__desde', ' >=', $modelField);
                 $modelField = str_replace('__hasta', ' <=', $modelField);
                  */
-
-
-                $conditions = array_merge($this->__reemplazos($modelField, $v), $conditions);
+                $conditions = array_merge($conditions, $this->__reemplazos($modelField, $v));
             }
         }
 
@@ -143,8 +141,11 @@ class PaginadorComponent extends Object {
         }
 
         if (!empty($conditions) || !empty($valoresLov)) {
-            $this->controller->Session->write('filtros.' . $this->controller->name . '.' . $this->controller->action, array('condiciones' => $conditions, 'valoresLov' => $valoresLov));
+            $this->__controller->Session->write('filtros.' . $this->__controller->name . '.' . $this->__controller->action, array('condiciones' => $conditions, 'valoresLov' => $valoresLov));
         }
+
+        /** Save currently used conditions */
+        $this->__conditions = $conditions;
         return $conditions;
     }
 
@@ -157,7 +158,7 @@ class PaginadorComponent extends Object {
  * @return void
  */
     function generarData() {
-		$condiciones = $this->controller->Session->read('filtros.' . $this->controller->name . '.' . $this->controller->action);
+		$condiciones = $this->__controller->Session->read('filtros.' . $this->__controller->name . '.' . $this->__controller->action);
 		if (!empty($condiciones)) {
         	/**
         	* Restauro los valores 'que se ven de una lov, para no perderlos.
@@ -166,7 +167,7 @@ class PaginadorComponent extends Object {
         	*/
         	if (!empty($condiciones['valoresLov']) && is_array($condiciones['valoresLov'])) {
 				foreach ($condiciones['valoresLov'] as $k => $v) {
-					$this->controller->data['Condicion'][$k] = $v;
+					$this->__controller->data['Condicion'][$k] = $v;
 				}
 			}
 			/**
@@ -182,14 +183,14 @@ class PaginadorComponent extends Object {
 				} elseif ($sufix === '<=') {
                     $k .= '__hasta';
 				}
-                $this->controller->data['Condicion'][$k] = $this->__removerReemplazos($v);
+                $this->__controller->data['Condicion'][$k] = $this->__removerReemplazos($v);
 			}
         }
 	}
 
 
 /**
- * Sets $__whiteListFields.
+ * Set whiteListed Fields.
  *
  * @param array|string $whiteListFields.
  */
@@ -199,12 +200,22 @@ class PaginadorComponent extends Object {
 
 
 /**
- * Sets conditions.
+ * Set conditions.
  *
  * @param array|string $conditions.
  */
     function setCondition($conditions) {
         $this->__conditions = array_merge($this->__conditions, (array)$conditions);
+    }
+
+
+/**
+ * Get conditions.
+ *
+ * @return array
+ */
+    function getCondition() {
+        return $this->__conditions;
     }
 
 
@@ -246,18 +257,25 @@ class PaginadorComponent extends Object {
             $conditions = $condicion;
         }
 
-        if (!empty($this->controller->{$this->controller->modelClass}->modificadores[$this->controller->action]['contain'])) {
-            $this->controller->paginate['contain'] = $this->controller->{$this->controller->modelClass}->modificadores[$this->controller->action]['contain'];
+        if (!empty($this->__controller->{$this->__controller->modelClass}->modificadores[$this->__controller->action]['contain'])) {
+            $this->__controller->paginate['contain'] = $this->__controller->{$this->__controller->modelClass}->modificadores[$this->__controller->action]['contain'];
         }
         
-        if (!empty($this->controller->paginate['conditions'])) {
-            $this->controller->paginate['conditions'] = array_merge($this->controller->paginate['conditions'], $conditions);
+        if (!empty($this->__controller->paginate['conditions'])) {
+            $this->__controller->paginate['conditions'] = array_merge($this->__controller->paginate['conditions'], $conditions);
         } else {
-            $this->controller->paginate['conditions'] = $conditions;
+            $this->__controller->paginate['conditions'] = $conditions;
         }
 
         $this->generarData();
-        return $this->controller->paginate();
+        
+        if (method_exists($this->__controller, 'afterPaginate')) {
+            $results = $this->__controller->paginate();
+            $this->__controller->afterPaginate($results);
+            return $results;
+        } else {
+            return $this->__controller->paginate();
+        }
     }
 
 
@@ -285,14 +303,14 @@ class PaginadorComponent extends Object {
 				$extra = 'hasta';
 			}
 
-			if (isset($this->controller->{$model}) && is_object($this->controller->{$model})) {
-				$tipoDato = $this->controller->{$model}->getColumnType($campo);
+			if (isset($this->__controller->{$model}) && is_object($this->__controller->{$model})) {
+				$tipoDato = $this->__controller->{$model}->getColumnType($campo);
 			}
 			/**
 			* Para el caso de una busqueda por un model asociado, veo si lo encuentro.
 			*/
-			elseif (isset($this->controller->{$this->controller->modelClass}->{$model}) && is_object($this->controller->{$this->controller->modelClass}->$model)) {
-				$tipoDato = $this->controller->{$this->controller->modelClass}->{$model}->getColumnType($campo);
+			elseif (isset($this->__controller->{$this->__controller->modelClass}->{$model}) && is_object($this->__controller->{$this->__controller->modelClass}->$model)) {
+				$tipoDato = $this->__controller->{$this->__controller->modelClass}->{$model}->getColumnType($campo);
 			}
 
 			$key = $model . '.' . $campo;
