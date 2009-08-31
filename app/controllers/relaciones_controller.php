@@ -26,6 +26,40 @@ class RelacionesController extends AppController {
 
 //var $components = array('DebugKit.Toolbar');
 
+    var $helpers = array('Documento');
+
+    function reporte_relaciones_activas() {
+        if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
+
+            if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
+                $conditions['(Relacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
+            }
+            if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
+                $conditions['Relacion.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
+            }
+
+            if (!empty($this->data['Condicion']['Bar-con_fecha_egreso']) && $this->data['Condicion']['Bar-con_fecha_egreso'] === 'No') {
+                $conditions[] = array('Relacion.egreso' => array(null, '0000-00-00'));
+            } else {
+                $conditions['Relacion.egreso NOT'] = '0000-00-00';
+                $conditions['Relacion.egreso !='] = null;
+            }
+
+            if (!empty($this->data['Condicion']['Bar-con_liquidacion_periodo']) && $this->data['Condicion']['Bar-con_liquidacion_periodo'] === 'Si' && !empty($this->data['Condicion']['Bar-periodo_largo'])) {
+
+                $period = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
+                $this->Relacion->Liquidacion->Behaviors->detach('Permisos');
+                
+                $conditions['Relacion.id'] = Set::extract('/Liquidacion/relacion_id', $this->Relacion->Liquidacion->find('all', array('recursive' => -1, 'group' => 'Liquidacion.relacion_id', 'conditions' => array('Liquidacion.ano' => $period['ano'], 'Liquidacion.mes' => $period['mes']))));
+            }
+
+            $this->Relacion->contain(array('Trabajador', 'Empleador'));
+            $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+            $this->set('data', $this->Relacion->find('all', array('conditions' => $conditions)));
+        }
+    }
+
+
 	
 /**
  * Set default search condition to active relations.
