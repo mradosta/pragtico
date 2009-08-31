@@ -228,7 +228,7 @@ class LiquidacionesController extends AppController {
  */
 	function preliquidar() {
 
-		$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_largo'], 'periodo');
+		$periodo = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 			
 			if ($periodo !== false) {
@@ -344,18 +344,6 @@ class LiquidacionesController extends AppController {
                 /** For finished relations, only allow last period receipt */
                 if (!empty($relacion['Relacion']['egreso']) && $relacion['Relacion']['egreso'] !== '0000-00-00' && $this->data['Condicion']['Liquidacion-tipo'] === 'final') {
                     $periodo['hasta'] = $relacion['Relacion']['egreso'];
-                        /*
-                        $tmpPeriod = explode('-', $relacion['Relacion']['egreso']);
-                        App::import('Vendor', 'dates', 'pragmatia');
-                        if ($periodo['periodo'] === 'M') {
-                            $tmpPeriodHasta = $periodo['ano'] . '-' . $periodo['mes'] . '-' . Dates::daysInMonth($periodo['ano'], $periodo['mes']);
-                        } elseif ($periodo['periodo'] === '1Q') {
-                            $tmpPeriodHasta = $periodo['ano'] . '-' . $periodo['mes'] . '-15';
-                        } elseif ($periodo['periodo'] === '2Q') {
-                            $tmpPeriodHasta = $periodo['ano'] . '-' . $periodo['mes'] . '-' . Dates::daysInMonth($periodo['ano'], $periodo['mes']);
-                        }
-                        $periodo['hasta'] = $tmpPeriodHasta;
-                        */
                 }
                 
                 $conveniosCategoriasHistoricoCondition['ConveniosCategoriasHistorico.convenios_categoria_id'] = $relacion['ConveniosCategoria']['id'];
@@ -404,17 +392,16 @@ class LiquidacionesController extends AppController {
 		}
 
         $this->Liquidacion->setSecurityAccess('readOwnerOnly');
-		$this->Liquidacion->contain(array(
-				'Relacion.Trabajador',
-				'Relacion.Empleador',
-	 			'LiquidacionesError'));
-        $this->paginate = array_merge($this->paginate, array('limit' => 15));
-		$resultados = $this->Paginador->paginar(
-			$condiciones,
-			array('Liquidacion.periodo_largo', 'Liquidacion.periodo_vacacional'));
-		
+        $this->paginate = array_merge($this->paginate, array(
+            'limit'     => 15,
+            'contain'   => array(
+                'Relacion.Trabajador',
+                'Relacion.Empleador',
+                'LiquidacionesError')));
+
+        $this->Paginador->setCondition($condiciones);
+        $this->set('registros', $this->Paginador->paginar());
 		$this->set('states', array('Guardada' => 'Guardada', 'Sin Confirmar' => 'Sin Confirmar'));
-		$this->set('registros', $resultados['registros']);
 	}
 
 
@@ -810,9 +797,16 @@ class LiquidacionesController extends AppController {
 		$this->set("bancos", $this->Banco->find("list", array("fields"=>array("Banco.nombre"))));
 	}
 	
+
+    function reporte_liquidaciones_confirmadas($receiptIds) {
+        $this->Liquidacion->setSecurityAccess('readOwnerOnly');
+        $data = $this->Liquidacion->find('all', array(
+            'conditions'    => array('Liquidacion.id' => explode('|', $receiptIds)),
+            'recursive'     => -1));
+        $this->set('data', $data);
+    }
 	
-	
-	function index() {
+	function index($receiptIds = null) {
 		if (!empty($this->data['Condicion']['Liquidacion-periodo_completo'])) {
 			$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_completo'], 'periodo');
 			if (!empty($periodo)) {
@@ -823,6 +817,7 @@ class LiquidacionesController extends AppController {
 			}
 		}
 		$this->paginate['conditions'] = array('Liquidacion.estado' => 'Confirmada');
+        $this->set('receiptIds', $receiptIds);
 		parent::index();
 	}
 
@@ -972,14 +967,7 @@ class LiquidacionesController extends AppController {
 						$this->Liquidacion->LiquidacionesAuxiliar->deleteAll(array('LiquidacionesAuxiliar.id' => $idsAuxiliares));
 					}
 					$db->commit($this);
-                    
-                    $data = $this->Liquidacion->find('all', array(
-                        'conditions'    => array('Liquidacion.id' => $ids),
-                        'recursive'     => -1));
-                    $this->set('data', $data);
-                    $this->render('reporte_liquidaciones_confirmadas');
-                    
-					//$this->Session->setFlash('Se confirmaron correctamente ' . count($ids) . ' liquidacion/es.', 'ok');
+                    $this->redirect('index/' . implode('|', $ids));
 				} else {
 					$db->rollback($this);
 					$this->Liquidacion->__buscarError();

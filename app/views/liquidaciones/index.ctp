@@ -67,16 +67,27 @@ $accionesExtra['opciones'] = array('acciones' => array(
     $appForm->link('Impr. (Preimpr)', null, array('class' => 'link_boton', 'id' => 'imprimir_preimpreso', 'title' => 'Imprime las preliquidaciones seleccionadas')),
     $appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas'))));
 
+
 echo $this->element('index/index', array(
         'accionesExtra' => $accionesExtra,
         'condiciones'   => $fieldset,
         'opcionesTabla' => array('tabla' => array('eliminar' => false, 'modificar' => false)),
         'cuerpo'        => $cuerpo));
 
+
 /**
 * Agrego el evento click asociado al boton confirmar.
 */
+if (!empty($receiptIds)) {
+    $appForm->addScript('
+        window.location = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'reporte_liquidaciones_confirmadas/' . $receiptIds)) . '";
+    ');
+}
+
 $appForm->addScript('
+
+        
+        
 	jQuery("#imprimir_preimpreso, #imprimir").click(
 		function() {
 			var c = jQuery(".tabla :checkbox").checkbox("contar");

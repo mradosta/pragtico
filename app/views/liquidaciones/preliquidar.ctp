@@ -41,8 +41,8 @@ $condiciones['Condicion.Relacion-id'] = array(
 
 $condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'type' => 'select');
 //$condiciones['Condicion.Liquidacion-estado'] = array('options' => array('Guardada' => 'Guardada', 'Sin Confirmar' => 'Sin Confirmar'));
-$condiciones['Condicion.Liquidacion-periodo_largo'] = array('label' => 'Periodo Liquidacion', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A'));
-$condiciones['Condicion.Liquidacion-periodo_vacacional'] = array('label' => 'Periodo Vacacional', 'type' => 'periodo', 'periodo' => array('A'), 'class' => 'periodo_vacacional');
+$condiciones['Condicion.Bar-periodo_largo'] = array('label' => 'Periodo Liquidacion', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A'));
+$condiciones['Condicion.Bar-periodo_vacacional'] = array('label' => 'Periodo Vacacional', 'type' => 'periodo', 'periodo' => array('A'), 'class' => 'periodo_vacacional');
 $condiciones['Condicion.Liquidacion-estado'] = array('options' => $states, 'type' => 'select', 'multiple' => 'checkbox');
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Preliquidar','imagen' => 'preliquidar.gif')));
