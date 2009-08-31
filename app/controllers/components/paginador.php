@@ -26,15 +26,7 @@
 class PaginadorComponent extends Object {
 
 /**
- * Los componentes que necesitare.
- *
- * @var array
- * @access public
- */
-	//var $components = array('Util');
-
-/**
- * El Controller que instancio el component.
+ * Controller associate to the component.
  *
  * @var array
  * @access public
@@ -58,6 +50,15 @@ class PaginadorComponent extends Object {
  * @access private
  */
     var $__conditions = array();
+
+
+/**
+ * $conditions that should be remove from filter and session.
+ *
+ * @var array
+ * @access private
+ */
+    var $__conditionsToRemove = array();
 
 
 /**
@@ -135,11 +136,15 @@ class PaginadorComponent extends Object {
             }
         }
 
+        if (!empty($this->__conditionsToRemove)) {
+            foreach ($this->__conditionsToRemove as $k) {
+                unset($conditions[$k]);
+            }
+        }
 
         if (!empty($conditions) || !empty($valoresLov)) {
             $this->controller->Session->write('filtros.' . $this->controller->name . '.' . $this->controller->action, array('condiciones' => $conditions, 'valoresLov' => $valoresLov));
         }
-        //d($conditions);
         return $conditions;
     }
 
@@ -200,6 +205,16 @@ class PaginadorComponent extends Object {
  */
     function setCondition($conditions) {
         $this->__conditions = array_merge($this->__conditions, (array)$conditions);
+    }
+
+
+/**
+ * Remove conditions.
+ *
+ * @param array|string $conditions.
+ */
+    function removeCondition($conditions) {
+        $this->__conditionsToRemove = array_merge($this->__conditionsToRemove, (array)$conditions);
     }
 
 
