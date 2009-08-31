@@ -36,6 +36,7 @@ class PaginadorComponent extends Object {
 
 /**
  * $whiteListFields are fields that should be saved in session but should not be used at filters.
+ * Bar model's fields will automatically be whiteListed.
  *
  * @var array
  * @access private
@@ -85,7 +86,7 @@ class PaginadorComponent extends Object {
  * @return array Un array con las condiciones de la forma que exije el framework para el metodo find.
  * @access public
  */
-    function generarCondicion($useSession = true, $whiteListFields = array()) {
+    function generarCondicion($useSession = true) {
 
         /** Delete filters */
         if (isset($this->__controller->data['Formulario']['accion']) && $this->__controller->data['Formulario']['accion'] == 'limpiar') {
@@ -113,6 +114,10 @@ class PaginadorComponent extends Object {
                 list($model, $field) = explode('-', $k);
                 $modelField = $model . '.' . $field;
 
+                if ($model === 'Bar') {
+                    $this->setWhiteList($k);
+                }
+                
                 /** Ignore empty values and removed then from sessions */
                 if (empty($v)) {
                     unset($conditions[$modelField]);
@@ -120,7 +125,7 @@ class PaginadorComponent extends Object {
                 }
                 
                 /** Ignore on lov descriptive data */
-                if (substr($field, -2) === '__' || in_array($k, $whiteListFields)) {
+                if (substr($field, -2) === '__' || in_array($k, $this->getWhiteList())) {
                     $valoresLov[$k] = $v;
                     continue;
                 }
@@ -198,6 +203,16 @@ class PaginadorComponent extends Object {
         $this->__whiteListFields = array_merge($this->__whiteListFields, (array)$whiteListFields);
     }
 
+
+/**
+ * Get whiteListed Fields.
+ *
+ * @return array
+ */
+    function getWhiteList() {
+        return $this->__whiteListFields;
+    }
+    
 
 /**
  * Set conditions.
