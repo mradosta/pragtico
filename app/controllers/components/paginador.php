@@ -31,7 +31,7 @@ class PaginadorComponent extends Object {
  * @var array
  * @access public
  */
-	var $components = array('Util');
+	//var $components = array('Util');
 
 /**
  * El Controller que instancio el component.
@@ -43,13 +43,31 @@ class PaginadorComponent extends Object {
 
 
 /**
+ * $whiteListFields are fields that should be saved in session but should not be used at filters.
+ *
+ * @var array
+ * @access private
+ */
+    var $__whiteListFields = array();
+
+
+/**
+ * $conditions that should be applied to current filter and saved to session.
+ *
+ * @var array
+ * @access private
+ */
+    var $__conditions = array();
+
+
+/**
  * Inicializa el Component para usar en el controller.
  *
  * @param object $controller Una referencia al controller que esta instanciando el component.
  * @return void
  * @access public
  */
-    function startup(&$controller) {
+    function startup($controller) {
         $this->controller = $controller;
     }
 
@@ -60,114 +78,69 @@ class PaginadorComponent extends Object {
  * en caso de que se haya paginado.
  *
  * @param boolean $useSession. If true, session data for the controller will be merged with controller->data
- *								to create conditions. 
- *								When false, just controller->data will be use to create conditions. 
+ *								to create conditions.
+ *								When false, just controller->data will be use to create conditions.
  *
  * @return array Un array con las condiciones de la forma que exije el framework para el metodo find.
  * @access public
  */
-    function generarCondicion($useSession = true, $whiteList = array()) {
+    function generarCondicion($useSession = true, $whiteListFields = array()) {
 
-        //$this->controller->Session->del('filtros.' . $this->controller->name . '.' . $this->controller->action);
-		if (isset($this->controller->data['Formulario']['accion']) && $this->controller->data['Formulario']['accion'] == 'limpiar') {
-			$this->controller->Session->del('filtros.' . $this->controller->name . '.' . $this->controller->action);
-			unset($this->controller->data['Condicion']);
-			return array();
-		}
-        
+        /** Delete filters */
+        if (isset($this->controller->data['Formulario']['accion']) && $this->controller->data['Formulario']['accion'] == 'limpiar') {
+            $this->controller->Session->del('filtros.' . $this->controller->name . '.' . $this->controller->action);
+            unset($this->controller->data['Condicion']);
+            return array();
+        }
+
+
+        /** Get session data */
+        $conditions = $this->__conditions;
+        $valoresLov = array();
         if ($useSession === true) {
-			$filter = $this->controller->Session->read('filtros.' . $this->controller->name . '.' . $this->controller->action);
-		} else {
-			$filter = array();
-		}
+            $filter = $this->controller->Session->read('filtros.' . $this->controller->name . '.' . $this->controller->action);
+            if (!empty($filter)) {
+                $conditions = array_merge($filter['condiciones'], $conditions);
+                $valoresLov = $filter['valoresLov'];
+            }
+        }
 
-		if (!empty($filter)) {
-			$condiciones = $filter['condiciones'];
-			$valoresLov = $filter['valoresLov'];
-		} else {
-    		$condiciones = $valoresLov = array();
-		}
 
-        $keys = array_keys($this->controller->{$this->controller->modelClass}->schema());
-		if (!empty($this->controller->data['Condicion'])) {
-			foreach ($this->controller->data['Condicion'] as $k => $v) {
+        if (!empty($this->controller->data['Condicion'])) {
+            foreach ($this->controller->data['Condicion'] as $k => $v) {
 
-                list($model, $field) = explode('-', $this->__removerReemplazos($k));
-                if (substr($field, -2) !== '__' && (($model === $this->controller->modelClass && !in_array($field, $keys)) ||
-                    in_array($model . '.' . $field, $whiteList))) {
+                list($model, $field) = explode('-', $k);
+                $modelField = $model . '.' . $field;
+
+                /** Ignore empty values and removed then from sessions */
+                if (empty($v)) {
+                    unset($conditions[$modelField]);
+                    continue;
+                }
+                
+                /** Ignore on lov descriptive data */
+                if (substr($field, -2) === '__' || in_array($k, $whiteListFields)) {
+                    $valoresLov[$k] = $v;
                     continue;
                 }
 
-				/** Remove session data that's posted empty */
-				$tmp = $this->__reemplazos(str_replace('-', '.', $k), '');
-				if (!empty($condiciones[$tmp['key']])) {
-					unset($condiciones[$tmp['key']]);
-				}
-				
-				if (is_array($v)) {
-					$v = implode('**||**', $v);
-				}
 
-				if (strpos($k, '-') !== false && (!empty($v) || is_null($v))) {
-					$t = explode('-', $k);
-					if (count($t) == 2) {
-						if (substr($t[1], -2) !== '__') {
-							/**
-							* La seleccion multiple desde una lov o desde un checkMultiple viene separada
-							* por **||**. En este caso, debo armar un IN
-							*/
-							if (strpos($v, '**||**') > 0) {
-								$condiciones[$t[0] . '.' . $t[1]] = explode('**||**', $v);
-							} else {
-								$condiciones[$t[0] . '.' . $t[1]] = $v;
-							}
-						} else {
-						/**
-						* Si termina con __ significa que son los valores de una lov que 'se ven'.
-						* Los guardo por separado, porque debo restaurarlos para mostrar la busqueda, aunque
-						* no seran parte del where de busqueda en la query.
-						*/
-							$valoresLov[$t[0] . '-' . $t[1]] = $v;
-						}
-					}
-				}
-			}
-			/**
-			* Vuelvo a recorrer el array para ver que no existan los desde y hasta como campos separados,
-			* de manera de unificarlos si los hay en un unico array del tipo 'and'=>array(...
-			*/
-			foreach ($condiciones as $campo => $valor) {
-				if (substr($campo, strlen($campo) - 7) === '__desde') {
-					$nuevoCampo = str_replace('__desde', '', $campo);
-					if (!isset($condiciones[$nuevoCampo])) {
-						$r = $this->__reemplazos($campo, $valor);
-						unset($condiciones[$campo]);
-						$condiciones[$r['key']] = $r['value'];
-					}
-				} elseif (substr($campo, strlen($campo) - 7) === '__hasta') {
-					$nuevoCampo = str_replace('__hasta', '', $campo);
-					if (!isset($condiciones[$nuevoCampo])) {
-						$r = $this->__reemplazos($campo, $valor);
-						unset($condiciones[$campo]);
-						$condiciones[$r['key']] = $r['value'];
-					}
-				} else {
-					$r = $this->__reemplazos($campo, $valor);
-					unset($condiciones[$campo]);
-					$condiciones[$r['key']] = $r['value'];
-				}
-			}
-			
-			/**
-			* Grabo en la session las condiciones mas los valores de la lov, que si bien no se usaran en las busquedas,
-			* me sirven para recargar el control con el valor seleccionado.
-			*/
-			if (!empty($condiciones)) {
-				$this->controller->Session->write('filtros.' . $this->controller->name . '.' . $this->controller->action, array('condiciones' => $condiciones, 'valoresLov' => $valoresLov));
-			}
-		}
+                /** Replace range conditions
+                $modelField = str_replace('__desde', ' >=', $modelField);
+                $modelField = str_replace('__hasta', ' <=', $modelField);
+                 */
 
-		return $condiciones;
+
+                $conditions = array_merge($this->__reemplazos($modelField, $v), $conditions);
+            }
+        }
+
+
+        if (!empty($conditions) || !empty($valoresLov)) {
+            $this->controller->Session->write('filtros.' . $this->controller->name . '.' . $this->controller->action, array('condiciones' => $conditions, 'valoresLov' => $valoresLov));
+        }
+        //d($conditions);
+        return $conditions;
     }
 
 
@@ -211,79 +184,67 @@ class PaginadorComponent extends Object {
 
 
 /**
+ * Sets $__whiteListFields.
+ *
+ * @param array|string $whiteListFields.
+ */
+    function setWhiteList($whiteListFields) {
+        $this->__whiteListFields = array_merge($this->__whiteListFields, (array)$whiteListFields);
+    }
+
+
+/**
+ * Sets conditions.
+ *
+ * @param array|string $conditions.
+ */
+    function setCondition($conditions) {
+        $this->__conditions = array_merge($this->__conditions, (array)$conditions);
+    }
+
+
+/**
  * Establece las condiciones, realiza las consultas a la base y deja el array $this->data['Condicion']
  * de manera que el helper pueda cargar los valores de las busquedas.
  *
  * @param array $condicion Condiciones que se sumaran a las que hay en la sesion.
  * @param array $whiteList Campos que no deben ser inlcuidos en los filtros pero si guardados en la session.
  * @param boolean $useSession. If true, session data for the controller will be merged with controller->data
- *								to create conditions. 
- *								When false, just controller->data will be use to create conditions. 
+ *								to create conditions.
+ *								When false, just controller->data will be use to create conditions.
  *
  * @return array Resultados de la paginacion.
  * @access public
  */
-	function paginar($condicion = array(), $whiteList = array(), $useSession = true) {
-		
-		if ($useSession === true) {
-			$condiciones = array_merge($this->generarCondicion($useSession, $whiteList), $condicion);
-		} else {
-			$condiciones = $condicion;
-		}
+    function paginar($options = array()) {
 
-		if (!empty($this->controller->paginate['conditions'])) {
-			$condiciones = array_merge($this->controller->paginate['conditions'], $condiciones);
-		}
-		//$this->controller->paginate['conditions'] = array_diff_key($condiciones, array_flip($whiteList));
-        $this->controller->paginate['conditions'] = $condiciones;
+        $defaults = array(  'whiteListFields'   => $this->__whiteListFields,
+                            'extraConditions'   => array(),
+                            'mergeConditions'   => false,
+                            'useSession'        => true);
 
-		$model = Inflector::classify($this->controller->name);
+        $options = array_merge($defaults, $options);
+        
+        if ($defaults['useSession'] === true) {
+            $conditions = array_merge($this->generarCondicion($options['useSession'], $options['whiteListFields']), $options['extraConditions']);
+        } else {
+            $conditions = $condicion;
+        }
 
-		$resultado = array();
-		if (!empty($this->controller->{$model}->totalizar)) {
-			/**
-			* Si he seteado contain, lo guardo y lo quito, ya que al utilizar una funcion de grupo se deberia quitar.
-			*/
-			if (isset($this->controller->{$model}->Behaviors->Containable->runtime[$model])) {
-				$contain = $this->controller->{$model}->Behaviors->Containable->runtime[$model];
-			}
-            /** TODO: En este caso saca todas las relaciones porque puede que cake las resuelva por el contain. Se deberia revisar esto y dejar las belongsTo y las otras resolverlas de alguna forma. */
-            $this->controller->{$model}->contain();
-			foreach ($this->controller->{$model}->totalizar as $operacion => $campos) {
-				foreach ($campos as $campo) {
-					$r = $this->controller->{$model}->find('all', array(
-												'recursive'		=> -1,
-                                                'conditions'    => $condiciones,
-												'fields'		=> strtoupper($operacion) . '(' . $model . '.' . $campo . ') as total'));
-                    if (isset($r[0][$model]['total'])) {
-                        $resultado[$campo] = $r[0][$model]['total'];
-                    } else {
-                        $resultado[$campo] = $r[0][0]['total'];
-                    }
-				}
-			}
+        if (!empty($this->controller->{$this->controller->modelClass}->modificadores[$this->controller->action]['contain'])) {
+            $this->controller->paginate['contain'] = $this->controller->{$this->controller->modelClass}->modificadores[$this->controller->action]['contain'];
+        }
+        
+        if (!empty($this->controller->paginate['conditions'])) {
+            $this->controller->paginate['conditions'] = array_merge($this->controller->paginate['conditions'], $conditions);
+        } else {
+            $this->controller->paginate['conditions'] = $conditions;
+        }
 
-			/** Restauro contain si lo tenia seteado. */
-			if (!empty($contain)) {
-				$this->controller->{$model}->Behaviors->Containable->runtime[$model] = $contain;
-			}
-		}
+        $this->generarData();
+        return $this->controller->paginate();
+    }
 
-		/**
-		* Si he seteado dinamicamente contain, me aseguro de aplicarlo tambien en el paginador.
-		*/
-		if (isset($this->controller->{$model}->Behaviors->Containable->runtime[$model])) {
-			if (!empty($this->controller->{$model}->Behaviors->Containable->runtime[$model]['contain'])) {
-				$this->controller->paginate = array($model=>array_merge($this->controller->paginate, array('contain'=>$this->controller->{$model}->Behaviors->Containable->runtime[$model]['contain'])));
-			} else {
-				$this->controller->paginate = array($model=>array_merge($this->controller->paginate, array('contain'=>false)));
-			}
-		}
-
-		$this->generarData();
-		$registros = $this->controller->paginate();
-		return array('registros' => $registros, 'totales' => $resultado);
-	}
 
 
 /**
@@ -346,7 +307,7 @@ class PaginadorComponent extends Object {
 				}
 			}
 		}
-		return array('key'=>$key, 'value'=>$valor);
+		return array($key => $valor);
 	}
 
 

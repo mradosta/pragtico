@@ -131,10 +131,8 @@ class AppController extends Controller {
 		if (isset($this->{$this->modelClass}->modificadores[$this->action]['contain'])) {
 			$this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
 		}
-		
-		$resultados = $this->Paginador->paginar();
-        $this->set('registros', $resultados['registros']);
-        $this->set('totales', $resultados['totales']);
+
+        $this->set('registros', $this->Paginador->paginar());
 	}
 
 
