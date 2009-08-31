@@ -41,6 +41,8 @@ $condiciones['Condicion.Ausencia-ausencia_motivo_id'] = array(	'empty'			=> true
 																'groupField'	=> 'AusenciasMotivo.tipo',
 																'model'			=> 'AusenciasMotivo',
 																'label'			=> 'Motivo');
+                                                                
+$condiciones['Condicion.AusenciasSeguimiento-estado'] = array('type' => 'select', 'multiple' => 'checkbox', 'aclaracion' => 'Estado de los seguimientos relacionados a la ausencia');
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'ausencias.gif')));
 
@@ -75,7 +77,7 @@ echo $this->element('index/index', array('accionesExtra' => $accionesExtra, 'con
 $js = '
 	jQuery(".confirmar").click(
 		function() {
-			var c = jQuery(".tabla input[@type=\'checkbox\']").checkbox("contar");
+			var c = jQuery(".tabla input[type=\'checkbox\']").checkbox("contar");
 			if (c>0) {
 				jQuery("#form")[0].action = "' . Router::url('/') . $this->params['controller'] . '/confirmar' . '";
 				jQuery("#form")[0].submit();

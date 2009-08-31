@@ -34,6 +34,19 @@ class AusenciasController extends AppController {
     );
 
 
+    function index() {
+        if (!empty($this->data['Condicion']['AusenciasSeguimiento-estado'])) {
+            
+            $this->Paginador->setWhiteList('AusenciasSeguimiento-estado');
+            $this->Paginador->setCondition(array('Ausencia.id' => array_unique(Set::extract('/AusenciasSeguimiento/ausencia_id', $this->Ausencia->AusenciasSeguimiento->find('all', array(  'recursive' => -1,
+                    'conditions' => array(
+                        'AusenciasSeguimiento.estado' => $this->data['Condicion']['AusenciasSeguimiento-estado'])))))));
+            //unset($this->data['Condicion']['AusenciasSeguimiento-estado']);
+        }
+        return parent::index();
+    }
+
+    
 /**
 * Permite confirmar las ausencias.
 */
