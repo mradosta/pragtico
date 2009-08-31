@@ -43,7 +43,9 @@ class DocumentoHelper extends AppHelper {
  * @access public.
  */
     var $activeSheet;
-    
+
+
+    private $__currentRow = 1;
     
 /**
  * Constructor de la clase.
@@ -137,23 +139,46 @@ class DocumentoHelper extends AppHelper {
     }
 
 
+    function moveCurrentRow($step = 1, $relative = true) {
+        if ($relative === true) {
+            $this->__currentRow += $step;
+        } else {
+            $this->__currentRow = $step;
+        }
+        return $this->__currentRow;
+    }
+    
+    function setCurrentRow($row) {
+        $this->__currentRow = $row;
+    }
+
+    function getCurrentRow() {
+        return $this->__currentRow;
+    }
+    
+
 /**
  * Forma un nombre de celda standar.
  *
  * @param string $cellName La celda
+ *          - A         Retornara A__currentRow.
  *          - A5        Retornara A5.
  *          - null      Retornara el valor el la proxima columna no ocupada y el la proxima fila no ocupada.
  *          - 4,3       Retornara el valor en la columna 4 y fila 3 (La A es la columna 1, La primer fila es la 1).
+ *          - 4         Retornara el valor en la columna 4 y __currentRow.
  * @return string Una celda de la forma "B3". String vacio en caso de error.
  * @access private. 
  */
     function __getCellName($cellName = null) {
         
-        /** Search for numbered named coll (zero indexed).*/
-        if (preg_match("/^([0-9]+)\,([0-9]+)$/", $cellName, $matches)) {
-            return PHPExcel_Cell::stringFromColumnIndex($matches[1]) . $matches[2];
-        } elseif (preg_match("/^[A-Z]+[0-9]+$/", $cellName)) {
+        if (preg_match('/^[A-Z]+$/', $cellName)) {
+            return $cellName . $this->getCurrentRow();
+        } elseif (is_numeric($cellName)) {
+            return PHPExcel_Cell::stringFromColumnIndex($cellName) . $this->getCurrentRow();
+        } elseif (preg_match('/^[A-Z]+[0-9]+$/', $cellName)) {
             return $cellName;
+        } elseif (preg_match('/^([0-9]+)\,([0-9]+)$/', $cellName, $matches)) {
+            return PHPExcel_Cell::stringFromColumnIndex($matches[1]) . $matches[2];
         } elseif (is_null($cellName)) {
             /**
             * Busco la proxima columna y fila libre.
@@ -187,6 +212,7 @@ class DocumentoHelper extends AppHelper {
  */
     function setCellValueFromArray($data) {
         $defaults = array('value' => '', 'options' => array());
+        $this->moveCurrentRow();
         foreach ($data as $cell => $value) {
             if (is_array($value)) {
                 $value = array_merge($defaults, (array)$value);
