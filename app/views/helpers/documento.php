@@ -65,12 +65,16 @@ class DocumentoHelper extends AppHelper {
  * @param array $options opciones de la orientacion del papel.
  *              Ej: $documento->create(array("orientation" => "landscape"));
  *              Ej: $documento->create(array("password" => "MyPass"));
+ *              Ej: $documento->create(array("password" => false));    -> no pass
  *              Ej: $documento->create(array("password" => ""));        -> generara un password
  * @return void.
  * @access public.  
  */
     function create($options = array()) {
 
+        $__defaults = array('password' => true, 'orientation' => 'portrait', 'groupId' => 0);
+        $options = array_merge($__defaults, $options);
+        
         $this->doc->getProperties()->setCreator('Pragtico');
         $this->doc->getProperties()->setLastModifiedBy('Pragtico');
         $this->doc->getProperties()->setTitle('Pragtico');
@@ -79,23 +83,23 @@ class DocumentoHelper extends AppHelper {
         $this->doc->getProperties()->setKeywords('Pragtico');
         $this->doc->getProperties()->setCategory('Pragtico');
         $this->doc->setActiveSheetIndex(0);
-        $this->setActiveSheet(0);
+        $this->setActiveSheet();
         $this->activeSheet->setShowGridlines(true);
         $this->activeSheet->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
-        if (isset($options['orientation']) && $options['orientation'] === 'landscape') {
-            $this->activeSheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-        } else {
+        if ($options['orientation'] === 'portrait') {
             $this->activeSheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_PORTRAIT);
+        } else {
+            $this->activeSheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
         }
         
         /**
         * Protejo la hoja para que no me la modifiquen, excepto lo que realmente necesito que modifique que lo desbloqueo luego.
         */
-        if (isset($options['password'])) {
-            if (empty($options['password'])) {
-                $options['password'] = substr(Configure::read('Security.salt'), 0, 10);
+        if ($options['password'] !== false) {
+            if (is_string($options['password'])) {
+                $this->activeSheet->getProtection()->setPassword(substr($options['password'], 0, 10));
             } else {
-                $options['password'] = substr($options['password'], 0, 10);
+                $options['password'] = substr(Configure::read('Security.salt'), 0, 10);
             }
             $this->activeSheet->getProtection()->setPassword($options['password']);
             $this->activeSheet->getProtection()->setSheet(true);
@@ -104,11 +108,27 @@ class DocumentoHelper extends AppHelper {
 
         $this->activeSheet->getDefaultStyle()->getFont()->setName('Courier New');
         $this->activeSheet->getDefaultStyle()->getFont()->setSize(6);
-
         $this->activeSheet->getDefaultRowDimension()->setRowHeight(10);
-        $this->activeSheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_PORTRAIT);
-        $this->activeSheet->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
+
+
+        if (!empty($options['groupId'])) {
+            $groupParams = User::getGroupParams($options['groupId']);
+        } else {
+            $groupParams = User::getGroupParams();
+        }
         
+        if (!empty($groupParams)) {
+            $this->activeSheet->getHeaderFooter()->setOddHeader(
+                sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s&R%s\nPagina &P de &N",
+                    $groupParams['nombre_fantasia'],
+                    $groupParams['direccion'],
+                    $groupParams['barrio'],
+                    $groupParams['codigo_postal'],
+                    $groupParams['ciudad'],
+                    $groupParams['pais'],
+                    $groupParams['cuit'],
+                    date('Y-m-d')));
+        }
     }
     
 
