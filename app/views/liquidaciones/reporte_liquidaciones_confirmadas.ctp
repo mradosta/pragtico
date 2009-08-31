@@ -17,11 +17,9 @@
  */
  
 if (!empty($data)) {
-    $documento->create(array('password' => 'PaXXHttBXG66'));
+    $documento->create(array('orientation' => 'landscape'));
 
-    $fila = 1;
-    $documento->setCellValue('I' . $fila, date('Y-m-d'), array('bold', 'right'));
-    $fila+=2;
+    $fila = 2;
     $documento->setCellValue('A' . $fila, 'Listado de Liquidaciones Confirmadas', 'bold');
 
     $fila = 7;
@@ -84,19 +82,30 @@ if (!empty($data)) {
     $fila+=3;
     $documento->setCellValue('A' . $fila . ':I' . $fila, 'TOTALES', 'title');
     $fila++;
-    $documento->setCellValue('B' . $fila, 'Liquidaciones:', array('bold', 'right'));
-    $documento->setCellValue('D' . $fila, count($data), 'bold');
+    $documento->setCellValue('H' . $fila, 'Liquidaciones:', array('bold', 'right'));
+    $documento->setCellValue('I' . $fila, count($data), 'bold');
     $fila++;
-    $documento->setCellValue('B' . $fila, 'Pesos:', array('bold', 'right'));
-    $documento->setCellValue('D' . $fila, sprintf('=SUM(F%s:F%s)', $startRow, $endRow), 'total');
+    $documento->setCellValue('H' . $fila, 'Pesos:', array('bold', 'right'));
+    $documento->setCellValue('I' . $fila, sprintf('=SUM(F%s:F%s)', $startRow, $endRow), 'total');
     $fila++;
-    $documento->setCellValue('B' . $fila, 'Beneficios:', array('bold', 'right'));
-    $documento->setCellValue('D' . $fila, sprintf('=SUM(G%s:G%s)', $startRow, $endRow), 'total');
+    $documento->setCellValue('H' . $fila, 'Beneficios:', array('bold', 'right'));
+    $documento->setCellValue('I' . $fila, sprintf('=SUM(G%s:G%s)', $startRow, $endRow), 'total');
     $fila++;
-    $documento->setCellValue('B' . $fila, 'Total:', array('bold', 'right'));
-    $documento->setCellValue('D' . $fila, sprintf('=SUM(H%s:H%s)', $startRow, $endRow), 'total');
-    
-    $appForm->addScript('console.log("xxxxxxxx");');
+    $documento->setCellValue('H' . $fila, 'Total:', array('bold', 'right'));
+    $documento->setCellValue('I' . $fila, sprintf('=SUM(H%s:H%s)', $startRow, $endRow), 'total');
+
+    $fila+=4;
+    $documento->setCellValue('A' . $fila, 'Observaciones:', 'bold');
+    $fila++;
+    $styleArray = array(
+        'borders' => array(
+            'outline' => array(
+                'style' => PHPExcel_Style_Border::BORDER_DOTTED,
+                'color' => array('argb' => '00000000'),
+            ),
+        ),
+    );
+    $documento->activeSheet->getStyle('A' . $fila . ':I' . ($fila + 6))->applyFromArray($styleArray);
     $documento->save('Excel5');
 
 }
