@@ -92,7 +92,7 @@ class NovedadesController extends AppController {
 					/**
 					* Vuelvo 10 columnas antes del final, ya que puede haber validaciones, siempre estan la final.
 					*/
-					for($i = 4; $i < PHPExcel_Cell::columnIndexFromString($objPHPExcel->getActiveSheet()->getHighestColumn()); $i++) {
+					for($i = 6; $i < PHPExcel_Cell::columnIndexFromString($objPHPExcel->getActiveSheet()->getHighestColumn()); $i++) {
 						$value = $objPHPExcel->getActiveSheet()->getCellByColumnAndRow($i, 8)->getValue();
 						if (empty($value)) {
 							break;

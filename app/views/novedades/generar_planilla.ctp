@@ -52,6 +52,8 @@ if(!empty($registros)) {
 	$documento->doc->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
 	$documento->doc->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
 	$documento->doc->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+    $documento->doc->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+    $documento->doc->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
 
 	/**
 	* Pongo los titulos de las columnas.
@@ -81,7 +83,9 @@ if(!empty($registros)) {
 	$documento->setCellValue('B' . $fila . ':B' . ($fila+1), 'Empleador', array('style' => $estiloTituloColumna));
 	$documento->setCellValue('C' . $fila . ':C' . ($fila+1), 'Trabajador', array('style' => $estiloTituloColumna));
 	$documento->setCellValue('D' . $fila . ':D' . ($fila+1), 'Categoria', array('style' => $estiloTituloColumna));
-	$columna = $columnaInicioConceptosDinamicos = 3;
+    $documento->setCellValue('E' . $fila . ':E' . ($fila+1), 'Ingreso', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('F' . $fila . ':F' . ($fila+1), 'Egreso', array('style' => $estiloTituloColumna));
+	$columna = $columnaInicioConceptosDinamicos = 5;
 	
 	/**
 	* Las horas.
@@ -180,6 +184,8 @@ if(!empty($registros)) {
 		$documento->setCellValue('B' . $fila, $registro['Empleador']['nombre']);
 		$documento->setCellValue('C' . $fila, $registro['Relacion']['legajo'] . ' - ' . $registro['Trabajador']['apellido'] . ' ' . $registro['Trabajador']['nombre']);
 		$documento->setCellValue('D' . $fila, $registro['ConveniosCategoria']['nombre']);
+        $documento->setCellValue('E' . $fila, $registro['Relacion']['ingreso']);
+        $documento->setCellValue('F' . $fila, ($registro['Relacion']['egreso'] !== '0000-00-00')?$registro['Relacion']['egreso']:'');
 
 
 		$last = PHPExcel_Cell::columnIndexFromString($documento->doc->getActiveSheet()->getHighestColumn());
@@ -195,7 +201,7 @@ if(!empty($registros)) {
 			$documento->setDataValidation($columnaMotivo . ',' . $fila, 'list', array('valores'=>$motivos));
 		}
 	}
-	$documento->doc->getActiveSheet()->freezePane('E10');
+	$documento->doc->getActiveSheet()->freezePane('G10');
 	$documento->save($formatoDocumento);
 } else {
 	/**
