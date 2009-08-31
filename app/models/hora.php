@@ -34,8 +34,6 @@ class Hora extends AppModel {
 								'edit'=>array(	'contain'=>array('Relacion' => array('Empleador', 'Trabajador'))));
 
 
-	var $totalizar = array('sum'=>array('cantidad'));
-	
 	var $opciones = array('estado'=> array(		'Confirmada'=>	'Confirmada',
 												'Pendiente'=>	'Pendiente'));
 	
@@ -83,6 +81,15 @@ class Hora extends AppModel {
 	}
 
 
+    function getTotal($conditions = array()) {
+        $result = $this->find('first', array(
+            'conditions'    => $conditions,
+            'callbacks'     => false,
+            'fields'        => 'SUM(Hora.cantidad) as total',
+            ));
+        return $result[0]['total'];
+    }
+        
 /**
  * Dada un ralacion y un periodo retorna las horas trabajadas de todos los tipos que esten pendientes de liquidar pero confirmadas.
  *

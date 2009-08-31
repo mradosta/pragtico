@@ -69,7 +69,7 @@ $fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => '');
 $fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => '');
 $fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => '');
 $fila[] = array('model' => 'Hora', 'field' => 'periodo', 'valor' => '');
-$fila[] = array('model' => 'Hora', 'field' => 'cantidad', 'valor'=>$totales['cantidad']);
+$fila[] = array('model' => 'Hora', 'field' => 'cantidad', 'valor'=>$cantidad);
 $fila[] = array('model' => 'Hora', 'field' => 'tipo', 'valor' => '');
 $fila[] = array('model' => 'Hora', 'field' => 'estado', 'valor' => '');
 

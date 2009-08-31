@@ -36,7 +36,7 @@ $condiciones['Condicion.Pago-relacion_id'] = array('lov' =>
 $condiciones['Condicion.Pago-fecha__desde'] = array('label' => 'Desde', 'type' => 'date');
 $condiciones['Condicion.Pago-fecha__hasta'] = array('label' => 'Hasta', 'type' => 'date');
 //$condiciones['Condicion.Liquidacion-periodo_completo'] = array('type' => 'periodo');
-//$condiciones['Condicion.Pago-origen'] = array('type' => 'select', 'multiple' => 'checkbox', 'options' => array('liquidaciones' => 'Liquidaciones', 'descuentos' => 'Descuentos'));
+$condiciones['Condicion.Pago-origen'] = array('type' => 'radio', 'options' => array('liquidaciones' => 'Liquidaciones', 'descuentos' => 'Descuentos'));
 $condiciones['Condicion.Pago-estado'] = array('type' => 'select', 'multiple' => 'checkbox');
 $condiciones['Condicion.Pago-identificador'] = array();
 $fieldsets[] = array('campos' => $condiciones);

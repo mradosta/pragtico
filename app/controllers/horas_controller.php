@@ -31,6 +31,15 @@ class HorasController extends AppController {
         )
     );
 
+
+    function afterPaginate($results) {
+        if (!empty($results)) {
+            $this->set('cantidad', $this->Hora->getTotal($this->Paginador->getCondition()));
+        } else {
+            $this->set('cantidad', 0);
+        }
+    }
+    
 }
 
 ?>
