@@ -140,7 +140,7 @@ class FacturasController extends AppController {
 			$this->data = $data;
 		}
 		
-		$this->set('registros', $resultados['registros']);
+		$this->set('registros', $resultados);
 		$this->set('grupos', $this->Util->getUserGroups());
 	}
 	
