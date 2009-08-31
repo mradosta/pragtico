@@ -99,6 +99,19 @@ class User extends AppModel {
             return array();
         }
     }
-    
+
+/**
+ * Gets group params.
+ *
+ * @param integer $groupId Group to be filtered. If empty, default group params will be returned.
+ * @return array param => value.
+ * @access public
+ */    
+    function getGroupParams($groupId = null) {
+        if (empty($groupId)) {
+            $groupId = array_pop(array_keys(User::getUserGroups()));
+        }
+        return ClassRegistry::init('Grupo')->getParams($groupId);
+    }
  }
 ?>
