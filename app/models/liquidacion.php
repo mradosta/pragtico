@@ -274,7 +274,7 @@ class Liquidacion extends AppModel {
             } else {
                 return array('error' => sprintf('Wrong period (%s). Only "1" for the first_half or "2" for the second_half allowed for type %s.', $options['period'], $type));
             }
-            
+
             $r = $this->find('all', array(
                     'recursive'     => -1,
                     'checkSecurity' => false,
@@ -287,6 +287,7 @@ class Liquidacion extends AppModel {
             } else {
                 $this->setVar('#mayor_suma_mes_remunerativo_semestre', 0);
             }
+            $this->setVar('#fecha_hasta_periodo_vacacional', sprintf('%d-12-31', $period['ano']));
 
 
             if ($type === 'final') {
