@@ -81,7 +81,7 @@ class FormuladorComponentTestCase extends CakeTestCase {
 
 		$formula = "=if(isblank(0000-00-00),'2035-12-31', 1)";
         $result = $this->FormuladorComponentTest->resolver($formula);
-        $expected = '2035-12-31';
+        $expected = '49674';
         $this->assertEqual($expected, $result);
         
 		$formula = "=if(isblank(0000-00-00), 1, 2)";
@@ -184,6 +184,11 @@ class FormuladorComponentTestCase extends CakeTestCase {
 		$expected = '19';
 		$this->assertEqual($expected, $result);
 
+        $formula = "= datedif(if(2009-07-20 > date(year(2009-08-27), 1, 1), 2009-07-20, date(year(2009-08-27), 1, 1)),2009-08-27)";
+        $result = $this->FormuladorComponentTest->resolver($formula);
+        $expected = '38';
+        $this->assertEqual($expected, $result);
+        
 		$formula = "=datedif(if('2009-02-10' > '2009-02-01', '2009-02-10'), if('2010-02-28' < '2009-02-28', '2010-02-28', '2009-02-28'))";
 		$result = $this->FormuladorComponentTest->resolver($formula);
 		$expected = '18';

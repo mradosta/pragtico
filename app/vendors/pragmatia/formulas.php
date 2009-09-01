@@ -97,7 +97,7 @@ class Formulas {
             }
 		} elseif (preg_match_all("/\'?(?!\")(\d\d\d\d)-(\d\d)-(\d\d)\'?(?!\")/", $formula, $strings)) {
             foreach (array_unique($strings[0]) as $k => $string) {
-                $formula = str_replace($string, sprintf('"%s-%s-%s"', $strings[1][$k], $strings[2][$k], $strings[3][$k]), $formula);
+                $formula = str_replace($string, sprintf('date(%s,%s,%s)', $strings[1][$k], $strings[2][$k], $strings[3][$k]), $formula);
             }
 		}
 
