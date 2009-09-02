@@ -118,9 +118,13 @@ class Liquidacion extends AppModel {
 		$this->setVar('#tipo_liquidacion', $type);
 		$this->setPeriod($period);
 		$this->setRelationship($relationship);
+        $tmpOut = $this->getRelationship('Relacion', 'egreso');
+        if (empty($tmpOut) || $tmpOut === '0000-00-00') {
+            $this->setVar('#fecha_egreso', '2035-01-01');
+        }
+        
 
         $this->resetRecursivity();
-		
 		if ($type === 'normal' || $type === 'especial') {
 
 			$jornada = $this->getRelationship('ConveniosCategoria', 'jornada');
