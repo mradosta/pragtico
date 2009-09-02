@@ -74,7 +74,7 @@ class DocumentoHelper extends AppHelper {
  */
     function create($options = array()) {
 
-        $__defaults = array('password' => true, 'orientation' => 'portrait', 'groupId' => 0);
+        $__defaults = array('password' => true, 'header' => true, 'orientation' => 'portrait', 'groupId' => 0);
         $options = array_merge($__defaults, $options);
         
         $this->doc->getProperties()->setCreator('Pragtico');
@@ -113,23 +113,29 @@ class DocumentoHelper extends AppHelper {
         $this->activeSheet->getDefaultRowDimension()->setRowHeight(10);
 
 
-        if (!empty($options['groupId'])) {
-            $groupParams = User::getGroupParams($options['groupId']);
-        } else {
-            $groupParams = User::getGroupParams();
-        }
-        
-        if (!empty($groupParams)) {
-            $this->activeSheet->getHeaderFooter()->setOddHeader(
-                sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s&R%s\nPagina &P de &N",
-                    $groupParams['nombre_fantasia'],
-                    $groupParams['direccion'],
-                    $groupParams['barrio'],
-                    $groupParams['codigo_postal'],
-                    $groupParams['ciudad'],
-                    $groupParams['pais'],
-                    $groupParams['cuit'],
-                    date('Y-m-d')));
+        if ($options['header'] !== false) {
+            if (is_string($options['header'])) {
+                $this->activeSheet->getHeaderFooter()->setOddHeader($options['header']);
+            } else {
+                if (!empty($options['groupId'])) {
+                    $groupParams = User::getGroupParams($options['groupId']);
+                } else {
+                    $groupParams = User::getGroupParams();
+                }
+                
+                if (!empty($groupParams)) {
+                    $this->activeSheet->getHeaderFooter()->setOddHeader(
+                        sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s&R%s\nPagina &P de &N",
+                            $groupParams['nombre_fantasia'],
+                            $groupParams['direccion'],
+                            $groupParams['barrio'],
+                            $groupParams['codigo_postal'],
+                            $groupParams['ciudad'],
+                            $groupParams['pais'],
+                            $groupParams['cuit'],
+                            date('Y-m-d')));
+                }
+            }
         }
     }
     

@@ -16,15 +16,17 @@
  * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 
-    $documento->create();
+    $documento->create(array('header' => false, 'orientation' => 'landscape'));
+
+    /*
     $documento->setActiveSheet();
     $documento->activeSheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
     $documento->activeSheet->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
+    $documento->activeSheet->getDefaultRowDimension()->setRowHeight(10);
+    */
     
     $documento->activeSheet->getDefaultStyle()->getFont()->setName('Arial');
     $documento->activeSheet->getDefaultStyle()->getFont()->setSize(8);
-
-    $documento->activeSheet->getDefaultRowDimension()->setRowHeight(10);
 
     $documento->setWidth('A:AS', 4);
 
