@@ -803,6 +803,7 @@ class LiquidacionesController extends AppController {
         $this->Liquidacion->setSecurityAccess('readOwnerOnly');
         $data = $this->Liquidacion->find('all', array(
             'conditions'    => array('Liquidacion.id' => explode('|', $receiptIds)),
+            'order'         => array('Liquidacion.trabajador_apellido', 'Liquidacion.trabajador_nombre'),
             'recursive'     => -1));
         $this->set('data', $data);
     }
