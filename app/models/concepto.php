@@ -57,7 +57,7 @@ class Concepto extends AppModel {
         ),
         'desde' => array(
 			array(
-				'rule'		=> VALID_DATE_NULO,
+				'rule'		=> VALID_DATE,
 				'message'	=> 'La fecha no es valida.'),
 			array(
 				'rule'		=> '__validarRango',
@@ -65,7 +65,7 @@ class Concepto extends AppModel {
         ),
         'hasta' => array(
 			array(
-				'rule'		=> VALID_DATE_NULO,
+				'rule'		=> VALID_DATE,
 				'message'	=> 'La fecha no es valida.'),
 			array(
 				'rule'		=> '__validarRango',
