@@ -52,96 +52,85 @@ class FacturasController extends AppController {
 
 	function prefacturar() {
 
-		if (!empty($this->data)) {
-			
-			if (!empty($this->data['Formulario']['accion'])) {
-				
-				$data = $this->data;
-				
-				if (!empty($this->data['Condicion']['Liquidacion-periodo_completo'])
-				   	&& ($period = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_completo'], 'periodo'))) {
-					unset($this->data['Condicion']['Liquidacion-periodo_completo']);
+        $condiciones = array();
+        
+        if (!empty($this->data['Formulario']['accion'])) {
+            
+            $data = $this->data;
+            if ($this->data['Formulario']['accion'] === 'generar') {
 
-					if ($this->data['Formulario']['accion'] === 'generar') {
-						$this->data['Condicion']['Liquidacion-ano'] = $period['ano'];
-						$this->data['Condicion']['Liquidacion-mes'] = $period['mes'];
-						if ($period['periodo'] !== 'M') {
-							$this->data['Condicion']['Liquidacion-periodo'] = $period['periodo'];
-						}
+                $period = $this->Util->format($this->data['Condicion']['Bar-periodo_completo'], 'periodo');
+                
+                if ($period === false) {
+                    $this->Session->setFlash(__('Must enter a valid period', true), 'error');
+                    $this->History->goBack();
+                }
 
-                        $condiciones = array();
-                        $groupId = null;
-						if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
-							$condiciones['(Liquidacion.group_id & ' . $this->data['Condicion']['Liquidacion-grupo_id'] . ') >'] = 0;
-                            $groupId = $this->data['Condicion']['Liquidacion-grupo_id'];
-							unset($this->data['Condicion']['Liquidacion-grupo_id']);
-						}
+                $this->data['Condicion']['Liquidacion-ano'] = $period['ano'];
+                $this->data['Condicion']['Liquidacion-mes'] = $period['mes'];
+                if ($period['periodo'] !== 'M') {
+                    $this->data['Condicion']['Liquidacion-periodo'] = $period['periodo'];
+                }
 
-						$condiciones = array_merge($condiciones, $this->Paginador->generarCondicion($this->data));
+                $groupId = null;
+                if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
+                    $condiciones['(Liquidacion.group_id & ' . $this->data['Condicion']['Liquidacion-grupo_id'] . ') >'] = 0;
+                    $groupId = $this->data['Condicion']['Liquidacion-grupo_id'];
+                    unset($this->data['Condicion']['Liquidacion-grupo_id']);
+                }
+                $condiciones = array_merge($condiciones, $this->Paginador->generarCondicion($this->data));
 
-						/** Delete user's unconfirmed Invoices */
-                        if (!$this->Factura->deleteAll(array(
-                            'Factura.user_id'   => User::get('/Usuario/id'),
-                            'Factura.estado'    => 'Sin Confirmar'), true, false)) {
-                            $this->Session->setFlash(__('Can\'t delete previous invoices. Call Administrator', true), 'error');
-                            $this->redirect(array('action' => 'prefecturar'));
-                        }
-                        
-                        if (in_array($condiciones['Liquidacion.estado'], array('Sin Confirmar', 'Guardada'))) {
-                            $this->Factura->Liquidacion->setSecurityAccess('readOwnerOnly');
-                        }
+                /** Delete user's unconfirmed Invoices */
+                if (!$this->Factura->deleteAll(array(
+                    'Factura.user_id'   => User::get('/Usuario/id'),
+                    'Factura.estado'    => 'Sin Confirmar'), true, false)) {
+                    $this->Session->setFlash(__('Can\'t delete previous invoices. Call Administrator', true), 'error');
+                    $this->redirect(array('action' => 'prefecturar'));
+                }
 
-						if (!$this->Factura->getInvoice($condiciones, $groupId)) {
-							$this->Session->setFlash(__('Can\'t create invoices. Check search criterias', true), 'error');
-							$resultados['registros'] = array();
-						}
-					} elseif ($this->data['Formulario']['accion'] === 'buscar') {
-						
-						$this->data['Condicion']['Factura-fecha__desde'] = $this->Util->format($period['desde'], 'date');
-						$this->data['Condicion']['Factura-fecha__hasta'] = $this->Util->format($period['hasta'], 'date');
+                $this->Factura->Liquidacion->setSecurityAccess('readOwnerOnly');
+                if (!$this->Factura->getInvoice($condiciones, $groupId)) {
+                    $this->Session->setFlash(__('Can\'t create invoices. Check search criterias', true), 'error');
+                    $resultados['registros'] = array();
+                }
+                $condiciones = array();
+            } elseif ($this->data['Formulario']['accion'] === 'limpiar') {
+                $data = array();
+            } elseif ($this->data['Formulario']['accion'] === 'buscar') {
 
-						if (!empty($this->data['Condicion']['Liquidacion-empleador_id'])) {
-							$this->data['Condicion']['Factura-empleador_id'] = $this->data['Condicion']['Liquidacion-empleador_id'];
-							unset($this->data['Condicion']['Relacion-empleador_id']);
-						}
-						unset($this->data['Condicion']['Liquidacion-empleador_id']);
-						unset($this->data['Condicion']['Liquidacion-grupo_id']);
-						unset($this->data['Condicion']['Liquidacion-estado']);
-						unset($this->data['Condicion']['Liquidacion-tipo']);
-						$condiciones = $this->Paginador->generarCondicion($this->data);
-						$condiciones['Factura.estado'] = 'Sin Confirmar';
-						$resultados = $this->Paginador->paginar($condiciones);
+                $period = $this->Util->format($this->data['Condicion']['Bar-periodo_completo'], 'periodo');
+                if ($period !== false) {
+                    $this->data['Condicion']['Factura-fecha__desde'] = $this->Util->format($period['desde'], 'date');
+                    $this->data['Condicion']['Factura-fecha__hasta'] = $this->Util->format($period['hasta'], 'date');
+                }
 
-					} elseif ($this->data['Formulario']['accion'] === 'limpiar') {
-						$resultados = $this->Paginador->paginar(array('Factura.estado' => 'Sin Confirmar'));
-						$data = array();
-					}
-				} else {
-					if (!empty($this->data['Formulario']['accion'])
-						&& $this->data['Formulario']['accion'] === 'generar') {
-						$this->Session->setFlash(__('Must enter a valid period', true), 'error');
-						$resultados['registros'] = array();
-					}
-				}
-			}
-		}
-		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'limpiar') {
-			$this->data = array();
-		}
+                if (!empty($this->data['Condicion']['Liquidacion-empleador_id'])) {
+                    $this->data['Condicion']['Factura-empleador_id'] = $this->data['Condicion']['Liquidacion-empleador_id'];
+                    unset($this->data['Condicion']['Relacion-empleador_id']);
+                }
+                unset($this->data['Condicion']['Liquidacion-empleador_id']);
+                unset($this->data['Condicion']['Liquidacion-grupo_id']);
+                unset($this->data['Condicion']['Liquidacion-estado']);
+                unset($this->data['Condicion']['Liquidacion-tipo']);
+                $condiciones = $this->Paginador->generarCondicion($this->data);
+            }
+        }
+
+        $this->Factura->setSecurityAccess('readOwnerOnly');
+        $this->paginate = array_merge($this->paginate, array(
+            'limit'     => 15,
+            'contain'   =>array('Empleador', 'Area')));
+        $this->Paginador->setCondition(array_merge($condiciones, array('Factura.estado' => 'Sin Confirmar')), true);
+        $resultados = $this->Paginador->paginar();
 		
-		if (!isset($resultados)) {
-            $this->Factura->contain(array('Empleador', 'Area'));
-            $this->Factura->setSecurityAccess('readOwnerOnly');
-            $this->paginate = array_merge($this->paginate, array('limit' => 15));
-			$resultados = $this->Paginador->paginar(array('Factura.estado' => 'Sin Confirmar'), array(), false);
-		}
-		
-		if (!empty($data)) {
+        if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'limpiar') {
+            $this->data = array();
+        } elseif (!empty($data)) {
 			$this->data = $data;
 		}
-		
+
 		$this->set('registros', $resultados);
-		$this->set('grupos', $this->Util->getUserGroups());
+		$this->set('grupos', User::getUserGroups());
 	}
 	
 /*

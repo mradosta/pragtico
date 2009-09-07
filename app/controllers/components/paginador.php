@@ -89,7 +89,7 @@ class PaginadorComponent extends Object {
     function generarCondicion($useSession = true) {
 
         /** Delete filters */
-        if (isset($this->__controller->data['Formulario']['accion']) && $this->__controller->data['Formulario']['accion'] == 'limpiar') {
+        if (isset($this->__controller->data['Formulario']['accion']) && $this->__controller->data['Formulario']['accion'] === 'limpiar') {
             $this->__controller->Session->del('filtros.' . $this->__controller->name . '.' . $this->__controller->action);
             unset($this->__controller->data['Condicion']);
             return array();
@@ -218,9 +218,16 @@ class PaginadorComponent extends Object {
  * Set conditions.
  *
  * @param array|string $conditions.
+ * @param boolean $reset When true, previous conditions will be reseted.
  */
-    function setCondition($conditions) {
-        $this->__conditions = array_merge($this->__conditions, (array)$conditions);
+    function setCondition($conditions, $reset = false) {
+        if ($reset === false) {
+            $this->__conditions = array_merge($this->__conditions, (array)$conditions);
+        } else {
+            $this->__controller->Session->del('filtros.' . $this->__controller->name . '.' . $this->__controller->action);
+            $this->__controller->data = array();
+            $this->__conditions = (array)$conditions;
+        }
     }
 
 

@@ -25,7 +25,7 @@ if (!empty($grupos)) {
 $condiciones['Condicion.Liquidacion-empleador_id'] = array(
 		'lov'	=> array('controller'	=> 'empleadores',
 						'camposRetorno'	=> array('Empleador.cuit', 'Empleador.nombre')));
-$condiciones['Condicion.Liquidacion-periodo_completo'] = array('label' => 'Periodo Liquidado', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A', 'F'));
+$condiciones['Condicion.Bar-periodo_completo'] = array('label' => 'Periodo Liquidado', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A', 'F'));
 $condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'type' => 'select');
 $condiciones['Condicion.Liquidacion-estado'] = array('aclaracion' => 'Se refiere a que liquidaciones tomar como base para la prefacturacion. Solo se podran confirmar prefacturaciones realizadas en base a liquidaciones Confirmadas');
 
