@@ -102,6 +102,12 @@ if (!empty($data)) {
         $documento->setCellValue('E' . $fila, $record['Trabajador']['nombre']);
         $documento->setCellValue('F' . $fila, $record['Trabajador']['direccion']);
         $documento->setCellValue('G' . $fila, $record['Trabajador']['numero']);
+        if (empty($record['Trabajador']['Localidad']['nombre'])) {
+            $record['Trabajador']['Localidad']['nombre'] = '';
+        }
+        if (empty($record['Trabajador']['Localidad']['Provincia']['nombre'])) {
+            $record['Trabajador']['Localidad']['Provincia']['nombre'] = '';
+        }
         $documento->setCellValue('H' . $fila, $record['Trabajador']['Localidad']['nombre']);
         $documento->setCellValue('I' . $fila, $record['Trabajador']['Localidad']['Provincia']['nombre']);
         $documento->setCellValue('J' . $fila, (!empty($record['Trabajador']['telefono']))?$record['Trabajador']['telefono']:'');
