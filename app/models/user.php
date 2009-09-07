@@ -88,7 +88,7 @@ class User extends AppModel {
             trigger_error(__('Invalid filter option.', true), E_USER_WARNING);
         }
 
-        foreach (User::get('/Grupo') as $group) {
+        foreach (User::get('/Grupo', array('flatten' => false)) as $group) {
             if (($group['Grupo']['id'] & (int)$filter) > 0) {
                 $filteredGroups[] = $group;
             }
