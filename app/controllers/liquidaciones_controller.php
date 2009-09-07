@@ -538,35 +538,34 @@ class LiquidacionesController extends AppController {
  * @access public.
 */
 	function generar_archivo_siap() {
-		
-		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === "generar" && !empty($this->data['Condicion']['Siap-version'])) {
-            if (empty($this->data['Condicion']['Siap-empleador_id'])
-				&& empty($this->data['Condicion']['Siap-grupo_id'])) {
-				$this->Session->setFlash("Debe seleccionar un Empleador o un Grupo por lo menos.", "error");
-			} elseif (empty($this->data['Condicion']['Siap-periodo']) || !preg_match('/^(20\d\d)(0[1-9]|1[012])$/', $this->data['Condicion']['Siap-periodo'], $periodo)) {
-				$this->Session->setFlash("Debe especificar un periodo valido de la forma AAAAMM.", "error");
+
+		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar' && !empty($this->data['Condicion']['Bar-version'])) {
+			if (empty($this->data['Condicion']['Bar-periodo_largo']) || !preg_match('/^(20\d\d)(0[1-9]|1[012])$/', $this->data['Condicion']['Bar-periodo_largo'])) {
+				$this->Session->setFlash('Debe especificar un periodo valido de la forma AAAAMM.', 'error');
 			} else {
-				$periodo = $this->Util->format($this->data['Condicion']['Siap-periodo'], 'periodo');
+				$periodo = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
 				
                 $conditions = array('Liquidacion.estado'        => 'Confirmada',
                                     'Liquidacion.ano'           => $periodo['ano'],
                                     'Liquidacion.mes'           => $periodo['mes']);
 
-				if (!empty($this->data['Condicion']['Siap-empleador_id'])) {
-                    $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Siap-empleador_id'];
-				}
-
-                if (!empty($this->data['Condicion']['Siap-grupo_id'])) {
-                    $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Siap-grupo_id'] . ') >'] = 0;
+				if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
+                    $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
+                    $contain = array('Empleador' => array('EmployersType'));
+                } else {
+                    $groupParams = ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Bar-grupo_id']);
+                    $contain = array();
                 }
+                
+                $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
 				
 				$liquidaciones = $this->Liquidacion->find('all',
 						array(	'checkSecurity'	=> false,
-								'contain'		=> array(	'Empleador',
+								'contain'		=> array_merge($contain, array(	
                                         'LiquidacionesDetalle' => array('conditions' => array('OR' => array('LiquidacionesDetalle.concepto_imprimir' => 'Si', array('LiquidacionesDetalle.concepto_imprimir' => 'Solo con valor', 'ABS(LiquidacionesDetalle.valor) >' => 0)))),
 										'Relacion' 		=> array('Situacion', 'ConveniosCategoria', 'Modalidad', 'Ausencia' =>
 												array('conditions' => array('Ausencia.desde >=' => $periodo['desde'], 'Ausencia.desde <=' => $periodo['hasta']))),
-										'Trabajador' 	=> array('ObrasSocial', 'Condicion', 'Siniestrado', 'Localidad')),
+										'Trabajador' 	=> array('ObrasSocial', 'Condicion', 'Siniestrado', 'Localidad'))),
 								'conditions'	=> $conditions));
 				
 				if (!empty($liquidaciones)) {
@@ -577,7 +576,7 @@ class LiquidacionesController extends AppController {
                     $ausenciasMotivo = Set::combine($ausenciasMotivo, '{n}.AusenciasMotivo.id', '{n}.Situacion');
                     
                     
-                    $data = ClassRegistry::init('Siap')->findById($this->data['Condicion']['Siap-version']);
+                    $data = ClassRegistry::init('Siap')->findById($this->data['Condicion']['Bar-version']);
                     foreach ($data['SiapsDetalle'] as $k => $v) {
                         $detalles[$v['elemento']] = $v;
                     }
@@ -640,17 +639,21 @@ class LiquidacionesController extends AppController {
 					$lineas = null;
 					foreach ($liquidaciones as $liquidacion) {
 						$campos = $detalles;
-						$campos['c1']['valor'] = str_replace("-", "", $liquidacion['Trabajador']['cuil']);
-						$campos['c2']['valor'] = $liquidacion['Trabajador']['apellido'] . ' ' . $liquidacion['Trabajador']['nombre'];
+						$campos['c1']['valor'] = str_replace('-', '', $liquidacion['Trabajador']['cuil']);
+						$campos['c2']['valor'] = str_replace(
+                            array('á', 'é', 'í', 'ó', 'ú', 'Á', 'É', 'Í', 'Ó', 'Ú', 'ñ', 'Ñ'),
+                            array('a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U', 'n', 'N'), $liquidacion['Trabajador']['apellido'] . ' ' . $liquidacion['Trabajador']['nombre']);
 						if (!empty($liquidacion['Relacion']['situacion_id'])) {
 							$campos['c5']['valor'] = $liquidacion['Relacion']['Situacion']['codigo'];
 						}
 						if (!empty($liquidacion['Trabajador']['condicion_id'])) {
 							$campos['c6']['valor'] = $liquidacion['Trabajador']['Condicion']['codigo'];
 						}
-						if (!empty($liquidacion['Trabajador']['actividad_id'])) {
-							$campos['c7']['valor'] = $liquidacion['Trabajador']['Actividad']['codigo'];
-						}
+                        if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
+                            $campos['c7']['valor'] = $liquidacion['Trabajador']['Actividad']['codigo'];
+                        } else {
+                            $campos['c7']['valor'] = $groupParams['siap_codigo_actividad'];
+                        }
 						$campos['c8']['valor'] = $liquidacion['Trabajador']['Localidad']['codigo_zona'];
 						if (!empty($liquidacion['Relacion']['modalidad_id'])) {
 							$campos['c10']['valor'] = $liquidacion['Relacion']['Modalidad']['codigo'];
@@ -671,15 +674,27 @@ class LiquidacionesController extends AppController {
 						if (!empty($liquidacion['Trabajador']['siniestrado_id'])) {
 							$campos['c24']['valor'] = $liquidacion['Trabajador']['Siniestrado']['codigo'];
 						}
-						if ($liquidacion['Empleador']['corresponde_reduccion'] === "Si") {
-							$campos['c25']['valor'] = "S";
+                        
+                        if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
+                            if ($liquidacion['Empleador']['corresponde_reduccion'] === 'Si') {
+                                $campos['c25']['valor'] = 'S';
+                            } else {
+                                $campos['c25']['valor'] = ' ';
+                            }
+                        } else {
+                            $campos['c25']['valor'] = $groupParams['siap_corresponde_reduccion'];
+                        }
+                        
+                        if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
+                            $campos['c27']['valor'] = $liquidacion['Empleador']['EmployersType']['code'];
+                        } else {
+                            $campos['c27']['valor'] = $groupParams['siap_tipo_empleador'];
+                        }
+                        
+						if ($liquidacion['Trabajador']['jubilacion'] === 'Reparto') {
+							$campos['c29']['valor'] = '1';
 						} else {
-							$campos['c25']['valor'] = " ";
-						}
-						if ($liquidacion['Trabajador']['jubilacion'] === "Reparto") {
-							$campos['c29']['valor'] = "1";
-						} else {
-							$campos['c29']['valor'] = "0";
+							$campos['c29']['valor'] = '0';
 						}
 						
 						

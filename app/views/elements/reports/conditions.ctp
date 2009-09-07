@@ -1,20 +1,33 @@
 <?php
 
-$groups = User::getUserGroups();
-$defaultGroup = User::get('/Usuario/preferencias/grupo_default_id');
-if (count($groups) > 1 && isset($groups[$defaultGroup])) {
-    $conditions['Condicion.Bar-grupo_id'] = array(
-        'options'   => $groups,
-        'empty'     => false,
-        'value'     => $defaultGroup);
+$__defaultConditions = array('Bar-grupo_id' => true, 'Bar-file_format' => true);
+if (!empty($options['conditions'])) {
+    $options['conditions'] = array_merge($__defaultConditions, $options['conditions']);
 } else {
-    $conditions['Condicion.Bar-grupo_id'] = array('options' => $groups, 'empty' => false);
+    $options['conditions'] = $__defaultConditions;
+}
+
+$conditions = array();
+if ($options['conditions']['Bar-grupo_id'] === true) {
+    $groups = User::getUserGroups();
+    $defaultGroup = User::get('/Usuario/preferencias/grupo_default_id');
+    if (count($groups) > 1 && isset($groups[$defaultGroup])) {
+        $conditions['Condicion.Bar-grupo_id'] = array(
+            'options'   => $groups,
+            'empty'     => false,
+            'value'     => $defaultGroup);
+    } else {
+        $conditions['Condicion.Bar-grupo_id'] = array('options' => $groups, 'empty' => false);
+    }
 }
 
 if (!empty($aditionalConditions)) {
     $conditions = array_merge($conditions, $aditionalConditions);
 }
-$conditions['Condicion.Bar-file_format'] = array('type' => 'radio', 'options' => array('Excel5' => 'Excel', 'Excel2007' => 'Excel 2007'), 'value' => 'Excel2007');
+
+if ($options['conditions']['Bar-file_format'] === true) {
+    $conditions['Condicion.Bar-file_format'] = array('type' => 'radio', 'options' => array('Excel5' => 'Excel', 'Excel2007' => 'Excel 2007'), 'value' => 'Excel2007');
+}
 
 $fieldsets[] = array('campos' => $conditions);
 
