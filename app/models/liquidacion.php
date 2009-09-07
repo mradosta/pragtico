@@ -233,6 +233,16 @@ class Liquidacion extends AppModel {
             $this->setVar('#suma_conceptos_plus_vacacional_6_meses', $total);
 		} elseif (in_array($type,  array('final', 'sac'))) {
 
+            /** Get discounts */
+            $discounts = $this->Relacion->Descuento->getDescuentos($this->getRelationship(),
+                    array(  'periodo'   => $this->getPeriod(),
+                            'tipo'      => $type));
+            foreach ($discounts['variables'] as $varName => $varValue) {
+                $this->setVar($varName, $varValue);
+            }
+            $this->__setAuxiliar($discounts['auxiliar']);
+            $this->setConcept($discounts['conceptos']);
+            
             if ($type === 'final') {
 
                 $auxiliar = null;
@@ -552,10 +562,26 @@ class Liquidacion extends AppModel {
             if (!empty($diff)) {
                 foreach ($diff as $concept) {
                     $tmpConcept = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $this->getRelationship(), 'codigoConcepto' => $concept));
-                    if (substr($tmpConcept[$concept]['imprimir'], -9) === '[Forzado]') {
-                        $tmpConcept[$concept]['imprimir'] = str_replace(' [Forzado]', '', $tmpConcept[$concept]['imprimir']);
+                    if (!empty($tmpConcept)) {
+                        if (substr($tmpConcept[$concept]['imprimir'], -9) === '[Forzado]') {
+                            $tmpConcept[$concept]['imprimir'] = str_replace(' [Forzado]', '', $tmpConcept[$concept]['imprimir']);
+                        } else {
+                            $tmpConcept[$concept]['imprimir'] = 'No';
+                        }
                     } else {
+                        $this->__setError(array(    'tipo'                  => 'Concepto Inexistente',
+                                                    'gravedad'              => 'Alta',
+                                                    'concepto'              => $concept,
+                                                    'variable'              => '',
+                                                    'formula'               => '',
+                                                    'descripcion'           => 'La formula requiere de un concepto inexistente.',
+                                                    'recomendacion'         => 'Verifique la formula y que todos los conceptos que esta utiliza existan.',
+                                                    'descripcion_adicional' => ''));
+                        $tmpConcept[$concept]['codigo'] = $concept;
                         $tmpConcept[$concept]['imprimir'] = 'No';
+                        $tmpConcept[$concept]['formula'] = 'ERROR';
+                        $tmpConcept[$concept]['tipo'] = 'ERROR';
+                        $tmpConcept[$concept]['valor'] = 0;
                     }
                     $this->setConcept($tmpConcept);
                 }

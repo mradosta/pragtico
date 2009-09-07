@@ -100,6 +100,11 @@ class Descuento extends AppModel {
  */
 	function getDescuentos($relacion, $opciones) {
 		
+        $conditions = array(array('OR'  => array(
+            'Descuento.hasta'       => '0000-00-00',
+            'Descuento.hasta >='    => $opciones['periodo']['hasta'])),
+            'DATE(CONCAT(YEAR(Descuento.desde), \'-\', MONTH(Descuento.desde), \'-' . array_pop(explode('-', $opciones['periodo']['desde'])) . '\')) <=' => $opciones['periodo']['desde']);
+       
 	   switch($opciones['tipo']) {
 			case 'normal':
 				if ($opciones['periodo']['periodo'] === '1Q') {
@@ -114,14 +119,15 @@ class Descuento extends AppModel {
 			case 'vacaciones':
 				$descontar = 17;
 			break;
-			case 'liquidacion_final':
+			case 'final':
 				$descontar = 33;
+                $conditions = array();
 			break;
 			case 'especial':
 				$descontar = 1;
 			break;
 		}
-		
+        
 		$r = $this->find('all',
 			array(
 				  	'contain'		=> 'DescuentosDetalle',
@@ -134,13 +140,10 @@ class Descuento extends AppModel {
 								end,
 								Descuento.alta",
 				  	'checkSecurity'	=> false,
-					'conditions' 	=> array(
-				array('OR'	=> array(	'Descuento.hasta' 		=> '0000-00-00',
-										'Descuento.hasta >=' 	=> $opciones['periodo']['hasta'])),
-				'Descuento.relacion_id' 						=> $relacion['Relacion']['id'],
-				'DATE(CONCAT(YEAR(Descuento.desde), \'-\', MONTH(Descuento.desde), \'-' . array_pop(explode('-', $opciones['periodo']['desde'])) . '\')) <=' => $opciones['periodo']['desde'],
- 				'(Descuento.descontar & ' . $descontar . ') >' 	=> 0,
- 				'Descuento.estado' 								=> 'Activo')
+					'conditions' 	=> array_merge($conditions, array(
+ 				'(Descuento.descontar & ' . $descontar . ') >' 	   => 0,
+                'Descuento.relacion_id'                            => $relacion['Relacion']['id'],
+ 				'Descuento.estado' 	                               => 'Activo'))
 		));
 
 		$conceptos = $variables = $auxiliares = array();
