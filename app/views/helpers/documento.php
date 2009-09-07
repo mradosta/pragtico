@@ -74,9 +74,9 @@ class DocumentoHelper extends AppHelper {
  */
     function create($options = array()) {
 
-        $__defaults = array('password' => true, 'header' => true, 'orientation' => 'portrait', 'groupId' => 0);
+        $__defaults = array('password' => true, 'header' => true, 'orientation' => 'portrait');
         $options = array_merge($__defaults, $options);
-        
+
         $this->doc->getProperties()->setCreator('Pragtico');
         $this->doc->getProperties()->setLastModifiedBy('Pragtico');
         $this->doc->getProperties()->setTitle('Pragtico');
@@ -93,7 +93,7 @@ class DocumentoHelper extends AppHelper {
         } else {
             $this->activeSheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
         }
-        
+
         /**
         * Protejo la hoja para que no me la modifiquen, excepto lo que realmente necesito que modifique que lo desbloqueo luego.
         */
@@ -114,15 +114,8 @@ class DocumentoHelper extends AppHelper {
 
 
         if ($options['header'] !== false) {
-            if (is_string($options['header'])) {
-                $this->activeSheet->getHeaderFooter()->setOddHeader($options['header']);
-            } else {
-                if (!empty($options['groupId'])) {
-                    $groupParams = User::getGroupParams($options['groupId']);
-                } else {
-                    $groupParams = User::getGroupParams();
-                }
-                
+            if (is_numeric($options['header'])) {
+                $groupParams = User::getGroupParams($options['header']);
                 if (!empty($groupParams)) {
                     $this->activeSheet->getHeaderFooter()->setOddHeader(
                         sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s&R%s\nPagina &P de &N",
@@ -135,6 +128,8 @@ class DocumentoHelper extends AppHelper {
                             $groupParams['cuit'],
                             date('Y-m-d')));
                 }
+            } elseif (is_string($options['header'])) {
+                $this->activeSheet->getHeaderFooter()->setOddHeader($options['header']);
             }
         }
     }
@@ -189,7 +184,7 @@ class DocumentoHelper extends AppHelper {
             /**
             * Busco la proxima columna y fila libre.
             */
-            return $this->doc->getActiveSheet()->getHighestColumn() . $this->doc->getActiveSheet()->getHighestRow();
+            return $this->activeSheet->getHighestColumn() . $this->doc->getActiveSheet()->getHighestRow();
         } else {
             return '';
         }
@@ -198,13 +193,13 @@ class DocumentoHelper extends AppHelper {
 
     function setWidth($cellName, $value) {
         if (is_numeric($cellName)) {
-            return $this->doc->getActiveSheet()->getColumnDimensionByColumn($cellName)->setWidth($value);
+            return $this->activeSheet->getColumnDimensionByColumn($cellName)->setWidth($value);
         } elseif (preg_match('/^([A-Z]+)\:([A-Z]+)$/', $cellName, $matches)) {
             for ($i = PHPExcel_Cell::columnIndexFromString($matches['1']); $i <= PHPExcel_Cell::columnIndexFromString($matches['2']); $i++) {
-                $this->doc->getActiveSheet()->getColumnDimensionByColumn($i-1)->setWidth($value);
+                $this->activeSheet->getColumnDimensionByColumn($i-1)->setWidth($value);
             }
         } else {
-            return $this->doc->getActiveSheet()->getColumnDimension($cellName)->setWidth($value);
+            return $this->activeSheet->getColumnDimension($cellName)->setWidth($value);
         }
     }
 
@@ -253,7 +248,7 @@ class DocumentoHelper extends AppHelper {
         $tmp = explode(':', $cellName);
         if (count($tmp) === 2) {
             $cellName = $this->__getCellName($tmp[0]);
-            $this->doc->getActiveSheet()->mergeCells($cellName . ":" . $this->__getCellName($tmp[1]));
+            $this->activeSheet->mergeCells($cellName . ":" . $this->__getCellName($tmp[1]));
         } else {
             $cellName = $this->__getCellName($cellName);
         }
@@ -277,7 +272,14 @@ class DocumentoHelper extends AppHelper {
             } else {
                 $styles = array();
                 $style = null;
-                foreach ($options as $option) {
+                foreach ($options as $k => $v) {
+                    $option = null;
+                    if (is_numeric($k)) {
+                        $option = $v;
+                        $v = null;
+                    } else {
+                        $option = $k;
+                    }
                     switch ($option) {
                         case 'right':
                             $style = array(
@@ -297,6 +299,11 @@ class DocumentoHelper extends AppHelper {
                                 'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
                                 'borders'   => array('bottom'     => array(
                                     'style' => PHPExcel_Style_Border::BORDER_DOTTED)));
+                            if (!empty($v)) {
+                                $this->setWidth(str_replace(array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), '', $cellName), $v);
+                            } else {
+                                $this->activeSheet->getColumnDimension(str_replace(array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), '', $cellName))->setAutoSize(true);
+                            }
                         break;
                         case 'decimal':
                             $this->activeSheet->getStyle($cellName)->getNumberFormat()->setFormatCode('0.00');
@@ -318,10 +325,10 @@ class DocumentoHelper extends AppHelper {
             }
 
             if (!empty($styles)) {
-                $this->doc->getActiveSheet()->getStyle($cellName)->applyFromArray($styles);
+                $this->activeSheet->getStyle($cellName)->applyFromArray($styles);
             }
         }
-        $this->doc->getActiveSheet()->setCellValue($cellName, $value);
+        $this->activeSheet->setCellValue($cellName, $value);
     }
 
 
