@@ -15,56 +15,29 @@
  * @lastmodified    $Date: 2009-05-20 16:56:44 -0300 (Wed, 20 May 2009) $
  * @author          Martin Radosta <mradosta@pragmatia.com>
  */
- 
 if (!empty($data)) {
 
-    $documento->create();
-    $fila = 2;
-    $documento->setCellValue('A' . $fila, 'Listado de Aportes Sindicales', 'bold');
-
-    $documento->moveCurrentRow(7, false);
-    
-    $documento->doc->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('L')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('M')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('N')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('O')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('P')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('Q')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('R')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('S')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('T')->setAutoSize(true);
-
-    $documento->setCellValue('A', 'Cuil', 'title');
-    $documento->setCellValue('B', 'Apellido', 'title');
-    $documento->setCellValue('C', 'Nombre', 'title');
-    $documento->setCellValue('D', 'Sexo', 'title');
-    $documento->setCellValue('E', 'Estado Civil', 'title');
-    $documento->setCellValue('F', 'F. Nacimiento', 'title');
-    $documento->setCellValue('G', 'direccion', 'title');
-    $documento->setCellValue('H', 'Numero', 'title');
-    $documento->setCellValue('I', 'Cod. Postal', 'title');
-    $documento->setCellValue('J', 'Empleador', 'title');
-    $documento->setCellValue('K', 'F. Ingreso', 'title');
-    $documento->setCellValue('L', 'F. Egreso', 'title');
-    $documento->setCellValue('M', 'Categoria', 'title');
-    $documento->setCellValue('N', 'Valor', 'title');
-    $documento->setCellValue('O', 'Concepto', 'title');
-    $documento->setCellValue('P', 'Valor', 'title');
-    $documento->setCellValue('Q', 'Periodo', 'title');
-    $documento->setCellValue('R', 'Dias Periodo', 'title');
-    $documento->setCellValue('S', 'Remunerativo', 'title');
-    $documento->setCellValue('T', 'No Remunerativo', 'title');
+    $documento->create(array('password' => false, 'title' => 'Listado de Aportes Sindicales'));
+    $documento->setCellValue('A', 'Cuil', array('title' => '25'));
+    $documento->setCellValue('B', 'Apellido', array('title' => '30'));
+    $documento->setCellValue('C', 'Nombre', array('title' => '30'));
+    $documento->setCellValue('D', 'Sexo', array('title' => '20'));
+    $documento->setCellValue('E', 'Estado Civil', array('title' => '20'));
+    $documento->setCellValue('F', 'F. Nacimiento', array('title' => '15'));
+    $documento->setCellValue('G', 'direccion', array('title' => '30'));
+    $documento->setCellValue('H', 'Numero', array('title' => '10'));
+    $documento->setCellValue('I', 'Cod. Postal', array('title' => '10'));
+    $documento->setCellValue('J', 'Empleador', array('title' => '30'));
+    $documento->setCellValue('K', 'F. Ingreso', array('title' => '15'));
+    $documento->setCellValue('L', 'F. Egreso', array('title' => '15'));
+    $documento->setCellValue('M', 'Categoria', array('title' => '30'));
+    $documento->setCellValue('N', 'Valor', array('title' => '15'));
+    $documento->setCellValue('O', 'Concepto', array('title' => '50'));
+    $documento->setCellValue('P', 'Valor', array('title' => '15'));
+    $documento->setCellValue('Q', 'Periodo', array('title' => '15'));
+    $documento->setCellValue('R', 'Dias Periodo', array('title' => '10'));
+    $documento->setCellValue('S', 'Remunerativo', array('title' => '20'));
+    $documento->setCellValue('T', 'No Remunerativo', array('title' => '20'));
 
     /** Body */
     foreach ($data as $k => $detail) {
@@ -100,17 +73,11 @@ if (!empty($data)) {
                     array('value' => $detail['Liquidacion']['no_remunerativo'], 'options' => 'currency')));
     }
 
-    $documento->moveCurrentRow(3);
-    $documento->setCellValue('A' . $documento->getCurrentRow() . ':C' . $documento->getCurrentRow(), 'TOTALES', 'title');
-    $documento->moveCurrentRow();
-    $documento->setCellValue('B', 'Trabajadores:', array('bold', 'right'));
-    $documento->setCellValue('C', count($cuils), 'bold');
-
+    $t['Trabajadores'] = array(count($cuils) => array('bold', 'right'));
     foreach ($totals as $conceptCode => $total) {
-        $documento->moveCurrentRow();
-        $documento->setCellValue('B', $codeToNameMapper[$conceptCode]. ':', array('bold', 'right'));
-        $documento->setCellValue('C', $total, 'total');
+        $t[$codeToNameMapper[$conceptCode]] = $total;
     }
+    $documento->setTotals($t);
     $documento->save($fileFormat);
 } else {
 
