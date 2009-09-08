@@ -40,8 +40,7 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'SiapsDetalle', 'field' => 'longitud', 'valor' => $v['SiapsDetalle']['longitud']);
     $fila[] = array('model' => 'SiapsDetalle', 'field' => 'tipo', 'valor' => $v['SiapsDetalle']['tipo']);
 	$fila[] = array('model' => 'SiapsDetalle', 'field' => 'valor', 'valor' => $v['SiapsDetalle']['valor']);
-	//$fila[] = array('model' => 'SiapsDetalle', 'field' => 'direccion_relleno', 'valor' => $v['SiapsDetalle']['direccion_relleno']);
-	//$fila[] = array('model' => 'SiapsDetalle', 'field' => 'caracter_relleno', 'valor' => $v['SiapsDetalle']['caracter_relleno']);
+    $fila[] = array('model' => 'SiapsDetalle', 'field' => 'valor', 'valor' => $v['SiapsDetalle']['valor_maximo'], 'nombreEncabezado' => 'Maximo');
 	$cuerpo[] = $fila;
 }
 echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo));

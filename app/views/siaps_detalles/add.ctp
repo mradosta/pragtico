@@ -24,6 +24,7 @@ $campos['SiapsDetalle.id'] = array();
 $campos['SiapsDetalle.siap_id'] = array('options' => 'listable', 'model' => 'Siap', 'displayField' => array('Siap.version'));
 $campos['SiapsDetalle.elemento'] = array();
 $campos['SiapsDetalle.valor'] = array();
+$campos['SiapsDetalle.valor_maximo'] = array();
 $campos['SiapsDetalle.tipo'] = array();
 $campos['SiapsDetalle.descripcion'] = array();
 $campos['SiapsDetalle.caracter_relleno'] = array();
