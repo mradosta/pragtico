@@ -54,7 +54,7 @@ class LiquidacionesController extends AppController {
             $conditions['LiquidacionesDetalle.concepto_retencion_sindical'] = 'Si';
             $conditions['LiquidacionesDetalle.valor >'] = 0;
             
-            $this->Liquidacion->Behaviors->detach('Permisos');
+            $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
             $this->Liquidacion->LiquidacionesDetalle->contain(array('Liquidacion' => array('Trabajador')));
             $this->set('data', $this->Liquidacion->LiquidacionesDetalle->find('all', array('conditions' => $conditions)));
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
@@ -563,7 +563,7 @@ class LiquidacionesController extends AppController {
 						array(	'checkSecurity'	=> false,
 								'contain'		=> array_merge($contain, array(	
                                         'LiquidacionesDetalle' => array('conditions' => array('OR' => array('LiquidacionesDetalle.concepto_imprimir' => 'Si', array('LiquidacionesDetalle.concepto_imprimir' => 'Solo con valor', 'ABS(LiquidacionesDetalle.valor) >' => 0)))),
-										'Relacion' 		=> array('Situacion', 'ConveniosCategoria', 'Modalidad', 'Ausencia' =>
+										'Relacion' 		=> array('Actividad', 'Situacion', 'ConveniosCategoria', 'Modalidad', 'Ausencia' =>
 												array('conditions' => array('Ausencia.desde >=' => $periodo['desde'], 'Ausencia.desde <=' => $periodo['hasta']))),
 										'Trabajador' 	=> array('ObrasSocial', 'Condicion', 'Siniestrado', 'Localidad'))),
 								'conditions'	=> $conditions));
@@ -643,18 +643,16 @@ class LiquidacionesController extends AppController {
 						$campos['c2']['valor'] = str_replace(
                             array('á', 'é', 'í', 'ó', 'ú', 'Á', 'É', 'Í', 'Ó', 'Ú', 'ñ', 'Ñ'),
                             array('a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U', 'n', 'N'), $liquidacion['Trabajador']['apellido'] . ' ' . $liquidacion['Trabajador']['nombre']);
+
 						if (!empty($liquidacion['Relacion']['situacion_id'])) {
 							$campos['c5']['valor'] = $liquidacion['Relacion']['Situacion']['codigo'];
 						}
 						if (!empty($liquidacion['Trabajador']['condicion_id'])) {
 							$campos['c6']['valor'] = $liquidacion['Trabajador']['Condicion']['codigo'];
 						}
-                        if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
-                            $campos['c7']['valor'] = $liquidacion['Trabajador']['Actividad']['codigo'];
-                        } else {
-                            $campos['c7']['valor'] = $groupParams['siap_codigo_actividad'];
-                        }
+                        $campos['c7']['valor'] = $liquidacion['Relacion']['Actividad']['codigo'];
 						$campos['c8']['valor'] = $liquidacion['Trabajador']['Localidad']['codigo_zona'];
+                        
 						if (!empty($liquidacion['Relacion']['modalidad_id'])) {
 							$campos['c10']['valor'] = $liquidacion['Relacion']['Modalidad']['codigo'];
 						}
