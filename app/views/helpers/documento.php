@@ -74,16 +74,10 @@ class DocumentoHelper extends AppHelper {
  */
     function create($options = array()) {
 
-        $__defaults = array('password' => true, 'header' => true, 'orientation' => 'portrait');
+        $__defaults = array('password' => true, 'header' => true, 'orientation' => 'portrait', 'title' => '');
         $options = array_merge($__defaults, $options);
 
-        $this->doc->getProperties()->setCreator('Pragtico');
-        $this->doc->getProperties()->setLastModifiedBy('Pragtico');
-        $this->doc->getProperties()->setTitle('Pragtico');
-        $this->doc->getProperties()->setSubject('Pragtico');
-        $this->doc->getProperties()->setDescription('Pragtico');
-        $this->doc->getProperties()->setKeywords('Pragtico');
-        $this->doc->getProperties()->setCategory('Pragtico');
+        $this->doc->getProperties()->setCreator('Pragtico')->setLastModifiedBy('Pragtico')->setTitle('Pragtico')->setSubject('Pragtico')->setDescription('Pragtico')->setKeywords('Pragtico')->setCategory('Pragtico');
         $this->doc->setActiveSheetIndex(0);
         $this->setActiveSheet();
         $this->activeSheet->setShowGridlines(true);
@@ -94,9 +88,7 @@ class DocumentoHelper extends AppHelper {
             $this->activeSheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
         }
 
-        /**
-        * Protejo la hoja para que no me la modifiquen, excepto lo que realmente necesito que modifique que lo desbloqueo luego.
-        */
+        /** Protejo la hoja para que no me la modifiquen, excepto lo que realmente necesito que modifique que lo desbloqueo luego */
         if ($options['password'] !== false) {
             if (is_string($options['password'])) {
                 $this->activeSheet->getProtection()->setPassword(substr($options['password'], 0, 10));
@@ -114,23 +106,34 @@ class DocumentoHelper extends AppHelper {
 
 
         if ($options['header'] !== false) {
+            $header = '';
             if (is_numeric($options['header'])) {
                 $groupParams = User::getGroupParams($options['header']);
-                if (!empty($groupParams)) {
-                    $this->activeSheet->getHeaderFooter()->setOddHeader(
-                        sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s&R%s\nPagina &P de &N",
-                            $groupParams['nombre_fantasia'],
-                            $groupParams['direccion'],
-                            $groupParams['barrio'],
-                            $groupParams['codigo_postal'],
-                            $groupParams['ciudad'],
-                            $groupParams['pais'],
-                            $groupParams['cuit'],
-                            date('Y-m-d')));
-                }
             } elseif (is_string($options['header'])) {
-                $this->activeSheet->getHeaderFooter()->setOddHeader($options['header']);
+                $header = $options['header'];
+            } else {
+                $groupParams = User::getGroupParams();
             }
+            
+            if (!empty($groupParams)) {
+                $header = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s&R%s\nPagina &P de &N",
+                    $groupParams['nombre_fantasia'],
+                    $groupParams['direccion'],
+                    $groupParams['barrio'],
+                    $groupParams['codigo_postal'],
+                    $groupParams['ciudad'],
+                    $groupParams['pais'],
+                    $groupParams['cuit'],
+                    date('Y-m-d'));
+            }
+            $this->activeSheet->getHeaderFooter()->setOddHeader($header);
+        }
+
+        if (!empty($options['title'])) {
+            $this->setCellValue('A1:E2', $options['title'], array(
+                'style' => array(
+                    'font' => array('bold' => true, 'size' => 12))));
+            $this->moveCurrentRow(7, false);
         }
     }
     
@@ -190,6 +193,34 @@ class DocumentoHelper extends AppHelper {
         }
     }
 
+/**
+ * Creates a formatted totals table.
+ *
+ * @param array() key => value pair for label in keys.
+ * <code>
+ * $t = array();
+ * $t['Label A'] = array('value' => array('bold', 'right'));
+ * $t['Label B'] = 'value';
+ * $documento->setTotals($t);
+ * </code>
+ *
+ */
+    function setTotals($totals = array()) {
+        if (!empty($totals)) {
+            $this->moveCurrentRow(3);
+            $this->setCellValue('A' . $this->getCurrentRow() . ':D' . $this->getCurrentRow(), 'TOTALES', 'title');
+            foreach ($totals as $label => $total) {
+                $this->moveCurrentRow();
+                $this->setCellValue('B', $label. ':', array('bold', 'right'));
+                if (is_array($total)) {
+                    $this->setCellValue('C', key($total), $total[key($total)]);
+                } else {
+                    $this->setCellValue('C', $total, 'total');
+                }
+            }
+        }
+    }
+    
 
     function setWidth($cellName, $value) {
         if (is_numeric($cellName)) {
