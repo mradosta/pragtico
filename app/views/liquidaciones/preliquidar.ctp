@@ -88,8 +88,12 @@ $opcionesTabla =  array('tabla' => array(	'ordenEnEncabezados'=> false,
 											'eliminar'			=> true,
 											'permisos'			=> false));
 
-//$accionesExtra['opciones'] = array('acciones' => array($appForm->link('Confirmar', null, array('class' => 'link_boton', 'id' => 'confirmar', 'title' => 'Confirma las preliquidaciones seleccionadas')), $appForm->link('Guardar', null, array('class' => 'link_boton', 'id' => 'guardar', 'title' => 'Guarda las preliquidaciones seleccionadas')), $appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas')), 'eliminar'));
-$accionesExtra['opciones'] = array('acciones' => array($appForm->link('Confirmar', null, array('class' => 'link_boton', 'id' => 'confirmar', 'title' => 'Confirma las preliquidaciones seleccionadas')), $appForm->link('Guardar', null, array('class' => 'link_boton', 'id' => 'guardar', 'title' => 'Guarda las preliquidaciones seleccionadas')), 'eliminar'));
+$accionesExtra['opciones'] = array('acciones' => array(
+    $appForm->link('Confirmar', null, array('class' => 'link_boton', 'id' => 'confirmar', 'title' => 'Confirma las preliquidaciones seleccionadas')),
+    $appForm->link('Guardar', null, array('class' => 'link_boton', 'id' => 'guardar', 'title' => 'Guarda las preliquidaciones seleccionadas')),
+    $appForm->link('Impr. (Preimpr)', null, array('class' => 'link_boton', 'id' => 'imprimir_preimpreso', 'title' => 'Imprime las preliquidaciones seleccionadas')),
+    $appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas')),
+    'eliminar'));
 $botonesExtra[] = 'limpiar';
 $botonesExtra[] = 'buscar';
 $botonesExtra[] = $appForm->submit('Generar', array('id' => 'generar', 'title'=>'Genera una Pre-liquidacion', 'onclick'=>'document.getElementById("accion").value="generar"'));
@@ -163,7 +167,7 @@ $appForm->addScript('
 	);
 	
 	
-	jQuery("#confirmar, #guardar, #imprimir").click(
+	jQuery("#confirmar, #guardar, #imprimir, #imprimir_preimpreso").click(
 		function() {
 			var c = jQuery(".tabla :checkbox").checkbox("contar");
 			if (c > 0) {
@@ -172,11 +176,16 @@ $appForm->addScript('
 				} else if (jQuery(this).attr("id") == "guardar") {
 					jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'guardar')) . '";
 				} else {
+                    if (jQuery(this).attr("id") == "imprimir_preimpreso") {
+                        jQuery("#accion").attr("value", "preimpreso")
+                    } else {
+                        jQuery("#accion").attr("value", "buscar")
+                    }
 					jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'imprimir')) . '";
 				}
 				jQuery("#form")[0].submit();
 			} else {
-				alert("Debe seleccionar al menos una pre-liquidacion para confirmar.");
+				alert("Debe seleccionar al menos una pre-liquidacion para realizar la accion.");
 			}
 		}
 	);', 'ready');

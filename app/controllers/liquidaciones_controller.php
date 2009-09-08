@@ -460,7 +460,10 @@ class LiquidacionesController extends AppController {
 				$id = $this->Util->extraerIds($this->params['data']['seleccionMultiple']);
 			}
 		}
-
+        
+        if (strstr($this->referer(), 'preliquidar')) {
+            $this->Liquidacion->setSecurityAccess('readOwnerOnly');
+        }
 		$this->data = null;
 		$this->Liquidacion->contain('LiquidacionesDetalle');
 		$this->Liquidacion->Empleador->Suss->contain('Banco');
