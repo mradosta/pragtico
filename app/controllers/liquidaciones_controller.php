@@ -102,7 +102,7 @@ class LiquidacionesController extends AppController {
                 $this->Liquidacion->Behaviors->detach('Util');
                 $workers = $this->Liquidacion->find('all', array(
                         'conditions'    => $conditions,
-                        'fields'        => array('COUNT(Liquidacion.trabajador_id) AS cantidad'),
+                        'fields'        => array('COUNT(DISTINCT Liquidacion.trabajador_id) AS cantidad'),
                         'recursive'     => -1));
 
                 if (empty($workers[0]['Liquidacion']['cantidad'])) {
