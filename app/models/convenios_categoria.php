@@ -24,6 +24,8 @@
  * @subpackage  app.models
  */
 class ConveniosCategoria extends AppModel {
+
+    var $permissions = array('permissions' => 508, 'group' => 'none', 'role' => 'higher');
     
     var $breadCrumb = array('format'    => '%s de %s',
                             'fields'    => array('ConveniosCategoria.nombre', 'Convenio.nombre'));
