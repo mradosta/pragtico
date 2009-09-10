@@ -1,4 +1,4 @@
-// <?php
+<?php
 /**
  * Helper que me facilita el formateo de string, numeros, etc.
  *
@@ -437,7 +437,7 @@ class FormatoHelper extends AppHelper {
                             $fechaDesde = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
                             $value = array_merge($value, array('dia' => '31', 'mes' => '12'));
                             $fechaHasta = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
-                        } elseif ($tmp['periodo'] === 'M' || $tmp['periodo'] === 'F') {
+                        } elseif ($tmp['periodo'] === 'M' || $tmp['periodo'] === 'F' || in_array('M', $tmp['periodo'])) {
                             $value = array_merge($value, array('dia' => '01'));
                             $fechaDesde = $this->format($value, array('type' => 'date', 'format' => 'Y-m-d'));
                             $value = array_merge($value, array('dia'=>$this->format($value, array('type' => 'ultimoDiaDelMes'))));
