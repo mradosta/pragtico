@@ -25,7 +25,7 @@ $campos['SiapsDetalle.siap_id'] = array('options' => 'listable', 'model' => 'Sia
 $campos['SiapsDetalle.elemento'] = array();
 $campos['SiapsDetalle.valor'] = array();
 $campos['SiapsDetalle.valor_maximo'] = array();
-$campos['SiapsDetalle.tipo'] = array();
+$campos['SiapsDetalle.tipo'] = array('empty' => true);
 $campos['SiapsDetalle.descripcion'] = array();
 $campos['SiapsDetalle.caracter_relleno'] = array();
 $campos['SiapsDetalle.direccion_relleno'] = array();
