@@ -1,4 +1,4 @@
-<?php
+// <?php
 /**
  * Helper que me facilita el formateo de string, numeros, etc.
  *
@@ -409,7 +409,7 @@ class FormatoHelper extends AppHelper {
                         $tmp['periodoCompleto'] = $matches[0];
                         $tmp['ano'] = $matches[1];
                         $tmp['mes'] = $matches[2];
-                        $tmp['periodo'] = (!empty($matches[3]))?$matches[3]:'M';
+                        $tmp['periodo'] = (!empty($matches[3]))?$matches[3]:array('M', '1Q', '2Q', 'F');
                         if (in_array($matches[2], array('1S', '2S', 'A', 'F'))) {
                             $tmp['mes'] = '00';
                             $tmp['periodo'] = $matches[2];
