@@ -55,8 +55,21 @@ $miga = array('format' 	=> '%s %s (%s)',
 			  'content' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));
 echo $this->element("add/add", array('fieldset' => $fieldset, "opcionesForm"=>array("enctype"=>"multipart/form-data"), 'miga' => $miga));
 $ajax->jsPredefinido(array('tipo' => 'detalle', 'agregar' => true, 'quitar' => true));
-$appForm->addScript('
-    jQuery("#AusenciasSeguimientoEstadoLiquidado").attr("disabled", true);
-');
 
+$extraJs = array();
+if (!empty($this->data)) {
+    foreach ($this->data as $ausencia) {
+        foreach ($ausencia['AusenciasSeguimiento'] as $k => $seguimiento) {
+            $extraJs[] = 'jQuery.detailAfterAdd(' . $k . ');';
+        }
+    }
+}
+$appForm->addScript('
+    jQuery.detailAfterAdd = function(id) {
+        if (id == undefined) {
+            id = "0";
+        }
+        jQuery("#AusenciasSeguimientoEstado" + id + "Liquidado").attr("disabled", true);
+    }
+    ' . implode('', $extraJs));
 ?>

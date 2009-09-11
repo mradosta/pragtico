@@ -337,7 +337,6 @@ function jsPredefinido($options = array()) {
 			fieldset.attr('id', 'fieldset_' + id);
 
 			fieldset.find('a:first').attr('id', 'linkQuitar_' + id);
-			fieldset.find('input:hidden').attr('value', '');
 
 			/**
 			* Si hay un control de tipo fecha, el campo al que retorna debo alterarle el id, sino no lo encontrara al correcto.
@@ -350,19 +349,24 @@ function jsPredefinido($options = array()) {
 			* Si hay un control de tipo radio, la label de este hara referencia al cual fue clonado, debo cambiarla por el
 			* nuevo id que tendra el control.
 			*/
-			fieldset.find('div.radio label.radio_label').each(function(){
+			fieldset.find('label.radio_label').each(function(){
 				jQuery(this).attr('for', jQuery(this).attr('for') + '_' + id);
 			});
 
+            var indice = '';
 			fieldset.find('input, select, textarea').each(function(){
-				
+
+                if (jQuery(this).attr('name').substr(-4) == '[id]') {
+                    jQuery(this).attr('value', '');
+                }
+    
 				/**
 				* Debo cambiar el subindice del nombre (name) de cada control,
 				* para que no se me repita y se me pisen.
 				* puede ser un solo registro o un edit multiple.
 				*/
 				this.id = this.id + '_' + id;
-				var indice = parseInt(this.name.replace(/(^data\[[a-zA-Z]+\])\[([0-9]+)\](\[[a-zA-Z_]+\])/, '$2')) + 1;
+				indice = parseInt(this.name.replace(/(^data\[[a-zA-Z]+\])\[([0-9]+)\](\[[a-zA-Z_]+\])/, '$2')) + 100;
 				if (isNaN(indice)) {
 					indice = parseInt(this.name.replace(/(^data\[[0-9]+\]\[[a-zA-Z]+\])\[([0-9]+)\](\[[a-zA-Z_]+\])/, '$2')) + 1;
 					this.name = this.name.replace(/(^data\[[0-9]+\]\[[a-zA-Z]+\])\[([0-9]+)\](\[[a-zA-Z_]+\])/, '$1\[' + indice + '\]$3')
@@ -378,6 +382,13 @@ function jsPredefinido($options = array()) {
 			*/
 			jQuery('#' + fsM).append(fieldset);
 			jQuery('#' + fsM).append(jQuery(this).parent());
+
+            /**
+            * Ejectuto la callback si existe.
+            */
+            if(typeof(jQuery.detailAfterAdd) == 'function'){
+                jQuery.detailAfterAdd(indice);
+            };
 		}";
 		
 	$js['detalle']['ready'] = "detalle();";

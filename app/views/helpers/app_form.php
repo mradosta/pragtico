@@ -240,6 +240,7 @@ class AppFormHelper extends FormHelper {
 										$opcionesCampoDetail['name'] = "data[" . $k . "][" . $modelDetail . "][" . $kDetail . "][" . $fieldDetail . "]";
 									} else {
 										$opcionesCampoDetail['name'] = "data[" . $modelDetail . "][" . $kDetail . "][" . $fieldDetail . "]";
+                                        $opcionesCampoDetail['id'] = $modelDetail . Inflector::Classify($fieldDetail) . '_' . $kDetail;
 									}
 									$salidaDetail .= $this->input($campo, $opcionesCampoDetail);
 								}
