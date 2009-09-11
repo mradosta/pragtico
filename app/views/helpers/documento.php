@@ -74,7 +74,7 @@ class DocumentoHelper extends AppHelper {
  */
     function create($options = array()) {
 
-        $__defaults = array('password' => true, 'header' => true, 'orientation' => 'portrait', 'title' => '');
+        $__defaults = array('password' => false, 'header' => true, 'orientation' => 'portrait', 'title' => '');
         $options = array_merge($__defaults, $options);
 
         $this->doc->getProperties()->setCreator('Pragtico')->setLastModifiedBy('Pragtico')->setTitle('Pragtico')->setSubject('Pragtico')->setDescription('Pragtico')->setKeywords('Pragtico')->setCategory('Pragtico');

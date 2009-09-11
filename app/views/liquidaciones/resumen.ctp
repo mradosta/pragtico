@@ -17,34 +17,15 @@
  */
  
 if (!empty($data)) {
-    $documento->create(array('password' => 'PaXXHttBXG66'));
-    $documento->doc->getActiveSheet()->getDefaultStyle()->getFont()->setName('Courier New');
-    $documento->doc->getActiveSheet()->getDefaultStyle()->getFont()->setSize(6);
 
-    $documento->doc->getActiveSheet()->getDefaultRowDimension()->setRowHeight(10);
-    $documento->doc->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_PORTRAIT);
-    $documento->doc->getActiveSheet()->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
-
-
-    if (!empty($groupParams)) {
-        $documento->doc->getActiveSheet()->getHeaderFooter()->setOddHeader(
-            sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s",
-                $groupParams['nombre_fantasia'],
-                $groupParams['direccion'],
-                $groupParams['barrio'],
-                $groupParams['codigo_postal'],
-                $groupParams['ciudad'],
-                $groupParams['pais'],
-                $groupParams['cuit']));
-    }
-
+    $documento->create(array('password' => false, 'title' => 'Resumen de Liquidacion'));
 
     /** Set array with definitios values. */
-    $definitions = array(   array(  'width' => 55,
+    $definitions = array(   array(  'width' => 60,
                                     'title' => ($group_option == 'worker')?'Trabajador':'Coeficiente' . ' / Concepto',
                                     'option' => null),
                             array(  'width' => 15,
-                                    'title' => 'Cantidad',
+                                    'title' => 'Cant.',
                                     'option' => 'decimal'),
                             array(  'width' => 15,
                                     'title' => 'Total',
@@ -56,26 +37,18 @@ if (!empty($data)) {
                                     'title' => 'Total',
                                     'option' => 'currency'));
 
-    $fila = 1;
-    $documento->setCellValue('E' . $fila, date('Y-m-d'), 'bold');
-    $fila+=2;
-    $documento->setCellValue('A' . $fila, 'Listado de Totales por Concepto', 'bold');
+    $fila = 4;
+    $documento->setCellValue('A' . $fila, 'Empresa: ' . $conditions['Bar-empleador_id__'], 'bold');
     $fila++;
-    $documento->setCellValue('A' . $fila, 'Empresa: ' . $conditions['Liquidacion-empleador_id__'], 'bold');
-    $fila++;
-    $documento->setCellValue('A' . $fila, 'Periodo: ' . $conditions['Liquidacion-periodo_largo'], 'bold');
+    $documento->setCellValue('A' . $fila, 'Periodo: ' . $conditions['Bar-periodo_largo'], 'bold');
 
 
     $fila+=2;
     /** Create headers */
     $column = 0;
     foreach ($definitions as $definition) {
-        /** Set width columns. */
-        if (!empty($definition['width'])) {
-            $documento->setWidth($column, $definition['width']);
-        }
         /** Set title columns. */
-        $documento->setCellValue($column . ',' . $fila, $definition['title'], 'title');
+        $documento->setCellValue($column . ',' . $fila, $definition['title'], array('title' => $definition['width']));
         $column++;
     }
 
@@ -128,47 +101,30 @@ if (!empty($data)) {
     $documento->setCellValue('A' . $fila, 'Facturado', 'bold');
     $documento->setCellValue('E' . $fila, '=SUM('.implode('+', $totals['E']).')', 'total');
     $fila++;
-    
 
-    $this->set('fileFormat', $this->data['Condicion']['Liquidacion-formato']);
+
     $documento->save($fileFormat);
     
 } else {
 
-    if (!empty($grupos)) {
-        $condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos, 'empty' => true);
-    }
+    $conditions['Condicion.Bar-empleador_id'] = array( 'lov' => array(
+            'controller'        => 'empleadores',
+            'seleccionMultiple' => 0,
+            'camposRetorno'     => array('Empleador.cuit', 'Empleador.nombre')));
     
-    $condiciones['Condicion.Liquidacion-empleador_id'] = array('lov' => array(
-        'controller'        => 'empleadores',
-        'seleccionMultiple' => 0,
-        'camposRetorno'     => array('Empleador.nombre')));
-        
-    $condiciones['Condicion.Liquidacion-trabajador_id'] = array(
+    $conditions['Condicion.Bar-trabajador_id'] = array(
             'lov'   => array(   'controller'   => 'trabajadores',
                                 'seleccionMultiple'    => 0,
                                 'camposRetorno' => array('Trabajador.cuil', 'Trabajador.nombre', 'Trabajador.apellido')));
 
-    $condiciones['Condicion.Liquidacion-group_option'] = array('type' => 'radio', 'options' => $options);
-    $condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'type' => 'select', 'multiple' => 'checkbox');
-    $condiciones['Condicion.Liquidacion-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'F'));
-    $condiciones['Condicion.Liquidacion-estado'] = array('type' => 'select', 'multiple' => 'checkbox');
-    $condiciones['Condicion.Liquidacion-formato'] = array('type' => 'radio', 'options' => array('Excel5' => 'Excel', 'Excel2007' => 'Excel 2007'), 'value' => 'Excel2007');
+    $conditions['Condicion.Bar-group_option'] = array('type' => 'radio', 'options' => $options);
+    
+    $conditions['Condicion.Bar-tipo'] = array('label' => 'Tipo', 'multiple' => 'checkbox', 'type' => 'select', 'options' => $types);
+    
+    $conditions['Condicion.Bar-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'F'));
 
-    $fieldsets[] = array('campos' => $condiciones);
-    $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'resumen.gif', 'legend' => "Resumen")));
-
-    $accionesExtra['opciones'] = array('acciones' => array());
-    $botonesExtra[] = 'limpiar';
-    $botonesExtra[] = $appForm->submit('Generar', array('title' => 'Genera el Resumen de Liquidacion', 'onclick'=>'document.getElementById("accion").value="generar"'));
-
-    echo $this->element('index/index', array(
-                        'opcionesTabla' => array('tabla' => array('omitirMensajeVacio' => true)),
-                        'botonesExtra'  => array('opciones' => array('botones' => $botonesExtra)),
-                        'accionesExtra' => $accionesExtra,
-                        'opcionesForm'  => array('action' => 'resumen'),
-                        'condiciones'   => $fieldset,
-                        'cuerpo'        => null));
+    $options = array('title' => 'Resumen de Liquidacion');
+    echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));
     
 
 }

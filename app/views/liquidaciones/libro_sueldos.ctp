@@ -18,20 +18,7 @@
  
 if (!empty($data)) {
 
-	$documento->create(array('password' => 'PaXXHttBXG66'));
-	$documento->doc->getActiveSheet()->getDefaultStyle()->getFont()->setName('Courier New');
-	$documento->doc->getActiveSheet()->getDefaultStyle()->getFont()->setSize(6);
-
-	$documento->doc->getActiveSheet()->getDefaultRowDimension()->setRowHeight(10);
-	$documento->doc->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_PORTRAIT);
-	$documento->doc->getActiveSheet()->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
-	
-	$pageMargins = $documento->doc->getActiveSheet()->getPageMargins();
-	$pageMargins->setBottom(0.2);
-	$pageMargins->setLeft(0.2);
-	$pageMargins->setRight(0.2);
-
-	if (empty($groupParams)) {
+    if (empty($groupParams)) {
         $left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s",
             $employer['Empleador']['nombre'],
             $employer['Empleador']['direccion'],
@@ -41,35 +28,39 @@ if (!empty($data)) {
             $employer['Empleador']['pais'],
             $employer['Empleador']['cuit']);
         $center = "&CLibro Especial de Sueldos - Art. 52 Ley 20744";
-	} else {
-		$left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s",
-			$groupParams['nombre_fantasia'],
-			$groupParams['direccion'],
-			$groupParams['barrio'],
-			$groupParams['codigo_postal'],
-			$groupParams['ciudad'],
-			$groupParams['pais'],
-			$groupParams['cuit']);
-		$center = "&CLibro Especial de Sueldos - Art. 52 Ley 20744" . $groupParams['libro_sueldos_encabezado'];
-	}
-	$documento->doc->getActiveSheet()->getHeaderFooter()->setOddHeader($left . $center);
-	
+    } else {
+        $left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s",
+            $groupParams['nombre_fantasia'],
+            $groupParams['direccion'],
+            $groupParams['barrio'],
+            $groupParams['codigo_postal'],
+            $groupParams['ciudad'],
+            $groupParams['pais'],
+            $groupParams['cuit']);
+        $center = "&CLibro Especial de Sueldos - Art. 52 Ley 20744" . $groupParams['libro_sueldos_encabezado'];
+    }
+	$documento->create(array('header' => $left . $center, 'password' => true));
+
+	$pageMargins = $documento->doc->getActiveSheet()->getPageMargins();
+	$pageMargins->setBottom(0.2);
+	$pageMargins->setLeft(0.2);
+	$pageMargins->setRight(0.2);
+
 	$styleBorderBottom = array('style' => array(
 		'borders' => array( 'bottom'     => array('style' => PHPExcel_Style_Border::BORDER_DASHDOT))));
-	
 
 	
 	$documento->setWidth('A', 30);
-	$documento->setWidth('B', 10);
-	$documento->setWidth('C', 10);
+	$documento->setWidth('B', 7);
+	$documento->setWidth('C', 13);
 	$documento->setWidth('D', 3);
 	$documento->setWidth('E', 30);
-	$documento->setWidth('F', 10);
-	$documento->setWidth('G', 10);
+	$documento->setWidth('F', 7);
+	$documento->setWidth('G', 13);
 	$documento->setWidth('H', 3);
 	$documento->setWidth('I', 30);
-	$documento->setWidth('J', 10);
-	$documento->setWidth('K', 10);
+	$documento->setWidth('J', 7);
+	$documento->setWidth('K', 13);
 
         
     $fila = 0;
@@ -110,12 +101,12 @@ if (!empty($data)) {
 		}
 		$recordCount++;
 		
-		$fila++;
+        $fila++;
 		$documento->setCellValue('A' . $fila, 'CUIL: ' . $record['Relacion']['Trabajador']['cuil']);
 		$documento->setCellValue('E' . $fila, 'Apellido y Nombre: ' . $record['Relacion']['Trabajador']['apellido'] . ' ' . $record['Relacion']['Trabajador']['nombre']);
         $documento->setCellValue('I' . $fila, 'Ingreso: ' . $formato->format($record['Relacion']['ingreso'], 'date'));
 
-		$fila++;
+        $fila++;
 		$documento->setCellValue('A' . $fila, 'Legajo: ' . $record['Relacion']['legajo']);
 		$documento->setCellValue('E' . $fila, 'Contrato: ' . $record['Relacion']['Modalidad']['nombre']);
         if ($record['Relacion']['basico'] > 0) {
@@ -123,9 +114,9 @@ if (!empty($data)) {
         } else {
             $salary = $record['Relacion']['ConveniosCategoria']['costo'];
         }
-        $documento->setCellValue('I' . $fila, 'Suel/Jorn.: $' . number_format($salary, 2, '.', ''));
+        $documento->setCellValue('I' . $fila, 'Suel/Jorn.: $ ' . $formato->format($salary));
 
-		$fila++;
+        $fila++;
         $documento->setCellValue('A' . $fila, 'Categoria: ' . $record['Liquidacion']['convenio_categoria_nombre']);
 
         $egreso = '';
@@ -140,28 +131,28 @@ if (!empty($data)) {
 		}
 
 		
-		$fila++;
-		$documento->setCellValue('A' . $fila . ':C' . $fila, 'Remunerativo', 'title');
+        $fila++;
+		$documento->setCellValue('A' . $fila . ':C' . $fila, 'Remunerativo', array('title' => 30));
 		$documento->setCellValue('B' . $fila, '');
 		$documento->setCellValue('C' . $fila, '');
-		$documento->setCellValue('E' . $fila . ':G' . $fila, 'Deduccion', 'title');
+		$documento->setCellValue('E' . $fila . ':G' . $fila, 'Deduccion', array('title' => 30));
 		$documento->setCellValue('F' . $fila, '');
 		$documento->setCellValue('G' . $fila, '');
-		$documento->setCellValue('I' . $fila . ':K' . $fila, 'No Remunerativo', 'title');
+		$documento->setCellValue('I' . $fila . ':K' . $fila, 'No Remunerativo', array('title' => 30));
 		$documento->setCellValue('J' . $fila, '');
 		$documento->setCellValue('K' . $fila, '');
 		
 		$fila++;
 		$documento->setCellValue('A' . $fila, 'Descripcion');
-		$documento->setCellValue('B' . $fila, 'Cantidad', 'right');
+		$documento->setCellValue('B' . $fila, 'Cant.', 'right');
 		$documento->setCellValue('C' . $fila, 'Importe', 'right');
 		
 		$documento->setCellValue('E' . $fila, 'Descripcion');
-		$documento->setCellValue('F' . $fila, 'Cantidad', 'right');
+		$documento->setCellValue('F' . $fila, 'Cant.', 'right');
 		$documento->setCellValue('G' . $fila, 'Importe', 'right');
 		
 		$documento->setCellValue('I' . $fila, 'Descripcion');
-		$documento->setCellValue('J' . $fila, 'Cantidad', 'right');
+		$documento->setCellValue('J' . $fila, 'Cant.', 'right');
 		$documento->setCellValue('K' . $fila, 'Importe', 'right');
 
 		$detailFlag = null;
@@ -179,21 +170,21 @@ if (!empty($data)) {
 						$maxCount = $count;
 					}
 				}
-				$fila++;
+                $fila++;
 				$count++;
 
 				if ($detail['concepto_tipo'] === 'Remunerativo') {
 					$documento->setCellValue('A' . $fila, $detail['concepto_nombre']);
 					$documento->setCellValue('B' . $fila, $detail['valor_cantidad']);
-					$documento->setCellValue('C' . $fila, $detail['valor'], 'right');
+					$documento->setCellValue('C' . $fila, $detail['valor'], 'currency');
 				} elseif ($detail['concepto_tipo'] === 'Deduccion') {
 					$documento->setCellValue('E' . $fila, $detail['concepto_nombre']);
 					$documento->setCellValue('F' . $fila, $detail['valor_cantidad']);
-					$documento->setCellValue('G' . $fila, $detail['valor'], 'right');
+					$documento->setCellValue('G' . $fila, $detail['valor'], 'currency');
 				} elseif ($detail['concepto_tipo'] === 'No Remunerativo') {
 					$documento->setCellValue('I' . $fila, $detail['concepto_nombre']);
 					$documento->setCellValue('J' . $fila, $detail['valor_cantidad']);
-					$documento->setCellValue('K' . $fila, $detail['valor'], 'right');
+					$documento->setCellValue('K' . $fila, $detail['valor'], 'currency');
 				}
 			}
 		}
@@ -201,16 +192,17 @@ if (!empty($data)) {
 		if ($count > $maxCount) {
 			$maxCount = $count;
 		}
-		$fila = $initialRow + $maxCount + 1;
+		$fila = $initialRow + $maxCount + 2;
 		$documento->setCellValue('A' . $fila, 'Totales', 'bold');
-		$documento->setCellValue('C' . $fila, $record['Liquidacion']['remunerativo'], array('bold', 'right'));
-		$documento->setCellValue('G' . $fila, $record['Liquidacion']['deduccion'], array('bold', 'right'));
-		$documento->setCellValue('K' . $fila, $record['Liquidacion']['no_remunerativo'], array('bold', 'right'));
+		$documento->setCellValue('C' . $fila, $record['Liquidacion']['remunerativo'], 'total');
+		$documento->setCellValue('G' . $fila, $record['Liquidacion']['deduccion'], 'total');
+		$documento->setCellValue('K' . $fila, $record['Liquidacion']['no_remunerativo'], 'total');
 
-		$fila++;
-		$documento->setCellValue('K' . $fila, 'Total Neto ' . $record['Liquidacion']['total_pesos'], array('bold', 'right'));
+        $fila++;
+		$documento->setCellValue('J' . $fila, 'Total Neto:', array('bold', 'right'));
+        $documento->setCellValue('K' . $fila, $record['Liquidacion']['total_pesos'], 'total');
 
-		$fila++;
+        $fila++;
 		$documento->setCellValue('A' . $fila, '', $styleBorderBottom);
 		$documento->setCellValue('B' . $fila, '', $styleBorderBottom);
 		$documento->setCellValue('C' . $fila, '', $styleBorderBottom);
@@ -222,47 +214,35 @@ if (!empty($data)) {
 		$documento->setCellValue('I' . $fila, '', $styleBorderBottom);
 		$documento->setCellValue('J' . $fila, '', $styleBorderBottom);
 		$documento->setCellValue('K' . $fila, '', $styleBorderBottom);
-		$fila++;
+        $fila++;
 
 		if ($recordCount === 4 && $k < count($data) - 1) {
 			$recordCount = 0;
 			$documento->doc->getActiveSheet()->setBreak('A' . $fila, PHPExcel_Worksheet::BREAK_ROW);
-			$fila++;
+            $fila++;
 			$pageCount++;
             $documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), 'bold');
 			$documento->setCellValue('K' . $fila, 'Hoja ' . $pageCount);
-			$fila++;
+            $fila++;
 		}
 	}
 	$documento->save($fileFormat);
 	
 } else {
-	if (!empty($grupos)) {
-		$condiciones['Condicion.Liquidacion-grupo_id'] = array('options' => $grupos, 'empty' => true);
-	}
-	$condiciones['Condicion.Liquidacion-empleador_id'] = array(	'lov' => array(
-			'controller'		=>	'empleadores',
-			'seleccionMultiple' => false,
-			'camposRetorno'		=> array('Empleador.cuit', 'Empleador.nombre')));
-	$condiciones['Condicion.Liquidacion-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'F'));
-	$condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'multiple' => 'checkbox', 'type' => 'select');
-	$condiciones['Condicion.Liquidacion-formato'] = array('type' => 'radio', 'options' => array('Excel5' => 'Excel', 'Excel2007' => 'Excel 2007'), 'value' => 'Excel2007');
-	$condiciones['Condicion.Bar-start_page'] = array('label' => 'Hoja Inicial', 'type' => 'text', 'value' => '1');
 
-	$fieldsets[] = array('campos' => $condiciones);
-	$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Generar Libro Sueldos','imagen' => 'archivo.gif')));
+    $conditions['Condicion.Bar-empleador_id'] = array( 'lov' => array(
+            'controller'        => 'empleadores',
+            'seleccionMultiple' => 0,
+            'camposRetorno'     => array('Empleador.cuit', 'Empleador.nombre')));
+    
+    $conditions['Condicion.Bar-tipo'] = array('label' => 'Tipo', 'multiple' => 'checkbox', 'type' => 'select', 'options' => $types);
+    $conditions['Condicion.Bar-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'F'));
 
-	$accionesExtra['opciones'] = array('acciones' => array());
-	$botonesExtra[] = 'limpiar';
-	$botonesExtra[] = $appForm->submit('Generar', array('title' => 'Genera el Libro de Sueldos', 'onclick'=>'document.getElementById("accion").value="generar"'));
+    $conditions['Condicion.Bar-start_page'] = array('label' => 'Hoja Inicial', 'type' => 'text', 'value' => '1');
+    $options = array('title' => 'Libro de Sueldos');
+    echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));
 
-	echo $this->element('index/index', array(
-						'opcionesTabla' => array('tabla' => array('omitirMensajeVacio' => true)),
-						'botonesExtra'	=> array('opciones' => array('botones' => $botonesExtra)),
-						'accionesExtra'	=> $accionesExtra,
-						'opcionesForm'	=> array('action' => 'libro_sueldos'),
-						'condiciones'	=> $fieldset,
-						'cuerpo'		=> null));
+
 }
  
 ?>

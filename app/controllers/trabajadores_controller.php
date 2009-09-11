@@ -68,28 +68,6 @@ class TrabajadoresController extends AppController {
     }
 
 
-    function __generateDebitCardFile($conditions) {
-
-        //$this->Trabajador->Relacion->Behaviors->detach('Permisos');
-        $conditions['Trabajador.numero_documento'] = 33387996;
-        $data = $this->Trabajador->Relacion->find('all', array(
-            'contain'       => array('Trabajador.Localidad.Provincia', 'Empleador'),
-            'conditions'    => $conditions));
-        
-        
-        if (!empty($data)) {
-            $this->set('data', $data);
-            /** Update state to avoid selecting again next time */
-            $this->Trabajador->updateAll(
-                array('Trabajador.solicitar_tarjeta_debito' => "'Solicitud en Proceso'"),
-                array('Trabajador.id' => Set::extract('/Trabajador/id', $data)));
-        } else {
-            $this->Session->setFlash('No se encontraron trabajadores a los cuales solicitar tarjeta de debito.', 'error');
-            $this->History->goBack();
-        }
-    }
-
-    
     function solicitar_tarjetas_debito() {
         
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
@@ -97,10 +75,23 @@ class TrabajadoresController extends AppController {
             $conditions['(Relacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
 
             $this->Trabajador->Relacion->Behaviors->detach('Permisos');
-            $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
-            $this->set('data', $this->Trabajador->Relacion->find('all', array(
+            $data = $this->Trabajador->Relacion->find('all', array(
                 'contain'       => array('Trabajador.Localidad.Provincia', 'Empleador'),
-                'conditions'    => $conditions)));
+                'conditions'    => $conditions));
+
+            if (!empty($data)) {
+                /** Update state to avoid selecting again next time */
+                if ($this->data['Condicion']['Bar-marcar'] == 'si') {
+                    $this->Trabajador->updateAll(
+                        array('Trabajador.solicitar_tarjeta_debito' => "'Solicitud en Proceso'"),
+                        array('Trabajador.id' => Set::extract('/Trabajador/id', $data)));
+                }
+                $this->set('data', $data);
+                $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+            } else {
+                $this->Session->setFlash('No se encontraron trabajadores a los cuales solicitarle Tarjeta de Debito.', 'error');
+                $this->History->goBack();
+            }
         }
         
     }
