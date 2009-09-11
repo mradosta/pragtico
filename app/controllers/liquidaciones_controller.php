@@ -378,7 +378,7 @@ class LiquidacionesController extends AppController {
 			$condiciones = array('Liquidacion.estado' => 'Sin Confirmar');
 			$this->data['Condicion']['Liquidacion-estado'] = 'Sin Confirmar';			
 		} else {
-			$condiciones = $this->Paginador->generarCondicion();
+			$condiciones = array();
 			if ($periodo !== false) {
 				$condiciones['Liquidacion.mes'] = $periodo['mes'];
 				$condiciones['Liquidacion.ano'] = $periodo['ano'];
