@@ -65,11 +65,12 @@ $fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array('cl
 * Datos de la afip.
 */
 $campos = null;
-$campos['Relacion.situacion_id'] = array(	'aclaracion' => 	'Se refiere a la situacion que se informara (SIAP).',
-											'lov'		=>	array(	'controller'		=> 	'situaciones',
-																	'seleccionMultiple'	=> 	0,
-																		'camposRetorno'	=> 	array(	'Situacion.codigo',
-																									'Situacion.nombre')));
+$campos['Relacion.situacion_id'] = array(   'options'       => 'listable',
+                                            'order'         => 'Situacion.nombre',
+                                            'displayField'  => 'Situacion.nombre',
+                                            'model'         => 'Situacion',
+                                            'aclaracion'    => 'Se refiere a la situacion que se informara (SIAP).');
+
 $campos['Relacion.actividad_id'] = array(	'aclaracion' => 'Se refiere a la actividad (SIAP).',
 											'lov'		=>	array(	'controller'		=> 	'actividades',
 																	'seleccionMultiple'	=> 	0,

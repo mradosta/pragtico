@@ -33,7 +33,9 @@ class Trabajador extends AppModel {
 																'Siniestrado',
 																'ObrasSocial')),
 								'add' =>array(								
-										'valoresDefault'=>array('pais' => 'Argentina',
+										'valoresDefault'=>array('jubilacion'  => 'Reparto',
+                                                                'condicion_id'  => '8',
+                                                                'pais' => 'Argentina',
 																'nacionalidad' => 'Argentina')));
 
 	var $breadCrumb = array('format' 	=> '(%s) %s %s',

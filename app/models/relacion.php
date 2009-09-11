@@ -40,8 +40,7 @@ class Relacion extends AppModel {
 												'Area',
 												'ConveniosCategoria.Convenio')),
 								'add' => array(								
-										'valoresDefault' => array('ingreso' => array('date' => 'Y-m-d'),
-																  'horas' => '8')));
+										'valoresDefault' => array('horas' => '8')));
 
 	var $breadCrumb = array('format' 	=> '%s %s (%s)',
 							'fields' 	=> array('Trabajador.apellido', 'Trabajador.nombre', 'Empleador.nombre'));

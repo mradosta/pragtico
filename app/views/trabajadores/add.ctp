@@ -66,10 +66,16 @@ $fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array("cl
 
 $campos = null;
 $campos['Trabajador.jubilacion'] = array();
+$campos['Trabajador.condicion_id'] = array( 'options'       => 'listable',
+                                            'order'         => 'Condicion.codigo',
+                                            'displayField'  => 'Condicion.nombre',
+                                            'model'         => 'Condicion');
+/*
 $campos['Trabajador.condicion_id'] = array(	"lov"=>array("controller"		=>	"condiciones",
 														"seleccionMultiple"	=> 	0,
 														"camposRetorno"		=>	array(	"Condicion.codigo",
 																						"Condicion.nombre")));
+*/
 $campos['Trabajador.obra_social_id'] = array(	"lov"=>array("controller"	=>	"obras_sociales",
 														"seleccionMultiple"	=> 	0,
 														"camposRetorno"		=>	array(	"ObrasSocial.codigo",
@@ -78,11 +84,18 @@ $campos['Trabajador.adicional_os'] = array('aclaracion' => "Importe adicional en
 $campos['Trabajador.excedentes_os'] = array('aclaracion' => "Importe de los excedentes en la Obra Social (SIAP).");
 $campos['Trabajador.adherentes_os'] = array();
 $campos['Trabajador.aporte_adicional_os'] = array('aclaracion' => "Aporte adicional a la Obra Social (SIAP).");
+$campos['Trabajador.siniestrado_id'] = array(   'options'       => 'listable',
+                                            'order'         => 'Siniestrado.codigo',
+                                            'displayField'  => 'Siniestrado.nombre',
+                                            'model'         => 'Siniestrado',
+                                            'aclaracion'    => 'Indica algun tipo de imposibilidad (SIAP).');
+/*
 $campos['Trabajador.siniestrado_id'] = array(	'aclaracion' => "Indica algun tipo de imposibilidad (SIAP).",
 											 	"lov"=>array("controller"	=>	"siniestrados",
 														"seleccionMultiple"	=> 	0,
 														"camposRetorno"		=>	array(	"Siniestrado.codigo",
 																						"Siniestrado.nombre")));
+*/
 $fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array("class"=>"subset"), 'fieldset' => array('legend' => "Afip", 'imagen' => 'afip.gif')));
 
 $campos = null;
