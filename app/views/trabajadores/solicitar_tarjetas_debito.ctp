@@ -80,15 +80,16 @@ if (!empty($data)) {
     $documento->setCellValue('E' . $fila, 'Nombre', array('style' => $estiloTituloColumna));
     $documento->setCellValue('F' . $fila, 'Dicreccion', array('style' => $estiloTituloColumna));
     $documento->setCellValue('G' . $fila, 'Numero', array('style' => $estiloTituloColumna));
-    $documento->setCellValue('H' . $fila, 'Localidad', array('style' => $estiloTituloColumna));
-    $documento->setCellValue('I' . $fila, 'Provincia', array('style' => $estiloTituloColumna));
-    $documento->setCellValue('J' . $fila, 'Telefono', array('style' => $estiloTituloColumna));
-    $documento->setCellValue('K' . $fila, 'Sexo', array('style' => $estiloTituloColumna));
-    $documento->setCellValue('L' . $fila, 'Estado Civil', array('style' => $estiloTituloColumna));
-    $documento->setCellValue('M' . $fila, 'Ingreso', array('style' => $estiloTituloColumna));
-    $documento->setCellValue('N' . $fila, 'Nacimiento', array('style' => $estiloTituloColumna));
-    $documento->setCellValue('O' . $fila, 'Codigo Postal', array('style' => $estiloTituloColumna));
-    $documento->setCellValue('P' . $fila, 'Empleador', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('H' . $fila, 'Numero', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('I' . $fila, 'Localidad', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('J' . $fila, 'Provincia', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('K' . $fila, 'Telefono', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('L' . $fila, 'Sexo', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('M' . $fila, 'Estado Civil', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('N' . $fila, 'Ingreso', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('O' . $fila, 'Nacimiento', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('P' . $fila, 'Codigo Postal', array('style' => $estiloTituloColumna));
+    $documento->setCellValue('Q' . $fila, 'Empleador', array('style' => $estiloTituloColumna));
 	
     
 	foreach($data as $record) {
@@ -108,15 +109,16 @@ if (!empty($data)) {
         if (empty($record['Trabajador']['Localidad']['Provincia']['nombre'])) {
             $record['Trabajador']['Localidad']['Provincia']['nombre'] = '';
         }
-        $documento->setCellValue('H' . $fila, $record['Trabajador']['Localidad']['nombre']);
-        $documento->setCellValue('I' . $fila, $record['Trabajador']['Localidad']['Provincia']['nombre']);
-        $documento->setCellValue('J' . $fila, (!empty($record['Trabajador']['telefono']))?$record['Trabajador']['telefono']:'');
-        $documento->setCellValue('K' . $fila, $record['Trabajador']['sexo']);
-        $documento->setCellValue('L' . $fila, $record['Trabajador']['estado_civil']);
-        $documento->setCellValue('M' . $fila, (!empty($record['Relacion']['ingreso']))?$formato->format($record['Relacion']['ingreso'], 'date'):'');
-        $documento->setCellValue('N' . $fila, $formato->format($record['Trabajador']['nacimiento'], 'date'));
-        $documento->setCellValue('O' . $fila, $record['Trabajador']['codigo_postal']);
-        $documento->setCellValue('P' . $fila, (!empty($record['Empleador']['nombre']))?$record['Empleador']['nombre']:'');
+        $documento->setCellValue('H' . $fila, $record['Trabajador']['ciudad']);
+        $documento->setCellValue('I' . $fila, $record['Trabajador']['Localidad']['nombre']);
+        $documento->setCellValue('J' . $fila, $record['Trabajador']['Localidad']['Provincia']['nombre']);
+        $documento->setCellValue('K' . $fila, (!empty($record['Trabajador']['telefono']))?$record['Trabajador']['telefono']:'');
+        $documento->setCellValue('L' . $fila, $record['Trabajador']['sexo']);
+        $documento->setCellValue('M' . $fila, $record['Trabajador']['estado_civil']);
+        $documento->setCellValue('N' . $fila, (!empty($record['Relacion']['ingreso']))?$formato->format($record['Relacion']['ingreso'], 'date'):'');
+        $documento->setCellValue('O' . $fila, $formato->format($record['Trabajador']['nacimiento'], 'date'));
+        $documento->setCellValue('P' . $fila, $record['Trabajador']['codigo_postal']);
+        $documento->setCellValue('Q' . $fila, (!empty($record['Empleador']['nombre']))?$record['Empleador']['nombre']:'');
         
 	}
 
