@@ -157,21 +157,17 @@ if (!empty($data)) {
 
 		$detailFlag = null;
 		$initialRow = $fila;
-		$maxCount = 0;
+		$maxCount['Remunerativo'] = 0;
+        $maxCount['Deduccion'] = 0;
+        $maxCount['No Remunerativo'] = 0;
 		foreach ($record['LiquidacionesDetalle'] as $detail) {
 
 			if($detail['concepto_imprimir'] === 'Si' || ($detail['concepto_imprimir'] === 'Solo con valor' && abs($detail['valor']) > 0)) {
 				if ($detailFlag !== $detail['concepto_tipo']) {
 					$detailFlag = $detail['concepto_tipo'];
 					$fila = $initialRow;
-					$count = 0;
-
-					if ($count > $maxCount) {
-						$maxCount = $count;
-					}
 				}
                 $fila++;
-				$count++;
 
 				if ($detail['concepto_tipo'] === 'Remunerativo') {
 					$documento->setCellValue('A' . $fila, $detail['concepto_nombre']);
@@ -186,13 +182,17 @@ if (!empty($data)) {
 					$documento->setCellValue('J' . $fila, $detail['valor_cantidad']);
 					$documento->setCellValue('K' . $fila, $detail['valor'], 'currency');
 				}
+                $maxCount[$detail['concepto_tipo']]++;
 			}
 		}
-		
-		if ($count > $maxCount) {
-			$maxCount = $count;
-		}
-		$fila = $initialRow + $maxCount + 2;
+
+        $count = 0;
+        foreach ($maxCount as $c) {
+            if ($c > $count) {
+                $count = $c;
+            }
+        }
+		$fila = $initialRow + $count + 1;
 		$documento->setCellValue('A' . $fila, 'Totales', 'bold');
 		$documento->setCellValue('C' . $fila, $record['Liquidacion']['remunerativo'], 'total');
 		$documento->setCellValue('G' . $fila, $record['Liquidacion']['deduccion'], 'total');
