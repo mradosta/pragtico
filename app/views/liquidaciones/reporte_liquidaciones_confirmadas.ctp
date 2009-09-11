@@ -17,43 +17,28 @@
  */
  
 if (!empty($data)) {
-    $documento->create(array('orientation' => 'landscape'));
+    $documento->create(array('password' => false, 'orientation' => 'landscape', 'title' => 'Listado de Liquidaciones Confirmadas'));
 
-    $fila = 2;
-    $documento->setCellValue('A' . $fila, 'Listado de Liquidaciones Confirmadas', 'bold');
-
-    $fila = 7;
     $total = 0;
     $flag = null;
     $inicio = 0;
     $flagCoeficiente = null;    
 
 
-    $documento->setWidth('A', 30);
-    $documento->setWidth('B', 15);
-    $documento->setWidth('C', 15);
-    $documento->setWidth('D', 30);
-    $documento->setWidth('E', 30);
-    $documento->setWidth('F', 15);
-    $documento->setWidth('G', 15);
-    $documento->setWidth('H', 15);
-    $documento->setWidth('I', 30);
-    
-    $documento->setCellValue('A' . $fila, 'Empleador', 'title');
-    $documento->setCellValue('B' . $fila, 'Periodo', 'title');
-    $documento->setCellValue('C' . $fila, 'Cuil', 'title');
-    $documento->setCellValue('D' . $fila, 'Apellido', 'title');
-    $documento->setCellValue('E' . $fila, 'Nombre', 'title');
-    $documento->setCellValue('F' . $fila, 'Pesos', 'title');
-    $documento->setCellValue('G' . $fila, 'Beneficios', 'title');
-    $documento->setCellValue('H' . $fila, 'Total', 'title');
-    $documento->setCellValue('I' . $fila, 'Cuenta', 'title');
+    $documento->setCellValue('A', 'Empleador', array('title' => 30));
+    $documento->setCellValue('B', 'Periodo', array('title' => 10));
+    $documento->setCellValue('C', 'Cuil', array('title' => 25));
+    $documento->setCellValue('D', 'Apellido', array('title' => 30));
+    $documento->setCellValue('E', 'Nombre', array('title' => 30));
+    $documento->setCellValue('F', 'Pesos', array('title' => 20));
+    $documento->setCellValue('G', 'Beneficios', array('title' => 20));
+    $documento->setCellValue('H', 'Total', array('title' => 20));
+    $documento->setCellValue('I', 'Cuenta', array('title' => 25));
             
     /** Body */
-    $startRow = $fila + 1;
+    $startRow = $documento->getCurrentRow() + 1;
     foreach ($data as $detail) {
 
-        $fila++;
         $account = '';
         if (preg_match('/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d/', $detail['Liquidacion']['trabajador_cbu'], $matches)) {
             unset($matches[0]);
@@ -61,42 +46,27 @@ if (!empty($data)) {
         }
 
         $documento->setCellValueFromArray(
-            array(  '0,' . $fila => $detail['Liquidacion']['empleador_nombre'],
-                    '1,' . $fila => array('value'      => $formato->format($detail['Liquidacion'], 'periodo'),
-                                          'options'    => 'center'),
-                    '2,' . $fila => array('value'      => $detail['Liquidacion']['trabajador_cuil'],
-                                          'options'    => 'center'),
-                    '3,' . $fila => $detail['Liquidacion']['trabajador_apellido'],
-                    '4,' . $fila => $detail['Liquidacion']['trabajador_nombre'],
-                    '5,' . $fila => array('value'      => $detail['Liquidacion']['total_pesos'],
-                                           'options'   => 'currency'),
-                    '6,' . $fila => array('value'      => $detail['Liquidacion']['total_beneficios'],
-                                           'options'   => 'currency'),
-                    '7,' . $fila => array('value'      => $detail['Liquidacion']['total'],
-                                           'options'   => 'currency'),
-                    '8,' . $fila => array('value'      => $account,
-                                           'options'   => 'center')));
+            array(  $detail['Liquidacion']['empleador_nombre'],
+                    array('value' => $formato->format($detail['Liquidacion'], 'periodo'), 'options' => 'center'),
+                    array('value' => $detail['Liquidacion']['trabajador_cuil'], 'options' => 'center'),
+                    $detail['Liquidacion']['trabajador_apellido'],
+                    $detail['Liquidacion']['trabajador_nombre'],
+                    array('value' => $detail['Liquidacion']['total_pesos'], 'options' => 'currency'),
+                    array('value' => $detail['Liquidacion']['total_beneficios'], 'options' => 'currency'),
+                    array('value' => $detail['Liquidacion']['total'], 'options' => 'currency'),
+                    array('value' => $account, 'options' => 'center')));
     }
-    $endRow = $fila;
-    
-    $fila+=3;
-    $documento->setCellValue('A' . $fila . ':I' . $fila, 'TOTALES', 'title');
-    $fila++;
-    $documento->setCellValue('H' . $fila, 'Liquidaciones:', array('bold', 'right'));
-    $documento->setCellValue('I' . $fila, count($data), 'bold');
-    $fila++;
-    $documento->setCellValue('H' . $fila, 'Pesos:', array('bold', 'right'));
-    $documento->setCellValue('I' . $fila, sprintf('=SUM(F%s:F%s)', $startRow, $endRow), 'total');
-    $fila++;
-    $documento->setCellValue('H' . $fila, 'Beneficios:', array('bold', 'right'));
-    $documento->setCellValue('I' . $fila, sprintf('=SUM(G%s:G%s)', $startRow, $endRow), 'total');
-    $fila++;
-    $documento->setCellValue('H' . $fila, 'Total:', array('bold', 'right'));
-    $documento->setCellValue('I' . $fila, sprintf('=SUM(H%s:H%s)', $startRow, $endRow), 'total');
+    $endRow = $documento->getCurrentRow();
 
-    $fila+=4;
-    $documento->setCellValue('A' . $fila, 'Observaciones:', 'bold');
-    $fila++;
+    $t['Liquidaciones'] = count($data);
+    $t['Pesos'] = sprintf('=SUM(F%s:F%s)', $startRow, $endRow);
+    $t['Beneficios'] = sprintf('=SUM(G%s:G%s)', $startRow, $endRow);
+    $t['Total'] = sprintf('=SUM(H%s:H%s)', $startRow, $endRow);
+    $documento->setTotals($t);
+    
+    $documento->moveCurrentRow(4);
+    $documento->setCellValue('A', 'Observaciones:', 'bold');
+    $documento->moveCurrentRow(1);
     $styleArray = array(
         'borders' => array(
             'outline' => array(
@@ -105,7 +75,8 @@ if (!empty($data)) {
             ),
         ),
     );
-    $documento->activeSheet->getStyle('A' . $fila . ':I' . ($fila + 6))->applyFromArray($styleArray);
+    $documento->activeSheet->getStyle('A' . $documento->getCurrentRow() . ':I' . ($documento->getCurrentRow() + 6))->applyFromArray($styleArray);
+    $documento->activeSheet->getStyle('A' . $documento->getCurrentRow() . ':I' . ($documento->getCurrentRow() + 6))->getProtection()->setLocked(PHPExcel_Style_Protection::PROTECTION_UNPROTECTED);
     $documento->save('Excel5');
 
 }
