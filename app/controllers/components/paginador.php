@@ -192,7 +192,7 @@ class PaginadorComponent extends Object {
 				} elseif ($sufix === '<=') {
                     $k .= '__hasta';
                 } elseif (in_array($k, $lovFields)) {
-                    $v = implode("**||**", $v);
+                    $v = implode("**||**", (array)$v);
                 }
                 $this->__controller->data['Condicion'][$k] = $this->__removerReemplazos($v);
 			}
