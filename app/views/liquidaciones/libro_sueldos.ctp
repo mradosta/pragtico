@@ -123,7 +123,6 @@ if (!empty($data)) {
         } else {
             $salary = $record['Relacion']['ConveniosCategoria']['costo'];
         }
-        $salary = $salary / 8 * $record['Relacion']['horas'];
         $documento->setCellValue('I' . $fila, 'Suel/Jorn.: $' . number_format($salary, 2, '.', ''));
 
 		$fila++;
