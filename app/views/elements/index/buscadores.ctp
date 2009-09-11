@@ -36,42 +36,58 @@ jQuery(document).ready(function($) {
 
             var params = jQuery.makeObject(jQuery('#opened_lov_options').val());
             if (params['seleccionMultiple'] == 0) {
-                jQuery('input.selection_lov', jQuery('#simplemodal-container')).hide();
+                jQuery('input.selection_lov', jQuery('#simplemodal-container')).remove();
             }
 
             
             jQuery('.seleccionar').click(function() {
 
-                var toReturn = params['camposRetorno'].split('|');
-    
-                /** Marks the checkbox associated as checked */
-                jQuery('.selection_lov', jQuery(this).parent()).attr('checked', true);
-
                 var selectedData = new Array();
                 var selectedIds = new Array();
-                jQuery('.selection_lov').filter(':checked').each(
-                    function() {
-                        var row = jQuery(this).parent().parent();
-                        var returnRowData = new Array();
-                        jQuery('td:not(\'.acciones\')', row).each(
-                            function() {
-                                if (jQuery.inArray(jQuery(this).attr('axis'), toReturn) >= 0) {
-                                    returnRowData.push(jQuery(this).html());
-                                }
-                            }
-                        );
-                        if (returnRowData.length > 0) {
-                            selectedData.push(jQuery.vsprintf(params['mask'], returnRowData));
-                        }
+                var toReturn = params['camposRetorno'].split('|');
 
-                        selectedIds.push(jQuery(this).parent().parent().attr('charoff'));
-                    }
-                );
+                if (params['seleccionMultiple'] == 0) {
+                    var r = getData(jQuery(this).parent(), toReturn);
+                    selectedData.push(r[0]);
+                    selectedIds.push(r[1]);
+                } else {
+                    /** Marks the checkbox associated as checked */
+                    jQuery('.selection_lov', jQuery(this).parent()).attr('checked', true);
+    
+                    jQuery('.selection_lov').filter(':checked').each(
+                        function() {
+                            var r = getData(jQuery(this).parent(), toReturn);
+                            selectedData.push(r[0]);
+                            selectedIds.push(r[1]);
+                        }
+                    );
+                }
+    
                 jQuery('#' + params['retornarA'] + '__').val(selectedData.join('\\n'));
                 jQuery('#' + params['retornarA']).val(selectedIds.join('**||**'));
                 jQuery('a.modalCloseImg').trigger('click');
             });
-            
+
+            var getData = function(cell, toReturn) {
+                var row = jQuery(cell).parent();
+                var returnRowData = new Array();
+                jQuery('td:not(\'.acciones\')', row).each(
+                    function() {
+                        if (jQuery.inArray(jQuery(this).attr('axis'), toReturn) >= 0) {
+                            returnRowData.push(jQuery(this).html());
+                        }
+                    }
+                );
+                var r = new Array();
+                if (returnRowData.length > 0) {
+                    r[0] = jQuery.vsprintf(params['mask'], returnRowData);
+                } else {
+                    r[0] = '';
+                }
+                r[1] = row.attr('charoff');
+                return r;
+            }
+    
         }
             
 

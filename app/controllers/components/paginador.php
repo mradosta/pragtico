@@ -92,7 +92,7 @@ class PaginadorComponent extends Object {
         if (isset($this->__controller->data['Formulario']['accion']) && $this->__controller->data['Formulario']['accion'] === 'limpiar') {
             $this->__controller->Session->del('filtros.' . $this->__controller->name . '.' . $this->__controller->action);
             unset($this->__controller->data['Condicion']);
-            return array();
+            //return array();
         }
 
 
@@ -148,7 +148,7 @@ class PaginadorComponent extends Object {
         if (!empty($conditions) || !empty($valoresLov)) {
             $this->__controller->Session->write('filtros.' . $this->__controller->name . '.' . $this->__controller->action, array('condiciones' => $conditions, 'valoresLov' => $valoresLov));
         }
-
+        
         /** Save currently used conditions */
         $this->__conditions = $conditions;
         return $conditions;
@@ -170,9 +170,13 @@ class PaginadorComponent extends Object {
         	* Estos no estan con las condiciones porque no se usaron en los filtros, aunque si deben mostrarse
         	* en el control lov.
         	*/
+            $lovFields = array();
         	if (!empty($condiciones['valoresLov']) && is_array($condiciones['valoresLov'])) {
 				foreach ($condiciones['valoresLov'] as $k => $v) {
 					$this->__controller->data['Condicion'][$k] = $v;
+                    if (substr($k, -2) === '__') {
+                        $lovFields[] = str_replace('__', '', $k);
+                    }
 				}
 			}
 			/**
@@ -187,7 +191,9 @@ class PaginadorComponent extends Object {
                     $k .= '__desde';
 				} elseif ($sufix === '<=') {
                     $k .= '__hasta';
-				}
+                } elseif (in_array($k, $lovFields)) {
+                    $v = implode("**||**", $v);
+                }
                 $this->__controller->data['Condicion'][$k] = $this->__removerReemplazos($v);
 			}
         }
@@ -310,59 +316,54 @@ class PaginadorComponent extends Object {
  * @return string Valor del campo ya reemplazado en funcion de su tipo.
  * @access private
  */
-	function __reemplazos($modelCampo, $v) {
- 		$valor = $v;
- 		if (strpos($modelCampo, '.')) {
-			$t = explode('.', $modelCampo);
-			$model = $t[0];
-			$campo = $t[1];
+	function __reemplazos($key, $value) {
+        
+        list($model, $field) = explode('.', $key);
 
-			if (substr($campo, strlen($campo) - 7) == '__desde') {
-				$campo = str_replace('__desde', '', $campo);
-				$extra = 'desde';
-			} elseif (substr($campo, strlen($campo) - 7) == '__hasta') {
-				$campo = str_replace('__hasta', '', $campo);
-				$extra = 'hasta';
-			}
+        if (substr($field, strlen($field) - 7) == '__desde') {
+            $field = str_replace('__desde', '', $field);
+            $extra = 'desde';
+        } elseif (substr($field, strlen($field) - 7) == '__hasta') {
+            $field = str_replace('__hasta', '', $field);
+            $extra = 'hasta';
+        }
 
-			if (isset($this->__controller->{$model}) && is_object($this->__controller->{$model})) {
-				$tipoDato = $this->__controller->{$model}->getColumnType($campo);
-			}
-			/**
-			* Para el caso de una busqueda por un model asociado, veo si lo encuentro.
-			*/
-			elseif (isset($this->__controller->{$this->__controller->modelClass}->{$model}) && is_object($this->__controller->{$this->__controller->modelClass}->$model)) {
-				$tipoDato = $this->__controller->{$this->__controller->modelClass}->{$model}->getColumnType($campo);
-			}
+        if (isset($this->__controller->{$model}) && is_object($this->__controller->{$model})) {
+            $tipoDato = $this->__controller->{$model}->getColumnType($field);
+        }
+        /**
+        * Para el caso de una busqueda por un model asociado, veo si lo encuentro.
+        */
+        elseif (isset($this->__controller->{$this->__controller->modelClass}->{$model}) && is_object($this->__controller->{$this->__controller->modelClass}->$model)) {
+            $tipoDato = $this->__controller->{$this->__controller->modelClass}->{$model}->getColumnType($field);
+        }
 
-			$key = $model . '.' . $campo;
-			if (!empty($tipoDato)) {
-				switch($tipoDato) {
-					case 'text':
-					case 'string':
- 						$valor = '%' . $v . '%';
- 						$key .= ' like';
-						break;
-					case 'date':
-					case 'datetime':
-						if (isset($extra)) {
-							if ($extra == 'desde') {
-								$valor = $v;
-								$key .= ' >=';
-							} elseif ($extra == 'hasta') {
-								$valor = $v;
-								$key .= ' <=';
-							}
-						} else {
-							$valor = $v;
-						}
-						break;
-					default:
-						$valor = $v;
-				}
-			}
-		}
-		return array($key => $valor);
+        if (is_string($value)) {
+            if (strpos($value, '**||**') === false) {
+                if (!empty($tipoDato)) {
+                    switch ($tipoDato) {
+                        case 'text':
+                        case 'string':
+                            $value = '%' . $value . '%';
+                            $key .= ' like';
+                            break;
+                        case 'date':
+                        case 'datetime':
+                            if (isset($extra)) {
+                                if ($extra == 'desde') {
+                                    $key .= ' >=';
+                                } elseif ($extra == 'hasta') {
+                                    $key .= ' <=';
+                                }
+                            }
+                            break;
+                    }
+                }
+            } else {
+                $value = explode('**||**', $value);
+            }
+        }
+		return array($key => $value);
 	}
 
 
