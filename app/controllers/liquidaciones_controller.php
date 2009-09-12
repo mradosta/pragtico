@@ -166,6 +166,7 @@ class LiquidacionesController extends AppController {
         }
         $this->set('options', array('coeficient' => 'Coeficiente', 'worker' => 'Trabajador'));
         $this->set('types', $this->Liquidacion->opciones['tipo']);
+        $this->set('states', $this->Liquidacion->opciones['estado']);
     }
 
 	function libro_sueldos() {

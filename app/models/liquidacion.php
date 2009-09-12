@@ -28,12 +28,17 @@ class Liquidacion extends AppModel {
 	/**
 	* Seteo los tipos posibles de liquidaciones que podre realizar.
 	*/
-	var $opciones = array('tipo' => array(
-						  		'normal'			=> 'Normal',
-			   					'sac'				=> 'Sac',
-		   						'vacaciones'		=> 'Vacaciones',
-		   						'final'	            => 'Final',
-		   						'especial'			=> 'Especial'));
+	var $opciones = array(
+        'tipo' => array(
+            'normal'			=> 'Normal',
+			'sac'				=> 'Sac',
+		   	'vacaciones'		=> 'Vacaciones',
+		   	'final'	            => 'Final',
+		   	'especial'			=> 'Especial'),
+        'estado' => array(
+            'Confirmada'        => 'Confirmada',
+            'Sin Confirmar'     => 'Sin Confirmar',
+            'Guardada'          => 'Guardada'));
 	
 	var $hasMany = array(	'LiquidacionesDetalle' =>
                         array('className'   => 'LiquidacionesDetalle',

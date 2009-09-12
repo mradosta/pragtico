@@ -120,6 +120,8 @@ if (!empty($data)) {
     $conditions['Condicion.Bar-group_option'] = array('type' => 'radio', 'options' => $options);
     
     $conditions['Condicion.Bar-tipo'] = array('label' => 'Tipo', 'multiple' => 'checkbox', 'type' => 'select', 'options' => $types);
+
+    $conditions['Condicion.Bar-estado'] = array('label' => 'Estado', 'multiple' => 'checkbox', 'type' => 'select', 'options' => $states);
     
     $conditions['Condicion.Bar-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'F'));
 
