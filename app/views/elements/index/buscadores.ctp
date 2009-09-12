@@ -2,18 +2,6 @@
 /** Crea el hidden que lleva la accion, esta accion puede ser buscar o limpiar.*/
 $out[] = $appForm->input('Formulario.accion', array('type' => 'hidden', 'id' => 'accion', 'value' => 'buscar'));
 
-/**
- * Si tengo el parametro de una seleccion multiple (cuando habro una lov), lo pongo en un hidden para no perderlo.
- if (!empty($this->params['named'])) {
- 	foreach($this->params['named'] as $k=>$v) {
- 		if($k != "accion" && $k != "layout") {
- 			$out[] = $appForm->input("Formulario." . $k, array("type"=>"hidden", "value"=>$v));
- 		}
- 	}
- }
- */
-
-
 if ($this->params['isAjax']) {
 
 	/**
@@ -30,6 +18,7 @@ jQuery(document).ready(function($) {
     
         /** When #opened_lov_options not empty, because I'm on a lov */
         if (jQuery('#opened_lov_options').val() != '') {
+
             /**Hides everything but select option */
             jQuery('td.acciones > a', jQuery('#simplemodal-container')).hide();
             jQuery('td.acciones > img:not(\'.seleccionar\')', jQuery('#simplemodal-container')).hide();
@@ -39,7 +28,7 @@ jQuery(document).ready(function($) {
                 jQuery('input.selection_lov', jQuery('#simplemodal-container')).remove();
             }
 
-            
+
             jQuery('.seleccionar').click(function() {
 
                 var selectedData = new Array();
@@ -53,7 +42,7 @@ jQuery(document).ready(function($) {
                 } else {
                     /** Marks the checkbox associated as checked */
                     jQuery('.selection_lov', jQuery(this).parent()).attr('checked', true);
-    
+
                     jQuery('.selection_lov').filter(':checked').each(
                         function() {
                             var r = getData(jQuery(this).parent(), toReturn);
@@ -91,8 +80,18 @@ jQuery(document).ready(function($) {
         }
             
 
+        /** Binds enter key to sumbit function */
+        jQuery('#lov').keypress(function (e) {
+            if (e.which == 13) {
+                submitData();
+            }
+        });
+    
+        /** Binds click to sumbit function */
+        jQuery('.buscador_ajax', jQuery('#lov')).click(submitData);
+
         /** Do ajax submit. */
-        jQuery('.buscador_ajax', jQuery('#lov')).click(function(){
+        var submitData = function() {
             /** Set action (clean or search) */
             var accion = jQuery(this).val().toLowerCase();
             jQuery('#accion', jQuery('#lov')).val(accion);
@@ -104,11 +103,11 @@ jQuery(document).ready(function($) {
                 url:        url
             };
             jQuery('#form', jQuery('#lov')).ajaxSubmit(options);
-        });
+        }
     
     
-        /** Finds wath is already selected and mark it */
-        var data = jQuery('#' + params['retornarA']).val().split('**||**')
+        /** Finds what is already selected and mark it up */
+        var data = jQuery('#' + params['retornarA']).val().split('**||**');
         jQuery('tr', jQuery('#lov')).each(
             function() {
                 if (jQuery.inArray(jQuery(this).attr('charoff'), data) >= 0) {
@@ -125,8 +124,9 @@ jQuery(document).ready(function($) {
 	*/
 	//$out[] = $appForm->input("Formulario.layout", array("type"=>"hidden", "value"=>$this->layout));
 	
-	$limpiar = $appForm->button(__("Clear", true), array("class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='limpiar';form.action='" . Router::url(array("controller" => $this->params['controller'], "action" => $opcionesForm['action'])) . "';form.submit();"));
-	$buscar = $appForm->submit(__("Search", true), array("onclick"=>"document.getElementById('accion').value='buscar'"));
+	//$limpiar = $appForm->button(__("Clear", true), array("class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='limpiar';form.action='" . Router::url(array("controller" => $this->params['controller'], "action" => $opcionesForm['action'])) . "';form.submit();"));
+    $limpiar = $appForm->button(__("Clear", true), array("class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='limpiar';form.submit();"));
+	$buscar = $appForm->submit(__("Search", true));
 	
 	if(isset($botonesExtra['opciones']['botones'])) {
 		foreach($botonesExtra['opciones']['botones'] as $v) {
