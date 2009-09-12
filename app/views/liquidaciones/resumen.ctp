@@ -58,7 +58,11 @@ if (!empty($data)) {
     $flag = null;
     $inicio = 0;
     $flagCoeficiente = null;    
-
+    $extraTotals['Remunerativo'] = 0;
+    $extraTotals['No Remunerativo'] = 0;
+    $extraTotals['Deduccion'] = 0;
+    
+            
     /** Body */
     foreach ($data as $k => $detail) {
 
@@ -66,6 +70,8 @@ if (!empty($data)) {
         $documento->setCellValue('A' . $fila, $k, 'bold');
         $beginRow = $fila;
         foreach ($detail as $r) {
+            
+            $extraTotals[$r['LiquidacionesDetalle']['concepto_tipo']] += $r['LiquidacionesDetalle']['valor'];
             
             if ($r['LiquidacionesDetalle']['concepto_tipo'] === 'Deduccion') {
                 $r['LiquidacionesDetalle']['valor'] = $r['LiquidacionesDetalle']['valor'] * -1;
@@ -97,8 +103,15 @@ if (!empty($data)) {
     $fila++;
     $documento->setCellValue('A' . $fila, 'Liquidado', 'bold');
     $documento->setCellValue('E' . $fila, '=SUM('.implode('+', $totals['C']).')', 'total');
+    
+    foreach ($extraTotals as $t => $v) {
+        $fila++;
+        $documento->setCellValue('A' . $fila, '    ' . $t, 'bold');
+        $documento->setCellValue('E' . $fila, $v, 'total');
+    }
+    
     $fila++;
-    $documento->setCellValue('A' . $fila, 'Facturado', 'bold');
+    $documento->setCellValue('A' . $fila, 'A Facturar', 'bold');
     $documento->setCellValue('E' . $fila, '=SUM('.implode('+', $totals['E']).')', 'total');
     $fila++;
 
