@@ -27,23 +27,24 @@ if (!empty($data)) {
     $documento->setCellValue('G', 'direccion', array('title' => '30'));
     $documento->setCellValue('H', 'Numero', array('title' => '10'));
     $documento->setCellValue('I', 'Cod. Postal', array('title' => '10'));
-    $documento->setCellValue('J', 'Empleador', array('title' => '30'));
-    $documento->setCellValue('K', 'F. Ingreso', array('title' => '15'));
-    $documento->setCellValue('L', 'F. Egreso', array('title' => '15'));
-    $documento->setCellValue('M', 'Categoria', array('title' => '30'));
-    $documento->setCellValue('N', 'Valor', array('title' => '15'));
-    $documento->setCellValue('O', 'Concepto', array('title' => '50'));
-    $documento->setCellValue('P', 'Valor', array('title' => '15'));
-    $documento->setCellValue('Q', 'Periodo', array('title' => '15'));
-    $documento->setCellValue('R', 'Dias Periodo', array('title' => '10'));
-    $documento->setCellValue('S', 'Remunerativo', array('title' => '20'));
-    $documento->setCellValue('T', 'No Remunerativo', array('title' => '20'));
+    $documento->setCellValue('J', 'Area', array('title' => '35'));
+    $documento->setCellValue('K', 'Empleador', array('title' => '30'));
+    $documento->setCellValue('L', 'F. Ingreso', array('title' => '15'));
+    $documento->setCellValue('M', 'F. Egreso', array('title' => '15'));
+    $documento->setCellValue('N', 'Categoria', array('title' => '30'));
+    $documento->setCellValue('O', 'Valor', array('title' => '15'));
+    $documento->setCellValue('P', 'Concepto', array('title' => '50'));
+    $documento->setCellValue('Q', 'Valor', array('title' => '15'));
+    $documento->setCellValue('R', 'Periodo', array('title' => '15'));
+    $documento->setCellValue('S', 'Dias Periodo', array('title' => '10'));
+    $documento->setCellValue('T', 'Remunerativo', array('title' => '20'));
+    $documento->setCellValue('U', 'No Remunerativo', array('title' => '20'));
 
     /** Body */
     foreach ($data as $k => $detail) {
 
         $codeToNameMapper[$detail['LiquidacionesDetalle']['concepto_codigo']] = $detail['LiquidacionesDetalle']['concepto_nombre'];
-        if (empty($total[$detail['LiquidacionesDetalle']['concepto_codigo']])) {
+        if (empty($totals[$detail['LiquidacionesDetalle']['concepto_codigo']])) {
             $totals[$detail['LiquidacionesDetalle']['concepto_codigo']] = $detail['LiquidacionesDetalle']['valor'];
         } else {
             $totals[$detail['LiquidacionesDetalle']['concepto_codigo']] += $detail['LiquidacionesDetalle']['valor'];
@@ -60,6 +61,7 @@ if (!empty($data)) {
                     $detail['Liquidacion']['Trabajador']['direccion'],
                     $detail['Liquidacion']['Trabajador']['numero'],
                     $detail['Liquidacion']['Trabajador']['codigo_postal'],
+                    $detail['Liquidacion']['Area']['nombre'],
                     $detail['Liquidacion']['empleador_nombre'],
                     $detail['Liquidacion']['relacion_ingreso'],
                     ($detail['Liquidacion']['relacion_egreso'] !== '0000-00-00')?$detail['Liquidacion']['relacion_egreso']:'',

@@ -55,7 +55,7 @@ class LiquidacionesController extends AppController {
             $conditions['LiquidacionesDetalle.valor >'] = 0;
             
             $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
-            $this->Liquidacion->LiquidacionesDetalle->contain(array('Liquidacion' => array('Trabajador')));
+            $this->Liquidacion->LiquidacionesDetalle->contain(array('Liquidacion' => array('Trabajador', 'Area')));
             $this->set('data', $this->Liquidacion->LiquidacionesDetalle->find('all', array('conditions' => $conditions)));
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
         }

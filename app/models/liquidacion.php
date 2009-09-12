@@ -72,7 +72,10 @@ class Liquidacion extends AppModel {
                               'foreignKey'   => 'convenio_categoria_convenio_id'),
 							'Factura' =>
                         array('className'    => 'Factura',
-                              'foreignKey'   => 'factura_id'));
+                              'foreignKey'   => 'factura_id'),
+                            'Area' =>
+                        array('className'    => 'Area',
+                              'foreignKey'   => 'relacion_area_id'));
                               
 
     var $__recursivityCounter = 0;
