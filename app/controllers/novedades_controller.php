@@ -119,7 +119,7 @@ class NovedadesController extends AppController {
 						}
 					}
 					
-					for($i = 10; $i <= $objPHPExcel->getActiveSheet()->getHighestRow(); $i++) {
+					for($i = 10; $i <= $objPHPExcel->getActiveSheet()->getHighestRow() - 1; $i++) {
 						$relacionId = $objPHPExcel->getActiveSheet()->getCell('A' . $i)->getValue();
 						foreach ($mapeo as $k => $v) {
 							foreach ($v as $k1 => $v1) {

@@ -17,7 +17,7 @@
  */
  
 if(!empty($registros)) {
-	$documento->create(array('password' => 'PaXXHttBXG66'));
+	$documento->create(array('password' => true));
 	$fila = $filaInicio = 8;
 
 	/**
@@ -49,6 +49,7 @@ if(!empty($registros)) {
 	/**
 	* Pongo las columnas en auto ajuste del ancho.
 	*/
+    $documento->doc->getActiveSheet()->getColumnDimensionByColumn('B')->setWidth(8);
 	$documento->doc->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
 	$documento->doc->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
 	$documento->doc->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
@@ -93,45 +94,45 @@ if(!empty($registros)) {
 	if (in_array('Horas', $tipos)) {
 		$columna++;
 		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas', array('style' => $estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(8);
 		$documento->setCellValue($columna . ',' . ($fila+1), 'Normal', array('style' => $estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(8);
 		$columna++;
 		$documento->setCellValue($columna . ',' . ($fila+1), '50%', array('style' => $estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(8);
 		$columna++;
 		$documento->setCellValue($columna . ',' . ($fila+1), '100%', array('style' => $estiloTituloColumna));
 		
 		$columna++;
 		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas Ajuste', array('style' => $estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(8);
 		$documento->setCellValue($columna . ',' . ($fila+1), 'Normal', array('style' => $estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(8);
 		$columna++;
 		$documento->setCellValue($columna . ',' . ($fila+1), '50%', array('style' => $estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(8);
 		$columna++;
 		$documento->setCellValue($columna . ',' . ($fila+1), '100%', array('style' => $estiloTituloColumna));
 		
 		$columna++;
 		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas Nocturna', array('style' => $estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(8);
 		$documento->setCellValue($columna . ',' . ($fila+1), 'Normal', array('style' => $estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(8);
 		$columna++;
 		$documento->setCellValue($columna . ',' . ($fila+1), '50%', array('style' => $estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(8);
 		$columna++;
 		$documento->setCellValue($columna . ',' . ($fila+1), '100%', array('style' => $estiloTituloColumna));
 		
 		$columna++;
 		$documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Horas Ajuste Nocturna', array('style' => $estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(8);
 		$documento->setCellValue($columna . ',' . ($fila+1), 'Normal', array('style' => $estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(8);
 		$columna++;
 		$documento->setCellValue($columna . ',' . ($fila+1), '50%', array('style' => $estiloTituloColumna));
-		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(6);
+		$documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(8);
 		$columna++;
 		$documento->setCellValue($columna . ',' . ($fila+1), '100%', array('style' => $estiloTituloColumna));
 	}
@@ -170,6 +171,7 @@ if(!empty($registros)) {
 	foreach ($tipos as $concepto) {
 		if (!in_array($concepto, $tiposPredefinidos)) {
 			$columna++;
+            $documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(30);
 			$documento->setCellValue($columna . ',' . $fila . ':' . $columna . ',' . ($fila+1), $concepto, array('style' => $estiloTituloColumna));
 		}
 	}
@@ -178,6 +180,7 @@ if(!empty($registros)) {
 	* Recorro cada registro ahora que yatengo los encabezados.
 	*/
 	$fila++;
+    $initialRow = $fila + 1;
 	foreach ($registros as $registro) {
 		$fila++;
 		$documento->setCellValue('A' . $fila, $registro['Relacion']['id']);
@@ -189,7 +192,7 @@ if(!empty($registros)) {
 
 
 		$last = PHPExcel_Cell::columnIndexFromString($documento->doc->getActiveSheet()->getHighestColumn());
-		for($i=$columnaInicioConceptosDinamicos; $i<$last; $i++) {
+		for($i = $columnaInicioConceptosDinamicos; $i < $last; $i++) {
 			$documento->setDataValidation($i . ',' . $fila, 'decimal');
 		}
 		
@@ -202,6 +205,12 @@ if(!empty($registros)) {
 		}
 	}
 	$documento->doc->getActiveSheet()->freezePane('G10');
+    $fila++;
+    for ($i = $columnaInicioConceptosDinamicos + 1; $i < $last; $i++) {
+        $documento->setCellValue($i . ',' . $fila,
+            '=SUM(' . PHPExcel_Cell::stringFromColumnIndex($i) . $initialRow . ':' . PHPExcel_Cell::stringFromColumnIndex($i) . ($fila - 1) . ')', array('right', 'bold'));
+    }
+    
 	$documento->save($formatoDocumento);
 } else {
 	/**
