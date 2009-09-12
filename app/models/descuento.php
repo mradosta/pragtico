@@ -191,6 +191,7 @@ class Descuento extends AppModel {
                 $auxiliar['descuento_id'] = $v['Descuento']['id'];
 				$auxiliar['fecha'] = '##MACRO:fecha_liquidacion##';
 				$auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
+                $auxiliar['permissions'] = '288';
 				$auxiliar['monto'] = '##MACRO:concepto_valor##';
 				$auxiliares[] = array('save' => serialize($auxiliar), 'model' => 'DescuentosDetalle');
                 if ($v['Descuento']['tipo'] !== 'Cuota Alimentaria') {
@@ -198,6 +199,7 @@ class Descuento extends AppModel {
                     $auxiliar['id'] = $v['Descuento']['id'];
                     $auxiliar['concepto_id'] = $conceptos[$k][$name]['id'];
                     $auxiliar['estado'] = 'Finalizado';
+                    $auxiliar['permissions'] = '288';
                     $auxiliar['condition'] = '##MACRO:concepto_valor##' . ' + ' . $variables['#total_descontado_' . $name] . ' >= ' . $variables['#monto_' . $name];
                     $auxiliares[] = array('save' => serialize($auxiliar), 'model' => 'Descuento');
                 }

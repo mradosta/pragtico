@@ -67,6 +67,8 @@ class Hora extends AppModel {
 
 	var $belongsTo = array('Relacion');
 
+    var $breadCrumb = array('format' => '%s %s (%s)', 
+                            'fields' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));    
 	
 /**
  * Before save callback
@@ -183,6 +185,7 @@ class Hora extends AppModel {
 				$auxiliar['id'] = $v['Hora']['id'];
 				$auxiliar['estado'] = 'Liquidada';
 				$auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
+                $auxiliar['permissions'] = '288';
 				$auxiliares[] = array('save'=>serialize($auxiliar), 'model' => 'Hora');
 			}
 		}

@@ -25,7 +25,7 @@
  */
 class Novedad extends AppModel {
 
-    var $permissions = array('permissions' => 496, 'group' => 'default', 'role' => 'all');
+    var $permissions = array('permissions' => 480, 'group' => 'default', 'role' => 'all');
 
 /**
  * Los modificaciones al comportamiento estandar de app_controller.php
@@ -36,16 +36,8 @@ class Novedad extends AppModel {
 	var $modificadores = array(	'index'	=> 
 			array('contain'	=> array('Relacion' => array('Empleador', 'Trabajador'))),
 								'edit'	=>
-			array('contain'	=> array('Relacion'	=> array('Empleador', 'Trabajador'))));
+			array('contain'	=> array('Concepto', 'Relacion'	=> array('Empleador', 'Trabajador'))));
 
-/**
- * Los permisos por defecto con los que se guardaran los datos de este model.
- *
- * @var integer
- * @access protected
- */
-	//protected $__permissions = 122;
-	
 /**
  * Las opciones validadas de formatos de planillas que se podran generar e importar.
  *
@@ -54,10 +46,10 @@ class Novedad extends AppModel {
  */
 	var $opciones = array('formato'=>array('Excel5' => 'Excel', 'Excel2007' => 'Excel 2007'));
 	
-	var $belongsTo = array(	'Relacion' =>
-                        array('className'    => 'Relacion',
-                              'foreignKey'   => 'relacion_id'));
+	var $belongsTo = array('Relacion', 'Concepto');
 
+    var $breadCrumb = array('format' => '%s %s (%s)', 
+                            'fields' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));    
 
 /**
  * Based on novelty type, mark the existance of a previewsly informed novelty.
@@ -131,6 +123,7 @@ class Novedad extends AppModel {
  * @access public 
  */
  	function grabar($datos, $periodo) {
+
 		if (!preg_match(VALID_PERIODO, $periodo) || empty($datos) || !is_array($datos)) {
 			return false;
 		}
@@ -159,6 +152,7 @@ class Novedad extends AppModel {
 							continue;
 						}
 						$save['Novedad']['data'] = $registro;
+                        $save['Novedad']['concepto_id'] = $concepto['Concepto']['id'];
 						$save['Novedad']['tipo'] = 'Concepto';
 						$save['Novedad']['subtipo'] = $concepto['Concepto']['id'] . ':' . $concepto['Concepto']['codigo'];
 					} else {
@@ -233,6 +227,7 @@ class Novedad extends AppModel {
 				$auxiliar = null;
 				$auxiliar['id'] = $novedad['Novedad']['id'];
 				$auxiliar['estado'] = 'Liquidada';
+                $auxiliar['permissions'] = '288';
 				$auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
 				$auxiliares[] = array('save'=>serialize($auxiliar), 'model' => 'Novedad');
 				

@@ -22,7 +22,11 @@
 $campos = null;
 $campos['Novedad.id'] = array();
 $campos['Novedad.alta'] = array('type' => 'hidden', 'value' => date('d/m/Y'));
-$campos['Novedad.tipo'] = array('type' => 'hidden', 'value' => 'Concepto');
+if (empty($this->data)) {
+    $campos['Novedad.tipo'] = array('readonly' => true, 'type' => 'text', 'value' => 'Concepto');
+} else {
+    $campos['Novedad.tipo'] = array('readonly' => true, 'type' => 'text');
+}
 $campos['Novedad.relacion_id'] = array(
         'lov'   => array('controller'   => 'relaciones',
                         'seleccionMultiple'    =>  0,
@@ -32,10 +36,12 @@ $campos['Novedad.relacion_id'] = array(
                                                     'Trabajador.nombre',
                                                     'Trabajador.apellido')));
 $campos['Novedad.periodo'] = array('type' => 'periodo');
-$campos['Novedad.concepto_id'] = array( "lov"=>array("controller"   =>  "conceptos",
-                                                        "seleccionMultiple" =>  0,
-                                                            "camposRetorno" =>  array(  "Concepto.codigo",
-                                                                                        "Concepto.nombre")));
+if (!empty($this->data[0]['Novedad']['concepto_id']) || empty($this->data)) {
+    $campos['Novedad.concepto_id'] = array( "lov"=>array("controller"   =>  "conceptos",
+                                                            "seleccionMultiple" =>  0,
+                                                                "camposRetorno" =>  array(  "Concepto.codigo",
+                                                                                            "Concepto.nombre")));
+}
 $campos['Novedad.data'] = array('label' => 'Valor', 'type' => 'text');
 $campos['Novedad.estado'] = array('options' => array('Pendiente' => 'Pendiente', 'Confirmada' => 'Confirmada'));
 $fieldsets[] = array('campos' => $campos);

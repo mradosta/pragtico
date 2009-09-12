@@ -37,17 +37,6 @@ class NovedadesController extends AppController {
 
 
 /**
- * Set default search condition to pending novelties.
- */
-	function index_deprecated() {
-		if (empty($this->data)) {
-			$this->data['Condicion']['Novedad-estado'] = 'Pendiente';
-		}
-		return parent::index();
-	}
-
-
-/**
  * Confirma las novedades seleccionadas.
  */
 	function confirmar() {
@@ -207,5 +196,11 @@ class NovedadesController extends AppController {
 		$this->set('tiposIngreso', $tiposIngresoKey);
 	}
 	
+
+    function delete($id = null, $goBack = 0) {
+        $this->Novedad->setSecurityAccess('readOwnerOnly');
+        return parent::delete($id, $goBack);
+    }
+        
 }
 ?>

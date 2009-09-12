@@ -64,7 +64,8 @@ class Ausencia extends AppModel {
 							  'dependent'	 => true,
                               'foreignKey'   => 'ausencia_id'));
 
-	
+    var $breadCrumb = array('format' => '%s %s (%s)', 
+                            'fields' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));	
 /**
  * Agrego un nuevo campo el calculo del total de dias que duro la ausencia 
  * (salen de la suma de los dias de seguimiento confirmados).
@@ -197,6 +198,7 @@ class Ausencia extends AppModel {
                             $auxiliar = null;
                             $auxiliar['id'] = $seguimiento['id'];
                             $auxiliar['estado'] = 'Liquidado';
+                            $auxiliar['permissions'] = '288';
                             $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
                             
                             $auxiliar['dias'] = $seguimiento['dias'] - $diff['dias'];
@@ -219,6 +221,7 @@ class Ausencia extends AppModel {
                             $auxiliar = null;
                             $auxiliar['id'] = $seguimiento['id'];
                             $auxiliar['estado'] = 'Liquidado';
+                            $auxiliar['permissions'] = '288';
                             $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
                             $auxiliares[] = array(	'save' 	=> serialize($auxiliar),
                                                     'model' => 'AusenciasSeguimiento');
