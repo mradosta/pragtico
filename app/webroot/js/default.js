@@ -1,6 +1,140 @@
 //defino la variable para que este accesible desde todos lados (como una global)
-var timer;
+//var timer;
 
+jQuery(document).ready(function($) {
+
+    /** Creates the menu */
+    jQuery(".menu").accordion({
+        header: "a.header",
+        active: parseInt(jQuery.cookie("menu_cookie"))
+    });
+    
+    /** Binds click event to select/deselect/invert classes for manipulating checkboxes */
+    jQuery.bindMultipleCheckBoxManipulation();
+    
+    
+    /** Binds click to expand textarea control */
+    jQuery(".expand_text_area").click(function() {
+        var textarea = "#" + jQuery("textarea", jQuery(this).parent()).attr("id");
+        if (jQuery(this).hasClass("colapse_text_area")) {
+            jQuery(textarea).parent().css("width", "365px");
+            jQuery(textarea).css("width", "196px").css("background-image", "url(" + jQuery.url("css/img/textarea.gif") + ")");
+            jQuery(this).removeClass("colapse_text_area");
+            jQuery(this).addClass("expand_text_area");
+        } else {
+            jQuery(textarea).parent().css("width", "720px");
+            jQuery(textarea).css("width", "565px").css("background-image", "url(" + jQuery.url("css/img/wide_textarea.gif") + ")");
+            jQuery(this).addClass("colapse_text_area");
+            jQuery(this).removeClass("expand_text_area");
+        }
+    });
+
+
+    /** Checks cookie to decide to hide conditions frameset */
+    if (jQuery.cookie("conditionsFrameCookie") == "false") {
+        jQuery(".conditions_frame").hide();
+        jQuery("#hideConditions > img").attr("src", jQuery.url("img/") + "sin_pinchar.gif");
+    }
+    
+    
+    /** Binds click to Show / Hide conditions */
+    jQuery("#hideConditions").bind("click",
+        function() {
+            jQuery(".conditions_frame").toggle();
+            if (jQuery(".conditions_frame").is(":visible")) {
+                jQuery.cookie("conditionsFrameCookie", "true");
+                jQuery("#hideConditions > img").attr("src", jQuery.url("img/") + "pinchado.gif");
+            } else {
+                jQuery.cookie("conditionsFrameCookie", "false");
+                jQuery("#hideConditions > img").attr("src", jQuery.url("img/") + "sin_pinchar.gif");
+            }
+        }
+    );
+
+
+    /** Binds event to every lov caller */
+    jQuery(".lupa_lov").click(
+        function() {
+    
+            jQuery("#opened_lov_options").val(jQuery(this).attr("longdesc"));
+            var params = jQuery.makeObject(jQuery("#opened_lov_options").val());
+
+            jQuery("#lov").load(jQuery.url(params["controller"] + "/" + params["action"])).modal({
+                containerCss: {
+                    height: 450,
+                    width: 850,
+                    position: "absolute",
+                    paddingLeft: 4
+                }
+            });
+        }
+    );
+    
+
+    /** Hides select img when not in lov */
+    jQuery(".seleccionar").hide();
+    
+});
+
+
+/** Binds click event to select/deselect/invert classes for manipulating checkboxes */
+jQuery.extend({
+    bindMultipleCheckBoxManipulation: function(scope) {
+
+        if (scope == undefined) {
+            scope = "#index";
+        }
+
+        jQuery(scope + " table .seleccionarTodos").click(
+            function() {
+                jQuery(".tabla :checkbox").checkbox("seleccionar");
+                return false;
+            }
+        );
+
+        jQuery(scope + " table .deseleccionarTodos").click(
+            function() {
+                jQuery(".tabla :checkbox").checkbox("deseleccionar");
+                return false;
+            }
+        );
+
+        jQuery(scope + " table .invertir").click(
+            function() {
+                jQuery(".tabla :checkbox").checkbox("invertir");
+                return false;
+            }
+        );
+    }
+});
+
+    
+/** Cretes an object (key => value) from a string
+ * The form of the string should be:
+ * str = "paramNameA: aaaaa; paramNameB: cccc";
+*/
+jQuery.makeObject = function(str, separator) {
+    if (separator == undefined) {
+        separator = ";";
+    }
+
+    var items = {};
+    jQuery.each(str.split(separator),
+        function() {
+            var tmp = this.split(":");
+            //items[tmp[0]] = tmp[1].trim();
+            items[tmp[0]] = tmp[1];
+        }
+    );
+    return items;
+}
+    
+/** Useful function to avoid using Router::url everywere */
+jQuery.url = function(url) {
+    return jQuery("#base_url").val() + url;
+}
+
+    
 Array.prototype.clean = function(to_delete)
 {
    var a;
@@ -15,7 +149,7 @@ Array.prototype.clean = function(to_delete)
    return this;
 };
 
-var desglose = function (tr, url) {
+var desglose_deprecated = function (tr, url) {
 	var selector = "#" + tr;
 	
 	var tr = jQuery("<tr></tr>"); 
@@ -62,68 +196,6 @@ var ajaxPost = function(url) {
 }
 
 
-//id del div a ocultar
-//si forzar es true, no importa el estado anterior, siempre lo muestra, false siempre lo oculta
-function mostrarOcultarDiv_deprecated( id_div, forzar ) {
-
-	var elDiv = document.getElementById(id_div);
-	if(forzar == true)
-	{
-		elDiv.style.visibility = 'visible';
-		elDiv.style.display = 'inline';
-	}
-	else if(forzar == false)
-	{
-		elDiv.style.visibility = 'hidden';
-		elDiv.style.display = 'none';
-	}
-	else
-	{
-		if (elDiv.style.visibility == 'visible')
-		{
-			elDiv.style.visibility = 'hidden';
-			elDiv.style.display = 'none';
-		}
-		else if(elDiv.style.visibility == 'hidden' || elDiv.style.visibility == '')
-		{
-			elDiv.style.visibility = 'visible';
-			elDiv.style.display = 'inline';
-		}
-	}
-}
-
-
-function mostrarOcultarDivYTr_deprecated(refElement, id_div, id_tr, base_url) {
-	
-	var elDiv = document.getElementById(id_div);
-	var elTr = document.getElementById(id_tr);
-	if (elTr.style.visibility == 'visible') {
-		elDiv.style.visibility = 'hidden';
-		elDiv.style.display = 'none';
-		elTr.style.visibility = 'hidden';
-		elTr.style.display = 'none';
-		/**
-		* Ejecuto esta accion para que me elimine de la session este desglose ya que esta cerrado.
-		*/
-		jQuery.get(base_url + '/quitarDesglose/' + refElement.className);
-		return false;
-	}
-	else
-	{
-		elDiv.style.visibility = 'visible';
-		elDiv.style.display = 'inline';
-		elTr.style.visibility = 'visible';
-		var isMSIE = /*@cc_on!@*/false; //detecto si es MSIE
-		if(isMSIE)
-		{ 
-			elTr.style.display = 'block'; //solo para explorer
-		}
-		else
-		{
-			elTr.style.display = 'table-row'; //gecko
-		}
-	}
-}
 
 /**
  * Esta funcion retorna el valor desde una lov (ya sea en div o en popup).
@@ -131,7 +203,7 @@ function mostrarOcultarDivYTr_deprecated(refElement, id_div, id_tr, base_url) {
  * Si el parametro padre viene un string vacio ("") implica que viene desde un div,
  * si es una popup este parametro tendra el valor "parent".
  */
-function retornoLov(retornarA, id, valor, padre)
+function retornoLov_deprecated(retornarA, id, valor, padre)
 {
 	var idRetorno = 'div_' + retornarA;
 
@@ -226,7 +298,7 @@ function retornoLov(retornarA, id, valor, padre)
 
 
 
-function abrirVentana(winName, theURL, w, h) {
+function abrirVentana_deprecated(winName, theURL, w, h) {
 
 	if (typeof w=='undefined') {
 		w=screen.availWidth-150;

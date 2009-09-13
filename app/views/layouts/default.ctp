@@ -50,9 +50,10 @@ $css[] = "jquery.autocomplete";
 */
 //$css[] = "basic";
 $css = null;
-$css[] = 'aplicacion.default.screen';
-$css[] = 'jscal/jscal2';
-$css[] = 'jscal/border-radius.css';
+//$css[] = 'aplicacion.default.screen';
+$css[] = 'aplicacion.default.screen.min';
+$css[] = 'jscal/jscal2.min';
+$css[] = 'jscal/border-radius.min';
 //$css[] = 'jscal/steel/steel.css';
 
 //$css[] = "theme/ui.all";
@@ -67,181 +68,19 @@ $css[] = 'jscal/border-radius.css';
 $html->css($css, null, array('media' => 'screen'), false);
 $js = null;
 $js[] = 'jquery/jquery-1.3.2.min';
-$js[] = 'jquery/jquery.cookie';
-$js[] = 'jquery/jquery.accordion';
-$js[] = 'jquery/jquery.checkbox';
-$js[] = 'jquery/jquery.simplemodal';
-$js[] = 'jquery/jquery.form';
-$js[] = 'jquery/jquery.sprintf';
-$js[] = 'default';
+$js[] = 'jquery/jquery.cookie.min';
+$js[] = 'jquery/jquery.accordion.min';
+$js[] = 'jquery/jquery.checkbox.min';
+$js[] = 'jquery/jquery.simplemodal.min';
+$js[] = 'jquery/jquery.form.min';
+$js[] = 'jquery/jquery.sprintf.min';
+$js[] = 'default.min';
 //$js[] = 'datetimepicker';
-$js[] = 'jscal/jscal2';
-$js[] = 'jscal/es';
-$js[] = 'jquery.flydom'; // lo usa en carga drapida de conceptos desde convenios
+$js[] = 'jscal/jscal2.min';
+$js[] = 'jscal/es.min';
+$js[] = 'jquery.flydom.min'; // lo usa en carga drapida de conceptos desde convenios
 $appForm->addScript($js, 'links');
 
-
-//$appForm->addScript("jquery.autocomplete", "links");
-
-        
-//$appForm->addScript("jquery.jqmodal", "links");
-//$appForm->addScript("jquery.simplemodal", "links");
-//$appForm->addScript("jquery-ui-personalized-1.5.3", "links");
-//$appForm->addScript("jquery/jquery-ui-1.7.custom", "links");
-
-//$appForm->addScript("jquery/ui.core", "links");
-//$appForm->addScript("jquery/ui.accordion", "links");
-//$appForm->addScript("jquery/jquery.accordion", "links");
-
-//$appForm->addScript("jquery/jquery.accordion", "links");
-//$appForm->addScript("basic", "links");
-//$appForm->addScript("jquery.jeditable", "links");
-
-//$appForm->addScript("jquery.form", "links");
-
-
-
-//$appForm->addScript("jquery.flydom", "links");
-//$session->read('__actualMenu')
-$appForm->addScript('
-
-/*
-      var cal = Calendar.setup({
-              cont     : "calendar-container",
-              weekNumbers   : true,
-              showTime      : 24,
-
-        });
-        */
-    jQuery.extend({
-        bindMultipleCheckBoxManipulation: function(scope) {
-
-    
-    
-    //jQuery.prototype.bindMultipleCheckBoxManipulation = function(scope) {
-        if (scope == undefined) {
-            scope = "#index";
-        }
-        //console.log(scope);
-        
-        jQuery(scope + " table .seleccionarTodos").click(
-            function() {
-                jQuery(".tabla :checkbox").checkbox("seleccionar");
-                return false;
-            }
-        );
-        jQuery(scope + " table .deseleccionarTodos").click(
-            function() {
-                jQuery(".tabla :checkbox").checkbox("deseleccionar");
-                return false;
-            }
-        );
-        jQuery(scope + " table .invertir").click(
-            function() {
-                jQuery(".tabla :checkbox").checkbox("invertir");
-                return false;
-            }
-        );
-    //}
-        }
-    });
-    jQuery.bindMultipleCheckBoxManipulation();
-    
-        
-
-        jQuery(".expand_text_area").click(function() {
-            var textarea = "#" + jQuery("textarea", jQuery(this).parent()).attr("id");
-            if (jQuery(this).hasClass("colapse_text_area")) {
-                jQuery(textarea).parent().css("width", "365px");
-                jQuery(textarea).css("width", "196px").css("background-image", "url(" + jQuery.url("css/img/textarea.gif") + ")");
-                jQuery(this).removeClass("colapse_text_area");
-                jQuery(this).addClass("expand_text_area");
-            } else {
-                jQuery(textarea).parent().css("width", "720px");
-                jQuery(textarea).css("width", "565px").css("background-image", "url(" + jQuery.url("css/img/wide_textarea.gif") + ")");
-                jQuery(this).addClass("colapse_text_area");
-                jQuery(this).removeClass("expand_text_area");
-            }
-        });
-        
-
-    /** Useful function to avoid using Router::url everywere */
-    jQuery.url = function(url) {
-        return jQuery("#base_url").val() + url;
-    }
-
-
-    /** Creates the menu */
-    jQuery(".menu").accordion({
-        header: "a.header",
-        active: parseInt(jQuery.cookie("menu_cookie"))
-    });
-
-
-    /** Show / Hide conditions */
-    jQuery("#hideConditions").bind("click",
-        function() {
-            jQuery(".conditions_frame").toggle();
-            if (jQuery(".conditions_frame").is(":visible")) {
-                jQuery.cookie("conditionsFrameCookie", "true");
-                jQuery("#hideConditions > img").attr("src", jQuery.url("img/") + "pinchado.gif");
-            } else {
-                jQuery.cookie("conditionsFrameCookie", "false");
-                jQuery("#hideConditions > img").attr("src", jQuery.url("img/") + "sin_pinchar.gif");
-            }
-        }
-    );
-
-    if (jQuery.cookie("conditionsFrameCookie") == "false") {
-        jQuery(".conditions_frame").hide();
-        jQuery("#hideConditions > img").attr("src", jQuery.url("img/") + "sin_pinchar.gif");
-    }
-
-
-    /** Cretes an object (key => value) from a string
-        The form of the string should be:
-        str = "paramNameA: aaaaa; paramNameB: cccc";
-    */
-    jQuery.makeObject = function(str, separator) {
-        if (separator == undefined) {
-            separator = ";";
-        }
-
-        var items = {};
-        jQuery.each(str.split(separator),
-            function() {
-                var tmp = this.split(":");
-                //items[tmp[0]] = tmp[1].trim();
-                items[tmp[0]] = tmp[1];
-            }
-        );
-        return items;
-    }
-
-
-        
-    //jQuery("#opened_lov_options").val("");
-    jQuery(".seleccionar").hide();
-
-    /** Binds event to every lov caller */
-    jQuery(".lupa_lov").click(
-        function() {
-    
-            jQuery("#opened_lov_options").val(jQuery(this).attr("longdesc"));
-            var params = jQuery.makeObject(jQuery("#opened_lov_options").val());
-
-            jQuery("#lov").load(
-                jQuery.url(params["controller"] + "/" + params["action"])).modal({
-                    containerCss: {
-                        height: 450,
-                        width: 850,
-                        position: "absolute",
-                        paddingLeft: 4
-                    }
-                });
-        }
-    );
-');
 
 $codigo_html[] = $asset->scripts_for_layout();
 $codigo_html[] = '</head>';
