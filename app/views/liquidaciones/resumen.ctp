@@ -130,7 +130,12 @@ if (!empty($data)) {
                                 'seleccionMultiple'    => 0,
                                 'camposRetorno' => array('Trabajador.cuil', 'Trabajador.nombre', 'Trabajador.apellido')));
 
-    $conditions['Condicion.Bar-group_option'] = array('type' => 'radio', 'options' => $options);
+    $conditions['Condicion.Bar-concepto_id'] = array( 'lov' => array(
+            'controller'        => 'conceptos',
+            'seleccionMultiple' => 1,
+            'camposRetorno'     => array('Concepto.nombre')));
+    
+    $conditions['Condicion.Bar-group_option'] = array('type' => 'radio', 'options' => $options, 'label' => 'Opcion');
     
     $conditions['Condicion.Bar-tipo'] = array('label' => 'Tipo', 'multiple' => 'checkbox', 'type' => 'select', 'options' => $types);
 
