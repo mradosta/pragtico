@@ -30,14 +30,12 @@ $condiciones['Condicion.Relacion-trabajador_id'] = array(
 					 	'camposRetorno'	=> array('Trabajador.apellido', 'Trabajador.nombre')));
 
 
-$condiciones['Condicion.Relacion-id'] = array(
-		'label' => 'Relacion',
-        'mask'          =>  '%s, %s (%s, %s)',
-		'lov'	=> array('controller'	=> 'relaciones',
-						'camposRetorno'	=> array(	'Trabajador.apellido',
-			   										'Trabajador.nombre',
-                                                    'Empleador.cuit',
-                                                    'Empleador.nombre')));
+$condiciones['Condicion.Relacion-area_id'] = array(
+		'label' => 'Area',
+        'mask'          =>  '%s, %s',
+		'lov'	=> array('controller'	=> 'areas',
+						'camposRetorno'	=> array(   'Empleador.nombre',
+                                                    'Area.nombre')));
 
 $condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'type' => 'select');
 //$condiciones['Condicion.Liquidacion-estado'] = array('options' => array('Guardada' => 'Guardada', 'Sin Confirmar' => 'Sin Confirmar'));

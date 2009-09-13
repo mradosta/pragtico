@@ -18,10 +18,11 @@
  
 /**
 * Especifico los campos para ingresar las condiciones.
-*/
 $condiciones['Condicion.Area-empleador_id'] = array(	'lov'=>array('controller'	=>	'empleadores',
 																		'camposRetorno'	=>array('Empleador.cuit',
 																								'Empleador.nombre')));
+*/
+$condiciones['Condicion.Empleador-nombre'] = array('label' => 'Empleador');
 $condiciones['Condicion.Area-identificador'] = array();
 $condiciones['Condicion.Area-nombre'] = array();
 $condiciones['Condicion.Area-direccion'] = array();

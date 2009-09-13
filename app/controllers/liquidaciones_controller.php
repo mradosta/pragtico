@@ -255,8 +255,8 @@ class LiquidacionesController extends AppController {
 
 			if (empty($this->data['Condicion']['Relacion-empleador_id']) &&
 					empty($this->data['Condicion']['Relacion-trabajador_id']) &&
-					empty($this->data['Condicion']['Relacion-id'])) {
-						$message = "Debe seleccionar un empleador, un trabajador o una relacion laboral.";
+					empty($this->data['Condicion']['Relacion-area_id'])) {
+						$message = "Debe seleccionar un Empleador, un Trabajador o un Area de la Relacion Laboral.";
 			}
 
 			if (!empty($message)) {
