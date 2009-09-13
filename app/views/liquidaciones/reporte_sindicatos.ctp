@@ -24,7 +24,7 @@ if (!empty($data)) {
     $documento->setCellValue('D', 'Sexo', array('title' => '20'));
     $documento->setCellValue('E', 'Estado Civil', array('title' => '20'));
     $documento->setCellValue('F', 'F. Nacimiento', array('title' => '15'));
-    $documento->setCellValue('G', 'direccion', array('title' => '30'));
+    $documento->setCellValue('G', 'Direccion', array('title' => '30'));
     $documento->setCellValue('H', 'Numero', array('title' => '10'));
     $documento->setCellValue('I', 'Cod. Postal', array('title' => '10'));
     $documento->setCellValue('J', 'Area', array('title' => '35'));

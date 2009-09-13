@@ -21,6 +21,11 @@ if ($options['conditions']['Bar-grupo_id'] === true) {
     }
 }
 
+foreach ($this->params['named'] as $k => $v) {
+    $conditions['Condicion.Bar-' . $k] = array('type' => 'hidden', 'value' => $v);
+}
+
+
 if (!empty($aditionalConditions)) {
     $conditions = array_merge($conditions, $aditionalConditions);
 }

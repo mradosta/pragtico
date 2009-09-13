@@ -119,6 +119,9 @@ class Relacion extends AppModel {
 							'Actividad' =>
                         array('className'    => 'Actividad',
                               'foreignKey'   => 'actividad_id'),
+                            'EgresosMotivo' =>
+                        array('className'    => 'EgresosMotivo',
+                              'foreignKey'   => 'egresos_motivo_id'),
 							'Modalidad' =>
                         array('className'    => 'Modalidad',
                               'foreignKey'   => 'modalidad_id'),
