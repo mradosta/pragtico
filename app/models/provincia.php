@@ -33,6 +33,7 @@ class Provincia extends AppModel {
         )
 	);
 
+    var $breadCrumb = array('fields'    => array('Provincia.nombre'));
 
 	var $hasMany = array(	'Localidad' =>
                         array('className'    => 'Localidad',
