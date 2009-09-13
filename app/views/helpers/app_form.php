@@ -1775,7 +1775,7 @@ class AppFormHelper extends FormHelper {
 			}
 
 			elseif (isset($options['multiple']) && $options['multiple'] === 'checkbox') {
-				$id = mt_rand();
+				$id = 'checkbox_' . mt_rand();
 				$seleccion[] = $this->link('T', null, array('onclick' => 'jQuery("#' . $id . ' input:checkbox").checkbox("seleccionar");return false;'));
 				$seleccion[] = $this->link('N', null, array('onclick' => 'jQuery("#' . $id . ' input:checkbox").checkbox("deseleccionar");return false;'));
 				$seleccion[] = $this->link('I', null, array('onclick' => 'jQuery("#' . $id . ' input:checkbox").checkbox("invertir");return false;'));
@@ -1783,6 +1783,8 @@ class AppFormHelper extends FormHelper {
 				if (empty($options['after'])) {
 					unset($options['after']);
 				}
+                $options['before'] = $this->label(null, $options['label'], array("for"=>false));
+                $options['label'] = false;
 				
 				if (!empty($this->data)) {
 					$parent = array_shift(array_keys($this->data));
