@@ -8,8 +8,8 @@ if ($this->params['isAjax']) {
 	* Creo los botones de los buscadores.
 	* El boton de Buscar y el de Limpiar.
 	*/
-	$out[] = $appForm->button(__('Clear', true), array('class' => 'buscador_ajax', 'title' => 'Limpiar los criterios de busqueda'));
-	$out[] = $appForm->button(__('Search', true), array('class' => 'buscador_ajax', 'title' => 'Realizar la busqueda'));
+	$out[] = $appForm->button(__('Clear', true), array('value' => 'limpiar', 'class' => 'buscador_ajax', 'title' => 'Limpiar los criterios de busqueda'));
+	$out[] = $appForm->button(__('Search', true), array('value' => 'buscar', 'class' => 'buscador_ajax', 'title' => 'Realizar la busqueda'));
 	
 	$out[] = $appForm->codeBlock("
 jQuery(document).ready(function($) {
@@ -84,16 +84,21 @@ jQuery(document).ready(function($) {
         jQuery('#lov').keypress(function (e) {
             if (e.which == 13) {
                 submitData();
+                return;
             }
         });
     
         /** Binds click to sumbit function */
-        jQuery('.buscador_ajax', jQuery('#lov')).click(submitData);
+        jQuery('.buscador_ajax', jQuery('#lov')).click(
+            function() {
+                submitData(this);
+            }
+        );
 
         /** Do ajax submit. */
-        var submitData = function() {
+        var submitData = function(el) {
             /** Set action (clean or search) */
-            var accion = jQuery(this).val().toLowerCase();
+            var accion = jQuery(el).val().toLowerCase();
             jQuery('#accion', jQuery('#lov')).val(accion);
             /** Seteo las opciones para hacer el request ajax. */
             var url = jQuery('#form', jQuery('#lov')).attr('action');
