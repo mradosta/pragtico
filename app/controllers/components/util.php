@@ -33,6 +33,12 @@ class UtilComponent extends Object {
     }
 
 
+    function replaceNonAsciiCharacters($text) {
+        return str_replace(
+            array('á', 'é', 'í', 'ó', 'ú', 'Á', 'É', 'Í', 'Ó', 'Ú', 'ñ', 'Ñ', '°'),
+            array('a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U', 'n', 'N', ''), $text);
+    }
+    
 /**
  * Gets currently logged in user's groups.
  *
