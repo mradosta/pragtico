@@ -558,7 +558,7 @@ class LiquidacionesController extends AppController {
                     $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
                     $contain = array('Empleador' => array('EmployersType'));
                 } else {
-                    $groupParams = ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Bar-grupo_id']);
+                    $groupParams = User::getGroupParams($this->data['Condicion']['Bar-grupo_id']);
                     $contain = array();
                 }
                 $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
@@ -852,9 +852,7 @@ class LiquidacionesController extends AppController {
                     }
                     $campo['valor'] = number_format($campo['valor'], 2, ',', '');
                 } elseif ($campo['tipo'] === 'text') {
-                    $campo['valor'] = str_replace(
-                        array('á', 'é', 'í', 'ó', 'ú', 'Á', 'É', 'Í', 'Ó', 'Ú', 'ñ', 'Ñ'),
-                        array('a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U', 'n', 'N'), $campo['valor']);
+                    $campo['valor'] = $this->Util->replaceNonAsciiCharacters($campo['valor']);
                 }
 
                 if ($campo['direccion_relleno'] === 'Derecha') {
@@ -864,11 +862,9 @@ class LiquidacionesController extends AppController {
                 } else {
                     $t = $campo['valor'];
                 }
-                //debug($k . ' ' . $campo['descripcion'] . ': ' . $campo['valor']);
                 $v[] = substr($t, 0, $campo['longitud']);
             }
         }
-//      d('xxx');
         return implode('', $v);
     }
 
