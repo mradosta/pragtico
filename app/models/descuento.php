@@ -98,15 +98,19 @@ class Descuento extends AppModel {
  * Dada un ralacion XXXXXXXXXX.
  * @return array vacio si no hay nada que descontar.
  */
-	function getDescuentos($relacion, $opciones) {
-		
+    function getDescuentos($relacion, $opciones) {
+        
         $conditions = array(array('OR'  => array(
             'Descuento.hasta'       => '0000-00-00',
-            'Descuento.hasta >='    => $opciones['periodo']['hasta'])),
-            'DATE(CONCAT(YEAR(Descuento.desde), \'-\', MONTH(Descuento.desde), \'-' . array_pop(explode('-', $opciones['periodo']['desde'])) . '\')) <=' => $opciones['periodo']['desde']);
-       
-	   switch($opciones['tipo']) {
-			case 'normal':
+            'Descuento.hasta >='    => $opciones['periodo']['hasta'])));
+
+        if (!empty($opciones['periodo']['desde'])) {
+            $conditions = array_merge(array(
+                'DATE(CONCAT(YEAR(Descuento.desde), \'-\', MONTH(Descuento.desde), \'-' . array_pop(explode('-', $opciones['periodo']['desde'])) . '\')) <=' => $opciones['periodo']['desde']), $conditions);
+        }
+
+        switch($opciones['tipo']) {
+            case 'normal':
 				if ($opciones['periodo']['periodo'] === '1Q') {
 					$descontar = 3;
 				} elseif ($opciones['periodo']['periodo'] === '2Q' || $opciones['periodo']['periodo'] === 'M') {
