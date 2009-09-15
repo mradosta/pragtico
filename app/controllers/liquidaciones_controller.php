@@ -879,16 +879,38 @@ class LiquidacionesController extends AppController {
     }
 	
 	function index($receiptIds = null) {
-		if (!empty($this->data['Condicion']['Liquidacion-periodo_completo'])) {
-			$periodo = $this->Util->format($this->data['Condicion']['Liquidacion-periodo_completo'], 'periodo');
+		if (!empty($this->data['Condicion']['Bar-periodo_largo'])) {
+			$periodo = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
 			if (!empty($periodo)) {
 				$this->data['Condicion']['Liquidacion-ano'] = $periodo['ano'];
 				$this->data['Condicion']['Liquidacion-mes'] = $periodo['mes'];
-				$this->data['Condicion']['Liquidacion-periodo'] = $periodo['periodo'];
-				unset($this->data['Condicion']['Liquidacion-periodo_completo']);
+                if (!empty($periodo['periodo'])) {
+				    $this->data['Condicion']['Liquidacion-periodo'] = $periodo['periodo'];
+                }
 			}
 		}
-		$this->paginate['conditions'] = array('Liquidacion.estado' => 'Confirmada');
+
+        if (!empty($this->data['Condicion']['Bar-facturado'])
+            && count($this->data['Condicion']['Bar-facturado']) == 1) {
+            if ($this->data['Condicion']['Bar-facturado'][0] == 'Si') {
+                $this->Paginador->setCondition(array(
+                    'Liquidacion.factura_id !=' => null));
+                $this->Paginador->removeCondition(array('Liquidacion.factura_id'));
+            } else {
+                $this->Paginador->setCondition(array(
+                    'Liquidacion.factura_id' => null));
+                $this->Paginador->removeCondition(array('Liquidacion.factura_id !='));
+            }
+        } else {
+            $this->data['Condicion']['Bar-facturado'] = array('Si', 'No');
+            $this->Paginador->removeCondition(array('Liquidacion.factura_id !=', 'Liquidacion.factura_id'));
+        }
+        
+        if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] == 'limpiar') {
+            $this->Paginador->removeCondition(array('Liquidacion.factura_id !=', 'Liquidacion.factura_id'));
+        }
+        
+        $this->Paginador->setCondition(array('Liquidacion.estado' => 'Confirmada'));
         $this->set('receiptIds', $receiptIds);
 		parent::index();
 	}

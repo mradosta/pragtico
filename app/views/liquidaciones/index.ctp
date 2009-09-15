@@ -36,7 +36,10 @@ $condiciones['Condicion.Relacion-id'] = array(	'label' => 'Relacion',
 																						'Trabajador.nombre',
 																						'Trabajador.apellido')));
 $condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'type' => 'select', 'multiple' => 'checkbox');
-$condiciones['Condicion.Liquidacion-periodo_completo'] = array('type'=>'periodo');
+$condiciones['Condicion.Bar-facturado'] = array('label' => 'Facturado', 'type' => 'select', 'multiple' => 'checkbox', 'options' => array('Si' => 'Si', 'No' => 'No'));
+
+$condiciones['Condicion.Bar-periodo_largo'] = array('label' => 'Periodo Liquidacion', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A'));
+
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Liquidaciones','imagen' => 'liquidaciones.gif')));
 
