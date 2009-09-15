@@ -191,8 +191,7 @@ if(!empty($registros)) {
         $documento->setCellValue('F' . $fila, ($registro['Relacion']['egreso'] !== '0000-00-00')?$registro['Relacion']['egreso']:'');
 
 
-		$last = PHPExcel_Cell::columnIndexFromString($documento->doc->getActiveSheet()->getHighestColumn());
-		for($i = $columnaInicioConceptosDinamicos; $i < $last; $i++) {
+		for($i = $columnaInicioConceptosDinamicos; $i <= $columna; $i++) {
 			$documento->setDataValidation($i . ',' . $fila, 'decimal');
 		}
 		
@@ -206,9 +205,14 @@ if(!empty($registros)) {
 	}
 	$documento->doc->getActiveSheet()->freezePane('G10');
     $fila++;
-    for ($i = $columnaInicioConceptosDinamicos + 1; $i < $last; $i++) {
+    for ($i = $initialRow; $i < ($fila - 1); $i++) {
+        $sum[] = 'CELL' . $i;
+    }
+    $formula = '=' . implode('+', $sum);
+    
+    for ($i = $columnaInicioConceptosDinamicos + 1; $i <= $columna; $i++) {
         $documento->setCellValue($i . ',' . $fila,
-            '=SUM(' . PHPExcel_Cell::stringFromColumnIndex($i) . $initialRow . ':' . PHPExcel_Cell::stringFromColumnIndex($i) . ($fila - 1) . ')', array('right', 'bold'));
+            str_replace('CELL', PHPExcel_Cell::stringFromColumnIndex($i), $formula), array('right', 'bold'));
     }
     
 	$documento->save($formatoDocumento);
