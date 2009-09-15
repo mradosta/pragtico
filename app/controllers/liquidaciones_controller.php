@@ -937,22 +937,6 @@ class LiquidacionesController extends AppController {
 
 
 /**
- * 
- * 
- */
-	function __seteos() {
-		$periodos["M"] = "Mensual";
-		$periodos["1Q"] = "Primera Quincena";
-		$periodos["2Q"] = "Segunda Quincena";
-		$this->set("periodos", $periodos);
-		$this->set("meses", $this->Util->format("all", array("type" => "mesEnLetras", "case" => "ucfirst")));
-	}
-
-
-
-	
-	
-/**
  * Permite confirmar liquidaciones.
  * Las liquidaciones estan en la tabla liquidaciones pero con estado "Sin Confirmar".
  *
