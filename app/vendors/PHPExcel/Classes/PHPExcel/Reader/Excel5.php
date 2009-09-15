@@ -4261,6 +4261,7 @@ class PHPExcel_Reader_Excel5 implements PHPExcel_Reader_IReader
 			break;
 			
 		case 0x4C: // Relative reference, used in shared formulas and some other places
+        case 0x6C:
 			$name = 'tRefN';
 			$size = 5;
 			$data = $this->_readBIFF8CellAddressB(substr($formulaData, 1, 4), $baseCell);
