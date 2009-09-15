@@ -92,6 +92,7 @@ class PaginadorComponent extends Object {
         if (isset($this->__controller->data['Formulario']['accion']) && $this->__controller->data['Formulario']['accion'] === 'limpiar') {
             $this->__controller->Session->del('filtros.' . $this->__controller->name . '.' . $this->__controller->action);
             unset($this->__controller->data['Condicion']);
+            $useSession = false;
             //return array();
         }
 
@@ -106,7 +107,6 @@ class PaginadorComponent extends Object {
                 $valoresLov = $filter['valoresLov'];
             }
         }
-
 
         if (!empty($this->__controller->data['Condicion'])) {
             foreach ($this->__controller->data['Condicion'] as $k => $v) {
