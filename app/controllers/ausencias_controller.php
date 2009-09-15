@@ -56,18 +56,27 @@ class AusenciasController extends AppController {
 
             $this->Ausencia->AusenciasSeguimiento->Liquidacion->Behaviors->detach('Permisos');
             $this->Ausencia->AusenciasSeguimiento->Behaviors->detach('Permisos');
-            //        'Liquidacion.LiquidacionesDetalle',
             $this->set('data', $this->Ausencia->AusenciasSeguimiento->find('all', array(
-                'contain'       => array(
+                'contain'      => array(
                     'Ausencia' => array('order' => array('Ausencia.relacion_id'),
                     'AusenciasMotivo',
-                    'Relacion' => array('Empleador', 'Trabajador'))),
+                    'Relacion' => array('Empleador', 'Trabajador')),
+                    'Liquidacion.LiquidacionesDetalle'),
                 'conditions'    => array(
                     'AusenciasSeguimiento.liquidacion_id' => Set::extract('/Liquidacion/id', $this->Ausencia->AusenciasSeguimiento->Liquidacion->find('all',
                         array(  'recursive'     => -1,
                                 'fields'        => array('Liquidacion.id'),
                                 'conditions'    => $conditions)))))));
-
+            /*            
+            $this->set('data', $this->Ausencia->AusenciasSeguimiento->find('all', array(
+                'contain'      => array(
+                    'Ausencia' => array('order' => array('Ausencia.relacion_id'),
+                    'AusenciasMotivo',
+                    'Relacion' => array('Empleador', 'Trabajador')),
+                    'Liquidacion.LiquidacionesDetalle'),
+                'conditions'    => array(
+                    'AusenciasSeguimiento.liquidacion_id' => array(9402, 16587)))));
+            */
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
         }
     }

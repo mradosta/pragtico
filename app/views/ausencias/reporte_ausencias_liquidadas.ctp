@@ -24,14 +24,34 @@ if (!empty($data)) {
     $documento->setCellValue('D', 'Motivo', array('title' => '40'));
     $documento->setCellValue('E', 'Inicio', array('title' => '15'));
     $documento->setCellValue('F', 'Dias', array('title' => '20'));
+    $documento->setCellValue('G', 'Liquidado', array('title' => '20'));
     
     /** Body */
     foreach ($data as $k => $detail) {
 
+        /** Because of naming convenion in absences model, can get concept code */
+        $conceptCode = null;
+        $tmpName = 'ausencias_' . strtolower($detail['Ausencia']['AusenciasMotivo']['tipo']);
+        $conceptCode[] = $tmpName;
+        if ($tmpName == 'ausencias_accidente') {
+            $conceptCode[] = $tmpName . '_art';
+        }
+        
+        
+        $val = 0;
+        foreach ($detail['Liquidacion']['LiquidacionesDetalle'] as $d) {
+            if (in_array($d['concepto_codigo'], $conceptCode)) {
+                $val = $d['valor'];
+                break;
+            }
+        }
+                
         if (empty($totals[$detail['Ausencia']['AusenciasMotivo']['motivo']])) {
-            $totals[$detail['Ausencia']['AusenciasMotivo']['motivo']] = $detail['AusenciasSeguimiento']['dias'];
+            $totals[$detail['Ausencia']['AusenciasMotivo']['motivo']]['days'] = $detail['AusenciasSeguimiento']['dias'];
+            $totals[$detail['Ausencia']['AusenciasMotivo']['motivo']]['value'] = $val;
         } else {
-            $totals[$detail['Ausencia']['AusenciasMotivo']['motivo']] += $detail['AusenciasSeguimiento']['dias'];
+            $totals[$detail['Ausencia']['AusenciasMotivo']['motivo']]['days'] += $detail['AusenciasSeguimiento']['dias'];
+            $totals[$detail['Ausencia']['AusenciasMotivo']['motivo']]['value'] += $val;
         }
 
         $documento->setCellValueFromArray(
@@ -39,13 +59,19 @@ if (!empty($data)) {
                     $detail['Ausencia']['Relacion']['Trabajador']['apellido'], $detail['Ausencia']['Relacion']['Trabajador']['nombre'],
                     $detail['Ausencia']['AusenciasMotivo']['motivo'],
                     $detail['Ausencia']['desde'],
-                    $detail['AusenciasSeguimiento']['dias']));
+                    $detail['AusenciasSeguimiento']['dias'],
+                    array('value' => $val, 'options' => 'currency')));
+    }
+    
+    $documento->moveCurrentRow(3);
+    $documento->setCellValue('A' . $documento->getCurrentRow() . ':D' . $documento->getCurrentRow(), 'TOTALES', 'title');
+    foreach ($totals as $label => $total) {
+        $documento->moveCurrentRow();
+        $documento->setCellValue('B', $label. ':', array('bold', 'right'));
+        $documento->setCellValue('C', $total['days'], array('bold', 'right'));
+        $documento->setCellValue('D', $total['value'], array('bold', 'currency'));
     }
 
-    foreach ($totals as $motive => $total) {
-        $t[$motive] = array($total => array('bold', 'right'));
-    }
-    $documento->setTotals($t);
     $documento->save($fileFormat);
 } else {
 
