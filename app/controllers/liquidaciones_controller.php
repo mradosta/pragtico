@@ -272,6 +272,8 @@ class LiquidacionesController extends AppController {
 			unset($condiciones['Liquidacion.periodo_largo']);
 			unset($condiciones['Liquidacion.periodo_vacacional']);
 			unset($condiciones['Liquidacion.estado']);
+            unset($condiciones['Liquidacion.ano']);
+            unset($condiciones['Liquidacion.mes']);
             if ($this->data['Condicion']['Liquidacion-tipo'] !== 'final') {
                 $condiciones['Relacion.ingreso <='] = $periodo['hasta'];
             }
@@ -535,6 +537,38 @@ class LiquidacionesController extends AppController {
 
 
 	function riesgo_indemnizatorio() {
+        if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
+
+            $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
+            
+            if (!empty($this->data['Condicion']['Bar-relacion_id'])) {
+                $conditions['Liquidacion.relacion_id'] = $this->data['Condicion']['Bar-relacion_id'];
+            }
+            $conditions['Liquidacion.tipo'] = 'Normal';
+            $conditions['Liquidacion.estado'] = 'Confirmada';
+
+            $this->Liquidacion->Behaviors->detach('Permisos');
+            $this->Liquidacion->Behaviors->detach('Util');
+            $this->set('data', $this->Liquidacion->find('all',
+                    array(  'contain'       => array('Relacion'),
+                            'limit'         => 12,
+                            'order'         => array(
+                                'Liquidacion.ano DESC',
+                                'Liquidacion.mes DESC'),
+                            'fields'        => array(
+                                'Liquidacion.relacion_id',
+                                'Liquidacion.ano',
+                                'Liquidacion.mes',
+                                'SUM(Liquidacion.total) AS total'),
+                            'group'         => array(
+                                'Liquidacion.relacion_id',
+                                'Liquidacion.ano',
+                                'Liquidacion.mes'),
+                            'conditions'    => $conditions)));
+
+            $this->set('relacion', $this->Liquidacion->Relacion->findById($this->data['Condicion']['Bar-relacion_id']));
+            $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+        }
 	}
 
 
