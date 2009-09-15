@@ -33,7 +33,46 @@ class AusenciasController extends AppController {
         )
     );
 
+    var $helpers = array('Documento');
 
+    function reporte_ausencias_liquidadas() {
+        
+        if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
+
+            $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
+            
+            if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
+                $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
+            }
+
+            if (!empty($this->data['Condicion']['Bar-periodo_largo'])) {
+                $period = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
+                $conditions['Liquidacion.ano'] = $period['ano'];
+                $conditions['Liquidacion.mes'] = $period['mes'];
+            }
+            
+            $conditions['Liquidacion.tipo'] = 'Normal';
+            $conditions['Liquidacion.estado'] = 'Confirmada';
+
+            $this->Ausencia->AusenciasSeguimiento->Liquidacion->Behaviors->detach('Permisos');
+            $this->Ausencia->AusenciasSeguimiento->Behaviors->detach('Permisos');
+            //        'Liquidacion.LiquidacionesDetalle',
+            $this->set('data', $this->Ausencia->AusenciasSeguimiento->find('all', array(
+                'contain'       => array(
+                    'Ausencia' => array('order' => array('Ausencia.relacion_id'),
+                    'AusenciasMotivo',
+                    'Relacion' => array('Empleador', 'Trabajador'))),
+                'conditions'    => array(
+                    'AusenciasSeguimiento.liquidacion_id' => Set::extract('/Liquidacion/id', $this->Ausencia->AusenciasSeguimiento->Liquidacion->find('all',
+                        array(  'recursive'     => -1,
+                                'fields'        => array('Liquidacion.id'),
+                                'conditions'    => $conditions)))))));
+
+            $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+        }
+    }
+
+    
     function index() {
         if (!empty($this->data['Condicion']['AusenciasSeguimiento-estado'])) {
             
