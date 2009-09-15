@@ -390,8 +390,12 @@ class LiquidacionesController extends AppController {
 
 		/** Take care of filtering saved or unconfirmed receipt */
 		if (empty($condiciones['Liquidacion.estado'])) {
-			$condiciones = array_merge($condiciones, array('Liquidacion.estado' => array('Guardada', 'Sin Confirmar')));
-			$this->data['Condicion']['Liquidacion-estado'] = array('Guardada', 'Sin Confirmar');
+            if (empty($this->data['Condicion']['Liquidacion-estado'])) {
+                $condiciones = array_merge($condiciones, array('Liquidacion.estado' => array('Guardada', 'Sin Confirmar')));
+                $this->data['Condicion']['Liquidacion-estado'] = array('Guardada', 'Sin Confirmar');
+            } else {
+                $condiciones = array_merge($condiciones, array('Liquidacion.estado' => $this->data['Condicion']['Liquidacion-estado']));
+            }
 		}
 
         $this->Liquidacion->setSecurityAccess('readOwnerOnly');
