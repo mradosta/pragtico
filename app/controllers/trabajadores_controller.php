@@ -43,15 +43,20 @@ class TrabajadoresController extends AppController {
 
                     $c = 0;
                     $this->Trabajador->unbindModel(array('belongsTo' => array_keys($this->Trabajador->belongsTo)));
-                    for($i = 3; $i <= $objPHPExcel->getActiveSheet()->getHighestRow(); $i++) {
-                        if ($this->Trabajador->updateAll(array(
-                            'Trabajador.solicitar_tarjeta_debito'   => "'No'",
-                            'Trabajador.cbu'                        => "'" .
-                            str_replace('\'', '', $objPHPExcel->getActiveSheet()->getCell('i' . $i)->getValue()) . "'"),
-                                                            array("REPLACE(Trabajador.cuil, '-', '') like"   =>
-                            $objPHPExcel->getActiveSheet()->getCell('F' . $i)->getValue()))) {
-                                $c++;
-                            }
+                    for($i = 1; $i <= $objPHPExcel->getActiveSheet()->getHighestRow(); $i++) {
+                        $cuil = $cbu = null;
+                        $cuil = $objPHPExcel->getActiveSheet()->getCell('A' . $i)->getValue();
+                        $cbu = $objPHPExcel->getActiveSheet()->getCell('B' . $i)->getValue();
+                        if (!empty($cuil) && !empty($cuil)
+                            && in_array(strlen($cuil), array(11, 13)) && strlen($cbu) == 22
+                            && $this->Trabajador->updateAll(
+                                array(
+                                    'Trabajador.solicitar_tarjeta_debito'   => "'No'",
+                                    'Trabajador.cbu'                        => "'" . $cbu . "'"),
+                                array("REPLACE(Trabajador.cuil, '-', '')"   => str_replace('-', '', $cuil)))) {
+
+                            $c++;
+                        }
                     }
 
                     if ($c > 0) {
