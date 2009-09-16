@@ -26,7 +26,11 @@ foreach ($this->data['Coeficiente'] as $k=>$v) {
 	$fila[] = array('model' => 'AreasCoeficiente', 'field' => 'id', 'valor' => $v['AreasCoeficiente']['id'], 'write' => $v['AreasCoeficiente']['write'], 'delete' => $v['AreasCoeficiente']['delete']);
 	$fila[] = array('model' => 'AreasCoeficiente', 'field' => 'nombre', 'valor' => $v['nombre']);
 	$fila[] = array('model' => 'AreasCoeficiente', 'field' => 'tipo', 'valor' => $v['tipo']);
+    $fila[] = array('model' => 'Coeficiente', 'field' => 'valor', 'valor' => $v['valor']);
 	$fila[] = array('model' => 'AreasCoeficiente', 'field' => 'porcentaje', 'valor' => $v['AreasCoeficiente']['porcentaje'], 'tipoDato' => 'percentage');
+    $fila[] = array('model' => 'AreasCoeficiente', 'field' => 'porcentaje', 'valor' =>
+    $formato->format($v['valor'] + ($v['valor'] * $v['AreasCoeficiente']['porcentaje'] / 100)), 'tipoDato' => 'decimal', 'nombreEncabezado' => 'Total');
+        
 	$cuerpo[] = $fila;
 }
 
