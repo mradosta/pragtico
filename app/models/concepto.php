@@ -210,232 +210,266 @@ class Concepto extends AppModel {
 			$fields = am($fieldsRelaciones, $fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente, $fieldAreasCoeficiente);
 			$table 	= 	'relaciones_conceptos';
 			$joins	=	array(
-							array(
-								"alias" => "EmpleadoresConcepto",
-								"table" => "empleadores_conceptos",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"RelacionesConcepto.concepto_id = EmpleadoresConcepto.concepto_id",
-											"EmpleadoresConcepto.empleador_id"=> $opciones['relacion']['Relacion']['empleador_id'] ))
-							),
-							array(
-								"alias" => "ConveniosConcepto",
-								"table" => "convenios_conceptos",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"RelacionesConcepto.concepto_id = ConveniosConcepto.concepto_id",
-											"ConveniosConcepto.convenio_id" => $opciones['relacion']['ConveniosCategoria']['convenio_id']))
-							),
-							array(
-								"alias" => "Concepto",
-								"table" => "conceptos",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"RelacionesConcepto.concepto_id = Concepto.id"))
-							),
-							array(
-								"alias" => "Coeficiente",
-								"table" => "coeficientes",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"Concepto.coeficiente_id = Coeficiente.id"))
-							),
-							array(
-								"alias" => "EmpleadoresCoeficiente",
-								"table" => "empleadores_coeficientes",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"Coeficiente.id = EmpleadoresCoeficiente.coeficiente_id",
-											"EmpleadoresCoeficiente.empleador_id"	=> $opciones['relacion']['Relacion']['empleador_id']))
-							),
-							array(
-								"alias" => "Area",
-								"table" => "areas",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"Area.id" => $opciones['relacion']['Relacion']['area_id']))
-							),
-							array(
-								"alias" => "AreasCoefiente",
-								"table" => "areas_coeficientes",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"Area.id = AreasCoefiente.area_id",
-										 	"Coeficiente.id = AreasCoefiente.coeficiente_id"))
-							)							
-						);
+                array(
+                    'alias' => 'EmpleadoresConcepto',
+                    'table' => 'empleadores_conceptos',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(
+                            'RelacionesConcepto.concepto_id = EmpleadoresConcepto.concepto_id',
+                            'EmpleadoresConcepto.empleador_id'  =>  $opciones['relacion']['Relacion']['empleador_id']),
+                        array('OR'  => array(
+                                'EmpleadoresConcepto.desde'     => '0000-00-00',
+                                'EmpleadoresConcepto.desde <='  => $opciones['desde'])),
+                        array('OR'  => array(
+                                'EmpleadoresConcepto.hasta'     => '0000-00-00',
+                                'EmpleadoresConcepto.hasta >='  => $opciones['hasta'])))
+                ),
+                array(
+                    'alias' => 'ConveniosConcepto',
+                    'table' => 'convenios_conceptos',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(
+                            'RelacionesConcepto.concepto_id = ConveniosConcepto.concepto_id',
+                            'ConveniosConcepto.convenio_id'   => $opciones['relacion']['ConveniosCategoria']['convenio_id']),
+                        array('OR'  => array(
+                                'ConveniosConcepto.desde'     => '0000-00-00',
+                                'ConveniosConcepto.desde <='  => $opciones['desde'])),
+                        array('OR'  => array(
+                                'ConveniosConcepto.hasta'     => '0000-00-00',
+                                'ConveniosConcepto.hasta >='  => $opciones['hasta'])))
+                ),
+                array(
+                    'alias' => 'Concepto',
+                    'table' => 'conceptos',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(	'RelacionesConcepto.concepto_id = Concepto.id'),
+                        array('OR'  => array(
+                                'Concepto.desde'     => '0000-00-00',
+                                'Concepto.desde <='  => $opciones['desde'])),
+                        array('OR'  => array(
+                                'Concepto.hasta'     => '0000-00-00',
+                                'Concepto.hasta >='  => $opciones['hasta'])))
+                ),
+                array(
+                    'alias' => 'Coeficiente',
+                    'table' => 'coeficientes',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(	'Concepto.coeficiente_id = Coeficiente.id'))
+                ),
+                array(
+                    'alias' => 'EmpleadoresCoeficiente',
+                    'table' => 'empleadores_coeficientes',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(	'Coeficiente.id = EmpleadoresCoeficiente.coeficiente_id',
+                                'EmpleadoresCoeficiente.empleador_id'   => $opciones['relacion']['Relacion']['empleador_id']))
+                ),
+                array(
+                    'alias' => 'Area',
+                    'table' => 'areas',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(	'Area.id' => $opciones['relacion']['Relacion']['area_id']))
+                ),
+                array(
+                    'alias' => 'AreasCoefiente',
+                    'table' => 'areas_coeficientes',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(	'Area.id = AreasCoefiente.area_id',
+                                'Coeficiente.id = AreasCoefiente.coeficiente_id'))
+                ));
+            
 			$conditions = array(
-							"RelacionesConcepto.relacion_id" => $opciones['relacion']['Relacion']['id'],
-							array("OR"	=> array(	"RelacionesConcepto.desde" => "0000-00-00",
-												"RelacionesConcepto.desde <=" => $opciones['desde'])),
-							array("OR"	=> array(	"RelacionesConcepto.hasta" => "0000-00-00",
-												"RelacionesConcepto.hasta >=" => $opciones['hasta']))
-						);
-		}
-		elseif ($tipo === "Empleador") {
+                'RelacionesConcepto.relacion_id' => $opciones['relacion']['Relacion']['id'],
+                array('OR'	=> array(
+                    'RelacionesConcepto.desde'      => '0000-00-00',
+                    'RelacionesConcepto.desde <='   => $opciones['desde'])),
+                array('OR'	=> array(
+                    'RelacionesConcepto.hasta'      => '0000-00-00',
+                    'RelacionesConcepto.hasta >='   => $opciones['hasta'])));
+
+		} elseif ($tipo === 'Empleador') {
 			$fields = am($fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente);
-			$table 	= 	"empleadores_conceptos";
+			$table 	= 	'empleadores_conceptos';
 			$joins 	=	array(
-							array(
-								"alias" => "ConveniosConcepto",
-								"table" => "convenios_conceptos",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"EmpleadoresConcepto.concepto_id = ConveniosConcepto.concepto_id",
-											"ConveniosConcepto.convenio_id" => $opciones['relacion']['ConveniosCategoria']['convenio_id'],
-											array("OR"	=> array(	"ConveniosConcepto.desde" => "0000-00-00",
-																	"ConveniosConcepto.desde <=" => $opciones['desde'])),
-											array("OR"	=> array(	"ConveniosConcepto.hasta" => "0000-00-00",
-																	"ConveniosConcepto.hasta >=" => $opciones['hasta'])))
-								)
-							),
-							array(
-								"alias" => "Concepto",
-								"table" => "conceptos",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"EmpleadoresConcepto.concepto_id = Concepto.id"))
-							),
-							array(
-								"alias" => "Coeficiente",
-								"table" => "coeficientes",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"Concepto.coeficiente_id = Coeficiente.id"))
-							),
-							array(
-								"alias" => "EmpleadoresCoeficiente",
-								"table" => "empleadores_coeficientes",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"Coeficiente.id = EmpleadoresCoeficiente.coeficiente_id",
-											"EmpleadoresCoeficiente.empleador_id"	=> $opciones['relacion']['Relacion']['empleador_id']))
-							)							
-						);
+                array(
+                    'alias' => 'ConveniosConcepto',
+                    'table' => 'convenios_conceptos',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(
+                            'EmpleadoresConcepto.concepto_id = ConveniosConcepto.concepto_id',
+                            'ConveniosConcepto.convenio_id' => $opciones['relacion']['ConveniosCategoria']['convenio_id'],
+                            array('OR'	=> array(
+                                'ConveniosConcepto.desde'       => '0000-00-00',
+                                'ConveniosConcepto.desde <='    => $opciones['desde'])),
+                            array('OR'	=> array(
+                                'ConveniosConcepto.hasta'       => '0000-00-00',
+                                'ConveniosConcepto.hasta >='    => $opciones['hasta']))))
+                ),
+                array(
+                    'alias' => 'Concepto',
+                    'table' => 'conceptos',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(	'EmpleadoresConcepto.concepto_id = Concepto.id'))
+                ),
+                array(
+                    'alias' => 'Coeficiente',
+                    'table' => 'coeficientes',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(	'Concepto.coeficiente_id = Coeficiente.id'))
+                ),
+                array(
+                    'alias' => 'EmpleadoresCoeficiente',
+                    'table' => 'empleadores_coeficientes',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(	'Coeficiente.id = EmpleadoresCoeficiente.coeficiente_id',
+                                'EmpleadoresCoeficiente.empleador_id' => $opciones['relacion']['Relacion']['empleador_id']))
+                ));
 			$conditions = array(
-							"EmpleadoresConcepto.empleador_id" => $opciones['relacion']['Relacion']['empleador_id'],
-							array("OR"	=> array(	"EmpleadoresConcepto.desde" => "0000-00-00",
-													"EmpleadoresConcepto.desde <=" => $opciones['desde'])),
-							array("OR"	=> array(	"EmpleadoresConcepto.hasta" => "0000-00-00",
-													"EmpleadoresConcepto.hasta >=" => $opciones['hasta']))
+							'EmpleadoresConcepto.empleador_id' => $opciones['relacion']['Relacion']['empleador_id'],
+							array('OR'	=> array(
+                                'EmpleadoresConcepto.desde'     => '0000-00-00',
+                                'EmpleadoresConcepto.desde <='  => $opciones['desde'])),
+							array('OR'	=> array(
+                                'EmpleadoresConcepto.hasta'     => '0000-00-00',
+								'EmpleadoresConcepto.hasta >='  => $opciones['hasta']))
 						);
-		}
-		elseif ($tipo === "ConvenioColectivo") {
+		} elseif ($tipo === 'ConvenioColectivo') {
 			$fields = am($fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente);
-			$table 	= 	"convenios_conceptos";
+			$table 	= 	'convenios_conceptos';
 			$joins 	=	array(
-							array(
-								"alias" => "Concepto",
-								"table" => "conceptos",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"ConveniosConcepto.concepto_id = Concepto.id"))
-							),
-							array(
-								"alias" => "Coeficiente",
-								"table" => "coeficientes",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"Concepto.coeficiente_id = Coeficiente.id"))
-							),
-							array(
-								"alias" => "EmpleadoresCoeficiente",
-								"table" => "empleadores_coeficientes",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"Coeficiente.id = EmpleadoresCoeficiente.coeficiente_id",
-											"EmpleadoresCoeficiente.empleador_id"	=> $opciones['relacion']['Relacion']['empleador_id']))
-							)							
-						);
-			$conditions = array(
-							"ConveniosConcepto.convenio_id" => $opciones['relacion']['ConveniosCategoria']['convenio_id'],
-							array("OR"	=> array(	"ConveniosConcepto.desde" => "0000-00-00",
-													"ConveniosConcepto.desde <=" => $opciones['desde'])),
-							array("OR"	=> array(	"ConveniosConcepto.hasta" => "0000-00-00",
-													"ConveniosConcepto.hasta >=" => $opciones['hasta']))
-						);
-		}
-		elseif ($tipo === "ConceptoPuntual") {
+                array(
+                    'alias' => 'Concepto',
+                    'table' => 'conceptos',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(	'ConveniosConcepto.concepto_id = Concepto.id'))
+                ),
+                array(
+                    'alias' => 'Coeficiente',
+                    'table' => 'coeficientes',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(	'Concepto.coeficiente_id = Coeficiente.id'))
+                ),
+                array(
+                    'alias' => 'EmpleadoresCoeficiente',
+                    'table' => 'empleadores_coeficientes',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(	'Coeficiente.id = EmpleadoresCoeficiente.coeficiente_id',
+                                'EmpleadoresCoeficiente.empleador_id'	=> $opciones['relacion']['Relacion']['empleador_id']))
+                )
+            );
+            $conditions = array(
+                            'ConveniosConcepto.convenio_id' => $opciones['relacion']['ConveniosCategoria']['convenio_id'],
+                            array('OR'	=> array(
+                                'ConveniosConcepto.desde'       => '0000-00-00',
+                                'ConveniosConcepto.desde <='    => $opciones['desde'])),
+                            array('OR'	=> array(
+                                'ConveniosConcepto.hasta'       => '0000-00-00',
+                                'ConveniosConcepto.hasta >='    => $opciones['hasta'])));
+            
+		} elseif ($tipo === 'ConceptoPuntual') {
 			$fields = am($fieldsRelaciones, $fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente, $fieldAreasCoeficiente);
-			$table 	= 	"conceptos";
+			$table 	= 	'conceptos';
 			$joins 	=	array(
-                            array(
-                                "alias" => "RelacionesConcepto",
-                                "table" => "relaciones_conceptos",
-                                "type"  => "LEFT",
-                                "conditions" => array(
-                                    array(  "RelacionesConcepto.concepto_id = Concepto.id",
-                                            "RelacionesConcepto.relacion_id" => $opciones['relacion']['Relacion']['id']))
-                            ),
-							array(
-								"alias" => "ConveniosConcepto",
-								"table" => "convenios_conceptos",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"Concepto.id = ConveniosConcepto.concepto_id"),
-											"ConveniosConcepto.convenio_id" => $opciones['relacion']['ConveniosCategoria']['convenio_id'])
-							),
-							array(
-								"alias" => "EmpleadoresConcepto",
-								"table" => "empleadores_conceptos",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"Concepto.id = EmpleadoresConcepto.concepto_id",
-											"EmpleadoresConcepto.empleador_id"=> $opciones['relacion']['Relacion']['empleador_id'] ))
-							),
-							array(
-								"alias" => "Coeficiente",
-								"table" => "coeficientes",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"Concepto.coeficiente_id = Coeficiente.id"))
-							),
-							array(
-								"alias" => "EmpleadoresCoeficiente",
-								"table" => "empleadores_coeficientes",
-								"type" 	=> "LEFT",
-								"conditions" => array(
-									array(	"Coeficiente.id = EmpleadoresCoeficiente.coeficiente_id",
-											"EmpleadoresCoeficiente.empleador_id"	=> $opciones['relacion']['Relacion']['empleador_id']))
-							),
-                            array(
-                                "alias" => "Area",
-                                "table" => "areas",
-                                "type"  => "LEFT",
-                                "conditions" => array(
-                                    array(  "Area.id" => $opciones['relacion']['Relacion']['area_id']))
-                            ),
-                            array(
-                                "alias" => "AreasCoefiente",
-                                "table" => "areas_coeficientes",
-                                "type"  => "LEFT",
-                                "conditions" => array(
-                                    array(  "Area.id = AreasCoefiente.area_id",
-                                            "Coeficiente.id = AreasCoefiente.coeficiente_id"))
-                            )							
-						);
+                array(
+                    'alias' => 'RelacionesConcepto',
+                    'table' => 'relaciones_conceptos',
+                    'type'  => 'LEFT',
+                    'conditions' => array(
+                        array(
+                            'RelacionesConcepto.concepto_id = Concepto.id',
+                            'RelacionesConcepto.relacion_id' => $opciones['relacion']['Relacion']['id']))
+                ),
+                array(
+                    'alias' => 'ConveniosConcepto',
+                    'table' => 'convenios_conceptos',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(
+                            'Concepto.id = ConveniosConcepto.concepto_id'),
+                            'ConveniosConcepto.convenio_id' => $opciones['relacion']['ConveniosCategoria']['convenio_id'])
+                ),
+                array(
+                    'alias' => 'EmpleadoresConcepto',
+                    'table' => 'empleadores_conceptos',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(
+                            'Concepto.id = EmpleadoresConcepto.concepto_id',
+                            'EmpleadoresConcepto.empleador_id' => $opciones['relacion']['Relacion']['empleador_id'] ))
+                ),
+                array(
+                    'alias' => 'Coeficiente',
+                    'table' => 'coeficientes',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(	'Concepto.coeficiente_id = Coeficiente.id'))
+                ),
+                array(
+                    'alias' => 'EmpleadoresCoeficiente',
+                    'table' => 'empleadores_coeficientes',
+                    'type' 	=> 'LEFT',
+                    'conditions' => array(
+                        array(
+                            'Coeficiente.id = EmpleadoresCoeficiente.coeficiente_id',
+                            'EmpleadoresCoeficiente.empleador_id'	=> $opciones['relacion']['Relacion']['empleador_id']))
+                ),
+                array(
+                    'alias' => 'Area',
+                    'table' => 'areas',
+                    'type'  => 'LEFT',
+                    'conditions' => array(
+                        array(  'Area.id' => $opciones['relacion']['Relacion']['area_id']))
+                ),
+                array(
+                    'alias' => 'AreasCoefiente',
+                    'table' => 'areas_coeficientes',
+                    'type'  => 'LEFT',
+                    'conditions' => array(
+                        array(  'Area.id = AreasCoefiente.area_id',
+                                'Coeficiente.id = AreasCoefiente.coeficiente_id'))
+                )
+            );
 			$conditions = array(
-							"Concepto.codigo" => $opciones['codigoConcepto'],
-							array("OR"	=> array(	"Concepto.desde" => "0000-00-00",
-													"Concepto.desde <=" => $opciones['desde'])),
-							array("OR"	=> array(	"Concepto.hasta" => "0000-00-00",
-													"Concepto.hasta >=" => $opciones['hasta']))
+							'Concepto.codigo' => $opciones['codigoConcepto'],
+							array('OR'	=> array(	'Concepto.desde' => '0000-00-00',
+													'Concepto.desde <=' => $opciones['desde'])),
+							array('OR'	=> array(	'Concepto.hasta' => '0000-00-00',
+													'Concepto.hasta >=' => $opciones['hasta']))
 						);
-		}
-		elseif ($tipo === "Todos") {
+            
+		} elseif ($tipo === 'Todos') {
 
 			$fields = $fieldsConceptos;
-			$table	= "conceptos";
+			$table	= 'conceptos';
 			$conditions = array(
-							array("OR"	=> array(	"Concepto.desde" => "0000-00-00",
-													"Concepto.desde <=" => $opciones['desde'])),
-							array("OR"	=> array(	"Concepto.hasta" => "0000-00-00",
-													"Concepto.hasta >=" => $opciones['hasta']))
-						);
-			$order	= "ORDER BY Concepto.nombre, Concepto.codigo";
+                array('OR'	=> array(
+                        'Concepto.desde'      => '0000-00-00',
+                        'Concepto.desde <=' => $opciones['desde'])),
+                array('OR'	=> array(
+                        'Concepto.hasta'      => '0000-00-00',
+                        'Concepto.hasta >=' => $opciones['hasta'])));
+			$order	= 'ORDER BY Concepto.nombre, Concepto.codigo';
 		}
 		
-		$sql = $this->generarSql(array("fields"=>$fields, "table"=>$table, "conditions"=>$conditions, "joins"=>$joins, "order"=>$order));
+		$sql = $this->generarSql(array(
+            'fields'        => $fields,
+            'table'         => $table,
+            'conditions'    =>$conditions,
+            'joins'         => $joins,
+            'order'         => $order));
 		$r = $this->query($sql);
 		
 		$conceptos = array();
