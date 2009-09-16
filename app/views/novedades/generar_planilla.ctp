@@ -17,44 +17,22 @@
  */
  
 if(!empty($registros)) {
-    $documento->create(array('password' => true));
+    $documento->create(array('password' => true, 'title' => 'Ingreso de Novedades'));
     $fila = $filaInicio = 8;
 
     /**
     * Oculto la columna donde tengo los identificadores de la relacion.
     */
-    $documento->doc->getActiveSheet()->getColumnDimension('A')->setVisible(false);
-
-    /**
-    * Pongo el titulo de la planilla.
-    */
-    $documento->setCellValue('E1:M3', 'Novedades - ' . date('Y-m-d'),
-        array('style' => array('font'       => array('bold' => true, 'size' => 14),
-                            'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER))
-            ));
-
-    /**
-    * Agrego el logo de Pragtico.
-    */
-    $objDrawing = new PHPExcel_Worksheet_Drawing();
-    $objDrawing->setName('Pragtico');
-    $objDrawing->setDescription('Pragtico');
-    $objDrawing->setPath(WWW_ROOT . 'img' . DS . 'logo_pragtico.jpg');
-    $objDrawing->setCoordinates('B1');
-    $objDrawing->setHeight(130);
-    $objDrawing->setWidth(260);
-    $objDrawing->getShadow()->setVisible(true);
-    $objDrawing->setWorksheet($documento->doc->getActiveSheet());
+    $documento->activeSheet->getColumnDimension('A')->setVisible(false);
 
     /**
     * Pongo las columnas en auto ajuste del ancho.
     */
-    $documento->doc->getActiveSheet()->getColumnDimensionByColumn('B')->setWidth(8);
-    $documento->doc->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
-    $documento->doc->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+    $documento->setWidth('B', 20);
+    $documento->setWidth('C', 35);
+    $documento->setWidth('D', 35);
+    $documento->setWidth('E', 15);
+    $documento->setWidth('F', 15);
 
     /**
     * Pongo los titulos de las columnas.
@@ -190,7 +168,7 @@ if(!empty($registros)) {
         $documento->setCellValue('E' . $fila, $registro['Relacion']['ingreso']);
         $documento->setCellValue('F' . $fila, ($registro['Relacion']['egreso'] !== '0000-00-00')?$registro['Relacion']['egreso']:'');
 
-        for($i = $columnaInicioConceptosDinamicos; $i < $columna; $i++) {
+        for($i = $columnaInicioConceptosDinamicos; $i <= $columna; $i++) {
             $documento->setDataValidation($i . ',' . $fila, 'decimal');
         }
         
