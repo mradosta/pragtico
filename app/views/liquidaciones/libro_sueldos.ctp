@@ -234,6 +234,13 @@ if (!empty($data)) {
             'controller'        => 'empleadores',
             'seleccionMultiple' => 0,
             'camposRetorno'     => array('Empleador.cuit', 'Empleador.nombre')));
+
+    $conditions['Condicion.Bar-area_id'] = array(
+            'label' => 'Area',
+            'mask'          =>  '%s, %s',
+            'lov'   => array('controller'   => 'areas',
+                            'camposRetorno' => array(   'Empleador.nombre',
+                                                        'Area.nombre')));
     
     $conditions['Condicion.Bar-tipo'] = array('label' => 'Tipo', 'multiple' => 'checkbox', 'type' => 'select', 'options' => $types);
     $conditions['Condicion.Bar-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'F'));

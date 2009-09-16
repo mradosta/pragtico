@@ -192,6 +192,10 @@ class LiquidacionesController extends AppController {
                     $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
                 }
 
+                if (!empty($this->data['Condicion']['Bar-area_id'])) {
+                    $conditions['Liquidacion.relacion_area_id'] = $this->data['Condicion']['Bar-area_id'];
+                }
+                
                 if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
                     $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
                 }
