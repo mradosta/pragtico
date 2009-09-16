@@ -278,6 +278,7 @@ class LiquidacionesController extends AppController {
 			unset($condiciones['Liquidacion.estado']);
             unset($condiciones['Liquidacion.ano']);
             unset($condiciones['Liquidacion.mes']);
+            unset($condiciones['Liquidacion.periodo']);
             if ($this->data['Condicion']['Liquidacion-tipo'] !== 'final') {
                 $condiciones['Relacion.ingreso <='] = $periodo['hasta'];
             }
