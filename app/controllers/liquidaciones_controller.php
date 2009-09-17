@@ -87,10 +87,6 @@ class LiquidacionesController extends AppController {
                     $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
                 }
 
-                if (!empty($this->data['Condicion']['Bar-concepto_id'])) {
-                    $conditions['Liquidacion.concepto_id'] = $this->data['Condicion']['Bar-concepto_id'];
-                }
-                                
                 if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
                     $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
                 }
@@ -113,6 +109,10 @@ class LiquidacionesController extends AppController {
                     $this->Session->setFlash('No se han encontrado liquidaciones segun los criterios especificados.', 'error');
                 } else {
 
+                    if (!empty($this->data['Condicion']['Bar-concepto_id'])) {
+                        $conditions['LiquidacionesDetalle.concepto_id'] = $this->data['Condicion']['Bar-concepto_id'];
+                    }
+                    
                     $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
                     $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Util');
                     $conditions['OR'] = array('LiquidacionesDetalle.concepto_imprimir' => 'Si', array('LiquidacionesDetalle.concepto_imprimir' => 'Solo con valor', 'ABS(LiquidacionesDetalle.valor) >' => 0));
@@ -122,18 +122,28 @@ class LiquidacionesController extends AppController {
                                 'conditions'    => $conditions,
                                 'contain'       => 'Liquidacion',
                                 'order'         => 'Liquidacion.relacion_id, LiquidacionesDetalle.concepto_orden',
-                                'fields'        => array('Liquidacion.trabajador_nombre',
-                                                        'Liquidacion.trabajador_apellido',
-                                                        'LiquidacionesDetalle.concepto_nombre',
-                                                        'LiquidacionesDetalle.concepto_tipo',
-                                                        'LiquidacionesDetalle.coeficiente_valor',
-                                                        'LiquidacionesDetalle.coeficiente_nombre',
-                                                        'COUNT(LiquidacionesDetalle.concepto_nombre) AS cantidad',
-                                                        'SUM(LiquidacionesDetalle.valor_cantidad) AS suma_cantidad',
-                                                        'SUM(LiquidacionesDetalle.valor) AS valor'),
-                                'group'         => array('Liquidacion.relacion_id', 'LiquidacionesDetalle.concepto_nombre')));
+                                'fields'        => array(
+                                    'Liquidacion.trabajador_cuil',
+                                    'Liquidacion.trabajador_nombre',
+                                    'Liquidacion.trabajador_apellido',
+                                    'LiquidacionesDetalle.concepto_nombre',
+                                    'LiquidacionesDetalle.concepto_tipo',
+                                    'LiquidacionesDetalle.coeficiente_valor',
+                                    'LiquidacionesDetalle.coeficiente_nombre',
+                                    'COUNT(LiquidacionesDetalle.concepto_nombre) AS cantidad',
+                                    'SUM(LiquidacionesDetalle.valor_cantidad) AS suma_cantidad',
+                                    'SUM(LiquidacionesDetalle.valor) AS valor'),
+                                'group'         => array(
+                                    'Liquidacion.relacion_id',
+                                    'Liquidacion.trabajador_cuil',
+                                    'Liquidacion.trabajador_nombre',
+                                    'Liquidacion.trabajador_apellido',
+                                    'LiquidacionesDetalle.concepto_nombre',
+                                    'LiquidacionesDetalle.concepto_tipo',
+                                    'LiquidacionesDetalle.coeficiente_valor',
+                                    'LiquidacionesDetalle.coeficiente_nombre')));
                         foreach ($r as $record) {
-                            $data[$record['Liquidacion']['trabajador_apellido'] . ', ' . $record['Liquidacion']['trabajador_nombre']][] = $record;
+                            $data[$record['Liquidacion']['trabajador_cuil']][] = $record;
                         }
                     } else {
                         $r = $this->Liquidacion->LiquidacionesDetalle->find('all', array(

@@ -66,6 +66,10 @@ if (!empty($data)) {
     /** Body */
     foreach ($data as $k => $detail) {
 
+        if (!empty($detail[0]['Liquidacion']['trabajador_cuil'])) {
+            $cuils[$detail[0]['Liquidacion']['trabajador_cuil']] = $detail[0]['Liquidacion']['trabajador_cuil'];
+        }
+                
         $fila++;
         $documento->setCellValue('A' . $fila, $k, 'bold');
         $beginRow = $fila;
@@ -97,9 +101,13 @@ if (!empty($data)) {
 
     $fila+=3;
     $documento->setCellValue('A' . $fila . ':E' . $fila, 'TOTALES', 'title');
-    $fila++;
-    $documento->setCellValue('A' . $fila, 'Trabajadores', 'bold');
-    $documento->setCellValue('E' . $fila, $totalWorkers, 'bold');
+
+    if (isset($cuils)) {
+        $fila++;
+        $documento->setCellValue('A' . $fila, 'Trabajadores', 'bold');
+        $documento->setCellValue('E' . $fila, count($cuils), 'bold');
+    }
+    
     $fila++;
     $documento->setCellValue('A' . $fila, 'Liquidado', 'bold');
     $documento->setCellValue('E' . $fila, '=SUM('.implode('+', $totals['C']).')', 'total');
