@@ -404,8 +404,11 @@ class LiquidacionesController extends AppController {
 				$condiciones['Liquidacion.periodo'] = $periodo['periodo'];
 			}
 		}
-
+        
 		/** Take care of filtering saved or unconfirmed receipt */
+        if (empty($condiciones)) {
+            $condiciones =$this->Paginador->generarCondicion();
+        }
 		if (empty($condiciones['Liquidacion.estado'])) {
             if (empty($this->data['Condicion']['Liquidacion-estado'])) {
                 $condiciones = array_merge($condiciones, array('Liquidacion.estado' => array('Guardada', 'Sin Confirmar')));
