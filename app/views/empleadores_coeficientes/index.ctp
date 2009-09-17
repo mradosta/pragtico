@@ -40,7 +40,7 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Coeficiente', 'field' => 'tipo', 'valor' => $v['Coeficiente']['tipo']);
     $fila[] = array('model' => 'Coeficiente', 'field' => 'valor', 'valor' => $v['Coeficiente']['valor']);
 	$fila[] = array('model' => 'EmpleadoresCoeficiente', 'field' => 'porcentaje', 'valor' => $v['EmpleadoresCoeficiente']['porcentaje'], 'tipoDato' => 'percentage');
-    $fila[] = array('model' => 'EmpleadoresCoeficiente', 'field' => 'porcentaje', 'valor' => $v['Coeficiente']['valor'] + ($v['Coeficiente']['valor'] * $v['EmpleadoresCoeficiente']['porcentaje'] / 100), 'tipoDato' => 'decimal', 'nombreEncabezado' => 'Total');
+    $fila[] = array('model' => 'EmpleadoresCoeficiente', 'field' => 'porcentaje', 'valor' => $formato->format($v['Coeficiente']['valor'] + ($v['Coeficiente']['valor'] * $v['EmpleadoresCoeficiente']['porcentaje'] / 100), array('type' => 'number', 'places' => 4)), 'nombreEncabezado' => 'Total');
 	$cuerpo[] = $fila;
 }
 
