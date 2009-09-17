@@ -45,19 +45,15 @@ if (!empty($data)) {
 
     $fila+=2;
     /** Create headers */
-    $column = 0;
+    $column = 'A';
     foreach ($definitions as $definition) {
         /** Set title columns. */
-        $documento->setCellValue($column . ',' . $fila, $definition['title'], array('title' => $definition['width']));
+        $documento->setCellValue($column . $fila, $definition['title'], array('title' => $definition['width']));
         $column++;
     }
 
 
     $fila = 7;
-    $total = 0;
-    $flag = null;
-    $inicio = 0;
-    $flagCoeficiente = null;    
     $extraTotals['Remunerativo'] = 0;
     $extraTotals['No Remunerativo'] = 0;
     $extraTotals['Deduccion'] = 0;
@@ -66,12 +62,15 @@ if (!empty($data)) {
     /** Body */
     foreach ($data as $k => $detail) {
 
+        $fila++;
         if (!empty($detail[0]['Liquidacion']['trabajador_cuil'])) {
             $cuils[$detail[0]['Liquidacion']['trabajador_cuil']] = $detail[0]['Liquidacion']['trabajador_cuil'];
+
+            $documento->setCellValue('A' . $fila, ($detail[0]['Liquidacion']['trabajador_apellido']) . $detail[0]['Liquidacion']['trabajador_apellido'] . ', ' . $detail[0]['Liquidacion']['trabajador_apellido'], 'bold');
+        } else {
+            $documento->setCellValue('A' . $fila, $k, 'bold');
         }
                 
-        $fila++;
-        $documento->setCellValue('A' . $fila, $k, 'bold');
         $beginRow = $fila;
         foreach ($detail as $r) {
             
