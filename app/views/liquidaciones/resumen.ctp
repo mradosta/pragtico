@@ -64,16 +64,14 @@ if (!empty($data)) {
 
         $fila++;
         if (!empty($detail[0]['Liquidacion']['trabajador_cuil'])) {
-            $cuils[$detail[0]['Liquidacion']['trabajador_cuil']] = $detail[0]['Liquidacion']['trabajador_cuil'];
-
-            $documento->setCellValue('A' . $fila, ($detail[0]['Liquidacion']['trabajador_apellido']) . $detail[0]['Liquidacion']['trabajador_apellido'] . ', ' . $detail[0]['Liquidacion']['trabajador_apellido'], 'bold');
+            $documento->setCellValue('A' . $fila, ($detail[0]['Liquidacion']['relacion_legajo']) . ' - ' . $detail[0]['Liquidacion']['trabajador_apellido'] . ', ' . $detail[0]['Liquidacion']['trabajador_nombre'], 'bold');
         } else {
             $documento->setCellValue('A' . $fila, $k, 'bold');
         }
                 
         $beginRow = $fila;
         foreach ($detail as $r) {
-            
+
             $extraTotals[$r['LiquidacionesDetalle']['concepto_tipo']] += $r['LiquidacionesDetalle']['valor'];
             
             if ($r['LiquidacionesDetalle']['concepto_tipo'] === 'Deduccion') {
@@ -101,11 +99,9 @@ if (!empty($data)) {
     $fila+=3;
     $documento->setCellValue('A' . $fila . ':E' . $fila, 'TOTALES', 'title');
 
-    if (isset($cuils)) {
-        $fila++;
-        $documento->setCellValue('A' . $fila, 'Trabajadores', 'bold');
-        $documento->setCellValue('E' . $fila, count($cuils), 'bold');
-    }
+    $fila++;
+    $documento->setCellValue('A' . $fila, 'Trabajadores', 'bold');
+    $documento->setCellValue('E' . $fila, $totalWorkers, 'bold');
     
     $fila++;
     $documento->setCellValue('A' . $fila, 'Liquidado', 'bold');

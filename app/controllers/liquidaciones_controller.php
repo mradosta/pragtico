@@ -123,6 +123,7 @@ class LiquidacionesController extends AppController {
                                 'contain'       => 'Liquidacion',
                                 'order'         => 'Liquidacion.relacion_id, LiquidacionesDetalle.concepto_orden',
                                 'fields'        => array(
+                                    'Liquidacion.relacion_legajo',
                                     'Liquidacion.trabajador_cuil',
                                     'Liquidacion.trabajador_nombre',
                                     'Liquidacion.trabajador_apellido',
@@ -135,6 +136,7 @@ class LiquidacionesController extends AppController {
                                     'SUM(LiquidacionesDetalle.valor) AS valor'),
                                 'group'         => array(
                                     'Liquidacion.relacion_id',
+                                    'Liquidacion.relacion_legajo',
                                     'Liquidacion.trabajador_cuil',
                                     'Liquidacion.trabajador_nombre',
                                     'Liquidacion.trabajador_apellido',
