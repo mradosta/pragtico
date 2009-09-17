@@ -326,7 +326,7 @@ TODO: REVISAR
                         $ausencias['Accidente ART'] = $ausencias['Accidente'];
                         $ausencias['Accidente'] = 0;
                     } else {
-                        $ausencias['Accidente ART'] = $ausencias['Accidente'] - 10;
+                        $ausencias['Accidente ART'] = ($daysBeforePeriod + $ausencias['Accidente']) - 10;
                         $ausencias['Accidente'] = 10 - $daysBeforePeriod;
                     }
 
