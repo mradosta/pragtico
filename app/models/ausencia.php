@@ -184,16 +184,28 @@ class Ausencia extends AppModel {
                     $ausenciasArt = $ausencia;
                 }
 
+                $diasPeriodo = Dates::dateDiff($periodo['desde'], $periodo['hasta']);
+                
                 $acumulado = 0;
                 foreach ($ausencia['AusenciasSeguimiento'] as $seguimiento) {
 
-                    $acumulado += $seguimiento['dias'];
                     if ($seguimiento['estado'] === 'Confirmado') {
+                        
+                        $acumulado += $seguimiento['dias'];
+                        
                         if (Dates::dateAdd($ausencia['Ausencia']['desde'], $acumulado) > $periodo['hasta']) {
 
-                            $diff = Dates::dateDiff(Dates::dateAdd($ausencia['Ausencia']['desde'], ($acumulado - $seguimiento['dias'])), $periodo['hasta']);
+                            if ($acumulado > $diasPeriodo['dias']) {
+                                $diff['dias'] = $diasPeriodo['dias'] + 1;
+                                
+                                if ($acumulado > $diasPeriodo['dias']) {
+                                    $acumulado = $diasPeriodo['dias'];
+                                }
+                            } else {
+                                $diff = Dates::dateDiff(Dates::dateAdd($ausencia['Ausencia']['desde'], ($acumulado - $seguimiento['dias'])), $periodo['hasta']);
+                            }
                             $diff['dias']--;
-                                    
+                            
                             $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $diff['dias'];
                             $auxiliar = null;
                             $auxiliar['id'] = $seguimiento['id'];
