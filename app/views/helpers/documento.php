@@ -332,9 +332,9 @@ class DocumentoHelper extends AppHelper {
                                     'style' => PHPExcel_Style_Border::BORDER_DOTTED)));
                             if (!empty($v)) {
                                 $this->setWidth(str_replace(array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), '', $cellName), $v);
-                            } else {
+                            }/* else {
                                 $this->activeSheet->getColumnDimension(str_replace(array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), '', $cellName))->setAutoSize(true);
-                            }
+                            }*/
                         break;
                         case 'decimal':
                             $this->activeSheet->getStyle($cellName)->getNumberFormat()->setFormatCode('0.00');
