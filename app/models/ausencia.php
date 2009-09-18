@@ -184,8 +184,6 @@ class Ausencia extends AppModel {
                     $ausenciasArt = $ausencia;
                 }
 
-                $diasPeriodo = Dates::dateDiff($periodo['desde'], $periodo['hasta']);
-                
                 $acumulado = 0;
                 foreach ($ausencia['AusenciasSeguimiento'] as $seguimiento) {
 
@@ -195,12 +193,10 @@ class Ausencia extends AppModel {
                         
                         if (Dates::dateAdd($ausencia['Ausencia']['desde'], $acumulado) > $periodo['hasta']) {
 
+                            $diasPeriodo = Dates::dateDiff($periodo['desde'], $periodo['hasta']);
                             if ($acumulado > $diasPeriodo['dias']) {
                                 $diff['dias'] = $diasPeriodo['dias'] + 1;
-                                
-                                if ($acumulado > $diasPeriodo['dias']) {
-                                    $acumulado = $diasPeriodo['dias'];
-                                }
+                                $acumulado = $diasPeriodo['dias'];
                             } else {
                                 $diff = Dates::dateDiff(Dates::dateAdd($ausencia['Ausencia']['desde'], ($acumulado - $seguimiento['dias'])), $periodo['hasta']);
                             }
@@ -212,8 +208,9 @@ class Ausencia extends AppModel {
                             $auxiliar['estado'] = 'Liquidado';
                             $auxiliar['permissions'] = '288';
                             $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
+                            $auxiliar['dias'] = $diff['dias'];
                             
-                            $auxiliar['dias'] = $seguimiento['dias'] - $diff['dias'];
+                            //debug($auxiliar);
                             $auxiliares[] = array(	'save' 	=> serialize($auxiliar),
                                                     'model' => 'AusenciasSeguimiento');
 
@@ -222,6 +219,7 @@ class Ausencia extends AppModel {
                             * con los dias que queron pendientes de este */
                             $seguimiento['id'] = null;
                             $seguimiento['dias'] = $seguimiento['dias'] - $auxiliar['dias'];
+                            //debug($seguimiento);
                             $auxiliares[] = array(	'save' 	=> serialize($seguimiento),
                                                     'model' => 'AusenciasSeguimiento');
                             //$acumulado += $auxiliar['dias'];
