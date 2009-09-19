@@ -28,6 +28,87 @@ class RelacionesController extends AppController {
 
     var $helpers = array('Documento');
 
+    function archivo_bimestral_ministerio_trabajo() {
+
+        if (!empty($this->data)) {
+            $this->Relacion->contain(array('Trabajador', 'Empleador', 'Area', 'ConveniosCategoria' => 'Convenio'));
+            $data = $this->Relacion->find('all', array('limit' => 1));
+            if (!empty($data)) {
+                
+                $lineas = array();
+                $groupParams = User::getGroupParams($this->data['Condicion']['Bar-grupo_id']);
+                
+                $linea = null;
+                $c = 1;
+                $linea[$c++] = 'HR';
+                $linea[$c++] = str_pad($groupParams['ministerio_trabajo_legajo'], 6, '0', STR_PAD_LEFT);
+                $linea[$c++] = str_replace('-', '', $groupParams['cuit']);
+                $linea[$c++] = str_pad($groupParams['nombre_fantasia'], 50, ' ', STR_PAD_RIGHT);
+                $linea[$c++] = str_pad($groupParams['direccion'], 30, ' ', STR_PAD_RIGHT);
+                $linea[$c++] = str_pad($groupParams['ciudad'], 20, ' ', STR_PAD_RIGHT);
+                $linea[$c++] = str_pad($groupParams['codigo_postal'], 8, ' ', STR_PAD_RIGHT);
+                $linea[$c++] = str_pad($groupParams['ministerio_trabajo_provincia'], 2, '0', STR_PAD_LEFT);
+                $linea[$c++] = $this->data['Condicion']['Bar-bimestre'];
+                $linea[$c++] = $this->data['Condicion']['Bar-ano'];
+                $linea[$c++] = '00';
+                $linea[$c++] = str_repeat(' ', 378);
+                $lineas[] = implode('', $linea);
+
+
+                foreach ($data as $r) {
+                    $linea = null;
+                    $c = 1;
+                    
+                    if (empty($historico[$r['ConveniosCategoria']['id']])) {
+                        $tmp = $this->Relacion->ConveniosCategoria->ConveniosCategoriasHistorico->find('first',
+                            array(
+                                'recursive'     => -1,
+                                'checkSecurity' => false,
+                                'order'         => 'ConveniosCategoriasHistorico.id DESC',
+                                'conditions'    =>
+                                    array('ConveniosCategoriasHistorico.convenios_categoria_id' => $r['ConveniosCategoria']['id'])));
+
+                        $historico[$r['ConveniosCategoria']['id']] = $tmp['ConveniosCategoriasHistorico']['costo'];
+                    }
+                    
+                    $linea[$c++] = 'DR';
+                    $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['Trabajador']['nombre']), 50, ' ', STR_PAD_RIGHT), 0, 50);
+                    $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['Trabajador']['apellido']), 50, ' ', STR_PAD_RIGHT), 0, 50);
+                    $linea[$c++] = str_replace('-', '', $r['Trabajador']['cuil']);
+                    $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['ConveniosCategoria']['nombre']), 30, ' ', STR_PAD_RIGHT), 0, 30);
+                    $linea[$c++] = substr(str_pad($r['ConveniosCategoria']['Convenio']['numero'], 20, ' ', STR_PAD_RIGHT), 0, 20);
+                    $linea[$c++] = str_pad($historico[$r['ConveniosCategoria']['id']], 8, '0', STR_PAD_LEFT);
+                    if ($r['ConveniosCategoria']['jornada'] == 'Mensual') {
+                        $linea[$c++] = 1;
+                    } else {
+                        $linea[$c++] = 2;
+                    }
+                    $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['Empleador']['nombre']), 50, ' ', STR_PAD_RIGHT), 0, 50);
+                    $linea[$c++] = str_repeat(' ', 134);
+                    $lineas[] = implode('', $linea);
+                }
+
+                $linea = null;
+                $c = 1;
+                $linea[$c++] = 'FR';
+                $linea[$c++] = str_replace('-', '', $groupParams['cuit']);
+                $linea[$c++] = str_pad(count($data), 50, '0', STR_PAD_LEFT);
+                $linea[$c++] = str_repeat(' ', 449);
+                $lineas[] = implode('', $linea);
+                
+                d(implode("\r\n", $lineas));
+                d($data);
+                $this->set('archivo', array(
+                    'contenido' => implode("\r\n", $lineas),
+                    'nombre'    => 'SICOSS_' . $periodo['ano'] . '-' . $periodo['mes'] . '.txt'));
+                $this->render('..' . DS . 'elements' . DS . 'txt', 'txt');
+            } else {
+                $this->Session->setFlash('No se encontraron registros para generar el archivo.', 'error');
+                $this->History->goBack();
+            }
+        }
+    }
+    
     function reporte_relaciones() {
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 
