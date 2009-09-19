@@ -33,6 +33,76 @@ class FacturasController extends AppController {
 
 	var $helpers = array('Documento');
 
+
+    function reporte_evolucion_facturacion() {
+        if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
+
+            $conditions['(Factura.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
+            
+            if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
+                $conditions['Factura.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
+            }
+
+            if (!empty($this->data['Condicion']['Bar-periodo_largo_partida']) && !empty($this->data['Condicion']['Bar-periodo_largo_final'])) {
+                $periodFrom = $this->Util->format($this->data['Condicion']['Bar-periodo_largo_partida'], 'periodo');
+                $periodTo = $this->Util->format($this->data['Condicion']['Bar-periodo_largo_final'], 'periodo');
+                $conditions['Factura.ano'] = array($periodFrom['ano'], $periodTo['ano']);
+                $conditions['Factura.mes'] = array($periodFrom['mes'], $periodTo['mes']);
+                if (!is_array($periodFrom['periodo'])) {
+                    $conditions['Factura.periodo'] = array($periodFrom['periodo'], $periodTo['periodo']);
+                } else {
+                    $conditions['Factura.periodo'] = array_merge($periodFrom['periodo'], $periodTo['periodo']);
+                }
+            } else {
+                $this->Session->setFlash('Debe seleccionar los dos periodos para la comparacion.', 'error');
+            }
+            $conditions['Factura.estado'] = 'Confirmada';
+                    
+            $this->Factura->Behaviors->detach('Permisos');
+            $this->Factura->contain(array('Empleador', 'Area'));
+            $data = array();
+            $queryData = array(
+                'conditions'    => $conditions,
+                'fields'        => array(
+                    'Empleador.cuit',
+                    'Empleador.nombre',
+                    'Area.nombre',
+                    'Factura.ano',
+                    'Factura.mes',
+                    'Factura.periodo',
+                    'SUM(Factura.total) AS total'),
+                'order'         => array(
+                    'Empleador.nombre',
+                    'Area.nombre',
+                    'Factura.ano',
+                    'Factura.mes',
+                    'Factura.periodo'),                    
+                'group'         => array(
+                    'Factura.empleador_id',
+                    'Factura.area_id',
+                    'Factura.ano',
+                    'Factura.mes',
+                    'Factura.periodo'));
+            
+            if (is_array($periodFrom['periodo'])) {
+                unset($queryData['fields'][5]);
+                unset($queryData['order'][4]);
+                unset($queryData['group'][4]);
+            }
+            
+            foreach ($this->Factura->find('all', $queryData) as $v) {
+                $data[$v['Empleador']['cuit']][$v['Area']['nombre']][$this->Util->format($v['Factura'], 'periodo')] = $v;
+            }
+
+            $this->set('data', $data);
+            $this->set('periods', array(
+                $this->data['Condicion']['Bar-periodo_largo_partida'],
+                $this->data['Condicion']['Bar-periodo_largo_final']));
+            $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+        }
+    }
+    
+            
 	function reporte($facturaId, $state = 'Confirmada') {
 
         if ($state == 'Sin Confirmar') {
