@@ -20,10 +20,10 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-$condiciones['Condicion.Feriado-fecha_origen__desde'] = array();
-$condiciones['Condicion.Feriado-fecha_origen__hasta'] = array();
-$condiciones['Condicion.Feriado-fecha_efectiva__desde'] = array();
-$condiciones['Condicion.Feriado-fecha_efectiva__hasta'] = array();
+$condiciones['Condicion.Feriado-fecha_origen__desde'] = array('label' => 'Origen Desde');
+$condiciones['Condicion.Feriado-fecha_origen__hasta'] = array('label' => 'Origen Hasta');
+$condiciones['Condicion.Feriado-fecha_efectiva__desde'] = array('label' => 'Efectiva Desde');
+$condiciones['Condicion.Feriado-fecha_efectiva__hasta'] = array('label' => 'Efectiva Hasta');
 $condiciones['Condicion.Feriado-nombre'] = array();
 $condiciones['Condicion.Feriado-trasladable'] = array();
 $fieldsets[] = array('campos' => $condiciones);

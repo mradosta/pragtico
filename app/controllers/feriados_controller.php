@@ -31,12 +31,6 @@ class FeriadosController extends AppController {
         )
     );
 
-    var $paginate = array(
-        'order' => array(
-            'Feriado.fecha_origen' => 'asc'
-        )
-    );
-
 
     function update_fron_ws() {
         $soapClient = new SoapClient('http://webservices.mininterior.gov.ar/feriados/Service.svc?wsdl',
