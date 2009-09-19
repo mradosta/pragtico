@@ -392,8 +392,11 @@ class FormatoHelper extends AppHelper {
 		switch($type) {
 			case 'periodo':
                 if (is_array($valor)) {
-                    if (isset($valor['ano']) && isset($valor['mes']) && isset($valor['periodo'])) {
-                        $return = strtoupper($valor['ano'] . str_pad($valor['mes'], 2, '0', STR_PAD_LEFT) . $valor['periodo']);
+                    if (isset($valor['ano']) && isset($valor['mes'])) {
+                        $return = $valor['ano'] . str_pad($valor['mes'], 2, '0', STR_PAD_LEFT);
+                        if (isset($valor['periodo'])) {
+                            $return .= strtoupper($valor['periodo']);
+                        }
                     } else {
                         $return = false;
                     }
