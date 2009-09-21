@@ -97,7 +97,6 @@ $form = $appForm->form($bloques, $opcionesForm);
 echo $appForm->tag('div', $form, array('class' => 'index', 'id' => 'index'));
 
 /** Add breakdown js code */
-$appForm->addScript('breakdowns', 'links', 100);
 $appForm->addScript('
 	jQuery("img.breakdown_icon").bind("click", breakdown);
 ');

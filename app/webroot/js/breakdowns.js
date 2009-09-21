@@ -2,7 +2,7 @@
  * Rebuild table tbody adding breakDowns rows.
  */
 var buildTable = function(clickedRowId, url, table) {
-	var breakDownRowId = "breakdown_row" + url.replace(/\//g, "_");
+	var breakDownRowId = "breakdown_row" + url.replace(/\/\.\./g, "").replace(/\//g, "_");
 	var newTbody = jQuery("<tbody/>");
 
 	if (table == undefined) {
@@ -11,10 +11,11 @@ var buildTable = function(clickedRowId, url, table) {
 			function() {
 				newTbody.append(this);
 				if (clickedRowId == jQuery(this).attr("charoff")) {
-					var td = jQuery("<td/>").attr("colspan", "10");
+					var td = jQuery("<td/>").attr("colspan", "12");
 					td.append(jQuery("<div/>").attr("class", "desglose").load(url,
 						function() {
 							jQuery("img.breakdown_icon", this).bind("click", breakdown);
+                            jQuery("img.seleccionar", this).hide();
 						}
 					));
 					var tr = jQuery("<tr/>").addClass(breakDownRowId).addClass("breakdown_row").append(td);
@@ -25,7 +26,6 @@ var buildTable = function(clickedRowId, url, table) {
 		jQuery(table + " > tbody").remove();
 		jQuery(table).append(newTbody);
 	} else {
-
 		table.parent().find("table:first > tbody > tr").each(
 			function() {
 				newTbody.append(this);
@@ -35,6 +35,7 @@ var buildTable = function(clickedRowId, url, table) {
 					td.append(jQuery("<div/>").attr("class", "desglose").load(url,
 						function() {
 							jQuery("img.breakdown_icon", this).bind("click", breakdown);
+                            jQuery("img.seleccionar", this).hide();
 						}
 					));
 					var tr = jQuery("<tr/>").addClass(breakDownRowId).addClass("breakdown_row").append(td);
@@ -112,7 +113,7 @@ var breakdown = function() {
 	}
 
 
-	var breakDownRowId = "breakdown_row" + url.replace(/\//g, "_");
+	var breakDownRowId = "breakdown_row" + url.replace(/\/\.\./g, "").replace(/\//g, "_");
 	if (jQuery("." + breakDownRowId).length) {
 		jQuery("." + breakDownRowId).toggle();
 		if (!jQuery("." + breakDownRowId).is(":visible")) {

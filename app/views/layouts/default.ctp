@@ -75,6 +75,7 @@ $js[] = 'jquery/jquery.simplemodal.min';
 $js[] = 'jquery/jquery.form.min';
 $js[] = 'jquery/jquery.sprintf.min';
 $js[] = 'default.min';
+$js[] = 'breakdowns.min';
 //$js[] = 'datetimepicker';
 $js[] = 'jscal/jscal2.min';
 $js[] = 'jscal/es.min';
