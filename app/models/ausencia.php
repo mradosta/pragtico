@@ -187,9 +187,11 @@ class Ausencia extends AppModel {
                 $acumulado = 0;
                 foreach ($ausencia['AusenciasSeguimiento'] as $seguimiento) {
 
-                    if ($seguimiento['estado'] === 'Confirmado') {
-                        
+                    if (in_array($seguimiento['estado'], array('Confirmado', 'Liquidado'))) {
                         $acumulado += $seguimiento['dias'];
+                    }
+                    
+                    if ($seguimiento['estado'] === 'Confirmado') {
                         
                         if (Dates::dateAdd($ausencia['Ausencia']['desde'], $acumulado) > $periodo['hasta']) {
 
