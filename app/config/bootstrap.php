@@ -54,8 +54,8 @@ define('VALID_NUMBER_MAYOR_A_CERO', '/^[1-9]+/');
 define('VALID_NUMBER_NULO', '/[0-9]*/');
 define('VALID_PERIODO', '/^(20\d\d)(0[1-9]|1[012])([12][qQ]|[mM]|[aA]|[fF])$|^$/'); //200804M, 2007111Q, 2007092Q
 
-function d($var = false) {
-	if (Configure::read() > 0) {
+function d($var = 'x', $skipDebugMode = false) {
+	if (Configure::read() > 0 || $skipDebugMode === true) {
 		$calledFrom = debug_backtrace();
 		echo '<strong>' . substr(str_replace(ROOT, '', $calledFrom[0]['file']), 1) . '</strong>';
 		echo ' (line <strong>' . $calledFrom[0]['line'] . '</strong>)';
