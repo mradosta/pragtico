@@ -160,6 +160,10 @@ class Descuento extends AppModel {
             $Concepto = ClassRegistry::init('Concepto');
 			foreach ($r as $k => $v) {
 
+                if ($index[$v['Descuento']['tipo']] != 'a' && $v['Descuento']['concurrencia'] == 'Solo uno a la vez') {
+                    continue;
+                }
+                
                 $tipos[] = $v['Descuento']['tipo'];
                 $name = Inflector::underscore(str_replace(' ', '', $v['Descuento']['tipo'] . '_' . $index[$v['Descuento']['tipo']]));
                 $index[$v['Descuento']['tipo']]++;
