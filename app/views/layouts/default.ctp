@@ -48,24 +48,12 @@ $codigo_html .= '\n
 $css[] = "aplicacion.default.screen";
 $css[] = "jquery.autocomplete";
 */
-//$css[] = "basic";
 $css = null;
-//$css[] = 'aplicacion.default.screen';
 $css[] = 'aplicacion.default.screen.min';
 $css[] = 'jscal/jscal2.min';
 $css[] = 'jscal/border-radius.min';
-//$css[] = 'jscal/steel/steel.css';
+$codigo_html[] = $html->css($css, 'stylesheet', array('media' => 'all'));
 
-//$css[] = "theme/ui.all";
-//$css[] = "theme/ui.base";
-//$css[] = "theme/ui.core";
-//$css[] = "theme/ui.theme";
-//$css[] = "theme/ui.dialog";
-//if($appForm->traerPreferencia("lov_apertura") != "popup") {
-//  $css[] = "jquery.jqmodal";
-//}
-
-$html->css($css, null, array('media' => 'screen'), false);
 $js = null;
 $js[] = 'jquery/jquery-1.3.2.min';
 $js[] = 'jquery/jquery.cookie.min';
@@ -76,29 +64,32 @@ $js[] = 'jquery/jquery.form.min';
 $js[] = 'jquery/jquery.sprintf.min';
 $js[] = 'default.min';
 $js[] = 'breakdowns.min';
-//$js[] = 'datetimepicker';
 $js[] = 'jscal/jscal2.min';
 $js[] = 'jscal/es.min';
-$js[] = 'jquery.flydom.min'; // lo usa en carga drapida de conceptos desde convenios
-$appForm->addScript($js, 'links');
+$js[] = 'jquery.flydom.min'; // lo usa en carga rapida de conceptos desde convenios
+$codigo_html[] = $javascript->link($js);
 
-
-$codigo_html[] = $asset->scripts_for_layout();
+$View = ClassRegistry::getObject('view');
+if (!empty($View->__jsCodeForReady)) {
+    $codigo_html[] = $javascript->codeBlock(sprintf('jQuery(document).ready(function($) {%s});', implode("\n", $View->__jsCodeForReady)));
+}
 $codigo_html[] = '</head>';
-$codigo_html[] = '<body>';
 
+if (!empty($View->__jsCodeForHeader)) {
+    $codigo_html[] = $javascript->codeBlock(sprintf('jQuery(document).ready(function($) {%s});', implode("\n", $View->__jsCodeForHeader)));
+}
+
+$codigo_html[] = '<body>';
 $codigo_html[] = '<input id="base_url" type="hidden" value="' . Router::url('/') . '" />';
 $codigo_html[] = '<div id="lov" class="index"></div>';
 /** When opening a Lov Control, all necessary options are temporaly saved in this hidden text field */
 $codigo_html[] = '<input id="opened_lov_options" type="hidden" />';
 
-//$menu = $this->element('layout' . DS . 'menu', array('cache' => '+1 day'));
-$menu = $this->element('layout' . DS . 'menu');
+$menu = $this->element('layout' . DS . 'menu', array('key' => implode('.', User::get('/Rol/nombre')), 'cache' => '+1 day'));
 
 $codigo_html[] = $flash;
 $codigo_html[] = $this->element('layout' . DS . 'encabezado');
 $codigo_html[] = $barra;
-//$contenido = $appForm->tag('div', '', array('id' => 'lov', 'class' => 'index'));
 $contenido = $appForm->tag('div', $content_for_layout, array('class' => 'cuerpo'));
 $codigo_html[] = $appForm->tag('div', $menu . $contenido, array('class' => 'contenido'));
 $codigo_html[] = $cakeDebug;

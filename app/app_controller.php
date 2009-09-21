@@ -31,7 +31,7 @@ class AppController extends Controller {
 	 * @var array
 	 * @access public
 	 */
-	var $helpers = array('Formato', 'AppForm', 'Paginador', 'Asset');
+    var $helpers = array('Formato', 'AppForm', 'Paginador');
 
 	/**
 	 * Los components que usara toda la aplicacion.
@@ -58,8 +58,8 @@ class AppController extends Controller {
 		/**
 		* Puedo tener cualquier condicion de las que soporta el metodo find.
 		*/
-		$opcionesValidas = array("displayField", "groupField", "conditions", "fields", "order", "limit", "recursive", "group", "contain", "model");
-		$opcionesValidasArray = array("displayField", "groupField", "conditions", "fields", "order", "contain");
+		$opcionesValidas = array('displayField', 'groupField', 'conditions', 'fields', 'order', 'limit', 'recursive', 'group', 'contain', 'model');
+		$opcionesValidasArray = array('displayField', 'groupField', 'conditions', 'fields', 'order', 'contain');
 		foreach ($opcionesValidas as $opcionValida) {
 			if (!empty($this->params['named'][$opcionValida])) {
 				if (in_array($opcionValida, $opcionesValidasArray)) {
@@ -89,15 +89,15 @@ class AppController extends Controller {
 		}
 
 		foreach ($displayFields as $displayField) {
-			$display[] = "{n}." . $displayField;
-			$exp[] = "%s";
+			$display[] = '{n}.' . $displayField;
+			$exp[] = '%s';
 		}
-		array_unshift($display, implode(" - ", $exp));
-		$data = $model->find("all", $condiciones);
+		array_unshift($display, implode(' - ', $exp));
+		$data = $model->find('all', $condiciones);
 		if (isset($group)) {
-			$data = Set::combine($data, "{n}." . $model->name . "." . $model->primaryKey, $display, "{n}." . $group);
+			$data = Set::combine($data, '{n}.' . $model->name . '.' . $model->primaryKey, $display, '{n}.' . $group);
 		} else {
-			$data = Set::combine($data, "{n}." . $model->name . "." . $model->primaryKey, $display);
+			$data = Set::combine($data, '{n}.' . $model->name . '.' . $model->primaryKey, $display);
 		}
 		return $data;
 	}

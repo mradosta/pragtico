@@ -294,17 +294,21 @@ class AppFormHelper extends FormHelper {
  */
 	
 	function addScript($script, $location = 'ready', $order = 0) {
+        if ($location == 'ready') {
+            ClassRegistry::getObject('view')->__jsCodeForReady[] = $script;
+        } elseif ($location == 'header') {
+            ClassRegistry::getObject('view')->__jsCodeForHeader[] = $script;
+        }
+        //$this->Javascript->codeBlock($script, array('inline' => false));
+        /*
 		$view = ClassRegistry::getObject('view');
-		if (in_array($location, array('ready', 'links', 'view'))) {
-			for ($i = 0; $i<100; $i++) {
-				if (!isset($view->__myScripts[$location][($order + $i)])) {
-					$view->__myScripts[$location][($order + $i)] = $script;
-					break;
-				}
-			}
-		} else {
-			trigger_error(__('Invalid script location', true));
-		}
+        for ($i = 0; $i<100; $i++) {
+            if (!isset($view->__myScripts[$location][($order + $i)])) {
+                $view->__myScripts[$location][($order + $i)] = $script;
+                break;
+            }
+        }
+        */
 	}
 	
 
