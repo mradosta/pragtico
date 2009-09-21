@@ -63,9 +63,16 @@ $codigo_html[] = '</head>';
 
 $codigo_html[] = '<body>';
 $codigo_html[] = $flash;
-$codigo_html[] = $appForm->tag('div', $content_for_layout, array('class' => 'login'));
+$links = null;
+$links[] = $appForm->link('Acerca de Pragtico', 'http://www.pragtico.com.ar/wiki', array('tabindex' => '50'));
+$links[] = $appForm->link('Manual', 'http://www.pragtico.com.ar/wiki/index.php/Manual_de_Usuario', array('tabindex' => '51'));
+$links[] = $appForm->link('Preguntas Frecuentes', 'http://www.pragtico.com.ar/wiki/index.php/FAQ', array('tabindex' => '52'));
+$links[] = $appForm->link('Contactenos', 'http://www.pragtico.com.ar/wiki/index.php/Especial:Contactar', array('tabindex' => '53'));
+$codigo_html[] = $appForm->tag('div', $appForm->tag('div', $links, array('class' => 'tabs')) . $content_for_layout, array('class' => 'login'));
+$links = null;
+$links[] = $appForm->link($appForm->image('logo_pragmatia.jpg', array('alt' => 'Pragmatia')), 'http://www.pragmatia.com');
 $links[] = $appForm->link($appForm->image('cake.power.gif', array('alt' => 'CakePhp')), 'http://www.cakephp.org');
-$links[] = $appForm->link($appForm->image('firefox.gif', array('alt' => 'Firefox 3')), 'http://www.spreadfirefox.com/node&id=0&t=308');
+$links[] = $appForm->link($appForm->image('firefox.png', array('alt' => 'Descargar Firefox 3.5')), 'http://www.spreadfirefox.com/node&id=0&t=308');
 $codigo_html[] = $appForm->tag('div', $links, array('class' => 'links_externos'));
 $codigo_html[] = $cakeDebug;
 $codigo_html[] = '</body>';

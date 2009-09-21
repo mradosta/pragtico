@@ -55,8 +55,23 @@ div.login {
 	height: 525px;
 }
 
+div.login div.tabs {
+    padding-top: 15px;
+    width: 733px;
+    height: 23px;
+}
+
+div.login div.tabs a {
+    width: 183px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    float: left;
+}
+
 div.login div.ingreso {
-	padding-top: 210px;
+	padding-top: 217px;
 	padding-left: 290px;
 	width: 200px;
 	height: 100px;
@@ -83,12 +98,12 @@ div.login div.ingreso .submit input {
 }
 
 div.links_externos {
-	margin-left: 220px;
+	margin-left: 140px;
 	margin-top: -20px;
 }
 
 div.links_externos a {
-	padding: 2px;
+	margin: 2px;
 	display: block;
 	float: left;
 }
