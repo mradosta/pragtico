@@ -48,7 +48,7 @@ $appForm->addScript("
     });
 ");
         
-$html->css('aplicacion.default.screen.min', null, array('media' => 'screen'), false);
+$codigo_html[] = $html->css('aplicacion.default.screen.min', 'stylesheet', array('media' => 'all'));
 $js[] = 'jquery/jquery-1.3.2.min';
 $js[] = 'jquery/jquery.cookie.min';
 $js[] = 'jquery/jquery.accordion.min';
@@ -57,9 +57,17 @@ $js[] = 'jquery/jquery.simplemodal.min';
 $js[] = 'jquery/jquery.form.min';
 $js[] = 'jquery/jquery.sprintf.min';
 $js[] = 'default.min';
-$appForm->addScript($js, 'links');
-$codigo_html[] = $asset->scripts_for_layout();
+$codigo_html[] = $javascript->link($js);
+
+$View = ClassRegistry::getObject('view');
+if (!empty($View->__jsCodeForReady)) {
+    $codigo_html[] = $javascript->codeBlock(sprintf('jQuery(document).ready(function($) {%s});', implode("\n", $View->__jsCodeForReady)));
+}
 $codigo_html[] = '</head>';
+
+if (!empty($View->__jsCodeForHeader)) {
+    $codigo_html[] = $javascript->codeBlock(sprintf('jQuery(document).ready(function($) {%s});', implode("\n", $View->__jsCodeForHeader)));
+}
 
 $codigo_html[] = '<body>';
 $codigo_html[] = $flash;
