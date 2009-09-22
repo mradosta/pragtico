@@ -47,5 +47,10 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' =
 $miga = array('format' 	=> '%s %s (%s)', 
 			  'content' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));
 echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => $miga));
-$this->addScript($ajax->jsPredefinido(array('tipo' => 'detalle', 'agregar' => true, 'quitar' => true)));
+
+$appForm->addScript('
+    detalle();
+    jQuery("a.link_boton").bind("click", agregar);
+');
+
 ?>

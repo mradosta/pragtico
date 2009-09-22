@@ -43,5 +43,8 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' =
 */
 echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => 'Preferencia.nombre'));
 
-$this->addScript($ajax->jsPredefinido(array('tipo' => 'detalle', 'agregar' => true, 'quitar' => true)));
+$appForm->addScript('
+    detalle();
+    jQuery("a.link_boton").bind("click", agregar);
+');
 ?>

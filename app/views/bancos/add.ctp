@@ -46,5 +46,8 @@ $miga = array('format' 	=> '(%s) %s',
 			  'content' => array('Banco.codigo', 'Banco.nombre'));
 
 echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => $miga));
-$this->addScript($ajax->jsPredefinido(array('tipo' => 'detalle', 'agregar' => true, 'quitar' => true)));
+$appForm->addScript('
+    detalle();
+    jQuery("a.link_boton").bind("click", agregar);
+');
 ?>

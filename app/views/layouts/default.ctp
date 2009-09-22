@@ -64,6 +64,7 @@ $js[] = 'jquery/jquery.form.min';
 $js[] = 'jquery/jquery.sprintf.min';
 $js[] = 'default.min';
 $js[] = 'breakdowns.min';
+$js[] = 'master_detail.min';
 $js[] = 'jscal/jscal2.min';
 $js[] = 'jscal/es.min';
 $js[] = 'jquery.flydom.min'; // lo usa en carga rapida de conceptos desde convenios
