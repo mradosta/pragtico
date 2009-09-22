@@ -55,6 +55,7 @@ class AusenciasController extends AppController {
             $conditions['Liquidacion.estado'] = 'Confirmada';
 
             $this->Ausencia->AusenciasSeguimiento->Liquidacion->Behaviors->detach('Permisos');
+            $this->Ausencia->AusenciasSeguimiento->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
             $this->Ausencia->AusenciasSeguimiento->Behaviors->detach('Permisos');
             $this->set('data', $this->Ausencia->AusenciasSeguimiento->find('all', array(
                 'contain'      => array(
@@ -63,20 +64,13 @@ class AusenciasController extends AppController {
                     'Relacion' => array('Empleador', 'Trabajador')),
                     'Liquidacion.LiquidacionesDetalle'),
                 'conditions'    => array(
-                    'AusenciasSeguimiento.liquidacion_id' => Set::extract('/Liquidacion/id', $this->Ausencia->AusenciasSeguimiento->Liquidacion->find('all',
-                        array(  'recursive'     => -1,
-                                'fields'        => array('Liquidacion.id'),
-                                'conditions'    => $conditions)))))));
-            /*            
-            $this->set('data', $this->Ausencia->AusenciasSeguimiento->find('all', array(
-                'contain'      => array(
-                    'Ausencia' => array('order' => array('Ausencia.relacion_id'),
-                    'AusenciasMotivo',
-                    'Relacion' => array('Empleador', 'Trabajador')),
-                    'Liquidacion.LiquidacionesDetalle'),
-                'conditions'    => array(
-                    'AusenciasSeguimiento.liquidacion_id' => array(9402, 16587)))));
-            */
+                    'AusenciasSeguimiento.liquidacion_id' => array_unique(
+                        Set::extract('/Liquidacion/id',
+                            $this->Ausencia->AusenciasSeguimiento->Liquidacion->find('all',
+                                array(  'recursive'     => -1,
+                                        'fields'        => array('Liquidacion.id'),
+                                        'conditions'    => $conditions))))))));
+                        
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
         }
     }

@@ -17,14 +17,16 @@
  */
 if (!empty($data)) {
 
-    $documento->create(array('password' => false, 'title' => 'Listado de Ausencias Liquidadas'));
-    $documento->setCellValue('A', 'Cuil', array('title' => '25'));
-    $documento->setCellValue('B', 'Apellido', array('title' => '30'));
-    $documento->setCellValue('C', 'Nombre', array('title' => '30'));
-    $documento->setCellValue('D', 'Motivo', array('title' => '40'));
-    $documento->setCellValue('E', 'Inicio', array('title' => '15'));
-    $documento->setCellValue('F', 'Dias', array('title' => '20'));
-    $documento->setCellValue('G', 'Liquidado', array('title' => '20'));
+    $documento->create(array('password' => false, 'orientation' => 'landscape', 'title' => 'Listado de Ausencias Liquidadas'));
+    $documento->setCellValue('A', 'Empleador', array('title' => '30'));
+    $documento->setCellValue('B', 'Cuil', array('title' => '20'));
+    $documento->setCellValue('C', 'Apellido', array('title' => '20'));
+    $documento->setCellValue('D', 'Nombre', array('title' => '20'));
+    $documento->setCellValue('E', 'Motivo', array('title' => '40'));
+    $documento->setCellValue('F', 'Inicio', array('title' => '15'));
+    $documento->setCellValue('G', 'Dias Conf.', array('title' => '15'));
+    $documento->setCellValue('H', 'Cant. Liq.', array('title' => '15'));
+    $documento->setCellValue('I', 'Liquidado', array('title' => '20'));
     
     /** Body */
     foreach ($data as $k => $detail) {
@@ -36,16 +38,15 @@ if (!empty($data)) {
         if ($tmpName == 'ausencias_accidente') {
             $conceptCode[] = $tmpName . '_art';
         }
-        
-        
-        $val = 0;
+
+        $val = $days = 0;
         foreach ($detail['Liquidacion']['LiquidacionesDetalle'] as $d) {
             if (in_array($d['concepto_codigo'], $conceptCode)) {
-                $val = $d['valor'];
-                break;
+                $val += $d['valor'];
+                $days += $d['valor_cantidad'];
             }
         }
-                
+
         if (empty($totals[$detail['Ausencia']['AusenciasMotivo']['motivo']])) {
             $totals[$detail['Ausencia']['AusenciasMotivo']['motivo']]['days'] = $detail['AusenciasSeguimiento']['dias'];
             $totals[$detail['Ausencia']['AusenciasMotivo']['motivo']]['value'] = $val;
@@ -55,11 +56,13 @@ if (!empty($data)) {
         }
 
         $documento->setCellValueFromArray(
-            array(  $detail['Ausencia']['Relacion']['Trabajador']['cuil'],
+            array(  $detail['Ausencia']['Relacion']['Empleador']['nombre'],
+                    $detail['Ausencia']['Relacion']['Trabajador']['cuil'],
                     $detail['Ausencia']['Relacion']['Trabajador']['apellido'], $detail['Ausencia']['Relacion']['Trabajador']['nombre'],
                     $detail['Ausencia']['AusenciasMotivo']['motivo'],
                     $detail['Ausencia']['desde'],
                     $detail['AusenciasSeguimiento']['dias'],
+                    $days,
                     array('value' => $val, 'options' => 'currency')));
     }
     
