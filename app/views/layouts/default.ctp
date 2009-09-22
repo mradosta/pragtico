@@ -85,7 +85,7 @@ $codigo_html[] = '<div id="lov" class="index"></div>';
 /** When opening a Lov Control, all necessary options are temporaly saved in this hidden text field */
 $codigo_html[] = '<input id="opened_lov_options" type="hidden" />';
 
-$menu = $this->element('layout' . DS . 'menu', array('key' => implode('.', User::get('/Rol/nombre')), 'cache' => '+1 day'));
+$menu = $this->element('layout' . DS . 'menu', array('key' => implode('.', User::get('/Rol/nombre', array('flatten' => false))), 'cache' => '+1 day'));
 
 $codigo_html[] = $flash;
 $codigo_html[] = $this->element('layout' . DS . 'encabezado');
