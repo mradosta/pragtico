@@ -128,6 +128,9 @@ jQuery.makeObject = function(str, separator) {
     
 /** Useful function to avoid using Router::url everywere */
 jQuery.url = function(url) {
+    if (url == undefines) {
+        url = "";
+    }
     return jQuery("#base_url").val() + url;
 }
 
