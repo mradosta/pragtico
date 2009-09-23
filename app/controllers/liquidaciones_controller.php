@@ -219,7 +219,9 @@ class LiquidacionesController extends AppController {
 									'LiquidacionesDetalle' => array('order' => 'LiquidacionesDetalle.concepto_tipo'),
 									'Relacion' => array('Trabajador', 'Empleador', 'Modalidad', 'ConveniosCategoria.ConveniosCategoriasHistorico')),
 								'conditions'	=> $conditions,
-							 	'order'			=> array('Liquidacion.empleador_nombre')));
+							 	'order'			=> array(
+                                    'Liquidacion.empleador_nombre',
+                                    'Liquidacion.periodo')));
 
 				if (empty($liquidaciones)) {
 					$this->Session->setFlash('No se han encontrado liquidaciones confirmadas para el periodo seleccionado segun los criterios especificados.', 'error');

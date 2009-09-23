@@ -102,12 +102,12 @@ if (!empty($data)) {
 		$recordCount++;
 		
         $fila++;
-		$documento->setCellValue('A' . $fila, 'CUIL: ' . $record['Relacion']['Trabajador']['cuil']);
+		$documento->setCellValue('A' . $fila, 'CUIL: ' . $record['Relacion']['Trabajador']['cuil'] . ' / Legajo: ' . $record['Relacion']['legajo']);
 		$documento->setCellValue('E' . $fila, 'Apellido y Nombre: ' . $record['Relacion']['Trabajador']['apellido'] . ' ' . $record['Relacion']['Trabajador']['nombre']);
         $documento->setCellValue('I' . $fila, 'Ingreso: ' . $formato->format($record['Relacion']['ingreso'], 'date'));
 
         $fila++;
-		$documento->setCellValue('A' . $fila, 'Legajo: ' . $record['Relacion']['legajo']);
+		$documento->setCellValue('A' . $fila, 'Periodo: ' . $record['Liquidacion']['periodo']);
 		$documento->setCellValue('E' . $fila, 'Contrato: ' . $record['Relacion']['Modalidad']['nombre']);
         if ($record['Relacion']['basico'] > 0) {
             $salary = $record['Relacion']['basico'];
@@ -216,7 +216,7 @@ if (!empty($data)) {
 		$documento->setCellValue('K' . $fila, '', $styleBorderBottom);
         $fila++;
 
-		if ($recordCount === 4 && $k < count($data) - 1) {
+		if ($recordCount === 3 && $k < count($data) - 1) {
 			$recordCount = 0;
 			$documento->doc->getActiveSheet()->setBreak('A' . $fila, PHPExcel_Worksheet::BREAK_ROW);
             $fila++;
