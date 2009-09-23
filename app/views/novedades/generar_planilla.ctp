@@ -150,7 +150,7 @@ if(!empty($registros)) {
         if (!in_array($concepto, $tiposPredefinidos)) {
             $columna++;
             $documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(30);
-            $documento->setCellValue($columna . ',' . $fila . ':' . $columna . ',' . ($fila+1), $concepto, array('style' => $estiloTituloColumna));
+            $documento->setCellValue($columna . ',' . $fila . ':' . $columna . ',' . ($fila+1), str_replace(array('(R)', '(NR)', 'D'), '', $concepto), array('style' => $estiloTituloColumna));
         }
     }
     
