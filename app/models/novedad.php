@@ -341,10 +341,23 @@ class Novedad extends AppModel {
 		$predefinidos[] = 'Vales';
 		if ($tipo === 'todos') {
 			$Concepto = new Concepto();
-			$conceptos = $Concepto->find('all', array('conditions'=>array('Concepto.novedad' => 'Si'), 'recursive'=>-1));
-			return array_merge($predefinidos, Set::extract('/Concepto/nombre', $conceptos));
-		}
-		elseif ($tipo === 'predefinidos') {
+			$tmpConceptos = $Concepto->find('all', array(
+                'conditions'    => array('Concepto.novedad' => 'Si'),
+                'order'         => array('Concepto.tipo', 'Concepto.nombre'),
+                'recursive'     => -1));
+            $conceptos = array();
+            foreach ($tmpConceptos as $concepto) {
+                if ($concepto['Concepto']['tipo'] == 'Remunerativo') {
+                    $type = 'R';
+                } elseif ($concepto['Concepto']['tipo'] == 'No Remunerativo') {
+                    $type = 'NR';
+                } else {
+                    $type = 'D';
+                }
+                $conceptos[] = $concepto['Concepto']['nombre'] . ' (' . $type . ')';
+            }
+			return array_merge($predefinidos, $conceptos);
+		} elseif ($tipo === 'predefinidos') {
 			return $predefinidos;	
 		}
 	}
