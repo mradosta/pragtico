@@ -37,7 +37,7 @@ if (!empty($data)) {
             $groupParams['ciudad'],
             $groupParams['pais'],
             $groupParams['cuit']);
-        $center = "&CLibro Especial de Sueldos - Art. 52 Ley 20744" . $groupParams['libro_sueldos_encabezado'];
+        $center = "&CLibro Especial de Sueldos" . $groupParams['libro_sueldos_encabezado'];
     }
 	$documento->create(array('header' => $left . $center, 'password' => true));
 
