@@ -184,7 +184,13 @@ class Novedad extends AppModel {
 							} else {
 								continue;
 							}
-						}
+                        } elseif ($tipo === 'Vacaciones') {
+                            if ($subTipo === 'Dias') {
+                                $save['Novedad']['data'] = $this->format(Dates::dateAdd('1970-01-01', $datos[$relacion_id][$tipo]['Inicio'] - 25569, 'd', array('fromInclusive' => false)), 'date') . '|' . $registro;
+                            } else {
+                                continue;
+                            }
+                        }
 					}
 					$saveAll[] = $save;
 				}
@@ -254,6 +260,16 @@ class Novedad extends AppModel {
 		foreach ($novedades as $novedad) {
 			$periodo = $this->format($novedad['Novedad']['periodo'], 'periodo');
 			switch ($novedad['Novedad']['tipo']) {
+                case 'Vacaciones':
+                    $saves[$i]['Vacacion']['id'] = null;
+                    $tmp = explode('|', $novedad['Novedad']['data']);
+                    $saves[$i]['Vacacion']['desde'] = $tmp[0];
+                    $saves[$i]['Vacacion']['dias'] = $tmp[1];
+                    $saves[$i]['Vacacion']['estado'] = 'Confirmada';
+                    $saves[$i]['Vacacion']['relacion_id'] = $novedad['Novedad']['relacion_id'];
+                    $saves[$i]['Vacacion']['periodo'] = $periodo['periodoCompleto'];
+                    $saves[$i]['Vacacion']['observacion'] = 'Ingresado desde planilla. Confirmado el ' . date('Y-m-d');
+                break;
 				case 'Horas':
 					$saves[$i]['Hora']['id'] = null;
 					$saves[$i]['Hora']['tipo'] = $novedad['Novedad']['subtipo'];
@@ -299,7 +315,7 @@ class Novedad extends AppModel {
 			}
 			$i++;
 		}
-		
+
         $db = ConnectionManager::getDataSource($this->useDbConfig);
         $db->begin($this);
 		foreach ($saves as $save) {
@@ -339,6 +355,7 @@ class Novedad extends AppModel {
 		$predefinidos[] = 'Horas';
 		$predefinidos[] = 'Ausencias';
 		$predefinidos[] = 'Vales';
+        $predefinidos[] = 'Vacaciones';
 		if ($tipo === 'todos') {
 			$Concepto = new Concepto();
 			$tmpConceptos = $Concepto->find('all', array(

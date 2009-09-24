@@ -65,6 +65,24 @@ if(!empty($registros)) {
     $documento->setCellValue('E' . $fila . ':E' . ($fila+1), 'Ingreso', array('style' => $estiloTituloColumna));
     $documento->setCellValue('F' . $fila . ':F' . ($fila+1), 'Egreso', array('style' => $estiloTituloColumna));
     $columna = $columnaInicioConceptosDinamicos = 5;
+
+    
+    /**
+    * Hollidays.
+    */
+    if (in_array('Vacaciones', $tipos)) {
+        $columna++;
+        $documento->setCellValue($columna . ',' . $fila . ':' . ($columna+2) . ',' . $fila, 'Vacaciones', array('style' => $estiloTituloColumna));
+        $documento->setCellValue($columna . ',' . ($fila+1), 'Corresponde', array('style' => $estiloTituloColumna));
+        $documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(15);
+        $columna++;
+        $documento->setCellValue($columna . ',' . ($fila+1), 'Inicio', array('style' => $estiloTituloColumna));
+        $documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(10);
+        $columna++;
+        $documento->setCellValue($columna . ',' . ($fila+1), 'Dias', array('style' => $estiloTituloColumna));
+        $documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(9);
+    }
+    
     
     /**
     * Las horas.
@@ -143,6 +161,7 @@ if(!empty($registros)) {
         $documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(9);
     }
     
+    
     /**
     * Trabajo con los genericos si hay alguno.
     */
@@ -155,7 +174,7 @@ if(!empty($registros)) {
     }
     
     /**
-    * Recorro cada registro ahora que yatengo los encabezados.
+    * Recorro cada registro ahora que ya tengo los encabezados.
     */
     $fila++;
     $initialRow = $fila + 1;
@@ -168,16 +187,23 @@ if(!empty($registros)) {
         $documento->setCellValue('E' . $fila, $registro['Relacion']['ingreso']);
         $documento->setCellValue('F' . $fila, ($registro['Relacion']['egreso'] !== '0000-00-00')?$registro['Relacion']['egreso']:'');
 
-        for($i = $columnaInicioConceptosDinamicos; $i <= $columna; $i++) {
+        for ($i = $columnaInicioConceptosDinamicos; $i <= $columna; $i++) {
             $documento->setDataValidation($i . ',' . $fila, 'decimal');
         }
+
+        if (in_array('Vacaciones', $tipos)) {
+            $documento->setCellValue('G' . $fila, '=if(and(month(E' . $fila . ')>6,year(E' . $fila . ')=year(' . $fecha_hasta_periodo_vacacional . '),day(E' . $fila . ')>=1),int(if(networkdays(E' . $fila . ',' . $fecha_hasta_periodo_vacacional . ')=132,14,networkdays(E' . $fila . ',' . $fecha_hasta_periodo_vacacional . ')/20)),if(and(month(E' . $fila . ')<6,year(E' . $fila . ')=year(' . $fecha_hasta_periodo_vacacional . ')),14,if((year(' . $fecha_hasta_periodo_vacacional . ')-year(E' . $fila . '))<=5,14,if((year(' . $fecha_hasta_periodo_vacacional . ')-year(E' . $fila . '))<=10,21,if((year(' . $fecha_hasta_periodo_vacacional . ')-year(E' . $fila . '))<=15,28,35)))))');
+            $documento->doc->getActiveSheet()->getStyle('G' . $fila)->getProtection()->setLocked(PHPExcel_Style_Protection::PROTECTION_PROTECTED);
+            $documento->setDataValidation('H' . $fila, 'date');
+        }
+
         
         /**
         * El combo con los posibles motivos.
         */
         if (isset($columnaMotivo)) {
+            $documento->setDataValidation($columnaMotivo . ',' . $fila, 'list', array('valores' => $motivos));
             $documento->setDataValidation(($columnaMotivo+1) . ',' . $fila, 'date');
-            $documento->setDataValidation($columnaMotivo . ',' . $fila, 'list', array('valores'=>$motivos));
         }
     }
     $documento->doc->getActiveSheet()->freezePane('G10');
@@ -205,8 +231,10 @@ if(!empty($registros)) {
             'label' => 'Relacion',
             'lov'   => array(   'controller'    => 'relaciones',
                                 'camposRetorno' => array('Empleador.nombre', 'Trabajador.apellido')));
+
+    $condiciones['Condicion.Novedad-periodo_vacacional'] = array('label' => 'Periodo Vacacional', 'type' => 'periodo', 'periodo' => array('A'), 'class' => 'periodo_vacacional');
     
-    $condiciones['Condicion.Novedad-tipo'] = array('type' => 'select', 'multiple' => 'checkbox', 'options'=>$tiposIngreso);
+    $condiciones['Condicion.Novedad-tipo'] = array('type' => 'select', 'multiple' => 'checkbox', 'options' => $tiposIngreso);
     $condiciones['Condicion.Novedad-formato'] = array('type' => 'radio');
     $fieldsets[] = array('campos' => $condiciones);
     
@@ -215,6 +243,31 @@ if(!empty($registros)) {
     $accionesExtra['opciones'] = array('acciones'=>array($appForm->link('Generar', null, array('class' => 'link_boton', 'id' => 'confirmar', 'title' => 'Confirma las liquidaciones seleccionadas'))));
     $botonesExtra['opciones'] = array('botones'=>array('limpiar', $appForm->submit('Generar', array('title' => 'Genera la planilla base para importar novedades'))));
     echo $this->element('index/index', array('botonesExtra'=>$botonesExtra, 'condiciones'=>$fieldset, 'opcionesForm'=>array('action' => 'generar_planilla'), 'opcionesTabla'=>$opcionesTabla));
+
+
+    $appForm->addScript('
+        jQuery(".periodo_vacacional").parent().show();
+        jQuery("#CondicionNovedad-tipoVacaciones").click(
+            function() {
+                if (jQuery(this).attr("checked")) {
+                    jQuery(".periodo_vacacional").parent().show();
+                } else {
+                    jQuery(".periodo_vacacional").parent().hide();
+                }
+            }
+        );
+
+        jQuery("#form").submit(
+            function() {
+                if (jQuery("#CondicionNovedad-tipoVacaciones").attr("checked") && jQuery(".periodo_vacacional").val() == "") {
+                    alert("Debe ingresar el periodo vacacional");
+                    return false;
+                }
+                return true;
+            }
+        );
+        
+    ');
 }
 
 ?>

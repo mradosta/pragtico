@@ -210,6 +210,10 @@ class Liquidacion extends AppModel {
 					array(	'relacion' 			=> $this->getRelationship(),
 							'codigoConcepto'	=> 'vacaciones')));
 
+            $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
+                    array(  'relacion'          => $this->getRelationship(),
+                            'codigoConcepto'    => 'plus_vacacional')));
+
             //$this->LiquidacionesDetalle->Behaviors->detach('Permisos');
             //$this->LiquidacionesDetalle->Behaviors->detach('Util');
 

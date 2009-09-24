@@ -76,6 +76,7 @@ class NovedadesController extends AppController {
 					} elseif (preg_match("/.*\.xlsx$/", $this->data['Novedad']['planilla']['name'])) {
 						$objReader = PHPExcel_IOFactory::createReader('Excel2007');
 					}
+                    $objReader->setReadDataOnly(true);
 					$objPHPExcel = $objReader->load($this->data['Novedad']['planilla']['tmp_name']);
 					
 					/**
@@ -112,19 +113,24 @@ class NovedadesController extends AppController {
 							$mapeo['Ausencias']['Desde']					= $i+1;
 							$mapeo['Ausencias']['Dias']						= $i+2;
 							$i = $i+1;
+                        } elseif ($value === "Vacaciones") {
+                            $mapeo['Vacaciones']['Corresponde']              = $i;
+                            $mapeo['Vacaciones']['Inicio']                   = $i+1;
+                            $mapeo['Vacaciones']['Dias']                     = $i+2;
+                            $i = $i+1;
 						} elseif ($value === "Vales") {
 							$mapeo['Vales']['Importe']						= $i;
 						} else {
 							$mapeo[$value]['Valor']							= $i;
 						}
 					}
-					
-					for($i = 10; $i <= $objPHPExcel->getActiveSheet()->getHighestRow() - 1; $i++) {
+
+					for ($i = 10; $i <= $objPHPExcel->getActiveSheet()->getHighestRow() - 1; $i++) {
 						$relacionId = $objPHPExcel->getActiveSheet()->getCell('A' . $i)->getValue();
 						foreach ($mapeo as $k => $v) {
 							foreach ($v as $k1 => $v1) {
 								$valor = $objPHPExcel->getActiveSheet()->getCellByColumnAndRow($v1, $i)->getValue();
-								if (!empty($valor)) {
+								if (!empty($valor) && !empty($relacionId)) {
 									$datos[$relacionId][$k][$k1] = $valor;
 								}
 							}
@@ -164,7 +170,13 @@ class NovedadesController extends AppController {
 					$formatoDocumento = $this->data['Condicion']['Novedad-formato'];
 					unset($this->data['Condicion']['Novedad-formato']);
 					unset($this->data['Condicion']['Novedad-tipo']);
-					$conditions = $this->Paginador->generarCondicion();
+                    if (!empty($this->data['Condicion']['Novedad-periodo_vacacional'])) {
+                        $this->set('fecha_hasta_periodo_vacacional', $this->data['Condicion']['Novedad-periodo_vacacional'] . '-12-31');
+                        unset($this->data['Condicion']['Novedad-periodo_vacacional']);
+                    }
+                    
+					$conditions = $this->Paginador->generarCondicion(false);
+
 					$registros = $this->Novedad->Relacion->find('all',
 						array('contain'	=> array('ConveniosCategoria', 'Trabajador', 'Empleador'),
                             'order'     => array('Trabajador.apellido', 'Trabajador.nombre'),

@@ -32,7 +32,8 @@ $condiciones['Condicion.Vacacion-relacion_id'] = array(	"lov"=>array("controller
 																								"Trabajador.apellido")));
 
 $condiciones['Condicion.Vacacion-desde'] = array();
-$condiciones['Condicion.Vacacion-hasta'] = array();
+$condiciones['Condicion.Vacacion-periodo'] = array();
+$condiciones['Condicion.Vacacion-estado'] = array('type' => 'select', 'multiple' => 'checkbox');
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "Vacaciones", 'imagen' => 'vacaciones.gif')));
 
@@ -48,8 +49,9 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
 	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
 	$fila[] = array('model' => 'Vacacion', 'field' => 'desde', 'valor' => $v['Vacacion']['desde']);
-	$fila[] = array('model' => 'Vacacion', 'field' => 'hasta', 'valor' => $v['Vacacion']['hasta']);
-	$fila[] = array('model' => 'Vacacion', 'field' => 'observacion', 'valor' => $v['Vacacion']['observacion']);
+	$fila[] = array('model' => 'Vacacion', 'field' => 'dias', 'valor' => $v['Vacacion']['dias']);
+    $fila[] = array('model' => 'Vacacion', 'field' => 'periodo', 'valor' => $v['Vacacion']['periodo']);
+	$fila[] = array('model' => 'Vacacion', 'field' => 'estado', 'valor' => $v['Vacacion']['estado']);
 	$cuerpo[] = $fila;
 }
 

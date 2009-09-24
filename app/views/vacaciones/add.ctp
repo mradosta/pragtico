@@ -27,8 +27,10 @@ $campos['Vacacion.relacion_id'] = array(	"label"=>"Relacion",
 														"camposRetorno"	=>	array(	"Trabajador.nombre",
 																					"Trabajador.apellido",
 																					"Empleador.nombre")));
+$campos['Vacacion.periodo'] = array();
 $campos['Vacacion.desde'] = array();
-$campos['Vacacion.hasta'] = array();
+$campos['Vacacion.dias'] = array();
+$campos['Vacacion.estado'] = array();
 $campos['Vacacion.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
