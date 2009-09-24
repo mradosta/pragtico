@@ -24,59 +24,44 @@
  */
 class RelacionesConceptosController extends AppController {
 
+    function save() {
+        if (!empty($this->data['Form']['tipo']) && $this->data['Form']['tipo'] == 'addRapido' && !empty($this->data['RelacionesConcepto']['relacion_id'])) {
 
-	function add() {
-		/**
-		* Detecto si viene de un addRapido.
-		*/
-		if (!empty($this->data['Form']['tipo']) && $this->data['Form']['tipo'] == "addRapido" && !empty($this->data['RelacionesConcepto']['relacion_id'])) {
+            $assignedConcepts = Set::extract('/Concepto/codigo',
+                $this->RelacionesConcepto->find('all', array(
+                    'contain'       => 'Concepto',
+                    'conditions'    => array(
+                        'RelacionesConcepto.relacion_id' => $this->data['RelacionesConcepto']['relacion_id']))));
 
-			if ($this->data['Form']['accion'] == "grabar") {
-				$registros = explode("*||*", $this->data['Form']['valores_derecha']);
+            foreach ($this->data['Concepto'] as $k => $v) {
+                list($conceptId, $conceptCode) = explode('|', $k);
+                if ($v == 1) {
+                    if (!in_array($conceptCode, $assignedConcepts)) {
+                        $add[] = array('RelacionesConcepto' => array(
+                            'relacion_id' => $this->data['RelacionesConcepto']['relacion_id'],
+                            'concepto_id' => $conceptId));
+                    }
+                } else {
+                    if (in_array($conceptCode, $assignedConcepts)) {
+                        $del[] =$conceptId;
+                    }
+                }
+            }
 
-				foreach ($registros as $registro) {
-					$seleccionados[] = array_shift(explode("|", $registro));
-				}
-				
-				$conceptosSeleccionados = $this->RelacionesConcepto->Concepto->find("list", array("recursive"=>-1, "conditions"=>array("Concepto.codigo"=>$seleccionados)));
-				$conceptosRelacion = $this->RelacionesConcepto->find("list", array("fields" => "RelacionesConcepto.concepto_id", "contain" => "Concepto", "conditions"=>array("RelacionesConcepto.relacion_id"=>$this->data['RelacionesConcepto']['relacion_id'])));
-				
-				$quitar = array_diff($conceptosRelacion, $conceptosSeleccionados);
-				$agregar = array_diff($conceptosSeleccionados, $conceptosRelacion);
-				$this->RelacionesConcepto->begin();
-				$c = 0;
-				foreach ($quitar as $k=>$v) {
-					if ($this->RelacionesConcepto->del($k)) {
-						$c++;
-					}
-				}
-				
-				$save['RelacionesConcepto']['relacion_id'] = $this->data['RelacionesConcepto']['relacion_id'];
-				foreach ($agregar as $k=>$v) {
-					$this->RelacionesConcepto->create();
-					$save['RelacionesConcepto']['concepto_id'] = $v;
-					$this->RelacionesConcepto->set($save);
-					if ($this->RelacionesConcepto->save($save)) {
-						$c++;
-					}
-				}
-				if ($c == count($agregar) + count($quitar)) {
-					$this->Session->setFlash("La operacion se realizo con exito.", "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
-					$this->RelacionesConcepto->commit();
-				}
-				else {
-					$dbError = $this->{$this->modelClass}->getError();
-					$this->Session->setFlash("Los cambios no pudieron guardarse.", "error", array("errores"=>$dbError));
-					$this->RelacionesConcepto->rollBack();
-				}
-			}
-			$this->History->goBack(2);
-		}
-		else {
-			parent::add();
-		}
-	}
-	
+            if (!empty($add)) {
+                $this->RelacionesConcepto->saveAll($add);
+            }           
+            if (!empty($del)) {
+                $this->RelacionesConcepto->deleteAll(array(
+                    'relacion_id' => $this->data['RelacionesConcepto']['relacion_id'],
+                    'concepto_id' => $del));
+            }
+            $this->Session->setFlash('La operacion se realizo con exito.', 'ok');
+            $this->redirect(array('controller' => 'relaciones', 'action' => 'index'));
+        } else {
+            return parent::save();
+        }
+    }
 
 /**
 * Permite realizar un add mediante tablas fromto.
@@ -86,54 +71,20 @@ class RelacionesConceptosController extends AppController {
 		if (!empty($this->passedArgs['RelacionesConcepto.relacion_id'])) {
 			$this->RelacionesConcepto->Relacion->contain(array("ConveniosCategoria", "Trabajador", "Empleador", "RelacionesConcepto.Concepto"));
 			$relacion = $this->RelacionesConcepto->Relacion->findById($this->passedArgs['RelacionesConcepto.relacion_id']);
+
+            $assignedConcepts = Set::extract('/RelacionesConcepto/Concepto/codigo', $relacion);
+			$concepts = $this->RelacionesConcepto->Concepto->find('all',
+				array(	'recursive'	 => -1,
+						'order'		 => array('Concepto.nombre')));
 			
-			/** Order results */
-			$conceptosAsignados = $conceptosAsignadosCodigos = array();
-			$conceptosAsignadosTmp = Set::combine($relacion['RelacionesConcepto'], '{n}.Concepto.codigo', '{n}.Concepto');
-			ksort($conceptosAsignadosTmp);
-			foreach ($conceptosAsignadosTmp as $concepto) {
-				$conceptosAsignados[]['Concepto'] = $concepto;
-				$conceptosAsignadosCodigos = $concepto['codigo'];
-			}
-			
-			$conceptosNoAsignados = $this->RelacionesConcepto->Concepto->find("all",
-				array(	"recursive"	=> -1,
-						"order"		=> array('Concepto.nombre'),
-						"conditions"=>
-							array("NOT"=>array("Concepto.codigo"=>$conceptosAsignadosCodigos))));
-			
-			$this->set("relacion", $relacion);
-			$this->set("datosIzquierda", $conceptosNoAsignados);
-			$this->set("datosDerecha", $conceptosAsignados);
+			$this->set('relacion', $relacion);
+			$this->set('concepts', $concepts);
+			$this->set('assignedConcepts', $assignedConcepts);
 		} else {
-			$this->Session->setFlash("Debe seleccionar una relacion.", 'error');
+			$this->Session->setFlash('Debe seleccionar una relacion.', 'error');
 			$this->History->goBack(2);
 		}
 	}
-
-
-	function actualizarTablaIzquierda() {
-		if (isset($this->params['named']['partialText'])) {
-			$this->params['named']['partialText'] = str_replace("[EXPANSOR]", "%", str_replace("[SPACE]", " ", $this->params['named']['partialText']));
-			$condiciones = array("Concepto.nombre like"=>$this->params['named']['partialText']);
-			unset($this->params['named']['partialText']);
-		}
-		if (isset($this->params['named']['selectedId'])){
-			$condiciones = array("Concepto.id"=>$this->params['named']['selectedId']);
-			unset($this->params['named']['selectedId']);
-		}
-
-		$conceptos = $this->RelacionesConcepto->Concepto->find("all", array("conditions"=>$condiciones));
-		$data = array();
-		foreach ($conceptos as $v) {
-			$data[$v['Concepto']['id']] = $v['Concepto']['nombre'];
-		}
-		$tablaSiemple = $this->Util->generarCuerpoTablaSimple($data);
-		$this->set("cuerpo", $tablaSiemple['cuerpo']);
-		$this->set("encabezados", $tablaSiemple['encabezados']);
-		$this->render("../elements/tablas_from_to/tabla");
-	}
-
-
+    
 }
 ?>
