@@ -30,9 +30,46 @@ class RelacionesController extends AppController {
 
     function archivo_bimestral_ministerio_trabajo() {
 
-        if (!empty($this->data)) {
-            $this->Relacion->contain(array('Trabajador', 'Empleador', 'Area', 'ConveniosCategoria' => 'Convenio'));
-            $data = $this->Relacion->find('all', array('limit' => 1));
+        if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
+
+            switch ($this->data['Condicion']['Bar-bimestre']) {
+                case 1:
+                    $month = array(1, 2);
+                break;
+                case 2:
+                    $month = array(3, 4);
+                break;
+                case 3:
+                    $month = array(5, 6);
+                break;
+                case 4:
+                    $month = array(7, 8);
+                break;
+                case 5:
+                    $month = array(9, 10);
+                break;
+                case 6:
+                    $month = array(11, 12);
+                break;
+            }
+
+            $conditions = null;
+            $this->Relacion->Liquidacion->Behaviors->detach('Permisos');
+            $conditions['Relacion.id'] =
+                array_unique(
+                    Set::extract('/Liquidacion/relacion_id',
+                        $this->Relacion->Liquidacion->find('all', array(
+                            'recursive'     => -1,
+                            'conditions'    => array(
+                                'Liquidacion.mes'       => $month,
+                                'Liquidacion.ano'       => $this->data['Condicion']['Bar-ano'],
+                                '(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'  => 0)))));
+            $conditions['(Relacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
+
+            $data = $this->Relacion->find('all', array(
+                'contain'       => array('Trabajador', 'Empleador', 'Area', 'ConveniosCategoria' => 'Convenio'),
+                'conditions'    => $conditions,
+                'limit'         => 1));           
             if (!empty($data)) {
                 
                 $lineas = array();
@@ -77,13 +114,21 @@ class RelacionesController extends AppController {
                     $linea[$c++] = str_replace('-', '', $r['Trabajador']['cuil']);
                     $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['ConveniosCategoria']['nombre']), 30, ' ', STR_PAD_RIGHT), 0, 30);
                     $linea[$c++] = substr(str_pad($r['ConveniosCategoria']['Convenio']['numero'], 20, ' ', STR_PAD_RIGHT), 0, 20);
-                    $linea[$c++] = str_pad($historico[$r['ConveniosCategoria']['id']], 8, '0', STR_PAD_LEFT);
+                    $linea[$c++] = substr(str_pad(str_replace('.', '', ($r['Relacion']['basico'] > 0)?$r['Relacion']['basico']:$historico[$r['ConveniosCategoria']['id']]), 8, '0', STR_PAD_LEFT), 0, 8);
                     if ($r['ConveniosCategoria']['jornada'] == 'Mensual') {
                         $linea[$c++] = 1;
                     } else {
                         $linea[$c++] = 2;
                     }
                     $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['Empleador']['nombre']), 50, ' ', STR_PAD_RIGHT), 0, 50);
+                    $linea[$c++] = str_replace('-', '', $r['Empleador']['cuit']);
+                    $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['Area']['direccion']), 30, ' ', STR_PAD_RIGHT), 0, 30);
+                    $linea[$c++] = str_repeat(' ', 20);
+                    $linea[$c++] = str_repeat(' ', 8);
+                    $linea[$c++] = str_repeat(' ', 2);
+                    $linea[$c++] = $this->Util->format($r['Relacion']['ingreso'], array('type' => 'date', 'format' => 'dmY'));
+                    $linea[$c++] = $this->Util->format($r['Relacion']['egreso'], array('type' => 'date', 'format' => 'dmY'));
+                    $linea[$c++] = "0";
                     $linea[$c++] = str_repeat(' ', 134);
                     $lineas[] = implode('', $linea);
                 }
@@ -96,11 +141,9 @@ class RelacionesController extends AppController {
                 $linea[$c++] = str_repeat(' ', 449);
                 $lineas[] = implode('', $linea);
                 
-                d(implode("\r\n", $lineas));
-                d($data);
                 $this->set('archivo', array(
                     'contenido' => implode("\r\n", $lineas),
-                    'nombre'    => 'SICOSS_' . $periodo['ano'] . '-' . $periodo['mes'] . '.txt'));
+                    'nombre'    => 'BIMESTRAL_MT_' . $this->data['Condicion']['Bar-ano'] . '-' . $this->data['Condicion']['Bar-bimestre'] . '.txt'));
                 $this->render('..' . DS . 'elements' . DS . 'txt', 'txt');
             } else {
                 $this->Session->setFlash('No se encontraron registros para generar el archivo.', 'error');

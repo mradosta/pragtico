@@ -16,10 +16,10 @@
  * @author          Martin Radosta <mradosta@pragmatia.com>
  */
  
-$conditions['Condicion.Bar-ano'] = array('label' => 'Ano');
+$conditions['Condicion.Bar-ano'] = array('label' => 'Año', 'type' => 'periodo', 'periodo' => array('A'));
 $conditions['Condicion.Bar-bimestre'] = array('label' => 'Bimestre', 'aclaracion' => 'Solo valores entre 1 y 6');
 
-$options = array('title' => 'Archivo Bimestral Ministerio de Trabajo');
+$options = array('title' => 'Archivo Bimestral Ministerio de Trabajo', 'conditions' => array('Bar-file_format' => false));
 echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));
  
 ?>
