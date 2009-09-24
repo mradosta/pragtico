@@ -476,10 +476,7 @@ class FormatoHelper extends AppHelper {
 				}
 
                 if (!empty($fecha)) {
-					if (preg_match(VALID_DATE, $fecha, $matches)) {
-						$options['format'] = 'Y-m-d';
-						$return = $matches[1] . '-' . $matches[2] . '-' . $matches[3];
-					} elseif (preg_match(VALID_DATE_MYSQL, $fecha, $matches)) {
+					if (preg_match(VALID_DATE_MYSQL, $fecha, $matches)) {
 						if (!isset($options['format'])) {
                             $options['format'] = 'Y-m-d';
 						}
