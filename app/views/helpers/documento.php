@@ -391,9 +391,13 @@ class DocumentoHelper extends AppHelper {
         if ($type === 'decimal') {
             $tipo = PHPExcel_Cell_DataValidation::TYPE_DECIMAL;
             $mensaje = 'Solo puede ingresar numeros';
+            $objValidation->setFormula1(0);
+            $objValidation->setFormula2(100000);
         } elseif ($type === 'date') {
             $tipo = PHPExcel_Cell_DataValidation::TYPE_DATE;
             $mensaje = 'Solo puede ingresar fechas';
+            //$objValidation->setFormula1('2000-01-01');
+            //$objValidation->setFormula2('2034-01-01');
         } elseif ($type === 'list') {
             /** Creo una lista que luego la oculto, con esto valido. */
             preg_match("/^([A-Z]+)([0-9]+)$/", $cellName, $matches);
