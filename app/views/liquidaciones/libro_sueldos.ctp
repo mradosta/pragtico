@@ -67,11 +67,13 @@ if (!empty($data)) {
 	$employerFlag = null;
 	$pageCount = $startPage - 1;
     $recordCount = 0;
-	foreach ($data as $k => $record) {
-
+    $k = 0;
+	foreach ($data as $record) {
+        $k++;
+        
         /** Must print emplyer only when group is selected */
-		if ($employerFlag !== $record['Relacion']['Empleador']['cuit']) {
-			$employerFlag = $record['Relacion']['Empleador']['cuit'];
+		if ($employerFlag !== $record['Liquidacion']['empleador_cuit']) {
+			$employerFlag = $record['Liquidacion']['empleador_cuit'];
 
 			$recordCount = 0;
 			$documento->doc->getActiveSheet()->setBreak('A' . $fila, PHPExcel_Worksheet::BREAK_ROW);
@@ -82,18 +84,18 @@ if (!empty($data)) {
             if (empty($employer)) {
                 $fila+=2;
                 $documento->setCellValue('A' . $fila, 'Empresa Usuario:');
-                $documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['nombre'], 'bold');
+                $documento->setCellValue('B' . $fila, $record['Liquidacion']['empleador_nombre'], 'bold');
                 $documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), 'bold');
                 
                 $fila++;
                 $documento->setCellValue('A' . $fila, 'CUIT:');
-                $documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['cuit'], 'bold');
+                $documento->setCellValue('B' . $fila, $record['Liquidacion']['empleador_cuit'], 'bold');
                 
                 $fila++;
                 $documento->setCellValue('A' . $fila, 'Direccion:');
-                $documento->setCellValue('B' . $fila, $record['Relacion']['Empleador']['direccion']);
+                $documento->setCellValue('B' . $fila, $record['Liquidacion']['empleador_direccion']);
                 
-                $fila+=3;
+                $fila+=2;
             } else {
                 $documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), 'bold');
                 $fila++;
@@ -102,17 +104,17 @@ if (!empty($data)) {
 		$recordCount++;
 		
         $fila++;
-		$documento->setCellValue('A' . $fila, 'CUIL: ' . $record['Relacion']['Trabajador']['cuil'] . ' / Legajo: ' . $record['Relacion']['legajo']);
-		$documento->setCellValue('E' . $fila, 'Apellido y Nombre: ' . $record['Relacion']['Trabajador']['apellido'] . ' ' . $record['Relacion']['Trabajador']['nombre']);
-        $documento->setCellValue('I' . $fila, 'Ingreso: ' . $formato->format($record['Relacion']['ingreso'], 'date'));
+		$documento->setCellValue('A' . $fila, 'CUIL: ' . $record['Liquidacion']['trabajador_cuil'] . ' / Legajo: ' . $record['Liquidacion']['relacion_legajo']);
+		$documento->setCellValue('E' . $fila, 'Apellido y Nombre: ' . $record['Liquidacion']['trabajador_apellido'] . ' ' . $record['Liquidacion']['trabajador_nombre']);
+        $documento->setCellValue('I' . $fila, 'Ingreso: ' . $formato->format($record['Liquidacion']['relacion_ingreso'], 'date'));
 
         $fila++;
 		$documento->setCellValue('A' . $fila, 'Periodo: ' . $record['Liquidacion']['periodo']);
-		$documento->setCellValue('E' . $fila, 'Contrato: ' . $record['Relacion']['Modalidad']['nombre']);
-        if ($record['Relacion']['basico'] > 0) {
-            $salary = $record['Relacion']['basico'];
+		$documento->setCellValue('E' . $fila, 'Contrato: ' . $record['Liquidacion']['relacion_modalidad_nombre']);
+        if ($record['Liquidacion']['relacion_basico'] > 0) {
+            $salary = $record['Liquidacion']['relacion_basico'];
         } else {
-            $salary = $record['Relacion']['ConveniosCategoria']['costo'];
+            $salary = $record['Liquidacion']['convenio_categoria_costo'];
         }
         $documento->setCellValue('I' . $fila, 'Suel/Jorn.: $ ' . $formato->format($salary));
 
@@ -120,8 +122,8 @@ if (!empty($data)) {
         $documento->setCellValue('A' . $fila, 'Categoria: ' . $record['Liquidacion']['convenio_categoria_nombre']);
 
         $egreso = '';
-        if (!empty($record['Relacion']['egreso']) && $record['Relacion']['egreso'] !== '0000-00-00') {
-            $egreso = $formato->format($record['Relacion']['egreso'], 'date');
+        if (!empty($record['Liquidacion']['relacion_egreso']) && $record['Liquidacion']['relacion_egreso'] !== '0000-00-00') {
+            $egreso = $formato->format($record['Liquidacion']['relacion_egreso'], 'date');
         }
 		$documento->setCellValue('E' . $fila, 'Baja: ' . $egreso);
 		if (empty($egreso)) {
@@ -226,6 +228,7 @@ if (!empty($data)) {
             $fila++;
 		}
 	}
+
 	$documento->save($fileFormat);
 	
 } else {

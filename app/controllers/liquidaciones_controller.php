@@ -212,16 +212,20 @@ class LiquidacionesController extends AppController {
                     $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
                 }
 
-				$this->Liquidacion->Behaviors->detach('Permisos');
-				$this->Liquidacion->Behaviors->detach('Util');
-				$liquidaciones = $this->Liquidacion->find('all',
-						array(	'contain'		=> array(
-									'LiquidacionesDetalle' => array('order' => 'LiquidacionesDetalle.concepto_tipo'),
-									'Relacion' => array('Trabajador', 'Empleador', 'Modalidad', 'ConveniosCategoria.ConveniosCategoriasHistorico')),
-								'conditions'	=> $conditions,
-							 	'order'			=> array(
+                $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
+                foreach ($this->Liquidacion->LiquidacionesDetalle->find('all',
+                        array(  'contain'       => array('Liquidacion'),
+                                'conditions'    => $conditions,
+                                'order'         => array(
                                     'Liquidacion.empleador_nombre',
-                                    'Liquidacion.periodo')));
+                                    'Liquidacion.periodo',
+                                    'LiquidacionesDetalle.concepto_tipo'))) as $k => $v) {
+
+                    if (empty($liquidaciones[$v['Liquidacion']['id']]['Liquidacion'])) {
+                        $liquidaciones[$v['Liquidacion']['id']]['Liquidacion'] = $v['Liquidacion'];
+                    }
+                    $liquidaciones[$v['Liquidacion']['id']]['LiquidacionesDetalle'][] = $v['LiquidacionesDetalle'];
+                }
 
 				if (empty($liquidaciones)) {
 					$this->Session->setFlash('No se han encontrado liquidaciones confirmadas para el periodo seleccionado segun los criterios especificados.', 'error');
@@ -321,6 +325,7 @@ class LiquidacionesController extends AppController {
             $condiciones['(Relacion.group_id & ' . User::get('/Usuario/preferencias/grupo_default_id') . ') >'] = 0;
 			$relaciones = $this->Liquidacion->Relacion->find('all',
 					array(	'contain'		=> array(	'ConveniosCategoria',
+                                                        'Modalidad',
 														'Trabajador.ObrasSocial',
 														'Empleador'),
 							'conditions'	=> $condiciones));
