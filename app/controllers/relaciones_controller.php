@@ -68,8 +68,7 @@ class RelacionesController extends AppController {
 
             $data = $this->Relacion->find('all', array(
                 'contain'       => array('Trabajador', 'Empleador', 'Area', 'ConveniosCategoria' => 'Convenio'),
-                'conditions'    => $conditions,
-                'limit'         => 1));           
+                'conditions'    => $conditions));           
             if (!empty($data)) {
                 
                 $lineas = array();
