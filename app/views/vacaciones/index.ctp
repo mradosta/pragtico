@@ -32,7 +32,6 @@ $condiciones['Condicion.Vacacion-relacion_id'] = array(	"lov"=>array("controller
 																								"Trabajador.apellido")));
 
 $condiciones['Condicion.Vacacion-desde'] = array();
-$condiciones['Condicion.Vacacion-periodo'] = array();
 $condiciones['Condicion.Vacacion-estado'] = array('type' => 'select', 'multiple' => 'checkbox');
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "Vacaciones", 'imagen' => 'vacaciones.gif')));

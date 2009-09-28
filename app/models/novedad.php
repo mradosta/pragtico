@@ -267,7 +267,6 @@ class Novedad extends AppModel {
                     $saves[$i]['Vacacion']['dias'] = $tmp[1];
                     $saves[$i]['Vacacion']['estado'] = 'Confirmada';
                     $saves[$i]['Vacacion']['relacion_id'] = $novedad['Novedad']['relacion_id'];
-                    $saves[$i]['Vacacion']['periodo'] = $periodo['periodoCompleto'];
                     $saves[$i]['Vacacion']['observacion'] = 'Ingresado desde planilla. Confirmado el ' . date('Y-m-d');
                 break;
 				case 'Horas':
