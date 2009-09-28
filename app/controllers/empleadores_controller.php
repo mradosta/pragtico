@@ -28,7 +28,7 @@ class EmpleadoresController extends AppController {
             'Empleador.nombre' => 'asc'
         )
     );
-
+    var $helpers = array('Documento');
 
 /**
  * Cuentas
@@ -172,5 +172,26 @@ class EmpleadoresController extends AppController {
 		}
 		$this->redirect("index");
 	}
+
+
+    function reporte_ultimos_ingresos() {
+        if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
+
+            $conditions['(Empleador.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
+            
+            if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
+                $conditions['Empleador.id'] = $this->data['Condicion']['Bar-empleador_id'];
+            }
+            
+            $this->Empleador->Behaviors->detach('Permisos');
+            $this->Empleador->contain(array(
+                'Trabajador' => array(
+                    'order' => array('Relacion.ingreso DESC'),
+                    'limit' => 1)));
+            $this->set('data', $this->Empleador->find('all', array('conditions' => $conditions)));
+            $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+        }
+    }
+
 }
 ?>
