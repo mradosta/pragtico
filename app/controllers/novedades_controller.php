@@ -84,6 +84,8 @@ class NovedadesController extends AppController {
 					*/
 					for($i = 6; $i < PHPExcel_Cell::columnIndexFromString($objPHPExcel->getActiveSheet()->getHighestColumn()); $i++) {
 						$value = $objPHPExcel->getActiveSheet()->getCellByColumnAndRow($i, 8)->getValue();
+                        //debug($value);
+                        //debug($i);
 						if (empty($value)) {
 							break;
 						}
@@ -112,12 +114,12 @@ class NovedadesController extends AppController {
 							$mapeo['Ausencias']['Motivo']					= $i;
 							$mapeo['Ausencias']['Desde']					= $i+1;
 							$mapeo['Ausencias']['Dias']						= $i+2;
-							$i = $i+1;
+							$i = $i+2;
                         } elseif ($value === "Vacaciones") {
                             $mapeo['Vacaciones']['Corresponde']              = $i;
                             $mapeo['Vacaciones']['Inicio']                   = $i+1;
                             $mapeo['Vacaciones']['Dias']                     = $i+2;
-                            $i = $i+1;
+                            $i = $i+2;
 						} elseif ($value === "Vales") {
 							$mapeo['Vales']['Importe']						= $i;
 						} else {

@@ -205,17 +205,31 @@ class Liquidacion extends AppModel {
 					$this->setConcept(array($cCod => $concepto));
 				}
 			}
-			
-			$this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
-					array(	'relacion' 			=> $this->getRelationship(),
-							'codigoConcepto'	=> 'vacaciones')));
 
+            /** Get discounts */
+            $discounts = $this->Relacion->Descuento->getDescuentos($this->getRelationship(),
+                    array(  'periodo'   => $this->getPeriod(),
+                            'tipo'      => $type));
+            foreach ($discounts['variables'] as $varName => $varValue) {
+                $this->setVar($varName, $varValue);
+            }
+            $this->__setAuxiliar($discounts['auxiliar']);
+            $this->setConcept($discounts['conceptos']);
+            
+
+            /** Get hollidays */
+            $hollidays = $this->Relacion->Vacacion->getVacaciones($this->getRelationship(),
+                    array(  'periodo'   => $this->getPeriod()));
+            foreach ($hollidays['variables'] as $varName => $varValue) {
+                $this->setVar($varName, $varValue);
+            }
+            $this->__setAuxiliar($hollidays['auxiliar']);
+            $this->setConcept($hollidays['conceptos']);
+            
             $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
                     array(  'relacion'          => $this->getRelationship(),
                             'codigoConcepto'    => 'plus_vacacional')));
 
-            //$this->LiquidacionesDetalle->Behaviors->detach('Permisos');
-            //$this->LiquidacionesDetalle->Behaviors->detach('Util');
 
             App::import('Vendor', 'dates', 'pragmatia');
             $data = $this->Relacion->Liquidacion->LiquidacionesDetalle->find('all', array(
