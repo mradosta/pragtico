@@ -26,6 +26,42 @@
 class EmpleadoresCoeficientesController extends AppController {
 
 
+    var $helpers = array('Documento');
+    
+    function reporte_coeficientes() {
+        if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
+
+            $conditions['(Empleador.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
+            
+            if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
+                $conditions['Empleador.id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
+            }
+
+            $this->EmpleadoresCoeficiente->Empleador->contain(
+                array('Coeficiente' => array('order' => 'Coeficiente.nombre')));
+            $data = $this->EmpleadoresCoeficiente->Empleador->find('all', array('conditions' => $conditions));
+
+            if (!empty($this->data['Condicion']['Bar-solo_con_valor']) && $this->data['Condicion']['Bar-solo_con_valor'] == 'No') {
+                
+                $coeficientes = Set::combine(
+                    $this->EmpleadoresCoeficiente->Coeficiente->find('all', array(
+                        'recursive' => -1,
+                        'order' => 'Coeficiente.nombre')),
+                            '{n}.Coeficiente.id', '{n}.Coeficiente');
+                
+                $ids = array_keys($coeficientes);
+                foreach ($data as $k => $record) {
+                    foreach (array_diff($ids, Set::extract('/Coeficiente/id', $record)) as $missingId) {
+                        $data[$k]['Coeficiente'][] = $coeficientes[$missingId];
+                    }
+                }
+            }
+            
+            $this->set('data', $data);
+            $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+        }
+    }
+        
     function add_rapido() {
         $empleadoresCoeficientes = Set::combine($this->EmpleadoresCoeficiente->find('all', array(
           'recursive'   => -1,

@@ -43,5 +43,8 @@ class Coeficiente extends AppModel {
         )        
 	);
 
+    
+    var $hasAndBelongsToMany = array('Coeficiente' => array('with' => 'EmpleadoresCoeficiente'));
+    
 }
 ?>
