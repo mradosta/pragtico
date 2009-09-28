@@ -264,9 +264,6 @@ class LiquidacionesController extends AppController {
 				} elseif ($this->data['Condicion']['Liquidacion-tipo'] === 'holliday' &&
 						!in_array($periodo['periodo'], array('1Q', '2Q', 'M'))) {
 					$message = __('Holliday liquidation period should be of the form "YYYYMM[1Q|2Q|M]"', true);
-				} elseif ($this->data['Condicion']['Liquidacion-tipo'] === 'holliday' &&
-						!preg_match('/\d\d\d\d/', $this->data['Condicion']['Liquidacion-periodo_vacacional'])) {
-					$message = __('Holliday period should be of the form "YYYY"', true);
 				} elseif ($this->data['Condicion']['Liquidacion-tipo'] === 'sac' &&
 						!in_array($periodo['periodo'], array('1S', '2S'))) {
 					$message = __('Sac liquidation period should be of the form "YYYY[12]S"', true);
@@ -292,7 +289,6 @@ class LiquidacionesController extends AppController {
 			$condiciones = $this->Paginador->generarCondicion();
 			unset($condiciones['Liquidacion.tipo']);
 			unset($condiciones['Liquidacion.periodo_largo']);
-			unset($condiciones['Liquidacion.periodo_vacacional']);
 			unset($condiciones['Liquidacion.estado']);
             unset($condiciones['Liquidacion.ano']);
             unset($condiciones['Liquidacion.mes']);
@@ -356,9 +352,6 @@ class LiquidacionesController extends AppController {
 					'recursive' => -1,
 	 				'order' => false)), '{n}.Variable.nombre', '{n}.Variable');
 			$variables['#tipo_liquidacion']['valor'] = $this->data['Condicion']['Liquidacion-tipo'];
-			if (!empty($this->data['Condicion']['Liquidacion-periodo_vacacional'])) {
-				$variables['#fecha_hasta_periodo_vacacional']['valor'] = sprintf('%d-12-31', $this->data['Condicion']['Liquidacion-periodo_vacacional']);
-			}
 
 			/** Make the liquidations if not done. */
 			$ids = null;
