@@ -49,7 +49,6 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
 	$fila[] = array('model' => 'Vacacion', 'field' => 'desde', 'valor' => $v['Vacacion']['desde']);
 	$fila[] = array('model' => 'Vacacion', 'field' => 'dias', 'valor' => $v['Vacacion']['dias']);
-    $fila[] = array('model' => 'Vacacion', 'field' => 'periodo', 'valor' => $v['Vacacion']['periodo']);
 	$fila[] = array('model' => 'Vacacion', 'field' => 'estado', 'valor' => $v['Vacacion']['estado']);
 	$cuerpo[] = $fila;
 }
