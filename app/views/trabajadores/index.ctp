@@ -22,7 +22,7 @@
 $condiciones['Condicion.Trabajador-apellido'] = array();
 $condiciones['Condicion.Trabajador-nombre'] = array();
 $condiciones['Condicion.Trabajador-sexo'] = array();
-$condiciones['Condicion.Trabajador-numero_documento'] = array("label"=>"Documento");
+$condiciones['Condicion.Trabajador-numero_documento'] = array('label' => 'Documento');
 $condiciones['Condicion.Trabajador-cuil'] = array();
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'trabajadores.gif')));
@@ -35,9 +35,9 @@ $cuerpo = null;
 foreach ($registros as $k => $v) {
 	$fila = null;
 	$id = $v['Trabajador']['id'];
-	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'empleadores.gif', 'alt' => "Empleadores"), 'url' => 'relaciones');
+	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'empleadores.gif', 'alt' => 'Empleadores'), 'url' => 'relaciones');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'id', 'valor' => $v['Trabajador']['id'], 'write' => $v['Trabajador']['write'], 'delete' => $v['Trabajador']['delete']);
-	$fila[] = array('model' => 'Trabajador', 'field' => 'cuil', 'valor' => $v['Trabajador']['cuil'], "class"=>"centro");
+	$fila[] = array('model' => 'Trabajador', 'field' => 'cuil', 'valor' => $v['Trabajador']['cuil'], 'class' => 'centro');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Trabajador']['apellido']);
 	$fila[] = array('model' => 'Trabajador', 'field' => 'nombre', 'valor' => $v['Trabajador']['nombre']);
 	$fila[] = array('model' => 'Trabajador', 'field' => 'telefono', 'valor' => $v['Trabajador']['telefono']);
@@ -45,7 +45,7 @@ foreach ($registros as $k => $v) {
 	$cuerpo[] = $fila;
 }
 
-$accionesExtra[] = $appForm->link("Imprimir", "imprimir", array("title"=>"Imprimir", "class"=>"link_boton"));
-echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, "accionesExtra"=>$accionesExtra));
+$accionesExtra[] = $appForm->link('Imprimir', 'imprimir', array('title' => 'Imprimir', 'class' => 'link_boton'));
+echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, 'accionesExtra'=>$accionesExtra));
 
 ?>
