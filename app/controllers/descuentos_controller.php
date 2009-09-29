@@ -32,7 +32,39 @@ class DescuentosController extends AppController {
         )
     );
 
+    var $helpers = array('Documento');
 
+
+    function reporte_vales_prestamos() {
+        if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
+
+            $conditions['(Descuento.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
+            
+            if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
+                $conditions['Relacion.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
+            }
+            
+            if (!empty($this->data['Condicion']['Bar-estado'])) {
+                $conditions['Descuento.estado'] = $this->data['Condicion']['Bar-estado'];
+            }
+            
+            if (!empty($this->data['Condicion']['Bar-tipo'])) {
+                $conditions['Descuento.tipo'] = $this->data['Condicion']['Bar-tipo'];
+            } else {
+                $conditions['Descuento.tipo'] = array('Vale', 'Prestamo');
+            }
+            
+            $this->Descuento->Behaviors->detach('Permisos');
+            $this->Descuento->contain(array(
+                'DescuentosDetalle',
+                'Relacion' => array('Empleador', 'Trabajador',
+                    'order' => array('Relacion.empleador_id', 'Relacion.trabajador_id'))));
+            $this->set('data', $this->Descuento->find('all', array('conditions' => $conditions)));
+            $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+        }
+    }
+        
+    
 /**
  * detalles.
  * Muestra via desglose los detalles de un descuento.
