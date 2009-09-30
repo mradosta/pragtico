@@ -67,7 +67,7 @@ class RelacionesController extends AppController {
             $conditions['(Relacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
 
             $data = $this->Relacion->find('all', array(
-                'contain'       => array('Trabajador', 'Empleador', 'Area', 'ConveniosCategoria' => 'Convenio'),
+                'contain'       => array('Trabajador', 'Empleador', 'Area.Provincia', 'ConveniosCategoria' => 'Convenio'),
                 'conditions'    => $conditions));           
             if (!empty($data)) {
                 
