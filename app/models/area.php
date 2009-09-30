@@ -46,7 +46,7 @@ class Area extends AppModel {
     var $breadCrumb = array('format'    => '%s para %s',
                             'fields'    => array('Area.nombre', 'Empleador.nombre'));
 	var $hasAndBelongsToMany = array('Coeficiente');
-	var $belongsTo = array('Empleador', 'Zone');
+	var $belongsTo = array('Empleador', 'Zone', 'Provincia');
 
 }
 ?>

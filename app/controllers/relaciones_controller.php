@@ -122,9 +122,9 @@ class RelacionesController extends AppController {
                     $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['Empleador']['nombre']), 50, ' ', STR_PAD_RIGHT), 0, 50);
                     $linea[$c++] = str_replace('-', '', $r['Empleador']['cuit']);
                     $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['Area']['direccion']), 30, ' ', STR_PAD_RIGHT), 0, 30);
-                    $linea[$c++] = str_repeat(' ', 20);
-                    $linea[$c++] = str_repeat(' ', 8);
-                    $linea[$c++] = str_repeat(' ', 2);
+                    $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['Area']['ciudad']), 20, ' ', STR_PAD_RIGHT), 0, 20);
+                    $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['Area']['codigo_postal']), 8, ' ', STR_PAD_RIGHT), 0, 8);
+                    $linea[$c++] = str_pad((!empty($r['Area']['Provincia']['codigo'])?$r['Area']['Provincia']['codigo']:'0'), 2, '0', STR_PAD_LEFT);
                     $linea[$c++] = $this->Util->format($r['Relacion']['ingreso'], array('type' => 'date', 'format' => 'dmY'));
                     $linea[$c++] = $this->Util->format($r['Relacion']['egreso'], array('type' => 'date', 'format' => 'dmY'));
                     $linea[$c++] = "0";
