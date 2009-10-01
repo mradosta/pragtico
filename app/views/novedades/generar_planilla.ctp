@@ -76,16 +76,14 @@ if(!empty($registros)) {
         $documento->setCellValue($columna . ',' . ($fila+1), 'Corresponde', array('style' => $estiloTituloColumna));
         $documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(15);
         $columna++;
-        $documento->setCellValue($columna . ',' . ($fila+1), 'Inicio', array('style' => $estiloTituloColumna));
-        $documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(10);
-        $columna++;
         $documento->setCellValue($columna . ',' . ($fila+1), 'Periodo', array('style' => $estiloTituloColumna));
         $documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(10);        
         $columna++;
+        $documento->setCellValue($columna . ',' . ($fila+1), 'Inicio', array('style' => $estiloTituloColumna));
+        $documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(10);
+        $columna++;
         $documento->setCellValue($columna . ',' . ($fila+1), 'Dias', array('style' => $estiloTituloColumna));
         $documento->doc->getActiveSheet()->getColumnDimensionByColumn($columna)->setWidth(9);
-        
-        $fecha_hasta_periodo_vacacional = 'DATE(' . str_replace('-', ', ', $fecha_hasta_periodo_vacacional) . ')';
     }
     
     
@@ -185,7 +183,7 @@ if(!empty($registros)) {
     $initialRow = $fila + 1;
     foreach ($registros as $registro) {
         $fila++;
-        
+
         $documento->setCellValue('A' . $fila, $registro['Relacion']['id']);
         $documento->setCellValue('B' . $fila, $registro['Empleador']['nombre']);
         $documento->setCellValue('C' . $fila, $registro['Relacion']['legajo'] . ' - ' . $registro['Trabajador']['apellido'] . ' ' . $registro['Trabajador']['nombre']);
@@ -197,16 +195,11 @@ if(!empty($registros)) {
             $documento->setDataValidation($i . ',' . $fila, 'decimal');
         }
 
-        if (in_array('Vacaciones', $tipos)) {
-            $documento->setCellValue('G' . $fila, '=if(and(month(DATE(' . str_replace('-', ', ',  $registro['Relacion']['ingreso']) . '))>6,year(DATE(' . str_replace('-', ', ',  $registro['Relacion']['ingreso']) . '))=year(' . $fecha_hasta_periodo_vacacional . '),day(DATE(' . str_replace('-', ', ',  $registro['Relacion']['ingreso']) . '))>=1),int(if((INT(' . $fecha_hasta_periodo_vacacional . '/7)-INT(DATE(' . str_replace('-', ', ',  $registro['Relacion']['ingreso']) . ')/7))*5+MAX(0,MOD(' . $fecha_hasta_periodo_vacacional . ',7)-1)-MAX(0,MOD(DATE(' . str_replace('-', ', ',  $registro['Relacion']['ingreso']) . '),7)-2)=132,14,(INT(' . $fecha_hasta_periodo_vacacional . '/7)-INT(DATE(' . str_replace('-', ', ',  $registro['Relacion']['ingreso']) . ')/7))*5+MAX(0,MOD(' . $fecha_hasta_periodo_vacacional . ',7)-1)-MAX(0,MOD(DATE(' . str_replace('-', ', ',  $registro['Relacion']['ingreso']) . '),7)-2)/20)),if(and(month(DATE(' . str_replace('-', ', ',  $registro['Relacion']['ingreso']) . '))<6,year(DATE(' . str_replace('-', ', ',  $registro['Relacion']['ingreso']) . '))=year(' . $fecha_hasta_periodo_vacacional . ')),14,if((year(' . $fecha_hasta_periodo_vacacional . ')-year(DATE(' . str_replace('-', ', ',  $registro['Relacion']['ingreso']) . ')))<=5,14,if((year(' . $fecha_hasta_periodo_vacacional . ')-year(DATE(' . str_replace('-', ', ',  $registro['Relacion']['ingreso']) . ')))<=10,21,if((year(' . $fecha_hasta_periodo_vacacional . ')-year(DATE(' . str_replace('-', ', ',  $registro['Relacion']['ingreso']) . ')))<=15,28,35)))))');
-            /*
-            Do not use of netwokday function. Check:
-            http://phpexcel.codeplex.com/WorkItem/View.aspx?WorkItemId=10692
-            
-            $documento->setCellValue('G' . $fila, '=if(and(month(E' . $fila . ')>6,year(E' . $fila . ')=year(' . $fecha_hasta_periodo_vacacional . '),day(E' . $fila . ')>=1),int(if(networkdays(E' . $fila . ',' . $fecha_hasta_periodo_vacacional . ')=132,14,networkdays(E' . $fila . ',' . $fecha_hasta_periodo_vacacional . ')/20)),if(and(month(E' . $fila . ')<6,year(E' . $fila . ')=year(' . $fecha_hasta_periodo_vacacional . ')),14,if((year(' . $fecha_hasta_periodo_vacacional . ')-year(E' . $fila . '))<=5,14,if((year(' . $fecha_hasta_periodo_vacacional . ')-year(E' . $fila . '))<=10,21,if((year(' . $fecha_hasta_periodo_vacacional . ')-year(E' . $fila . '))<=15,28,35)))))');
-            */
+        if (in_array('Vacaciones', $tipos) && !empty($registro['Vacacion'][0]['corresponde'])) {
+            $documento->setCellValue('G' . $fila, $registro['Vacacion'][0]['corresponde']);
+            $documento->setCellValue('H' . $fila, $registro['Vacacion'][0]['periodo']);
             $documento->doc->getActiveSheet()->getStyle('G' . $fila)->getProtection()->setLocked(PHPExcel_Style_Protection::PROTECTION_PROTECTED);
-            $documento->setDataValidation('H' . $fila, 'date');
+            $documento->setDataValidation('I' . $fila, 'date');
         }
 
         
@@ -239,10 +232,12 @@ if(!empty($registros)) {
             'lov'=>array(   'controller'        => 'empleadores',
                             'camposRetorno'     => array('Empleador.nombre')));
 
-    $condiciones['Condicion.Relacion-id'] = array(  
-            'label' => 'Relacion',
-            'lov'   => array(   'controller'    => 'relaciones',
-                                'camposRetorno' => array('Empleador.nombre', 'Trabajador.apellido')));
+    $condiciones['Condicion.Relacion-area_id'] = array(
+            'label' => 'Area',
+            'mask'  => '%s, %s',
+            'lov'   => array('controller'   => 'areas',
+                            'camposRetorno' => array(   'Empleador.nombre',
+                                                        'Area.nombre')));
 
     $condiciones['Condicion.Novedad-periodo_vacacional'] = array('label' => 'Periodo Vacacional', 'type' => 'periodo', 'periodo' => array('A'), 'class' => 'periodo_vacacional');
     

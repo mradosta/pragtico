@@ -117,8 +117,8 @@ class NovedadesController extends AppController {
 							$i = $i+2;
                         } elseif ($value === "Vacaciones") {
                             $mapeo['Vacaciones']['Corresponde']              = $i;
-                            $mapeo['Vacaciones']['Inicio']                   = $i+1;
-                            $mapeo['Vacaciones']['Periodo']                  = $i+2;
+                            $mapeo['Vacaciones']['Periodo']                  = $i+1;
+                            $mapeo['Vacaciones']['Inicio']                   = $i+2;
                             $mapeo['Vacaciones']['Dias']                     = $i+3;
                             $i = $i+3;
 						} elseif ($value === "Vales") {
@@ -173,15 +173,17 @@ class NovedadesController extends AppController {
 					$formatoDocumento = $this->data['Condicion']['Novedad-formato'];
 					unset($this->data['Condicion']['Novedad-formato']);
 					unset($this->data['Condicion']['Novedad-tipo']);
+
+                    $contain = array();
                     if (!empty($this->data['Condicion']['Novedad-periodo_vacacional'])) {
-                        $this->set('fecha_hasta_periodo_vacacional', $this->data['Condicion']['Novedad-periodo_vacacional'] . '-12-31');
+                        $contain = array('Vacacion' => array('conditions' => array('Vacacion.periodo' => $this->data['Condicion']['Novedad-periodo_vacacional'])));
                         unset($this->data['Condicion']['Novedad-periodo_vacacional']);
                     }
                     
 					$conditions = $this->Paginador->generarCondicion(false);
 
 					$registros = $this->Novedad->Relacion->find('all',
-						array('contain'	=> array('ConveniosCategoria', 'Trabajador', 'Empleador'),
+						array('contain'	=> array_merge(array('ConveniosCategoria', 'Trabajador', 'Empleador'), $contain),
                             'order'     => array('Empleador.nombre', 'Trabajador.apellido', 'Trabajador.nombre'),
 							'conditions'=> $conditions));
 

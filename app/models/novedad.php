@@ -260,7 +260,7 @@ class Novedad extends AppModel {
  * @access public
  */
 	function confirmar($ids) {
-		$novedades = $this->find('all', 
+		$novedades = $this->find('all',
 				array('conditions' 	=> array('Novedad.id' => $ids), 
 					  'recursive'	=> -1));
 		$c = $i = $ii = 0;
@@ -270,14 +270,19 @@ class Novedad extends AppModel {
 			$periodo = $this->format($novedad['Novedad']['periodo'], 'periodo');
 			switch ($novedad['Novedad']['tipo']) {
                 case 'Vacaciones':
-                    $saves[$i]['Vacacion']['id'] = null;
-                    $tmp = explode('|', $novedad['Novedad']['data']);
-                    $saves[$i]['Vacacion']['desde'] = $tmp[0];
-                    $saves[$i]['Vacacion']['periodo'] = $tmp[1];
-                    $saves[$i]['Vacacion']['dias'] = $tmp[2];
-                    $saves[$i]['Vacacion']['estado'] = 'Confirmada';
-                    $saves[$i]['Vacacion']['relacion_id'] = $novedad['Novedad']['relacion_id'];
-                    $saves[$i]['Vacacion']['observacion'] = 'Ingresado desde planilla. Confirmado el ' . date('Y-m-d');
+                    $vacacion = ClassRegistry::init('Vacacion')->find('first', array(
+                        'conditions' => array(
+                            'Vacacion.relacion_id' => $novedad['Novedad']['relacion_id'],
+                            'Vacacion.periodo'     => $novedad['Novedad']['periodo'])));
+                    if (!empty($vacacion)) {
+                        $tmp = explode('|', $novedad['Novedad']['data']);
+                        $saves[$i]['VacacionesDetalle']['id'] = null;
+                        $saves[$i]['VacacionesDetalle']['vacacion_id'] = $vacacion['Vacacion']['id'];
+                        $saves[$i]['VacacionesDetalle']['desde'] = $tmp[0];
+                        $saves[$i]['VacacionesDetalle']['dias'] = $tmp[1];
+                        $saves[$i]['VacacionesDetalle']['estado'] = 'Confirmado';
+                        $saves[$i]['VacacionesDetalle']['observacion'] = 'Ingresado desde planilla. Confirmado el ' . date('Y-m-d');
+                    }
                 break;
 				case 'Horas':
 					$saves[$i]['Hora']['id'] = null;
@@ -325,23 +330,27 @@ class Novedad extends AppModel {
 			$i++;
 		}
 
-        $db = ConnectionManager::getDataSource($this->useDbConfig);
-        $db->begin($this);
-		foreach ($saves as $save) {
-			$keys = array_keys($save);
-			if ($this->Relacion->{$keys[0]}->appSave($save)) {
-				$c++;
-			}
-		}
-		
-		if ($i === $c) {
-			$this->deleteAll(array('Novedad.id' => array_diff($ids, $excludeIds)), false, false, false);
-			$db->commit($this);
-			return $i;
-		} else {
-			$db->rollback($this);
-			return false;
-		}
+        if (!empty($saves)) {
+            $db = ConnectionManager::getDataSource($this->useDbConfig);
+            $db->begin($this);
+            foreach ($saves as $save) {
+                $keys = array_keys($save);
+                if (($keys[0] == 'VacacionesDetalle' && $this->Relacion->Vacacion->{$keys[0]}->appSave($save)) || $this->Relacion->{$keys[0]}->appSave($save)) {
+                    $c++;
+                }
+            }
+            
+            if ($i === $c) {
+                $this->deleteAll(array('Novedad.id' => array_diff($ids, $excludeIds)), false, false, false);
+                $db->commit($this);
+                return $i;
+            } else {
+                $db->rollback($this);
+                return false;
+            }
+        } else {
+            return false;
+        }
 	}
 
 

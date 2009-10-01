@@ -83,10 +83,11 @@ class VacacionesController extends AppController {
 
                 if (!empty($saveAll) && $this->Vacacion->saveAll($saveAll)) {
                     $this->Session->setFlash('Se generaron / actualizaron ' . count($saveAll) . ' vacaciones.', 'ok');
+                    $this->History->goBack(2);
                 } else {
                     $this->Session->setFlash('No fue posible generar dias de vacaciones', 'error');
+                    $this->History->goBack();
                 }
-                $this->History->goBack();
             }
         }
     }
