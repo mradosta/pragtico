@@ -91,6 +91,14 @@ class Novedad extends AppModel {
 						$existe = $Ausencia->find('first', array(	'recursive' 	=> -1, 
 											 						'checkSecurity'	=> false,
 											 						'conditions' 	=> $find));
+                    } elseif ($v['Novedad']['tipo'] === 'Vacaciones') {
+                        $Vacacion = ClassRegistry::init('Vacacion');
+                        $find = null;
+                        $find['Vacacion.periodo'] = $v['Novedad']['periodo'];
+                        $find['Vacacion.relacion_id'] = $v['Novedad']['relacion_id'];
+                        $existe = $Vacacion->find('first', array(   'recursive'     => -1,
+                                                                    'checkSecurity' => false,
+                                                                    'conditions'    => $find));
 					} elseif ($v['Novedad']['tipo'] === 'Vales') {
 						$Descuento = ClassRegistry::init('Descuento');
 						$find = null;
@@ -186,6 +194,7 @@ class Novedad extends AppModel {
 							}
                         } elseif ($tipo === 'Vacaciones') {
                             if ($subTipo === 'Dias') {
+                                $save['Novedad']['periodo'] = $datos[$relacion_id][$tipo]['Periodo'];
                                 $save['Novedad']['data'] = $this->format(Dates::dateAdd('1970-01-01', $datos[$relacion_id][$tipo]['Inicio'] - 25569, 'd', array('fromInclusive' => false)), 'date') . '|' . $registro;
                             } else {
                                 continue;
@@ -264,7 +273,8 @@ class Novedad extends AppModel {
                     $saves[$i]['Vacacion']['id'] = null;
                     $tmp = explode('|', $novedad['Novedad']['data']);
                     $saves[$i]['Vacacion']['desde'] = $tmp[0];
-                    $saves[$i]['Vacacion']['dias'] = $tmp[1];
+                    $saves[$i]['Vacacion']['periodo'] = $tmp[1];
+                    $saves[$i]['Vacacion']['dias'] = $tmp[2];
                     $saves[$i]['Vacacion']['estado'] = 'Confirmada';
                     $saves[$i]['Vacacion']['relacion_id'] = $novedad['Novedad']['relacion_id'];
                     $saves[$i]['Vacacion']['observacion'] = 'Ingresado desde planilla. Confirmado el ' . date('Y-m-d');
@@ -338,7 +348,7 @@ class Novedad extends AppModel {
 /** When manually inserted, must create the subtipo field */
     function beforeSave($options = array()) {
         if (!empty($this->data['Novedad']['concepto_id__']) && empty($this->data['Novedad']['subtipo'])) {
-            $this->data['Novedad']['subtipo'] = $this->data['Novedad']['concepto_id'] . ':' . array_shift(explode('-', $this->data['Novedad']['concepto_id__']));
+            $this->data['Novedad']['subtipo'] = $this->data['Novedad']['concepto_id'] . ':' . array_shift(explode(' ', array_shift(explode('-', $this->data['Novedad']['concepto_id__']))));
         }
         return parent::beforeSave($options);
     }
