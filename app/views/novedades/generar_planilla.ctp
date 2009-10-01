@@ -240,7 +240,7 @@ if(!empty($registros)) {
                                                         'Area.nombre')));
 
     $condiciones['Condicion.Novedad-periodo_vacacional'] = array('label' => 'Periodo Vacacional', 'type' => 'periodo', 'periodo' => array('A'), 'class' => 'periodo_vacacional');
-    
+
     $condiciones['Condicion.Novedad-tipo'] = array('type' => 'select', 'multiple' => 'checkbox', 'options' => $tiposIngreso);
     $condiciones['Condicion.Novedad-formato'] = array('type' => 'radio');
     $fieldsets[] = array('campos' => $condiciones);
@@ -273,7 +273,7 @@ if(!empty($registros)) {
                 return true;
             }
         );
-        
+
     ');
 }
 
