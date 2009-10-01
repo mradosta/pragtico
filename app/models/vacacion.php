@@ -88,7 +88,7 @@ class Vacacion extends AppModel {
                 array('conditions'  => array(
                             'VacacionesDetalle.desde >='    => $periodo['periodo']['desde'],
                             'VacacionesDetalle.desde <='    => $periodo['periodo']['hasta'],
-                            'VacacionesDetalle.estado'      => 'Confirmada',
+                            'VacacionesDetalle.estado'      => 'Confirmado',
                             'Vacacion.relacion_id'          => $relacion['Relacion']['id']),
                       'contain'   => 'Vacacion'));
 
@@ -112,7 +112,9 @@ class Vacacion extends AppModel {
                 $auxiliares[] = array('save'=>serialize($auxiliar), 'model' => 'Vacacion');
             }
 
-            $variables = array('#dias_vacaciones_confirmados' => $days);
+            $variables = array(
+                '#dias_vacaciones' => $vacacion['Vacacion']['corresponde'],
+                '#dias_vacaciones_confirmados' => $days);
 
             $conceptos[] = ClassRegistry::init('Concepto')->findConceptos('ConceptoPuntual',
                     array(  'relacion'          => $relacion,
