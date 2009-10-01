@@ -67,8 +67,6 @@ class LiquidacionesController extends AppController {
             if (empty($this->data['Condicion']['Bar-empleador_id'])
                 && empty($this->data['Condicion']['Bar-grupo_id'])) {
                 $this->Session->setFlash('Debe seleccionar por lo menos un Empleador y/o un Grupo.', 'error');
-            } elseif (empty($this->data['Condicion']['Bar-empleador_id'])) {
-                $this->Session->setFlash('Debe seleccionar un empleador.', 'error');
             } elseif (empty($this->data['Condicion']['Bar-periodo_largo']) || $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo') === false) {
                 $this->Session->setFlash('Debe especificar un periodo valido.', 'error');
             } else {
@@ -331,14 +329,18 @@ class LiquidacionesController extends AppController {
 				$this->redirect(array('action' => 'preliquidar'));
 			}
 
-			/** Delete user's unconfirmed liquidations */
+
+			/** Delete user's unconfirmed receipts or saved ones for same period and type */
             $this->Liquidacion->setSecurityAccess('readOwnerOnly');
+            $condicionesLiquidacion['Liquidacion.estado'] = 'Guardada';
 			if (!$this->Liquidacion->deleteAll(array(
                 'Liquidacion.user_id'   => User::get('/Usuario/id'),
-                'Liquidacion.estado'    => 'Sin Confirmar'), true, false, true)) {
+                array('OR' =>
+                    array(array('Liquidacion.estado' => 'Sin Confirmar'), $condicionesLiquidacion))), true, false, true)) {
 				$this->Session->setFlash(__('Can\'t delete previous liquidations. Call Administrator', true), 'error');
 				$this->redirect(array('action' => 'preliquidar'));
 			}
+
 
 			/**
 			 * Busco las informaciones de los convenios que pueden necesitarse en las formulas.
