@@ -28,13 +28,13 @@ $condiciones['Condicion.Relacion-trabajador_id'] = array(	'lov'=>array('controll
 																									'Trabajador.nombre',
 																									'Trabajador.apellido')));
 
-$condiciones['Condicion.Relacion-id'] = array(	'label' => 'Relacion',
-												'lov'=>array('controller'	=> 'relaciones',
-															'camposRetorno'	=> array(	'Empleador.cuit',
-																						'Empleador.nombre',
-																						'Trabajador.cuil',
-																						'Trabajador.nombre',
-																						'Trabajador.apellido')));
+$condiciones['Condicion.Relacion-area_id'] = array(
+        'label' => 'Area',
+        'mask'  =>  '%s, %s',
+        'lov'   => array('controller'   => 'areas',
+                        'camposRetorno' => array(   'Empleador.nombre',
+                                                    'Area.nombre')));
+                                                    
 $condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'type' => 'select', 'multiple' => 'checkbox');
 $condiciones['Condicion.Bar-facturado'] = array('label' => 'Facturado', 'type' => 'select', 'multiple' => 'checkbox', 'options' => array('Si' => 'Si', 'No' => 'No'));
 
