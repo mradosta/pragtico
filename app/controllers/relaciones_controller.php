@@ -162,7 +162,7 @@ class RelacionesController extends AppController {
                 $conditions['(Relacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
             }
             if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
-                $conditions['Relacion.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
+                $conditions['Relacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
             }
 
             if (!empty($this->data['Condicion']['Bar-periodo_largo'])) {

@@ -41,7 +41,7 @@ class LiquidacionesController extends AppController {
             $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
             
             if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
-                $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
+                $conditions['Liquidacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
             }
             if (!empty($this->data['Condicion']['Bar-convenio_id'])) {
                 $conditions['Liquidacion.convenio_categoria_convenio_id'] = $this->data['Condicion']['Bar-convenio_id'];
@@ -82,7 +82,7 @@ class LiquidacionesController extends AppController {
                 }
 
                 if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
-                    $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
+                    $conditions['Liquidacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
                 }
 
                 if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
@@ -199,11 +199,11 @@ class LiquidacionesController extends AppController {
                                     'Liquidacion.mes'           => $periodo['mes']);
                 
                 if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
-                    $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
+                    $conditions['Liquidacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
                 }
 
                 if (!empty($this->data['Condicion']['Bar-area_id'])) {
-                    $conditions['Liquidacion.relacion_area_id'] = $this->data['Condicion']['Bar-area_id'];
+                    $conditions['Liquidacion.relacion_area_id'] = explode('**||**', $this->data['Condicion']['Bar-area_id']);
                 }
                 
                 if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
