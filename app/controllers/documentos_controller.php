@@ -65,13 +65,18 @@ class DocumentosController extends AppController {
 				$this->set('id', $id);
 				$this->set('documentos', Set::combine($documentos, '{n}.Documento.id', '{n}.Documento.nombre'));
 			} else {
+
+                if (!empty($this->data['Model']['id'])) {
+                    $id = $this->data['Model']['id'];
+                }
+                
 				/** When just one document per model, use it */
 				$Model = ClassRegistry::init($documentos[0]['Documento']['model']);
-				if (!empty($this->params['named']['contain'])) {
-					$Model->contain(unserialize(urldecode($this->params['named']['contain'])));
+				if (!empty($documentos[0]['Documento']['contain'])) {
+					$Model->contain($documentos[0]['Documento']['contain']);
 				}
-
-				$data = $Model->find('all', array('conditions' => array($Model->name . '.' . $Model->primaryKey => $id)));
+                
+				$data = $Model->find('first', array('conditions' => array($Model->name . '.' . $Model->primaryKey => $id)));
                 
 				$reemplazarTexto['texto'] = Set::combine($documentos[0]['DocumentosPatron'], '{n}.identificador', '{n}.patron');
 				$reemplazarTexto['reemplazos'] = $data;
