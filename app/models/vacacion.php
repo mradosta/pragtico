@@ -32,62 +32,65 @@ class Vacacion extends AppModel {
  * @access public
 */
     var $modificadores = array( 'index' => 
-            array('contain' => array('Relacion' => array('Empleador', 'Trabajador'))),
+            array('contain' => array('VacacionesDetalle', 'Relacion' => array('Empleador', 'Trabajador'))),
                                 'edit'  =>
             array('contain' => array('Relacion' => array('Empleador', 'Trabajador'))));
 
     var $validate = array(
-        'desde' => array(
-			array(
-				'rule'		=> VALID_NOT_EMPTY,
-				'message'	=> 'Debe especificar la fecha de inicio de las vacaciones.'),
-			array(
-				'rule'      => VALID_DATE,
-				'message'	=> 'Debe especificar una fecha valida.')
-				
-        ),
-        'hasta' => array(
-			array(
-				'rule'		=> VALID_NOT_EMPTY,
-				'message'	=> 'Debe especificar la fecha de fin de las vacaciones.'),
-			array(
-				'rule'      => VALID_DATE,
-				'message'	=> 'Debe especificar una fecha valida.')
-				
-        ),
         'relacion_id' => array(
 			array(
 				'rule'      => VALID_NOT_EMPTY,
 				'message'	=> 'Debe seleccionar la relacion laboral que toma las vacaciones.')
         )        
 	);
-	
-	var $belongsTo = array(	'Relacion' =>
-                        array('className'    => 'Relacion',
-                              'foreignKey'   => 'relacion_id'));
 
+
+	var $belongsTo = array('Relacion');
+
+    var $hasMany = array('VacacionesDetalle');
+
+
+
+    function afterFind($results, $primary = false) {
+        if ($primary) {
+            foreach ($results as $k => $vacacion) {
+                if (isset($vacacion['Vacacion']['id'])) {
+                    if (isset($vacacion['VacacionesDetalle'])) {
+                        $results[$k]['Vacacion']['dias'] = array_sum(Set::extract('/VacacionesDetalle[estado!=Pendiente]/dias', $vacacion));
+                    }
+                }
+            }
+        } else {
+            if (!empty($results[0]['Vacacion'][0])) {
+                foreach ($results as $k => $v) {
+                    foreach ($v as $k1 => $v1) {
+                        foreach ($v1 as $k2 => $vacacion) {
+                            if (!isset($vacacion['VacacionesDetalle'])) {
+                                $vacacionesDetalle = $this->VacacionesDetalle->find('all',
+                                                                array(  'recursive' => -1, 
+                                                                        'conditions'=> 
+                                                                                array(  'VacacionesDetalle.Vacacion_id'  => $vacacion['id'],
+                                                                                        'VacacionesDetalle.estado'       => array('Confirmado', 'Liquidado'))));
+                            }
+                            $results[$k]['Vacacion'][$k2]['dias'] = array_sum(Set::extract('/VacacionesDetalle/dias', $vacacionesDetalle));
+                        }
+                    }
+                }
+            }
+        }
+        return parent::afterFind($results, $primary);
+    }
 
 
     function getVacaciones($relacion, $periodo) {
 
-
-        $vacaciones = $this->find('all',
-                array('fields'      => array('Vacacion.id', 'Vacacion.dias'),
-                      'conditions'  => array(
-                            'Vacacion.desde >='    => $periodo['periodo']['desde'],
-                            'Vacacion.desde <='    => $periodo['periodo']['hasta'],
-                            'Vacacion.estado'       => 'Confirmada',
-                            'Vacacion.relacion_id'  => $relacion['Relacion']['id']),
-                      'recursive'   => -1));
-
-        $vacacionesLiquidadas = $this->find('all',
-                array('fields'      => array('SUM(Vacacion.dias) AS total'),
-                      'conditions'  => array(
-                            'Vacacion.desde >='    => $periodo['periodo']['ano'] . '-01-01',
-                            'Vacacion.desde <='    => $periodo['periodo']['ano'] . '-12-31',
-                            'Vacacion.estado'       => 'Liquidada',
-                            'Vacacion.relacion_id'  => $relacion['Relacion']['id']),
-                      'recursive'   => -1));
+        $vacaciones = $this->VacacionesDetalle->find('all',
+                array('conditions'  => array(
+                            'VacacionesDetalle.desde >='    => $periodo['periodo']['desde'],
+                            'VacacionesDetalle.desde <='    => $periodo['periodo']['hasta'],
+                            'VacacionesDetalle.estado'      => 'Confirmada',
+                            'Vacacion.relacion_id'          => $relacion['Relacion']['id']),
+                      'contain'   => 'Vacacion'));
 
         $variables = $conceptos = $auxiliares = array();
         $days = 0;
@@ -95,18 +98,21 @@ class Vacacion extends AppModel {
             
             foreach ($vacaciones as $vacacion) {
                 
-                $days += $vacacion['Vacacion']['dias'];
+                $days += $vacacion['VacacionesDetalle']['dias'];
                 $auxiliar = null;
-                $auxiliar['id'] = $vacacion['Vacacion']['id'];
+                $auxiliar['id'] = $vacacion['VacacionesDetalle']['id'];
                 $auxiliar['estado'] = 'Liquidada';
                 $auxiliar['permissions'] = '288';
                 $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
+                $auxiliares[] = array('save'=>serialize($auxiliar), 'model' => 'VacacionesDetalle');
+
+                $auxiliar = null;
+                $auxiliar['id'] = $vacacion['Vacacion']['id'];
+                $auxiliar['permissions'] = '288';
                 $auxiliares[] = array('save'=>serialize($auxiliar), 'model' => 'Vacacion');
             }
 
-            $variables = array(
-                '#dias_vacaciones_confirmados'  => $days,
-                '#dias_vacaciones_liquidados'   => (empty($vacacionesLiquidadas[0]['Vacacion']['total']))?0:$vacacionesLiquidadas[0]['Vacacion']['total']);
+            $variables = array('#dias_vacaciones_confirmados' => $days);
 
             $conceptos[] = ClassRegistry::init('Concepto')->findConceptos('ConceptoPuntual',
                     array(  'relacion'          => $relacion,

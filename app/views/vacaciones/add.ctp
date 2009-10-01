@@ -21,26 +21,26 @@
 */
 $campos = null;
 $campos['Vacacion.id'] = array();
-$campos['Vacacion.relacion_id'] = array(	"label"=>"Relacion",
-											"lov"=>array("controller"	=>	"relaciones",
-													"seleccionMultiple"	=> 	0,
-														"camposRetorno"	=>	array(	"Trabajador.nombre",
-																					"Trabajador.apellido",
-																					"Empleador.nombre")));
-$campos['Vacacion.desde'] = array();
-$campos['Vacacion.dias'] = array();
-$campos['Vacacion.estado'] = array();
+$campos['Vacacion.relacion_id'] = array(
+    'label' => 'Relacion',
+    'lov'   => array(
+        'controller'            => 'relaciones',
+        'seleccionMultiple'	    => 0,
+        'camposRetorno'	        => array(
+            'Trabajador.nombre',
+            'Trabajador.apellido',
+            'Empleador.nombre')));
+
+$campos['Vacacion.periodo'] = array('type' => 'periodo', 'periodo' => array('A'));
+$campos['Vacacion.corresponde'] = array();
 $campos['Vacacion.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "Vacaciones", 'imagen' => 'vacaciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => 'Vacaciones', 'imagen' => 'vacaciones.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
 echo $this->element('add/add', array('fieldset' => $fieldset));
 
-$appForm->addScript('
-    jQuery("#VacacionEstadoLiquidada").attr("disabled", true);
-');
 ?>

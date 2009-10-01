@@ -224,7 +224,7 @@ class FormatoHelper extends AppHelper {
 			}
 			$patterns = array_keys($patterns);
 		}
-		$replaces = array_merge(array('Bar' => array('foo' => '')), $replaces);
+		$replaces = array_merge(array('Bar' => array('foo' => '')), (array)$replaces);
 		
 
 		foreach ($patterns as $pattern) {

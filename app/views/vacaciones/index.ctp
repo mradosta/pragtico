@@ -19,40 +19,56 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-$condiciones['Condicion.Relacion-trabajador_id'] = array(	"lov"=>array("controller"		=>	"trabajadores",
-																		"separadorRetorno"	=>	" ",
-																		"camposRetorno"		=>array("Trabajador.apellido",
-																									"Trabajador.nombre")));
+$condiciones['Condicion.Relacion-trabajador_id'] = array(
+    'lov'               => array('controller' => 'trabajadores',
+    'separadorRetorno'	=> ' ',
+    'camposRetorno'		=> array(
+        'Trabajador.apellido',
+        'Trabajador.nombre')));
 
-$condiciones['Condicion.Relacion-empleador_id'] = array(	"lov"=>array("controller"	=> "empleadores",
-																		"camposRetorno"	=> array("Empleador.nombre")));
+$condiciones['Condicion.Relacion-empleador_id'] = array(	'lov'=>array('controller'	=> 'empleadores',
+																		'camposRetorno'	=> array('Empleador.nombre')));
 
-$condiciones['Condicion.Vacacion-relacion_id'] = array(	"lov"=>array("controller"	=>	"relaciones",
-																		"camposRetorno"	=>array("Empleador.nombre",
-																								"Trabajador.apellido")));
+$condiciones['Condicion.Vacacion-relacion_id'] = array(	'lov'=>array('controller'	=>	'relaciones',
+																		'camposRetorno'	=>array('Empleador.nombre',
+																								'Trabajador.apellido')));
 
-$condiciones['Condicion.Vacacion-desde'] = array();
-$condiciones['Condicion.Vacacion-estado'] = array('type' => 'select', 'multiple' => 'checkbox');
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "Vacaciones", 'imagen' => 'vacaciones.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Vacaciones', 'imagen' => 'vacaciones.gif')));
 
 
 /**
 * Creo el cuerpo de la tabla.
 */
 $cuerpo = null;
-foreach ($registros as $k => $v) {
+foreach ($registros as $v) {
 	$fila = null;
 	$fila[] = array('model' => 'Vacacion', 'field' => 'id', 'valor' => $v['Vacacion']['id'], 'write' => $v['Vacacion']['write'], 'delete' => $v['Vacacion']['delete']);
-	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], "nombreEncabezado"=>"Empleador");
-	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], "class"=>"derecha", "nombreEncabezado"=>"Documento");
-	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . " " . $v['Relacion']['Trabajador']['nombre'], "nombreEncabezado"=>"Trabajador");
-	$fila[] = array('model' => 'Vacacion', 'field' => 'desde', 'valor' => $v['Vacacion']['desde']);
-	$fila[] = array('model' => 'Vacacion', 'field' => 'dias', 'valor' => $v['Vacacion']['dias']);
-	$fila[] = array('model' => 'Vacacion', 'field' => 'estado', 'valor' => $v['Vacacion']['estado']);
-	$cuerpo[] = $fila;
+    $fila[] = array('tipo' => 'desglose', 'id' => $v['Vacacion']['id'], 'imagen' => array('nombre' => 'detalles.gif', 'alt' => 'Detalles'), 'url' => 'detalles');
+    $fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('documentos.gif', array('alt' => 'Generar Documento')), array('controller' => 'documentos', 'action' => 'generar', 'model' => 'Vacacion', 'id' => $v['Vacacion']['id'])));
+	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], 'nombreEncabezado'=>'Empleador');
+	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], 'class'=>'derecha', 'nombreEncabezado'=>'Documento');
+	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . ' ' . $v['Relacion']['Trabajador']['nombre'], 'nombreEncabezado'=>'Trabajador');
+    $fila[] = array('model' => 'Vacacion', 'field' => 'periodo', 'valor' => $v['Vacacion']['periodo'], 'class' => 'centro');
+    $fila[] = array('model' => 'Vacacion', 'field' => 'corresponde', 'valor' => $v['Vacacion']['corresponde']);
+    $fila[] = array('model' => 'Vacacion', 'field' => 'dias', 'valor' => $v['Vacacion']['dias'], 'class' => 'derecha');
+
+    if ($v['Vacacion']['dias'] > $v['Vacacion']['corresponde']) {
+        $cuerpo[] = array('contenido' => $fila, 'opciones' =>
+        array('title'   => 'El trabajador ha obtenido mas dias de vacaciones de los que le corresponden',
+                'class' => 'fila_resaltada'));
+    } elseif ($v['Vacacion']['dias'] < $v['Vacacion']['corresponde']) {
+        $cuerpo[] = array('contenido' => $fila, 'opciones' =>
+        array('title'   => 'El trabajador tiene dias de vacaciones pendientes',
+                'class' => 'fila_resaltada'));
+    } else {
+        $cuerpo[] = $fila;
+    }
 }
 
-echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo));
+$generar = $appForm->link('Generar Dias', 'generar_dias', array('title' => 'Genera los Dias en funcion del Periodo', 'class' => 'link_boton'));
+$accionesExtra['opciones'] = array('acciones' => array($generar));
+
+echo $this->element('index/index', array('accionesExtra' => $accionesExtra, 'condiciones' => $fieldset, 'cuerpo' => $cuerpo));
 
 ?>
