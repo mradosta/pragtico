@@ -118,8 +118,9 @@ class NovedadesController extends AppController {
                         } elseif ($value === "Vacaciones") {
                             $mapeo['Vacaciones']['Corresponde']              = $i;
                             $mapeo['Vacaciones']['Inicio']                   = $i+1;
-                            $mapeo['Vacaciones']['Dias']                     = $i+2;
-                            $i = $i+2;
+                            $mapeo['Vacaciones']['Periodo']                  = $i+2;
+                            $mapeo['Vacaciones']['Dias']                     = $i+3;
+                            $i = $i+3;
 						} elseif ($value === "Vales") {
 							$mapeo['Vales']['Importe']						= $i;
 						} else {
@@ -181,7 +182,7 @@ class NovedadesController extends AppController {
 
 					$registros = $this->Novedad->Relacion->find('all',
 						array('contain'	=> array('ConveniosCategoria', 'Trabajador', 'Empleador'),
-                            'order'     => array('Trabajador.apellido', 'Trabajador.nombre'),
+                            'order'     => array('Empleador.nombre', 'Trabajador.apellido', 'Trabajador.nombre'),
 							'conditions'=> $conditions));
 
 					if (!empty($registros)) {
