@@ -73,6 +73,10 @@ $appForm->addScript('
         if (id == undefined) {
             id = "0";
         }
+        if (jQuery("#AusenciasSeguimientoEstado" + id + "Liquidado").attr("checked")) {
+            jQuery("#AusenciasSeguimientoEstado" + id + "Pendiente").attr("disabled", true);
+            jQuery("#AusenciasSeguimientoEstado" + id + "Confirmado").attr("disabled", true);
+        }
         jQuery("#AusenciasSeguimientoEstado" + id + "Liquidado").attr("disabled", true);
     }
     ' . implode('', $extraJs));

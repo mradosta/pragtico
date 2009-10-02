@@ -164,17 +164,6 @@ class Ausencia extends AppModel {
 			$Concepto = ClassRegistry::init('Concepto');
 
 			foreach ($r as $k => $ausencia) {
-
-                /*
-                if ($ausencia['Ausencia']['desde'] < $periodo['desde']) {
-                    $diff = $this->dateDiff($periodo['desde'], $periodo['hasta']);
-                } else {
-                    $diff = $this->dateDiff($ausencia['Ausencia']['desde'], $periodo['hasta']);
-                }
-                */
-                //$diff = $this->dateDiff($ausencia['Ausencia']['desde'], $periodo['hasta']);
-                //d($diff);
-                //$ausencia['AusenciasSeguimiento'][] = array('estado' => 'Confirmado', 'dias' => 10, 'id' => 1000);
                 if ($ausencia['AusenciasMotivo']['tipo'] === 'Accidente') {
                     if (count(Set::extract('/AusenciasMotivo[tipo=Accidente]/id', $ausencia)) > 1) {
                         /** TODO: Revisar esto y hacerlo de una forma mas elegante */
@@ -192,8 +181,10 @@ class Ausencia extends AppModel {
                     }
                     
                     if ($seguimiento['estado'] === 'Confirmado') {
+
+                        $endDate = Dates::dateAdd($ausencia['Ausencia']['desde'], $acumulado);
                         
-                        if (Dates::dateAdd($ausencia['Ausencia']['desde'], $acumulado) > $periodo['hasta']) {
+                        if ($endDate > $periodo['hasta']) {
 
                             $diasPeriodo = Dates::dateDiff($periodo['desde'], $periodo['hasta']);
                             if ($acumulado > $diasPeriodo['dias']) {
@@ -212,7 +203,6 @@ class Ausencia extends AppModel {
                             $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
                             $auxiliar['dias'] = $diff['dias'];
                             
-                            //debug($auxiliar);
                             $auxiliares[] = array(	'save' 	=> serialize($auxiliar),
                                                     'model' => 'AusenciasSeguimiento');
 
@@ -221,14 +211,11 @@ class Ausencia extends AppModel {
                             * con los dias que queron pendientes de este */
                             $seguimiento['id'] = null;
                             $seguimiento['dias'] = $seguimiento['dias'] - $auxiliar['dias'];
-                            //debug($seguimiento);
                             $auxiliares[] = array(	'save' 	=> serialize($seguimiento),
                                                     'model' => 'AusenciasSeguimiento');
-                            //$acumulado += $auxiliar['dias'];
                             break;
                         } else {
                             $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $seguimiento['dias'];
-                            //$acumulado += $seguimiento['dias'];
                             
                             $auxiliar = null;
                             $auxiliar['id'] = $seguimiento['id'];
@@ -237,6 +224,10 @@ class Ausencia extends AppModel {
                             $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
                             $auxiliares[] = array(	'save' 	=> serialize($auxiliar),
                                                     'model' => 'AusenciasSeguimiento');
+
+                            if ($endDate == $periodo['hasta']) {
+                                break;
+                            }
                         }
                     }
                 }
@@ -275,17 +266,6 @@ TODO: REVISAR
                 } else {
                     $daysBeforePeriod = 0;
                 }
-
-                /*
-                $date = $this->dateAdd($ausenciasArt['Ausencia']['desde'], -365);
-                $ausencias['Dias Accidentado'] = 365;
-                if ($date < $relacion['Relacion']['ingreso']) {
-                    $date = $relacion['Relacion']['ingreso'];
-                    $diffDividendo = $this->dateDiff($relacion['Relacion']['ingreso'], $ausenciasArt['Ausencia']['desde']);
-                    $ausencias['Dias Anteriores Accidente'] = $diffDividendo['dias'];
-                }
-                list($yearFrom, $monthFrom) = explode('-', $date);
-                */
 
                 list($yearTo, $monthTo, $dayTo) = explode('-', $ausenciasArt['Ausencia']['desde']);
                 if ($periodo['periodo'] === '1Q') {
