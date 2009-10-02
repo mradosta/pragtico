@@ -334,13 +334,11 @@ class LiquidacionesController extends AppController {
 			}
 
 
-			/** Delete user's unconfirmed receipts or saved ones for same period and type */
+			/** Delete user's unconfirmed receipts */
             $this->Liquidacion->setSecurityAccess('readOwnerOnly');
-            $condicionesLiquidacion['Liquidacion.estado'] = 'Guardada';
 			if (!$this->Liquidacion->deleteAll(array(
                 'Liquidacion.user_id'   => User::get('/Usuario/id'),
-                array('OR' =>
-                    array(array('Liquidacion.estado' => 'Sin Confirmar'), $condicionesLiquidacion))), true, false, true)) {
+                'Liquidacion.estado'    => 'Sin Confirmar'), true, false, true)) {
 				$this->Session->setFlash(__('Can\'t delete previous liquidations. Call Administrator', true), 'error');
 				$this->redirect(array('action' => 'preliquidar'));
 			}
@@ -454,10 +452,30 @@ class LiquidacionesController extends AppController {
 				$id = $this->Util->extraerIds($this->params['data']['seleccionMultiple']);
 			}
 		}
-		$this->Liquidacion->unbindModel(array('belongsTo' => array('Trabajador', 'Empleador', 'Relacion', 'Factura')));
+        
+        foreach ($this->Liquidacion->find('all', array(
+            'recursive'     => -1,
+            'conditions'    => array('Liquidacion.id' => $id))) as $receipt) {
+
+            /** Delete user's saved ones for same period and type */
+            $this->Liquidacion->setSecurityAccess('readOwnerOnly');
+            if (!$this->Liquidacion->deleteAll(array(
+                'Liquidacion.user_id'       => User::get('/Usuario/id'),
+                'Liquidacion.tipo'          => $receipt['Liquidacion']['tipo'],
+                'Liquidacion.ano'           => $receipt['Liquidacion']['ano'],
+                'Liquidacion.mes'           => $receipt['Liquidacion']['mes'],
+                'Liquidacion.periodo'       => $receipt['Liquidacion']['periodo'],
+                'Liquidacion.relacion_id'   => $receipt['Liquidacion']['relacion_id'],
+                'Liquidacion.estado'        => 'Guardada'), true, false, true)) {
+            }
+        }
+
+
+
+        $this->Liquidacion->unbindModel(array('belongsTo' => array('Trabajador', 'Empleador', 'Relacion', 'Factura')));
         if ($this->Liquidacion->updateAll(
-				array('Liquidacion.estado' => "'Guardada'"),
-				array('Liquidacion.id' => $id))) {
+				array('Liquidacion.estado'  => "'Guardada'"),
+				array('Liquidacion.id'      => $id))) {
 			$this->Session->setFlash(sprintf('Se guardaron correctamente %s liquidacion/es', count($id)), 'ok');
 		} else {
 			$this->Session->setFlash('No fue posible guardar las liquidaciones seleccionadas', 'error');
