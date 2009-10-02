@@ -28,14 +28,13 @@ if (!empty($data)) {
 
     /** Body */
     foreach ($data as $k => $detail) {
-
         $documento->setCellValueFromArray(
             array(  $detail['Empleador']['cuit'],
                     $detail['Empleador']['nombre'],
-                    $detail['Trabajador'][0]['cuil'],
-                    $detail['Trabajador'][0]['apellido'],
-                    $detail['Trabajador'][0]['nombre'],
-                    $detail['Trabajador'][0]['Relacion']['ingreso']));
+                    (!empty($detail['Trabajador']['cuil']))?$detail['Trabajador']['cuil']:'',
+                    (!empty($detail['Trabajador']['apellido']))?$detail['Trabajador']['apellido']:'',
+                    (!empty($detail['Trabajador']['nombre']))?$detail['Trabajador']['nombre']:'',
+                    (!empty($detail[0]['ingreso']))?$detail[0]['ingreso']:''));
     }
 
     $documento->save($fileFormat);

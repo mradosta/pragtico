@@ -182,13 +182,21 @@ class EmpleadoresController extends AppController {
             if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
                 $conditions['Empleador.id'] = $this->data['Condicion']['Bar-empleador_id'];
             }
-            
-            $this->Empleador->Behaviors->detach('Permisos');
-            $this->Empleador->contain(array(
-                'Trabajador' => array(
-                    'order' => array('Relacion.ingreso DESC'),
-                    'limit' => 1)));
-            $this->set('data', $this->Empleador->find('all', array('conditions' => $conditions)));
+
+            $sql = '
+                SELECT      Empleador.cuit,
+                            Empleador.nombre,
+                            Trabajador.cuil,
+                            Trabajador.apellido,
+                            Trabajador.nombre,
+                            MAX(Relacion.ingreso) AS ingreso
+                FROM        empleadores Empleador
+                    LEFT JOIN relaciones Relacion ON (Empleador.id = Relacion.empleador_id)
+                    LEFT JOIN trabajadores Trabajador ON (Trabajador.id = Relacion.trabajador_id)
+                GROUP BY    Empleador.cuit, Empleador.nombre
+                ORDER BY    MAX(Relacion.ingreso) DESC, Empleador.nombre';
+                    
+            $this->set('data', $this->Empleador->query($sql));
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
         }
     }
