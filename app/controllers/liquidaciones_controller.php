@@ -82,9 +82,13 @@ class LiquidacionesController extends AppController {
                 }
 
                 if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
-                    $conditions['Liquidacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
+                    $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
                 }
 
+                if (!empty($this->data['Condicion']['Bar-trabajador_id'])) {
+                    $conditions['Liquidacion.trabajador_id'] = explode('**||**', $this->data['Condicion']['Bar-trabajador_id']);
+                }
+                
                 if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
                     $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
                 }
