@@ -66,7 +66,8 @@ if (!empty($data)) {
     $documento->setCellValue('A', 'Observaciones:', 'bold');
     $documento->moveCurrentRow(1);
     $styleArray = array(
-        'borders' => array(
+        'font'      => array('size' => 11, 'bold' => true),
+        'borders'   => array(
             'outline' => array(
                 'style' => PHPExcel_Style_Border::BORDER_DOTTED,
                 'color' => array('argb' => '00000000'),
