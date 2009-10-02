@@ -77,6 +77,7 @@ if (!empty($data)) {
     $documento->activeSheet->getStyle('A' . $documento->getCurrentRow() . ':H' . ($documento->getCurrentRow() + 6))->applyFromArray($styleArray);
     for ($i = 'A'; $i <= 'H'; $i++) {
         for ($j = $documento->getCurrentRow(); $j <= $documento->getCurrentRow() + 6; $j++) {
+            $documento->doc->getActiveSheet()->getRowDimension($j)->setRowHeight(15);
             $documento->doc->getActiveSheet()->getStyle($i . $j)->getProtection()->setLocked(PHPExcel_Style_Protection::PROTECTION_UNPROTECTED);
         }
     }
