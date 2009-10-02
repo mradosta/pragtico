@@ -100,7 +100,7 @@ class PagosController extends AppController {
 /**
  *
  */
-	function detalle_cambio() {
+	function detalle_cambio_deprecated() {
 
 		$pagos = null;
 		//d($this->data['Condicion']);
@@ -205,26 +205,31 @@ class PagosController extends AppController {
  * @access public
  */
 	function generar_soporte_magnetico() {
+        
 		if (!empty($this->data['Soporte']['pago_id'])
-			&& !empty($this->data['Soporte']['cuenta_id'])
-			&& !empty($this->data['Soporte']['empleador_id'])) {
+			&& !empty($this->data['Soporte']['cuenta_id'])) {
 			
 			$opciones = array(	"pago_id"				=> unserialize($this->data['Soporte']['pago_id']),
 								"fecha_acreditacion"	=> "",
-								"cuenta_id"				=> $this->data['Soporte']['cuenta_id'],
-								"empleador_id"			=> $this->data['Soporte']['empleador_id']);
+								"cuenta_id"				=> $this->data['Soporte']['cuenta_id']);
 								
 			if (!empty($this->data['Soporte']['fecha_acreditacion'])) {
 				$opciones['fecha_acreditacion'] = $this->data['Soporte']['fecha_acreditacion'];
 			}
-			$archivo = $this->Pago->generarSoporteMagnetico($opciones);
-			if (!empty($archivo)) {
-				$this->set("archivo", array("contenido"=>$archivo['contenido'], "nombre"=>$archivo['banco'] . "-" . date("Y-m-d") . ".txt"));
-				$this->render(".." . DS . "elements" . DS . "txt", "txt");
-			} else {
-				$this->Session->setFlash("Ocurrio un error al intentar generar el soporte magnetico. Ningun pago seleccionado es posible realizarlo con la cuenta seleccionada.", "error");
-				$this->History->goBack();
-			}
+
+            if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] == 'confirmar') {
+                $archivo = $this->Pago->generarSoporteMagnetico($opciones, true);
+                
+                if (!empty($archivo)) {
+                    $this->set("archivo", array("contenido"=>$archivo['contenido'], "nombre"=>$archivo['banco'] . "-" . date("Y-m-d") . ".txt"));
+                    $this->render(".." . DS . "elements" . DS . "txt", "txt");
+                } else {
+                    $this->Session->setFlash("Ocurrio un error al intentar generar el soporte magnetico. Ningun pago seleccionado es posible realizarlo con la cuenta seleccionada.", "error");
+                    $this->History->goBack();
+                }
+            } else {
+                $this->set('confirmar', $this->Pago->generarSoporteMagnetico($opciones, false));
+            }
 		} elseif (isset($this->data['seleccionMultiple'])) {
 			$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
 			$pagos = $this->Pago->find("all", array("contain" => "PagosForma", "conditions"=>array("Pago.moneda" => "Pesos", "Pago.estado" => "Pendiente", "Pago.id"=>$ids)));

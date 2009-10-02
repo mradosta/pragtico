@@ -37,6 +37,7 @@ $condiciones['Condicion.Pago-fecha__desde'] = array('label' => 'Desde', 'type' =
 $condiciones['Condicion.Pago-fecha__hasta'] = array('label' => 'Hasta', 'type' => 'date');
 //$condiciones['Condicion.Liquidacion-periodo_completo'] = array('type' => 'periodo');
 $condiciones['Condicion.Pago-origen'] = array('type' => 'radio', 'options' => array('liquidaciones' => 'Liquidaciones', 'descuentos' => 'Descuentos'));
+$condiciones['Condicion.Pago-moneda'] = array('type' => 'select', 'multiple' => 'checkbox');
 $condiciones['Condicion.Pago-estado'] = array('type' => 'select', 'multiple' => 'checkbox');
 $condiciones['Condicion.Pago-identificador'] = array();
 $fieldsets[] = array('campos' => $condiciones);
@@ -67,12 +68,18 @@ foreach ($registros as $k => $v) {
 	}
 	$fila[] = array('model' => 'Pago', 'field' => 'id', 'valor' => $v['Pago']['id'], 'write' => $v['Pago']['write'], 'delete' => $v['Pago']['delete']);
     $fila[] = array('model' => 'Pago', 'field' => 'estado', 'valor' => $v['Pago']['estado']);
+
+    if (!empty($v['Relacion']['Trabajador']['cbu'])) {
+        $fila[] = array('model' => 'Bar', 'field' => 'foo', 'valor' => $bancos[(int)substr($v['Relacion']['Trabajador']['cbu'], 0, 3)], 'nombreEncabezado' => 'Banco');
+    } else {
+        $fila[] = array('model' => 'Bar', 'field' => 'foo', 'valor' => '', 'nombreEncabezado' => 'Banco');
+    }
+    
 	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], 'nombreEncabezado' => 'Empleador');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], 'class' => 'derecha', 'nombreEncabezado' => 'Documento');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . ' ' . $v['Relacion']['Trabajador']['nombre'], 'nombreEncabezado' => 'Trabajador');
 
 	$fila[] = array('model' => 'Pago', 'field' => 'fecha', 'valor' => $v['Pago']['fecha']);
-	$fila[] = array('model' => 'Pago', 'field' => 'moneda', 'valor' => $v['Pago']['moneda']);
 	$fila[] = array('model' => 'Pago', 'field' => 'monto', 'valor' => $v['Pago']['monto'], 'tipoDato' => 'moneda');
 	$fila[] = array('model' => 'Pago', 'field' => 'saldo', 'valor' => $v['Pago']['saldo'], 'tipoDato' => 'moneda');
     
@@ -85,13 +92,6 @@ foreach ($registros as $k => $v) {
     $fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => $valor, 'nombreEncabezado' => 'Origen');
     
     $fila[] = array('model' => 'Pago', 'field' => 'identificador', 'valor' => $v['Pago']['identificador'], 'nombreEncabezado' => 'Ident.');
-
-    if (!empty($v['Relacion']['Trabajador']['cbu'])) {
-        $fila[] = array('model' => 'Bar', 'field' => 'foo', 'valor' => $bancos[(int)substr($v['Relacion']['Trabajador']['cbu'], 0, 3)], 'nombreEncabezado' => 'Banco');
-    } else {
-        $fila[] = array('model' => 'Bar', 'field' => 'foo', 'valor' => '', 'nombreEncabezado' => 'Banco');
-    }
-
 
 	if ($v['Pago']['estado'] === 'Imputado' || $v['Pago']['estado'] === 'Cancelado') {
 		$cuerpo[] = array('contenido' 	=> $fila, 
