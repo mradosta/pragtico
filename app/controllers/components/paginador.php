@@ -345,15 +345,15 @@ class PaginadorComponent extends Object {
                         case 'text':
                         case 'string':
                             $value = '%' . $value . '%';
-                            $key .= ' like';
+                            $field .= ' like';
                             break;
                         case 'date':
                         case 'datetime':
                             if (isset($extra)) {
                                 if ($extra == 'desde') {
-                                    $key .= ' >=';
+                                    $field .= ' >=';
                                 } elseif ($extra == 'hasta') {
-                                    $key .= ' <=';
+                                    $field .= ' <=';
                                 }
                             }
                             break;
@@ -363,7 +363,8 @@ class PaginadorComponent extends Object {
                 $value = explode('**||**', $value);
             }
         }
-		return array($key => $value);
+
+		return array($model . '.' . $field => $value);
 	}
 
 
