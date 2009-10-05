@@ -77,13 +77,13 @@ class RelacionesController extends AppController {
                 $linea = null;
                 $c = 1;
                 $linea[$c++] = 'HR';
-                $linea[$c++] = str_pad($groupParams['ministerio_trabajo_legajo'], 6, '0', STR_PAD_LEFT);
-                $linea[$c++] = str_replace('-', '', $groupParams['cuit']);
-                $linea[$c++] = str_pad($groupParams['nombre_fantasia'], 50, ' ', STR_PAD_RIGHT);
-                $linea[$c++] = str_pad($groupParams['direccion'], 30, ' ', STR_PAD_RIGHT);
-                $linea[$c++] = str_pad($groupParams['ciudad'], 20, ' ', STR_PAD_RIGHT);
-                $linea[$c++] = str_pad($groupParams['codigo_postal'], 8, ' ', STR_PAD_RIGHT);
-                $linea[$c++] = str_pad($groupParams['ministerio_trabajo_provincia'], 2, '0', STR_PAD_LEFT);
+                $linea[$c++] = $this->Util->normalizeText($groupParams['ministerio_trabajo_legajo'], 4);
+                $linea[$c++] = $this->Util->normalizeText(str_replace('-', '', $groupParams['cuit']), 11);
+                $linea[$c++] = $this->Util->normalizeText($groupParams['nombre_fantasia'], 50);
+                $linea[$c++] = $this->Util->normalizeText($groupParams['direccion'], 30);
+                $linea[$c++] = $this->Util->normalizeText($groupParams['ciudad'], 20);
+                $linea[$c++] = $this->Util->normalizeText($groupParams['codigo_postal'], 8);
+                $linea[$c++] = $this->Util->normalizeText($groupParams['ministerio_trabajo_provincia'], 2, 'number');
                 $linea[$c++] = $this->data['Condicion']['Bar-bimestre'];
                 $linea[$c++] = $this->data['Condicion']['Bar-ano'];
                 $linea[$c++] = '00';
@@ -108,26 +108,26 @@ class RelacionesController extends AppController {
                     }
                     
                     $linea[$c++] = 'DR';
-                    $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['Trabajador']['nombre']), 50, ' ', STR_PAD_RIGHT), 0, 50);
-                    $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['Trabajador']['apellido']), 50, ' ', STR_PAD_RIGHT), 0, 50);
-                    $linea[$c++] = str_replace('-', '', $r['Trabajador']['cuil']);
-                    $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['ConveniosCategoria']['nombre']), 30, ' ', STR_PAD_RIGHT), 0, 30);
-                    $linea[$c++] = substr(str_pad($r['ConveniosCategoria']['Convenio']['numero'], 20, ' ', STR_PAD_RIGHT), 0, 20);
-                    $linea[$c++] = substr(str_pad(str_replace('.', '', ($r['Relacion']['basico'] > 0)?$r['Relacion']['basico']:$historico[$r['ConveniosCategoria']['id']]), 8, '0', STR_PAD_LEFT), 0, 8);
+                    $linea[$c++] = $this->Util->normalizeText($r['Trabajador']['nombre'], 50);
+                    $linea[$c++] = $this->Util->normalizeText($r['Trabajador']['apellido'], 50);
+                    $linea[$c++] = $this->Util->normalizeText(str_replace('-', '', $r['Trabajador']['cuil']), 11);
+                    $linea[$c++] = $this->Util->normalizeText($r['ConveniosCategoria']['nombre'], 30);
+                    $linea[$c++] = $this->Util->normalizeText($r['ConveniosCategoria']['Convenio']['numero'], 20);
+                    $linea[$c++] = $this->Util->normalizeText(($r['Relacion']['basico'] > 0)?$r['Relacion']['basico']:$historico[$r['ConveniosCategoria']['id']], 8, 'number');
                     if ($r['ConveniosCategoria']['jornada'] == 'Mensual') {
                         $linea[$c++] = 1;
                     } else {
                         $linea[$c++] = 2;
                     }
-                    $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['Empleador']['nombre']), 50, ' ', STR_PAD_RIGHT), 0, 50);
-                    $linea[$c++] = str_replace('-', '', $r['Empleador']['cuit']);
-                    $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['Area']['direccion']), 30, ' ', STR_PAD_RIGHT), 0, 30);
-                    $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['Area']['ciudad']), 20, ' ', STR_PAD_RIGHT), 0, 20);
-                    $linea[$c++] = substr(str_pad($this->Util->replaceNonAsciiCharacters($r['Area']['codigo_postal']), 8, ' ', STR_PAD_RIGHT), 0, 8);
-                    $linea[$c++] = str_pad((!empty($r['Area']['Provincia']['codigo'])?$r['Area']['Provincia']['codigo']:'0'), 2, '0', STR_PAD_LEFT);
-                    $linea[$c++] = $this->Util->format($r['Relacion']['ingreso'], array('type' => 'date', 'format' => 'dmY'));
-                    $linea[$c++] = $this->Util->format($r['Relacion']['egreso'], array('type' => 'date', 'format' => 'dmY'));
-                    $linea[$c++] = "0";
+                    $linea[$c++] = $this->Util->normalizeText($r['Empleador']['nombre'], 50);
+                    $linea[$c++] = $this->Util->normalizeText(str_replace('-', '', $r['Empleador']['cuit']), 11);
+                    $linea[$c++] = $this->Util->normalizeText($r['Area']['direccion'], 30);
+                    $linea[$c++] = $this->Util->normalizeText($r['Area']['ciudad'], 20);
+                    $linea[$c++] = $this->Util->normalizeText($r['Area']['codigo_postal'], 8);
+                    $linea[$c++] = $this->Util->normalizeText((!empty($r['Area']['Provincia']['codigo'])?$r['Area']['Provincia']['codigo']:'0'), 2, 'number');
+                    $linea[$c++] = $this->Util->normalizeText($this->Util->format($r['Relacion']['ingreso'], array('type' => 'date', 'format' => 'dmY')), 8);
+                    $linea[$c++] = $this->Util->normalizeText($this->Util->format($r['Relacion']['egreso'], array('type' => 'date', 'format' => 'dmY')), 8);
+                    $linea[$c++] = '0';
                     $linea[$c++] = str_repeat(' ', 134);
                     $lineas[] = implode('', $linea);
                 }
@@ -135,8 +135,8 @@ class RelacionesController extends AppController {
                 $linea = null;
                 $c = 1;
                 $linea[$c++] = 'FR';
-                $linea[$c++] = str_replace('-', '', $groupParams['cuit']);
-                $linea[$c++] = str_pad(count($data), 50, '0', STR_PAD_LEFT);
+                $linea[$c++] = $this->Util->normalizeText(str_replace('-', '', $groupParams['cuit']), 11);
+                $linea[$c++] = $this->Util->normalizeText(count($data), 50, 'number');
                 $linea[$c++] = str_repeat(' ', 449);
                 $lineas[] = implode('', $linea);
                 

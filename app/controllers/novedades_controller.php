@@ -181,6 +181,7 @@ class NovedadesController extends AppController {
                     }
                     
 					$conditions = $this->Paginador->generarCondicion(false);
+                    $conditions['Relacion.estado'] = 'Activa';
 
 					$registros = $this->Novedad->Relacion->find('all',
 						array('contain'	=> array_merge(array('ConveniosCategoria', 'Trabajador', 'Empleador'), $contain),

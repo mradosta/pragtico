@@ -38,6 +38,26 @@ class UtilComponent extends Object {
             array('á', 'é', 'í', 'ó', 'ú', 'Á', 'É', 'Í', 'Ó', 'Ú', 'ñ', 'Ñ', '°'),
             array('a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U', 'n', 'N', ''), $text);
     }
+
+
+/**
+ * Normalize text input to a given length and pad based on it's type.
+ *
+ *
+*/
+    function normalizeText($text, $long, $type = 'text', $options = array()) {
+        if ($type == 'text') {
+            $__default = array('pad' => STR_PAD_RIGHT, 'character' => ' ');
+            $text = $this->replaceNonAsciiCharacters($text);
+        } elseif ($type == 'number') {
+            $__default = array('pad' => STR_PAD_LEFT, 'character' => '0');
+        } else {
+            return $text;
+        }
+
+        $options = array_merge($__default, $options);
+        return str_pad(substr($text, 0, $long), $long, $options['character'], $options['pad']);
+    }
     
 /**
  * Gets currently logged in user's groups.
