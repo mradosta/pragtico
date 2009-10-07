@@ -53,7 +53,7 @@
 
             $fila+=3;
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('A') -1 + ($i * 23)) . ',' . $fila, substr($receipt['Liquidacion']['tipo'], 0, 3) . ' ' . $formato->format($receipt['Liquidacion']['ano'] . str_pad($receipt['Liquidacion']['mes'], 2, '0', STR_PAD_LEFT) . $receipt['Liquidacion']['periodo'], array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')));
-            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('D') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['pago'], 'date'));
+            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('D') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['pago'], array('type' => 'date', 'format' => 'd-m-Y')));
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('H') -1 + ($i * 23)) . ',' . $fila, sprintf('%s, %s', $receipt['Liquidacion']['trabajador_apellido'], $receipt['Liquidacion']['trabajador_nombre']));
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('N') -1 + ($i * 23)) . ',' . $fila, ' ');
             if (preg_match('/\d\d\-([0-9]+)\-\d/', $receipt['Liquidacion']['trabajador_cuil'], $matches)) {
@@ -65,7 +65,7 @@
 
             $fila+=3;
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('A') -1 + ($i * 23)) . ',' . $fila, $receipt['Liquidacion']['trabajador_cuil']);
-            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('F') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['relacion_ingreso'], 'date'), $styleRight);
+            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('F') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['relacion_ingreso'], array('type' => 'date', 'format' => 'd-m-Y')), $styleRight);
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('H') -1 + ($i * 23)) . ',' . $fila, $receipt['Liquidacion']['relacion_antiguedad'], $styleCenter);
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('I') -1 + ($i * 23)) . ',' . $fila, $receipt['Liquidacion']['convenio_categoria_nombre']);
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('R') -1 + ($i * 23)) . ',' . $fila, substr($receipt['Liquidacion']['trabajador_cbu'], 0, 3) . " " . substr($receipt['Liquidacion']['trabajador_cbu'], 8, 13));
@@ -78,9 +78,9 @@
                     }
                     $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('E') -1 + ($i * 23)) . ',' . $fila, $detail['concepto_nombre']);
                     if (abs($detail['valor_unitario']) > 0) {
-                        $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('P') -1 + ($i * 23)) . ',' . $fila, $formato->format($detail['valor_unitario'], 'currency'), $styleRight);
+                        $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('O') -1 + ($i * 23)) . ',' . $fila, $formato->format($detail['valor_unitario'], 'currency'), $styleRight);
                     } else {
-                        $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('P') -1 + ($i * 23)) . ',' . $fila, ' ');
+                        $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('O') -1 + ($i * 23)) . ',' . $fila, ' ');
                     }
                     if ($detail['concepto_tipo'] !== 'Deduccion') {
                         $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('S') -1 + ($i * 23)) . ',' . $fila, $formato->format($detail['valor'], 'currency'), $styleRight);
@@ -116,7 +116,7 @@
                 $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('T') -1 + ($i * 23)) . ',' . $fila, $receipt['Banco']['nombre']);
             }
             $fila+=2;
-            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('P') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['pago'], 'date') . ' ( CORDOBA )');
+            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('P') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['pago'], array('type' => 'date', 'format' => 'd-m-Y')) . ' ( CORDOBA )');
         }
         
         $documento->activeSheet->setBreak('A' . $fila, PHPExcel_Worksheet::BREAK_ROW);
