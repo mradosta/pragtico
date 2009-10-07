@@ -674,37 +674,8 @@ class Liquidacion extends AppModel {
 						'descripcion_adicional'	=> ''));
 			}
 		}
+        $this->setVar('#concepto_cantidad', $conceptoCantidad);
 
-        /**
-        * Si en el valor unitario hay una variable, la reemplazo.
-        */
-        $conceptoValorUnitario = 0;
-        if (!empty($concepto['valor_unitario'])) {
-            if (isset($this->__variables[$concepto['valor_unitario']])) {
-                $varValue = $this->getVarValue($concepto['valor_unitario']);
-                if ($varValue !== '#N/A') {
-                    $conceptoValorUnitario = $varValue;
-                } else {
-                    $this->__setError(array(
-                        'tipo'                  => 'Variable No Resuelta',
-                        'gravedad'              => 'Media',
-                        'variable'              => $concepto['valor_unitario'],
-                        'formula'               => $concepto['formula'],
-                        'descripcion'           => 'El valor unitario intenta usar una variable que no ha podido ser resuelta.',
-                        'recomendacion'         => 'Verifique que los datos hayan sido correctamente ingresados.',
-                        'descripcion_adicional' => ''));
-                }
-            } else {
-                $this->__setError(array(
-                        'tipo'                  => 'Variable Inexistente',
-                        'gravedad'              => 'Media',
-                        'variable'              => $concepto['valor_unitario'],
-                        'formula'               => $concepto['formula'],
-                        'descripcion'           => 'El valor unitario intenta usar una variable inexistente.',
-                        'recomendacion'         => 'Verifique que la cantidad este correctamente definida y que la variable que la cantidad utiliza exista en el sistema.',
-                        'descripcion_adicional' => ''));
-            }
-        }
 
 		/**
 		* Verifico si el nombre que se muestra del concepto es una formula, la resuelvo.
@@ -879,7 +850,41 @@ class Liquidacion extends AppModel {
 		} else {
 			$valor = '#N/A';
 		}
-		
+        $this->setVar('#concepto_valor', $valor);
+
+
+        /**
+        * Si en el valor unitario hay una variable, la reemplazo.
+        */
+        $conceptoValorUnitario = 0;
+        if (!empty($concepto['valor_unitario'])) {
+            if (isset($this->__variables[$concepto['valor_unitario']])) {
+                $varValue = $this->getVarValue($concepto['valor_unitario']);
+                if ($varValue !== '#N/A') {
+                    $conceptoValorUnitario = $varValue;
+                } else {
+                    $this->__setError(array(
+                        'tipo'                  => 'Variable No Resuelta',
+                        'gravedad'              => 'Media',
+                        'variable'              => $concepto['valor_unitario'],
+                        'formula'               => $concepto['formula'],
+                        'descripcion'           => 'El valor unitario intenta usar una variable que no ha podido ser resuelta.',
+                        'recomendacion'         => 'Verifique que los datos hayan sido correctamente ingresados.',
+                        'descripcion_adicional' => ''));
+                }
+            } else {
+                $this->__setError(array(
+                        'tipo'                  => 'Variable Inexistente',
+                        'gravedad'              => 'Media',
+                        'variable'              => $concepto['valor_unitario'],
+                        'formula'               => $concepto['formula'],
+                        'descripcion'           => 'El valor unitario intenta usar una variable inexistente.',
+                        'recomendacion'         => 'Verifique que la cantidad este correctamente definida y que la variable que la cantidad utiliza exista en el sistema.',
+                        'descripcion_adicional' => ''));
+            }
+        }
+
+        
 		return array(
             'valor'             => $valor,
             'debug'             => $formula,
