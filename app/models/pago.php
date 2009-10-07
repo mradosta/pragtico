@@ -244,6 +244,8 @@ class Pago extends AppModel {
 			
 			if (!empty($pagos)) {
 
+                App::import('Vendor', 'utils', 'pragmatia');
+                
                 $this->Relacion->Empleador->Cuenta->contain(array('Empleador', 'Sucursal.Banco'));
                 $cuenta = $this->Relacion->Empleador->Cuenta->findById($opciones['cuenta_id']);
                 $bankCode = str_pad($cuenta['Sucursal']['Banco']['codigo'], 3, '0', STR_PAD_LEFT);
@@ -272,12 +274,12 @@ class Pago extends AppModel {
                                     }
                                     $c = null;
                                     $c[] = '0'; // moneda
-                                    $c[] = str_pad(substr($pago['Relacion']['Trabajador']['apellido'] . ' ' . $pago['Relacion']['Trabajador']['nombre'], 0, 15), 15, ' ', STR_PAD_RIGHT); //nombre
-                                    $c[] = str_replace('-', '', $pago['Relacion']['Trabajador']['cuil']); //cuil
+                                    $c[] = Utils::normalizeText($pago['Relacion']['Trabajador']['apellido'] . ' ' . $pago['Relacion']['Trabajador']['nombre'], 15); //nombre
+                                    $c[] = Utils::normalizeText(str_replace('-', '', $pago['Relacion']['Trabajador']['cuil']), 11); //cuil
                                     $c[] = $matches[2]; // Sucursal
                                     $c[] = $tipoCuentaTrabajador; // Tipo de Cuenta
                                     $c[] = substr($matches[3], 2); // Cuenta
-                                    $c[] = str_pad(number_format($pago['Pago']['monto'], 2, '', ''), 15, '0', STR_PAD_LEFT); // importe
+                                    $c[] = Utils::normalizeText(number_format($pago['Pago']['monto'], 2, '', ''), 15, 'number'); // importe
                                     $rds[] = implode(';', $c);
                                     break;
                                 case '007': //Galicia
@@ -295,10 +297,10 @@ class Pago extends AppModel {
                                     $rd[] = substr($pago['Relacion']['Trabajador']['cbu'], 19, 1); //1 digito
                                     $rd[] = str_pad(substr($pago['Relacion']['Trabajador']['cbu'], 4, 3), 3, '0', STR_PAD_LEFT); //sucursal
                                     $rd[] = substr($pago['Relacion']['Trabajador']['cbu'], -2, 1); //2 digito
-                                    $rd[] = strtoupper(str_pad(substr($pago['Relacion']['Trabajador']['apellido'] . ' ' . $pago['Relacion']['Trabajador']['nombre'], 0, 20), 20, ' ', STR_PAD_RIGHT)); //nombre
-                                    $rd[] = str_pad(number_format($pago['Pago']['monto'], 2, '', ''), 14, '0', STR_PAD_LEFT); //importe
-                                    $rd[] = str_pad('1', 2, '0', STR_PAD_LEFT); //concepto
-                                    $rd[] = str_pad('', 11, ' ', STR_PAD_RIGHT); //libre
+                                    $rd[] = strtoupper(Utils::normalizeText($pago['Relacion']['Trabajador']['apellido'] . ' ' . $pago['Relacion']['Trabajador']['nombre'], 20)); //nombre
+                                    $rd[] = Utils::normalizeText(number_format($pago['Pago']['monto'], 2, '', ''), 14, 'number'); //importe
+                                    $rd[] = '01'; //concepto
+                                    $rd[] = str_repeat(' ', 11); //libre
                                     $rds[] = implode('', $rd);
                                     break;
                                 case '011': //Nacion
@@ -315,11 +317,11 @@ class Pago extends AppModel {
                                     $c[] = '141'; // nadie sabe que es, pero debe ir este valor
                                     $c[] = $fechaAcreditacion; // fecha de acreditacion
                                     $c[] = 'CTRE0'; // nadie sabe que es, pero debe ir este valor
-                                    $c[] = str_pad($pago['Relacion']['Trabajador']['numero_documento'], 8, '0', STR_PAD_LEFT); //dni
-                                    $c[] = str_pad(number_format($pago['Pago']['monto'], 2, '', ''), 13, '0', STR_PAD_LEFT); //importe
-                                    $c[] = str_pad(substr($pago['Relacion']['Trabajador']['apellido'] . ' ' . $pago['Relacion']['Trabajador']['nombre'], 0, 30), 30, ' ', STR_PAD_RIGHT); //nombre
+                                    $c[] = Utils::normalizeText($pago['Relacion']['Trabajador']['numero_documento'], 8, 'number'); //dni
+                                    $c[] = Utils::normalizeText(number_format($pago['Pago']['monto'], 2, '', ''), 13, 'number'); //importe
+                                    $c[] = Utils::normalizeText($pago['Relacion']['Trabajador']['apellido'] . ' ' . $pago['Relacion']['Trabajador']['nombre'], 30); //nombre
                                     $c[] = '96'; // nadie sabe que es, pero debe ir este valor
-                                    $c[] = str_pad($pago['Relacion']['Trabajador']['numero_documento'], 8, '0', STR_PAD_LEFT); //dni
+                                    $c[] = Utils::normalizeText($pago['Relacion']['Trabajador']['numero_documento'], 8, 'number'); //dni
                                     $rds[] = implode('', $c);
                                     break;
                             }
@@ -348,20 +350,20 @@ class Pago extends AppModel {
                                     $tipoCuentaEmpleador = '9';
                                 }
                                 $rh[] = 'H';
-                                $rh[] = str_pad($cuenta['Cuenta']['convenio'], 5, '0', STR_PAD_LEFT); //Numero de empresa
+                                $rh[] = Utils::normalizeText($cuenta['Cuenta']['convenio'], 5, 'number'); //Numero de empresa
                                 $rh[] = $tipoCuentaEmpleador; //tipo de cuenta
                                 $rh[] = str_pad(substr($cuenta['Cuenta']['cbu'], 13, 6), 6, '0', STR_PAD_LEFT); //folio (cuenta)
                                 $rh[] = substr($cuenta['Cuenta']['cbu'], 19, 1); //1 digito
                                 $rh[] = str_pad(substr($cuenta['Cuenta']['cbu'], 4, 3), 3, '0', STR_PAD_LEFT); //sucursal
                                 $rh[] = substr($cuenta['Cuenta']['cbu'], -2, 1); //2 digito
-                                $rh[] = str_pad(number_format($total, 2, '', ''), 14, '0', STR_PAD_LEFT); //importe total
-                                $rh[] = str_pad($fechaAcreditacion, 8, ' ', STR_PAD_RIGHT); //fecha acreditacion
+                                $rh[] = Utils::normalizeText(number_format($total, 2, '', ''), 14, 'number'); //importe total
+                                $rh[] = Utils::normalizeText($fechaAcreditacion, 8); //fecha acreditacion
                                 $rh[] = str_pad('', 25, ' ', STR_PAD_RIGHT); //libre
                                 $rhs = implode('', $rh);
                                 $rf[] = 'F';
-                                $rf[] = str_pad($cuenta['Cuenta']['convenio'], 5, '0', STR_PAD_LEFT); //Numero de empresa
-                                $rf[] = str_pad(count($rds), 7, '0', STR_PAD_LEFT); //cantidad registros
-                                $rf[] = str_pad('', 52, ' ', STR_PAD_RIGHT); //libre
+                                $rf[] = Utils::normalizeText($cuenta['Cuenta']['convenio'], 5, 'number'); //Numero de empresa
+                                $rf[] = Utils::normalizeText(count($rds), 7, 'number'); //cantidad registros
+                                $rf[] = str_repeat(' ', 52); //libre
                                 $rfs = implode('', $rf);
                                 $contenido = $rhs . "\r\n" . implode("\r\n", $rds) . "\r\n" . $rfs;
                                 break;

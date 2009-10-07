@@ -70,20 +70,21 @@ class RelacionesController extends AppController {
                 'contain'       => array('Trabajador', 'Empleador', 'Area' => 'Provincia', 'ConveniosCategoria' => 'Convenio'),
                 'conditions'    => $conditions));           
             if (!empty($data)) {
-                
+
+                App::import('Vendor', 'utils', 'pragmatia');
                 $lineas = array();
                 $groupParams = User::getGroupParams($this->data['Condicion']['Bar-grupo_id']);
-                
+
                 $linea = null;
                 $c = 1;
                 $linea[$c++] = 'HR';
-                $linea[$c++] = $this->Util->normalizeText($groupParams['ministerio_trabajo_legajo'], 4);
-                $linea[$c++] = $this->Util->normalizeText(str_replace('-', '', $groupParams['cuit']), 11);
-                $linea[$c++] = $this->Util->normalizeText($groupParams['nombre_fantasia'], 50);
-                $linea[$c++] = $this->Util->normalizeText($groupParams['direccion'], 30);
-                $linea[$c++] = $this->Util->normalizeText($groupParams['ciudad'], 20);
-                $linea[$c++] = $this->Util->normalizeText($groupParams['codigo_postal'], 8);
-                $linea[$c++] = $this->Util->normalizeText($groupParams['ministerio_trabajo_provincia'], 2, 'number');
+                $linea[$c++] = Utils::normalizeText($groupParams['ministerio_trabajo_legajo'], 4);
+                $linea[$c++] = Utils::normalizeText(str_replace('-', '', $groupParams['cuit']), 11);
+                $linea[$c++] = Utils::normalizeText($groupParams['nombre_fantasia'], 50);
+                $linea[$c++] = Utils::normalizeText($groupParams['direccion'], 30);
+                $linea[$c++] = Utils::normalizeText($groupParams['ciudad'], 20);
+                $linea[$c++] = Utils::normalizeText($groupParams['codigo_postal'], 8);
+                $linea[$c++] = Utils::normalizeText($groupParams['ministerio_trabajo_provincia'], 2, 'number');
                 $linea[$c++] = $this->data['Condicion']['Bar-bimestre'];
                 $linea[$c++] = $this->data['Condicion']['Bar-ano'];
                 $linea[$c++] = '00';
@@ -108,25 +109,25 @@ class RelacionesController extends AppController {
                     }
                     
                     $linea[$c++] = 'DR';
-                    $linea[$c++] = $this->Util->normalizeText($r['Trabajador']['nombre'], 50);
-                    $linea[$c++] = $this->Util->normalizeText($r['Trabajador']['apellido'], 50);
-                    $linea[$c++] = $this->Util->normalizeText(str_replace('-', '', $r['Trabajador']['cuil']), 11);
-                    $linea[$c++] = $this->Util->normalizeText($r['ConveniosCategoria']['nombre'], 30);
-                    $linea[$c++] = $this->Util->normalizeText($r['ConveniosCategoria']['Convenio']['numero'], 20);
-                    $linea[$c++] = $this->Util->normalizeText(($r['Relacion']['basico'] > 0)?$r['Relacion']['basico']:$historico[$r['ConveniosCategoria']['id']], 8, 'number');
+                    $linea[$c++] = Utils::normalizeText($r['Trabajador']['nombre'], 50);
+                    $linea[$c++] = Utils::normalizeText($r['Trabajador']['apellido'], 50);
+                    $linea[$c++] = Utils::normalizeText(str_replace('-', '', $r['Trabajador']['cuil']), 11);
+                    $linea[$c++] = Utils::normalizeText($r['ConveniosCategoria']['nombre'], 30);
+                    $linea[$c++] = Utils::normalizeText($r['ConveniosCategoria']['Convenio']['numero'], 20);
+                    $linea[$c++] = Utils::normalizeText(($r['Relacion']['basico'] > 0)?$r['Relacion']['basico']:$historico[$r['ConveniosCategoria']['id']], 8, 'number');
                     if ($r['ConveniosCategoria']['jornada'] == 'Mensual') {
                         $linea[$c++] = 1;
                     } else {
                         $linea[$c++] = 2;
                     }
-                    $linea[$c++] = $this->Util->normalizeText($r['Empleador']['nombre'], 50);
-                    $linea[$c++] = $this->Util->normalizeText(str_replace('-', '', $r['Empleador']['cuit']), 11);
-                    $linea[$c++] = $this->Util->normalizeText($r['Area']['direccion'], 30);
-                    $linea[$c++] = $this->Util->normalizeText($r['Area']['ciudad'], 20);
-                    $linea[$c++] = $this->Util->normalizeText($r['Area']['codigo_postal'], 8);
-                    $linea[$c++] = $this->Util->normalizeText((!empty($r['Area']['Provincia']['codigo'])?$r['Area']['Provincia']['codigo']:'0'), 2, 'number');
-                    $linea[$c++] = $this->Util->normalizeText($this->Util->format($r['Relacion']['ingreso'], array('type' => 'date', 'format' => 'dmY')), 8);
-                    $linea[$c++] = $this->Util->normalizeText($this->Util->format($r['Relacion']['egreso'], array('type' => 'date', 'format' => 'dmY')), 8);
+                    $linea[$c++] = Utils::normalizeText($r['Empleador']['nombre'], 50);
+                    $linea[$c++] = Utils::normalizeText(str_replace('-', '', $r['Empleador']['cuit']), 11);
+                    $linea[$c++] = Utils::normalizeText($r['Area']['direccion'], 30);
+                    $linea[$c++] = Utils::normalizeText($r['Area']['ciudad'], 20);
+                    $linea[$c++] = Utils::normalizeText($r['Area']['codigo_postal'], 8);
+                    $linea[$c++] = Utils::normalizeText((!empty($r['Area']['Provincia']['codigo'])?$r['Area']['Provincia']['codigo']:'0'), 2, 'number');
+                    $linea[$c++] = Utils::normalizeText($this->Util->format($r['Relacion']['ingreso'], array('type' => 'date', 'format' => 'dmY')), 8);
+                    $linea[$c++] = Utils::normalizeText($this->Util->format($r['Relacion']['egreso'], array('type' => 'date', 'format' => 'dmY')), 8);
                     $linea[$c++] = '0';
                     $linea[$c++] = str_repeat(' ', 134);
                     $lineas[] = implode('', $linea);
@@ -135,8 +136,8 @@ class RelacionesController extends AppController {
                 $linea = null;
                 $c = 1;
                 $linea[$c++] = 'FR';
-                $linea[$c++] = $this->Util->normalizeText(str_replace('-', '', $groupParams['cuit']), 11);
-                $linea[$c++] = $this->Util->normalizeText(count($data), 50, 'number');
+                $linea[$c++] = Utils::normalizeText(str_replace('-', '', $groupParams['cuit']), 11);
+                $linea[$c++] = Utils::normalizeText(count($data), 50, 'number');
                 $linea[$c++] = str_repeat(' ', 449);
                 $lineas[] = implode('', $linea);
                 

@@ -208,7 +208,7 @@ class PagosController extends AppController {
         
 		if (!empty($this->data['Soporte']['pago_id'])
 			&& !empty($this->data['Soporte']['cuenta_id'])) {
-			
+
 			$opciones = array(	"pago_id"				=> unserialize($this->data['Soporte']['pago_id']),
 								"fecha_acreditacion"	=> "",
 								"cuenta_id"				=> $this->data['Soporte']['cuenta_id']);
@@ -219,7 +219,7 @@ class PagosController extends AppController {
 
             if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] == 'confirmar') {
                 $archivo = $this->Pago->generarSoporteMagnetico($opciones, true);
-                
+
                 if (!empty($archivo)) {
                     $this->set("archivo", array("contenido"=>$archivo['contenido'], "nombre"=>$archivo['banco'] . "-" . date("Y-m-d") . ".txt"));
                     $this->render(".." . DS . "elements" . DS . "txt", "txt");
