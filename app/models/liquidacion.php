@@ -674,7 +674,6 @@ class Liquidacion extends AppModel {
 						'descripcion_adicional'	=> ''));
 			}
 		}
-        $this->setVar('#concepto_cantidad', $conceptoCantidad);
 
 
 		/**
@@ -850,7 +849,10 @@ class Liquidacion extends AppModel {
 		} else {
 			$valor = '#N/A';
 		}
+
+        /** Sets current concept vars */
         $this->setVar('#concepto_valor', $valor);
+        $this->setVar('#concepto_cantidad', $conceptoCantidad);
 
 
         /**
