@@ -1165,7 +1165,7 @@ class LiquidacionesController extends AppController {
                 /** Just the owner and group can just read. Nobody can edit or delete it */
                 $save['permissions'] = '288';
 				$save = array($model => $save);
-				$modelSave->create($save);
+				$modelSave->create(false);
 				if ($modelSave->save($save, false)) {
 					$c++;
                 }
