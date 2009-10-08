@@ -34,7 +34,67 @@ class LiquidacionesController extends AppController {
     
 	var $components = array('Formulador');
 	var $helpers = array('Documento');
-	
+
+    function reporte_liquidaciones() {
+        if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
+
+            $conditions['(Liquidacion.group_id & ' . array_sum($this->data['Condicion']['Bar-grupo_id']) . ') >'] = 0;
+            
+            if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
+                $conditions['Liquidacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
+            }
+        
+            if (!empty($this->data['Condicion']['Bar-relacion_id'])) {
+                $conditions['Liquidacion.relacion_id'] = explode('**||**', $this->data['Condicion']['Bar-relacion_id']);
+            }
+            
+            if (!empty($this->data['Condicion']['Bar-periodo_largo'])) {
+                $period = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
+                $conditions['Liquidacion.ano'] = $period['ano'];
+                $conditions['Liquidacion.mes'] = $period['mes'];
+            }
+
+            $data = array();
+            $this->Liquidacion->Behaviors->detach('Permisos');
+            $this->Liquidacion->contain('Area');
+            foreach ($this->Liquidacion->find('all', array(
+                'conditions'    => $conditions,
+                'fields'        => array(
+                    'Liquidacion.empleador_id',
+                    'Liquidacion.empleador_cuit',
+                    'Liquidacion.empleador_nombre',
+                    'Liquidacion.relacion_area_id',
+                    'Area.nombre',
+                    'Area.identificador_centro_costo',
+                    'Liquidacion.trabajador_id',
+                    'SUM(Liquidacion.remunerativo) AS remunerativo',
+                    'SUM(Liquidacion.no_remunerativo) AS no_remunerativo'),
+                'group'         => array(
+                    'Liquidacion.empleador_id',
+                    'Liquidacion.empleador_cuit',
+                    'Liquidacion.empleador_nombre',
+                    'Liquidacion.relacion_area_id',
+                    'Area.nombre',
+                    'Area.identificador_centro_costo',
+                    'Liquidacion.trabajador_id'))) as $record) {
+
+                if (empty($data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']])) {
+                    $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']]['trabajadores'] = 0;
+                    $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']]['remunerativo'] = 0;
+                    $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']]['no_remunerativo'] = 0;
+                }
+
+                $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']]['trabajadores'] += 1;
+                $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']]['remunerativo'] += $record['Liquidacion']['remunerativo'];
+                $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']]['no_remunerativo'] += $record['Liquidacion']['no_remunerativo'];
+            }
+
+            $this->set('data', $data);
+            $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+        }
+    }
+
+    
     function reporte_sindicatos() {
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 

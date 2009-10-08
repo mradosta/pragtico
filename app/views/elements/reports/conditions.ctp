@@ -8,16 +8,23 @@ if (!empty($options['conditions'])) {
 }
 
 $conditions = array();
-if ($options['conditions']['Bar-grupo_id'] === true) {
+if ($options['conditions']['Bar-grupo_id'] !== false) {
+    if ($options['conditions']['Bar-grupo_id'] === 'multiple') {
+        $multiple = 'checkbox';
+    } else {
+        $multiple = false;
+    }
+    
     $groups = User::getUserGroups();
     $defaultGroup = User::get('/Usuario/preferencias/grupo_default_id');
     if (count($groups) > 1 && isset($groups[$defaultGroup])) {
         $conditions['Condicion.Bar-grupo_id'] = array(
             'options'   => $groups,
+            'multiple'  => $multiple,
             'empty'     => false,
             'value'     => $defaultGroup);
     } else {
-        $conditions['Condicion.Bar-grupo_id'] = array('options' => $groups, 'empty' => false);
+        $conditions['Condicion.Bar-grupo_id'] = array('options' => $groups, 'empty' => false, 'multiple'  => $multiple);
     }
 }
 
