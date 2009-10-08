@@ -168,7 +168,7 @@ class AppController extends Controller {
 				list($model, $field) = explode(".", $k);
 				$this->data[$model][$field] = $v;
 				if (substr($field, -3) === '_id') {
-					$modelAsociado = str_replace(" ", "", Inflector::classify(str_replace("_id", "", $field)));
+					$modelAsociado = ucfirst(str_replace("_id", "", $field));
 					
 					/**
 					* Doy tratamiento al tipo especial de relacion con sigo mismo.
