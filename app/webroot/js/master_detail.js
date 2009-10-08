@@ -86,8 +86,7 @@ var agregar = function() {
         if (isNaN(indice)) {
             indice = parseInt(this.name.replace(/(^data\[[0-9]+\]\[[a-zA-Z]+\])\[([0-9]+)\](\[[a-zA-Z_]+\])/, '$2')) + 1;
             this.name = this.name.replace(/(^data\[[0-9]+\]\[[a-zA-Z]+\])\[([0-9]+)\](\[[a-zA-Z_]+\])/, '$1\[' + indice + '\]$3')
-        }
-        else {
+        } else {
             this.name = this.name.replace(/(^data\[[a-zA-Z]+\])\[([0-9]+)\](\[[a-zA-Z_]+\])/, '$1\[' + indice + '\]$3')
         }
 
@@ -101,8 +100,9 @@ var agregar = function() {
 
     /**
     * Ejectuto la callback si existe.
+    * Envio el id del nuevo FrameSet creado y del nuevo elemento.
     */
     if(typeof(jQuery.detailAfterAdd) == 'function'){
-        jQuery.detailAfterAdd(indice);
+        jQuery.detailAfterAdd(id, indice);
     };
 }

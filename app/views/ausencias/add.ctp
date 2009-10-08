@@ -59,7 +59,7 @@ $extraJs = array();
 if (!empty($this->data)) {
     foreach ($this->data as $ausencia) {
         foreach ($ausencia['AusenciasSeguimiento'] as $k => $seguimiento) {
-            $extraJs[] = 'jQuery.detailAfterAdd(' . $k . ');';
+            $extraJs[] = 'verifyStates(' . $k . ');';
         }
     }
 }
@@ -68,16 +68,20 @@ $appForm->addScript('
     detalle();
     jQuery("a.link_boton").bind("click", agregar);
    
+    jQuery.detailAfterAdd = function(frameSetId, elementId) {
+        jQuery("#AusenciasSeguimientoEstado" + (frameSetId - 1) + "Pendiente_" + frameSetId).attr("checked", true);
+        jQuery("#AusenciasSeguimientoEstado" + (frameSetId - 1) + "Pendiente_" + frameSetId).removeAttr("disabled");
+        jQuery("#AusenciasSeguimientoEstado" + (frameSetId - 1) + "Confirmado_" + frameSetId).removeAttr("disabled");
+        jQuery("#AusenciasSeguimientoEstado" + (frameSetId - 1) + "Liquidado_" + frameSetId).attr("disabled", true);
+    }
         
-    jQuery.detailAfterAdd = function(id) {
-        if (id == undefined) {
-            id = "0";
-        }
+    var verifyStates = function(id) {
         if (jQuery("#AusenciasSeguimientoEstado" + id + "Liquidado").attr("checked")) {
             jQuery("#AusenciasSeguimientoEstado" + id + "Pendiente").attr("disabled", true);
             jQuery("#AusenciasSeguimientoEstado" + id + "Confirmado").attr("disabled", true);
+        } else {
+            jQuery("#AusenciasSeguimientoEstado" + id + "Liquidado").attr("disabled", true);
         }
-        jQuery("#AusenciasSeguimientoEstado" + id + "Liquidado").attr("disabled", true);
     }
     ' . implode('', $extraJs));
 ?>
