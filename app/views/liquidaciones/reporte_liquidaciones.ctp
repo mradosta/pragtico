@@ -19,10 +19,11 @@ if (!empty($data)) {
 
     $documento->create(array('password' => false, 'title' => 'Listado de Liquidaciones'));
     $documento->setCellValue('A', 'Centro Costo', array('title' => '30'));
-    $documento->setCellValue('B', 'Empelador', array('title' => '45'));
-    $documento->setCellValue('C', 'Trabajadores', array('title' => '20'));
-    $documento->setCellValue('D', 'Remunerativo', array('title' => '20'));
-    $documento->setCellValue('E', 'No Remunerativo', array('title' => '20'));
+    $documento->setCellValue('B', 'Empelador', array('title' => '30'));
+    $documento->setCellValue('C', 'Area', array('title' => '30'));
+    $documento->setCellValue('D', 'Trabajadores', array('title' => '15'));
+    $documento->setCellValue('E', 'Remunerativo', array('title' => '15'));
+    $documento->setCellValue('F', 'No Remunerativo', array('title' => '15'));
 
     /** Body */
     foreach ($data as $cc => $detail) {
@@ -30,19 +31,25 @@ if (!empty($data)) {
         $documento->moveCurrentRow();
         $documento->setCellValue('A', $cc, 'bold');
         $initialRow = $documento->getCurrentRow() + 1;
-        foreach ($detail as $employer => $values) {
+        foreach ($detail as $employer => $areas) {
 
-            $documento->setCellValueFromArray(
-                array(  '',
-                        $employer,
-                        $values['trabajadores'],
-                        array('value' => $values['remunerativo'], 'options' => 'currency'),
-                        array('value' => $values['no_remunerativo'], 'options' => 'currency')));
+            $documento->setCellValue('B', $employer, 'bold');
+            
+            foreach ($areas as $area => $values) {
+                
+                $documento->setCellValueFromArray(
+                    array(  '',
+                            '',
+                            $area,
+                            $values['trabajadores'],
+                            array('value' => $values['remunerativo'], 'options' => 'currency'),
+                            array('value' => $values['no_remunerativo'], 'options' => 'currency')));
+            }
         }
         $documento->moveCurrentRow();
-        $documento->setCellValue('C', '=SUM(C' . $initialRow . ':C' . ($documento->getCurrentRow() - 1) . ')', array('bold', 'right'));
-        $documento->setCellValue('D', '=SUM(D' . $initialRow . ':D' . ($documento->getCurrentRow() - 1) . ')', 'total');
+        $documento->setCellValue('D', '=SUM(D' . $initialRow . ':D' . ($documento->getCurrentRow() - 1) . ')', array('bold', 'right'));
         $documento->setCellValue('E', '=SUM(E' . $initialRow . ':E' . ($documento->getCurrentRow() - 1) . ')', 'total');
+        $documento->setCellValue('F', '=SUM(F' . $initialRow . ':F' . ($documento->getCurrentRow() - 1) . ')', 'total');
     }
 
     $documento->save($fileFormat);

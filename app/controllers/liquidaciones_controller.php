@@ -53,6 +53,7 @@ class LiquidacionesController extends AppController {
             $data = array();
             $this->Liquidacion->Behaviors->detach('Permisos');
             $this->Liquidacion->contain('Area');
+
             foreach ($this->Liquidacion->find('all', array(
                 'conditions'    => $conditions,
                 'fields'        => array(
@@ -74,17 +75,16 @@ class LiquidacionesController extends AppController {
                     'Area.identificador_centro_costo',
                     'Liquidacion.trabajador_id'))) as $record) {
 
-                if (empty($data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']])) {
-                    $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']]['trabajadores'] = 0;
-                    $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']]['remunerativo'] = 0;
-                    $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']]['no_remunerativo'] = 0;
+                if (empty($data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']])) {
+                    $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['trabajadores'] = 0;
+                    $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['remunerativo'] = 0;
+                    $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['no_remunerativo'] = 0;
                 }
 
-                $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']]['trabajadores'] += 1;
-                $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']]['remunerativo'] += $record['Liquidacion']['remunerativo'];
-                $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']]['no_remunerativo'] += $record['Liquidacion']['no_remunerativo'];
+                $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['trabajadores'] += 1;
+                $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['remunerativo'] += $record['Liquidacion']['remunerativo'];
+                $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['no_remunerativo'] += $record['Liquidacion']['no_remunerativo'];
             }
-
             $this->set('data', $data);
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
         }
