@@ -55,9 +55,9 @@ $fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array("cl
 
 $campos = null;
 $campos['Trabajador.solicitar_tarjeta_debito'] = array();
-$campos['Trabajador.tipo_cuenta'] = array("label"=>"Tipo");
-$campos['Trabajador.cbu'] = array('aclaracion' => "Ingrese sin guiones ni barras.");
-if($this->action === "edit") {
+$campos['Trabajador.tipo_cuenta'] = array('label' => 'Tipo');
+$campos['Trabajador.cbu'] = array('aclaracion' => 'Ingrese sin guiones ni barras.');
+if($this->action === 'edit') {
 	$campos['Trabajador.banco'] = array("type"=>"soloLectura");
 	$campos['Trabajador.sucursal'] = array("type"=>"soloLectura");
 	$campos['Trabajador.cuenta'] = array("type"=>"soloLectura");
@@ -70,13 +70,7 @@ $campos['Trabajador.condicion_id'] = array( 'options'       => 'listable',
                                             'order'         => 'Condicion.codigo',
                                             'displayField'  => 'Condicion.nombre',
                                             'model'         => 'Condicion');
-/*
-$campos['Trabajador.condicion_id'] = array(	"lov"=>array("controller"		=>	"condiciones",
-														"seleccionMultiple"	=> 	0,
-														"camposRetorno"		=>	array(	"Condicion.codigo",
-																						"Condicion.nombre")));
-*/
-$campos['Trabajador.obra_social_id'] = array(	"lov"=>array("controller"	=>	"obras_sociales",
+$campos['Trabajador.obra_social_id'] = array(	'lov'=>array('controller'	=>	'obras_sociales',
 														"seleccionMultiple"	=> 	0,
 														"camposRetorno"		=>	array(	"ObrasSocial.codigo",
 																						"ObrasSocial.nombre")));
@@ -89,13 +83,6 @@ $campos['Trabajador.siniestrado_id'] = array(   'options'       => 'listable',
                                             'displayField'  => 'Siniestrado.nombre',
                                             'model'         => 'Siniestrado',
                                             'aclaracion'    => 'Indica algun tipo de imposibilidad (SIAP).');
-/*
-$campos['Trabajador.siniestrado_id'] = array(	'aclaracion' => "Indica algun tipo de imposibilidad (SIAP).",
-											 	"lov"=>array("controller"	=>	"siniestrados",
-														"seleccionMultiple"	=> 	0,
-														"camposRetorno"		=>	array(	"Siniestrado.codigo",
-																						"Siniestrado.nombre")));
-*/
 $fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array("class"=>"subset"), 'fieldset' => array('legend' => "Afip", 'imagen' => 'afip.gif')));
 
 $campos = null;
@@ -107,9 +94,7 @@ $fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array("cl
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-$miga = array('format' 	=> '%s %s', 
-			  'content' => array('Trabajador.apellido', 'Trabajador.nombre'));
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('imagen' => 'trabajadores.gif')));
-echo $this->element('add/add', array('fieldset' => $fieldset, "opcionesForm"=>array("enctype"=>"multipart/form-data"), 'miga' => $miga));
+echo $this->element('add/add', array('fieldset' => $fieldset, "opcionesForm"=>array("enctype"=>"multipart/form-data")));
 
 ?>
