@@ -73,6 +73,7 @@ class User extends AppModel {
  * @param integer $filter Filter groups based on bitwise math.
  * @param mixed $filter If integer, filter groups based on bitwise math.
  *                      If 'selected', filters based on currently selected group.
+ *                      If 'default', filters based on default group.
  *                      If 'all', return all user's groups.    
  * @return array GroupId => GroupName, empty array if the user has no groups.
  * @access public
@@ -80,8 +81,10 @@ class User extends AppModel {
     function getUserGroups($filter = 'selected') {
 
         if ($filter === 'selected') {
-            /** If more than one group is selected, return array of groups, else just selected one */
+            /** If more than one group is selected, return array of groups, else just the selected one */
             $filter = User::get('/Usuario/preferencias/grupos_seleccionados');
+        } elseif ($filter === 'default') {
+            $filter = User::get('/Usuario/preferencias/grupo_default_id');
         } elseif ($filter === 'all') {
             return Set::combine(User::get('/Grupo'), '{n}.Grupo.id', '{n}.Grupo.nombre');
         } elseif (!is_numeric($filter)) {
@@ -109,7 +112,7 @@ class User extends AppModel {
  */    
     function getGroupParams($groupId = null) {
         if (empty($groupId)) {
-            $groupId = array_pop(array_keys(User::getUserGroups()));
+            list($groupId, ) = array_keys(User::getUserGroups('default'));
         }
         return ClassRegistry::init('Grupo')->getParams($groupId);
     }
