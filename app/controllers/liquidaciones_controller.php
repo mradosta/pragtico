@@ -44,10 +44,6 @@ class LiquidacionesController extends AppController {
                 $conditions['Liquidacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
             }
         
-            if (!empty($this->data['Condicion']['Bar-relacion_id'])) {
-                $conditions['Liquidacion.relacion_id'] = explode('**||**', $this->data['Condicion']['Bar-relacion_id']);
-            }
-            
             if (!empty($this->data['Condicion']['Bar-periodo_largo'])) {
                 $period = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
                 $conditions['Liquidacion.ano'] = $period['ano'];

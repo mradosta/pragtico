@@ -40,15 +40,11 @@ if (!empty($data)) {
                         array('value' => $values['no_remunerativo'], 'options' => 'currency')));
         }
         $documento->moveCurrentRow();
+        $documento->setCellValue('C', '=SUM(C' . $initialRow . ':C' . ($documento->getCurrentRow() - 1) . ')', array('bold', 'right'));
         $documento->setCellValue('D', '=SUM(D' . $initialRow . ':D' . ($documento->getCurrentRow() - 1) . ')', 'total');
         $documento->setCellValue('E', '=SUM(E' . $initialRow . ':E' . ($documento->getCurrentRow() - 1) . ')', 'total');
     }
 
-/*    $t['Trabajadores'] = array(count($cuils) => array('bold', 'right'));
-    foreach ($totals as $conceptCode => $total) {
-        $t[$codeToNameMapper[$conceptCode]] = $total;
-    }
-    $documento->setTotals($t);*/
     $documento->save($fileFormat);
 } else {
 
@@ -58,11 +54,6 @@ if (!empty($data)) {
             'controller'        => 'empleadores',
             'seleccionMultiple' => true,
             'camposRetorno'     => array('Empleador.cuit', 'Empleador.nombre')));
-    
-    $conditions['Condicion.Bar-relacion_id'] = array( 'lov' => array(
-            'controller'        => 'relaciones',
-            'seleccionMultiple' => true,
-            'camposRetorno'     => array('Empleador.nombre', 'Trabajador.apellido', 'Trabajador.nombre')));
     
     $options = array('title' => 'Liquidaciones', 'conditions' => array('Bar-grupo_id' => 'multiple'));
     echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));
