@@ -117,6 +117,8 @@ class Liquidacion extends AppModel {
 		$this->__variables = null;
         $this->__currentConcept = null;
 
+        $this->resetRecursivity();
+        
 		/** Initial set of vars and concepts */
 		$this->setVar($options['variables']);
 		if (!empty($options['informaciones'][$relationship['ConveniosCategoria']['convenio_id']])) {
@@ -132,7 +134,6 @@ class Liquidacion extends AppModel {
         }
         
 
-        $this->resetRecursivity();
 		if ($type === 'normal' || $type === 'especial') {
 
 			$jornada = $this->getRelationship('ConveniosCategoria', 'jornada');
@@ -184,17 +185,23 @@ class Liquidacion extends AppModel {
 			$this->__setAuxiliar($ausencias['auxiliar']);
 			$this->setConcept($ausencias['conceptos']);
 
-			/** Get discounts */
-			$discounts = $this->Relacion->Descuento->getDescuentos($this->getRelationship(),
-					array(	'periodo' 	=> $this->getPeriod(),
-							'tipo'		=> $type));
-            foreach ($discounts['variables'] as $varName => $varValue) {
-                $this->setVar($varName, $varValue);
+
+            if ($type === 'especial') {
+
+                $noveltiesConcepts = array_keys(am($ausencias['conceptos'], $horas['conceptos'], $novedades['conceptos']));
+                foreach ($this->__conceptos as $cCod => $concepto) {
+                    if (!($concepto['tipo'] === 'Deduccion' || in_array($cCod, $noveltiesConcepts))) {
+                        $this->__conceptos[$cCod] = array_merge(
+                            $this->__conceptos[$cCod],
+                            array(  'valor'             => 0,
+                                    'debug'             => '',
+                                    'valor_cantidad'    => 0,
+                                    'valor_unitario'    => 0,
+                                    'errores'           => array()));
+                    }
+                }
             }
-			$this->__setAuxiliar($discounts['auxiliar']);
-			$this->setConcept($discounts['conceptos']);
-		
-			
+            
 		} elseif ($type === 'vacaciones') {
 			foreach ($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
 					array(		'relacion' 	=> $relationship,
@@ -205,17 +212,6 @@ class Liquidacion extends AppModel {
 					$this->setConcept(array($cCod => $concepto));
 				}
 			}
-
-            /** Get discounts */
-            $discounts = $this->Relacion->Descuento->getDescuentos($this->getRelationship(),
-                    array(  'periodo'   => $this->getPeriod(),
-                            'tipo'      => $type));
-            foreach ($discounts['variables'] as $varName => $varValue) {
-                $this->setVar($varName, $varValue);
-            }
-            $this->__setAuxiliar($discounts['auxiliar']);
-            $this->setConcept($discounts['conceptos']);
-            
 
             /** Get hollidays */
             $hollidays = $this->Relacion->Vacacion->getVacaciones($this->getRelationship(),
@@ -259,16 +255,6 @@ class Liquidacion extends AppModel {
             $this->setVar('#suma_conceptos_plus_vacacional_6_meses', $total);
 		} elseif (in_array($type,  array('final', 'sac'))) {
 
-            /** Get discounts */
-            $discounts = $this->Relacion->Descuento->getDescuentos($this->getRelationship(),
-                    array(  'periodo'   => $this->getPeriod(),
-                            'tipo'      => $type));
-            foreach ($discounts['variables'] as $varName => $varValue) {
-                $this->setVar($varName, $varValue);
-            }
-            $this->__setAuxiliar($discounts['auxiliar']);
-            $this->setConcept($discounts['conceptos']);
-            
             if ($type === 'final') {
 
                 $auxiliar = null;
@@ -355,10 +341,19 @@ class Liquidacion extends AppModel {
                     array(  'relacion'          => $this->getRelationship(),
                             'codigoConcepto'    => 'sac')));
             $this->__conceptos['sac'] = array_merge($this->__conceptos['sac'], $this->__getConceptValue($this->__conceptos['sac']));
-
-        } elseif ($type === 'especial') {
-            return $this->getReceipt($relationship, $period, 'normal', $options);
         }
+
+        
+        /** Get discounts */
+        $discounts = $this->Relacion->Descuento->getDescuentos($this->getRelationship(),
+                array(  'periodo'   => $this->getPeriod(),
+                        'tipo'      => $type));
+        foreach ($discounts['variables'] as $varName => $varValue) {
+            $this->setVar($varName, $varValue);
+        }
+        $this->__setAuxiliar($discounts['auxiliar']);
+        $this->setConcept($discounts['conceptos']);
+
 
 		/** Resolv */
 		foreach ($this->__conceptos as $cCod => $concepto) {
@@ -462,7 +457,6 @@ class Liquidacion extends AppModel {
 		if ($this->getRelationship('Empleador', 'redondear') === 'Si') {
 			$redondeo = round($totales['total']) - $totales['total'];
 			if ($redondeo !== 0) {
-				//$opcionesFindConcepto['codigoConcepto'] = 'redondeo';
 				$conceptoRedondeo = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
 						array(	'relacion' 			=> $this->getRelationship(),
 								'codigoConcepto' 	=> 'redondeo'));
@@ -621,13 +615,19 @@ class Liquidacion extends AppModel {
 * Dado un concepto, resuelve la formula.
 */
 	function __getConceptValue($concepto) {
+
+        /** The concept is already resolved */
+        if (isset($concepto['valor'])) {
+            return $concepto;
+        }
+        
         //debug($concepto['nombre'] . ' ' . $concepto['formula']);
         $this->__setCurrentConcept($concepto);
         
         $valor = null;
 		$errores = array();
 		$formula = $concepto['formula'];
-        
+
 		/**
 		* Si en la formula hay variables, busco primero estos valores.
 		*/
@@ -644,9 +644,7 @@ class Liquidacion extends AppModel {
 		}
 
 
-		/**
-		* Si en la cantidad hay una variable, la reemplazo.
-		*/
+		/** Si en la cantidad hay una variable, la reemplazo. */
 		$conceptoCantidad = 0;
 		if (!empty($concepto['cantidad'])) {
 			if (isset($this->__variables[$concepto['cantidad']])) {
@@ -676,9 +674,7 @@ class Liquidacion extends AppModel {
 		}
 
 
-		/**
-		* Verifico si el nombre que se muestra del concepto es una formula, la resuelvo.
-		*/
+		/** Verifico si el nombre que se muestra del concepto es una formula, la resuelvo. */
 		if (!empty($concepto['nombre_formula'])) {
 			$nombreConcepto = $concepto['nombre_formula'];
 			
@@ -744,7 +740,7 @@ class Liquidacion extends AppModel {
 		* Veo si es una formula, que tiene otros conceptos dentro.
 		* Lo se porque los codigos de los conceptos empiezan siempre con @.
 		*/
-		elseif (substr($formula, 0, 1) === "=") {
+		elseif (substr($formula, 0, 1) === '=') {
 
 			/**
 			* Verifico que tenga calculado todos los conceptos que esta formula me pide.
@@ -775,14 +771,14 @@ class Liquidacion extends AppModel {
 						*/
 						$conceptoParaCalculo = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $this->getRelationship(), 'codigoConcepto' => $match));
 						if (empty($conceptoParaCalculo)) {
-							$this->__setError(array(	'tipo'					=> "Concepto Inexistente",
-														'gravedad'				=> "Alta",
+							$this->__setError(array(	'tipo'					=> 'Concepto Inexistente',
+														'gravedad'				=> 'Alta',
 														'concepto'				=> $match,
-														'variable'				=> "",
+														'variable'				=> '',
 														'formula'				=> $formula,
-														'descripcion'			=> "La formula requiere de un concepto inexistente.",
-														'recomendacion'			=> "Verifique la formula y que todos los conceptos que esta utiliza existan.",
-														'descripcion_adicional'	=> "verifique: " . $concepto['codigo']));
+														'descripcion'			=> 'La formula requiere de un concepto inexistente.',
+														'recomendacion'			=> 'Verifique la formula y que todos los conceptos que esta utiliza existan.',
+														'descripcion_adicional'	=> 'verifique: ' . $concepto['codigo']));
 						} else {
                             if (substr($conceptoParaCalculo[$match]['imprimir'], -9) === '[Forzado]') {
                                 $conceptoParaCalculo[$match]['imprimir'] = str_replace(' [Forzado]', '', $conceptoParaCalculo[$match]['imprimir']);
@@ -799,14 +795,14 @@ class Liquidacion extends AppModel {
 							$resolucionCalculo = $this->__getConceptValue($this->__conceptos[$match]);
 							$this->__conceptos[$match] = array_merge($resolucionCalculo, $this->__conceptos[$match]);
 						} else {
-							$this->__setError(array(	"tipo"					=> "Concepto Inexistente",
-														"gravedad"				=> "Alta",
-														"concepto"				=> $match,
-														"variable"				=> "",
-														"formula"				=> $formula,
-														"descripcion"			=> "La formula requiere de un concepto inexistente.",
-														"recomendacion"			=> "Verifique la formula y que todos los conceptos que esta utiliza existan.",
-														"descripcion_adicional"	=> "verifique: " . $concepto['codigo']));
+							$this->__setError(array(	'tipo'					=> 'Concepto Inexistente',
+														'gravedad'				=> 'Alta',
+														'concepto'				=> $match,
+														'variable'				=> '',
+														'formula'				=> $formula,
+														'descripcion'			=> 'La formula requiere de un concepto inexistente.',
+														'recomendacion'			=> 'Verifique la formula y que todos los conceptos que esta utiliza existan.',
+														'descripcion_adicional'	=> 'verifique: ' . $concepto['codigo']));
 						}
 					}
 						
@@ -818,14 +814,14 @@ class Liquidacion extends AppModel {
                         $formula = str_replace('@' . $match, $resolucionCalculo['valor'], $formula);
 						$resolucionCalculo['debug'] = $formula;
 					} else {
-						$this->__setError(array(	"tipo"					=> "Concepto Inexistente",
-													"gravedad"				=> "Alta",
-													"concepto"				=> $match,
-													"variable"				=> "",
-													"formula"				=> $formula,
-													"descripcion"			=> "La formula requiere de un concepto inexistente.",
-													"recomendacion"			=> "Verifique la formula y que todos los conceptos que esta utiliza existan.",
-													"descripcion_adicional"	=> "verifique: " . $concepto['codigo']));
+						$this->__setError(array(	'tipo'					=> 'Concepto Inexistente',
+													'gravedad'				=> 'Alta',
+													'concepto'				=> $match,
+													'variable'				=> '',
+													'formula'				=> $formula,
+													'descripcion'			=> 'La formula requiere de un concepto inexistente.',
+													'recomendacion'			=> 'Verifique la formula y que todos los conceptos que esta utiliza existan.',
+													'descripcion_adicional'	=> 'verifique: ' . $concepto['codigo']));
 					}
 				}
 			}
@@ -837,14 +833,14 @@ class Liquidacion extends AppModel {
             
 			$valor = $this->resolver($formula);
 		} elseif (empty($formula)) {
-			$this->__setError(array(	"tipo"					=> "Formula de Concepto Inexistente",
-										"gravedad"				=> "Media",
-										"concepto"				=> $concepto['codigo'],
-										"variable"				=> "",
-										"formula"				=> "",
-										"descripcion"			=> "El concepto no tiene definida una formula.",
-										"recomendacion"			=> "Ingrese la formula correspondiente al concepto en caso de que sea necesario. Para evitar este error ingrese como formula: =0",
-										"descripcion_adicional"	=> "Se asume como 0 (cero) el valor del concepto."));
+			$this->__setError(array(	'tipo'					=> 'Formula de Concepto Inexistente',
+										'gravedad'				=> 'Media',
+										'concepto'				=> $concepto['codigo'],
+										'variable'				=> '',
+										'formula'				=> '',
+										'descripcion'			=> 'El concepto no tiene definida una formula.',
+										'recomendacion'			=> 'Ingrese la formula correspondiente al concepto en caso de que sea necesario. Para evitar este error ingrese como formula: =0',
+										'descripcion_adicional'	=> 'Se asume como 0 (cero) el valor del concepto.'));
 			$valor = 0;
 		} else {
 			$valor = '#N/A';
@@ -855,9 +851,7 @@ class Liquidacion extends AppModel {
         $this->setVar('#concepto_cantidad', $conceptoCantidad);
 
 
-        /**
-        * Si en el valor unitario hay una variable, la reemplazo.
-        */
+        /** Si en el valor unitario hay una variable, la reemplazo. */
         $conceptoValorUnitario = 0;
         if (!empty($concepto['valor_unitario'])) {
             if (isset($this->__variables[$concepto['valor_unitario']])) {
@@ -893,7 +887,7 @@ class Liquidacion extends AppModel {
             'valor_cantidad'    => $conceptoCantidad,
             'valor_unitario'    => $conceptoValorUnitario,
             'nombre'            => $nombreConcepto,
-            'errores' => $errores);
+            'errores'           => $errores);
 	}
 	
 	
