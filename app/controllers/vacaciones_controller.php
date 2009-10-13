@@ -45,7 +45,7 @@ class VacacionesController extends AppController {
                 }
                 
                 if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
-                    $conditions['Relacion.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
+                    $conditions['Relacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
                 }
 
                 /*
@@ -60,7 +60,7 @@ class VacacionesController extends AppController {
 
                 App::import('Vendor', 'formulas', 'pragmatia');
                 $Formulas = new Formulas();
-                
+
                 foreach ($this->Vacacion->Relacion->find('all', array(
                     'contain'       => array('Vacacion' => array(
                         'conditions' => array('Vacacion.periodo' => $this->data['Condicion']['Bar-periodo_largo']))),
