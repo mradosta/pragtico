@@ -38,7 +38,15 @@ class LiquidacionesController extends AppController {
     function reporte_liquidaciones() {
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 
+            if (empty($this->data['Condicion']['Bar-grupo_id'])) {
+                $this->Session->setFlash('Debe seleccionar por lo menos un grupo.', 'error');
+                $this->History->goBack();
+            }
+            
             $conditions['(Liquidacion.group_id & ' . array_sum($this->data['Condicion']['Bar-grupo_id']) . ') >'] = 0;
+            foreach ($this->data['Condicion']['Bar-grupo_id'] as $groupId) {
+                $groupParams[$groupId] = User::getGroupParams($groupId);
+            }
             
             if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
                 $conditions['Liquidacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
@@ -54,6 +62,39 @@ class LiquidacionesController extends AppController {
             $this->Liquidacion->Behaviors->detach('Permisos');
             $this->Liquidacion->contain('Area');
 
+            $sql = '
+            SELECT          `Liquidacion`.`empleador_id`,
+                            `Liquidacion`.`empleador_cuit`,
+                            `Liquidacion`.`empleador_nombre`,
+                            `Liquidacion`.`relacion_area_id`,
+                            `Area`.`id`,
+                            `Area`.`nombre`,
+                            `Area`.`group_id`,
+                            `Area`.`identificador_centro_costo`,
+                            `Liquidacion`.`trabajador_id`,
+                            SUM(`Liquidacion`.`remunerativo`) AS remunerativo,
+                            SUM(`Liquidacion`.`no_remunerativo`) AS no_remunerativo,
+                            SUM(`Factura`.`total`) AS facturado
+            FROM            `liquidaciones` AS `Liquidacion`
+            LEFT JOIN       `areas` AS `Area`
+            ON              (`Liquidacion`.`relacion_area_id` = `Area`.`id`)
+            LEFT JOIN       `facturas` AS `Factura`
+            ON              (`Liquidacion`.`empleador_id` = `Factura`.`empleador_id`)
+            WHERE           (`Liquidacion`.`group_id` & 64) > 0
+            AND             `Liquidacion`.`ano` = 2009
+            AND             `Liquidacion`.`mes` = \'09\'
+            GROUP BY        `Liquidacion`.`empleador_id`,
+                            `Liquidacion`.`empleador_cuit`,
+                            `Liquidacion`.`empleador_nombre`,
+                            `Liquidacion`.`relacion_area_id`,
+                            `Area`.`id`,
+                            `Area`.`nombre`,
+                            `Area`.`group_id`,
+                            `Area`.`identificador_centro_costo`,
+                            `Liquidacion`.`trabajador_id`';
+
+
+                                    /*
             foreach ($this->Liquidacion->find('all', array(
                 'conditions'    => $conditions,
                 'fields'        => array(
@@ -62,6 +103,7 @@ class LiquidacionesController extends AppController {
                     'Liquidacion.empleador_nombre',
                     'Liquidacion.relacion_area_id',
                     'Area.nombre',
+                    'Area.group_id',
                     'Area.identificador_centro_costo',
                     'Liquidacion.trabajador_id',
                     'SUM(Liquidacion.remunerativo) AS remunerativo',
@@ -72,20 +114,29 @@ class LiquidacionesController extends AppController {
                     'Liquidacion.empleador_nombre',
                     'Liquidacion.relacion_area_id',
                     'Area.nombre',
+                    'Area.group_id',
                     'Area.identificador_centro_costo',
-                    'Liquidacion.trabajador_id'))) as $record) {
+                    'Liquidacion.trabajador_idx'))) as $record) {
+                        */
 
+            foreach ($this->Liquidacion->query($sql) as $record) {
+
+                $record['Area']['nombre'] .= '||' . $record['Area']['group_id'];
+                                
                 if (empty($data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']])) {
                     $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['trabajadores'] = 0;
                     $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['remunerativo'] = 0;
                     $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['no_remunerativo'] = 0;
+                    $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['facturado'] = 0;
                 }
 
                 $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['trabajadores'] += 1;
-                $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['remunerativo'] += $record['Liquidacion']['remunerativo'];
-                $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['no_remunerativo'] += $record['Liquidacion']['no_remunerativo'];
+                $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['remunerativo'] += $record[0]['remunerativo'];
+                $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['no_remunerativo'] += $record[0]['no_remunerativo'];
+                $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['facturado'] += $record[0]['facturado'];
             }
             $this->set('data', $data);
+            $this->set('groupParams', $groupParams);
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
         }
     }
