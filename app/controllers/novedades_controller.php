@@ -134,7 +134,7 @@ class NovedadesController extends AppController {
 							foreach ($v as $k1 => $v1) {
 								$valor = $objPHPExcel->getActiveSheet()->getCellByColumnAndRow($v1, $i)->getValue();
 								if (!empty($valor) && !empty($relacionId)) {
-									$datos[$relacionId][$k][$k1] = $valor;
+									$datos[$relacionId][trim($k)][$k1] = $valor;
 								}
 							}
 						}
