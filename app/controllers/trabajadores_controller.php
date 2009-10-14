@@ -123,12 +123,19 @@ class TrabajadoresController extends AppController {
  * Muestra via desglose las Relaciones Laborales existentes entre un trabajador y un empleador.
  */
 	function relaciones($id) {
-		$this->Trabajador->contain(array("Empleador"));
+		$this->Trabajador->contain('Empleador');
 		$this->data = $this->Trabajador->read(null, $id);
 	}
 
 
 
-
+/**
+ * Familiares.
+ * Muestra via desglose los familiares de los trabajadores.
+ */
+    function familiares($id) {
+        $this->Trabajador->contain('Familiar');
+        $this->data = $this->Trabajador->read(null, $id);
+    }
 }
 ?>

@@ -132,18 +132,16 @@ class Trabajador extends AppModel {
         )
 	);
 
-	var $belongsTo = array(	'Localidad' =>
-                        array('className'    => 'Localidad',
-                              'foreignKey'   => 'localidad_id'),
-							'Siniestrado' =>
-                        array('className'    => 'Siniestrado',
-                              'foreignKey'   => 'siniestrado_id'),							  
-							'Condicion' =>
-                        array('className'    => 'Condicion',
-                              'foreignKey'   => 'condicion_id'),
-							'ObrasSocial' =>
-                        array('className'    => 'ObrasSocial',
-                              'foreignKey'   => 'obra_social_id'));
+    var $hasMany = array('Familiar');
+            
+	var $belongsTo = array(
+        'Localidad',
+		'Siniestrado',
+        'Condicion',
+        'ObrasSocial' =>
+            array(
+            'className'    => 'ObrasSocial',
+            'foreignKey'   => 'obra_social_id'));
 
 	var $hasAndBelongsToMany = array('Empleador' =>
 						array('with' => 'Relacion'));
