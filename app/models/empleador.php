@@ -86,7 +86,8 @@ class Empleador extends AppModel {
 
 	var $belongsTo = array('Localidad', 'Actividad', 'EmployersType');
 	
-	var $hasMany = array(	'Area',
+	var $hasMany = array(	'Relacion',
+                            'Area',
 							'Suss',                              
 							'Recibo',
 	   						'Cuenta');

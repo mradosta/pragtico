@@ -132,7 +132,7 @@ class Trabajador extends AppModel {
         )
 	);
 
-    var $hasMany = array('Familiar');
+    var $hasMany = array('Familiar', 'Relacion');
             
 	var $belongsTo = array(
         'Localidad',
