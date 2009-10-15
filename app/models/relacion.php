@@ -129,7 +129,8 @@ class Relacion extends AppModel {
                         array('className'    => 'ConveniosCategoria',
                               'foreignKey'   => 'convenios_categoria_id'));
 
-	var $hasMany = array(	'Ausencia' =>
+	var $hasMany = array(  'RelacionesHistorica',
+                            'Ausencia' =>
                         array('className'    => 'Ausencia',
                               'foreignKey'   => 'relacion_id'),
 							'Ropa' =>

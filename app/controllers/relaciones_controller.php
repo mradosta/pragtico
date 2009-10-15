@@ -336,6 +336,12 @@ class RelacionesController extends AppController {
 	}
 
 
+    function historicas($id) {
+        $this->Relacion->contain('RelacionesHistorica.EgresosMotivo');
+        $this->data = $this->Relacion->read(null, $id);
+    }
+
+
 /**
  * descuentos_detalle.
  * Muestra via desglose el detalle de los descuentos realizados.
