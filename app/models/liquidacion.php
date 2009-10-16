@@ -1178,7 +1178,7 @@ class Liquidacion extends AppModel {
     }
 
 
-    function getConcept($conceptCode = null) {
+    function getConcept_deprecated($conceptCode = null) {
         if (empty($conceptCode)) {
             return $this->__conceptos;
         } elseif (!empty($this->__conceptos[$conceptCode])) {

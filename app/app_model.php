@@ -61,7 +61,9 @@ class AppModel extends Model {
  * @access public
  */
     //var $actsAs = array("Containable", "Util", "Permisos", "Validaciones", "Crumbable");
-    var $actsAs = array("Containable", "Util", "Permisos", "Validaciones");
+    //var $actsAs = array("Containable", "Linkable", "Util", "Permisos", "Validaciones");
+      var $actsAs = array("Containable", "Util", "Permisos", "Validaciones");
+      //var $actsAs = array("Linkable", "Containable");
     //var $actsAs = array("Util", "Permisos", "Validaciones");
 
 

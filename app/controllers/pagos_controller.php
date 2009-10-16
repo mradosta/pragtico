@@ -34,6 +34,13 @@ class PagosController extends AppController {
 
 
     function index() {
+//d($this->Pago->find('all', array('link' => array('Descuento', 'Liquidacion', 'PagosForma', 'Relacion'   => array('Empleador', 'Trabajador')), 'limit' => 1)));
+        
+/*
+d($this->Pago->find('all', array('fields' => array('Pago.fecha', 'Pago.monto', 'Relacion.legajo'), 'link' => array('Relacion' =>
+    array('Trabajador' => array(
+        'fields' => array('Trabajador.apellido')))), 'limit' => 1)));
+*/        
         if (!empty($this->data['Condicion']['Pago-origen'])) {
             
             $this->Paginador->setWhiteList('Pago-origen');
