@@ -288,10 +288,6 @@ class PaginadorComponent extends Object {
         if (!empty($this->__controller->{$this->__controller->modelClass}->modificadores[$this->__controller->action]['contain'])) {
             $this->__controller->paginate['contain'] = $this->__controller->{$this->__controller->modelClass}->modificadores[$this->__controller->action]['contain'];
         }
-
-        if (!empty($this->__controller->{$this->__controller->modelClass}->modificadores[$this->__controller->action]['link'])) {
-            $this->__controller->paginate['link'] = $this->__controller->{$this->__controller->modelClass}->modificadores[$this->__controller->action]['link'];
-        }        
         
         if (!empty($this->__controller->paginate['conditions'])) {
             $this->__controller->paginate['conditions'] = array_merge($this->__controller->paginate['conditions'], $conditions);
