@@ -190,7 +190,9 @@ class Liquidacion extends AppModel {
 
                 $noveltiesConcepts = array_keys(am($ausencias['conceptos'], $horas['conceptos'], $novedades['conceptos']));
                 foreach ($this->__conceptos as $cCod => $concepto) {
-                    if (!($concepto['tipo'] === 'Deduccion' || in_array($cCod, $noveltiesConcepts))) {
+                    if (!($concepto['tipo'] === 'Deduccion'
+                        || in_array($cCod, $noveltiesConcepts)
+                        || substr($concepto['imprimir'], -9) === '[Forzado]')) {
                         $this->__conceptos[$cCod] = array_merge(
                             $this->__conceptos[$cCod],
                             array(  'valor'             => 0,
