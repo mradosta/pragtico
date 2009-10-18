@@ -28,7 +28,8 @@ if (!empty($data)) {
     $documento->setCellValue('G', 'Alta', array('title' => 15));
     $documento->setCellValue('H', 'Monto', array('title' => 15));
     $documento->setCellValue('I', 'Descontado', array('title' => 15));
-    $documento->setCellValue('J', 'Estado', array('title' => 15));
+    $documento->setCellValue('J', 'A Descontar', array('title' => 15));
+    $documento->setCellValue('K', 'Estado', array('title' => 15));
 
     /** Body */
     foreach ($data as $k => $detail) {
@@ -43,6 +44,7 @@ if (!empty($data)) {
                     $detail['Descuento']['alta'],
                     array('value' => $detail['Descuento']['monto'], 'options' => 'currency'),
                     array('value' => array_sum(Set::extract('/DescuentosDetalle/monto', $detail)), 'options' => 'currency'),
+                    array('value' => '=H' . ($documento->getCurrentRow() + 1). '-I' . ($documento->getCurrentRow() + 1), 'options' => 'currency'),
                     $detail['Descuento']['estado'],));
     }
 

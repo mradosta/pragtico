@@ -48,6 +48,14 @@ class DescuentosController extends AppController {
                 $conditions['Descuento.estado'] = $this->data['Condicion']['Bar-estado'];
             }
             
+            if (!empty($this->data['Condicion']['Bar-desde'])) {
+                $conditions['Descuento.desde >='] = $this->data['Condicion']['Bar-desde'];
+            }
+            
+            if (!empty($this->data['Condicion']['Bar-hasta'])) {
+                $conditions['Descuento.desde <='] = $this->data['Condicion']['Bar-hasta'];
+            }
+            
             if (!empty($this->data['Condicion']['Bar-tipo'])) {
                 $conditions['Descuento.tipo'] = $this->data['Condicion']['Bar-tipo'];
             } else {
@@ -59,6 +67,7 @@ class DescuentosController extends AppController {
                 'DescuentosDetalle',
                 'Relacion' => array('Empleador', 'Trabajador',
                     'order' => array('Relacion.empleador_id', 'Relacion.trabajador_id'))));
+            //d($this->Descuento->find('all', array('conditions' => $conditions)));
             $this->set('data', $this->Descuento->find('all', array('conditions' => $conditions)));
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
         }
