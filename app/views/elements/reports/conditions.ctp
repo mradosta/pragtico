@@ -44,9 +44,8 @@ $fieldsets[] = array('campos' => $conditions);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => $options['title'], 'imagen' => 'reports.gif')));
 
 $accionesExtra['opciones'] = array('acciones' => array());
-$botonesExtra[] = 'limpiar';
+$botonesExtra[] = $appForm->button('Limpiar', array('id' => 'cleanup_report', 'title' => 'Limpiar', 'onclick' => 'location.replace("' . $this->action . '")'));
 $botonesExtra[] = $appForm->submit('Generar', array('title' => $options['title'], 'onclick' => 'document.getElementById("accion").value="generar"'));
-
 echo $this->element('index/index', array(
                     'opcionesTabla' => array('tabla' => array('omitirMensajeVacio' => true)),
                     'botonesExtra'  => array('opciones' => array('botones' => $botonesExtra)),
