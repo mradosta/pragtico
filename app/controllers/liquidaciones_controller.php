@@ -125,10 +125,11 @@ class LiquidacionesController extends AppController {
                         */
                                     
 //d($this->Liquidacion->query($sql));
+            $workers = array();
             foreach ($this->Liquidacion->query($sql) as $record) {
 
                 $record['Area']['nombre'] .= '||' . $record['Area']['group_id'];
-                                
+
                 if (empty($data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']])) {
                     $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['trabajadores'] = 0;
                     $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['remunerativo'] = 0;
@@ -142,7 +143,10 @@ class LiquidacionesController extends AppController {
                     $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['facturado'] += $record['Factura']['facturado'];
                 }
 
-                $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['trabajadores'] += 1;
+                if (!in_array($record['Liquidacion']['empleador_id'] . '|' . $record['Liquidacion']['trabajador_id'], $workers)) {
+                    $workers[] = $record['Liquidacion']['empleador_id'] . '|' . $record['Liquidacion']['trabajador_id'];
+                    $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['trabajadores'] += 1;
+                }
                 $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['remunerativo'] += $record[0]['remunerativo'];
                 $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['no_remunerativo'] += $record[0]['no_remunerativo'];
             }
