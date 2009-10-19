@@ -18,9 +18,9 @@
 if (!empty($data)) {
 
     $documento->create(array('password' => false, 'orientation' => 'landscape', 'title' => 'Listado de Liquidaciones'));
-    $documento->setCellValue('A', 'Centro Costo', array('title' => '25'));
-    $documento->setCellValue('B', 'Empelador', array('title' => '30'));
-    $documento->setCellValue('C', 'Area', array('title' => '30'));
+    $documento->setCellValue('A', 'CC', array('title' => '5'));
+    $documento->setCellValue('B', 'Emp.', array('title' => '10'));
+    $documento->setCellValue('C', 'Area', array('title' => '45'));
     $documento->setCellValue('D', 'Trabaj.', array('title' => '10'));
     $documento->setCellValue('E', 'Remuner.', array('title' => '15'));
     $documento->setCellValue('F', 'No Remuner.', array('title' => '15'));
@@ -29,6 +29,8 @@ if (!empty($data)) {
     $documento->setCellValue('I', 'ART Variable', array('title' => '15'));
     $documento->setCellValue('J', 'ART Fijo', array('title' => '15'));
     $documento->setCellValue('K', 'Resultado', array('title' => '15'));
+    $documento->setCellValue('L', 'Coef. Rem.', array('title' => '15'));
+    $documento->setCellValue('M', 'R.B. s/ Fact.', array('title' => '15'));
 
     /** Body */
     $totalRows = array();
@@ -57,7 +59,9 @@ if (!empty($data)) {
                             array('value' => '=E' . ($documento->getCurrentRow() + 1) . '*' . $groupParams[$groupId]['porcentaje_contribuciones'] . '/100', 'options' => 'currency'),
                             array('value' => '=E' . ($documento->getCurrentRow() + 1) . '*' . $groupParams[$groupId]['porcentaje_art_variable'] . '/100', 'options' => 'currency'),
                             array('value' => '=D' . ($documento->getCurrentRow() + 1) . '*' . $groupParams[$groupId]['valor_art_fijo'], 'options' => 'currency'),
-                            array('value' => '=G' . ($documento->getCurrentRow() + 1) . '-E' . ($documento->getCurrentRow() + 1) . '-F' . ($documento->getCurrentRow() + 1) . '-H' . ($documento->getCurrentRow() + 1) . '-I' . ($documento->getCurrentRow() + 1) . '-J' . ($documento->getCurrentRow() + 1), 'options' => 'currency')
+                            array('value' => '=G' . ($documento->getCurrentRow() + 1) . '-E' . ($documento->getCurrentRow() + 1) . '-F' . ($documento->getCurrentRow() + 1) . '-H' . ($documento->getCurrentRow() + 1) . '-I' . ($documento->getCurrentRow() + 1) . '-J' . ($documento->getCurrentRow() + 1), 'options' => 'currency'),
+                            '=G' . ($documento->getCurrentRow() + 1) . '/E' . ($documento->getCurrentRow() + 1),
+                            '=K' . ($documento->getCurrentRow() + 1) . '/G' . ($documento->getCurrentRow() + 1)
                     ));
             }
         }
@@ -70,11 +74,13 @@ if (!empty($data)) {
         $documento->setCellValue('I', '=SUM(I' . $initialRow . ':I' . ($documento->getCurrentRow() - 1) . ')', 'total');
         $documento->setCellValue('J', '=SUM(J' . $initialRow . ':J' . ($documento->getCurrentRow() - 1) . ')', 'total');
         $documento->setCellValue('K', '=SUM(K' . $initialRow . ':K' . ($documento->getCurrentRow() - 1) . ')', 'total');
+        $documento->setCellValue('L', '=SUM(L' . $initialRow . ':L' . ($documento->getCurrentRow() - 1) . ')', array('bold', 'right'));
+        $documento->setCellValue('M', '=SUM(M' . $initialRow . ':M' . ($documento->getCurrentRow() - 1) . ')', array('bold', 'right'));
         $totalRows[$cc] = $documento->getCurrentRow();
     }
 
     $documento->moveCurrentRow(3);
-    $documento->setCellValue('A' . $documento->getCurrentRow() . ':K' . $documento->getCurrentRow(), 'RESUMEN', 'title');
+    $documento->setCellValue('A' . $documento->getCurrentRow() . ':M' . $documento->getCurrentRow(), 'RESUMEN', 'title');
     $initialResumeRow = $documento->getCurrentRow() + 1;
     foreach ($totalRows as $cc => $row) {
         $documento->moveCurrentRow();
@@ -87,6 +93,8 @@ if (!empty($data)) {
         $documento->setCellValue('I', '=I' . $row, 'total');
         $documento->setCellValue('J', '=J' . $row, 'total');
         $documento->setCellValue('K', '=K' . $row, 'total');
+        $documento->setCellValue('L', '=L' . $row, array('bold', 'right'));
+        $documento->setCellValue('M', '=M' . $row, array('bold', 'right'));
     }
     $documento->moveCurrentRow();
     $documento->setCellValue('D', '=SUM(D' . $initialResumeRow . ':D' . ($documento->getCurrentRow() - 1) . ')', array('bold', 'right'));
@@ -97,6 +105,8 @@ if (!empty($data)) {
     $documento->setCellValue('I', '=SUM(I' . $initialResumeRow . ':I' . ($documento->getCurrentRow() - 1) . ')', 'total');
     $documento->setCellValue('J', '=SUM(J' . $initialResumeRow . ':J' . ($documento->getCurrentRow() - 1) . ')', 'total');
     $documento->setCellValue('K', '=SUM(K' . $initialResumeRow . ':K' . ($documento->getCurrentRow() - 1) . ')', 'total');
+    $documento->setCellValue('L', '=SUM(L' . $initialResumeRow . ':L' . ($documento->getCurrentRow() - 1) . ')', array('bold', 'right'));
+    $documento->setCellValue('M', '=SUM(M' . $initialResumeRow . ':M' . ($documento->getCurrentRow() - 1) . ')', array('bold', 'right'));
 
     $documento->save($fileFormat);
 } else {
