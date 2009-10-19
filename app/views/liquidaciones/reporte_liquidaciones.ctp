@@ -60,7 +60,7 @@ if (!empty($data)) {
                             array('value' => '=E' . ($documento->getCurrentRow() + 1) . '*' . $groupParams[$groupId]['porcentaje_art_variable'] . '/100', 'options' => 'currency'),
                             array('value' => '=D' . ($documento->getCurrentRow() + 1) . '*' . $groupParams[$groupId]['valor_art_fijo'], 'options' => 'currency'),
                             array('value' => '=G' . ($documento->getCurrentRow() + 1) . '-E' . ($documento->getCurrentRow() + 1) . '-F' . ($documento->getCurrentRow() + 1) . '-H' . ($documento->getCurrentRow() + 1) . '-I' . ($documento->getCurrentRow() + 1) . '-J' . ($documento->getCurrentRow() + 1), 'options' => 'currency'),
-                            '=G' . ($documento->getCurrentRow() + 1) . '/E' . ($documento->getCurrentRow() + 1),
+                            '=(G' . ($documento->getCurrentRow() + 1) . '-(1.15*F' . ($documento->getCurrentRow() + 1) . '))/E' . ($documento->getCurrentRow() + 1),
                             '=K' . ($documento->getCurrentRow() + 1) . '/G' . ($documento->getCurrentRow() + 1)
                     ));
             }
@@ -74,8 +74,8 @@ if (!empty($data)) {
         $documento->setCellValue('I', '=SUM(I' . $initialRow . ':I' . ($documento->getCurrentRow() - 1) . ')', 'total');
         $documento->setCellValue('J', '=SUM(J' . $initialRow . ':J' . ($documento->getCurrentRow() - 1) . ')', 'total');
         $documento->setCellValue('K', '=SUM(K' . $initialRow . ':K' . ($documento->getCurrentRow() - 1) . ')', 'total');
-        $documento->setCellValue('L', '=SUM(L' . $initialRow . ':L' . ($documento->getCurrentRow() - 1) . ')', array('bold', 'right'));
-        $documento->setCellValue('M', '=SUM(M' . $initialRow . ':M' . ($documento->getCurrentRow() - 1) . ')', array('bold', 'right'));
+        $documento->setCellValue('L', '=(G' . $documento->getCurrentRow() . '-(1.15*F' . $documento->getCurrentRow() . '))/E' . $documento->getCurrentRow(), array('bold', 'right'));
+        $documento->setCellValue('M', '=K' . $documento->getCurrentRow() . '/G' . $documento->getCurrentRow(), array('bold', 'right'));
         $totalRows[$cc] = $documento->getCurrentRow();
     }
 
@@ -105,8 +105,8 @@ if (!empty($data)) {
     $documento->setCellValue('I', '=SUM(I' . $initialResumeRow . ':I' . ($documento->getCurrentRow() - 1) . ')', 'total');
     $documento->setCellValue('J', '=SUM(J' . $initialResumeRow . ':J' . ($documento->getCurrentRow() - 1) . ')', 'total');
     $documento->setCellValue('K', '=SUM(K' . $initialResumeRow . ':K' . ($documento->getCurrentRow() - 1) . ')', 'total');
-    $documento->setCellValue('L', '=SUM(L' . $initialResumeRow . ':L' . ($documento->getCurrentRow() - 1) . ')', array('bold', 'right'));
-    $documento->setCellValue('M', '=SUM(M' . $initialResumeRow . ':M' . ($documento->getCurrentRow() - 1) . ')', array('bold', 'right'));
+    $documento->setCellValue('L', '=(G' . $documento->getCurrentRow() . '-(1.15*F' . $documento->getCurrentRow() . '))/E' . $documento->getCurrentRow(), array('bold', 'right'));
+    $documento->setCellValue('M', '=K' . $documento->getCurrentRow() . '/G' . $documento->getCurrentRow(), array('bold', 'right'));
 
     $documento->save($fileFormat);
 } else {
