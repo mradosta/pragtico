@@ -54,10 +54,10 @@ if (!empty($data)) {
                             array('value' => $values['remunerativo'], 'options' => 'currency'),
                             array('value' => $values['no_remunerativo'], 'options' => 'currency'),
                             array('value' => $values['facturado'], 'options' => 'currency'),
-                            array('value' => '=G' . ($documento->getCurrentRow() + 1) . '*' . $groupParams[$groupId]['porcentaje_contribuciones'] . '/100', 'options' => 'currency'),
-                            array('value' => '=G' . ($documento->getCurrentRow() + 1) . '*' . $groupParams[$groupId]['porcentaje_art_variable'] . '/100', 'options' => 'currency'),
+                            array('value' => '=E' . ($documento->getCurrentRow() + 1) . '*' . $groupParams[$groupId]['porcentaje_contribuciones'] . '/100', 'options' => 'currency'),
+                            array('value' => '=E' . ($documento->getCurrentRow() + 1) . '*' . $groupParams[$groupId]['porcentaje_art_variable'] . '/100', 'options' => 'currency'),
                             array('value' => '=D' . ($documento->getCurrentRow() + 1) . '*' . $groupParams[$groupId]['valor_art_fijo'], 'options' => 'currency'),
-                            array('value' => '=G' . ($documento->getCurrentRow() + 1) . '-F' . ($documento->getCurrentRow() + 1) . '-H' . ($documento->getCurrentRow() + 1) . '-I' . ($documento->getCurrentRow() + 1) . '-J' . ($documento->getCurrentRow() + 1), 'options' => 'currency')
+                            array('value' => '=G' . ($documento->getCurrentRow() + 1) . '-E' . ($documento->getCurrentRow() + 1) . '-F' . ($documento->getCurrentRow() + 1) . '-H' . ($documento->getCurrentRow() + 1) . '-I' . ($documento->getCurrentRow() + 1) . '-J' . ($documento->getCurrentRow() + 1), 'options' => 'currency')
                     ));
             }
         }
