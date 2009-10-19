@@ -61,8 +61,9 @@ class LiquidacionesController extends AppController {
             $conditions['Liquidacion.ano'] = $period['ano'];
             $conditions['Liquidacion.mes'] = $period['mes'];
             $conditions['Liquidacion.estado'] = 'Confirmada';
+            //$conditions['Liquidacion.relacion_id'] = 6801;
             //$conditions['Liquidacion.factura_id !='] = null;
-            $conditions['Factura.estado'] = 'Confirmada';
+            //$conditions['Factura.estado'] = 'Confirmada';
             
             $data = array();
             $this->Liquidacion->Behaviors->detach('Permisos');
@@ -84,7 +85,7 @@ class LiquidacionesController extends AppController {
                             `Factura`.`total` AS facturado
             FROM            `liquidaciones` AS `Liquidacion`
             LEFT JOIN       `facturas` AS `Factura`
-            ON              (`Factura`.`id` = `Liquidacion`.`factura_id`)
+            ON              (`Factura`.`id` = `Liquidacion`.`factura_id` AND `Factura`.`estado` = \'Confirmada\')
             LEFT JOIN       `areas` AS `Area`
             ON              (`Liquidacion`.`relacion_area_id` = `Area`.`id`)' . "\n" .  ConnectionManager::getDataSource('default')->conditions($conditions) . '
             GROUP BY        `Factura`.`id`,
@@ -123,7 +124,8 @@ class LiquidacionesController extends AppController {
                     'Area.identificador_centro_costo',
                     'Liquidacion.trabajador_idx'))) as $record) {
                         */
-                                    
+
+//                                    debug($sql);
 //d($this->Liquidacion->query($sql));
             $workers = array();
             foreach ($this->Liquidacion->query($sql) as $record) {
