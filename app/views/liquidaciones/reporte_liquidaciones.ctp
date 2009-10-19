@@ -65,7 +65,10 @@ if (!empty($data)) {
                     ));
             }
         }
-        $documento->moveCurrentRow();
+        
+        /** Sub-totals */
+        $documento->moveCurrentRow(2);
+        $documento->setCellValue('C', 'Sub-Total', 'bold');
         $documento->setCellValue('D', '=SUM(D' . $initialRow . ':D' . ($documento->getCurrentRow() - 1) . ')', array('bold', 'right'));
         $documento->setCellValue('E', '=SUM(E' . $initialRow . ':E' . ($documento->getCurrentRow() - 1) . ')', 'total');
         $documento->setCellValue('F', '=SUM(F' . $initialRow . ':F' . ($documento->getCurrentRow() - 1) . ')', 'total');
@@ -77,9 +80,21 @@ if (!empty($data)) {
         $documento->setCellValue('L', '=(G' . $documento->getCurrentRow() . '-(1.15*F' . $documento->getCurrentRow() . '))/E' . $documento->getCurrentRow(), array('bold', 'right'));
         $documento->setCellValue('M', '=K' . $documento->getCurrentRow() . '/G' . $documento->getCurrentRow(), array('bold', 'right'));
         $totalRows[$cc] = $documento->getCurrentRow();
+
+        /** Adverage salaries */
+        $documento->moveCurrentRow();
+        $documento->setCellValue('C', 'Promedios', 'bold');
+        $documento->setCellValue('E', '=E' . ($documento->getCurrentRow() - 1) . '/D' . ($documento->getCurrentRow() - 1), 'total');
+        $documento->setCellValue('F', '=F' . ($documento->getCurrentRow() - 1) . '/D' . ($documento->getCurrentRow() - 1), 'total');
+        $documento->setCellValue('G', '=G' . ($documento->getCurrentRow() - 1) . '/D' . ($documento->getCurrentRow() - 1), 'total');
+        $documento->setCellValue('H', '=H' . ($documento->getCurrentRow() - 1) . '/D' . ($documento->getCurrentRow() - 1), 'total');
+        $documento->setCellValue('I', '=I' . ($documento->getCurrentRow() - 1) . '/D' . ($documento->getCurrentRow() - 1), 'total');
+        $documento->setCellValue('J', '=J' . ($documento->getCurrentRow() - 1) . '/D' . ($documento->getCurrentRow() - 1), 'total');
+        $documento->setCellValue('K', '=K' . ($documento->getCurrentRow() - 1) . '/D' . ($documento->getCurrentRow() - 1), 'total');
+        $documento->moveCurrentRow(2);
     }
 
-    $documento->moveCurrentRow(3);
+    $documento->moveCurrentRow(4);
     $documento->setCellValue('A' . $documento->getCurrentRow() . ':M' . $documento->getCurrentRow(), 'RESUMEN', 'title');
     $initialResumeRow = $documento->getCurrentRow() + 1;
     foreach ($totalRows as $cc => $row) {
@@ -97,6 +112,7 @@ if (!empty($data)) {
         $documento->setCellValue('M', '=M' . $row, array('bold', 'right'));
     }
     $documento->moveCurrentRow();
+    $documento->setCellValue('C', 'Totales', 'bold');
     $documento->setCellValue('D', '=SUM(D' . $initialResumeRow . ':D' . ($documento->getCurrentRow() - 1) . ')', array('bold', 'right'));
     $documento->setCellValue('E', '=SUM(E' . $initialResumeRow . ':E' . ($documento->getCurrentRow() - 1) . ')', 'total');
     $documento->setCellValue('F', '=SUM(F' . $initialResumeRow . ':F' . ($documento->getCurrentRow() - 1) . ')', 'total');
@@ -108,6 +124,18 @@ if (!empty($data)) {
     $documento->setCellValue('L', '=(G' . $documento->getCurrentRow() . '-(1.15*F' . $documento->getCurrentRow() . '))/E' . $documento->getCurrentRow(), array('bold', 'right'));
     $documento->setCellValue('M', '=K' . $documento->getCurrentRow() . '/G' . $documento->getCurrentRow(), array('bold', 'right'));
 
+
+    /** Adverage salaries */
+    $documento->moveCurrentRow();
+    $documento->setCellValue('C', 'Promedios Generales', 'bold');
+    $documento->setCellValue('E', '=E' . ($documento->getCurrentRow() - 1) . '/D' . ($documento->getCurrentRow() - 1), 'total');
+    $documento->setCellValue('F', '=F' . ($documento->getCurrentRow() - 1) . '/D' . ($documento->getCurrentRow() - 1), 'total');
+    $documento->setCellValue('G', '=G' . ($documento->getCurrentRow() - 1) . '/D' . ($documento->getCurrentRow() - 1), 'total');
+    $documento->setCellValue('H', '=H' . ($documento->getCurrentRow() - 1) . '/D' . ($documento->getCurrentRow() - 1), 'total');
+    $documento->setCellValue('I', '=I' . ($documento->getCurrentRow() - 1) . '/D' . ($documento->getCurrentRow() - 1), 'total');
+    $documento->setCellValue('J', '=J' . ($documento->getCurrentRow() - 1) . '/D' . ($documento->getCurrentRow() - 1), 'total');
+    $documento->setCellValue('K', '=K' . ($documento->getCurrentRow() - 1) . '/D' . ($documento->getCurrentRow() - 1), 'total');
+    
     $documento->save($fileFormat);
 } else {
 
