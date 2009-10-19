@@ -61,9 +61,6 @@ class LiquidacionesController extends AppController {
             $conditions['Liquidacion.ano'] = $period['ano'];
             $conditions['Liquidacion.mes'] = $period['mes'];
             $conditions['Liquidacion.estado'] = 'Confirmada';
-            //$conditions['Liquidacion.relacion_id'] = 6801;
-            //$conditions['Liquidacion.factura_id !='] = null;
-            //$conditions['Factura.estado'] = 'Confirmada';
             
             $data = array();
             $this->Liquidacion->Behaviors->detach('Permisos');
@@ -97,7 +94,8 @@ class LiquidacionesController extends AppController {
                             `Area`.`id`,
                             `Area`.`nombre`,
                             `Area`.`group_id`,
-                            `Area`.`identificador_centro_costo`';
+                            `Area`.`identificador_centro_costo`
+            ORDER BY        `Liquidacion`.`empleador_nombre`';
 
 
                                     /*
