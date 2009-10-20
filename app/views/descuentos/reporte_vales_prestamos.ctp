@@ -19,35 +19,59 @@ if (!empty($data)) {
 
     $documento->create(array('password' => false, 'title' => 'Anticipos', 'orientation' => 'landscape'));
     
-    $documento->setCellValue('A', 'Cuit', array('title' => 20));
-    $documento->setCellValue('B', 'Empleador', array('title' => 35));
-    $documento->setCellValue('C', 'Cuil', array('title' => 20));
+    $documento->setCellValue('A', 'Cuit', array('title' => 15));
+    $documento->setCellValue('B', 'Empleador', array('title' => 30));
+    $documento->setCellValue('C', 'Cuil', array('title' => 15));
     $documento->setCellValue('D', 'Apellido', array('title' => 20));
     $documento->setCellValue('E', 'Nombre', array('title' => 20));
-    $documento->setCellValue('F', 'Tipo', array('title' => 15));
-    $documento->setCellValue('G', 'Alta', array('title' => 15));
-    $documento->setCellValue('H', 'Monto', array('title' => 15));
-    $documento->setCellValue('I', 'Descontado', array('title' => 15));
-    $documento->setCellValue('J', 'A Descontar', array('title' => 15));
-    $documento->setCellValue('K', 'Estado', array('title' => 15));
+    $documento->setCellValue('F', 'Estado', array('title' => 15));
+    $documento->setCellValue('G', 'Tipo', array('title' => 15));
+    $documento->setCellValue('H', 'Alta', array('title' => 15));
+    $documento->setCellValue('I', 'Monto', array('title' => 15));
+    $documento->setCellValue('J', 'Fecha', array('title' => 15));
+    $documento->setCellValue('K', 'Descontado', array('title' => 15));
+    $documento->setCellValue('L', 'Saldo', array('title' => 15));
 
     /** Body */
     foreach ($data as $k => $detail) {
 
-        $documento->setCellValueFromArray(
-            array(  $detail['Relacion']['Empleador']['cuit'],
-                    $detail['Relacion']['Empleador']['nombre'],
-                    $detail['Relacion']['Trabajador']['cuil'],
-                    $detail['Relacion']['Trabajador']['apellido'],
-                    $detail['Relacion']['Trabajador']['nombre'],
-                    $detail['Descuento']['tipo'],
-                    $detail['Descuento']['alta'],
-                    array('value' => $detail['Descuento']['monto'], 'options' => 'currency'),
-                    array('value' => array_sum(Set::extract('/DescuentosDetalle/monto', $detail)), 'options' => 'currency'),
-                    array('value' => '=H' . ($documento->getCurrentRow() + 1). '-I' . ($documento->getCurrentRow() + 1), 'options' => 'currency'),
-                    $detail['Descuento']['estado'],));
-    }
+        $array = array(
+            $detail['Relacion']['Empleador']['cuit'],
+            $detail['Relacion']['Empleador']['nombre'],
+            $detail['Relacion']['Trabajador']['cuil'],
+            $detail['Relacion']['Trabajador']['apellido'],
+            $detail['Relacion']['Trabajador']['nombre'],
+            $detail['Descuento']['estado'],
+            $detail['Descuento']['tipo'],
+            $detail['Descuento']['alta'],
+            array('value' => $detail['Descuento']['monto'], 'options' => 'currency'));
 
+        $acumulado = 0;
+        foreach ($detail['DescuentosDetalle'] as $k => $v) {
+            $acumulado+= $v['monto'];
+            if ($k == 0) {
+                $array[] = $v['fecha'];
+                $array[] = array('value' => $v['monto'], 'options' => 'currency');
+                $array[] = array('value' => ($detail['Descuento']['monto'] - $acumulado), 'options' => 'currency');
+            } else {
+                $array = array(
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    $v['fecha'],
+                    array('value' => $v['monto'], 'options' => 'currency'),
+                    array('value' => ($detail['Descuento']['monto'] - $acumulado), 'options' => 'currency'));
+            }
+            $documento->setCellValueFromArray($array);
+        }
+    }
+    
     $documento->save($fileFormat);
 } else {
 
