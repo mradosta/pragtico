@@ -34,7 +34,7 @@ class Ausencia extends AppModel {
 								'add'  	=> array(								
 										'valoresDefault'=>array('desde' => array('date' => 'Y-m-d'))),
 								'edit'=>array('contain'=>array(	'Relacion'=>array('Empleador','Trabajador'),
-																'AusenciasSeguimiento')));
+																'AusenciasSeguimiento' => array('order' => 'AusenciasSeguimiento.id'))));
 	
 	var $validate = array( 
         'relacion_id' => array(
@@ -233,23 +233,13 @@ class Ausencia extends AppModel {
                 }
 
                 if (isset($nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']])) {
+                    $tmpEndDate = Dates::dateAdd($ausencia['Ausencia']['desde'], $acumulado);
                     if ($ausencia['Ausencia']['desde'] < $periodo['desde']) {
-                        $nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']] += Dates::getNonWorkingDays($periodo['desde'], Dates::dateAdd($periodo['desde'], $acumulado));
+                        $nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']] += Dates::getNonWorkingDays($periodo['desde'], $tmpEndDate);
                     } else {
-                        $nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']] += Dates::getNonWorkingDays($ausencia['Ausencia']['desde'], Dates::dateAdd($ausencia['Ausencia']['desde'], $acumulado));
+                        $nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']] += Dates::getNonWorkingDays($ausencia['Ausencia']['desde'], $tmpEndDate);
                     }
                 }
-                
-/**
-TODO: REVISAR
-                if (isset($nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']])) {
-                    if ($ausencia['Ausencia']['desde'] < $periodo['desde']) {
-                        $nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']] += Dates::getNonWorkingDays($periodo['desde'], Dates::dateAdd($periodo['desde'], $acumulado));
-                    } else {
-                        $nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']] += Dates::getNonWorkingDays($ausencia['Ausencia']['desde'], Dates::dateAdd($ausencia['Ausencia']['desde'], $acumulado));
-                    }
-                }
-*/
 			}
 
             foreach (array_unique(Set::extract('/AusenciasMotivo/tipo', $r)) as $type) {
@@ -329,7 +319,8 @@ TODO: REVISAR
             }
         }
 
-/*
+
+        /*
         d(array('conceptos'    => $conceptos,
                      'variables'    => array(
         '#ausencias_accidente'                              => $ausencias['Accidente'],
@@ -345,7 +336,8 @@ TODO: REVISAR
         '#ausencias_injustificada'                          => $ausencias['Injustificada'],
         '#no_laborables_durante_ausencias_injustificada'    => $nonWorkingDays['Injustificada']),
                      'auxiliar'     => $auxiliares));
-*/
+        */
+
 		return array('conceptos' 	=> $conceptos,
 					 'variables' 	=> array(
         '#ausencias_accidente'                              => $ausencias['Accidente'],
