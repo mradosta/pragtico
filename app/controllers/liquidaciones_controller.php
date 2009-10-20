@@ -209,9 +209,9 @@ class LiquidacionesController extends AppController {
                 }
 
                 if (!empty($this->data['Condicion']['Bar-trabajador_id'])) {
-                    $conditions['Liquidacion.trabajador_id'] = explode('**||**', $this->data['Condicion']['Bar-trabajador_id']);
+                    $conditions['Liquidacion.trabajador_id'] = $this->data['Condicion']['Bar-trabajador_id'];
                 }
-                
+
                 if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
                     $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
                 }
@@ -235,7 +235,7 @@ class LiquidacionesController extends AppController {
                 } else {
 
                     if (!empty($this->data['Condicion']['Bar-concepto_id'])) {
-                        $conditions['LiquidacionesDetalle.concepto_id'] = $this->data['Condicion']['Bar-concepto_id'];
+                        $conditions['LiquidacionesDetalle.concepto_id'] = explode('**||**', $this->data['Condicion']['Bar-concepto_id']);
                     }
                     
                     $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
