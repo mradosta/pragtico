@@ -111,7 +111,7 @@ class AusenciasController extends AppController {
  * Muestra via desglose el seguimiento de la ausencia.
  */
 	function seguimientos($id) {
-		$this->Ausencia->contain(array("AusenciasSeguimiento"));
+		$this->Ausencia->contain(array('AusenciasSeguimiento' => array('order' => 'AusenciasSeguimiento.id')));
 		$this->data = $this->Ausencia->read(null, $id);
 	}
 
@@ -129,7 +129,7 @@ class AusenciasController extends AppController {
 /**
 * Imprimir.
 */    
-	function imprimir() {
+	function imprimir_deprecated() {
 		$this->Ausencia->contain(array("Relacion.Empleador", "Relacion.Trabajador"));
 		$condiciones = $this->Paginador->generarCondicion($this->data);
 		$registros = $this->Ausencia->findAll($condiciones, null, "Ausencia.desde, Relacion.id");
