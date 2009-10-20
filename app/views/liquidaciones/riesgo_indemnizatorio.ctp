@@ -20,7 +20,8 @@ if (!empty($data)) {
     $documento->create(array('password' => false, 'title' => 'Riesgo Indemnizatorio'));
     
     $documento->setWidth('A', '50');
-    $documento->setWidth('B', '20');
+    $documento->setWidth('B', '30');
+    $documento->setWidth('C', '30');
             
     $documento->setCellValue('A', 'Empleador: ', 'right');
     $documento->setCellValue('B', $relacion['Empleador']['nombre'], 'bold');
@@ -44,10 +45,40 @@ if (!empty($data)) {
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('egreso', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
 
     $documento->moveCurrentRow();
-    $documento->setCellValue('A', 'Antiguedad: ', 'right');
-    $documento->setCellValue('B', '=INT((egreso - ingreso) / 365.25)', 'bold');
+    $documento->setCellValue('A', 'Dias Suspension: ', 'right');
+    $documento->setCellValue('B', '0', 'bold');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('dias_suspension', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    
+    $documento->moveCurrentRow();
+    $documento->setCellValue('A', 'Dias Excedencia: ', 'right');
+    $documento->setCellValue('B', '0', 'bold');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('dias_excedencia', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    
+    $documento->moveCurrentRow();
+    $documento->setCellValue('A', 'Dias Antiguedad: ', 'right');
+    $documento->setCellValue('B', '=egreso - ingreso - dias_suspension - dias_excedencia', 'bold');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('dias_antiguedad', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    
+    $documento->moveCurrentRow();
+    $documento->setCellValue('A', 'Años Servicio: ', 'right');
+    $documento->setCellValue('B', '=INT(dias_antiguedad / 365.25)', 'bold');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('anos_servicio', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    
+    $documento->moveCurrentRow();
+    $documento->setCellValue('A', 'Meses Servicio: ', 'right');
+    $documento->setCellValue('B', '=INT((dias_antiguedad - (anos_servicio * 365.25)) / 30.44)', 'bold');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('meses_servicio', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    
+    $documento->moveCurrentRow();
+    $documento->setCellValue('A', 'Dias Servicio: ', 'right');
+    $documento->setCellValue('B', '=INT(dias_antiguedad - (anos_servicio * 365.25) - (meses_servicio * 30.44))', 'bold');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('dias_servicio', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    
+    $documento->moveCurrentRow();
+    $documento->setCellValue('A', 'Años Antiguedad a Computar: ', 'right');
+    $documento->setCellValue('B', '=IF(meses_servicio<3, anos_servicio, (anos_servicio + 1))', 'bold');
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('anos_antiguedad', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
-
+    
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Semestre: ', 'right');
     $documento->setCellValue('B', '=IF(MONTH(egreso) >= 6, "Segundo", "Primero")', 'bold');
@@ -76,6 +107,7 @@ if (!empty($data)) {
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Dias Vacaciones No Goz.: ', 'right');
     $documento->setCellValue('B', '=B' . ($documento->getCurrentRow() - 7) . ' - IF(B' . ($documento->getCurrentRow() - 8) . ' > DATE(YEAR(B' . ($documento->getCurrentRow() - 7) . '), 1, 1), B' . ($documento->getCurrentRow() - 8) . ', DATE(YEAR(B' . ($documento->getCurrentRow() - 7) . '), 1, 1))', 'bold');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('dias_vacaciones_no_gozadas', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
 
     $documento->moveCurrentRow(4);
     $initialRow = $documento->getCurrentRow() + 1;
@@ -96,7 +128,7 @@ if (!empty($data)) {
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Promedio: ', 'right');
     $documento->setCellValue('B', '=suma_sueldos / COUNT(sueldos)', 'total');
-    $documento->doc->addNamedRange(new PHPExcel_NamedRange('promedio_sueldos', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('promedio_sueldo', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
 
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Mayor: ', 'right');
@@ -104,53 +136,90 @@ if (!empty($data)) {
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('mayor_sueldo', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
 
     $documento->moveCurrentRow(3);
+    $documento->setCellValue('B', 'Sobre Sueldo Mayor', 'right');
+    $documento->setCellValue('C', 'Sobre Sueldo Promedio', 'right');
+    
+    $documento->moveCurrentRow();
     $documento->setCellValue('A', 'SAC Proporcional: ', 'right');
     $documento->setCellValue('B', '=((mayor_sueldo / 2) / dias_semestre) * dias_trabajados_en_el_semestre', 'total');
-    $documento->doc->addNamedRange(new PHPExcel_NamedRange('sac_proporcional', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('sac_proporcional_mayor', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->setCellValue('C', '=((promedio_sueldo / 2) / dias_semestre) * dias_trabajados_en_el_semestre', 'total');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('sac_proporcional_promedio', $documento->activeSheet, 'C' . $documento->getCurrentRow()));
     
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Preaviso: ', 'right');
-    $documento->setCellValue('B', '=promedio_sueldos * meses_de_preaviso', 'total');
-    $documento->doc->addNamedRange(new PHPExcel_NamedRange('preaviso', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->setCellValue('B', '=promedio_sueldo * meses_de_preaviso', 'total');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('preaviso_mayor', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->setCellValue('C', '=promedio_sueldo * meses_de_preaviso', 'total');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('preaviso_promedio', $documento->activeSheet, 'C' . $documento->getCurrentRow()));
 
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'SAC s/ Preaviso: ', 'right');
-    $documento->setCellValue('B', '=preaviso / 12', 'total');
-    $documento->doc->addNamedRange(new PHPExcel_NamedRange('sac_sobre_preaviso', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->setCellValue('B', '=preaviso_mayor / 12', 'total');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('sac_sobre_preaviso_mayor', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->setCellValue('C', '=preaviso_promedio / 12', 'total');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('sac_sobre_preaviso_promedio', $documento->activeSheet, 'C' . $documento->getCurrentRow()));
 
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Indemnizacion: ', 'right');
     $documento->setCellValue('B', '=mayor_sueldo * anos_antiguedad', 'total');
-    $documento->doc->addNamedRange(new PHPExcel_NamedRange('indemnizacion', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('indemnizacion_mayor', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->setCellValue('C', '=promedio_sueldo * anos_antiguedad', 'total');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('indemnizacion_promedio', $documento->activeSheet, 'C' . $documento->getCurrentRow()));
     
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Integrativo Mes Despido: ', 'right');
-    $documento->setCellValue('B', '=(promedio_sueldos / 30) * dias_integrativos', 'total');
-    $documento->doc->addNamedRange(new PHPExcel_NamedRange('integrativo_mes_despido', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->setCellValue('B', '=(promedio_sueldo / 30) * dias_integrativos', 'total');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('integrativo_mes_despido_mayor', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->setCellValue('C', '=(promedio_sueldo / 30) * dias_integrativos', 'total');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('integrativo_mes_despido_promedio', $documento->activeSheet, 'C' . $documento->getCurrentRow()));
     
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'SAC s/ Integrativo: ', 'right');
-    $documento->setCellValue('B', '=integrativo_mes_despido / 12', 'total');
+    $documento->setCellValue('B', '=integrativo_mes_despido_mayor / 12', 'total');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('sac_sobre_integrativo_mayor', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->setCellValue('C', '=integrativo_mes_despido_promedio / 12', 'total');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('sac_sobre_integrativo_promedio', $documento->activeSheet, 'C' . $documento->getCurrentRow()));
     
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Vacaciones No Gozadas: ', 'right');
-    $documento->setCellValue('B', '=MAX(B' . $initialRow . ':B' . $finalRow . ')', 'total');
-    $documento->doc->addNamedRange(new PHPExcel_NamedRange('vacaciones_no_gozadas', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->setCellValue('B', '=(promedio_sueldo / 25) * dias_vacaciones_no_gozadas', 'total');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('vacaciones_no_gozadas_mayor', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->setCellValue('C', '=(promedio_sueldo / 25) * dias_vacaciones_no_gozadas', 'total');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('vacaciones_no_gozadas_promedio', $documento->activeSheet, 'C' . $documento->getCurrentRow()));
     
     $documento->moveCurrentRow(2);
     $documento->setCellValue('A', 'Total Indemnizaciones: ', 'right');
-    $documento->setCellValue('B', '=', 'total');
-    $documento->doc->addNamedRange(new PHPExcel_NamedRange('total_indemnizaciones', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->setCellValue('B', '=preaviso_mayor + sac_sobre_preaviso_mayor + indemnizacion_mayor + integrativo_mes_despido_mayor + sac_sobre_integrativo_mayor', 'total');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('total_indemnizaciones_mayor', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->setCellValue('C', '=preaviso_promedio + sac_sobre_preaviso_promedio + indemnizacion_promedio + integrativo_mes_despido_promedio + sac_sobre_integrativo_promedio', 'total');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('total_indemnizaciones_promedio', $documento->activeSheet, 'C' . $documento->getCurrentRow()));
     
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Liquidacion Final: ', 'right');
-    $documento->setCellValue('B', '=', 'total');
-    $documento->doc->addNamedRange(new PHPExcel_NamedRange('liquidacion_final', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->setCellValue('B', '=sac_proporcional_mayor + vacaciones_no_gozadas_mayor', 'total');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('liquidacion_final_mayor', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+    $documento->setCellValue('C', '=sac_proporcional_promedio + vacaciones_no_gozadas_promedio', 'total');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('liquidacion_final_promedio', $documento->activeSheet, 'C' . $documento->getCurrentRow()));
     
     $documento->moveCurrentRow(2);
     $documento->setCellValue('A', 'TOTAL: ', 'right');
-    $documento->setCellValue('B', '=total_indemnizaciones + liquidacion_final', 'total');
-    
+    $documento->setCellValue('B', '=total_indemnizaciones_mayor + liquidacion_final_mayor', 'total');
+    $documento->setCellValue('C', '=total_indemnizaciones_promedio + liquidacion_final_promedio', 'total');
+
+    $documento->moveCurrentRow(4);
+    $documento->setCellValue('A', 'Observaciones:', 'bold');
+    $styleArray = array(
+        'font'      => array('bold' => true),
+        'borders'   => array(
+            'outline' => array(
+                'style' => PHPExcel_Style_Border::BORDER_DOTTED,
+                'color' => array('argb' => '00000000'),
+            ),
+        ),
+    );
+    $documento->activeSheet->getStyle('A' . $documento->getCurrentRow() . ':F' . ($documento->getCurrentRow() + 6))->applyFromArray($styleArray);
+        
     $documento->save($fileFormat);
 } else {
 

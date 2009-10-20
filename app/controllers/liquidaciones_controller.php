@@ -726,7 +726,7 @@ class LiquidacionesController extends AppController {
                                 'Liquidacion.relacion_id',
                                 'Liquidacion.ano',
                                 'Liquidacion.mes',
-                                'SUM(Liquidacion.total) AS total'),
+                                'SUM(Liquidacion.remunerativo) AS total'),
                             'group'         => array(
                                 'Liquidacion.relacion_id',
                                 'Liquidacion.ano',
