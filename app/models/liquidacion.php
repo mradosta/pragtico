@@ -857,6 +857,7 @@ class Liquidacion extends AppModel {
         $conceptoValorUnitario = 0;
         if (!empty($concepto['valor_unitario'])) {
             if (isset($this->__variables[$concepto['valor_unitario']])) {
+                unset($this->__variables[$concepto['valor_unitario']]['valor']);
                 $varValue = $this->getVarValue($concepto['valor_unitario']);
                 if ($varValue !== '#N/A') {
                     $conceptoValorUnitario = $varValue;
