@@ -29,6 +29,15 @@ if (!empty($data)) {
     $documento->setCellValue('I', 'Liquidado', array('title' => '20'));
     
     /** Body */
+    $receipts = array();
+    foreach ($data as $k => $detail) {
+        if (empty($counts[$detail['Liquidacion']['id']])) {
+            $counts[$detail['Liquidacion']['id']] = 1;
+        } else {
+            $counts[$detail['Liquidacion']['id']]++;
+        }
+    }
+    
     foreach ($data as $k => $detail) {
 
         /** Because of naming convenion in absences model, can get concept code */
@@ -55,15 +64,23 @@ if (!empty($data)) {
             $totals[$detail['Ausencia']['AusenciasMotivo']['motivo']]['value'] += $val;
         }
 
-        $documento->setCellValueFromArray(
-            array(  $detail['Ausencia']['Relacion']['Empleador']['nombre'],
-                    $detail['Ausencia']['Relacion']['Trabajador']['cuil'],
-                    $detail['Ausencia']['Relacion']['Trabajador']['apellido'], $detail['Ausencia']['Relacion']['Trabajador']['nombre'],
-                    $detail['Ausencia']['AusenciasMotivo']['motivo'],
-                    $detail['Ausencia']['desde'],
-                    $detail['AusenciasSeguimiento']['dias'],
-                    $days,
-                    array('value' => $val, 'options' => 'currency')));
+        $currentRow = $documento->moveCurrentRow();
+        if (!in_array($detail['Liquidacion']['id'], $receipts)) {
+            $receipts[] = $detail['Liquidacion']['id'];
+            $counts[$detail['Liquidacion']['id']]--;
+            $documento->setCellValue('A' . $currentRow .':A' . ($currentRow + $counts[$detail['Liquidacion']['id']]), $detail['Ausencia']['Relacion']['Empleador']['nombre']);
+            $documento->setCellValue('B' . $currentRow .':B' . ($currentRow + $counts[$detail['Liquidacion']['id']]), $detail['Ausencia']['Relacion']['Trabajador']['cuil']);
+            $documento->setCellValue('C' . $currentRow .':C' . ($currentRow + $counts[$detail['Liquidacion']['id']]), $detail['Ausencia']['Relacion']['Trabajador']['apellido']);
+            $documento->setCellValue('D' . $currentRow .':D' . ($currentRow + $counts[$detail['Liquidacion']['id']]), $detail['Ausencia']['Relacion']['Trabajador']['nombre']);
+            $documento->setCellValue('E' . $currentRow .':E' . ($currentRow + $counts[$detail['Liquidacion']['id']]), $detail['Ausencia']['AusenciasMotivo']['motivo']);
+            $documento->setCellValue('F' . $currentRow .':F' . ($currentRow + $counts[$detail['Liquidacion']['id']]), $detail['Ausencia']['desde']);
+            $documento->setCellValue('H' . $currentRow .':H' . ($currentRow + $counts[$detail['Liquidacion']['id']]), $days);
+            $documento->setCellValue('I' . $currentRow .':I' . ($currentRow + $counts[$detail['Liquidacion']['id']]), $val, 'currency');
+        }
+        
+        //$documento->setCellValue('G' . $currentRow .':G' . ($currentRow + $counts[$detail['Ausencia']['id']]), $detail['AusenciasSeguimiento']['dias']);
+        $documento->setCellValue('G' . $currentRow, $detail['AusenciasSeguimiento']['dias']);
+        
     }
     
     $documento->moveCurrentRow(3);
