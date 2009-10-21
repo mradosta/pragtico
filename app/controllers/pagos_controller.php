@@ -34,6 +34,20 @@ class PagosController extends AppController {
 
 
     function index() {
+        $this->__setConditions();
+        return parent::index();
+    }
+
+    function afterPaginate($results) {
+        $this->__setConditions();
+        if (!empty($results)) {
+            $this->set('monto', $this->Pago->getTotal($this->Paginador->getCondition()));
+        } else {
+            $this->set('monto', 0);
+        }
+    }
+
+    function __setConditions() {
         if (!empty($this->data['Condicion']['Pago-origen'])) {
             
             $this->Paginador->setWhiteList('Pago-origen');
@@ -50,17 +64,8 @@ class PagosController extends AppController {
                     'Pago.liquidacion_id'       => null));
             }
         }
-        return parent::index();
     }
-
-    function afterPaginate($results) {
-        if (!empty($results)) {
-            $this->set('monto', $this->Pago->getTotal($this->Paginador->getCondition()));
-        } else {
-            $this->set('monto', 0);
-        }
-    }
-
+    
 
 	function beforeRender() {
 		if ($this->action === 'index') {
