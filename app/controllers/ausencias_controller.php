@@ -66,7 +66,6 @@ class AusenciasController extends AppController {
                     'Relacion' => array('Empleador', 'Trabajador')),
                     'Liquidacion.LiquidacionesDetalle'),
                 'conditions'    => array(
-                    'Ausencia.relacion_id' => 4091,
                     'AusenciasSeguimiento.liquidacion_id' => array_unique(
                         Set::extract('/Liquidacion/id',
                             $this->Ausencia->AusenciasSeguimiento->Liquidacion->find('all',
