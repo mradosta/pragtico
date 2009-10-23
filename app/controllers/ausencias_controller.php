@@ -57,20 +57,55 @@ class AusenciasController extends AppController {
             $this->Ausencia->AusenciasSeguimiento->Liquidacion->Behaviors->detach('Permisos');
             $this->Ausencia->AusenciasSeguimiento->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
             $this->Ausencia->AusenciasSeguimiento->Behaviors->detach('Permisos');
-            $this->set('data', $this->Ausencia->AusenciasSeguimiento->find('all', array(
+
+            $r = array();
+            foreach ($this->Ausencia->AusenciasSeguimiento->find('all', array(
                 'contain'      => array(
                     'Ausencia' => array('order' => array('Ausencia.relacion_id'),
                     'AusenciasMotivo',
                     'Relacion' => array('Empleador', 'Trabajador')),
                     'Liquidacion.LiquidacionesDetalle'),
                 'conditions'    => array(
+                    'Ausencia.relacion_id' => 4091,
                     'AusenciasSeguimiento.liquidacion_id' => array_unique(
                         Set::extract('/Liquidacion/id',
                             $this->Ausencia->AusenciasSeguimiento->Liquidacion->find('all',
                                 array(  'recursive'     => -1,
                                         'fields'        => array('Liquidacion.id'),
-                                        'conditions'    => $conditions))))))));
-                        
+                                        'conditions'    => $conditions))))))) as $detail) {
+
+                if (empty($r[$detail['Ausencia']['Relacion']['id']])) {
+                    $r[$detail['Ausencia']['Relacion']['id']]['employer'] = $detail['Ausencia']['Relacion']['Empleador']['nombre'];
+                    $r[$detail['Ausencia']['Relacion']['id']]['cuil'] = $detail['Ausencia']['Relacion']['Trabajador']['cuil'];
+                    $r[$detail['Ausencia']['Relacion']['id']]['last_name'] = $detail['Ausencia']['Relacion']['Trabajador']['apellido'];
+                    $r[$detail['Ausencia']['Relacion']['id']]['name'] = $detail['Ausencia']['Relacion']['Trabajador']['nombre'];
+                    $r[$detail['Ausencia']['Relacion']['id']]['lines'] = 0;
+                }
+
+
+                if (empty($r[$detail['Ausencia']['Relacion']['id']][$detail['Ausencia']['AusenciasMotivo']['tipo']])) {
+                    $r[$detail['Ausencia']['Relacion']['id']]['lines']++;
+                    $r[$detail['Ausencia']['Relacion']['id']][$detail['Ausencia']['AusenciasMotivo']['tipo']]['confirmed_days'] = 0;
+                    $r[$detail['Ausencia']['Relacion']['id']][$detail['Ausencia']['AusenciasMotivo']['tipo']]['days'] = 0;
+                    $r[$detail['Ausencia']['Relacion']['id']][$detail['Ausencia']['AusenciasMotivo']['tipo']]['amount'] = 0;
+                }
+                $r[$detail['Ausencia']['Relacion']['id']][$detail['Ausencia']['AusenciasMotivo']['tipo']]['confirmed_days'] += $detail['AusenciasSeguimiento']['dias'];
+
+                $conceptCode = null;
+                $tmpName = 'ausencias_' . strtolower($detail['Ausencia']['AusenciasMotivo']['tipo']);
+                $conceptCode[] = $tmpName;
+                if ($tmpName === 'ausencias_accidente') {
+                    $conceptCode[] = $tmpName . '_art';
+                }
+                foreach ($detail['Liquidacion']['LiquidacionesDetalle'] as $d) {
+                    if (in_array($d['concepto_codigo'], $conceptCode)) {
+                        $r[$detail['Ausencia']['Relacion']['id']][$detail['Ausencia']['AusenciasMotivo']['tipo']]['amount'] += $d['valor'];
+                        $r[$detail['Ausencia']['Relacion']['id']][$detail['Ausencia']['AusenciasMotivo']['tipo']]['days'] += $d['valor_cantidad'];
+                    }
+                }
+            }
+
+            $this->set('data', $r);
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
         }
     }
