@@ -84,11 +84,9 @@ class AusenciasController extends AppController {
 
                 if (empty($r[$detail['Ausencia']['Relacion']['id']][$detail['Ausencia']['AusenciasMotivo']['tipo']])) {
                     $r[$detail['Ausencia']['Relacion']['id']]['lines']++;
-                    $r[$detail['Ausencia']['Relacion']['id']][$detail['Ausencia']['AusenciasMotivo']['tipo']]['confirmed_days'] = 0;
                     $r[$detail['Ausencia']['Relacion']['id']][$detail['Ausencia']['AusenciasMotivo']['tipo']]['days'] = 0;
                     $r[$detail['Ausencia']['Relacion']['id']][$detail['Ausencia']['AusenciasMotivo']['tipo']]['amount'] = 0;
                 }
-                $r[$detail['Ausencia']['Relacion']['id']][$detail['Ausencia']['AusenciasMotivo']['tipo']]['confirmed_days'] += $detail['AusenciasSeguimiento']['dias'];
 
                 $conceptCode = null;
                 $tmpName = 'ausencias_' . strtolower($detail['Ausencia']['AusenciasMotivo']['tipo']);
@@ -97,9 +95,11 @@ class AusenciasController extends AppController {
                     $conceptCode[] = $tmpName . '_art';
                 }
                 foreach ($detail['Liquidacion']['LiquidacionesDetalle'] as $d) {
-                    if (in_array($d['concepto_codigo'], $conceptCode)) {
+                    if (in_array($d['concepto_codigo'], $conceptCode)
+                        && empty($receiptsToSkip[$detail['Liquidacion']['id']][$d['concepto_codigo']])) {
                         $r[$detail['Ausencia']['Relacion']['id']][$detail['Ausencia']['AusenciasMotivo']['tipo']]['amount'] += $d['valor'];
                         $r[$detail['Ausencia']['Relacion']['id']][$detail['Ausencia']['AusenciasMotivo']['tipo']]['days'] += $d['valor_cantidad'];
+                        $receiptsToSkip[$detail['Liquidacion']['id']][$d['concepto_codigo']] = true;
                     }
                 }
             }

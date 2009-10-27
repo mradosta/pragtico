@@ -22,10 +22,9 @@ if (!empty($data)) {
     $documento->setCellValue('B', 'Cuil', array('title' => '20'));
     $documento->setCellValue('C', 'Apellido', array('title' => '20'));
     $documento->setCellValue('D', 'Nombre', array('title' => '20'));
-    $documento->setCellValue('E', 'Motivo', array('title' => '40'));
-    $documento->setCellValue('F', 'Dias Conf.', array('title' => '15'));
-    $documento->setCellValue('G', 'Cant. Liq.', array('title' => '15'));
-    $documento->setCellValue('H', 'Liquidado', array('title' => '20'));
+    $documento->setCellValue('E', 'Tipo', array('title' => '40'));
+    $documento->setCellValue('F', 'Dias Liq.', array('title' => '15'));
+    $documento->setCellValue('G', 'Monto', array('title' => '20'));
     
 
     /** Body */
@@ -52,12 +51,11 @@ if (!empty($data)) {
             $totals[$type]['amount'] += $d['amount'];
             
             $documento->setCellValue('E', $type);
-            $documento->setCellValue('F', $d['confirmed_days']);
-            $documento->setCellValue('G', $d['days']);
-            $documento->setCellValue('H', $d['amount']);
+            $documento->setCellValue('F', $d['days']);
+            $documento->setCellValue('G', $d['amount'], 'currency');
             $documento->moveCurrentRow();
         }
-        
+        $documento->moveCurrentRow(-1);
     }
 
 
