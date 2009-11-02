@@ -189,7 +189,7 @@ if(!empty($registros)) {
         $documento->setCellValue('C' . $fila, $registro['Relacion']['legajo'] . ' - ' . $registro['Trabajador']['apellido'] . ' ' . $registro['Trabajador']['nombre']);
         $documento->setCellValue('D' . $fila, $registro['ConveniosCategoria']['nombre']);
         $documento->setCellValue('E' . $fila, $registro['Relacion']['ingreso']);
-        $documento->setCellValue('F' . $fila, ($registro['Relacion']['egreso'] !== '0000-00-00')?$registro['Relacion']['egreso']:'');
+        $documento->setCellValue('F' . $fila, (!empty($registro['RelacionesHistorial'][0]['fin']))?$registro['RelacionesHistorial'][0]['fin']:'');
 
         for ($i = $columnaInicioConceptosDinamicos; $i <= $columna; $i++) {
             $documento->setDataValidation($i . ',' . $fila, 'decimal');
@@ -217,7 +217,7 @@ if(!empty($registros)) {
         $documento->setCellValue($i . ',' . $fila,
             '=SUM(' . PHPExcel_Cell::stringFromColumnIndex($i) . $initialRow . ':' . PHPExcel_Cell::stringFromColumnIndex($i) . ($fila - 1) . ')', array('right', 'bold'));
     }
-    
+
     $documento->save($formatoDocumento);
 } else {
     /**
