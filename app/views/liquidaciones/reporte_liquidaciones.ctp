@@ -47,7 +47,7 @@ if (!empty($data)) {
             foreach ($areas as $area => $values) {
 
                 list($areaName, $groupId) = explode('||', $area);
-                
+
                 $documento->setCellValueFromArray(
                     array(  '',
                             '',

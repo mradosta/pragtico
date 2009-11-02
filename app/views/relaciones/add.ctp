@@ -82,21 +82,9 @@ $campos['Relacion.modalidad_id'] = array(	'lov'	=>	array(	'controller'		=> 	'mod
 																								'Modalidad.nombre')));
 $fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array('class' => 'subset'), 'fieldset' => array('legend' => 'Afip', 'imagen' => 'afip.gif')));
 
-
-/**
-* Datos de la desvinculacion.
-*/
 $campos = null;
-$campos['Relacion.egreso'] = array();
-$campos['Relacion.egresos_motivo_id'] = array( 'empty'         => true,
-                                                'options'       => 'listable',
-                                                'order'         => 'EgresosMotivo.motivo',
-                                                'displayField'  => 'EgresosMotivo.motivo',
-                                                'model'         => 'EgresosMotivo',
-                                                'label'         => 'Motivo');
-$campos['Relacion.liquidacion_final'] = array('aclaracion' => 'Indica si esta autorizado para realizarle la Liquidacion Final');
 $campos['Relacion.observacion'] = array();
-$fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array('class' => 'subset'), 'fieldset' => array('legend' => 'Desvinculacion', 'imagen' => 'fin_relacion_laboral.gif')));
+$fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array('class' => 'subset'), 'fieldset' => array('legend' => 'Observaciones', 'imagen' => 'historicos.gif')));
 
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => 'Relacion Laboral', 'imagen' => 'relaciones.gif')));
 

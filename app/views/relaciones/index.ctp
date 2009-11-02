@@ -31,7 +31,6 @@ $condiciones['Condicion.Trabajador-apellido'] = array('label'=>'Apellido');
 $condiciones['Condicion.Trabajador-nombre'] = array();
 $condiciones['Condicion.Trabajador-numero_documento'] = array('label'=>'Documento');
 $condiciones['Condicion.Relacion-estado'] = array('type' => 'select', 'multiple' => 'checkbox');
-$condiciones['Condicion.Relacion-liquidacion_final'] = array();
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('imagen' => 'relaciones.gif')));
 
@@ -49,7 +48,7 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'descuentos.gif', 'alt' => 'Descuentos y Anticipos'), 'url' => 'descuentos');
 	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'vacaciones.gif', 'alt' => 'Vacaciones'), 'url' => 'vacaciones');
 	$fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'pagos.gif', 'alt' => 'Pagos'), 'url' => 'pagos');
-    $fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'historicas.gif', 'alt' => 'Historicas'), 'url' => 'historicas');
+    $fila[] = array('tipo' => 'desglose', 'id' => $id, 'imagen' => array('nombre' => 'historicos.gif', 'alt' => 'Historical'), 'url' => 'historial');
 	//$fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('acciones/bloquear.gif', array('alt' => 'Pasar a historico', 'title'=>'Pasar a historico')), 'pasarAHistorico/' . $id, array(), 'Desea pasar la relacion laboral al historico?'));
 	//$fila[] = array('tipo' => 'accion', 'valor' => $appForm->link($appForm->image('documentos.gif', array('alt' => 'Generar Documento')), array('controller' => 'documentos', 'action' => 'generar', 'model' => 'Relacion', 'id'' . $id));
 	$fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('documentos.gif', array('alt' => 'Generar Documento')), array('controller' => 'documentos', 'action' => 'generar', 'model' => 'Relacion', 'id' => $id)));

@@ -127,8 +127,12 @@ class Liquidacion extends AppModel {
 
 		$this->setVar('#tipo_liquidacion', $type);
 		$this->setPeriod($period);
-		$this->setRelationship($relationship);
-        $tmpOut = $this->getRelationship('Relacion', 'egreso');
+        $this->setRelationship($relationship);
+
+        if ($type === 'final') {
+            $tmpOut = $relationship['RelacionesHistorial'][0]['fin'];
+        }
+        
         if (empty($tmpOut) || $tmpOut === '0000-00-00') {
             $this->setVar('#fecha_egreso', '2035-01-01');
         }
@@ -192,18 +196,13 @@ class Liquidacion extends AppModel {
                 foreach ($this->__conceptos as $cCod => $concepto) {
                     if (!($concepto['tipo'] === 'Deduccion'
                         || in_array($cCod, $noveltiesConcepts)
+                        || $concepto['imprimir'] == 'No'
                         || substr($concepto['imprimir'], -9) === '[Forzado]')) {
-                        $this->__conceptos[$cCod] = array_merge(
-                            $this->__conceptos[$cCod],
-                            array(  'valor'             => 0,
-                                    'debug'             => '',
-                                    'valor_cantidad'    => 0,
-                                    'valor_unitario'    => 0,
-                                    'errores'           => array()));
+                        
+                        $this->__resolvConceptToZero($cCod);
                     }
                 }
             }
-            
 		} elseif ($type === 'vacaciones') {
 			foreach ($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
 					array(		'relacion' 	=> $relationship,
@@ -259,13 +258,22 @@ class Liquidacion extends AppModel {
 
             if ($type === 'final') {
 
+
+                //if ($relationship['RelacionesHistorial'][0]['liquidacion_final'] == 'Si y Suspender'')
+                $auxiliar = null;
+                $auxiliar['id'] = $relationship['Relacion']['id'];
+                $auxiliar['estado'] = 'Suspendida';
+                $this->__setAuxiliar(array('save' => serialize($auxiliar), 'model' => 'Relacion'));
+                            
+                                            
                 $auxiliar = null;
                 $auxiliar['id'] = $relationship['Relacion']['id'];
                 $auxiliar['estado'] = 'Historica';
                 $this->__setAuxiliar(array('save' => serialize($auxiliar), 'model' => 'Relacion'));
                 
-                $to = $relationship['Relacion']['egreso'];
-                $tmp = explode('-', $relationship['Relacion']['egreso']);
+                $to = $relationship['RelacionesHistorial'][0]['fin'];
+        
+                $tmp = explode('-', $relationship['RelacionesHistorial'][0]['fin']);
                 $period['ano'] = $tmp[0];
                 $period['mes'] = $tmp[1];
                 if ($period['mes'] <= 6) {
@@ -377,10 +385,11 @@ class Liquidacion extends AppModel {
 		$liquidacion = null;
 		$liquidacion['fecha'] = date('Y-m-d');
         if ($type === 'final') {
-            list($liquidacion['ano'], $liquidacion['mes'], ) = explode('-', $this->getRelationship('Relacion', 'egreso'));
+            $relationship = $this->getRelationship();
+            list($liquidacion['ano'], $liquidacion['mes'], ) = explode('-', $relationship['RelacionesHistorial'][0]['fin']);
             $liquidacion['periodo'] = 'F';
             /**When final receipt, must pay whether two next days */
-            $liquidacion['pago'] = $this->dateAddWorkingDays($this->getRelationship('Relacion', 'egreso'), 2);
+            $liquidacion['pago'] = $this->dateAddWorkingDays($relationship['RelacionesHistorial'][0]['fin'], 2);
         } else {
             $liquidacion['ano'] = $this->getPeriod('ano');
             $liquidacion['mes'] = $this->getPeriod('mes');
@@ -391,7 +400,9 @@ class Liquidacion extends AppModel {
 		$liquidacion['estado'] = 'Sin Confirmar';
 		$liquidacion['relacion_id'] = $this->getRelationship('Relacion', 'id');
 		$liquidacion['relacion_ingreso'] = $this->getRelationship('Relacion', 'ingreso');
-        $liquidacion['relacion_egreso'] = $this->getRelationship('Relacion', 'egreso');
+        if (!empty($relationship['RelacionesHistorial'][0]['fin'])) {
+            $liquidacion['relacion_egreso'] = $relationship['RelacionesHistorial'][0]['fin'];
+        }
 		$liquidacion['relacion_legajo'] = $this->getRelationship('Relacion', 'legajo');
 		$liquidacion['relacion_horas'] = $this->getRelationship('Relacion', 'horas');
 		$liquidacion['relacion_basico'] = $this->getRelationship('Relacion', 'basico');
@@ -428,21 +439,19 @@ class Liquidacion extends AppModel {
 				$detalle[] = $v;
 			}
 
-			if ($detalleLiquidacion['imprimir'] === "Si" || $detalleLiquidacion['imprimir'] === "Solo con valor") {
+			if (in_array($detalleLiquidacion['imprimir'], array('Si', 'Solo con valor'))) {
 
-				$pago = "total_" . strtolower($detalleLiquidacion['pago']);
+				$pago = 'total_' . strtolower($detalleLiquidacion['pago']);
 				switch ($detalleLiquidacion['tipo']) {
-					case "Remunerativo":
+					case 'Remunerativo':
 						$totales[$pago] += $detalleLiquidacion['valor'];
 						$totales['remunerativo'] += $detalleLiquidacion['valor'];
 						break;
-					case "No Remunerativo":
-                        //debug($detalleLiquidacion);
-                        //d($totales);
+					case 'No Remunerativo':
 						$totales[$pago] += $detalleLiquidacion['valor'];
 						$totales['no_remunerativo'] += $detalleLiquidacion['valor'];
 						break;
-					case "Deduccion":
+					case 'Deduccion':
 						$totales[$pago] -= $detalleLiquidacion['valor'];
 						$totales['deduccion'] += $detalleLiquidacion['valor'];
 						break;
@@ -540,6 +549,7 @@ class Liquidacion extends AppModel {
 	function __agregarDetalle($detalleLiquidacion) {
 		$detalle = null;
 		if (!empty($detalleLiquidacion['concepto_id'])) {
+            //debug($detalleLiquidacion);
 			$detalle['concepto_id'] = $detalleLiquidacion['concepto_id'];
 			$detalle['concepto_codigo'] = $detalleLiquidacion['codigo'];
 			$detalle['concepto_nombre'] = $detalleLiquidacion['nombre'];
@@ -584,29 +594,34 @@ class Liquidacion extends AppModel {
             $diff = array_diff($allNecesaryConcepts, array_keys($this->__conceptos));
             if (!empty($diff)) {
                 foreach ($diff as $concept) {
-                    $tmpConcept = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $this->getRelationship(), 'codigoConcepto' => $concept));
-                    if (!empty($tmpConcept)) {
-                        if (substr($tmpConcept[$concept]['imprimir'], -9) === '[Forzado]') {
-                            $tmpConcept[$concept]['imprimir'] = str_replace(' [Forzado]', '', $tmpConcept[$concept]['imprimir']);
-                        } else {
-                            $tmpConcept[$concept]['imprimir'] = 'No';
-                        }
+                    if ($this->getVarValue('#tipo_liquidacion') === 'especial') {
+                        $this->__resolvConceptToZero($concept);
                     } else {
-                        $this->__setError(array(    'tipo'                  => 'Concepto Inexistente',
-                                                    'gravedad'              => 'Alta',
-                                                    'concepto'              => $concept,
-                                                    'variable'              => '',
-                                                    'formula'               => '',
-                                                    'descripcion'           => 'La formula requiere de un concepto inexistente.',
-                                                    'recomendacion'         => 'Verifique la formula y que todos los conceptos que esta utiliza existan.',
-                                                    'descripcion_adicional' => ''));
-                        $tmpConcept[$concept]['codigo'] = $concept;
-                        $tmpConcept[$concept]['imprimir'] = 'No';
-                        $tmpConcept[$concept]['formula'] = 'ERROR';
-                        $tmpConcept[$concept]['tipo'] = 'ERROR';
-                        $tmpConcept[$concept]['valor'] = 0;
+
+                        $tmpConcept = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $this->getRelationship(), 'codigoConcepto' => $concept));
+                        if (!empty($tmpConcept)) {
+                            if (substr($tmpConcept[$concept]['imprimir'], -9) === '[Forzado]') {
+                                $tmpConcept[$concept]['imprimir'] = str_replace(' [Forzado]', '', $tmpConcept[$concept]['imprimir']);
+                            } else {
+                                $tmpConcept[$concept]['imprimir'] = 'No';
+                            }
+                        } else {
+                            $this->__setError(array(    'tipo'                  => 'Concepto Inexistente',
+                                                        'gravedad'              => 'Alta',
+                                                        'concepto'              => $concept,
+                                                        'variable'              => '',
+                                                        'formula'               => '',
+                                                        'descripcion'           => 'La formula requiere de un concepto inexistente.',
+                                                        'recomendacion'         => 'Verifique la formula y que todos los conceptos que esta utiliza existan.',
+                                                        'descripcion_adicional' => ''));
+                            $tmpConcept[$concept]['codigo'] = $concept;
+                            $tmpConcept[$concept]['imprimir'] = 'No';
+                            $tmpConcept[$concept]['formula'] = 'ERROR';
+                            $tmpConcept[$concept]['tipo'] = 'ERROR';
+                            $tmpConcept[$concept]['valor'] = 0;
+                        }
+                        $this->setConcept($tmpConcept);
                     }
-                    $this->setConcept($tmpConcept);
                 }
                 $this->__getAllNecessaryConcepts();
             }
@@ -707,10 +722,8 @@ class Liquidacion extends AppModel {
 		* Veo si es una formula, hay un not, obtengo los conceptos y rearmo los formula eliminando la perte del not.
 		*/
 		if (preg_match('/not[\s]*\(([^()]+)\)/', $formula, $matches)) {
-            //debug($concepto['codigo']);
 			$conceptosNot = explode(',', str_replace('@', '', str_replace(' ', '', $matches[1])));
 			$formula = str_replace('(,', '(', str_replace(str_replace(' ', '', $matches[0]), '', str_replace(' ', '', $formula)));
-            //debug($conceptosNot);
 		}
 		
 
@@ -727,11 +740,10 @@ class Liquidacion extends AppModel {
 			foreach ($this->__conceptos as $conceptoTmp) {
                 
 				if (!in_array($conceptoTmp['codigo'], $conceptosNot) && $conceptoTmp['tipo'] == $matches[1] && in_array($conceptoTmp['imprimir'], array('Si', 'Solo con valor'))) {
-                    //debug($conceptoTmp['codigo']);
 					if (empty($conceptoTmp['valor'])) {
-						$resolucionCalculo = $this->__getConceptValue($conceptoTmp);
-						$this->__conceptos[$conceptoTmp['codigo']] = array_merge($resolucionCalculo, $this->__conceptos[$conceptoTmp['codigo']]);
-						$conceptoTmp['valor'] = $resolucionCalculo['valor'];
+                        $resolucionCalculo = $this->__getConceptValue($conceptoTmp);
+                        $this->__conceptos[$conceptoTmp['codigo']] = array_merge($resolucionCalculo, $this->__conceptos[$conceptoTmp['codigo']]);
+                        $conceptoTmp['valor'] = $resolucionCalculo['valor'];
 					}
 					$valor += $conceptoTmp['valor'];
 				}
@@ -748,7 +760,7 @@ class Liquidacion extends AppModel {
 			* Verifico que tenga calculado todos los conceptos que esta formula me pide.
 			* Si aun no lo tengo, lo calculo.
 			*/
-			if (preg_match_all("/(@[\w]+)/", $formula, $matches)) {
+			if (preg_match_all('/(@[\w]+)/', $formula, $matches)) {
                 
                 /** Must order array before replacing because of non exact replace of str_replace */
                 $tmp = null;
@@ -771,46 +783,52 @@ class Liquidacion extends AppModel {
 						* Busco los conceptos que puedan estar faltandome.
 						* Los agrego al array de conceptos identificandolos y poniendoles el estado a no imprimir.
 						*/
-						$conceptoParaCalculo = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $this->getRelationship(), 'codigoConcepto' => $match));
-						if (empty($conceptoParaCalculo)) {
-							$this->__setError(array(	'tipo'					=> 'Concepto Inexistente',
-														'gravedad'				=> 'Alta',
-														'concepto'				=> $match,
-														'variable'				=> '',
-														'formula'				=> $formula,
-														'descripcion'			=> 'La formula requiere de un concepto inexistente.',
-														'recomendacion'			=> 'Verifique la formula y que todos los conceptos que esta utiliza existan.',
-														'descripcion_adicional'	=> 'verifique: ' . $concepto['codigo']));
-						} else {
-                            if (substr($conceptoParaCalculo[$match]['imprimir'], -9) === '[Forzado]') {
-                                $conceptoParaCalculo[$match]['imprimir'] = str_replace(' [Forzado]', '', $conceptoParaCalculo[$match]['imprimir']);
+                        if ($this->getVarValue('#tipo_liquidacion') === 'especial') {
+                            $this->__resolvConceptToZero($match);
+                        } else {
+                            $conceptoParaCalculo = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $this->getRelationship(), 'codigoConcepto' => $match));
+                            if (empty($conceptoParaCalculo)) {
+                                $this->__setError(array(	'tipo'					=> 'Concepto Inexistente',
+                                                            'gravedad'				=> 'Alta',
+                                                            'concepto'				=> $match,
+                                                            'variable'				=> '',
+                                                            'formula'				=> $formula,
+                                                            'descripcion'			=> 'La formula requiere de un concepto inexistente.',
+                                                            'recomendacion'			=> 'Verifique la formula y que todos los conceptos que esta utiliza existan.',
+                                                            'descripcion_adicional'	=> 'verifique: ' . $concepto['codigo']));
                             } else {
-                                $conceptoParaCalculo[$match]['imprimir'] = 'No';
+                                if (substr($conceptoParaCalculo[$match]['imprimir'], -9) === '[Forzado]') {
+                                    $conceptoParaCalculo[$match]['imprimir'] = str_replace(' [Forzado]', '', $conceptoParaCalculo[$match]['imprimir']);
+                                } else {
+                                    $conceptoParaCalculo[$match]['imprimir'] = 'No';
+                                }
+                                $this->setConcept($conceptoParaCalculo);
                             }
-							$this->setConcept($conceptoParaCalculo);
-						}
+                        }
 					}
 					
-					/** Si no tiene valor, lo calculo */
+					/** If no value yet, must calculate it */
 					if (!isset($this->__conceptos[$match]['valor'])) {
-						if (isset($this->__conceptos[$match])) {
-							$resolucionCalculo = $this->__getConceptValue($this->__conceptos[$match]);
-							$this->__conceptos[$match] = array_merge($resolucionCalculo, $this->__conceptos[$match]);
-						} else {
-							$this->__setError(array(	'tipo'					=> 'Concepto Inexistente',
-														'gravedad'				=> 'Alta',
-														'concepto'				=> $match,
-														'variable'				=> '',
-														'formula'				=> $formula,
-														'descripcion'			=> 'La formula requiere de un concepto inexistente.',
-														'recomendacion'			=> 'Verifique la formula y que todos los conceptos que esta utiliza existan.',
-														'descripcion_adicional'	=> 'verifique: ' . $concepto['codigo']));
-						}
+                        if ($this->getVarValue('#tipo_liquidacion') === 'especial') {
+                            $this->__resolvConceptToZero($match);
+                        } else {
+                            if (isset($this->__conceptos[$match])) {
+                                $resolucionCalculo = $this->__getConceptValue($this->__conceptos[$match]);
+                                $this->__conceptos[$match] = array_merge($resolucionCalculo, $this->__conceptos[$match]);
+                            } else {
+                                $this->__setError(array(	'tipo'					=> 'Concepto Inexistente',
+                                                            'gravedad'				=> 'Alta',
+                                                            'concepto'				=> $match,
+                                                            'variable'				=> '',
+                                                            'formula'				=> $formula,
+                                                            'descripcion'			=> 'La formula requiere de un concepto inexistente.',
+                                                            'recomendacion'			=> 'Verifique la formula y que todos los conceptos que esta utiliza existan.',
+                                                            'descripcion_adicional'	=> 'verifique: ' . $concepto['codigo']));
+                            }
+                        }
 					}
 						
-					/**
-					* Reemplazo en la formula el concepto por su valor.
-					*/
+					/** Replace concept by it's value. */
 					if (isset($this->__conceptos[$match])) {
 						$resolucionCalculo['valor'] = $this->__conceptos[$match]['valor'];
                         $formula = str_replace('@' . $match, $resolucionCalculo['valor'], $formula);
@@ -832,7 +850,6 @@ class Liquidacion extends AppModel {
             //debug($concepto['codigo']);
             //debug($concepto['formula']);
             //debug($formula);
-            
 			$valor = $this->resolver($formula);
 		} elseif (empty($formula)) {
 			$this->__setError(array(	'tipo'					=> 'Formula de Concepto Inexistente',
@@ -912,21 +929,12 @@ class Liquidacion extends AppModel {
                                         'descripcion_adicional' => ''));
             $this->setVar($variable, '#N/A');
             return '#N/A';
-        }
-        /**
-        * Ya he resuelto esta variable anteriormente.
-        */
-        elseif (isset($this->__variables[$variable]['valor'])) {
+        } elseif (isset($this->__variables[$variable]['valor'])) {
+            /** The var is already resolved */
             return $this->__variables[$variable]['valor'];
-        }
-        /**
-        * Intento resolverla.
-        */
-        else {
-			
-            /**
-            * Si es una formula, la resuelvo.
-            */
+        } else {
+            /** Try resolving */
+
             if (substr($this->__variables[$variable]['formula'], 0, 1) === '=') {
                 $formula = $this->__variables[$variable]['formula'];
                 /**
@@ -937,7 +945,7 @@ class Liquidacion extends AppModel {
                         $formula = preg_replace('/(' . $v . ')([\)\s\*\+\/\-\=\,]*(?!_))/', $this->getVarValue($v) . '$2', $formula);
                     }
                 }
-                if (preg_match_all("/@([\w]+)/", $formula, $conceptos_tmp)) {
+                if (preg_match_all('/@([\w]+)/', $formula, $conceptos_tmp)) {
                     foreach (array_unique($conceptos_tmp[1]) as $v) {
                         if (!empty($this->__conceptos[$v])) {
                             $tmp = $this->__getConceptValue($this->__conceptos[$v]);
@@ -1180,6 +1188,26 @@ class Liquidacion extends AppModel {
         }
     }
 
+
+    function __resolvConceptToZero($conceptCode) {
+        $zero = array(
+            'codigo'            => $conceptCode,
+            'imprimir'          => 'No',
+            'formula'           => '',
+            'valor'             => 0,
+            'debug'             => 'Auto-resulto a 0 (Cero)',
+            'valor_cantidad'    => 0,
+            'valor_unitario'    => 0,
+            'errores'           => array());
+        
+        if (!empty($this->__conceptos[$conceptCode])) {
+            $this->__conceptos[$conceptCode] = array_merge(
+            $this->__conceptos[$conceptCode], $zero);
+        } else {
+            $this->__conceptos[$conceptCode] = $zero;
+        }
+    }
+    
 
     function getConcept_deprecated($conceptCode = null) {
         if (empty($conceptCode)) {

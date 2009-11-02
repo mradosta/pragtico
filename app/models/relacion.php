@@ -119,9 +119,6 @@ class Relacion extends AppModel {
 							'Actividad' =>
                         array('className'    => 'Actividad',
                               'foreignKey'   => 'actividad_id'),
-                            'EgresosMotivo' =>
-                        array('className'    => 'EgresosMotivo',
-                              'foreignKey'   => 'egresos_motivo_id'),
 							'Modalidad' =>
                         array('className'    => 'Modalidad',
                               'foreignKey'   => 'modalidad_id'),
@@ -129,7 +126,7 @@ class Relacion extends AppModel {
                         array('className'    => 'ConveniosCategoria',
                               'foreignKey'   => 'convenios_categoria_id'));
 
-	var $hasMany = array(  'RelacionesHistorica',
+	var $hasMany = array(  'RelacionesHistorial',
                             'Ausencia' =>
                         array('className'    => 'Ausencia',
                               'foreignKey'   => 'relacion_id'),

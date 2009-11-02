@@ -79,6 +79,7 @@
  */
  	$singularRules = array(	'/(.)res$/i' => '\1\2r',
  							'/(.)nes$/i' => '\1\2n',
+                            '/(.)riales$/i' => '\1\2rial',
  							'/(.)ciales$/i' => '\1\2cial',);
  	
 /**

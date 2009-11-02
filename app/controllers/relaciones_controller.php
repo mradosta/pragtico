@@ -336,8 +336,8 @@ class RelacionesController extends AppController {
 	}
 
 
-    function historicas($id) {
-        $this->Relacion->contain('RelacionesHistorica.EgresosMotivo');
+    function historial($id) {
+        $this->Relacion->contain('RelacionesHistorial.EgresosMotivo');
         $this->data = $this->Relacion->read(null, $id);
     }
 

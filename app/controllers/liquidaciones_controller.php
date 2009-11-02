@@ -97,34 +97,6 @@ class LiquidacionesController extends AppController {
                             `Area`.`identificador_centro_costo`
             ORDER BY        `Liquidacion`.`empleador_nombre`';
 
-
-                                    /*
-            foreach ($this->Liquidacion->find('all', array(
-                'conditions'    => $conditions,
-                'fields'        => array(
-                    'Liquidacion.empleador_id',
-                    'Liquidacion.empleador_cuit',
-                    'Liquidacion.empleador_nombre',
-                    'Liquidacion.relacion_area_id',
-                    'Area.nombre',
-                    'Area.group_id',
-                    'Area.identificador_centro_costo',
-                    'Liquidacion.trabajador_id',
-                    'SUM(Liquidacion.remunerativo) AS remunerativo',
-                    'SUM(Liquidacion.no_remunerativo) AS no_remunerativo'),
-                'group'         => array(
-                    'Liquidacion.empleador_id',
-                    'Liquidacion.empleador_cuit',
-                    'Liquidacion.empleador_nombre',
-                    'Liquidacion.relacion_area_id',
-                    'Area.nombre',
-                    'Area.group_id',
-                    'Area.identificador_centro_costo',
-                    'Liquidacion.trabajador_idx'))) as $record) {
-                        */
-
-//                                    debug($sql);
-//d($this->Liquidacion->query($sql));
             $workers = array();
             foreach ($this->Liquidacion->query($sql) as $record) {
 
@@ -447,6 +419,11 @@ class LiquidacionesController extends AppController {
 			$relaciones = $this->Liquidacion->Relacion->find('all',
 					array(	'contain'		=> array(	'ConveniosCategoria',
                                                         'Modalidad',
+                                                        'RelacionesHistorial' => array(
+                                                                'limit'     => 1,
+                                                            'conditions'    => array(
+                                                                'RelacionesHistorial.estado' => 'Confirmado'),
+                                                            'order'         => 'RelacionesHistorial.id DESC'),
 														'Trabajador.ObrasSocial',
 														'Empleador'),
 							'conditions'	=> $condiciones));
@@ -486,14 +463,18 @@ class LiquidacionesController extends AppController {
 			$opciones['informaciones'] = $informaciones;
 			foreach ($relaciones as $relacion) {
 
-                if ($this->data['Condicion']['Liquidacion-tipo'] === 'final' && $relacion['Relacion']['liquidacion_final'] === 'No') {
-                    continue;
+                if ($this->data['Condicion']['Liquidacion-tipo'] === 'final') {
+                    if ($relacion['RelacionesHistorial'][0]['liquidacion_final'] != 'Si'
+                    || empty($relacion['RelacionesHistorial'][0]['fin'])
+                    || (!empty($relacion['RelacionesHistorial'][0]['fin'])
+                        && $relacion['RelacionesHistorial'][0]['fin'] == '0000-00-00')) {
+                        continue;
+                    } else {
+                        /** For finished relations, only allow last period receipt */
+                        $periodo['hasta'] = $relacion['RelacionesHistorial'][0]['fin'];
+                    }
                 }
 
-                /** For finished relations, only allow last period receipt */
-                if (!empty($relacion['Relacion']['egreso']) && $relacion['Relacion']['egreso'] !== '0000-00-00' && $this->data['Condicion']['Liquidacion-tipo'] === 'final') {
-                    $periodo['hasta'] = $relacion['Relacion']['egreso'];
-                }
                 
                 $conveniosCategoriasHistoricoCondition['ConveniosCategoriasHistorico.convenios_categoria_id'] = $relacion['ConveniosCategoria']['id'];
                 
@@ -503,9 +484,9 @@ class LiquidacionesController extends AppController {
                         'ConveniosCategoriasHistorico.hasta >=' => $periodo['hasta'],
                         'ConveniosCategoriasHistorico.hasta'    => '0000-00-00');
                 } else {
-                    $conveniosCategoriasHistoricoCondition['ConveniosCategoriasHistorico.desde <='] = $relacion['Relacion']['egreso'];
+                    $conveniosCategoriasHistoricoCondition['ConveniosCategoriasHistorico.desde <='] = $relacion['RelacionesHistorial'][0]['fin'];
                     $conveniosCategoriasHistoricoCondition['OR'] = array(
-                        'ConveniosCategoriasHistorico.hasta >=' => $relacion['Relacion']['egreso'],
+                        'ConveniosCategoriasHistorico.hasta >=' => $relacion['RelacionesHistorial'][0]['fin'],
                         'ConveniosCategoriasHistorico.hasta'    => '0000-00-00');
                 }
                 
