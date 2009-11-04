@@ -129,18 +129,19 @@ class Liquidacion extends AppModel {
 		$this->setPeriod($period);
         $this->setRelationship($relationship);
 
-        if ($type === 'final') {
+
+        if (!empty($relationship['RelacionesHistorial'][0]['fin'])) {
             $tmpOut = $relationship['RelacionesHistorial'][0]['fin'];
         }
-        
+
         if (empty($tmpOut) || $tmpOut === '0000-00-00') {
             $this->setVar('#fecha_egreso', '2035-01-01');
         }
-        
 
-		if ($type === 'normal' || $type === 'especial') {
 
-			$jornada = $this->getRelationship('ConveniosCategoria', 'jornada');
+        if ($type === 'normal' || $type === 'especial') {
+
+            $jornada = $this->getRelationship('ConveniosCategoria', 'jornada');
 			if (($period['periodo'] !== 'M' && $jornada === 'Mensual') || ($period['periodo'] === 'M' && $jornada === 'Por Hora')) {
 				return;
 			}
@@ -198,7 +199,7 @@ class Liquidacion extends AppModel {
                         || in_array($cCod, $noveltiesConcepts)
                         || $concepto['imprimir'] == 'No'
                         || substr($concepto['imprimir'], -9) === '[Forzado]')) {
-                        
+
                         $this->__resolvConceptToZero($cCod);
                     }
                 }
@@ -738,7 +739,7 @@ class Liquidacion extends AppModel {
             $valor = 0;
             $this->__getAllNecessaryConcepts();
 			foreach ($this->__conceptos as $conceptoTmp) {
-                
+
 				if (!in_array($conceptoTmp['codigo'], $conceptosNot) && $conceptoTmp['tipo'] == $matches[1] && in_array($conceptoTmp['imprimir'], array('Si', 'Solo con valor'))) {
 					if (empty($conceptoTmp['valor'])) {
                         $resolucionCalculo = $this->__getConceptValue($conceptoTmp);
