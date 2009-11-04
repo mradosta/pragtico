@@ -75,7 +75,7 @@ class ConveniosCategoria extends AppModel {
 				$results['costo'] = $this->__getCosto($results['ConveniosCategoriasHistorico']);
 			} else {
 				foreach ($results as $k=>$v) {
-					if (isset($v['ConveniosCategoria'][0])) {
+					if (Set::check($v, 'ConveniosCategoria.0')) {
 						foreach ($v['ConveniosCategoria'] as $k1=>$v1) {
 							if (is_numeric($k1) && isset($v1['ConveniosCategoriasHistorico'])) {
 								if (is_array($v1)) {
