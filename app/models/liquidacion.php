@@ -118,15 +118,15 @@ class Liquidacion extends AppModel {
         $this->__currentConcept = null;
 
         $this->resetRecursivity();
-        
-		/** Initial set of vars and concepts */
-		$this->setVar($options['variables']);
-		if (!empty($options['informaciones'][$relationship['ConveniosCategoria']['convenio_id']])) {
-			$this->setVar($options['informaciones'][$relationship['ConveniosCategoria']['convenio_id']]);
-		}
 
-		$this->setVar('#tipo_liquidacion', $type);
-		$this->setPeriod($period);
+        /** Initial set of vars and concepts */
+        $this->setVar($options['variables']);
+        if (!empty($options['informaciones'][$relationship['ConveniosCategoria']['convenio_id']])) {
+            $this->setVar($options['informaciones'][$relationship['ConveniosCategoria']['convenio_id']]);
+        }
+
+        $this->setVar('#tipo_liquidacion', $type);
+        $this->setPeriod($period);
         $this->setRelationship($relationship);
 
 
@@ -136,6 +136,8 @@ class Liquidacion extends AppModel {
 
         if (empty($tmpOut) || $tmpOut === '0000-00-00') {
             $this->setVar('#fecha_egreso', '2035-01-01');
+        } else {
+            $this->setVar('#fecha_egreso', $tmpOut);
         }
 
 
