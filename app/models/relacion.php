@@ -160,21 +160,15 @@ class Relacion extends AppModel {
 
 
 	function beforeSave() {
-		/** When no record number is entered, assing same number as document */
-		if (empty($this->data['Relacion']['legajo']) && !empty($this->data['Relacion']['trabajador_id'])) {
-			$this->Trabajador->recursive = -1;
-			$trabajador = $this->Trabajador->findById($this->data['Relacion']['trabajador_id']);
-			$this->data['Relacion']['legajo'] = $trabajador['Trabajador']['numero_documento'];
-		}
-	
-		/** Update state when expiry date is set
-		if (!empty($this->data['Relacion']['egreso']) && $this->data['Relacion']['egreso'] !== '0000-00-00') {
-			$this->data['Relacion']['estado'] = 'Historica';
-		}
-        */
-		
-		return parent::beforeSave();
-	}
+        /** When no record number is entered, assing same number as document */
+        if (empty($this->data['Relacion']['legajo']) && !empty($this->data['Relacion']['trabajador_id'])) {
+            $this->Trabajador->recursive = -1;
+            $trabajador = $this->Trabajador->findById($this->data['Relacion']['trabajador_id']);
+            $this->data['Relacion']['legajo'] = $trabajador['Trabajador']['numero_documento'];
+        }
+
+        return parent::beforeSave();
+    }
 
 
 

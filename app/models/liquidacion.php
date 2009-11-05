@@ -196,7 +196,9 @@ class Liquidacion extends AppModel {
             if ($type === 'especial') {
 
                 $noveltiesConcepts = array_keys(am($ausencias['conceptos'], $horas['conceptos'], $novedades['conceptos']));
+
                 foreach ($this->__conceptos as $cCod => $concepto) {
+
                     if (!($concepto['tipo'] === 'Deduccion'
                         || in_array($cCod, $noveltiesConcepts)
                         || $concepto['imprimir'] == 'No'
@@ -598,6 +600,8 @@ class Liquidacion extends AppModel {
             if (!empty($diff)) {
                 foreach ($diff as $concept) {
                     if ($this->getVarValue('#tipo_liquidacion') === 'especial') {
+                        //$tmpConcept = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' =>   $this->getRelationship(), 'codigoConcepto' => $concept));
+                        //$this->setConcept($tmpConcept);
                         $this->__resolvConceptToZero($concept);
                     } else {
 
@@ -1202,7 +1206,7 @@ class Liquidacion extends AppModel {
             'valor_cantidad'    => 0,
             'valor_unitario'    => 0,
             'errores'           => array());
-        
+
         if (!empty($this->__conceptos[$conceptCode])) {
             $this->__conceptos[$conceptCode] = array_merge(
             $this->__conceptos[$conceptCode], $zero);
@@ -1210,7 +1214,7 @@ class Liquidacion extends AppModel {
             $this->__conceptos[$conceptCode] = $zero;
         }
     }
-    
+
 
     function getConcept_deprecated($conceptCode = null) {
         if (empty($conceptCode)) {
