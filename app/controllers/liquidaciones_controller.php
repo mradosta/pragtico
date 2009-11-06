@@ -28,7 +28,10 @@ class LiquidacionesController extends AppController {
         'order' => array(
             'Liquidacion.ano'       => 'desc',
             'Liquidacion.mes'       => 'desc',
-            'Liquidacion.periodo'   => 'desc'
+            'Liquidacion.periodo'   => 'desc',
+            'Liquidacion.empleador_nombre',
+            'Liquidacion.trabajador_apellido',
+            'Liquidacion.trabajador_nombre'
         )
     );
     
@@ -95,7 +98,9 @@ class LiquidacionesController extends AppController {
                             `Area`.`nombre`,
                             `Area`.`group_id`,
                             `Area`.`identificador_centro_costo`
-            ORDER BY        `Liquidacion`.`empleador_nombre`';
+            ORDER BY        `Liquidacion`.`empleador_nombre`,
+                            `Liquidacion`.`trabajador_apellido`,
+                            `Liquidacion`.`trabajador_nombre`';
 
             $workers = array();
             foreach ($this->Liquidacion->query($sql) as $record) {
@@ -517,7 +522,7 @@ class LiquidacionesController extends AppController {
         
 		/** Take care of filtering saved or unconfirmed receipt */
         if (empty($condiciones)) {
-            $condiciones =$this->Paginador->generarCondicion();
+            $condiciones = $this->Paginador->generarCondicion();
         }
 		if (empty($condiciones['Liquidacion.estado'])) {
             if (empty($this->data['Condicion']['Liquidacion-estado'])) {
@@ -697,6 +702,13 @@ class LiquidacionesController extends AppController {
 
             $this->Liquidacion->Behaviors->detach('Permisos');
             $this->Liquidacion->Behaviors->detach('Util');
+            /*
+                    array(  'contain'       => array('Relacion' => array(
+                        'RelacionesHistorial' => array(
+                            'limit'         => 1,
+                            'conditions'    => array('RelacionesHistorial.estado' => 'Confirmado'),
+                            'order'         => 'RelacionesHistorial.id DESC'))),
+            */
             $this->set('data', $this->Liquidacion->find('all',
                     array(  'contain'       => array('Relacion'),
                             'limit'         => 12,
