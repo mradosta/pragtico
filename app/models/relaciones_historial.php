@@ -42,7 +42,8 @@ class RelacionesHistorial extends AppModel {
 
 
     function beforeValidate($options = array()) {
-        if (!empty($this->data['RelacionesHistorial']['fin']) && $this->data['RelacionesHistorial']['fin'] < date('Y-m-d')) {
+        if (!empty($this->data['RelacionesHistorial']['fin'])
+            && $this->data['RelacionesHistorial']['fin'] < date('Y-m-d')) {
             return false;
         } else {
             return parent::beforeValidate($options);
@@ -50,9 +51,23 @@ class RelacionesHistorial extends AppModel {
     }
     
     function beforeSave($options = array()) {
-        $this->Relacion->recursive = -1;
+        $this->Relacion->contain(array('RelacionesHistorial' => array(
+            'conditions'    => array('RelacionesHistorial.estado' => 'Confirmado'),
+            'order'         => 'RelacionesHistorial.id DESC')));
         $relation = $this->Relacion->findById($this->data['RelacionesHistorial']['relacion_id']);
-        $this->data['RelacionesHistorial']['inicio'] = $relation['Relacion']['ingreso'];
+
+        if (empty($relation['RelacionesHistorial'])) {
+            $this->data['RelacionesHistorial']['inicio'] = $relation['Relacion']['ingreso'];
+        } else {
+            App::import('Vendor', 'dates', 'pragmatia');
+            $this->data['RelacionesHistorial']['inicio'] = Dates::dateAdd($relation['RelacionesHistorial'][0]['fin'], 1, 'd', array('fromInclusive' => false));
+        }
+
+        if (!empty($this->data['RelacionesHistorial']['estado'])
+            && $this->data['RelacionesHistorial']['estado'] == 'Pendiente') {
+            $this->data['RelacionesHistorial']['permissions'] = '496';
+        }
+
         return parent::beforeSave($options);
     }
 
