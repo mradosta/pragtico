@@ -130,6 +130,7 @@ class LiquidacionesController extends AppController {
 
             $this->set('data', $data);
             $this->set('groupParams', $groupParams);
+            $this->set('period', $this->data['Condicion']['Bar-periodo_largo']);
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
         }
     }

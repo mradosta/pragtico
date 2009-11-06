@@ -18,6 +18,10 @@
 if (!empty($data)) {
 
     $documento->create(array('password' => false, 'orientation' => 'landscape', 'title' => 'Listado de Liquidaciones'));
+
+    $documento->moveCurrentRow(-4);
+    $documento->setCellValue('A', 'Periodo: ' . $period, 'bold');
+    $documento->moveCurrentRow(4);
     $documento->setCellValue('A', 'CC', array('title' => '5'));
     $documento->setCellValue('B', 'Emp.', array('title' => '10'));
     $documento->setCellValue('C', 'Area', array('title' => '45'));
