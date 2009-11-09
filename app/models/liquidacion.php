@@ -209,14 +209,16 @@ class Liquidacion extends AppModel {
                 }
             }
         } elseif ($type === 'vacaciones') {
-            foreach ($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
+            $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
                     array(  'relacion'  => $relationship,
                             'desde'     => $this->getVarValue('#fecha_desde_liquidacion'),
-                            'hasta'     => $this->getVarValue('#fecha_hasta_liquidacion'))) as $cCod => $concepto) {
+                            'hasta'     => $this->getVarValue('#fecha_hasta_liquidacion'))));
 
-                if ($concepto['tipo'] === 'Deduccion') {
-                    $this->setConcept(array($cCod => $concepto));
-                } else {
+            foreach ($this->__conceptos as $cCod => $concepto) {
+                if (!($concepto['tipo'] === 'Deduccion'
+                    || $concepto['imprimir'] == 'No'
+                    || substr($concepto['imprimir'], -9) === '[Forzado]')) {
+
                     $this->__resolvConceptToZero($cCod);
                 }
             }
@@ -251,7 +253,7 @@ class Liquidacion extends AppModel {
                             array('fromInclusive' => false, 'toInclusive' => false)))));
 
             $this->setVar('#suma_conceptos_plus_vacacional_12_meses', array_sum(Set::extract('/LiquidacionesDetalle/valor')));
-            
+
             $total = 0;
             $data = Set::combine($data, '{n}.LiquidacionesDetalle.periodo', '{n}.LiquidacionesDetalle.valor');
             $periods = Dates::getPeriods(null, $period['desde'],
