@@ -72,7 +72,9 @@ class Formulas {
 		$formula = preg_replace('/[^[:print:]]/', '', $formula);
 		if (substr($formula, 0, 1) !== '=') {
 			$formula = '=' . $formula;
-		}
+		} elseif (substr($formula, 0, 2) === '==') {
+            $formula = substr($formula, 1);
+        }
 		return $formula;
 	}
 
