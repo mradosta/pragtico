@@ -25,114 +25,70 @@
  */
 class EmpleadoresConceptosController extends AppController {
 
-	function add() {
-		/**
-		* Detecto si viene de un addRapido.
-		*/
-		if (!empty($this->data['Form']['tipo']) && $this->data['Form']['tipo'] == "addRapido" && !empty($this->data['EmpleadoresConcepto']['empleador_id'])) {
+    function save() {
+        if (!empty($this->data['Form']['tipo'])
+            && $this->data['Form']['tipo'] == 'addRapido'
+            && !empty($this->data['EmpleadoresConcepto']['empleador_id'])) {
 
-			if ($this->data['Form']['accion'] == "grabar") {
-				$registros = explode("*||*", $this->data['Form']['valores_derecha']);
+            $assignedConcepts = $this->__getAssignedConcepts($this->data['EmpleadoresConcepto']['empleador_id'], true);
 
-				foreach ($registros as $registro) {
-					$seleccionados[] = array_shift(explode("|", $registro));
-				}
+            foreach ($this->data['Concepto'] as $k => $v) {
+                list($conceptId, $conceptCode) = explode('|', $k);
+                if ($v == 1 && !in_array($conceptCode, $assignedConcepts)) {
+                    $add[] = array('EmpleadoresConcepto' => array(
+                        'empleador_id'  => $this->data['EmpleadoresConcepto']['empleador_id'],
+                        'concepto_id'   => $conceptId));
+                } elseif ($v == 0 && in_array($conceptCode, $assignedConcepts)) {
+                    $del[] = $conceptId;
+                }
+            }
 
-				$conceptosSeleccionados = $this->EmpleadoresConcepto->Concepto->find("list", array("recursive"=>-1, "conditions"=>array("Concepto.codigo"=>$seleccionados)));
-				$conceptosEmpleador = Set::combine($this->EmpleadoresConcepto->find('all',
-					array(	'fields' 	=> 'EmpleadoresConcepto.id',
-						  	'contain' 	=> 'Concepto',
-							'conditions'=> array('EmpleadoresConcepto.empleador_id' => $this->data['EmpleadoresConcepto']['empleador_id']))),
-					'{n}.EmpleadoresConcepto.id', '{n}.Concepto.id');
-
-				$quitar = array_diff($conceptosEmpleador, $conceptosSeleccionados);
-				$agregar = array_diff($conceptosSeleccionados, $conceptosEmpleador);
-				$this->EmpleadoresConcepto->begin();
-				$c = 0;
-				foreach ($quitar as $k=>$v) {
-					if ($this->EmpleadoresConcepto->del($k)) {
-						$c++;
-					}
-				}
-				
-				$save['EmpleadoresConcepto']['empleador_id'] = $this->data['EmpleadoresConcepto']['empleador_id'];
-				foreach ($agregar as $k=>$v) {
-					$this->EmpleadoresConcepto->create();
-					$save['EmpleadoresConcepto']['concepto_id'] = $v;
-					$this->EmpleadoresConcepto->set($save);
-					if ($this->EmpleadoresConcepto->save($save)) {
-						$c++;
-					}
-				}
-				if ($c == count($agregar) + count($quitar)) {
-					$this->Session->setFlash("La operacion se realizo con exito.", "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
-					$this->EmpleadoresConcepto->commit();
-				}
-				else {
-					$dbError = $this->{$this->modelClass}->getError();
-					$this->Session->setFlash("Los cambios no pudieron guardarse.", "error", array("errores"=>$dbError));
-					$this->EmpleadoresConcepto->rollBack();
-				}
-			}
-			$this->History->goBack(2);
-		}
-		else {
-			parent::add();
-		}
-	}
+            if (!empty($add)) {
+                $this->EmpleadoresConcepto->saveAll($add);
+            }
+            if (!empty($del)) {
+                $this->EmpleadoresConcepto->deleteAll(array(
+                    'empleador_id'  => $this->data['EmpleadoresConcepto']['empleador_id'],
+                    'concepto_id'   => $del));
+            }
+            $this->Session->setFlash('La operacion se realizo con exito.', 'ok');
+            $this->redirect(array('controller' => 'empleadores', 'action' => 'index'));
+        } else {
+            return parent::save();
+        }
+    }
 
 /**
 * Permite realizar un add mediante tablas fromto.
 */
-	function add_rapido() {
+    function add_rapido() {
 
-		if (!empty($this->passedArgs['EmpleadoresConcepto.empleador_id'])) {
-			$this->EmpleadoresConcepto->Empleador->contain(array("Concepto"));
-			$empleador = $this->EmpleadoresConcepto->Empleador->findById($this->passedArgs['EmpleadoresConcepto.empleador_id']);
+        if (!empty($this->passedArgs['EmpleadoresConcepto.empleador_id'])) {
+            $employer = $this->__getAssignedConcepts($this->passedArgs['EmpleadoresConcepto.empleador_id']);
+            $assignedConcepts = Set::extract('/Concepto/codigo', $employer);
+            $concepts = $this->EmpleadoresConcepto->Concepto->find('all',
+                array(  'recursive'  => -1,
+                        'order'      => array('Concepto.nombre')));
 
-			if (!empty($empleador['Concepto'])) {
-				$conceptosAsignados = Set::extract('/Concepto', $empleador);
-			} else {
-				$conceptosAsignados = array();
-			}
-			$conceptosAsignadosCodigos = Set::extract('/Concepto/codigo', $conceptosAsignados);
-			$conceptosNoAsignados = $this->EmpleadoresConcepto->Concepto->find('all',
-				array(	'recursive'	=>	-1,
-						'conditions'=>
-							array('NOT' => array('Concepto.codigo' => $conceptosAsignadosCodigos))));
-			
-			$this->set('empleador', $empleador);
-			$this->set('datosIzquierda', $conceptosNoAsignados);
-			$this->set('datosDerecha', $conceptosAsignados);
-		}
-		else {
-			$this->Session->setFlash("Debe seleccionar un Empleador.", 'error');
-			$this->History->goBack(2);
-		}
-	}
+            $this->set('employer', $employer);
+            $this->set('concepts', $concepts);
+            $this->set('assignedConcepts', $assignedConcepts);
+        } else {
+            $this->Session->setFlash('Debe seleccionar un Empleador.', 'error');
+            $this->History->goBack(2);
+        }
+    }
 
-	function actualizarTablaIzquierda() {
-		if (isset($this->params['named']['partialText'])) {
-			$this->params['named']['partialText'] = str_replace("[EXPANSOR]", "%", str_replace("[SPACE]", " ", $this->params['named']['partialText']));
-			$condiciones = array("Concepto.nombre like"=>$this->params['named']['partialText']);
-			unset($this->params['named']['partialText']);
-		}
-		if (isset($this->params['named']['selectedId'])){
-			$condiciones = array("Concepto.id"=>$this->params['named']['selectedId']);
-			unset($this->params['named']['selectedId']);
-		}
 
-		$conceptos = $this->EmpleadoresConcepto->Concepto->find("all", array("conditions"=>$condiciones));
-		$data = array();
-		foreach ($conceptos as $v) {
-			$data[$v['Concepto']['id']] = $v['Concepto']['nombre'];
-		}
-		$tablaSiemple = $this->Util->generarCuerpoTablaSimple($data);
-		$this->set("cuerpo", $tablaSiemple['cuerpo']);
-		$this->set("encabezados", $tablaSiemple['encabezados']);
-		$this->render("../elements/tablas_from_to/tabla");
-	}
-
+    function __getAssignedConcepts($employerId, $extract = false) {
+        $this->EmpleadoresConcepto->Empleador->contain(array('Concepto'));
+        $employer = $this->EmpleadoresConcepto->Empleador->findById($employerId);
+        if ($extract === true) {
+            return Set::extract('/Concepto/codigo', $employer);
+        } else {
+            return $employer;
+        }
+    }
 
 }
 ?>

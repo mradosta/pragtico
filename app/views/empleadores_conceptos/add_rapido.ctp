@@ -5,44 +5,48 @@
  * PHP versions 5
  *
  * @filesource
- * @copyright		Copyright 2007-2008, Pragmatia de RPB S.A.
- * @link			http://www.pragmatia.com
- * @package			pragtico
- * @subpackage		app.views
- * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @author      	Martin Radosta <mradosta@pragmatia.com>
+ * @copyright       Copyright 2007-2008, Pragmatia de RPB S.A.
+ * @link            http://www.pragmatia.com
+ * @package         pragtico
+ * @subpackage      app.views
+ * @since           Pragtico v 1.0.0
+ * @version         $Revision$
+ * @modifiedby      $LastChangedBy$
+ * @lastmodified    $Date$
+ * @author          Martin Radosta <mradosta@pragmatia.com>
  */
  
-$cuerpoT1 = $cuerpoT2 = null;
-foreach($datosIzquierda as $k=>$v) {
-	$fila = null;
-	$fila[] = array('model' => 'Concepto', 'field' => 'id', 'valor' => $v['Concepto']['id']);
-	$fila[] = array('model' => 'Concepto', 'field' => 'codigo", "class"=>"oculto', 'valor' => $v['Concepto']['codigo']);
-	$fila[] = array('model' => 'Concepto', 'field' => 'nombre', 'valor' => $v['Concepto']['nombre']);
-	$cuerpoT1[] = $fila;
+$appForm->addCrumb($this->name,
+        array('controller'  => $this->params['controller'],
+              'action'      => 'index'));
+$appForm->addCrumb(__('Edit', true));
+$appForm->addCrumb('Conceptos para el Empleador <h5>' . $employer['Empleador']['nombre'] . '</h5>');
+ 
+foreach($concepts as $k => $v) {
+    $fila = null;
+    $checked = (in_array($v['Concepto']['codigo'], $assignedConcepts))?true:false;
+    $fila[] = array('model' => 'Concepto', 'field' => 'included', 'valor' => $appForm->input('Concepto.' . $v['Concepto']['id'] . '|' . $v['Concepto']['codigo'], array('type' => 'checkbox', 'checked' => $checked, 'label' => false, 'div' => false)));
+    $fila[] = array('model' => 'Concepto', 'field' => 'tipo', 'valor' => $v['Concepto']['tipo']);
+    $fila[] = array('model' => 'Concepto', 'field' => 'nombre', 'valor' => $v['Concepto']['nombre']);
+    $cuerpo[] = $fila;
 }
+$fila = null;
+$fila[] = array('type' => 'header', 'model' => 'EmpleadoresConcepto', 'field' => 'included', 'valor' => 'Incluido');
+$fila[] = array('type' => 'header', 'model' => 'EmpleadoresConcepto', 'field' => 'tipo', 'valor' => 'Tipo');
+$fila[] = array('type' => 'header', 'model' => 'EmpleadoresConcepto', 'field' => 'nombre', 'valor' => 'Concepto');
+$cuerpo[] = $fila;
+$datos['tabla']['simple'] = true;
+$datos['cuerpo'] = $cuerpo;
 
-foreach($datosDerecha as $k=>$v) {
-	$fila = null;
-	$fila[] = array('model' => 'Concepto', 'field' => 'id', 'valor' => $v['Concepto']['id']);
-	$fila[] = array('model' => 'Concepto', 'field' => 'codigo", "class"=>"oculto', 'valor' => $v['Concepto']['codigo']);
-	$fila[] = array('model' => 'Concepto', 'field' => 'nombre', 'valor' => $v['Concepto']['nombre']);
-	$cuerpoT2[] = $fila;
-}
+$extra = $appForm->input('Form.tipo', array(
+    'type'  => 'hidden',
+    'value' => 'addRapido'));
+$extra .= $appForm->input('EmpleadoresConcepto.empleador_id', array(
+    'type'  => 'hidden',
+    'value' => $employer['Empleador']['id']));
 
-$extra = $appForm->input("EmpleadoresConcepto.empleador_id", array("type"=>"hidden", "value"=>$empleador['Empleador']['id']));
+$acciones = $appForm->tag('div', $this->element('add/acciones'), array('class'=>'botones_tablas_from_to'));
+$add = $appForm->tag('div', $appForm->form($appForm->tabla($datos) . $extra . $acciones, array('action' => 'save')), array('class' => 'unica'));
+echo $appForm->tag('div', $add, array('class' => 'add'));
 
-echo $this->renderElement("add/add_rapido", array(
-				"cuerpoTablaIzquierda"		=> $cuerpoT1,
-				"cuerpoTablaDerecha"		=> $cuerpoT2,
-				"extra"						=> $extra,
-				"encabezadosTablaIzquierda"	=> array("Nombre"),
-				"encabezadosTablaDerecha"	=> array("Nombre"),
-				"busqueda"					=> array("label"=>"Concepto"),
-				"fieldset"					=> array(	"imagen"=>	'conceptos.gif',
-														'legend' => 	"Asignar conceptos al Empleador " . $empleador['Empleador']['nombre'])
-				));
 ?>
