@@ -24,136 +24,70 @@
 class RecibosConceptosController extends AppController {
 
 
-	function add() {
-		/**
-		* Detecto si viene de un addRapido.
-		*/
-		if (!empty($this->data['Form']['tipo']) && $this->data['Form']['tipo'] == "addRapido" && !empty($this->data['RecibosConcepto']['recibo_id'])) {
+    function save() {
+        if (!empty($this->data['Form']['tipo'])
+            && $this->data['Form']['tipo'] == 'addRapido'
+            && !empty($this->data['RecibosConcepto']['recibo_id'])) {
 
-			if ($this->data['Form']['accion'] == "grabar") {
-				$registros = explode("*||*", $this->data['Form']['valores_derecha']);
+            $assignedConcepts = $this->__getAssignedConcepts($this->data['RecibosConcepto']['recibo_id'], true);
 
-				foreach ($registros as $registro) {
-					$seleccionados[] = array_shift(explode("|", $registro));
-				}
-				
-				$conceptosSeleccionados = $this->RecibosConcepto->Concepto->find("list", array("recursive"=>-1, "conditions"=>array("Concepto.codigo"=>$seleccionados)));
-				$conceptosConvenio = $this->RecibosConcepto->find("list", array("fields" => "RecibosConcepto.recibo_id", "contain" => "Concepto", "conditions"=>array("RecibosConcepto.recibo_id"=>$this->data['RecibosConcepto']['recibo_id'])));
-				
-				$quitar = array_diff($conceptosConvenio, $conceptosSeleccionados);
-				$agregar = array_diff($conceptosSeleccionados, $conceptosConvenio);
-				$this->RecibosConcepto->begin();
-				$c = 0;
-				foreach ($quitar as $k=>$v) {
-					if ($this->RecibosConcepto->del($k)) {
-						$c++;
-					}
-				}
-				
-				$save['RecibosConcepto']['recibo_id'] = $this->data['RecibosConcepto']['recibo_id'];
-				foreach ($agregar as $k=>$v) {
-					$this->RecibosConcepto->create();
-					$save['RecibosConcepto']['concepto_id'] = $v;
-					$this->RecibosConcepto->set($save);
-					if ($this->RecibosConcepto->save($save)) {
-						$c++;
-					}
-				}
-				if ($c == count($agregar) + count($quitar)) {
-					$this->Session->setFlash("La operacion se realizo con exito.", "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
-					$this->RecibosConcepto->commit();
-				}
-				else {
-					$dbError = $this->{$this->modelClass}->getError();
-					$this->Session->setFlash("Los cambios no pudieron guardarse.", "error", array("errores"=>$dbError));
-					$this->RecibosConcepto->rollBack();
-				}
-			}
-			$this->History->goBack(2);
-		}
-		else {
-			parent::add();
-		}
-	}
+            foreach ($this->data['Concepto'] as $k => $v) {
+                list($conceptId, $conceptCode) = explode('|', $k);
+                if ($v == 1 && !in_array($conceptCode, $assignedConcepts)) {
+                    $add[] = array('RecibosConcepto' => array(
+                        'recibo_id'     => $this->data['RecibosConcepto']['recibo_id'],
+                        'concepto_id'   => $conceptId));
+                } elseif ($v == 0 && in_array($conceptCode, $assignedConcepts)) {
+                    $del[] = $conceptId;
+                }
+            }
+
+            if (!empty($add)) {
+                $this->RecibosConcepto->saveAll($add);
+            }
+            if (!empty($del)) {
+                $this->RecibosConcepto->deleteAll(array(
+                    'recibo_id'     => $this->data['RecibosConcepto']['recibo_id'],
+                    'concepto_id'   => $del));
+            }
+            $this->Session->setFlash('La operacion se realizo con exito.', 'ok');
+            $this->redirect(array('controller' => 'recibos', 'action' => 'index'));
+        } else {
+            return parent::save();
+        }
+    }
 
 /**
 * Permite realizar un add mediante tablas fromto.
 */
-	function add_rapido() {
+    function add_rapido() {
 
-		if (!empty($this->passedArgs['RecibosConcepto.recibo_id'])) {
-			$this->RecibosConcepto->Recibo->contain(array("RecibosConcepto.Concepto", "Empleador"));
-			$recibo = $this->RecibosConcepto->Recibo->findById($this->passedArgs['RecibosConcepto.recibo_id']);
+        if (!empty($this->passedArgs['RecibosConcepto.recibo_id'])) {
+            $receipt = $this->__getAssignedConcepts($this->passedArgs['RecibosConcepto.recibo_id']);
+            $assignedConcepts = Set::extract('/RecibosConcepto/Concepto/codigo', $receipt);
+            $concepts = $this->RecibosConcepto->Concepto->find('all',
+                array(  'recursive'  => -1,
+                        'order'      => array('Concepto.nombre')));
 
-			$conceptosAsignados = Set::extract("/Concepto", $recibo['RecibosConcepto']);
-			$conceptosAsignadosCodigos = Set::extract("/Concepto/codigo", $conceptosAsignados);
-			$conceptosNoAsignados = $this->RecibosConcepto->Concepto->find("all",
-				array(	"recursive"	=>	-1,
-						"conditions"=>
-							array("NOT"=>array("Concepto.codigo"=>$conceptosAsignadosCodigos))));
-			
-			$this->set("recibo", $recibo);
-			$this->set("datosIzquierda", $conceptosNoAsignados);
-			$this->set("datosDerecha", $conceptosAsignados);
-		}
-		else {
-			$this->Session->setFlash("Debe seleccionar un Recibo.", 'error');
-			$this->History->goBack(2);
-		}
-	}
-  	
-  	
-/**
-* Permite realizar un add mediante tablas fromto.
-*/
-	function add_rapido_XXX() {
-		$reciboId = $this->passedArgs['RecibosConcepto.recibo_id'];
-		$recibo = $this->RecibosConcepto->Recibo->findById($reciboId);
-		if (!empty($recibo['RecibosConcepto'])) {
-			$idsConceptosAsignados = Set::combine($recibo['RecibosConcepto'], "{n}.concepto_id", "{n}.concepto_id");
-		}
-		else {
-			$idsConceptosAsignados = array();
-		}
-		
-		$this->RecibosConcepto->Concepto->contain();
-		$conceptos = $this->RecibosConcepto->Concepto->findConceptos("Todos");
-		$conceptosAsignados = $conceptosNoAsignados = array();
-		foreach ($conceptos as $codigo=>$concepto) {
-			if (in_array($concepto['id'], $idsConceptosAsignados)) {
-				$conceptosAsignados[] = $concepto;
-			}
-			else {
-				if ($concepto['imprimir'] == "Si" || $concepto['imprimir'] == "Solo con valor") {
-					$conceptosNoAsignados[$codigo] = $concepto;
-				}
-			}
-		}
-
-		unset($recibo['RecibosConcepto']);
-		$this->set("recibo", $recibo);
-		$this->set("datosIzquierda", $conceptosNoAsignados);
-		$this->set("datosDerecha", $conceptosAsignados);
-		//$this->set("datosDerecha", $conceptosNoAsignados);
-		$this->render("add_rapido");
-	}
+            $this->set('receipt', $receipt);
+            $this->set('concepts', $concepts);
+            $this->set('assignedConcepts', $assignedConcepts);
+        } else {
+            $this->Session->setFlash('Debe seleccionar un Recibo.', 'error');
+            $this->History->goBack(2);
+        }
+    }
 
 
-	function actualizarTablaIzquierda() {
-		if (isset($this->params['named']['partialText'])) {
-			$this->params['named']['partialText'] = str_replace("[EXPANSOR]", "%", str_replace("[SPACE]", " ", $this->params['named']['partialText']));
-			$acciones = $this->RecibosConcepto->Concepto->find("all", array("conditions"=>array("Concepto.nombre like"=>$this->params['named']['partialText'] . "%"), "order"=>array("Concepto.nombre")));
-		}
-		else {
-			$acciones = $this->RecibosConcepto->Concepto->find("all", array("conditions"=>array("Concepto.id"=>$this->params['named']['selectedId']), "order"=>array("Concepto.nombre")));
-		}
-		$data = Set::combine($acciones, "{n}.Concepto.id", "{n}.Concepto.nombre");
-		$tablaSiemple = $this->Util->generarCuerpoTablaSimple($data);
-		$this->set("cuerpo", $tablaSiemple['cuerpo']);
-		$this->set("encabezados", $tablaSiemple['encabezados']);
-		$this->render("../elements/tablas_from_to/tabla");
-	}
-
+    function __getAssignedConcepts($agreementId, $extract = false) {
+        $this->RecibosConcepto->Recibo->contain(array('RecibosConcepto.Concepto'));
+        $receipt = $this->RecibosConcepto->Recibo->findById($agreementId);
+        if ($extract === true) {
+            return Set::extract('/RecibosConcepto/Concepto/codigo', $receipt);
+        } else {
+            return $receipt;
+        }
+    }
 
 
 }
