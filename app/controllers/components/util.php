@@ -110,43 +110,6 @@ class UtilComponent extends Object {
 	
 
 /**
-* Dado un array (key => value), genera un string de la forma que lo necesita la funcion js autocomplete.
-*/
-	function generarAutocomplete($datos) {
-		if (!empty($datos) && is_array($datos)) {
-			foreach ($datos as $k=>$v) {
-				$data[] = $v . "|" . $k;
-			}
-			return implode("\n", $data);
-		}
-		else {
-			return "";
-		}
-	}
-	
-	
-/**
-* Dado un array (key => value), genera un array para una tabla simple. Normalmente se usa para cargar una tabla
-* FromTo via ajax, evitando generar un vista, que lo resuelva directamente el controlador y le pasa los datos al
-* element.
-*/
-	function generarCuerpoTablaSimple($datos, $opciones = array()) {
-		$opcionesDefault = array("encabezados" => "Nombre", "class" => "izquierda");
-		$opciones = am($opcionesDefault, $opciones);
-		$cuerpo = null;
-		if (!empty($datos) && is_array($datos)) {
-			foreach ($datos as $k=>$v) {
-				$fila = array();
-				$fila[] = array("model" => "Bar", "field" => "id", "valor"=>$k);
-				$fila[] = array("model" => "Bar", "field" => "foo", "valor"=>$v);
-				$cuerpo[] = $fila;
-			}
-		}
-		return array('cuerpo' => $cuerpo, "encabezados"=>array($opciones['encabezados']), "class"=>$opciones['class']);
-	}
-	
-	
-/**
  * Formatea un valor de acuerdo a un formato.
  *
  * @param string $valor Un valor a formatear.
