@@ -196,7 +196,7 @@ class AppController extends Controller {
  * @return void.
  * @access public
  */
-	function edit($id=null) {
+	function edit($id = null) {
         $this->{$this->modelClass}->Behaviors->attach('Crumbable');
                 
 		if (!empty($id)) {
