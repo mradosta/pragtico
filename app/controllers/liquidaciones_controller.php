@@ -471,9 +471,9 @@ class LiquidacionesController extends AppController {
 
                 if ($this->data['Condicion']['Liquidacion-tipo'] === 'final') {
                     if ($relacion['RelacionesHistorial'][0]['liquidacion_final'] != 'Si'
-                    && (empty($relacion['RelacionesHistorial'][0]['fin'])
+                    || empty($relacion['RelacionesHistorial'][0]['fin'])
                     || (!empty($relacion['RelacionesHistorial'][0]['fin'])
-                        && $relacion['RelacionesHistorial'][0]['fin'] == '0000-00-00'))) {
+                        && $relacion['RelacionesHistorial'][0]['fin'] == '0000-00-00')) {
                         continue;
                     } else {
                         /** For finished relations, only allow last period receipt */
