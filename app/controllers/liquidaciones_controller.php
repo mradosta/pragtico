@@ -471,9 +471,9 @@ class LiquidacionesController extends AppController {
 
                 if ($this->data['Condicion']['Liquidacion-tipo'] === 'final') {
                     if ($relacion['RelacionesHistorial'][0]['liquidacion_final'] != 'Si'
-                    || empty($relacion['RelacionesHistorial'][0]['fin'])
+                    && (empty($relacion['RelacionesHistorial'][0]['fin'])
                     || (!empty($relacion['RelacionesHistorial'][0]['fin'])
-                        && $relacion['RelacionesHistorial'][0]['fin'] == '0000-00-00')) {
+                        && $relacion['RelacionesHistorial'][0]['fin'] == '0000-00-00'))) {
                         continue;
                     } else {
                         /** For finished relations, only allow last period receipt */
@@ -789,7 +789,16 @@ class LiquidacionesController extends AppController {
                                     'limit' => $step . ',' . 100,
                                     'contain'       => array_merge($contain, array( 
                                             'LiquidacionesDetalle' => array('conditions' => array('OR' => array('LiquidacionesDetalle.concepto_imprimir' => 'Si', array('LiquidacionesDetalle.concepto_imprimir' => 'Solo con valor', 'ABS(LiquidacionesDetalle.valor) >' => 0)))),
-                                            'Relacion'      => array('Actividad', 'Situacion', 'ConveniosCategoria', 'Modalidad'),
+                                            'Relacion'      => array(
+                                                'RelacionesHistorial' => array(
+                                                    'limit'         => 1,
+                                                    'conditions'    => array(
+                                                        'RelacionesHistorial.estado' => 'Confirmado'),
+                                                    'order'         => 'RelacionesHistorial.id DESC'),
+                                                'Actividad',
+                                                'Situacion',
+                                                'ConveniosCategoria',
+                                                'Modalidad'),
                                             'Trabajador'    => array('ObrasSocial', 'Condicion', 'Siniestrado', 'Localidad'))),
                                     'conditions'    => $conditions));
                     $step+=100;
