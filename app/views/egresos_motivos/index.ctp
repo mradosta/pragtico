@@ -19,6 +19,7 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
+$condiciones['Condicion.EgresosMotivo-recomendable'] = array();
 $condiciones['Condicion.EgresosMotivo-motivo'] = array();
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "Motivos de Egreso", 'imagen' => 'egresos_motivos.gif')));
@@ -31,7 +32,8 @@ $cuerpo = null;
 foreach ($registros as $k => $v) {
 	$fila = null;
 	$fila[] = array('model' => 'EgresosMotivo', 'field' => 'id', 'valor' => $v['EgresosMotivo']['id'], 'write' => $v['EgresosMotivo']['write'], 'delete' => $v['EgresosMotivo']['delete']);
-	$fila[] = array('model' => 'EgresosMotivo', 'field' => 'motivo', 'valor' => $v['EgresosMotivo']['motivo']);
+	$fila[] = array('model' => 'EgresosMotivo', 'field' => 'recomendable', 'valor' => $v['EgresosMotivo']['recomendable']);
+    $fila[] = array('model' => 'EgresosMotivo', 'field' => 'motivo', 'valor' => $v['EgresosMotivo']['motivo']);
 	$cuerpo[] = $fila;
 }
 

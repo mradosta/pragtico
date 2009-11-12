@@ -21,6 +21,7 @@
 */
 $campos = null;
 $campos['EgresosMotivo.id'] = array();
+$campos['EgresosMotivo.recomendable'] = array();
 $campos['EgresosMotivo.motivo'] = array();
 $fieldsets[] = array('campos' => $campos);
 
