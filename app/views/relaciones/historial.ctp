@@ -31,6 +31,8 @@ foreach ($this->data['RelacionesHistorial'] as $v) {
     $fila[] = array('model' => 'RelacionesHistorial', 'field' => 'fin', 'valor' => $v['fin']);
     $fila[] = array('model' => 'EgresosMotivo', 'field' => 'motivo', 'valor' => $v['EgresosMotivo']['motivo']);
     $fila[] = array('model' => 'RelacionesHistorial', 'field' => 'estado', 'valor' => $v['estado']);
+    $fila[] = array('model' => 'RelacionesHistorial', 'field' => 'liquidacion_final', 'valor' => $v['liquidacion_final']);
+    $fila[] = array('model' => 'RelacionesHistorial', 'field' => 'observacion', 'valor' => $v['observacion']);
     $cuerpo[] = $fila;
 }
 
