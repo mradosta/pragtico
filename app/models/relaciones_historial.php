@@ -30,6 +30,16 @@ class RelacionesHistorial extends AppModel {
             array(
                 'rule'      => VALID_NOT_EMPTY,
                 'message'   => 'Debe seleccionar la relacion laboral.')
+        ),
+        'fin' => array(
+            array(
+                'rule'      => VALID_NOT_EMPTY,
+                'message'   => 'Debe seleccionar la la fecha de fin.')
+        ),
+        'egresos_motivo_id' => array(
+            array(
+                'rule'      => VALID_NOT_EMPTY,
+                'message'   => 'Debe seleccionar un motivo de egreso.')
         )
     );
 
@@ -37,19 +47,28 @@ class RelacionesHistorial extends AppModel {
             array('contain' => array('Relacion' => array('Empleador', 'Trabajador'))),
                                 'edit'  =>
             array('contain' => array('Relacion' => array('Empleador', 'Trabajador'))));
-    
+
     var $belongsTo = array('Relacion', 'EgresosMotivo');
 
 
     function beforeValidate($options = array()) {
+
+
+        $this->Relacion->contain(array('RelacionesHistorial' => array(
+            'conditions'    => array('RelacionesHistorial.estado' => 'Confirmado'),
+            'order'         => 'RelacionesHistorial.id DESC')));
+        $relation = $this->Relacion->findById($this->data['RelacionesHistorial']['relacion_id']);
+
         if (!empty($this->data['RelacionesHistorial']['fin'])
-            && $this->data['RelacionesHistorial']['fin'] < date('Y-m-d')) {
+            && !empty($relation['RelacionesHistorial'][0]['fin'])
+            && $relation['RelacionesHistorial'][0]['fin'] >= $this->data['RelacionesHistorial']['fin']) {
+            $this->invalidate('fin', 'La fecha de fin debe ser posterior al ultimo historial confirmado.');
             return false;
         } else {
             return parent::beforeValidate($options);
         }
     }
-    
+
     function beforeSave($options = array()) {
         $this->Relacion->contain(array('RelacionesHistorial' => array(
             'conditions'    => array('RelacionesHistorial.estado' => 'Confirmado'),
@@ -67,7 +86,6 @@ class RelacionesHistorial extends AppModel {
             && $this->data['RelacionesHistorial']['estado'] == 'Pendiente') {
             $this->data['RelacionesHistorial']['permissions'] = '496';
         }
-
         return parent::beforeSave($options);
     }
 
@@ -78,17 +96,18 @@ class RelacionesHistorial extends AppModel {
             && $this->data['RelacionesHistorial']['estado'] == 'Confirmado') {
 
             if ($this->data['RelacionesHistorial']['liquidacion_final'] == 'Suspender') {
-                $estado = 'Suspendida';
+                $state = 'Suspendida';
             } elseif ($this->data['RelacionesHistorial']['liquidacion_final'] == 'No') {
-                $estado = 'Historica';
+                $state = 'Historica';
             }
 
-            return $this->Relacion->save(array('Relacion' => array(
-                'estado'    => $estado,
-                'id'        => $this->data['RelacionesHistorial']['relacion_id'])));
-        } else {
-            return parent::afterSave($created);
+            if (!empty($state) && !$this->Relacion->save(array('Relacion' => array(
+                'estado'    => $state,
+                'id'        => $this->data['RelacionesHistorial']['relacion_id'])))) {
+                return false;
+            }
         }
+        return parent::afterSave($created);
     }
 
 }
