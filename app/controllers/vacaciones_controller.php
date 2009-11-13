@@ -23,12 +23,29 @@
  */
 class VacacionesController extends AppController {
 
+    var $helpers = array('Documento');
+
     var $paginate = array(
         'order' => array(
             'Vacacion.periodo' => 'desc'
         )
     );
 
+
+    function notificaciones($id = null) {
+
+        if (!empty($id)) {
+            $ids[] = $id;
+        } else {
+            $ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
+        }
+
+        $this->set('data', $this->Vacacion->find('all', array(
+            'contain'       => array(
+                'VacacionesDetalle' => array('conditions' => array('VacacionesDetalle.estado' => 'Confirmado')),
+                'Relacion' => array('Empleador', 'Trabajador')),
+            'conditions'    => array('Vacacion.id' => $ids))));
+    }
 
     function generar_dias() {
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {

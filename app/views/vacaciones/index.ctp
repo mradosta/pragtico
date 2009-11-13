@@ -45,7 +45,8 @@ foreach ($registros as $v) {
 	$fila = null;
 	$fila[] = array('model' => 'Vacacion', 'field' => 'id', 'valor' => $v['Vacacion']['id'], 'write' => $v['Vacacion']['write'], 'delete' => $v['Vacacion']['delete']);
     $fila[] = array('tipo' => 'desglose', 'id' => $v['Vacacion']['id'], 'imagen' => array('nombre' => 'detalles.gif', 'alt' => 'Detalles'), 'url' => 'detalles');
-    $fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('documentos.gif', array('alt' => 'Generar Documento')), array('controller' => 'documentos', 'action' => 'generar', 'model' => 'Vacacion', 'id' => $v['Vacacion']['id'])));
+    //$fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('documentos.gif', array('alt' => 'Generar Documento')), array('controller' => 'documentos', 'action' => 'generar', 'model' => 'Vacacion', 'id' => $v['Vacacion']['id'])));
+    $fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('documentos.gif', array('alt' => 'Generar Documento')), array('action' => 'notificaciones', 'id' => $v['Vacacion']['id'])));
 	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], 'nombreEncabezado'=>'Empleador');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], 'class'=>'derecha', 'nombreEncabezado'=>'Documento');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . ' ' . $v['Relacion']['Trabajador']['nombre'], 'nombreEncabezado'=>'Trabajador');
@@ -66,9 +67,27 @@ foreach ($registros as $v) {
     }
 }
 
-$generar = $appForm->link('Generar Dias', 'generar_dias', array('title' => 'Genera los Dias en funcion del Periodo', 'class' => 'link_boton'));
-$accionesExtra['opciones'] = array('acciones' => array($generar));
+$actions[] = $appForm->link('Generar Dias', 'generar_dias', array('title' => 'Genera los Dias en funcion del Periodo', 'class' => 'link_boton'));
+$actions[] = $appForm->link('Notificaciones', null, array('title' => 'Imprime las notificaciones de vacaciones', 'class' => 'link_boton', 'id' => 'notificaciones'));
+$accionesExtra['opciones'] = array('acciones' => $actions);
 
 echo $this->element('index/index', array('accionesExtra' => $accionesExtra, 'condiciones' => $fieldset, 'cuerpo' => $cuerpo));
 
+/**
+* Agrego el evento click asociado al detalle de cambio.
+*/
+$js = '
+    jQuery("#notificaciones").click(
+        function () {
+            var c = jQuery(".tabla :checkbox").checkbox("contar");
+            if (c == 0) {
+                alert("Debe seleccionar al menos una vacacion a notificar.");
+                return false;
+            }
+            jQuery("#form")[0].action = "../notificaciones";
+            jQuery("#form")[0].submit();
+        }
+    );
+';
+$appForm->addScript($js);
 ?>
