@@ -186,28 +186,9 @@ class Trabajador extends AppModel {
 
 	function beforeSave() {
 		$this->getFile();
-		/**
-		* Si no cargo el documento, lo obtengo desde el cuit.
-		*/
+		/** Si no cargo el documento, lo obtengo desde el cuit. */
 		if (empty($this->data['Trabajador']['numero_documento']) && !empty($this->data['Trabajador']['cuil'])) {
 			$this->data['Trabajador']['numero_documento'] = substr(str_replace('-', '', $this->data['Trabajador']['cuil']), 2, 8);
-		}
-		
-		/**
-		* Si las foraneas opcionales no las saco del array, en caso de que esten vacias, el framework intentara
-		* guardarlas con el valor vacio, y este fallara.
-		*/
-		if (empty($this->data['Trabajador']['localidad_id'])) {
-			unset($this->data['Trabajador']['localidad_id']);
-		}
-		if (empty($this->data['Trabajador']['obra_social_id'])) {
-			unset($this->data['Trabajador']['obra_social_id']);
-		}
-		if (empty($this->data['Trabajador']['condicion_id'])) {
-			unset($this->data['Trabajador']['condicion_id']);
-		}
-		if (empty($this->data['Trabajador']['siniestrado_id'])) {
-			unset($this->data['Trabajador']['siniestrado_id']);
 		}
 		
 		return parent::beforeSave();
