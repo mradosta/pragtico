@@ -31,10 +31,10 @@ class Liquidacion extends AppModel {
     var $opciones = array(
         'tipo' => array(
             'normal'            => 'Normal',
-            'sac'                => 'Sac',
-               'vacaciones'        => 'Vacaciones',
-               'final'                => 'Final',
-               'especial'            => 'Especial'),
+            'sac'               => 'Sac',
+            'vacaciones'        => 'Vacaciones',
+            'final'             => 'Final',
+            'especial'          => 'Especial'),
         'estado' => array(
             'Confirmada'        => 'Confirmada',
             'Sin Confirmar'     => 'Sin Confirmar',
@@ -167,14 +167,6 @@ class Liquidacion extends AppModel {
                         array(  'relacion'          => $this->getRelationship(),
                                 'codigoConcepto'    => 'antiguedad')));
             }
-
-            /** Get novelties */
-            $novedades = $this->Relacion->Novedad->getNovedades($this->getRelationship(), $this->getPeriod());
-            foreach ($novedades['variables'] as $varName => $varValue) {
-                $this->setVar($varName, $varValue);
-            }
-            $this->__setAuxiliar($novedades['auxiliar']);
-            $this->setConcept($novedades['conceptos']);
 
             /** Get hours */
             $horas = $this->Relacion->Hora->getHoras($this->getRelationship(), $this->getPeriod());
@@ -373,6 +365,15 @@ class Liquidacion extends AppModel {
         }
         $this->__setAuxiliar($discounts['auxiliar']);
         $this->setConcept($discounts['conceptos']);
+
+
+        /** Get novelties */
+        $novedades = $this->Relacion->Novedad->getNovedades($this->getRelationship(), $this->getPeriod(), $type);
+        foreach ($novedades['variables'] as $varName => $varValue) {
+            $this->setVar($varName, $varValue);
+        }
+        $this->__setAuxiliar($novedades['auxiliar']);
+        $this->setConcept($novedades['conceptos']);
 
 
         /** Resolv */

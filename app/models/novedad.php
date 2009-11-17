@@ -46,7 +46,7 @@ class Novedad extends AppModel {
  */
 	var $opciones = array('formato'=>array('Excel5' => 'Excel', 'Excel2007' => 'Excel 2007'));
 	
-	var $belongsTo = array('Relacion', 'Concepto');
+	var $belongsTo = array('Relacion', 'Concepto', 'Liquidacion');
 
     var $breadCrumb = array('format' => '%s %s (%s)', 
                             'fields' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));    
@@ -127,12 +127,13 @@ class Novedad extends AppModel {
  *
  * @param array $datos Los datos a grabar.
  * @param array $periodo El periodo al cual se asignaran los datos de las novedades.
+ * @param string $receiptType The receipt type to be attached to.
  * @return boolean True si fue posible guardar las novedades ingresadas, false en otro caso
  * @access public 
  */
- 	function grabar($datos, $periodo) {
+ 	function grabar($datos, $periodo, $receiptType) {
 
-		if (!preg_match(VALID_PERIODO, $periodo) || empty($datos) || !is_array($datos)) {
+		if (!preg_match(VALID_PERIODO, $periodo) || empty($datos) || !is_array($datos) || empty($receiptType)) {
 			return false;
 		}
 		
@@ -146,6 +147,7 @@ class Novedad extends AppModel {
 					$save = null;
 					$save['Novedad']['id'] = null;
 					$save['Novedad']['periodo'] = $periodo;
+                    $save['Novedad']['liquidacion_tipo'] = $receiptType;
 					$save['Novedad']['alta'] = date('Y-m-d');
 					$save['Novedad']['estado'] = 'Pendiente';
 					$save['Novedad']['relacion_id'] = $relacion_id;
@@ -210,7 +212,7 @@ class Novedad extends AppModel {
 
 
 
-	function getNovedades($relacion, $periodo) {
+	function getNovedades($relacion, $periodo, $receiptType) {
 
 		if ($periodo['periodo'] === 'M') {
 			$period[] = $periodo['ano'] . $periodo['mes'] . 'M';
@@ -222,22 +224,20 @@ class Novedad extends AppModel {
 
 		$novedades = $this->find('all',
 				array('conditions' 	=> array(
-					  		'Novedad.periodo' 		=> $period,
-		 					'Novedad.estado' 		=> 'Confirmada',
-							'Novedad.tipo' 			=> 'Concepto',
-							'Novedad.relacion_id'	=> $relacion['Relacion']['id']),
+					  		'Novedad.periodo'          => $period,
+		 					'Novedad.estado'           => 'Confirmada',
+                            'Novedad.liquidacion_tipo' => $receiptType,
+							'Novedad.tipo' 			   => 'Concepto',
+							'Novedad.relacion_id'	   => $relacion['Relacion']['id']),
 					  'recursive'	=> -1));
 
 		$variables = $conceptos = $auxiliares = array();
 		if (!empty($novedades)) {
-            //$conceptosQueYatengo = ClassRegistry::init('Liquidacion')->getConcept();
 			$Concepto = ClassRegistry::init('Concepto');
 			foreach ($novedades as $novedad) {
 				$conceptoCodigo = array_pop(explode(':', $novedad['Novedad']['subtipo']));
 				$variables['#' . $conceptoCodigo] = $novedad['Novedad']['data'];
-                //if (!isset($conceptosQueYatengo[$conceptoCodigo])) {
-				    $conceptos = array_merge($conceptos, $Concepto->findConceptos('ConceptoPuntual', array('relacion' => $relacion, 'codigoConcepto' => $conceptoCodigo)));
-                //}
+                $conceptos = array_merge($conceptos, $Concepto->findConceptos('ConceptoPuntual', array('relacion' => $relacion, 'codigoConcepto' => $conceptoCodigo)));
 
 				$auxiliar = null;
 				$auxiliar['id'] = $novedad['Novedad']['id'];
@@ -245,7 +245,6 @@ class Novedad extends AppModel {
                 $auxiliar['permissions'] = '288';
 				$auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
 				$auxiliares[] = array('save'=>serialize($auxiliar), 'model' => 'Novedad');
-				
 			}
 		}
 		return array('conceptos' => $conceptos, 'variables' => $variables, 'auxiliar' => $auxiliares);

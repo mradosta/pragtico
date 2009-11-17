@@ -20,8 +20,8 @@
 * Especifico los campos de ingreso de datos.
 */
 $campos = null;
-//$campos['Novedad.periodo'] = array('type' => 'periodo', 'aclaracion' => 'Tomara este periodo para los datos ingresados desde la planilla.', 'verificarRequerido' => false, 'periodo' => array('1Q', '2Q', 'M', '1S', '2S'));
 $campos['Novedad.periodo'] = array('type' => 'periodo', 'aclaracion' => 'Tomara este periodo para los datos ingresados desde la planilla.', 'verificarRequerido' => false);
+$campos['Novedad.liquidacion_tipo'] = array('type' => 'radio', 'options' => $liquidacion_tipo, 'label' => 'Tipo Liquidacion');
 $campos['Novedad.planilla'] = array('type' => 'file');
 
 $fieldset = $appForm->pintarFieldsets(array(array('campos' => $campos)), array('fieldset' => array('legend' => 'Importar novedades desde planilla', 'imagen' => 'excel.gif')));

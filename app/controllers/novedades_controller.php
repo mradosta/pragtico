@@ -84,8 +84,6 @@ class NovedadesController extends AppController {
 					*/
 					for($i = 6; $i < PHPExcel_Cell::columnIndexFromString($objPHPExcel->getActiveSheet()->getHighestColumn()); $i++) {
 						$value = $objPHPExcel->getActiveSheet()->getCellByColumnAndRow($i, 8)->getValue();
-                        //debug($value);
-                        //debug($i);
 						if (empty($value)) {
 							break;
 						}
@@ -140,7 +138,7 @@ class NovedadesController extends AppController {
 						}
 					}
 
-					if ($this->Novedad->grabar($datos, $this->data['Novedad']['periodo'])) {
+					if ($this->Novedad->grabar($datos, $this->data['Novedad']['periodo'], $this->data['Novedad']['liquidacion_tipo'])) {
 						$this->redirect('index');
 					}
 				}
@@ -148,6 +146,7 @@ class NovedadesController extends AppController {
 				$this->redirect('index');
 			}
 		}
+        $this->set('liquidacion_tipo', $this->Novedad->Liquidacion->opciones['tipo']);
 		$this->data['Novedad']['formato'] = 'Excel2007';
 	}
 	
