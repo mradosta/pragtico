@@ -44,6 +44,7 @@ if (empty($confirmar)) {
     $campos = null;
     $campos['Soporte.cuenta_id'] = array('type' => 'hidden', 'value' => $confirmar['cuenta']['Cuenta']['id']);
     $campos['Soporte.pago_id'] = array('type' => 'hidden', 'value' => serialize($confirmar['pagos']));
+    $campos['Soporte.fecha_acreditacion'] = array('type' => 'hidden', 'value' => $fecha_acreditacion);
     $campos['Bar.cantidad'] = array('type' => 'soloLectura', 'value' => count($confirmar['pagos']));
     $campos['Bar.Total'] = array('type' => 'soloLectura', 'value' => '$ ' . $confirmar['total']);
 

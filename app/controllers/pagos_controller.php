@@ -38,6 +38,7 @@ class PagosController extends AppController {
         return parent::index();
     }
 
+
     function afterPaginate($results) {
         $this->__setConditions();
         if (!empty($results)) {
@@ -47,11 +48,11 @@ class PagosController extends AppController {
         }
     }
 
+
     function __setConditions() {
         if (!empty($this->data['Condicion']['Pago-origen'])) {
-            
+
             $this->Paginador->setWhiteList('Pago-origen');
-            
             if ($this->data['Condicion']['Pago-origen'] === 'liquidaciones') {
                 $this->Paginador->removeCondition(array('Pago.descuento_id !=', 'Pago.liquidacion_id'));
                 $this->Paginador->setCondition(array(
@@ -65,125 +66,92 @@ class PagosController extends AppController {
             }
         }
     }
-    
 
-	function beforeRender() {
-		if ($this->action === 'index') {
+
+    function beforeRender() {
+        if ($this->action === 'index') {
             $this->set('bancos', ClassRegistry::init('Banco')->find('list', array(
                 'recursive' => -1,
                 'fields'    => array('Banco.codigo', 'Banco.nombre'))));
-			$filters = $this->Session->read('filtros.' . $this->name . '.' . $this->action);
-			if (!empty($filters['condiciones']['Liquidacion.ano']) && !empty($filters['condiciones']['Liquidacion.mes']) && !empty($filters['condiciones']['Liquidacion.periodo like'])) {
-				$this->data['Condicion']['Liquidacion-periodo_completo'] = $filters['condiciones']['Liquidacion.ano'] . $filters['condiciones']['Liquidacion.mes'] . str_replace('%', '', $filters['condiciones']['Liquidacion.periodo like']);
-			}
-		}
-	}
+            $filters = $this->Session->read('filtros.' . $this->name . '.' . $this->action);
+            if (!empty($filters['condiciones']['Liquidacion.ano']) && !empty($filters['condiciones']['Liquidacion.mes']) && !empty($filters['condiciones']['Liquidacion.periodo like'])) {
+                $this->data['Condicion']['Liquidacion-periodo_completo'] = $filters['condiciones']['Liquidacion.ano'] . $filters['condiciones']['Liquidacion.mes'] . str_replace('%', '', $filters['condiciones']['Liquidacion.periodo like']);
+            }
+        }
+    }
 
 /**
  * formas.
  * Muestra via desglose las formas de pago relacionadas a este pago.
  */
-	function formas($id) {
-		$this->Pago->contain(array("PagosForma"));
-		$this->data = $this->Pago->read(null, $id);
-	}
-
-
-
-	function revertir_pago($id) {
-		if ($this->Pago->revertir($id)) {
-			$this->Session->setFlash("El pago se revirtio correctamente.", "ok");
-		}
-		else {
-			$errores = $this->Pago->getError();
-			$this->Session->setFlash("No fue posible revertir el Pago.", "error", array("errores"=>$errores));
-		}
-		$this->History->goBack();
-	}
-
-	
-/**
- *
- */
-	function detalle_cambio_deprecated() {
-
-		$pagos = null;
-		//d($this->data['Condicion']);
-		if (!empty($this->data['Condicion']['Relacion-empleador_id']) && !empty($this->data['Condicion']['Liquidacion-periodo']) && preg_match(VALID_PERIODO, $this->data['Condicion']['Liquidacion-periodo'], $matches)) {
-			unset($this->data['Condicion']['Liquidacion-periodo']);
-			$this->data['Condicion']['Liquidacion-ano'] = $matches[1];
-			$this->data['Condicion']['Liquidacion-mes'] = $matches[2];
-			$this->data['Condicion']['Liquidacion-periodo'] = $matches[3];
-			
-			$condiciones = $this->Paginador->generarCondicion($this->data);
-			$pagos = $this->Pago->traerDetalleCambio($condiciones);
-			if (empty($pagos)) {
-				$this->Session->setFlash("No se encontraron datos con los criterios especificados. Verifique.", "error");
-				$this->History->goBack(2);
-			}
-			else {
-				$this->set("condiciones", $this->data['Condicion']);
-				$this->set("data", $pagos);
-				$this->layout = "pdf";
-			}
-		}
-		else {
-			$this->Session->setFlash("Debe ingresar el periodo y seleccionar el/los empleador/es.", "error");
-			$this->History->goBack(2);
-		}
+    function formas($id) {
+        $this->Pago->contain(array('PagosForma'));
+        $this->data = $this->Pago->read(null, $id);
     }
 
-    
+
+    function revertir_pago($id) {
+        if ($this->Pago->revertir($id)) {
+            $this->Session->setFlash('El pago se revirtio correctamente.', 'ok');
+        }
+        else {
+            $errores = $this->Pago->getError();
+            $this->Session->setFlash('No fue posible revertir el Pago.', 'error', array('errores'=>$errores));
+        }
+        $this->History->goBack();
+    }
+
+
 /**
  * Busca las cuentas relacionadas con un empleador. Esta funcion esta preparada para generar datos que se
  * pintaran en un control relacionado via Json.
  *
  * @param number $id Id del empleador del cual se desea recuperar sus cuentas relacionadas.
- * @return	void
+ * @return    void
  * @access public
  */
-	function cuentas_relacionado($id) {
-		if (is_numeric($id)) {
-			$empleador = $this->Pago->Relacion->Empleador->findById($id);
-			if (!empty($empleador['Cuenta'])) {
-				$this->Pago->Relacion->Empleador->contain(array("Cuenta"));
-				$c=0;
-				foreach ($empleador['Cuenta'] as $k=>$v) {
-					$this->Pago->Relacion->Empleador->Cuenta->Sucursal->contain(array("Banco"));
-					$sucursal = $this->Pago->Relacion->Empleador->Cuenta->Sucursal->findById($v['sucursal_id']);
-					$cuentas[$c]['optionValue'] = $v['id'];
-					$cuentas[$c]['optionDisplay'] = $sucursal['Banco']['nombre'] . ", " . $sucursal['Sucursal']['direccion'];
-					$c++;
-				}
-				
-				$this->set("data", $cuentas);
-				$this->render("../elements/json");
-			}
-		}
-	}
-	
+    function cuentas_relacionado($id) {
+        if (is_numeric($id)) {
+            $empleador = $this->Pago->Relacion->Empleador->findById($id);
+            if (!empty($empleador['Cuenta'])) {
+                $this->Pago->Relacion->Empleador->contain(array('Cuenta'));
+                $c=0;
+                foreach ($empleador['Cuenta'] as $k=>$v) {
+                    $this->Pago->Relacion->Empleador->Cuenta->Sucursal->contain(array('Banco'));
+                    $sucursal = $this->Pago->Relacion->Empleador->Cuenta->Sucursal->findById($v['sucursal_id']);
+                    $cuentas[$c]['optionValue'] = $v['id'];
+                    $cuentas[$c]['optionDisplay'] = $sucursal['Banco']['nombre'] . ', ' . $sucursal['Sucursal']['direccion'];
+                    $c++;
+                }
+
+                $this->set('data', $cuentas);
+                $this->render('../elements/json');
+            }
+        }
+    }
+
 
 /**
  * Permite la registracion masiva de pagos por algun medio (formas).
  *
  * @param string $tipo Las formas de pago masivo: efectivo, beneficios, deposito
- * @return	void
+ * @return    void
  * @access public
  */
-	function registrar_pago_masivo($tipo) {
-		if (!empty($tipo) && is_string($tipo) && in_array($tipo, array("efectivo", "beneficios", "deposito"))) {
-			$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
+    function registrar_pago_masivo($tipo) {
+        if (!empty($tipo) && is_string($tipo) && in_array($tipo, array('efectivo', 'beneficios', 'deposito'))) {
+            $ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
 
-			$cantidad = $this->Pago->registrarPago($ids, $tipo);
-			if ($cantidad) {
-				$this->Session->setFlash("Se confirmaron correctamente " . $cantidad . " de " . count($ids) . " pagos con " . ucfirst($tipo) . ".", "ok");
-			}
-			else {
-				$this->Session->setFlash("Ocurrio un error al intentar confirmar los pagos con " . ucfirst($tipo) . ".", "error");
-			}
-		}
-		$this->redirect("index");
-	}
+            $cantidad = $this->Pago->registrarPago($ids, $tipo);
+            if ($cantidad) {
+                $this->Session->setFlash('Se confirmaron correctamente ' . $cantidad . ' de ' . count($ids) . ' pagos con ' . ucfirst($tipo) . '.', 'ok');
+            }
+            else {
+                $this->Session->setFlash('Ocurrio un error al intentar confirmar los pagos con ' . ucfirst($tipo) . '.', 'error');
+            }
+        }
+        $this->redirect('index');
+    }
 
 
     function confirmar_soporte_magnetico() {
@@ -206,45 +174,47 @@ class PagosController extends AppController {
  * Permite generar un archivo con el formato especificado por cada banco para la acreditacion de haberes en las
  * cuentas de los trabajadores.
  *
- * @return	void
+ * @return    void
  * @access public
  */
-	function generar_soporte_magnetico() {
+    function generar_soporte_magnetico() {
         
-		if (!empty($this->data['Soporte']['pago_id'])
-			&& !empty($this->data['Soporte']['cuenta_id'])) {
+        if (!empty($this->data['Soporte']['pago_id'])
+            && !empty($this->data['Soporte']['cuenta_id'])) {
 
-			$opciones = array(	"pago_id"				=> unserialize($this->data['Soporte']['pago_id']),
-								"fecha_acreditacion"	=> "",
-								"cuenta_id"				=> $this->data['Soporte']['cuenta_id']);
-								
-			if (!empty($this->data['Soporte']['fecha_acreditacion'])) {
-				$opciones['fecha_acreditacion'] = $this->data['Soporte']['fecha_acreditacion'];
-			}
+            $opciones = array(  'pago_id'               => unserialize($this->data['Soporte']['pago_id']),
+                                'fecha_acreditacion'    => '',
+                                'cuenta_id'             => $this->data['Soporte']['cuenta_id']);
+
+            if (!empty($this->data['Soporte']['fecha_acreditacion'])) {
+                $opciones['fecha_acreditacion'] = $this->data['Soporte']['fecha_acreditacion'];
+            }
+
 
             if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] == 'confirmar') {
                 $archivo = $this->Pago->generarSoporteMagnetico($opciones, true);
 
                 if (!empty($archivo)) {
-                    $this->set("archivo", array("contenido"=>$archivo['contenido'], "nombre"=>$archivo['banco'] . "-" . date("Y-m-d") . ".txt"));
-                    $this->render(".." . DS . "elements" . DS . "txt", "txt");
+                    $this->set('archivo', array('contenido'=>$archivo['contenido'], 'nombre'=>$archivo['banco'] . '-' . date('Y-m-d') . '.txt'));
+                    $this->render('..' . DS . 'elements' . DS . 'txt', 'txt');
                 } else {
-                    $this->Session->setFlash("Ocurrio un error al intentar generar el soporte magnetico. Ningun pago seleccionado es posible realizarlo con la cuenta seleccionada.", "error");
+                    $this->Session->setFlash('Ocurrio un error al intentar generar el soporte magnetico. Ningun pago seleccionado es posible realizarlo con la cuenta seleccionada.', 'error');
                     $this->History->goBack();
                 }
             } else {
+                $this->set('fecha_acreditacion', $opciones['fecha_acreditacion']);
                 $this->set('confirmar', $this->Pago->generarSoporteMagnetico($opciones, false));
             }
-		} elseif (isset($this->data['seleccionMultiple'])) {
-			$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
-			$pagos = $this->Pago->find("all", array("contain" => "PagosForma", "conditions"=>array("Pago.moneda" => "Pesos", "Pago.estado" => "Pendiente", "Pago.id"=>$ids)));
-			if (empty($pagos)) {
-				$this->Session->setFlash("Ocurrio un error al intentar generar el soporte magnetico. Ningun pago seleccionado es valido.", "error");
-				$this->History->goBack();
-			}
-			$this->set("ids", serialize($ids));
-		}
-	}
+        } elseif (isset($this->data['seleccionMultiple'])) {
+            $ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
+            $pagos = $this->Pago->find('all', array('contain' => 'PagosForma', 'conditions'=>array('Pago.moneda' => 'Pesos', 'Pago.estado' => 'Pendiente', 'Pago.id'=>$ids)));
+            if (empty($pagos)) {
+                $this->Session->setFlash('Ocurrio un error al intentar generar el soporte magnetico. Ningun pago seleccionado es valido.', 'error');
+                $this->History->goBack();
+            }
+            $this->set('ids', serialize($ids));
+        }
+    }
 
 }
 ?>

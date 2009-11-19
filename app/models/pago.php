@@ -304,7 +304,6 @@ class Pago extends AppModel {
                                     $rds[] = implode('', $rd);
                                     break;
                                 case '011': //Nacion
-
                                     if (!empty($opciones['fecha_acreditacion']) && preg_match(VALID_DATE, $opciones['fecha_acreditacion'], $matchesDate)) {
                                         $fechaAcreditacion = $matchesDate[3] . $matchesDate[2] . substr($matchesDate[1], -2);
                                     } else {
