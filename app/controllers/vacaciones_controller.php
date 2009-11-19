@@ -42,7 +42,8 @@ class VacacionesController extends AppController {
 
         $this->set('data', $this->Vacacion->find('all', array(
             'contain'       => array(
-                'VacacionesDetalle' => array('conditions' => array('VacacionesDetalle.estado' => 'Confirmado')),
+                'VacacionesDetalle' => array('conditions' => array(
+                    'VacacionesDetalle.estado' => array('Confirmado', 'Liquidado'))),
                 'Relacion' => array('Empleador', 'Trabajador')),
             'conditions'    => array('Vacacion.id' => $ids))));
     }
