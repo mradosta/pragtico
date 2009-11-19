@@ -114,8 +114,8 @@ if (!empty($data)) {
         }
     }
 
-    //$documento->save('Excel5');
-    $documento->save('Excel2007');
+    $documento->save('Excel5');
+    //$documento->save('Excel2007');
 }
 
 ?>
