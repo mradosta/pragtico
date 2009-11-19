@@ -65,7 +65,7 @@ class AusenciasController extends AppController {
                             'LiquidacionesDetalle'),
                     'Ausencia'      => array('order' => array('Ausencia.relacion_id'),
                             'AusenciasMotivo',
-                            'Relacion' => array('Empleador' => 'Trabajador'))),
+                            'Relacion' => array('Empleador', 'Trabajador'))),
                 'conditions'    => array(
                     'AusenciasSeguimiento.liquidacion_id' => array_unique(
                         Set::extract('/Liquidacion/id',
@@ -73,7 +73,6 @@ class AusenciasController extends AppController {
                                 array(  'recursive'     => -1,
                                         'fields'        => array('Liquidacion.id'),
                                         'conditions'    => $conditions))))))) as $detail) {
-                                            d();
 
                 if (empty($r[$detail['Ausencia']['Relacion']['id']])) {
                     $r[$detail['Ausencia']['Relacion']['id']]['employer'] = $detail['Ausencia']['Relacion']['Empleador']['nombre'];

@@ -18,7 +18,7 @@
 if (!empty($data)) {
 
     $documento->create(array('password' => false, 'orientation' => 'landscape', 'title' => 'Listado de Ausencias Liquidadas'));
-    $documento->setCellValue('A', 'Empleador', array('title' => '30'));
+    $documento->setCellValue('A', 'Empleador', array('title' => '40'));
     $documento->setCellValue('B', 'Cuil', array('title' => '20'));
     $documento->setCellValue('C', 'Apellido', array('title' => '20'));
     $documento->setCellValue('D', 'Nombre', array('title' => '20'));
