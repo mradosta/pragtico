@@ -71,7 +71,7 @@ if (!empty($data)) {
 
             $documento->moveCurrentRow(2);
             $documento->setCellValue('C', 'Cantidad:');
-            $documento->setCellValue('H', $record['Vacacion']['corresponde'], array('right', 'bold'));
+            $documento->setCellValue('H', $detail['dias'], array('right', 'bold'));
 
             $documento->moveCurrentRow(2);
             $documento->setCellValue('C', 'Fecha de Inicio:');
