@@ -91,6 +91,12 @@ class Concepto extends AppModel {
 								array('with' => 'RelacionesConcepto'));
 
     var $opciones = array(
+        'liquidacion_tipo'  => array(
+            '1'     => 'Normal',
+            '2'     => 'Sac',
+            '4'     => 'Vacaciones',
+            '8'     => 'Final',
+            '16'    => 'Especial'),
         'remuneracion'      => array(
             '1'     => 'Remuneracion 1',
             '2'     => 'Remuneracion 2',
@@ -115,6 +121,9 @@ class Concepto extends AppModel {
     function beforeSave($options = array()) {
         if (isset($this->data['Concepto']['remuneracion']) && is_array($this->data['Concepto']['remuneracion'])) {
             $this->data['Concepto']['remuneracion'] = array_sum($this->data['Concepto']['remuneracion']);
+        }
+        if (isset($this->data['Concepto']['liquidacion_tipo']) && is_array($this->data['Concepto']['liquidacion_tipo'])) {
+            $this->data['Concepto']['liquidacion_tipo'] = array_sum($this->data['Concepto']['liquidacion_tipo']);
         }
         return parent::beforeSave($options);
     }

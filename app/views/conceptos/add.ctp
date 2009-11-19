@@ -31,7 +31,7 @@ $campos['Concepto.coeficiente_id'] = array(	'empty'			=> true,
 											'displayField'	=> 'Coeficiente.nombre',
 											'groupField'	=> 'Coeficiente.tipo',
 											'model'			=> 'Coeficiente');
-
+$campos['Concepto.liquidacion_tipo'] = array('label' => 'Tipo Liquidacion', 'multiple' => 'checkbox', 'aclaracion' => 'Indica para que tipo de liquidacion debe aplicar el concepto. En cualquier otro tipo de preliquidacion a los aqui especificados, se resolvera a cero.');
 $campos['Concepto.periodo'] = array();
 $campos['Concepto.tipo'] = array();
 $campos['Concepto.desde'] = array();
