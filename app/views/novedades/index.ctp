@@ -50,6 +50,7 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Trabajador', 'field' => 'numero_documento', 'valor' => $v['Relacion']['Trabajador']['numero_documento'], 'class' => 'derecha', 'nombreEncabezado' => 'Documento');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . ' ' . $v['Relacion']['Trabajador']['nombre'], 'nombreEncabezado' => 'Trabajador');
 	$fila[] = array('model' => 'Novedad', 'field' => 'estado', 'valor' => $v['Novedad']['estado']);
+	$fila[] = array('model' => 'Novedad', 'field' => 'liquidacion_tipo', 'valor' => $v['Novedad']['liquidacion_tipo'], 'nombreEncabezado' => 'Tipo Liq.');
 	$fila[] = array('model' => 'Novedad', 'field' => 'periodo', 'valor' => $v['Novedad']['periodo']);
 	$fila[] = array('model' => 'Novedad', 'field' => 'tipo', 'valor' => $v['Novedad']['tipo']);
 	$fila[] = array('model' => 'Novedad', 'field' => 'subtipo', 'valor' => $v['Novedad']['subtipo'], 'nombreEncabezado' => 'Detalle');
