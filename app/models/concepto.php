@@ -197,6 +197,7 @@ class Concepto extends AppModel {
                                                 'Concepto.valor_unitario',
                                                 'Concepto.compone',
                                                 'Concepto.remuneracion',
+												'Concepto.liquidacion_tipo',
 												'Concepto.formula',
 												'Concepto.desde',
 												'Concepto.hasta',

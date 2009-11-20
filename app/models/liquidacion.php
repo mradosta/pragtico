@@ -90,7 +90,8 @@ class Liquidacion extends AppModel {
         $this->setSecurityAccess('readOwnerOnly');
         return parent::deleteAll($conditions, $cascade, $callbacks, true);
     }
-    
+
+
 
 /**
  * Generates a liquidation.
@@ -113,6 +114,7 @@ class Liquidacion extends AppModel {
 
         $this->__conceptos = array();
         $this->__receiptError = array();
+        $this->__receiptType = $type;
         $this->__saveAuxiliar = array();
         $this->__variables = null;
         $this->__currentConcept = null;
@@ -125,8 +127,7 @@ class Liquidacion extends AppModel {
             $this->setVar($options['informaciones'][$relationship['ConveniosCategoria']['convenio_id']]);
         }
 
-        $this->setVar('#tipo_liquidacion', $type);
-        $this->setPeriod($period);
+        $this->setVar('#tipo_liquidacion', $this->__receiptType);
         $this->setRelationship($relationship);
 
 
@@ -141,28 +142,43 @@ class Liquidacion extends AppModel {
         }
 
 
-        if ($type === 'normal' || $type === 'especial') {
+        if ($this->__receiptType === 'final') {
+            $tmp = explode('-', $relationship['RelacionesHistorial'][0]['fin']);
+            $period['ano'] = $tmp[0];
+            $period['mes'] = $tmp[1];
+            if ($period['mes'] <= 6) {
+                $period['periodo'] = '1S';
+            } else {
+                $period['periodo'] = '2S';
+            }
+        }
+        $this->setPeriod($period);
+
+
+        /** Get novelties */
+        $novedades = $this->Relacion->Novedad->getNovedades($this->getRelationship(), $this->getPeriod(), $this->__receiptType);
+        foreach ($novedades['variables'] as $varName => $varValue) {
+            $this->setVar($varName, $varValue);
+        }
+        $this->__setAuxiliar($novedades['auxiliar']);
+        $this->setConcept($novedades['conceptos']);
+
+
+        if (in_array($this->__receiptType, array('normal', 'especial'))) {
 
             $jornada = $this->getRelationship('ConveniosCategoria', 'jornada');
             if (($period['periodo'] !== 'M' && $jornada === 'Mensual') || ($period['periodo'] === 'M' && $jornada === 'Por Hora')) {
                 return;
             }
-    
-            //$opcionesFindConcepto = null;
+
             $this->setConcept(
                 $this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
                     array(        'relacion'     => $relationship,
                                 'desde'     => $this->getVarValue('#fecha_desde_liquidacion'),
                                 'hasta'     => $this->getVarValue('#fecha_hasta_liquidacion'))));
 
-            /** Always must be present basic salary
-            if (empty($this->__conceptos['sueldo_basico']) || $type === 'normal') {
-                $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
-                        array(  'relacion'          => $this->getRelationship(),
-                                'codigoConcepto'    => 'sueldo_basico')));
-            }
-            */
-            if (empty($this->__conceptos['antiguedad']) && $type === 'normal') {
+            /** Always must be present antiguedad in normal receipt type */
+            if (empty($this->__conceptos['antiguedad']) && $this->__receiptType === 'normal') {
                 $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
                         array(  'relacion'          => $this->getRelationship(),
                                 'codigoConcepto'    => 'antiguedad')));
@@ -185,7 +201,7 @@ class Liquidacion extends AppModel {
             $this->setConcept($ausencias['conceptos']);
 
 
-            if ($type === 'especial') {
+            if ($this->__receiptType === 'especial') {
 
                 $noveltiesConcepts = array_keys(am($ausencias['conceptos'], $horas['conceptos'], $novedades['conceptos']));
 
@@ -200,7 +216,7 @@ class Liquidacion extends AppModel {
                     }
                 }
             }
-        } elseif ($type === 'vacaciones') {
+        } elseif ($this->__receiptType === 'vacaciones') {
             $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
                     array(  'relacion'  => $relationship,
                             'desde'     => $this->getVarValue('#fecha_desde_liquidacion'),
@@ -256,34 +272,17 @@ class Liquidacion extends AppModel {
                 }
             }
             $this->setVar('#suma_conceptos_plus_vacacional_6_meses', $total);
-        } elseif (in_array($type,  array('final', 'sac'))) {
+        } elseif (in_array($this->__receiptType,  array('final', 'sac'))) {
 
-            if ($type === 'final') {
+            if ($this->__receiptType === 'final') {
+                $to = $relationship['RelacionesHistorial'][0]['fin'];
 
-
-                //if ($relationship['RelacionesHistorial'][0]['liquidacion_final'] == 'Si y Suspender'')
-                $auxiliar = null;
-                $auxiliar['id'] = $relationship['Relacion']['id'];
-                $auxiliar['estado'] = 'Suspendida';
-                $this->__setAuxiliar(array('save' => serialize($auxiliar), 'model' => 'Relacion'));
-                            
-                                            
                 $auxiliar = null;
                 $auxiliar['id'] = $relationship['Relacion']['id'];
                 $auxiliar['estado'] = 'Historica';
                 $this->__setAuxiliar(array('save' => serialize($auxiliar), 'model' => 'Relacion'));
-                
-                $to = $relationship['RelacionesHistorial'][0]['fin'];
-        
-                $tmp = explode('-', $relationship['RelacionesHistorial'][0]['fin']);
-                $period['ano'] = $tmp[0];
-                $period['mes'] = $tmp[1];
-                if ($period['mes'] <= 6) {
-                    $period['periodo'] = '1S';
-                } else {
-                    $period['periodo'] = '2S';
-                }
             }
+
             unset($options['variables']);
             unset($options['informaciones']);
 
@@ -310,7 +309,7 @@ class Liquidacion extends AppModel {
                 }
                 $period['hasta'] = $period['ano'] . '-12-31';
             } else {
-                return array('error' => sprintf('Wrong period (%s). Only "1" for the first_half or "2" for the second_half allowed for type %s.', $options['period'], $type));
+                return array('error' => sprintf('Wrong period (%s). Only "1" for the first_half or "2" for the second_half allowed for type %s.', $options['period'], $this->__receiptType));
             }
 
             $r = $this->find('all', array(
@@ -328,7 +327,7 @@ class Liquidacion extends AppModel {
             $this->setVar('#fecha_hasta_periodo_vacacional', sprintf('%d-12-31', $period['ano']));
 
 
-            if ($type === 'final') {
+            if ($this->__receiptType === 'final') {
                 $this->setVar('#fecha_desde_liquidacion', $from);
                 $this->setVar('#fecha_hasta_liquidacion', $period['hasta']);
                 $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
@@ -359,7 +358,7 @@ class Liquidacion extends AppModel {
         /** Get discounts */
         $discounts = $this->Relacion->Descuento->getDescuentos($this->getRelationship(),
                 array(  'periodo'   => $this->getPeriod(),
-                        'tipo'      => $type));
+                        'tipo'      => $this->__receiptType));
         foreach ($discounts['variables'] as $varName => $varValue) {
             $this->setVar($varName, $varValue);
         }
@@ -367,21 +366,12 @@ class Liquidacion extends AppModel {
         $this->setConcept($discounts['conceptos']);
 
 
-        /** Get novelties */
-        $novedades = $this->Relacion->Novedad->getNovedades($this->getRelationship(), $this->getPeriod(), $type);
-        foreach ($novedades['variables'] as $varName => $varValue) {
-            $this->setVar($varName, $varValue);
-        }
-        $this->__setAuxiliar($novedades['auxiliar']);
-        $this->setConcept($novedades['conceptos']);
-
-
         /** Resolv */
         foreach ($this->__conceptos as $cCod => $concepto) {
             $this->__conceptos[$cCod] = array_merge($this->__conceptos[$cCod],
                     $this->__getConceptValue($concepto));
         }
-        return $this->__getSaveArray($type);
+        return $this->__getSaveArray($this->__receiptType);
     }
     
 
@@ -645,6 +635,17 @@ class Liquidacion extends AppModel {
 * Dado un concepto, resuelve la formula.
 */
     function __getConceptValue($concepto) {
+
+        $receiptTypeMapping = array(
+            'normal'        => 1,
+            'sac'           => 2,
+            'vacaciones'    => 4,
+            'final'         => 8,
+            'especial'      => 16);
+
+        if ($receiptTypeMapping[$this->__receiptType] & $concepto['liquidacion_tipo'] != $concepto['liquidacion_tipo']) {
+            $this->__resolvConceptToZero($concepto['codigo']);
+		}
 
         /** The concept is already resolved */
         if (isset($concepto['valor'])) {
