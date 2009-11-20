@@ -206,7 +206,6 @@ class Liquidacion extends AppModel {
                 $noveltiesConcepts = array_keys(am($ausencias['conceptos'], $horas['conceptos'], $novedades['conceptos']));
 
                 foreach ($this->__conceptos as $cCod => $concepto) {
-
                     if (!($concepto['tipo'] === 'Deduccion'
                         || in_array($cCod, $noveltiesConcepts)
                         || $concepto['imprimir'] == 'No'
@@ -224,8 +223,9 @@ class Liquidacion extends AppModel {
 
             foreach ($this->__conceptos as $cCod => $concepto) {
                 if (!($concepto['tipo'] === 'Deduccion'
-                    || $concepto['imprimir'] == 'No'
-                    || substr($concepto['imprimir'], -9) === '[Forzado]')) {
+					|| in_array($cCod, array_keys($novedades['conceptos']))
+					|| $concepto['imprimir'] == 'No'
+					|| substr($concepto['imprimir'], -9) === '[Forzado]')) {
 
                     $this->__resolvConceptToZero($cCod);
                 }
