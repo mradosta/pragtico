@@ -323,6 +323,7 @@ class Novedad extends AppModel {
 				case 'Concepto':
 					$excludeIds[] = $novedad['Novedad']['id'];
 					$saves[$i]['Novedad']['id'] = $novedad['Novedad']['id'];
+					$saves[$i]['Novedad']['liquidacion_tipo'] = $novedad['Novedad']['liquidacion_tipo'];
 					$saves[$i]['Novedad']['estado'] = 'Confirmada';
 				break;
 			}
@@ -338,11 +339,14 @@ class Novedad extends AppModel {
                     $c++;
                 }
             }
-            
+
             if ($i === $c) {
-                $this->deleteAll(array('Novedad.id' => array_diff($ids, $excludeIds)), false, false, false);
-                $db->commit($this);
-                return $i;
+				$diff = array_diff($ids, $excludeIds);
+				if (!empty($diff)) {
+                	$this->deleteAll(array('Novedad.id' => $diff), false, false, false);
+				}
+				$db->commit($this);
+				return $i;
             } else {
                 $db->rollback($this);
                 return false;
