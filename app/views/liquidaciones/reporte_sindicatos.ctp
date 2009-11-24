@@ -27,18 +27,19 @@ if (!empty($data)) {
     $documento->setCellValue('G', 'Direccion', array('title' => '30'));
     $documento->setCellValue('H', 'Numero', array('title' => '10'));
     $documento->setCellValue('I', 'Cod. Postal', array('title' => '10'));
-    $documento->setCellValue('J', 'Area', array('title' => '35'));
-    $documento->setCellValue('K', 'Empleador', array('title' => '30'));
-    $documento->setCellValue('L', 'F. Ingreso', array('title' => '15'));
-    $documento->setCellValue('M', 'F. Egreso', array('title' => '15'));
-    $documento->setCellValue('N', 'Categoria', array('title' => '30'));
-    $documento->setCellValue('O', 'Valor', array('title' => '15'));
-    $documento->setCellValue('P', 'Concepto', array('title' => '50'));
-    $documento->setCellValue('Q', 'Valor', array('title' => '15'));
-    $documento->setCellValue('R', 'Periodo', array('title' => '15'));
-    $documento->setCellValue('S', 'Dias Periodo', array('title' => '10'));
-    $documento->setCellValue('T', 'Remunerativo', array('title' => '20'));
-    $documento->setCellValue('U', 'No Remunerativo', array('title' => '20'));
+    $documento->setCellValue('J', 'Obra Social', array('title' => '50'));
+	$documento->setCellValue('L', 'Area', array('title' => '35'));
+    $documento->setCellValue('L', 'Empleador', array('title' => '30'));
+    $documento->setCellValue('M', 'F. Ingreso', array('title' => '15'));
+    $documento->setCellValue('N', 'F. Egreso', array('title' => '15'));
+    $documento->setCellValue('O', 'Categoria', array('title' => '30'));
+    $documento->setCellValue('O', 'Valor', array('title' => '30'));
+    $documento->setCellValue('Q', 'Concepto', array('title' => '50'));
+    $documento->setCellValue('R', 'Valor', array('title' => '15'));
+    $documento->setCellValue('S', 'Periodo', array('title' => '15'));
+    $documento->setCellValue('T', 'Dias Periodo', array('title' => '10'));
+    $documento->setCellValue('U', 'Remunerativo', array('title' => '20'));
+    $documento->setCellValue('V', 'No Remunerativo', array('title' => '20'));
 
     /** Body */
     foreach ($data as $k => $detail) {
@@ -61,7 +62,8 @@ if (!empty($data)) {
                     $detail['Liquidacion']['Trabajador']['direccion'],
                     $detail['Liquidacion']['Trabajador']['numero'],
                     $detail['Liquidacion']['Trabajador']['codigo_postal'],
-                    $detail['Liquidacion']['Area']['nombre'],
+                    $detail['Liquidacion']['Trabajador']['ObrasSocial']['nombre'],
+					$detail['Liquidacion']['Area']['nombre'],
                     $detail['Liquidacion']['empleador_nombre'],
                     $detail['Liquidacion']['relacion_ingreso'],
                     ($detail['Liquidacion']['relacion_egreso'] !== '0000-00-00')?$detail['Liquidacion']['relacion_egreso']:'',
