@@ -26,6 +26,9 @@ class VacacionesController extends AppController {
     var $helpers = array('Documento');
 
     var $paginate = array(
+		'conditions' => array(
+			'Relacion.estado' => 'Activa'
+		),
         'order' => array(
             'Vacacion.periodo' => 'desc'
         )
