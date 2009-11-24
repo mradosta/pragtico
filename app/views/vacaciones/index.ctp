@@ -84,7 +84,7 @@ $js = '
                 alert("Debe seleccionar al menos una vacacion a notificar.");
                 return false;
             }
-            jQuery("#form")[0].action = "../notificaciones";
+            jQuery("#form")[0].action = jQuery.url("' . $this->params['controller'] . '/notificaciones");
             jQuery("#form")[0].submit();
         }
     );
