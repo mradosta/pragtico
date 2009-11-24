@@ -214,22 +214,26 @@ class Novedad extends AppModel {
 
 	function getNovedades($relacion, $periodo, $receiptType) {
 
-		if ($periodo['periodo'] === 'M') {
-			$period[] = $periodo['ano'] . $periodo['mes'] . 'M';
-			$period[] = $periodo['ano'] . $periodo['mes'] . '1Q';
-			$period[] = $periodo['ano'] . $periodo['mes'] . '2Q';
-		} else {
-			$period[] = $periodo['periodoCompleto'];
+		$conditions = array(
+			'Novedad.estado'           => 'Confirmada',
+			'Novedad.liquidacion_tipo' => $receiptType,
+			'Novedad.tipo' 			   => 'Concepto',
+			'Novedad.relacion_id'	   => $relacion['Relacion']['id']);
+
+		if ($receiptType != 'final') {
+			if ($periodo['periodo'] === 'M') {
+				$period[] = $periodo['ano'] . $periodo['mes'] . 'M';
+				$period[] = $periodo['ano'] . $periodo['mes'] . '1Q';
+				$period[] = $periodo['ano'] . $periodo['mes'] . '2Q';
+			} else {
+				$period[] = $periodo['periodoCompleto'];
+			}
+			$conditions['Novedad.periodo'] = $period;
 		}
 
-		$novedades = $this->find('all',
-				array('conditions' 	=> array(
-					  		'Novedad.periodo'          => $period,
-		 					'Novedad.estado'           => 'Confirmada',
-                            'Novedad.liquidacion_tipo' => $receiptType,
-							'Novedad.tipo' 			   => 'Concepto',
-							'Novedad.relacion_id'	   => $relacion['Relacion']['id']),
-					  'recursive'	=> -1));
+		$novedades = $this->find('all', array(
+			'conditions' 	=> $conditions,
+			'recursive'		=> -1));
 
 		$variables = $conceptos = $auxiliares = array();
 		if (!empty($novedades)) {
