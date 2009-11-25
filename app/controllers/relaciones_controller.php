@@ -67,8 +67,17 @@ class RelacionesController extends AppController {
             $conditions['(Relacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
 
             $data = $this->Relacion->find('all', array(
-                'contain'       => array('Trabajador', 'Empleador', 'Area' => 'Provincia', 'ConveniosCategoria' => 'Convenio'),
-                'conditions'    => $conditions));           
+                'contain'       => array(
+					'RelacionesHistorial' => array(
+						'order' 		=> 'RelacionesHistorial.id DESC',
+						'conditions' 	=> array(
+							'RelacionesHistorial.estado' => array('Liquidado', 'Confirmado'))),
+					'Trabajador',
+					'Empleador',
+					'Area' => 'Provincia',
+					'ConveniosCategoria' => 'Convenio'),
+                'conditions'    => $conditions));
+
             if (!empty($data)) {
 
                 App::import('Vendor', 'utils', 'pragmatia');
@@ -127,7 +136,11 @@ class RelacionesController extends AppController {
                     $linea[$c++] = Utils::normalizeText($r['Area']['codigo_postal'], 8);
                     $linea[$c++] = Utils::normalizeText((!empty($r['Area']['Provincia']['codigo'])?$r['Area']['Provincia']['codigo']:'0'), 2, 'number');
                     $linea[$c++] = Utils::normalizeText($this->Util->format($r['Relacion']['ingreso'], array('type' => 'date', 'format' => 'dmY')), 8);
-                    $linea[$c++] = Utils::normalizeText($this->Util->format($r['Relacion']['egreso'], array('type' => 'date', 'format' => 'dmY')), 8);
+					if ($r['Relacion']['estado'] == 'Historica') {
+                    	$linea[$c++] = Utils::normalizeText($this->Util->format($r['RelacionesHistorial'][0]['fin'], array('type' => 'date', 'format' => 'dmY')), 8);
+					} else {
+						$linea[$c++] = str_repeat(' ', 8);
+					}
                     $linea[$c++] = '0';
                     $linea[$c++] = str_repeat(' ', 134);
                     $lineas[] = implode('', $linea);
