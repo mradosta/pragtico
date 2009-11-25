@@ -50,19 +50,31 @@ class LiquidacionesController extends AppController {
             foreach ($this->data['Condicion']['Bar-grupo_id'] as $groupId) {
                 $groupParams[$groupId] = User::getGroupParams($groupId);
             }
-            if (empty($this->data['Condicion']['Bar-periodo_largo'])) {
-                $this->Session->setFlash('Debe seleccionar el periodo.', 'error');
-                $this->History->goBack();
-            }
-            
+
+			if (!empty($this->data['Condicion']['Bar-periodo_largo'])) {
+				$period = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
+				$conditions['Liquidacion.ano'] = $period['ano'];
+				$conditions['Liquidacion.mes'] = $period['mes'];
+				$periodToShow = $this->data['Condicion']['Bar-periodo_largo'];
+			}
+
+			if (!empty($this->data['Condicion']['Bar-desde']) && !empty($this->data['Condicion']['Bar-hasta'])) {
+				App::import('Vendor', 'dates', 'pragmatia');
+				$periods = Dates::getPeriods($this->data['Condicion']['Bar-desde'], $this->data['Condicion']['Bar-hasta']);
+				$periodToShow = implode(', ', $periods);
+				foreach ($periods as $period) {
+					$years[] = substr($period, 0, 4);
+					$months[] = substr($period, 4, 2);
+				}
+				$conditions['Liquidacion.ano'] = array_unique($years);
+				$conditions['Liquidacion.mes'] = array_unique($months);
+			}
+
             if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
                 $conditions['Liquidacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
             }
-        
 
-            $period = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
-            $conditions['Liquidacion.ano'] = $period['ano'];
-            $conditions['Liquidacion.mes'] = $period['mes'];
+            
             $conditions['Liquidacion.estado'] = 'Confirmada';
             
             $data = array();
@@ -130,7 +142,7 @@ class LiquidacionesController extends AppController {
 
             $this->set('data', $data);
             $this->set('groupParams', $groupParams);
-            $this->set('period', $this->data['Condicion']['Bar-periodo_largo']);
+            $this->set('period', $periodToShow);
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
         }
     }

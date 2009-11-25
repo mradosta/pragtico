@@ -149,7 +149,9 @@ if (!empty($data)) {
             'controller'        => 'empleadores',
             'seleccionMultiple' => true,
             'camposRetorno'     => array('Empleador.cuit', 'Empleador.nombre')));
-    
+	$conditions['Condicion.Bar-desde'] = array('type' => 'date');
+	$conditions['Condicion.Bar-hasta'] = array('type' => 'date');
+
     $options = array('title' => 'Liquidaciones', 'conditions' => array('Bar-grupo_id' => 'multiple'));
     echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));
 }
