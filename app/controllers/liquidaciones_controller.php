@@ -181,16 +181,23 @@ class LiquidacionesController extends AppController {
             if (empty($this->data['Condicion']['Bar-empleador_id'])
                 && empty($this->data['Condicion']['Bar-grupo_id'])) {
                 $this->Session->setFlash('Debe seleccionar por lo menos un Empleador y/o un Grupo.', 'error');
-            } elseif (empty($this->data['Condicion']['Bar-periodo_largo']) || $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo') === false) {
+            } elseif (empty($this->data['Condicion']['Bar-periodo_largo_desde']) || $this->Util->format($this->data['Condicion']['Bar-periodo_largo_desde'], 'periodo') === false) {
                 $this->Session->setFlash('Debe especificar un periodo valido.', 'error');
             } else {
-                $periodo = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
 
-                $conditions = array('Liquidacion.tipo'          => $this->data['Condicion']['Bar-tipo'],
-                                    'Liquidacion.periodo'       => $periodo['periodo'],
-                                    'Liquidacion.ano'           => $periodo['ano'],
-                                    'Liquidacion.mes'           => $periodo['mes']);
-                
+				$conditions['Liquidacion.tipo'] = $this->data['Condicion']['Bar-tipo'];
+				$periodFrom = $this->Util->format($this->data['Condicion']['Bar-periodo_largo_desde'], 'periodo');
+
+				if (!empty($this->data['Condicion']['Bar-periodo_largo_hasta'])) {
+					App::import('Vendor', 'dates', 'pragmatia');
+					$periodTo = $this->Util->format($this->data['Condicion']['Bar-periodo_largo_hasta'], 'periodo');
+					$conditions['CONCAT(Liquidacion.ano, LPAD(Liquidacion.mes, 2, \'0\'), Liquidacion.periodo)'] = Dates::getPeriods($periodFrom['desde'], $periodTo['hasta']);
+				} else {
+					$conditions = array('Liquidacion.periodo'       => $periodFrom['periodo'],
+										'Liquidacion.ano'           => $periodFrom['ano'],
+										'Liquidacion.mes'           => $periodFrom['mes']);
+				}
+
                 if (!empty($this->data['Condicion']['Bar-estado'])) {
                     $conditions['Liquidacion.estado'] = $this->data['Condicion']['Bar-estado'];
                 }
@@ -213,14 +220,13 @@ class LiquidacionesController extends AppController {
                     $group_option = 'coeficient';
                 }
 
-
                 $this->Liquidacion->Behaviors->detach('Permisos');
                 $this->Liquidacion->Behaviors->detach('Util');
                 $workers = $this->Liquidacion->find('all', array(
                         'conditions'    => $conditions,
                         'fields'        => array('COUNT(DISTINCT Liquidacion.trabajador_id) AS cantidad'),
                         'recursive'     => -1));
-
+d($workers);
                 if (empty($workers[0]['Liquidacion']['cantidad'])) {
                     $this->Session->setFlash('No se han encontrado liquidaciones segun los criterios especificados.', 'error');
                 } else {

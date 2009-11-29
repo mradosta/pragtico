@@ -142,9 +142,11 @@ if (!empty($data)) {
     
     $conditions['Condicion.Bar-tipo'] = array('label' => 'Tipo', 'multiple' => 'checkbox', 'type' => 'select', 'options' => $types);
 
+    $conditions['Condicion.Bar-periodo_largo_desde'] = array('label' => 'Periodo Desde', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'F'), 'aclaracion' => 'Si no desea especificar un rango, solo especifique el periodo desde.');
+
+	$conditions['Condicion.Bar-periodo_largo_hasta'] = array('label' => 'Periodo Hasta', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'F'));
+
     $conditions['Condicion.Bar-estado'] = array('label' => 'Estado', 'multiple' => 'checkbox', 'type' => 'select', 'options' => $states);
-    
-    $conditions['Condicion.Bar-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'F'));
 
     $options = array('title' => 'Resumen de Liquidacion');
     echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));
