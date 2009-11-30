@@ -226,7 +226,7 @@ class LiquidacionesController extends AppController {
                         'conditions'    => $conditions,
                         'fields'        => array('COUNT(DISTINCT Liquidacion.trabajador_id) AS cantidad'),
                         'recursive'     => -1));
-d($workers);
+
                 if (empty($workers[0]['Liquidacion']['cantidad'])) {
                     $this->Session->setFlash('No se han encontrado liquidaciones segun los criterios especificados.', 'error');
                 } else {
