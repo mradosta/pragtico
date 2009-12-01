@@ -173,7 +173,7 @@ class Liquidacion extends AppModel {
 
             $this->setConcept(
                 $this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
-                    array(        'relacion'     => $relationship,
+                    array(      'relacion'  => $relationship,
                                 'desde'     => $this->getVarValue('#fecha_desde_liquidacion'),
                                 'hasta'     => $this->getVarValue('#fecha_hasta_liquidacion'))));
 
@@ -222,7 +222,7 @@ class Liquidacion extends AppModel {
                             'hasta'     => $this->getVarValue('#fecha_hasta_liquidacion'))));
 
             foreach ($this->__conceptos as $cCod => $concepto) {
-                if (!($concepto['tipo'] === 'Deduccion'
+                if (!($concepto['liquidacion_tipo'] & 4 == 4
 					|| in_array($cCod, array_keys($novedades['conceptos']))
 					|| $concepto['imprimir'] == 'No'
 					|| substr($concepto['imprimir'], -9) === '[Forzado]')) {
