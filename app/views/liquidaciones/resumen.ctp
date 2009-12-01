@@ -40,7 +40,7 @@ if (!empty($data)) {
     $fila = 4;
     $documento->setCellValue('A' . $fila, 'Empresa: ' . $conditions['Bar-empleador_id__'], 'bold');
     $fila++;
-    $documento->setCellValue('A' . $fila, 'Periodo: ' . $conditions['Bar-periodo_largo'], 'bold');
+    $documento->setCellValue('A' . $fila, 'Periodo: ' . $conditions['Bar-periodo_largo_desde'], 'bold');
 
 
     $fila+=2;
