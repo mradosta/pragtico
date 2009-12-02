@@ -222,9 +222,10 @@ class Liquidacion extends AppModel {
                             'hasta'     => $this->getVarValue('#fecha_hasta_liquidacion'))));
 
             foreach ($this->__conceptos as $cCod => $concepto) {
-                if (!($concepto['liquidacion_tipo'] & 4 == 4
+                if (!(((int)$concepto['liquidacion_tipo'] & 4) === 4
 					|| in_array($cCod, array_keys($novedades['conceptos']))
 					|| $concepto['imprimir'] == 'No'
+					|| $concepto['tipo'] == 'Deduccion'
 					|| substr($concepto['imprimir'], -9) === '[Forzado]')) {
 
                     $this->__resolvConceptToZero($cCod);
