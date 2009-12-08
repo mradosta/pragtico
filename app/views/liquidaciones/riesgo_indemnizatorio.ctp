@@ -38,10 +38,10 @@ if (!empty($data)) {
     $documento->setCellValue('A', 'Ingreso: ', 'right');
     $documento->setCellValue('B', $relacion['Relacion']['ingreso'], 'bold');
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('ingreso', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
-    
+
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Egreso: ', 'right');
-    $documento->setCellValue('B', $relacion['Relacion']['egreso'], 'bold');
+    $documento->setCellValue('B', (!empty($relacion['RelacionesHistorial'][0]['fin']))?$relacion['RelacionesHistorial'][0]['fin']:'', 'bold');
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('egreso', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
 
     $documento->moveCurrentRow();
@@ -219,7 +219,7 @@ if (!empty($data)) {
         ),
     );
     $documento->activeSheet->getStyle('A' . $documento->getCurrentRow() . ':F' . ($documento->getCurrentRow() + 6))->applyFromArray($styleArray);
-        
+
     $documento->save($fileFormat);
 } else {
 

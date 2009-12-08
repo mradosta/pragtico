@@ -722,15 +722,9 @@ class LiquidacionesController extends AppController {
 
             $this->Liquidacion->Behaviors->detach('Permisos');
             $this->Liquidacion->Behaviors->detach('Util');
-            /*
-                    array(  'contain'       => array('Relacion' => array(
-                        'RelacionesHistorial' => array(
-                            'limit'         => 1,
-                            'conditions'    => array('RelacionesHistorial.estado' => 'Confirmado'),
-                            'order'         => 'RelacionesHistorial.id DESC'))),
-            */
+
             $this->set('data', $this->Liquidacion->find('all',
-                    array(  'contain'       => array('Relacion'),
+                    array(  'recursive'     => -1,
                             'limit'         => 12,
                             'order'         => array(
                                 'Liquidacion.ano DESC',
@@ -746,8 +740,16 @@ class LiquidacionesController extends AppController {
                                 'Liquidacion.mes'),
                             'conditions'    => $conditions)));
 
-            $this->set('relacion', $this->Liquidacion->Relacion->findById($this->data['Condicion']['Bar-relacion_id']));
-            $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+			$this->Liquidacion->Relacion->contain(array(
+				'Empleador',
+				'Trabajador',
+				'RelacionesHistorial' => array(
+					'limit'         => 1,
+					'conditions'    => array('RelacionesHistorial.estado' => 'Confirmado'),
+					'order'         => 'RelacionesHistorial.id DESC')));
+			$this->set('relacion',
+				 $this->Liquidacion->Relacion->findById($this->data['Condicion']['Bar-relacion_id']));
+			$this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
         }
 	}
 
