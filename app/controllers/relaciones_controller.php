@@ -28,6 +28,21 @@ class RelacionesController extends AppController {
 
     var $helpers = array('Documento');
 
+
+	function reingreso() {
+		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] == 'confirmar' && !empty($this->data['Relacion']['ingreso']) && !empty($this->data['Relacion']['id'])) {
+			$this->Relacion->Behaviors->detach('Permisos');
+			$this->data['Relacion']['estado'] = 'Activa';
+			if ($this->Relacion->save(array('Relacion' => $this->data['Relacion']), false)) {
+				$this->Session->setFlash('El reingreso se completo correctamente.', 'ok');
+			} else {
+				$this->Session->setFlash('No fue posible guardar el reingreso.', 'error');
+			}
+			$this->History->goBack();
+		}
+	}
+
+
     function archivo_bimestral_ministerio_trabajo() {
 
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {

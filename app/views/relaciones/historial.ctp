@@ -36,7 +36,8 @@ foreach ($this->data['RelacionesHistorial'] as $v) {
     $cuerpo[] = $fila;
 }
 
-$url = array('controller' => 'relaciones_historiales', 'action' => 'add', 'RelacionesHistorial.relacion_id' => $this->data['Relacion']['id']);
+$url[] = array('controller' => 'relaciones_historiales', 'action' => 'add', 'RelacionesHistorial.relacion_id' => $this->data['Relacion']['id']);
+$url[] = array('controller' => 'relaciones', 'action' => 'reingreso', 'Relacion.id' => $this->data['Relacion']['id'], 'texto' => 'Reingreso');
 echo $this->element('desgloses/agregar', array('url' => $url, 'titulo' => 'Historial', 'cuerpo' => $cuerpo));
 
 ?>
