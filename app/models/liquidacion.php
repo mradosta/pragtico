@@ -339,16 +339,24 @@ class Liquidacion extends AppModel {
             $ausencias = $this->Relacion->Ausencia->getAbsencesByType(array('Accidente', 'Maternidad'), $relationship['Relacion']['id'], $from, $to);
             $this->setVar('#total_dias_ausencias_accidente_semestre', $ausencias['Accidente']);
             $this->setVar('#total_dias_ausencias_maternidad_semestre', $ausencias['Maternidad']);
- 
+
             foreach ($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
                     array(      'relacion'  => $relationship,
                                 'desde'     => $this->getVarValue('#fecha_desde_liquidacion'),
                                 'hasta'     => $this->getVarValue('#fecha_hasta_liquidacion'))) as $cCod => $concepto) {
 
-                if ($concepto['tipo'] === 'Deduccion') {
-                    $this->setConcept(array($cCod => $concepto));
-                }
+                if (!(((int)$concepto['liquidacion_tipo'] & $receiptType) === 8
+					|| in_array($cCod, array_keys($novedades['conceptos']))
+					|| $concepto['imprimir'] == 'No'
+					|| $concepto['tipo'] == 'Deduccion'
+					|| substr($concepto['imprimir'], -9) === '[Forzado]')) {
+
+                    $this->__resolvConceptToZero($cCod);
+                } else {
+					$this->setConcept(array($cCod => $concepto));
+				}
             }
+
             $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
                     array(  'relacion'          => $this->getRelationship(),
                             'codigoConcepto'    => 'sac')));
