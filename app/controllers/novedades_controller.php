@@ -82,44 +82,44 @@ class NovedadesController extends AppController {
 					/**
 					* Vuelvo 10 columnas antes del final, ya que puede haber validaciones, siempre estan la final.
 					*/
-					for($i = 6; $i < PHPExcel_Cell::columnIndexFromString($objPHPExcel->getActiveSheet()->getHighestColumn()); $i++) {
+					for($i = 7; $i < PHPExcel_Cell::columnIndexFromString($objPHPExcel->getActiveSheet()->getHighestColumn()); $i++) {
 						$value = $objPHPExcel->getActiveSheet()->getCellByColumnAndRow($i, 8)->getValue();
 						if (empty($value)) {
 							break;
 						}
 						
-						if ($value === "Horas") {
+						if ($value === 'Horas') {
 							$mapeo['Horas']['Normal']						= $i;
 							$mapeo['Horas']['Extra 50%']					= $i+1;
 							$mapeo['Horas']['Extra 100%' ] 					= $i+2;
 							$i = $i+2;
-						} elseif ($value === "Horas Ajuste") {
+						} elseif ($value === 'Horas Ajuste') {
 							$mapeo['Horas']['Ajuste Normal'] 				= $i;
 							$mapeo['Horas']['Ajuste Extra 50%']				= $i+1;
 							$mapeo['Horas']['Ajuste Extra 100%']			= $i+2;
 							$i = $i+2;
-						} elseif ($value === "Horas Nocturna") {
+						} elseif ($value === 'Horas Nocturna') {
 							$mapeo['Horas']['Normal Nocturna']				= $i;
 							$mapeo['Horas']['Extra Nocturna 50%']			= $i+1;
 							$mapeo['Horas']['Extra Nocturna 100%']			= $i+2;
 							$i = $i+2;
-						} elseif ($value === "Horas Ajuste Nocturna") {
+						} elseif ($value === 'Horas Ajuste Nocturna') {
 							$mapeo['Horas']['Ajuste Normal Nocturna']		= $i;
 							$mapeo['Horas']['Ajuste Extra Nocturna 50%']	= $i+1;
 							$mapeo['Horas']['Ajuste Extra Nocturna 100%']	= $i+2;
 							$i = $i+2;
-						} elseif ($value === "Ausencias") {
+						} elseif ($value === 'Ausencias') {
 							$mapeo['Ausencias']['Motivo']					= $i;
 							$mapeo['Ausencias']['Desde']					= $i+1;
 							$mapeo['Ausencias']['Dias']						= $i+2;
 							$i = $i+2;
-                        } elseif ($value === "Vacaciones") {
+                        } elseif ($value === 'Vacaciones') {
                             $mapeo['Vacaciones']['Corresponde']              = $i;
                             $mapeo['Vacaciones']['Periodo']                  = $i+1;
                             $mapeo['Vacaciones']['Inicio']                   = $i+2;
                             $mapeo['Vacaciones']['Dias']                     = $i+3;
                             $i = $i+3;
-						} elseif ($value === "Vales") {
+						} elseif ($value === 'Vales') {
 							$mapeo['Vales']['Importe']						= $i;
 						} else {
 							$mapeo[$value]['Valor']							= $i;
