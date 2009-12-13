@@ -79,6 +79,14 @@ class Liquidacion extends AppModel {
 
 
     var $__recursivityCounter = 0;
+
+	private $__receiptTypeMapping = array(
+		'normal'        => 1,
+		'sac'           => 2,
+		'vacaciones'    => 4,
+		'final'         => 8,
+		'especial'      => 16);
+
 /**
  * I must overwrite default cakePHP deleteAll method because it's not performant when there're many 
  * relations and many records.
@@ -201,20 +209,20 @@ class Liquidacion extends AppModel {
             $this->setConcept($ausencias['conceptos']);
 
 
-            if ($this->__receiptType === 'especial') {
+            //if ($this->__receiptType === 'especial') {
+			$noveltiesConcepts = array_keys(
+				am(
+					$ausencias['conceptos'],
+					$horas['conceptos'],
+					$novedades['conceptos']));
 
-                $noveltiesConcepts = array_keys(am($ausencias['conceptos'], $horas['conceptos'], $novedades['conceptos']));
+			foreach ($this->__conceptos as $cCod => $concepto) {
 
-                foreach ($this->__conceptos as $cCod => $concepto) {
-                    if (!($concepto['tipo'] === 'Deduccion'
-                        || in_array($cCod, $noveltiesConcepts)
-                        || $concepto['imprimir'] == 'No'
-                        || substr($concepto['imprimir'], -9) === '[Forzado]')) {
-
-                        $this->__resolvConceptToZero($cCod);
-                    }
-                }
-            }
+				if (!$this->__isValid($concepto, $noveltiesConcepts)) {
+					$this->__resolvConceptToZero($cCod);
+				}
+			}
+            //}
         } elseif ($this->__receiptType === 'vacaciones') {
             $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
                     array(  'relacion'  => $relationship,
@@ -222,14 +230,10 @@ class Liquidacion extends AppModel {
                             'hasta'     => $this->getVarValue('#fecha_hasta_liquidacion'))));
 
             foreach ($this->__conceptos as $cCod => $concepto) {
-                if (!(((int)$concepto['liquidacion_tipo'] & 4) === 4
-					|| in_array($cCod, array_keys($novedades['conceptos']))
-					|| $concepto['imprimir'] == 'No'
-					|| $concepto['tipo'] == 'Deduccion'
-					|| substr($concepto['imprimir'], -9) === '[Forzado]')) {
 
-                    $this->__resolvConceptToZero($cCod);
-                }
+				if (!$this->__isValid($concepto, array_keys($novedades['conceptos']))) {
+					$this->__resolvConceptToZero($cCod);
+				}
             }
 
 
@@ -345,12 +349,7 @@ class Liquidacion extends AppModel {
                                 'desde'     => $this->getVarValue('#fecha_desde_liquidacion'),
                                 'hasta'     => $this->getVarValue('#fecha_hasta_liquidacion'))) as $cCod => $concepto) {
 
-                if (!(((int)$concepto['liquidacion_tipo'] & $receiptType) === 8
-					|| in_array($cCod, array_keys($novedades['conceptos']))
-					|| $concepto['imprimir'] == 'No'
-					|| $concepto['tipo'] == 'Deduccion'
-					|| substr($concepto['imprimir'], -9) === '[Forzado]')) {
-
+				if (!$this->__isValid($concepto, array_keys($novedades['conceptos']))) {
                     $this->__resolvConceptToZero($cCod);
                 } else {
 					$this->setConcept(array($cCod => $concepto));
@@ -382,8 +381,24 @@ class Liquidacion extends AppModel {
         }
         return $this->__getSaveArray($this->__receiptType);
     }
-    
 
+
+/**
+ * Returns true when the concept is valid for the current receipt type, false in other cases.
+*/
+	function __isValid($concept, $novelties) {
+
+		if (((int)$concept['liquidacion_tipo'] & $this->__receiptTypeMapping[$this->__receiptType]) === $this->__receiptTypeMapping[$this->__receiptType]
+			|| in_array($concept['codigo'], $novelties)
+			|| $concept['imprimir'] == 'No'
+			|| $concept['tipo'] == 'Deduccion'
+			|| substr($concept['imprimir'], -9) === '[Forzado]') {
+
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 
     function __getSaveArray($type) {
@@ -559,7 +574,6 @@ class Liquidacion extends AppModel {
     function __agregarDetalle($detalleLiquidacion) {
         $detalle = null;
         if (!empty($detalleLiquidacion['concepto_id'])) {
-            //debug($detalleLiquidacion);
             $detalle['concepto_id'] = $detalleLiquidacion['concepto_id'];
             $detalle['concepto_codigo'] = $detalleLiquidacion['codigo'];
             $detalle['concepto_nombre'] = $detalleLiquidacion['nombre'];
@@ -645,14 +659,7 @@ class Liquidacion extends AppModel {
 */
     function __getConceptValue($concepto) {
 
-        $receiptTypeMapping = array(
-            'normal'        => 1,
-            'sac'           => 2,
-            'vacaciones'    => 4,
-            'final'         => 8,
-            'especial'      => 16);
-
-        if ($receiptTypeMapping[$this->__receiptType] & $concepto['liquidacion_tipo'] != $concepto['liquidacion_tipo']) {
+        if ($this->__receiptTypeMapping[$this->__receiptType] & $concepto['liquidacion_tipo'] != $concepto['liquidacion_tipo']) {
             $this->__resolvConceptToZero($concepto['codigo']);
 		}
 
