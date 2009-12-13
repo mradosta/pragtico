@@ -38,6 +38,42 @@ class LiquidacionesController extends AppController {
 	var $components = array('Formulador');
 	var $helpers = array('Documento');
 
+
+	function reporte_liquidaciones_finales() {
+        if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
+
+			$and = '';
+			if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
+				$and = ' AND Grupo.id = ' . $this->data['Condicion']['Bar-grupo_id'];
+			}
+
+			$sql = "
+				select 	Grupo.nombre,
+						Trabajador.cuil,
+						Trabajador.nombre,
+						Trabajador.apellido,
+						Empleador.nombre,
+						Relacion.ingreso,
+						RelacionesHistorial.fin,
+						RelacionesHistorial.liquidacion_final
+				FROM relaciones Relacion
+					INNER JOIN trabajadores Trabajador on (Trabajador.id = Relacion.trabajador_id)
+					INNER JOIN empleadores Empleador ON (Relacion.empleador_id = Empleador.id)
+					INNER JOIN relaciones_historiales RelacionesHistorial ON (RelacionesHistorial.relacion_id = Relacion.id)
+					INNER JOIN grupos Grupo on (Relacion.group_id = Grupo.id)
+				WHERE 	RelacionesHistorial.estado = 'Confirmado'
+				" . $and . "
+				AND 	RelacionesHistorial.liquidacion_final IN ('" . implode("', '", $this->data['Condicion']['Bar-liquidacion_final']) . "')
+				AND 	RelacionesHistorial.fin >= '" . $this->data['Condicion']['Bar-desde'] . "'
+				AND 	RelacionesHistorial.fin <= '" . $this->data['Condicion']['Bar-hasta'] . "'
+				ORDER BY Grupo.nombre, RelacionesHistorial.fin DESC";
+
+
+            $this->set('data', $this->Liquidacion->query($sql));
+            $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+        }
+	}
+
     function reporte_liquidaciones() {
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 
