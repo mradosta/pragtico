@@ -195,7 +195,9 @@ class Novedad extends AppModel {
 								continue;
 							}
                         } elseif ($tipo === 'Vacaciones') {
-                            if ($subTipo === 'Dias') {
+                            if ($subTipo === 'Dias'
+								&& !empty($datos[$relacion_id][$tipo]['Inicio'])
+								&& preg_match(VALID_DATE, $datos[$relacion_id][$tipo]['Inicio'])) {
                                 $save['Novedad']['periodo'] = $datos[$relacion_id][$tipo]['Periodo'];
                                 $save['Novedad']['data'] = $this->format(Dates::dateAdd('1970-01-01', $datos[$relacion_id][$tipo]['Inicio'] - 25569, 'd', array('fromInclusive' => false)), 'date') . '|' . $registro;
                             } else {
