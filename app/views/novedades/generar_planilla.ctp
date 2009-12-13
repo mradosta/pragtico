@@ -33,6 +33,8 @@ if(!empty($registros)) {
     $documento->setWidth('D', 35);
     $documento->setWidth('E', 15);
     $documento->setWidth('F', 15);
+	$documento->setWidth('G', 15);
+	$documento->setWidth('H', 15);
 
     /**
     * Pongo los titulos de las columnas.
@@ -64,7 +66,9 @@ if(!empty($registros)) {
     $documento->setCellValue('D' . $fila . ':D' . ($fila+1), 'Categoria', array('style' => $estiloTituloColumna));
     $documento->setCellValue('E' . $fila . ':E' . ($fila+1), 'Ingreso', array('style' => $estiloTituloColumna));
     $documento->setCellValue('F' . $fila . ':F' . ($fila+1), 'Egreso', array('style' => $estiloTituloColumna));
-    $columna = $columnaInicioConceptosDinamicos = 5;
+	$documento->setCellValue('G' . $fila . ':G' . ($fila+1), 'Periodo', array('style' => $estiloTituloColumna));
+	$documento->setCellValue('H' . $fila . ':H' . ($fila+1), 'Liq. Tipo', array('style' => $estiloTituloColumna));
+    $columna = $columnaInicioConceptosDinamicos = 7;
 
     
     /**
@@ -190,16 +194,21 @@ if(!empty($registros)) {
         $documento->setCellValue('D' . $fila, $registro['ConveniosCategoria']['nombre']);
         $documento->setCellValue('E' . $fila, $registro['Relacion']['ingreso']);
         $documento->setCellValue('F' . $fila, (!empty($registro['RelacionesHistorial'][0]['fin']))?$registro['RelacionesHistorial'][0]['fin']:'');
+		$documento->setCellValue('G' . $fila, '');
+		$documento->setCellValue('H' . $fila, '');
+
+		$documento->doc->getActiveSheet()->getStyle('G' . $fila)->getProtection()->setLocked(PHPExcel_Style_Protection::PROTECTION_UNPROTECTED);
+		$documento->doc->getActiveSheet()->getStyle('H' . $fila)->getProtection()->setLocked(PHPExcel_Style_Protection::PROTECTION_UNPROTECTED);
 
         for ($i = $columnaInicioConceptosDinamicos; $i <= $columna; $i++) {
             $documento->setDataValidation($i . ',' . $fila, 'decimal');
         }
 
         if (in_array('Vacaciones', $tipos) && !empty($registro['Vacacion'][0]['corresponde'])) {
-            $documento->setCellValue('G' . $fila, $registro['Vacacion'][0]['corresponde']);
-            $documento->setCellValue('H' . $fila, $registro['Vacacion'][0]['periodo']);
-            $documento->doc->getActiveSheet()->getStyle('G' . $fila)->getProtection()->setLocked(PHPExcel_Style_Protection::PROTECTION_PROTECTED);
-            $documento->setDataValidation('I' . $fila, 'date');
+            $documento->setCellValue('I' . $fila, $registro['Vacacion'][0]['corresponde']);
+            $documento->setCellValue('J' . $fila, $registro['Vacacion'][0]['periodo']);
+            $documento->doc->getActiveSheet()->getStyle('I' . $fila)->getProtection()->setLocked(PHPExcel_Style_Protection::PROTECTION_PROTECTED);
+            $documento->setDataValidation('K' . $fila, 'date');
         }
 
         

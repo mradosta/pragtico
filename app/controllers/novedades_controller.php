@@ -82,7 +82,7 @@ class NovedadesController extends AppController {
 					/**
 					* Vuelvo 10 columnas antes del final, ya que puede haber validaciones, siempre estan la final.
 					*/
-					for($i = 7; $i < PHPExcel_Cell::columnIndexFromString($objPHPExcel->getActiveSheet()->getHighestColumn()); $i++) {
+					for($i = 8; $i < PHPExcel_Cell::columnIndexFromString($objPHPExcel->getActiveSheet()->getHighestColumn()); $i++) {
 						$value = $objPHPExcel->getActiveSheet()->getCellByColumnAndRow($i, 8)->getValue();
 						if (empty($value)) {
 							break;
@@ -128,6 +128,24 @@ class NovedadesController extends AppController {
 
 					for ($i = 10; $i <= $objPHPExcel->getActiveSheet()->getHighestRow() - 1; $i++) {
 						$relacionId = $objPHPExcel->getActiveSheet()->getCell('A' . $i)->getValue();
+
+						/** Try to get period out of file */
+						$tmp = $objPHPExcel->getActiveSheet()->getCell('G' . $i)->getValue();
+						if (!empty($tmp)) {
+							$relacionId .= '|' . $tmp;
+						} else {
+							$relacionId .= '|' . $this->data['Novedad']['periodo'];
+						}
+
+						/** Try to get receipt type out of file */
+						$tmp = $objPHPExcel->getActiveSheet()->getCell('H' . $i)->getValue();
+						if (!empty($tmp)
+							&& in_array(strtolower($this->data['Novedad']['liquidacion_tipo']), array_keys($this->Novedad->Liquidacion->opciones['tipo']))) {
+							$relacionId .= '|' . strtolower($tmp);
+						} else {
+							$relacionId .= '|' . $this->data['Novedad']['liquidacion_tipo'];
+						}
+						
 						foreach ($mapeo as $k => $v) {
 							foreach ($v as $k1 => $v1) {
 								$valor = $objPHPExcel->getActiveSheet()->getCellByColumnAndRow($v1, $i)->getValue();
@@ -138,7 +156,7 @@ class NovedadesController extends AppController {
 						}
 					}
 
-					if ($this->Novedad->grabar($datos, $this->data['Novedad']['periodo'], $this->data['Novedad']['liquidacion_tipo'])) {
+					if ($this->Novedad->grabar($datos)) {
 						$this->redirect('index');
 					}
 				}

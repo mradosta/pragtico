@@ -126,21 +126,20 @@ class Novedad extends AppModel {
  * Maneja transacciones.
  *
  * @param array $datos Los datos a grabar.
- * @param array $periodo El periodo al cual se asignaran los datos de las novedades.
- * @param string $receiptType The receipt type to be attached to.
  * @return boolean True si fue posible guardar las novedades ingresadas, false en otro caso
  * @access public 
  */
- 	function grabar($datos, $periodo, $receiptType) {
+ 	function grabar($datos) {
 
-		if (!preg_match(VALID_PERIODO, $periodo) || empty($datos) || !is_array($datos) || empty($receiptType)) {
-			return false;
-		}
-		
         App::import('Vendor', 'dates', 'pragmatia');
         
 		$predefinidos = $this->getIngresosPosibles('predefinidos');
-		foreach ($datos as $relacion_id => $data) {
+		foreach ($datos as $r => $data) {
+			$tmp = explode('|', $r);
+			$relacion_id = $tmp[0];
+			$periodo = $tmp[1];
+			$receiptType = $tmp[2];
+
 			foreach ($data as $tipo => $registros) {
 				foreach ($registros as $subTipo => $registro) {
 				
