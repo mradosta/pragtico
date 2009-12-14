@@ -67,11 +67,11 @@ class LiquidacionesController extends AppController {
 					INNER JOIN empleadores Empleador ON (Relacion.empleador_id = Empleador.id)
 					INNER JOIN relaciones_historiales RelacionesHistorial ON (RelacionesHistorial.relacion_id = Relacion.id)
 				WHERE 	RelacionesHistorial.estado = 'Confirmado'
+				AND 	Relacion.estado = 'Activa'
 				AND " . implode(' AND ', $and) . "
 				AND 	RelacionesHistorial.liquidacion_final IN ('" . implode("', '", $this->data['Condicion']['Bar-liquidacion_final']) . "')
 				ORDER BY RelacionesHistorial.fin DESC";
 
-//d($sql);
             $this->set('data', $this->Liquidacion->query($sql));
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
         }
