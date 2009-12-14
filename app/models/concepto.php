@@ -82,7 +82,7 @@ class Concepto extends AppModel {
 	);
 
 	var $belongsTo = array('Coeficiente');
-                              
+
 	var $hasAndBelongsToMany = array(	'Convenio' =>
 								array('with' => 'ConveniosConcepto'),
 										'Empleador' =>
@@ -114,7 +114,7 @@ class Concepto extends AppModel {
             'SAC'                       => 'SAC',
             'Vacaciones'                => 'Vacaciones',
             'Plus Zona Desfavorable'    => 'Plus Zona Desfavorable'));
-    
+
 /**
  * descontar field is bitwise, must sum values then.
  */
@@ -480,11 +480,13 @@ class Concepto extends AppModel {
             'conditions'    =>$conditions,
             'joins'         => $joins,
             'order'         => $order));
+
 		$r = $this->query($sql);
 		
 		$conceptos = array();
+
 		foreach ($r as $v) {
-            
+
 			/**
 			* En principio tomo el concepto como verdad, luego puede estar sobreescrito.
 			* La jerarquia es: 	Relacion,
@@ -500,40 +502,43 @@ class Concepto extends AppModel {
 			/**
 			* De la relacion.
 			*/
-			if (!empty($v['RelacionesConcepto']['desde']) && $v['RelacionesConcepto']['desde'] != "0000-00-00" && $v['RelacionesConcepto']['desde'] > $opciones['desde']) {
+			if (!empty($v['RelacionesConcepto']['desde']) && $v['RelacionesConcepto']['desde'] != '0000-00-00' && $v['RelacionesConcepto']['desde'] > $opciones['desde']) {
 				continue;
 			}
-			if (!empty($v['RelacionesConcepto']['hasta']) && $v['RelacionesConcepto']['hasta'] != "0000-00-00" && $v['RelacionesConcepto']['hasta'] < $opciones['hasta']) {
+			if (!empty($v['RelacionesConcepto']['hasta']) && $v['RelacionesConcepto']['hasta'] != '0000-00-00' && $v['RelacionesConcepto']['hasta'] < $opciones['hasta']) {
 				continue;
 			}
 			
 			/**
 			* Del empleador.
 			*/
-			if (!empty($v['EmpleadoresConcepto']['desde']) && $v['EmpleadoresConcepto']['desde'] != "0000-00-00" && $v['EmpleadoresConcepto']['desde'] > $opciones['desde']) {
+			if (!empty($v['EmpleadoresConcepto']['desde']) && $v['EmpleadoresConcepto']['desde'] != '0000-00-00' && $v['EmpleadoresConcepto']['desde'] > $opciones['desde']) {
 				continue;
 			}
-			if (!empty($v['EmpleadoresConcepto']['hasta']) && $v['EmpleadoresConcepto']['hasta'] != "0000-00-00" && $v['EmpleadoresConcepto']['hasta'] < $opciones['hasta']) {
+			if (!empty($v['EmpleadoresConcepto']['hasta']) && $v['EmpleadoresConcepto']['hasta'] != '0000-00-00' && $v['EmpleadoresConcepto']['hasta'] < $opciones['hasta']) {
 				continue;
 			}
 
 			/**
 			* Del convenio.
 			*/
-			if (!empty($v['ConveniosConcepto']['desde']) && $v['ConveniosConcepto']['desde'] != "0000-00-00" && $v['ConveniosConcepto']['desde'] > $opciones['desde']) {
+			if (!empty($v['ConveniosConcepto']['desde']) && $v['ConveniosConcepto']['desde'] != '0000-00-00' && $v['ConveniosConcepto']['desde'] > $opciones['desde']) {
 				continue;
 			}
-			if (!empty($v['ConveniosConcepto']['hasta']) && $v['ConveniosConcepto']['hasta'] != "0000-00-00" && $v['ConveniosConcepto']['hasta'] < $opciones['hasta']) {
+			if (!empty($v['ConveniosConcepto']['hasta']) && $v['ConveniosConcepto']['hasta'] != '0000-00-00' && $v['ConveniosConcepto']['hasta'] < $opciones['hasta']) {
 				continue;
 			}
 			
 			/**
 			* Del concepto.
 			*/
-			if (!empty($v['Concepto']['desde']) && $v['Concepto']['desde'] != "0000-00-00" && $v['Concepto']['desde'] > $opciones['desde']) {
+			if (empty($v['Concepto']['id'])) {
 				continue;
 			}
-			if (!empty($v['Concepto']['hasta']) && $v['Concepto']['hasta'] != "0000-00-00" && $v['Concepto']['hasta'] < $opciones['hasta']) {
+			if (!empty($v['Concepto']['desde']) && $v['Concepto']['desde'] != '0000-00-00' && $v['Concepto']['desde'] > $opciones['desde']) {
+				continue;
+			}
+			if (!empty($v['Concepto']['hasta']) && $v['Concepto']['hasta'] != '0000-00-00' && $v['Concepto']['hasta'] < $opciones['hasta']) {
 				continue;
 			}
 
