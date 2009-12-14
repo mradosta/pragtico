@@ -40,16 +40,22 @@ class LiquidacionesController extends AppController {
 
 
 	function reporte_liquidaciones_finales() {
+
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 
-			$and = '';
+			$and = array();
 			if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
-				$and = ' AND Grupo.id = ' . $this->data['Condicion']['Bar-grupo_id'];
+				$and[] = 'Relacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ' = ' . $this->data['Condicion']['Bar-grupo_id'];
+			}
+			if (!empty($this->data['Condicion']['Bar-desde'])) {
+				$and[] = 'RelacionesHistorial.fin >= ' . $this->data['Condicion']['Bar-desde'];
+			}
+			if (!empty($this->data['Condicion']['Bar-hasta'])) {
+				$and[] = 'RelacionesHistorial.fin <= ' . $this->data['Condicion']['Bar-hasta'];
 			}
 
 			$sql = "
-				select 	Grupo.nombre,
-						Trabajador.cuil,
+				select	Trabajador.cuil,
 						Trabajador.nombre,
 						Trabajador.apellido,
 						Empleador.nombre,
@@ -60,15 +66,12 @@ class LiquidacionesController extends AppController {
 					INNER JOIN trabajadores Trabajador on (Trabajador.id = Relacion.trabajador_id)
 					INNER JOIN empleadores Empleador ON (Relacion.empleador_id = Empleador.id)
 					INNER JOIN relaciones_historiales RelacionesHistorial ON (RelacionesHistorial.relacion_id = Relacion.id)
-					INNER JOIN grupos Grupo on (Relacion.group_id = Grupo.id)
 				WHERE 	RelacionesHistorial.estado = 'Confirmado'
-				" . $and . "
+				AND " . implode(' AND ', $and) . "
 				AND 	RelacionesHistorial.liquidacion_final IN ('" . implode("', '", $this->data['Condicion']['Bar-liquidacion_final']) . "')
-				AND 	RelacionesHistorial.fin >= '" . $this->data['Condicion']['Bar-desde'] . "'
-				AND 	RelacionesHistorial.fin <= '" . $this->data['Condicion']['Bar-hasta'] . "'
-				ORDER BY Grupo.nombre, RelacionesHistorial.fin DESC";
+				ORDER BY RelacionesHistorial.fin DESC";
 
-
+//d($sql);
             $this->set('data', $this->Liquidacion->query($sql));
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
         }
