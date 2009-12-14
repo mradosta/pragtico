@@ -344,10 +344,12 @@ class Liquidacion extends AppModel {
             $this->setVar('#total_dias_ausencias_accidente_semestre', $ausencias['Accidente']);
             $this->setVar('#total_dias_ausencias_maternidad_semestre', $ausencias['Maternidad']);
 
+
             foreach ($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
                     array(      'relacion'  => $relationship,
                                 'desde'     => $this->getVarValue('#fecha_desde_liquidacion'),
                                 'hasta'     => $this->getVarValue('#fecha_hasta_liquidacion'))) as $cCod => $concepto) {
+
 
 				if (!$this->__isValid($concepto, array_keys($novedades['conceptos']))) {
                     $this->__resolvConceptToZero($cCod);
@@ -391,8 +393,8 @@ class Liquidacion extends AppModel {
 		if (((int)$concept['liquidacion_tipo'] & $this->__receiptTypeMapping[$this->__receiptType]) === $this->__receiptTypeMapping[$this->__receiptType]
 			|| in_array($concept['codigo'], $novelties)
 			|| $concept['imprimir'] == 'No'
-			|| $concept['tipo'] == 'Deduccion'
-			|| substr($concept['imprimir'], -9) === '[Forzado]') {
+			|| $concept['tipo'] == 'Deduccion') {
+			//|| substr($concept['imprimir'], -9) === '[Forzado]') {
 
 			return true;
 		} else {
@@ -659,9 +661,10 @@ class Liquidacion extends AppModel {
 */
     function __getConceptValue($concepto) {
 
+		/*
         if ($this->__receiptTypeMapping[$this->__receiptType] & $concepto['liquidacion_tipo'] != $concepto['liquidacion_tipo']) {
             $this->__resolvConceptToZero($concepto['codigo']);
-		}
+		}*/
 
         /** The concept is already resolved */
         if (isset($concepto['valor'])) {
@@ -769,7 +772,7 @@ class Liquidacion extends AppModel {
             $this->__getAllNecessaryConcepts();
             foreach ($this->__conceptos as $conceptoTmp) {
 
-                if (!in_array($conceptoTmp['codigo'], $conceptosNot) && $conceptoTmp['tipo'] == $matches[1] && in_array($conceptoTmp['imprimir'], array('Si', 'Solo con valor'))) {
+                if (!empty($conceptoTmp['tipo']) && !in_array($conceptoTmp['codigo'], $conceptosNot) && $conceptoTmp['tipo'] == $matches[1] && in_array($conceptoTmp['imprimir'], array('Si', 'Solo con valor'))) {
                     if (empty($conceptoTmp['valor'])) {
                         $resolucionCalculo = $this->__getConceptValue($conceptoTmp);
                         $this->__conceptos[$conceptoTmp['codigo']] = array_merge($resolucionCalculo, $this->__conceptos[$conceptoTmp['codigo']]);
