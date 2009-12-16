@@ -33,6 +33,7 @@ class RelacionesController extends AppController {
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] == 'confirmar' && !empty($this->data['Relacion']['ingreso']) && !empty($this->data['Relacion']['id'])) {
 			$this->Relacion->Behaviors->detach('Permisos');
 			$this->data['Relacion']['estado'] = 'Activa';
+			$this->data['Relacion']['permissions'] = 496;
 			if ($this->Relacion->save(array('Relacion' => $this->data['Relacion']), false)) {
 				$this->Session->setFlash('El reingreso se completo correctamente.', 'ok');
 			} else {
