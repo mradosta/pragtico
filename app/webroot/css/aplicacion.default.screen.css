@@ -331,6 +331,10 @@ div.menu div.panel a {
 	background: transparent url(img/boton_menu_hijo.gif) no-repeat;
 }
 
+div.menu div.panel {
+	height: 385px;
+}
+
 div.menu div.panel a:hover {
 	background-image: url(img/boton_menu_hijo_activo.gif);
 }
