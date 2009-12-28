@@ -113,6 +113,43 @@ class VacacionesController extends AppController {
         }
     }
 
+
+	function reporte_vacaciones() {
+        if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
+
+
+			$conditions[] = '(Relacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') > 0';
+            if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
+                $conditions[] = 'Relacion.empleador_id IN (' . implode(',', explode('**||**', $this->data['Condicion']['Bar-empleador_id'])) . ')';
+            }
+
+            if (!empty($this->data['Condicion']['Bar-periodo_largo'])) {
+                $period = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
+                $conditions[] = 'VacacionesDetalle.desde >= ' . $period['desde'];
+            }
+
+			$sql = '
+				SELECT		Vacacion.corresponde,
+							VacacionesDetalle.desde,
+							VacacionesDetalle.dias,
+							Empleador.cuit,
+							Empleador.nombre,
+							Trabajador.cuil,
+							Trabajador.apellido,
+							Trabajador.nombre
+				FROM		vacaciones_detalles VacacionesDetalle
+				INNER JOIN	vacaciones Vacacion ON (Vacacion.id = VacacionesDetalle.vacacion_id)
+				INNER JOIN	relaciones Relacion ON (Relacion.id = Vacacion.relacion_id)
+				INNER JOIN	empleadores Empleador ON (Empleador.id = Relacion.empleador_id)
+				INNER JOIN	trabajadores Trabajador ON (Trabajador.id = Relacion.trabajador_id)
+				WHERE		' . implode(' AND ', $conditions);
+
+            $this->set('data', $this->Vacacion->query($sql));
+            $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+        }
+	}
+
+
 /**
  * Details.
  * Show hollyday's details as an ajax breakdown..
@@ -120,6 +157,6 @@ class VacacionesController extends AppController {
     function detalles($id) {
         $this->Vacacion->contain(array('VacacionesDetalle'));
         $this->data = $this->Vacacion->read(null, $id);
-    }    
+    }
 }
 ?>
