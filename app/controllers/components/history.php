@@ -90,7 +90,9 @@ class HistoryComponent extends Object {
  * @access public
  */
     function beforeRender(&$controller) {
-        $this->_addUrl();
+		if (!empty($controller->action)) {
+        	$this->_addUrl();
+		}
     }
 
 
@@ -126,7 +128,7 @@ class HistoryComponent extends Object {
  * @access private
  */
 	function _addUrl() {
-
+debug($this->controller->action);
 		if (in_array($this->controller->action, $this->__blackListedActions)
             || $this->__skip
 			|| $this->controller->params['isAjax'] === true
