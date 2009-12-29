@@ -139,11 +139,13 @@ class Liquidacion extends AppModel {
         $this->setRelationship($relationship);
 
 
-        if (!empty($relationship['RelacionesHistorial'][0]['fin'])) {
+        if (!empty($relationship['RelacionesHistorial'][0]['fin'])
+			&& $relationship['RelacionesHistorial'][0]['fin'] != '0000-00-00'
+			&& $relationship['RelacionesHistorial'][0]['fin'] > $relationship['Relacion']['ingreso']) {
             $tmpOut = $relationship['RelacionesHistorial'][0]['fin'];
         }
 
-        if (empty($tmpOut) || $tmpOut === '0000-00-00') {
+        if (empty($tmpOut)) {
             $this->setVar('#fecha_egreso', '2035-01-01');
         } else {
             $this->setVar('#fecha_egreso', $tmpOut);
@@ -343,7 +345,6 @@ class Liquidacion extends AppModel {
             $ausencias = $this->Relacion->Ausencia->getAbsencesByType(array('Accidente', 'Maternidad'), $relationship['Relacion']['id'], $from, $to);
             $this->setVar('#total_dias_ausencias_accidente_semestre', $ausencias['Accidente']);
             $this->setVar('#total_dias_ausencias_maternidad_semestre', $ausencias['Maternidad']);
-
 
             foreach ($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
                     array(      'relacion'  => $relationship,
