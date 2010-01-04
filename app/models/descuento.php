@@ -104,17 +104,17 @@ class Descuento extends AppModel {
             'Descuento.hasta'       => '0000-00-00',
             'Descuento.hasta >='    => $opciones['periodo']['hasta'])));
 
-        if (!empty($opciones['periodo']['desde'])) {
-            $conditions = array_merge(array(
-                'DATE(CONCAT(YEAR(Descuento.desde), \'-\', MONTH(Descuento.desde), \'-' . array_pop(explode('-', $opciones['periodo']['desde'])) . '\')) <=' => $opciones['periodo']['desde']), $conditions);
-        }
-
-        switch($opciones['tipo']) {
+        switch ($opciones['tipo']) {
             case 'normal':
 				if ($opciones['periodo']['periodo'] === '1Q') {
 					$descontar = 3;
 				} elseif ($opciones['periodo']['periodo'] === '2Q' || $opciones['periodo']['periodo'] === 'M') {
 					$descontar = 5;
+				}
+
+				if (!empty($opciones['periodo']['desde'])) {
+					$conditions = array_merge(array(
+						'DATE(CONCAT(YEAR(Descuento.desde), \'-\', MONTH(Descuento.desde), \'-' . array_pop(explode('-', $opciones['periodo']['desde'])) . '\')) <=' => $opciones['periodo']['desde']), $conditions);
 				}
 				break;
 			case 'sac':
@@ -155,6 +155,7 @@ class Descuento extends AppModel {
         $index['Prestamo'] = 'a';
         $index['Embargo'] = 'a';
         $index['Cuota Alimentaria'] = 'a';
+
 		if (!empty($r)) {
             
             $Concepto = ClassRegistry::init('Concepto');
@@ -213,7 +214,7 @@ class Descuento extends AppModel {
                 }
 			}
 		}
-        
+
         return array(
                     'conceptos'    => $conceptos,
                     'variables'    => $variables,
