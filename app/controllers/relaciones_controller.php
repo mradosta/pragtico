@@ -188,9 +188,13 @@ class RelacionesController extends AppController {
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 
             if (!empty($this->data['Condicion']['Bar-state'])) {
-                $conditions['Relacion.estado'] = $this->data['Condicion']['Bar-state'];
+				if ($this->data['Condicion']['Bar-state'] == 'Historica') {
+                	$conditions['Relacion.estado <>'] = 'Activa';
+				} else {
+					$conditions['Relacion.estado'] = $this->data['Condicion']['Bar-state'];
+				}
             }
-            
+
             if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
                 $conditions['(Relacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
             }
@@ -201,7 +205,15 @@ class RelacionesController extends AppController {
             if (!empty($this->data['Condicion']['Bar-periodo_largo'])) {
                 $period = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
             }
-            
+
+            if (!empty($this->data['Condicion']['Bar-desde'])) {
+				$conditions['RelacionesHistorial.inicio >='] = $this->data['Condicion']['Bar-desde'];
+            }
+
+            if (!empty($this->data['Condicion']['Bar-hasta'])) {
+				$conditions['RelacionesHistorial.inicio <='] = $this->data['Condicion']['Bar-hasta'];
+            }
+
             if (!empty($this->data['Condicion']['Bar-con_fecha_egreso'])) {
                 if ($this->data['Condicion']['Bar-con_fecha_egreso'] === 'No') {
                     $conditions[] = array('Relacion.egreso' => array(null, '0000-00-00'));
@@ -209,13 +221,26 @@ class RelacionesController extends AppController {
                     $conditions['Relacion.egreso NOT'] = '0000-00-00';
                     $conditions['Relacion.egreso !='] = null;
                 }
-            } elseif ($period !== false) {
+            } elseif (!empty($period) && $period !== false) {
                 $conditions['Relacion.egreso >='] = $period['desde'];
                 $conditions['Relacion.egreso <='] = $period['hasta'];
             }
 
 
+			$this->Relacion->RelacionesHistorial->Behaviors->detach('Permisos');
+			$this->set('data', $this->Relacion->RelacionesHistorial->find('all', array(
+				'conditions'	=> $conditions,
+				'limit' => 1,
+				'contain' => array(
+					'EgresosMotivo',
+					'Relacion' => array(
+						'Area',
+						'Empleador',
+						'Trabajador')))));
 
+			$this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+
+			/*
             if (!empty($this->data['Condicion']['Bar-con_liquidacion_periodo']) && $this->data['Condicion']['Bar-con_liquidacion_periodo'] === 'Si' && $period !== false) {
 
                 $this->Relacion->Liquidacion->Behaviors->detach('Permisos');
@@ -237,6 +262,7 @@ class RelacionesController extends AppController {
 				'RelacionesHistorial' => 'EgresosMotivo',
 				'ConveniosCategoria' => 'Convenio'));
             $this->set('data', $this->Relacion->find('all', array('conditions' => $conditions)));
+			*/
         }
     }
 
