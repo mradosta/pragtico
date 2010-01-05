@@ -19,9 +19,8 @@
 
 
 $campos = null;
-$campos['Relacion.id'] = array('lov' => array(
+$campos['Relacion.id'] = array('label' => 'Relacion', 'lov' => array(
 	'controller'		=> 'relaciones',
-	'label'				=> 'Relacion',
 	'seleccionMultiple'	=> 	0,
 	'camposRetorno'		=> 	array('Empleador.nombre', 'Trabajador.apellido')));
 

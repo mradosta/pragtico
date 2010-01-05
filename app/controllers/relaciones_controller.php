@@ -40,6 +40,9 @@ class RelacionesController extends AppController {
 				$this->Session->setFlash('No fue posible guardar el reingreso.', 'error');
 			}
 			$this->History->goBack();
+		} else {
+			$this->Relacion->contain(array('Empleador', 'Trabajador'));
+			$this->data = $this->Relacion->findById($this->params['named']['Relacion.id']);
 		}
 	}
 
@@ -180,7 +183,7 @@ class RelacionesController extends AppController {
             }
         }
     }
-    
+
     function reporte_relaciones() {
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 
@@ -216,12 +219,23 @@ class RelacionesController extends AppController {
             if (!empty($this->data['Condicion']['Bar-con_liquidacion_periodo']) && $this->data['Condicion']['Bar-con_liquidacion_periodo'] === 'Si' && $period !== false) {
 
                 $this->Relacion->Liquidacion->Behaviors->detach('Permisos');
-                $conditions['Relacion.id'] = Set::extract('/Liquidacion/relacion_id', $this->Relacion->Liquidacion->find('all', array('recursive' => -1, 'group' => 'Liquidacion.relacion_id', 'conditions' => array('Liquidacion.ano' => $period['ano'], 'Liquidacion.mes' => $period['mes']))));
+                $conditions['Relacion.id'] = Set::extract('/Liquidacion/relacion_id',
+					$this->Relacion->Liquidacion->find('all', array(
+						'recursive' => -1,
+						'group' 	=> 'Liquidacion.relacion_id',
+						'conditions' => array(
+							'Liquidacion.ano' => $period['ano'],
+							'Liquidacion.mes' => $period['mes']))));
             }
 
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
             $this->set('state', $this->data['Condicion']['Bar-state']);
-            $this->Relacion->contain(array('Trabajador' => array('ObrasSocial', 'Localidad' => 'Provincia'), 'Empleador', 'Area', 'EgresosMotivo', 'ConveniosCategoria' => 'Convenio'));
+            $this->Relacion->contain(array(
+				'Trabajador' => array('ObrasSocial', 'Localidad' => 'Provincia'),
+				'Empleador',
+				'Area',
+				'RelacionesHistorial' => 'EgresosMotivo',
+				'ConveniosCategoria' => 'Convenio'));
             $this->set('data', $this->Relacion->find('all', array('conditions' => $conditions)));
         }
     }
