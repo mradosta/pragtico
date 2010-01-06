@@ -230,7 +230,6 @@ class RelacionesController extends AppController {
 			$this->Relacion->RelacionesHistorial->Behaviors->detach('Permisos');
 			$this->set('data', $this->Relacion->RelacionesHistorial->find('all', array(
 				'conditions'	=> $conditions,
-				'limit' => 1,
 				'contain' => array(
 					'EgresosMotivo',
 					'Relacion' => array(
