@@ -28,18 +28,18 @@ if (!empty($data)) {
     /** Body */
     foreach ($data as $record) {
 
-        $documento->setCellValueFromArray(
+/*        $documento->setCellValueFromArray(
             array(  array('value' => $record['Empleador']['cuit'], 'options' => 'bold'),
                     array('value' => $record['Empleador']['nombre'], 'options' => 'bold'),
                     '',
                     '',
                     '',
-                    ''));
+                    ''));*/
         
         foreach ($record['Coeficiente'] as $detail) {
             $documento->setCellValueFromArray(
-                array(  '',
-                        '',
+                array(  $record['Empleador']['cuit'],
+                        $record['Empleador']['nombre'],
                         $detail['nombre'],
                         $detail['valor'],
                         (!empty($detail['EmpleadoresCoeficiente']['porcentaje']))?$detail['EmpleadoresCoeficiente']['porcentaje']:'0',
