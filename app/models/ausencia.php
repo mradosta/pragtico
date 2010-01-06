@@ -266,14 +266,14 @@ class Ausencia extends AppModel {
                         $toDate = $yearTo .'-12-31';
                     }
                 } elseif ($periodo['periodo'] === '2Q') {
-                    if ($monthTo === 12) {
+                    if ($monthTo == 12) {
                         $fromDate = ($yearTo - 1) . '-01-01';
                     } else {
                         $fromDate = ($yearTo - 1) . '-' . str_pad(($monthTo + 1), 2, '0', STR_PAD_LEFT) . '-01';
                     }
                     $toDate = $yearTo . '-' . $monthTo . '-15';
                 } elseif ($periodo['periodo'] === 'M') {
-                    if ($monthTo === 12) {
+                    if ($monthTo == 12) {
                         $fromDate = ($yearTo - 1) . '-01-01';
                     } else {
                         $fromDate = ($yearTo - 1) . '-' . str_pad(($monthTo + 1), 2, '0', STR_PAD_LEFT) . '-01';
