@@ -154,6 +154,7 @@ class LiquidacionesController extends AppController {
                             `Liquidacion`.`trabajador_nombre`';
 
             $workers = array();
+			$prevInvoiceId = null;
             foreach ($this->Liquidacion->query($sql) as $record) {
 
                 $record['Area']['nombre'] .= '||' . $record['Area']['group_id'];
@@ -168,7 +169,10 @@ class LiquidacionesController extends AppController {
                 if (empty($data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']][$record['Factura']['id']]['facturado'])) {
                     $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']][$record['Factura']['id']]['facturado'] = true;
 
-                    $data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['facturado'] += $record['Factura']['facturado'];
+					if ($prevInvoiceId != $record['Factura']['id']) {
+                    	$data[$record['Area']['identificador_centro_costo']][$record['Liquidacion']['empleador_cuit'] . ' ' . $record['Liquidacion']['empleador_nombre']][$record['Area']['nombre']]['facturado'] += $record['Factura']['facturado'];
+						$prevInvoiceId = $record['Factura']['id'];
+					}
                 }
 
                 if (!in_array($record['Liquidacion']['empleador_id'] . '|' . $record['Liquidacion']['trabajador_id'], $workers)) {

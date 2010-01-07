@@ -43,6 +43,7 @@ if (!empty($data)) {
         $documento->moveCurrentRow();
         $documento->setCellValue('A', $cc, 'bold');
         $initialRow = $documento->getCurrentRow() + 1;
+
         foreach ($detail as $employer => $areas) {
 
             $documento->moveCurrentRow();
@@ -63,9 +64,9 @@ if (!empty($data)) {
                             array('value' => '=E' . ($documento->getCurrentRow() + 1) . '*' . $groupParams[$groupId]['porcentaje_contribuciones'] . '/100', 'options' => 'currency'),
                             array('value' => '=E' . ($documento->getCurrentRow() + 1) . '*' . $groupParams[$groupId]['porcentaje_art_variable'] . '/100', 'options' => 'currency'),
                             array('value' => '=D' . ($documento->getCurrentRow() + 1) . '*' . $groupParams[$groupId]['valor_art_fijo'], 'options' => 'currency'),
-                            array('value' => '=G' . ($documento->getCurrentRow() + 1) . '-E' . ($documento->getCurrentRow() + 1) . '-F' . ($documento->getCurrentRow() + 1) . '-H' . ($documento->getCurrentRow() + 1) . '-I' . ($documento->getCurrentRow() + 1) . '-J' . ($documento->getCurrentRow() + 1), 'options' => 'currency'),
-                            '=(G' . ($documento->getCurrentRow() + 1) . '-(1.15*F' . ($documento->getCurrentRow() + 1) . '))/E' . ($documento->getCurrentRow() + 1),
-                            '=K' . ($documento->getCurrentRow() + 1) . '/G' . ($documento->getCurrentRow() + 1)
+                            array('value' => '=IF(G' . ($documento->getCurrentRow() + 1) . ' > 0, G' . ($documento->getCurrentRow() + 1) . '-E' . ($documento->getCurrentRow() + 1) . '-F' . ($documento->getCurrentRow() + 1) . '-H' . ($documento->getCurrentRow() + 1) . '-I' . ($documento->getCurrentRow() + 1) . '-J' . ($documento->getCurrentRow() + 1) . ', 0)', 'options' => 'currency'),
+                            '=IF(G' . ($documento->getCurrentRow() + 1) . ' > 0, (G' . ($documento->getCurrentRow() + 1) . '-(1.15*F' . ($documento->getCurrentRow() + 1) . '))/E' . ($documento->getCurrentRow() + 1) . ', 0)',
+                            '=IF(G' . ($documento->getCurrentRow() + 1) . ' > 0, K' . ($documento->getCurrentRow() + 1) . '/G' . ($documento->getCurrentRow() + 1) . ', 0)'
                     ));
             }
         }
