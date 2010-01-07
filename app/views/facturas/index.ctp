@@ -70,7 +70,7 @@ $appForm->addScript('
 				jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'imprimir')) . '";
 				jQuery("#form")[0].submit();
 			} else {
-				alert("Debe seleccionar al menos una pre-liquidacion para confirmar.");
+				alert("Debe seleccionar al menos una factura para imprimir.");
 			}
 		}
 	);', 'ready');
