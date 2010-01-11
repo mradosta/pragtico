@@ -133,6 +133,14 @@ if (!empty($data)) {
                                 'seleccionMultiple'    => 0,
                                 'camposRetorno' => array('Trabajador.cuil', 'Trabajador.nombre', 'Trabajador.apellido')));
 
+	$conditions['Condicion.Relacion-area_id'] = array(
+			'label' => 'Area',
+			'mask'          =>  '%s, %s',
+			'lov'	=> array('controller'	=> 'areas',
+							'camposRetorno'	=> array(   'Empleador.nombre',
+														'Area.nombre')));
+
+
     $conditions['Condicion.Bar-concepto_id'] = array( 'lov' => array(
             'controller'        => 'conceptos',
             'seleccionMultiple' => 1,

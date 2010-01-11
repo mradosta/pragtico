@@ -152,7 +152,8 @@ class LiquidacionesController extends AppController {
             ORDER BY        `Liquidacion`.`empleador_nombre`,
                             `Liquidacion`.`trabajador_apellido`,
                             `Liquidacion`.`trabajador_nombre`';
-
+//203
+d($sql);
             $workers = array();
 			$prevInvoiceId = null;
             foreach ($this->Liquidacion->query($sql) as $record) {
@@ -251,6 +252,10 @@ class LiquidacionesController extends AppController {
 
                 if (!empty($this->data['Condicion']['Bar-trabajador_id'])) {
                     $conditions['Liquidacion.trabajador_id'] = $this->data['Condicion']['Bar-trabajador_id'];
+                }
+
+                if (!empty($this->data['Condicion']['Bar-area_id'])) {
+                    $conditions['Liquidacion.area_id'] = $this->data['Condicion']['Bar-area_id'];
                 }
 
                 if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
