@@ -153,7 +153,7 @@ class LiquidacionesController extends AppController {
                             `Liquidacion`.`trabajador_apellido`,
                             `Liquidacion`.`trabajador_nombre`';
 //203
-d($sql);
+//d($sql);
             $workers = array();
 			$prevInvoiceId = null;
             foreach ($this->Liquidacion->query($sql) as $record) {
