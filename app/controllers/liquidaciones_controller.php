@@ -255,7 +255,7 @@ d($sql);
                 }
 
                 if (!empty($this->data['Condicion']['Bar-area_id'])) {
-                    $conditions['Liquidacion.area_id'] = $this->data['Condicion']['Bar-area_id'];
+                    $conditions['Liquidacion.area_id'] = explode('**||**', $this->data['Condicion']['Bar-area_id']);
                 }
 
                 if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
