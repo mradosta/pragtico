@@ -93,12 +93,11 @@ class PaginadorComponent extends Object {
             $this->__controller->Session->del('filtros.' . $this->__controller->name . '.' . $this->__controller->action);
             unset($this->__controller->data['Condicion']);
             $useSession = false;
-            //return array();
         }
 
 
         /** Get session data */
-        $conditions = $this->__conditions;
+        $conditions = $this->getCondition();
         $valoresLov = array();
         if ($useSession === true) {
             $filter = $this->__controller->Session->read('filtros.' . $this->__controller->name . '.' . $this->__controller->action);
@@ -117,13 +116,13 @@ class PaginadorComponent extends Object {
                 if ($model === 'Bar') {
                     $this->setWhiteList($k);
                 }
-                
+
                 /** Ignore empty values and removed then from sessions */
                 if (empty($v)) {
                     unset($conditions[$modelField]);
                     continue;
                 }
-                
+
                 /** Ignore on lov descriptive data */
                 if (substr($field, -2) === '__' || in_array($k, $this->getWhiteList())) {
                     $valoresLov[$k] = $v;
@@ -148,7 +147,7 @@ class PaginadorComponent extends Object {
         if (!empty($conditions) || !empty($valoresLov)) {
             $this->__controller->Session->write('filtros.' . $this->__controller->name . '.' . $this->__controller->action, array('condiciones' => $conditions, 'valoresLov' => $valoresLov));
         }
-        
+
         /** Save currently used conditions */
         $this->__conditions = $conditions;
         return $conditions;
