@@ -1167,6 +1167,7 @@ d($sql);
 			}
 		}
 
+		$prevFilter = $this->Session->read('filtros.' . $this->name . '.' . $this->action);
         if (!empty($this->data['Condicion']['Bar-facturado'])
             && count($this->data['Condicion']['Bar-facturado']) == 1) {
             if ($this->data['Condicion']['Bar-facturado'][0] == 'Si') {
@@ -1178,7 +1179,8 @@ d($sql);
                     'Liquidacion.factura_id' => null));
                 $this->Paginador->removeCondition(array('Liquidacion.factura_id !='));
             }
-        } else {
+		} elseif (!array_key_exists('Liquidacion.factura_id', $prevFilter['condiciones'])
+			&& !array_key_exists('Liquidacion.factura_id !=', $prevFilter['condiciones'])) {
             $this->data['Condicion']['Bar-facturado'] = array('Si', 'No');
             $this->Paginador->removeCondition(array('Liquidacion.factura_id !=', 'Liquidacion.factura_id'));
         }
