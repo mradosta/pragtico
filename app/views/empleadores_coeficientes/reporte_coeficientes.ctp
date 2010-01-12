@@ -43,7 +43,7 @@ if (!empty($data)) {
                         $detail['nombre'],
                         $detail['valor'],
                         (!empty($detail['EmpleadoresCoeficiente']['porcentaje']))?$detail['EmpleadoresCoeficiente']['porcentaje']:'0',
-                        '=D' . ($documento->getCurrentRow() + 1) . ' - (D' . ($documento->getCurrentRow() + 1) . ' * E' . ($documento->getCurrentRow() + 1). ' / 100)'));
+                        '=D' . ($documento->getCurrentRow() + 1) . ' + (D' . ($documento->getCurrentRow() + 1) . ' * E' . ($documento->getCurrentRow() + 1). ' / 100)'));
         }
     }
 
