@@ -229,9 +229,7 @@ class LiquidacionesController extends AppController {
                 $this->Session->setFlash('Debe especificar un periodo valido.', 'error');
             } else {
 
-				$conditions['Liquidacion.tipo'] = $this->data['Condicion']['Bar-tipo'];
 				$periodFrom = $this->Util->format($this->data['Condicion']['Bar-periodo_largo_desde'], 'periodo');
-
 				if (!empty($this->data['Condicion']['Bar-periodo_largo_hasta'])) {
 					App::import('Vendor', 'dates', 'pragmatia');
 					$periodTo = $this->Util->format($this->data['Condicion']['Bar-periodo_largo_hasta'], 'periodo');
@@ -241,6 +239,8 @@ class LiquidacionesController extends AppController {
 										'Liquidacion.ano'           => $periodFrom['ano'],
 										'Liquidacion.mes'           => $periodFrom['mes']);
 				}
+
+				$conditions['Liquidacion.tipo'] = $this->data['Condicion']['Bar-tipo'];
 
                 if (!empty($this->data['Condicion']['Bar-estado'])) {
                     $conditions['Liquidacion.estado'] = $this->data['Condicion']['Bar-estado'];
@@ -255,7 +255,7 @@ class LiquidacionesController extends AppController {
                 }
 
                 if (!empty($this->data['Condicion']['Bar-area_id'])) {
-                    $conditions['Liquidacion.area_id'] = explode('**||**', $this->data['Condicion']['Bar-area_id']);
+                    $conditions['Liquidacion.relacion_area_id'] = explode('**||**', $this->data['Condicion']['Bar-area_id']);
                 }
 
                 if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
