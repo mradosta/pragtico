@@ -25,6 +25,9 @@ class Liquidacion extends AppModel {
 
     var $permissions = array('permissions' => 448, 'group' => 'default', 'role' => 'all');
 
+	private $__formulas = null;
+
+
     /**
     * Seteo los tipos posibles de liquidaciones que podre realizar.
     */
@@ -128,6 +131,12 @@ class Liquidacion extends AppModel {
         $this->__currentConcept = null;
 
         $this->resetRecursivity();
+
+
+		if (is_null($this->__formulas)) {
+			App::import('Vendor', 'formulas', 'pragmatia');
+			$this->__formulas = new Formulas();
+		}
 
         /** Initial set of vars and concepts */
         $this->setVar($options['variables']);
@@ -416,12 +425,19 @@ class Liquidacion extends AppModel {
             $relationship = $this->getRelationship();
             list($liquidacion['ano'], $liquidacion['mes'], ) = explode('-', $relationship['RelacionesHistorial'][0]['fin']);
             $liquidacion['periodo'] = 'F';
-            /**When final receipt, must pay whether two next days */
+            /** When final receipt, must pay whether two next days */
             $liquidacion['pago'] = $this->dateAddWorkingDays($relationship['RelacionesHistorial'][0]['fin'], 2);
         } else {
             $liquidacion['ano'] = $this->getPeriod('ano');
             $liquidacion['mes'] = $this->getPeriod('mes');
             $liquidacion['periodo'] = $this->getPeriod('periodo');
+			if ($type === 'sac') {
+				if ($liquidacion['periodo'] == '1S') {
+					$liquidacion['mes']	= 6;
+				} else {
+					$liquidacion['mes']	= 12;
+				}
+			}
             $liquidacion['pago'] = $this->dateAddWorkingDays($this->getPeriod('hasta'), $this->getRelationship('Empleador', 'pago'));
         }
         $liquidacion['tipo'] = $this->getVarValue('#tipo_liquidacion');
@@ -744,7 +760,7 @@ class Liquidacion extends AppModel {
             }
     
             if (substr($nombreConcepto, 0, 3) === '=if') {
-                $nombreConcepto = $this->resolver($nombreConcepto);
+                $nombreConcepto = $this->__formulas->resolver($nombreConcepto);
             } elseif (in_array(substr($nombreConcepto, 0, 1), array('#', '='))) {
                 $nombreConcepto = substr($nombreConcepto, 1);
             }
@@ -881,10 +897,20 @@ class Liquidacion extends AppModel {
             }
 
             /** Resolv formula */
-            //debug($concepto['codigo']);
-            //debug($concepto['formula']);
-            //debug($formula);
-            $valor = $this->resolver($formula);
+			$check = $this->__formulas->checkFormula($formula);
+			if ($check !== true) {
+				$this->__setError(array(    'tipo'                    => 'Error en la Formula',
+											'gravedad'                => 'Grave',
+											'concepto'                => $concepto['codigo'] . ' (' . $concepto['jerarquia'] . ')',
+											'variable'                => '',
+											'formula'                 => $concepto['formula'],
+											'descripcion'             => $check,
+											'recomendacion'           => 'Verifique la formula.',
+											'descripcion_adicional'   => $formula));
+				$valor = 0;
+			} else {
+            	$valor = $this->__formulas->resolver($formula);
+			}
         } elseif (empty($formula)) {
             $this->__setError(array(    'tipo'                    => 'Formula de Concepto Inexistente',
                                         'gravedad'                => 'Media',
@@ -997,9 +1023,21 @@ class Liquidacion extends AppModel {
                     }
                 }
 
-                $valor = $this->resolver($formula);
-                //debug($variable . ' = ' . $valor . ' ( ' . $formula . ' )');
-                
+				$check = $this->__formulas->checkFormula($formula);
+				if ($check !== true) {
+					$this->__setError(array(    'tipo'                    => 'Error en la Formula',
+												'gravedad'                => 'Grave',
+												'concepto'                => '',
+												'variable'                => $variable,
+												'formula'                 => $this->__variables[$variable]['formula'],
+												'descripcion'             => $check,
+												'recomendacion'           => 'Verifique la formula.',
+												'descripcion_adicional'   => $formula));
+					$valor = 0;
+				} else {
+					$valor = $this->__formulas->resolver($formula);
+				}
+
                 if ($valor === '#N/A') {
                     $valor = 0;
                     $this->__setError(array(    'tipo'                  => 'Variable No Resuelta',
