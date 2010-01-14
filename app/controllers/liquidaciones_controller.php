@@ -820,7 +820,10 @@ class LiquidacionesController extends AppController {
                 
                 $conditions = array('Liquidacion.estado'        => 'Confirmada',
                                     'Liquidacion.ano'           => $periodo['ano'],
-                                    'Liquidacion.mes'           => $periodo['mes']);
+                                    'OR'						=> array(
+										'Liquidacion.mes'	=> $periodo['mes'],
+										array(	'Liquidacion.mes'	=> 0,
+												'Liquidacion.tipo'	=> 'Final')));
 
                 if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
                     $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
