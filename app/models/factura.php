@@ -87,6 +87,8 @@ class Factura extends AppModel {
 
 		$save = array_merge(array('Factura' => $saveMaster), array('FacturasDetalle' => $saveDatails));
 		if ($this->saveAll($save)) {
+			$this->Liquidacion->unbindModel(array('belongsTo' => array(
+				'Convenio', 'Area', 'Relacion', 'Factura', 'Trabajador', 'Empleador')));
 			return $this->Liquidacion->updateAll(array('Liquidacion.factura_id' => $this->id), array('Liquidacion.id' => $receiptIds));
 		} else {
 			return false;
@@ -131,16 +133,16 @@ class Factura extends AppModel {
 			foreach ($data as $k => $receipt) {
 
                 if ($receipt['Empleador']['facturar_por_area'] === 'No'
-                    && $employerId !== $receipt['Liquidacion']['empleador_id']) {
+                    && $employerId != $receipt['Liquidacion']['empleador_id']) {
 					$employerId = $receipt['Liquidacion']['empleador_id'];
 					$areaId = null;
                     if ($k > 0) {
 						$this->__createAndSave($employerId, $receiptIds, $areaId, $saveDatails, $conditions, $groupId);
 						$saveMaster = $saveDatails = $receiptIds = null;
 					}
-				} else if ($receipt['Empleador']['facturar_por_area'] === 'Si'
-                    && $areaId !== $receipt['Liquidacion']['relacion_area_id']) {
-                    if ($areaId !== null && !empty($saveDatails)) {
+				} elseif ($receipt['Empleador']['facturar_por_area'] === 'Si'
+                    && $areaId != $receipt['Liquidacion']['relacion_area_id']) {
+                    if ($areaId != null && !empty($saveDatails)) {
                         $this->__createAndSave($employerId, $receiptIds, $areaId, $saveDatails, $conditions, $groupId);
                         $saveMaster = $saveDatails = $receiptIds = null;
                     }
