@@ -984,7 +984,7 @@ class Liquidacion extends AppModel {
             $this->__setError(array(    'tipo'                  => 'Variable Inexistente',
                                         'gravedad'              => 'Media',
                                         'variable'              => $variable,
-                                        'descripcion'           => 'La formula intenta usar una variable inexistente. Se resolvera a "#N/A" su valor.',
+                                        'descripcion'           => 'La formula intenta usar una variable inexistente. Se resolvera a 0 su valor.',
                                         'recomendacion'         => 'Verifique que la formula este correctamente definida y que las variables que esta formula utiliza existan en el sistema.',
                                         'descripcion_adicional' => ''));
             $this->setVar($variable, '#N/A');

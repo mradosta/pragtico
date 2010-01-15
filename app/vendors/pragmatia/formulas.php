@@ -17,7 +17,18 @@
  */
  
  set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes');
- 
+/** PHPExcel_Calculation */
+ App::import('Vendor', 'Calculation', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'Calculation.php');
+
+class MyPHPExcel_Calculation extends PHPExcel_Calculation {
+
+	protected function _raiseFormulaError($errorMessage) {
+		$this->formulaError = $errorMessage;
+	}
+
+}
+
+
 /**
  * Resolv formulas Class.
  *
@@ -34,6 +45,7 @@ class Formulas {
  * @access private
  */
 	private $__objPHPExcel = null;
+	private $__PHPExcel_Calculation = null;
 	
 	
 /**
@@ -52,9 +64,24 @@ class Formulas {
  * @access public
  */
     function __construct() {
-		/** PHPExcel_Calculation */
-        App::import('Vendor', 'Calculation', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'Calculation.php');
-		$this->__objPHPExcel = new PHPExcel();
+		$this->__PHPExcel_Calculation = new MyPHPExcel_Calculation();
+		//$this->__PHPExcel_Calculation->suppressFormulaErrors = true;
+	}
+
+
+	function checkFormula($formula, $returnError = true) {
+		//$this->__PHPExcel_Calculation->suppressFormulaErrors = true;
+		$this->formulaError = null;
+		debug($formula);
+		$this->__PHPExcel_Calculation->parseFormula($formula);
+		debug($this->formulaError);
+		if (empty($this->formulaError)) {
+			return true;
+		} elseif ($returnError) {
+			return $this->formulaError;
+		} else {
+			return false;
+		}
 	}
 
 
@@ -87,7 +114,8 @@ class Formulas {
  * @access public
  */
 	function resolver($formula) {
-        
+
+		$this->formulaError = null;
 		$cellId = 0;
 		$formula = $this->__cleanUp($formula);
         $formula = preg_replace("/isblank\(\'?0000\-00\-00\'?\)/", 'true', $formula);
@@ -110,9 +138,13 @@ class Formulas {
         $formula = str_replace('#N/A', '0', $formula);
         $formula = str_replace('#NUM!', '0', $formula);
         $formula = str_replace('#DIV/0!', '0', $formula);
-        //debug($formula);
-		$this->__objPHPExcel->getActiveSheet()->setCellValue('ZZ' . $this->__cellId, $formula);
-		return $this->__objPHPExcel->getActiveSheet()->getCell('ZZ' . $this->__cellId)->getCalculatedValue();
+
+//		$formula = "= if(or('M'='1S', 'M'='2S', 'normal' = 'final'), 0, (if('normal' = 'vacaciones', 0, (0 + 0 + 0 +0 + 0)) * 0.005))";
+//		$formula = $this->__cleanUp($formula);
+//debug($formula);
+//		debug($this->checkFormula($formula));
+//d($this->__PHPExcel_Calculation->calculateFormula($formula));
+		return $this->__PHPExcel_Calculation->calculateFormula($formula);
 	}
 
 }
