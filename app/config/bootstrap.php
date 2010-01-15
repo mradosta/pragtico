@@ -52,7 +52,7 @@ define('VALID_DATETIME', '/(0[1-9]|[12][0-9]|3[01])[\/.](0[1-9]|1[012])[\/.](19\
 define('VALID_MAIL', '/\A(?:^([a-z0-9][a-z0-9_\-\.\+]*)@([a-z0-9][a-z0-9\.\-]{0,63}\.(com|org|net|biz|info|name|net|pro|aero|coop|museum|[a-z]{2,4}))$)\z|^$/i');
 define('VALID_NUMBER_MAYOR_A_CERO', '/^[1-9]+/');
 define('VALID_NUMBER_NULO', '/[0-9]*/');
-define('VALID_PERIODO', '/^(20\d\d)(0[1-9]|1[012])([12][qQ]|[mM]|[aA]|[fF][sS])$|^$/'); //200804M, 2007111Q, 2007092Q
+define('VALID_PERIODO', '/^(20\d\d)(0[1-9]|1[012])([12][qQ]|[12][sS]|[mM]|[aA]|[fF])$|^$/'); //200804M, 2007111Q, 2007092Q
 
 function d($var = 'x', $skipDebugMode = false) {
 	if (Configure::read() > 0 || $skipDebugMode === true) {
