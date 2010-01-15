@@ -24,6 +24,7 @@ $condiciones['Condicion.Factura-empleador_id'] = array('lov' => array(
 		'camposRetorno'	=> array('Empleador.cuit', 'Empleador.nombre')));
 $condiciones['Condicion.Factura-fecha__desde'] = array('label' => 'Desde', 'type' => 'date');
 $condiciones['Condicion.Factura-fecha__hasta'] = array('label' => 'Hasta', 'type' => 'date');
+$condiciones['Condicion.Bar-periodo_largo'] = array('label' => 'Periodo Liquidado', 'type' => 'periodo');
 
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Facturas', 'imagen' => 'facturas.gif')));

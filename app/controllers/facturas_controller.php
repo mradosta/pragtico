@@ -255,6 +255,17 @@ class FacturasController extends AppController {
 	
 	function index() {
 		$this->paginate['conditions'] = array('Factura.estado' => 'Confirmada');
+
+		if (!empty($this->data['Condicion']['Bar-periodo_largo'])) {
+			$period = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
+
+			$this->paginate['conditions']['Factura.ano'] = $period['ano'];
+			$this->paginate['conditions']['Factura.mes'] = $period['mes'];
+			if ($period['periodo'] !== 'M') {
+				$this->paginate['conditions']['Factura.periodo'] = $period['periodo'];
+			}
+		}
+
 		parent::index();
 	}
 
