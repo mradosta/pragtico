@@ -406,14 +406,13 @@ class FormatoHelper extends AppHelper {
                     if (!empty($valor) &&
                             (preg_match(VALID_PERIODO, $valor, $matches)
                             || preg_match('/^(20\d\d)(0[1-9]|1[012])$/', $valor, $matches)
-                            || preg_match('/^(20\d\d)([12]S)$/', $valor, $matches)
                             || preg_match('/^(20\d\d)([A|F])$/', $valor, $matches))) {
                         $tmp = null;
                         $tmp['periodoCompleto'] = $matches[0];
                         $tmp['ano'] = $matches[1];
                         $tmp['mes'] = $matches[2];
                         $tmp['periodo'] = (!empty($matches[3]))?$matches[3]:array('M', '1Q', '2Q', 'F');
-                        if (in_array($matches[2], array('1S', '2S', 'A', 'F'))) {
+                        if (in_array($matches[2], array('A', 'F'))) {
                             $tmp['mes'] = '00';
                             $tmp['periodo'] = $matches[2];
                         }
@@ -572,16 +571,16 @@ class FormatoHelper extends AppHelper {
 				break;
 			case '1SAnterior':
 				if ($this->format($valor, 'mes') >= 7) {
-					$return = $this->format($valor, 'ano') . '1S';
+					$return = $this->format($valor, 'ano') . '061S';
 				} else {
-					$return = $this->format($valor, array('type' => 'anoAnterior')) . '1S';
+					$return = $this->format($valor, array('type' => 'anoAnterior')) . '061S';
 				}
 				break;
 			case '2SAnterior':
 				if ($this->format($valor, 'mes') >= 7) {
-					$return = $this->format($valor, 'ano') . '1S';
+					$return = $this->format($valor, 'ano') . '061S';
 				} else {
-					$return = $this->format($valor, array('type' => 'anoAnterior')) . '2S';
+					$return = $this->format($valor, array('type' => 'anoAnterior')) . '122S';
 				}
 				break;
 				break;
