@@ -39,24 +39,14 @@ class Formulas {
 
 	
 /**
- * PHPExcel object.
+ * PHPExcel Calculation object.
  *
  * @var object
  * @access private
  */
-	private $__objPHPExcel = null;
 	private $__PHPExcel_Calculation = null;
 	
 	
-/**
- * Used cells.
- *
- * @var array
- * @access private
- */	
-	private $__cellId = 0;
-
-
 /**
  * Instance PHPExcel's object.
  *
@@ -70,11 +60,9 @@ class Formulas {
 
 
 	function checkFormula($formula, $returnError = true) {
-		//$this->__PHPExcel_Calculation->suppressFormulaErrors = true;
 		$this->formulaError = null;
-		//debug($formula);
+		$this->__cleanUp($formula);
 		$this->__PHPExcel_Calculation->parseFormula($formula);
-		//debug($this->formulaError);
 		if (empty($this->formulaError)) {
 			return true;
 		} elseif ($returnError) {
@@ -102,6 +90,14 @@ class Formulas {
 		} elseif (substr($formula, 0, 2) === '==') {
             $formula = substr($formula, 1);
         }
+
+		$formula = str_replace('\'', '"', $formula);
+        $formula = str_replace('#N/E', '0', $formula);
+        $formula = str_replace('#VALUE!', '0', $formula);
+        $formula = str_replace('#N/A', '0', $formula);
+        $formula = str_replace('#NUM!', '0', $formula);
+        $formula = str_replace('#DIV/0!', '0', $formula);
+
 		return $formula;
 	}
 
@@ -116,7 +112,6 @@ class Formulas {
 	function resolver($formula) {
 
 		$this->formulaError = null;
-		$cellId = 0;
 		$formula = $this->__cleanUp($formula);
         $formula = preg_replace("/isblank\(\'?0000\-00\-00\'?\)/", 'true', $formula);
         $formula = preg_replace("/isblank\(\'?\d\d\d\d\-\d\d\-\d\d\'?\)/", 'false', $formula);
@@ -131,19 +126,6 @@ class Formulas {
             }
 		}
 
-		$this->__cellId++;
-		$formula = str_replace('\'', '"', $formula);
-        $formula = str_replace('#N/E', '0', $formula);
-        $formula = str_replace('#VALUE!', '0', $formula);
-        $formula = str_replace('#N/A', '0', $formula);
-        $formula = str_replace('#NUM!', '0', $formula);
-        $formula = str_replace('#DIV/0!', '0', $formula);
-
-//		$formula = "= if(or('M'='1S', 'M'='2S', 'normal' = 'final'), 0, (if('normal' = 'vacaciones', 0, (0 + 0 + 0 +0 + 0)) * 0.005))";
-//		$formula = $this->__cleanUp($formula);
-//debug($formula);
-//		debug($this->checkFormula($formula));
-//d($this->__PHPExcel_Calculation->calculateFormula($formula));
 		return $this->__PHPExcel_Calculation->calculateFormula($formula);
 	}
 
