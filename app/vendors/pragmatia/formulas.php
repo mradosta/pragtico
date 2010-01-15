@@ -72,9 +72,9 @@ class Formulas {
 	function checkFormula($formula, $returnError = true) {
 		//$this->__PHPExcel_Calculation->suppressFormulaErrors = true;
 		$this->formulaError = null;
-		debug($formula);
+		//debug($formula);
 		$this->__PHPExcel_Calculation->parseFormula($formula);
-		debug($this->formulaError);
+		//debug($this->formulaError);
 		if (empty($this->formulaError)) {
 			return true;
 		} elseif ($returnError) {
