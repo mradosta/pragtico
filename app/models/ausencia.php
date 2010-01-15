@@ -389,7 +389,7 @@ class Ausencia extends AppModel {
 
                 foreach ($ausencia['AusenciasSeguimiento'] as $diasSeguimiento) {
                     if ($diasSeguimiento > $diff['dias']) {
-                        $ausencias[$ausencia['Ausencia']['tipo']] += $diff['dias'];
+                        $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $diff['dias'];
                     }
                     $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $diasSeguimiento;
                 }
