@@ -36,12 +36,19 @@ if (!empty($data)) {
     
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Ingreso: ', 'right');
-    $documento->setCellValue('B', $relacion['Relacion']['ingreso'], 'bold');
+	$d = explode('-', $relacion['Relacion']['ingreso']);
+    $documento->setCellValue('B', '=DATE(' . $d[0] . ', ' . $d[1] . ', ' . $d[2] . ')', 'bold');
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('ingreso', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
 
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Egreso: ', 'right');
-    $documento->setCellValue('B', (!empty($relacion['RelacionesHistorial'][0]['fin']))?$relacion['RelacionesHistorial'][0]['fin']:'', 'bold');
+ 	if (!empty($relacion['RelacionesHistorial'][0]['fin'])) {
+		$d = explode('-', $relacion['RelacionesHistorial'][0]['fin']);
+		$egreso = '=DATE(' . $d[0] . ', ' . $d[1] . ', ' . $d[2] . ')';
+	} else {
+		$egreso = '';
+	}
+    $documento->setCellValue('B', $egreso, 'bold');
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('egreso', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
 
     $documento->moveCurrentRow();
@@ -56,7 +63,7 @@ if (!empty($data)) {
     
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Dias Antiguedad: ', 'right');
-    $documento->setCellValue('B', '=egreso - ingreso - dias_suspension - dias_excedencia', 'bold');
+    $documento->setCellValue('B', '=((egreso - ingreso) + 1) - (dias_suspension + dias_excedencia)', 'bold');
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('dias_antiguedad', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
     
     $documento->moveCurrentRow();
@@ -103,10 +110,20 @@ if (!empty($data)) {
     $documento->setCellValue('A', 'Dias Integrativos: ', 'right');
     $documento->setCellValue('B', '=30 - DAY(egreso)', 'bold');
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('dias_integrativos', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
-    
+
+    $documento->moveCurrentRow();
+    $documento->setCellValue('A', 'Dias Corridos Trabajados: ', 'right');
+    $documento->setCellValue('B', '= (egreso - IF(ingreso > DATE(YEAR(egreso), 1, 1), ingreso, DATE(YEAR(egreso), 1, 1)))+1', 'bold');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('dias_corridos_trabajados', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+
+    $documento->moveCurrentRow();
+    $documento->setCellValue('A', 'Dias Vacaciones: ', 'right');
+    $documento->setCellValue('B', '=IF(AND(MONTH(ingreso)>6,YEAR(ingreso)=YEAR(egreso),DAY(ingreso)>=1),INT(IF(NETWORKDAYS(ingreso,egreso)=132,14,NETWORKDAYS(ingreso,egreso)/20)),IF(AND(MONTH(ingreso)<6,YEAR(ingreso)=YEAR(egreso)),14,IF((YEAR(egreso)-YEAR(ingreso))<=5,14,IF((YEAR(egreso)-YEAR(ingreso))<=10,21,IF((YEAR(egreso)-YEAR(ingreso))<=15,28,35)))))', 'bold');
+    $documento->doc->addNamedRange(new PHPExcel_NamedRange('dias_vacaciones', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
+
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Dias Vacaciones No Goz.: ', 'right');
-    $documento->setCellValue('B', '=B' . ($documento->getCurrentRow() - 7) . ' - IF(B' . ($documento->getCurrentRow() - 8) . ' > DATE(YEAR(B' . ($documento->getCurrentRow() - 7) . '), 1, 1), B' . ($documento->getCurrentRow() - 8) . ', DATE(YEAR(B' . ($documento->getCurrentRow() - 7) . '), 1, 1))', 'bold');
+    $documento->setCellValue('B', '=(dias_vacaciones * dias_corridos_trabajados) / 365', 'bold');
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('dias_vacaciones_no_gozadas', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
 
     $documento->moveCurrentRow(4);
@@ -121,7 +138,6 @@ if (!empty($data)) {
     
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Total: ', 'right');
-    //$documento->setCellValue('B', '=SUM(B' . $initialRow .':B' . $finalRow . ')', 'total');
     $documento->setCellValue('B', '=SUM(sueldos)', 'total');
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('suma_sueldos', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
     
@@ -148,7 +164,7 @@ if (!empty($data)) {
     
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Preaviso: ', 'right');
-    $documento->setCellValue('B', '=promedio_sueldo * meses_de_preaviso', 'total');
+    $documento->setCellValue('B', '=mayor_sueldo * meses_de_preaviso', 'total');
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('preaviso_mayor', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
     $documento->setCellValue('C', '=promedio_sueldo * meses_de_preaviso', 'total');
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('preaviso_promedio', $documento->activeSheet, 'C' . $documento->getCurrentRow()));
@@ -169,7 +185,7 @@ if (!empty($data)) {
     
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Integrativo Mes Despido: ', 'right');
-    $documento->setCellValue('B', '=(promedio_sueldo / 30) * dias_integrativos', 'total');
+    $documento->setCellValue('B', '=(mayor_sueldo / 30) * dias_integrativos', 'total');
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('integrativo_mes_despido_mayor', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
     $documento->setCellValue('C', '=(promedio_sueldo / 30) * dias_integrativos', 'total');
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('integrativo_mes_despido_promedio', $documento->activeSheet, 'C' . $documento->getCurrentRow()));
@@ -183,7 +199,7 @@ if (!empty($data)) {
     
     $documento->moveCurrentRow();
     $documento->setCellValue('A', 'Vacaciones No Gozadas: ', 'right');
-    $documento->setCellValue('B', '=(promedio_sueldo / 25) * dias_vacaciones_no_gozadas', 'total');
+    $documento->setCellValue('B', '=(mayor_sueldo / 25) * dias_vacaciones_no_gozadas', 'total');
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('vacaciones_no_gozadas_mayor', $documento->activeSheet, 'B' . $documento->getCurrentRow()));
     $documento->setCellValue('C', '=(promedio_sueldo / 25) * dias_vacaciones_no_gozadas', 'total');
     $documento->doc->addNamedRange(new PHPExcel_NamedRange('vacaciones_no_gozadas_promedio', $documento->activeSheet, 'C' . $documento->getCurrentRow()));
