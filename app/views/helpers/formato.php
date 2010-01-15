@@ -402,7 +402,6 @@ class FormatoHelper extends AppHelper {
                     }
                 } else {
                     $valor = strtoupper($valor);
-                    preg_match(VALID_PERIODO, $valor, $matches);
                     if (!empty($valor) &&
                             (preg_match(VALID_PERIODO, $valor, $matches)
                             || preg_match('/^(20\d\d)(0[1-9]|1[012])$/', $valor, $matches)
