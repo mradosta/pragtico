@@ -121,8 +121,8 @@ class LiquidacionesController extends AppController {
             $this->Liquidacion->contain('Area');
 
             $sql = '
-            SELECT          `Factura`.`id`,
-                            `Liquidacion`.`empleador_id`,
+            SELECT			`Factura`.`id`,
+							`Liquidacion`.`empleador_id`,
                             `Liquidacion`.`trabajador_id`,
                             `Liquidacion`.`empleador_cuit`,
                             `Liquidacion`.`empleador_nombre`,
@@ -134,13 +134,12 @@ class LiquidacionesController extends AppController {
                             SUM(`Liquidacion`.`remunerativo`) AS remunerativo,
                             SUM(`Liquidacion`.`no_remunerativo`) AS no_remunerativo,
                             `Factura`.`total` AS facturado
-            FROM            `liquidaciones` AS `Liquidacion`
+            FROM            `areas` AS `Area`, `liquidaciones` AS `Liquidacion`
             LEFT JOIN       `facturas` AS `Factura`
-            ON              (`Factura`.`id` = `Liquidacion`.`factura_id` AND `Factura`.`estado` = \'Confirmada\')
-            LEFT JOIN       `areas` AS `Area`
-            ON              (`Liquidacion`.`relacion_area_id` = `Area`.`id`)' . "\n" .  ConnectionManager::getDataSource('default')->conditions($conditions) . '
-            GROUP BY        `Factura`.`id`,
-                            `Liquidacion`.`empleador_id`,
+            ON              (`Factura`.`id` = `Liquidacion`.`factura_id` AND `Factura`.`estado` = \'Confirmada\')' . "\n" . 
+			ConnectionManager::getDataSource('default')->conditions($conditions) . ' AND `Area`.`id` = `Liquidacion`.`relacion_area_id`
+            GROUP BY		`Factura`.`id`,
+							`Liquidacion`.`empleador_id`,
                             `Liquidacion`.`trabajador_id`,
                             `Liquidacion`.`empleador_cuit`,
                             `Liquidacion`.`empleador_nombre`,
@@ -152,8 +151,7 @@ class LiquidacionesController extends AppController {
             ORDER BY        `Liquidacion`.`empleador_nombre`,
                             `Liquidacion`.`trabajador_apellido`,
                             `Liquidacion`.`trabajador_nombre`';
-//203
-//d($sql);
+
             $workers = array();
 			$prevInvoiceId = null;
             foreach ($this->Liquidacion->query($sql) as $record) {
