@@ -678,6 +678,7 @@ class Liquidacion extends AppModel {
 */
     function __getConceptValue($concepto) {
 
+
 		/*
         if ($this->__receiptTypeMapping[$this->__receiptType] & $concepto['liquidacion_tipo'] != $concepto['liquidacion_tipo']) {
             $this->__resolvConceptToZero($concepto['codigo']);
@@ -720,23 +721,23 @@ class Liquidacion extends AppModel {
                     $conceptoCantidad = $varValue;
                 } else {
                     $this->__setError(array(
-                        'tipo'                    => 'Variable No Resuelta',
-                          'gravedad'                => 'Media',
-                        'variable'                => $concepto['cantidad'],
-                        'formula'                => $concepto['formula'],
-                        'descripcion'            => 'La cantidad intenta usar una variable que no ha podido ser resuelta.',
-                        'recomendacion'            => 'Verifique que los datos hayan sido correctamente ingresados.',
-                        'descripcion_adicional'    => ''));
+                        'tipo'					=> 'Variable No Resuelta',
+						'gravedad'				=> 'Media',
+                        'variable'				=> $concepto['cantidad'],
+                        'formula'				=> $concepto['formula'],
+                        'descripcion'			=> 'La cantidad intenta usar una variable que no ha podido ser resuelta.',
+                        'recomendacion'			=> 'Verifique que los datos hayan sido correctamente ingresados.',
+                        'descripcion_adicional'	=> ''));
                 }
             } else {
                 $this->__setError(array(
-                        'tipo'                    => 'Variable Inexistente',
-                         'gravedad'                => 'Media',
-                        'variable'                => $concepto['cantidad'],
-                        'formula'                => $concepto['formula'],
-                        'descripcion'            => 'La cantidad intenta usar una variable inexistente.',
-                        'recomendacion'            => 'Verifique que la cantidad este correctamente definida y que la variable que la cantidad utiliza exista en el sistema.',
-                        'descripcion_adicional'    => ''));
+                        'tipo'					=> 'Variable Inexistente',
+						'gravedad'				=> 'Media',
+                        'variable'				=> $concepto['cantidad'],
+                        'formula'				=> $concepto['formula'],
+                        'descripcion'			=> 'La cantidad intenta usar una variable inexistente.',
+                        'recomendacion'			=> 'Verifique que la cantidad este correctamente definida y que la variable que la cantidad utiliza exista en el sistema.',
+                        'descripcion_adicional'	=> ''));
             }
         }
 
@@ -960,7 +961,6 @@ class Liquidacion extends AppModel {
             }
         }
 
-        
         return array(
             'valor'             => $valor,
             'debug'             => $formula,
@@ -1264,10 +1264,10 @@ class Liquidacion extends AppModel {
     function __resolvConceptToZero($conceptCode) {
         $zero = array(
             'codigo'            => $conceptCode,
-            'imprimir'          => 'No',
+            //'imprimir'          => 'No',
             'formula'           => '',
             'valor'             => 0,
-            'debug'             => 'Auto-resulto a 0 (Cero)',
+            'debug'             => 'Auto-resuelto a 0 (Cero)',
             'valor_cantidad'    => 0,
             'valor_unitario'    => 0,
             'errores'           => array());
