@@ -851,7 +851,7 @@ class LiquidacionesController extends AppController {
                 App::import('Vendor', 'dates', 'pragmatia');
                 $remuneraciones = null;
                 $compone = null;
-                $cantidadHorasExtras = null;
+                $vantidadSueldo = $cantidadHorasExtras = null;
                 $step = 0;
                 do {
                     $r = $this->Liquidacion->find('all',
@@ -878,26 +878,28 @@ class LiquidacionesController extends AppController {
 
                     $opcionesConcepto = $this->Liquidacion->LiquidacionesDetalle->Concepto->opciones;
                             
-                    $ausenciasMotivo = $this->Liquidacion->Relacion->Ausencia->AusenciasMotivo->find('all', array('conditions' => array('NOT' => array('AusenciasMotivo.situacion_id' => null))));
+                    $ausenciasMotivo = $this->Liquidacion->Relacion->Ausencia->AusenciasMotivo->find('all',
+						 array('conditions' => array('NOT' => array('AusenciasMotivo.situacion_id' => null))));
                     $ausenciasMotivo = Set::combine($ausenciasMotivo, '{n}.AusenciasMotivo.id', '{n}.Situacion');
-                    
-                    
+
+
                     $data = ClassRegistry::init('Siap')->findById($this->data['Condicion']['Bar-version']);
                     foreach ($data['SiapsDetalle'] as $k => $v) {
                         $detalles[$v['elemento']] = $v;
                     }
-                    
+
                     foreach ($r as $liquidacion) {
 
                         /** Inicialize arrays */
                         if (!isset($remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']])) {
-                            
+
                             $cantidadHorasExtras[$liquidacion['Liquidacion']['trabajador_cuil']] = 0;
-                            
+							$cantidadSueldo[$liquidacion['Liquidacion']['trabajador_cuil']] = 0;
+
                             foreach ($opcionesConcepto['remuneracion'] as $k => $v) {
                                 $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']][$v] = 0;
                             }
-                            
+
                             foreach ($opcionesConcepto['compone'] as $k => $v) {
                                 $compone[$liquidacion['Liquidacion']['trabajador_cuil']][$k] = 0;
                             }
@@ -910,6 +912,9 @@ class LiquidacionesController extends AppController {
                                     $cantidadHorasExtras[$liquidacion['Liquidacion']['trabajador_cuil']] += $detalle['valor_cantidad'];
                                 }
 
+                                if ($detalle['concepto_compone'] === 'Sueldo') {
+                                    $cantidadSueldo[$liquidacion['Liquidacion']['trabajador_cuil']] += $detalle['valor_cantidad'];
+                                }
                             }
                             if (!empty($detalle['concepto_remuneracion'])) {
                                 foreach ($opcionesConcepto['remuneracion'] as $k => $v) {
@@ -932,7 +937,7 @@ class LiquidacionesController extends AppController {
 
                     $lineas = null;
                     foreach ($liquidaciones as $liquidacion) {
-                        
+
                         if ($liquidacion['Liquidacion']['no_remunerativo'] < 0) {
                             $liquidacion['Liquidacion']['no_remunerativo'] = '0';
                         }
@@ -1096,6 +1101,13 @@ class LiquidacionesController extends AppController {
                         }
                         $campos['c51']['valor'] = $liquidacion['Liquidacion']['no_remunerativo'];
                         $lineas[] = $this->__generarRegistro($campos);
+						$campos['c54']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 9'];
+
+						if ($liquidacion['Relacion']['tarea_diferencial'] == 'Si') {
+							$campos['c55']['valor'] = '2';
+						}
+
+						$campos['c56']['valor'] = round($cantidadSueldo[$liquidacion['Liquidacion']['trabajador_cuil']]);
                     }
                 } while (!empty($r));
             }
