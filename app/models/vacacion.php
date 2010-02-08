@@ -100,7 +100,8 @@ class Vacacion extends AppModel {
 		foreach ($vacaciones as $vacacion) {
 			$endDate = Dates::dateAdd($vacacion['VacacionesDetalle']['desde'], $vacacion['VacacionesDetalle']['dias']);
 			if ($endDate > $periodo['hasta']) {
-				$diasPeriodo += Dates::dateDiff($vacacion['VacacionesDetalle']['desde'], $periodo['hasta']);
+				$diff = Dates::dateDiff($vacacion['VacacionesDetalle']['desde'], $periodo['hasta']);
+				$diasPeriodo = $diff['dias'];
 			} else {
 				$diasPeriodo += $vacacion['VacacionesDetalle']['dias'];
 			}
