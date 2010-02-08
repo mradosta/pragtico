@@ -87,9 +87,15 @@ class Vacacion extends AppModel {
  */
     function getDiasVacaciones($relacion, $periodo) {
 
+		if ($periodo['mes'] < 6) {
+			$anos = array($periodo['ano'], ($periodo['ano'] - 1));
+		} else {
+			$anos = $periodo['ano'];
+		}
+
         $vacaciones = $this->VacacionesDetalle->find('all',
                 array('conditions'  => array(
-                            'VacacionesDetalle.desde >='    => $periodo['desde'],
+							'Vacacion.periodo'				=> $anos,
                             'VacacionesDetalle.desde <='    => $periodo['hasta'],
                             'VacacionesDetalle.estado'      => array('Confirmado', 'Liquidado'),
                             'Vacacion.relacion_id'          => $relacion['Relacion']['id']),
@@ -98,12 +104,17 @@ class Vacacion extends AppModel {
 		App::import('Vendor', 'dates', 'pragmatia');
 		$diasPeriodo = 0;
 		foreach ($vacaciones as $vacacion) {
-			$endDate = Dates::dateAdd($vacacion['VacacionesDetalle']['desde'], $vacacion['VacacionesDetalle']['dias']);
-			if ($endDate > $periodo['hasta']) {
-				$diff = Dates::dateDiff($vacacion['VacacionesDetalle']['desde'], $periodo['hasta']);
-				$diasPeriodo = $diff['dias'];
-			} else {
-				$diasPeriodo += $vacacion['VacacionesDetalle']['dias'];
+			$date = Dates::dateAdd($vacacion['VacacionesDetalle']['desde'], $vacacion['VacacionesDetalle']['dias']);
+			if ($date >= $periodo['desde']) {
+				if ($date > $periodo['hasta']) {
+					$diff = Dates::dateDiff($vacacion['VacacionesDetalle']['desde'], $periodo['hasta']);
+					$diasPeriodo = $diff['dias'];
+				} elseif ($vacacion['VacacionesDetalle']['desde'] < $periodo['desde']) {
+					$diff = Dates::dateDiff($periodo['desde'], $date);
+					$diasPeriodo = $diff['dias'];
+				} else {
+					$diasPeriodo += $vacacion['VacacionesDetalle']['dias'];
+				}
 			}
 		}
 		return $diasPeriodo;
