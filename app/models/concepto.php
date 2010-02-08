@@ -105,7 +105,8 @@ class Concepto extends AppModel {
             '16'    => 'Remuneracion 5',
             '32'    => 'Remuneracion 6',
             '64'    => 'Remuneracion 7',
-            '128'   => 'Remuneracion 8'),
+            '128'   => 'Remuneracion 8',
+			'256'   => 'Remuneracion 9'),
         'compone'           => array(
             'Sueldo'                    => 'Sueldo',
             'Adicionales'               => 'Adicionales',
