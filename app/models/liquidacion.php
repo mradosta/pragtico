@@ -375,7 +375,7 @@ class Liquidacion extends AppModel {
         }
 
 
-		$this->setVar('#dias_vacaciones_confirmados', $this->Relacion->Vacacion->getDiasVacaciones($this->getRelationship(), $this->getPeriod());
+		$this->setVar('#dias_vacaciones_confirmados', $this->Relacion->Vacacion->getDiasVacaciones($this->getRelationship(), $this->getPeriod()));
 
         /** Get discounts */
         $discounts = $this->Relacion->Descuento->getDescuentos($this->getRelationship(),
