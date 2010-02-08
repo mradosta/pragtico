@@ -1100,7 +1100,6 @@ class LiquidacionesController extends AppController {
                             }
                         }
                         $campos['c51']['valor'] = $liquidacion['Liquidacion']['no_remunerativo'];
-                        $lineas[] = $this->__generarRegistro($campos);
 						$campos['c54']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 9'];
 
 						if ($liquidacion['Relacion']['tarea_diferencial'] == 'Si') {
@@ -1108,6 +1107,8 @@ class LiquidacionesController extends AppController {
 						}
 
 						$campos['c56']['valor'] = round($cantidadSueldo[$liquidacion['Liquidacion']['trabajador_cuil']]);
+
+                        $lineas[] = $this->__generarRegistro($campos);
                     }
                 } while (!empty($r));
             }
