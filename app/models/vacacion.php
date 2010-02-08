@@ -82,6 +82,32 @@ class Vacacion extends AppModel {
     }
 
 
+/**
+ * Dias de vacaciones del periodo Confirmados o Liquidados.
+ */
+    function getDiasVacaciones($relacion, $periodo) {
+
+        $vacaciones = $this->VacacionesDetalle->find('all',
+                array('conditions'  => array(
+                            'VacacionesDetalle.desde >='    => $periodo['periodo']['desde'],
+                            'VacacionesDetalle.desde <='    => $periodo['periodo']['hasta'],
+                            'VacacionesDetalle.estado'      => array('Confirmado', 'Liquidado'),
+                            'Vacacion.relacion_id'          => $relacion['Relacion']['id']),
+                      'contain'   => 'Vacacion'));
+
+		App::import('Vendor', 'dates', 'pragmatia');
+		$diasPeriodo = 0;
+		foreach ($vacaciones as $vacacion) {
+			$endDate = Dates::dateAdd($vacacion['VacacionesDetalle']['desde'], $vacaciones['VacacionesDetalle']['dias']);
+			if ($endDate > $periodo['hasta']) {
+				$diasPeriodo += Dates::dateDiff($vacacion['VacacionesDetalle']['desde'], $periodo['hasta']);
+			} else {
+				$diasPeriodo += $vacaciones['VacacionesDetalle']['dias'];
+			}
+		}
+		return $diasPeriodo;
+	}
+
     function getVacaciones($relacion, $periodo) {
 
         $vacaciones = $this->VacacionesDetalle->find('all',
@@ -119,10 +145,10 @@ class Vacacion extends AppModel {
             $conceptos[] = ClassRegistry::init('Concepto')->findConceptos('ConceptoPuntual',
                     array(  'relacion'          => $relacion,
                             'codigoConcepto'    => 'vacaciones'));
-            
+
         }
         return array('conceptos' => $conceptos, 'variables' => $variables, 'auxiliar' => $auxiliares);
     }
-    
+
 }
 ?>

@@ -374,7 +374,9 @@ class Liquidacion extends AppModel {
             $this->__conceptos['sac'] = array_merge($this->__conceptos['sac'], $this->__getConceptValue($this->__conceptos['sac']));
         }
 
-        
+
+		$this->setVar('#dias_vacaciones_confirmados', $this->Relacion->Vacacion->getDiasVacaciones($this->getRelationship(), $this->getPeriod());
+
         /** Get discounts */
         $discounts = $this->Relacion->Descuento->getDescuentos($this->getRelationship(),
                 array(  'periodo'   => $this->getPeriod(),
