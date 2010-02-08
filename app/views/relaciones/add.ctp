@@ -80,6 +80,7 @@ $campos['Relacion.modalidad_id'] = array(	'lov'	=>	array(	'controller'		=> 	'mod
 																'seleccionMultiple'	=> 	0,
 																	'camposRetorno'	=> 	array(	'Modalidad.codigo',
 																								'Modalidad.nombre')));
+$campos['Relacion.tarea_diferencial'] = array('aclaracion' => 'Segun ley 22.250 (Trabajadores de la construccion)');
 $fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array('class' => 'subset'), 'fieldset' => array('legend' => 'Afip', 'imagen' => 'afip.gif')));
 
 $campos = null;
