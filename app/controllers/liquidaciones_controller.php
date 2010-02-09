@@ -908,13 +908,16 @@ class LiquidacionesController extends AppController {
                         foreach ($liquidacion['LiquidacionesDetalle'] as $detalle) {
                             if (!empty($detalle['concepto_compone'])) {
                                 $compone[$liquidacion['Liquidacion']['trabajador_cuil']][$detalle['concepto_compone']] += $detalle['valor'];
-                                if ($detalle['concepto_compone'] === 'Importe Horas Extras') {
-                                    $cantidadHorasExtras[$liquidacion['Liquidacion']['trabajador_cuil']] += $detalle['valor_cantidad'];
-                                }
 
-                                if ($detalle['concepto_compone'] === 'Sueldo') {
-                                    $cantidadSueldo[$liquidacion['Liquidacion']['trabajador_cuil']] += $detalle['valor_cantidad'];
-                                }
+								if ($liquidacion['Relacion']['ConveniosCategoria']['jornada'] == 'Por Hora') {
+									if ($detalle['concepto_compone'] === 'Importe Horas Extras') {
+										$cantidadHorasExtras[$liquidacion['Liquidacion']['trabajador_cuil']] += $detalle['valor_cantidad'];
+									}
+								} else {
+									if ($detalle['concepto_compone'] === 'Sueldo') {
+										$cantidadSueldo[$liquidacion['Liquidacion']['trabajador_cuil']] += $detalle['valor_cantidad'];
+									}
+								}
                             }
                             if (!empty($detalle['concepto_remuneracion'])) {
                                 foreach ($opcionesConcepto['remuneracion'] as $k => $v) {
