@@ -846,7 +846,7 @@ class LiquidacionesController extends AppController {
                         $ausencias[$ausencia['Liquidacion']['trabajador_cuil']][] = $ausencia;
                     }
                 }
-                
+
 
                 App::import('Vendor', 'dates', 'pragmatia');
                 $remuneraciones = null;
@@ -1079,8 +1079,14 @@ class LiquidacionesController extends AppController {
                         } else {
                             $to = $periodo['hasta'];
                         }
-                        $diff = Dates::dateDiff($from, $to);
-                        $campos['c41']['valor'] = $diff['dias'] - $diasRevista;
+
+
+ 						if ($liquidacion['Relacion']['ConveniosCategoria']['jornada'] == 'Por Hora') {
+							$campos['c41']['valor'] = 0;
+						} else {
+							$diff = Dates::dateDiff($from, $to);
+							$campos['c41']['valor'] = $diff['dias'] - $diasRevista;
+						}
 
 
                         $campos['c42']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 5'];
@@ -1109,7 +1115,13 @@ class LiquidacionesController extends AppController {
 							$campos['c55']['valor'] = '2';
 						}
 
-						$campos['c56']['valor'] = round($cantidadSueldo[$liquidacion['Liquidacion']['trabajador_cuil']]);
+
+						if ($liquidacion['Relacion']['ConveniosCategoria']['jornada'] == 'Por Hora') {
+							$campos['c56']['valor'] = round($cantidadSueldo[$liquidacion['Liquidacion']['trabajador_cuil']]);
+						} else {
+							$campos['c56']['valor'] = 0;
+
+						}
 
                         $lineas[] = $this->__generarRegistro($campos);
                     }
