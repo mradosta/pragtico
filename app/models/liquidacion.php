@@ -233,6 +233,8 @@ class Liquidacion extends AppModel {
 					$this->__resolvConceptToZero($cCod);
 				}
 			}
+
+			$this->setVar('#dias_vacaciones_confirmados', $this->Relacion->Vacacion->getDiasVacaciones($this->getRelationship(), $this->getPeriod()));
             //}
         } elseif ($this->__receiptType === 'vacaciones') {
             $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
@@ -373,9 +375,6 @@ class Liquidacion extends AppModel {
                             'codigoConcepto'    => 'sac')));
             $this->__conceptos['sac'] = array_merge($this->__conceptos['sac'], $this->__getConceptValue($this->__conceptos['sac']));
         }
-
-
-		$this->setVar('#dias_vacaciones_confirmados', $this->Relacion->Vacacion->getDiasVacaciones($this->getRelationship(), $this->getPeriod()));
 
         /** Get discounts */
         $discounts = $this->Relacion->Descuento->getDescuentos($this->getRelationship(),
