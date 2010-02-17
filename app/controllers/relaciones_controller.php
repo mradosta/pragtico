@@ -214,6 +214,7 @@ class RelacionesController extends AppController {
 				$conditions['RelacionesHistorial.inicio <='] = $this->data['Condicion']['Bar-hasta'];
             }
 
+/*
             if (!empty($this->data['Condicion']['Bar-con_fecha_egreso'])) {
                 if ($this->data['Condicion']['Bar-con_fecha_egreso'] === 'No') {
                     $conditions[] = array('Relacion.egreso' => array(null, '0000-00-00'));
@@ -225,7 +226,7 @@ class RelacionesController extends AppController {
                 $conditions['Relacion.egreso >='] = $period['desde'];
                 $conditions['Relacion.egreso <='] = $period['hasta'];
             }
-
+*/
 
 			$this->Relacion->RelacionesHistorial->Behaviors->detach('Permisos');
 			$this->set('data', $this->Relacion->RelacionesHistorial->find('all', array(
