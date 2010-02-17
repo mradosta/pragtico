@@ -352,6 +352,7 @@ class Pago extends AppModel {
                         switch ($bankCode) {
                             case '072':
                             case '011':
+							case '044':
                                 $contenido = implode("\r\n", $rds);
                                 break;
                             case '007':
