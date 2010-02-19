@@ -187,11 +187,26 @@ class RelacionesController extends AppController {
     function reporte_relaciones() {
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 
+
+            if (!empty($this->data['Condicion']['Bar-periodo_largo'])) {
+                $period = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
+            }
+
             if (!empty($this->data['Condicion']['Bar-state'])) {
 				if ($this->data['Condicion']['Bar-state'] == 'Historica') {
+
                 	$conditions['Relacion.estado <>'] = 'Activa';
+
+					/** For historical relations only */
+					if (!empty($this->data['Condicion']['Bar-desde'])) {
+						$conditions['RelacionesHistorial.inicio >='] = $this->data['Condicion']['Bar-desde'];
+					}
+
+					if (!empty($this->data['Condicion']['Bar-hasta'])) {
+						$conditions['RelacionesHistorial.inicio <='] = $this->data['Condicion']['Bar-hasta'];
+					}
 				} else {
-					$conditions['Relacion.estado'] = $this->data['Condicion']['Bar-state'];
+					$conditions['Relacion.estado'] = 'Activa';
 				}
             }
 
@@ -202,32 +217,15 @@ class RelacionesController extends AppController {
                 $conditions['Relacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
             }
 
-            if (!empty($this->data['Condicion']['Bar-periodo_largo'])) {
-                $period = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
-            }
 
-            if (!empty($this->data['Condicion']['Bar-desde'])) {
-				$conditions['RelacionesHistorial.inicio >='] = $this->data['Condicion']['Bar-desde'];
-            }
+            //if (!empty($this->data['Condicion']['Bar-con_fecha_egreso'])) {
+                //if ($this->data['Condicion']['Bar-con_fecha_egreso'] === 'No') {
 
-            if (!empty($this->data['Condicion']['Bar-hasta'])) {
-				$conditions['RelacionesHistorial.inicio <='] = $this->data['Condicion']['Bar-hasta'];
-            }
+                //}
+            //}
 
-/*
-            if (!empty($this->data['Condicion']['Bar-con_fecha_egreso'])) {
-                if ($this->data['Condicion']['Bar-con_fecha_egreso'] === 'No') {
-                    $conditions[] = array('Relacion.egreso' => array(null, '0000-00-00'));
-                } else {
-                    $conditions['Relacion.egreso NOT'] = '0000-00-00';
-                    $conditions['Relacion.egreso !='] = null;
-                }
-            } elseif (!empty($period) && $period !== false) {
-                $conditions['Relacion.egreso >='] = $period['desde'];
-                $conditions['Relacion.egreso <='] = $period['hasta'];
-            }
-*/
 
+			/** For historical
 			$this->Relacion->RelacionesHistorial->Behaviors->detach('Permisos');
 			$this->set('data', $this->Relacion->RelacionesHistorial->find('all', array(
 				'conditions'	=> $conditions,
@@ -239,8 +237,9 @@ class RelacionesController extends AppController {
 						'Trabajador')))));
 
 			$this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+ 			*/
 
-			/*
+
             if (!empty($this->data['Condicion']['Bar-con_liquidacion_periodo']) && $this->data['Condicion']['Bar-con_liquidacion_periodo'] === 'Si' && $period !== false) {
 
                 $this->Relacion->Liquidacion->Behaviors->detach('Permisos');
@@ -261,8 +260,9 @@ class RelacionesController extends AppController {
 				'Area',
 				'RelacionesHistorial' => 'EgresosMotivo',
 				'ConveniosCategoria' => 'Convenio'));
+//d($this->Relacion->find('all', array('conditions' => $conditions)));
             $this->set('data', $this->Relacion->find('all', array('conditions' => $conditions)));
-			*/
+			
         }
     }
 

@@ -18,33 +18,37 @@
  
 if (!empty($data)) {
 
-    $documento->create(array('password' => false, 'orientation' => 'landscape', 'title' => 'Relaciones No Activas'));
+    $documento->create(array('password' => false, 'orientation' => 'landscape', 'title' => 'Relaciones ' . $state . 's'));
 
     $documento->setCellValue('A', 'Cuit', array('title' => '15'));
     $documento->setCellValue('B', 'Empleador', array('title' => '30'));
     $documento->setCellValue('C', 'Cuil', array('title' => '15'));
     $documento->setCellValue('D', 'Apellido', array('title' => '20'));
     $documento->setCellValue('E', 'Nombre', array('title' => '25'));
-    $documento->setCellValue('F', 'Area', array('title' => '30'));
-    $documento->setCellValue('G', 'F. Ingreso', array('title' => '15'));
-    $documento->setCellValue('H', 'F. Egreso', array('title' => '15'));
-	$documento->setCellValue('I', 'Motivo Egreso', array('title' => '40'));
-
+	$documento->setCellValue('F', 'F. Nacimiento', array('title' => '15'));
+    $documento->setCellValue('G', 'Area', array('title' => '30'));
+	if ($state == 'Historica') {
+		$documento->setCellValue('H', 'F. Ingreso', array('title' => '15'));
+		$documento->setCellValue('I', 'F. Egreso', array('title' => '15'));
+		$documento->setCellValue('J', 'Motivo Egreso', array('title' => '40'));
+	}
 
 
     /** Body */
     foreach ($data as $k => $record) {
-        $documento->setCellValueFromArray(
-            array(  $record['Relacion']['Empleador']['cuit'],
-                    $record['Relacion']['Empleador']['nombre'],
-					$record['Relacion']['Trabajador']['cuil'],
-                    $record['Relacion']['Trabajador']['apellido'],
-                    $record['Relacion']['Trabajador']['nombre'],
-                    $record['Relacion']['Area']['nombre'],
-                    $record['RelacionesHistorial']['inicio'],
-                    $record['RelacionesHistorial']['fin'],
-                    $record['EgresosMotivo']['motivo']
-                 ));
+         $info = array( $record['Empleador']['cuit'],
+						$record['Empleador']['nombre'],
+						$record['Trabajador']['cuil'],
+						$record['Trabajador']['apellido'],
+						$record['Trabajador']['nombre'],
+						$record['Trabajador']['nacimiento'],
+						$record['Area']['nombre']);
+		if ($state == 'Historica') {
+			$info[] = $record['RelacionesHistorial']['inicio'];
+			$info[] = $record['RelacionesHistorial']['fin'];
+			$info[] = $record['RelacionesHistorial']['EgresosMotivo']['motivo'];
+		}
+        $documento->setCellValueFromArray($info);
     }
 
     $documento->save($fileFormat);
@@ -57,7 +61,7 @@ if (!empty($data)) {
 
     if ($this->params['named']['state'] == 'Activa') {
     	$conditions['Condicion.Bar-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('soloAAAAMM'));
-        $conditions['Condicion.Bar-con_fecha_egreso'] = array('label' => 'Fecha Egreso', 'type' => 'radio', 'options' => array('Si' => 'Si', 'No' => 'No'), 'default' => 'No');
+        //$conditions['Condicion.Bar-con_fecha_egreso'] = array('label' => 'Fecha Egreso', 'type' => 'radio', 'options' => array('Si' => 'Si', 'No' => 'No'), 'default' => 'No');
 
         $conditions['Condicion.Bar-con_liquidacion_periodo'] = array('label' => 'Liquidacion en el Periodo', 'type' => 'radio', 'options' => array('Si' => 'Si', 'No' => 'No'), 'default' => 'No');
     } else {
