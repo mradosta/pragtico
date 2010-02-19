@@ -23,14 +23,15 @@ if (!empty($data)) {
     $documento->setCellValue('A', 'Cuit', array('title' => '15'));
     $documento->setCellValue('B', 'Empleador', array('title' => '30'));
     $documento->setCellValue('C', 'Cuil', array('title' => '15'));
-    $documento->setCellValue('D', 'Apellido', array('title' => '20'));
-    $documento->setCellValue('E', 'Nombre', array('title' => '25'));
-	$documento->setCellValue('F', 'F. Nacimiento', array('title' => '15'));
-    $documento->setCellValue('G', 'Area', array('title' => '30'));
+	$documento->setCellValue('D', 'F. Ingreso', array('title' => '15'));
+    $documento->setCellValue('E', 'Apellido', array('title' => '20'));
+    $documento->setCellValue('F', 'Nombre', array('title' => '25'));
+	$documento->setCellValue('G', 'F. Nacimiento', array('title' => '15'));
+    $documento->setCellValue('H', 'Area', array('title' => '30'));
 	if ($state == 'Historica') {
-		$documento->setCellValue('H', 'F. Ingreso', array('title' => '15'));
-		$documento->setCellValue('I', 'F. Egreso', array('title' => '15'));
-		$documento->setCellValue('J', 'Motivo Egreso', array('title' => '40'));
+		$documento->setCellValue('I', 'F. Ingreso', array('title' => '15'));
+		$documento->setCellValue('J', 'F. Egreso', array('title' => '15'));
+		$documento->setCellValue('K', 'Motivo Egreso', array('title' => '40'));
 	}
 
 
@@ -39,6 +40,7 @@ if (!empty($data)) {
          $info = array( $record['Empleador']['cuit'],
 						$record['Empleador']['nombre'],
 						$record['Trabajador']['cuil'],
+						$record['Relacion']['ingreso'],
 						$record['Trabajador']['apellido'],
 						$record['Trabajador']['nombre'],
 						$record['Trabajador']['nacimiento'],
@@ -63,7 +65,7 @@ if (!empty($data)) {
     	$conditions['Condicion.Bar-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('soloAAAAMM'));
         //$conditions['Condicion.Bar-con_fecha_egreso'] = array('label' => 'Fecha Egreso', 'type' => 'radio', 'options' => array('Si' => 'Si', 'No' => 'No'), 'default' => 'No');
 
-        $conditions['Condicion.Bar-con_liquidacion_periodo'] = array('label' => 'Liquidacion en el Periodo', 'type' => 'radio', 'options' => array('Si' => 'Si', 'No' => 'No'), 'default' => 'No');
+        $conditions['Condicion.Bar-con_liquidacion_periodo'] = array('label' => 'Liquidacion en el Periodo', 'type' => 'radio', 'options' => array('Si' => 'Si', 'Indistinto' => 'Indistinto'), 'default' => 'Indistinto');
     } else {
 		$conditions['Condicion.Bar-desde'] = array('label' => 'Desde', 'type' => 'date');
 		$conditions['Condicion.Bar-hasta'] = array('label' => 'Hasta', 'type' => 'date');
