@@ -484,7 +484,7 @@ class Liquidacion extends AppModel {
                 $detalle[] = $v;
             }
 
-            if (in_array($detalleLiquidacion['imprimir'], array('Si', 'Solo con valor'))) {
+            if (!empty($detalleLiquidacion['imprimir']) && in_array($detalleLiquidacion['imprimir'], array('Si', 'Solo con valor'))) {
 
                 $pago = 'total_' . strtolower($detalleLiquidacion['pago']);
                 switch ($detalleLiquidacion['tipo']) {
@@ -835,9 +835,9 @@ class Liquidacion extends AppModel {
                         * Busco los conceptos que puedan estar faltandome.
                         * Los agrego al array de conceptos identificandolos y poniendoles el estado a no imprimir.
                         */
-                        if ($this->getVarValue('#tipo_liquidacion') === 'especial') {
-                            $this->__resolvConceptToZero($match);
-                        } else {
+                        //if ($this->getVarValue('#tipo_liquidacion') === 'especial') {
+                        //    $this->__resolvConceptToZero($match);
+                        //} else {
                             $conceptoParaCalculo = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $this->getRelationship(), 'codigoConcepto' => $match));
                             if (empty($conceptoParaCalculo)) {
                                 $this->__setError(array(    'tipo'                    => 'Concepto Inexistente',
@@ -856,12 +856,12 @@ class Liquidacion extends AppModel {
                                 }
                                 $this->setConcept($conceptoParaCalculo);
                             }
-                        }
+                        //}
                     }
     
                     /** If no value yet, must calculate it */
                     if (!isset($this->__conceptos[$match]['valor'])) {
-                        if ($this->getVarValue('#tipo_liquidacion') === 'especial') {
+                        if ($this->getVarValue('#tipo_liquidacion') === 'xespecialx') {
                             $this->__resolvConceptToZero($match);
                         } else {
                             if (isset($this->__conceptos[$match])) {
