@@ -195,7 +195,7 @@ class RelacionesController extends AppController {
             if (!empty($this->data['Condicion']['Bar-state'])) {
 				if ($this->data['Condicion']['Bar-state'] == 'Historica') {
 
-                	$conditions['Relacion.estado <>'] = 'Activa';
+                	$conditions['Relacion.estado'] = 'Historica';
 
 					/** For historical relations only */
 					if (!empty($this->data['Condicion']['Bar-desde'])) {
@@ -206,7 +206,7 @@ class RelacionesController extends AppController {
 						$conditions['RelacionesHistorial.inicio <='] = $this->data['Condicion']['Bar-hasta'];
 					}
 				} else {
-					$conditions['Relacion.estado'] = 'Activa';
+					$conditions['Relacion.estado <>'] = 'Historica';
 				}
             }
 
@@ -216,28 +216,6 @@ class RelacionesController extends AppController {
             if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
                 $conditions['Relacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
             }
-
-
-            //if (!empty($this->data['Condicion']['Bar-con_fecha_egreso'])) {
-                //if ($this->data['Condicion']['Bar-con_fecha_egreso'] === 'No') {
-
-                //}
-            //}
-
-
-			/** For historical
-			$this->Relacion->RelacionesHistorial->Behaviors->detach('Permisos');
-			$this->set('data', $this->Relacion->RelacionesHistorial->find('all', array(
-				'conditions'	=> $conditions,
-				'contain' => array(
-					'EgresosMotivo',
-					'Relacion' => array(
-						'Area',
-						'Empleador',
-						'Trabajador')))));
-
-			$this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
- 			*/
 
 
             if (!empty($this->data['Condicion']['Bar-con_liquidacion_periodo']) && $this->data['Condicion']['Bar-con_liquidacion_periodo'] === 'Si' && $period !== false) {
@@ -254,15 +232,24 @@ class RelacionesController extends AppController {
 
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
             $this->set('state', $this->data['Condicion']['Bar-state']);
-            $this->Relacion->contain(array(
-				'Trabajador' => array('ObrasSocial', 'Localidad' => 'Provincia'),
-				'Empleador',
-				'Area',
-				'RelacionesHistorial' => 'EgresosMotivo',
-				'ConveniosCategoria' => 'Convenio'));
-//d($this->Relacion->find('all', array('conditions' => $conditions)));
+
+            if (!empty($this->data['Condicion']['Bar-state']) && $this->data['Condicion']['Bar-state'] == 'Historica') {
+				$this->Relacion->contain(array(
+					'Trabajador' => array('ObrasSocial', 'Localidad' => 'Provincia'),
+					'Empleador',
+					'Area',
+					'RelacionesHistorial' => array(
+							'limit'     => 1,
+						'conditions'    => array(
+							'RelacionesHistorial.estado' => 'Confirmado'), 'EgresosMotivo')));
+			} else {
+				$this->Relacion->contain(array(
+					'Trabajador' => array('ObrasSocial', 'Localidad' => 'Provincia'),
+					'Empleador',
+					'Area'));
+			}
+
             $this->set('data', $this->Relacion->find('all', array('conditions' => $conditions)));
-			
         }
     }
 

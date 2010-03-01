@@ -46,9 +46,9 @@ if (!empty($data)) {
 						$record['Trabajador']['nacimiento'],
 						$record['Area']['nombre']);
 		if ($state == 'Historica') {
-			$info[] = $record['RelacionesHistorial']['inicio'];
-			$info[] = $record['RelacionesHistorial']['fin'];
-			$info[] = $record['RelacionesHistorial']['EgresosMotivo']['motivo'];
+			$info[] = $record['RelacionesHistorial'][0]['inicio'];
+			$info[] = $record['RelacionesHistorial'][0]['fin'];
+			$info[] = $record['RelacionesHistorial'][0]['EgresosMotivo']['motivo'];
 		}
         $documento->setCellValueFromArray($info);
     }
