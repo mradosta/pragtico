@@ -183,11 +183,11 @@ class Novedad extends AppModel {
 								} else {
 									$save['Novedad']['data'] = $registros['Dias'];
 								}
-								if (isset($datos[$relacion_id][$tipo]['Motivo'])) {
+								if (isset($datos[$r][$tipo]['Motivo'])) {
 									$this->Relacion->Ausencia->AusenciasMotivo->recursive = -1;
-									$motivo = $this->Relacion->Ausencia->AusenciasMotivo->findByMotivo($datos[$relacion_id][$tipo]['Motivo']);
+									$motivo = $this->Relacion->Ausencia->AusenciasMotivo->findByMotivo($datos[$r][$tipo]['Motivo']);
 									if (!empty($motivo)) {
-										$save['Novedad']['subtipo'] = $motivo['AusenciasMotivo']['id'] . ':' . $datos[$relacion_id][$tipo]['Motivo'];
+										$save['Novedad']['subtipo'] = $motivo['AusenciasMotivo']['id'] . ':' . $datos[$r][$tipo]['Motivo'];
 									}
 								}
 							} else {
