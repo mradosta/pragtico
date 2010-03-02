@@ -324,6 +324,7 @@ class Pago extends AppModel {
                                     $rds[] = implode('', $c);
                                     break;
                                 case '044': //Hipotecario
+
                                     if (!empty($opciones['fecha_acreditacion']) && preg_match(VALID_DATE, $opciones['fecha_acreditacion'], $matchesDate)) {
                                         $fechaAcreditacion = $matchesDate[3] . '/' . $matchesDate[2] . '/' . $matchesDate[1];
                                     } else {
@@ -333,7 +334,9 @@ class Pago extends AppModel {
                                     $c = null;
                                     $c[] = $pago['Relacion']['legajo'];
 									$c[] = $pago['Relacion']['Trabajador']['apellido'] . ' ' . $pago['Relacion']['Trabajador']['nombre']; //nombre
-                                    $c[] = substr($matches[3], -10); // Nro cuenta
+									//           1 2  3 4 5  6  7  8 9 1  2 3 4 5 6 7 8 9 1 2 3  4
+									preg_match('\d\d(\d\d\d)\d(\d)\d\d\d(\d\d\d\d\d\d\d\d\d\d\d)\d$/', $pago['Relacion']['Trabajador']['cbu'], $matchesTmp);
+                                    $c[] = implode('', $matchesTmp);
 									$c[] = $pago['Relacion']['Trabajador']['cbu'];
 									$c[] = '';
 									$c[] = '11'
