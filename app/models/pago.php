@@ -330,14 +330,13 @@ class Pago extends AppModel {
                                     } else {
                                         $fechaAcreditacion = date('d/m/y');
                                     }
-
                                     $c = null;
                                     $c[] = $pago['Relacion']['legajo'];
 									$c[] = $pago['Relacion']['Trabajador']['apellido'] . ' ' . $pago['Relacion']['Trabajador']['nombre']; //nombre
 									//           1 2  3 4 5  6  7  8 9 1  2 3 4 5 6 7 8 9 1 2 3  4
-									preg_match('\d\d(\d\d\d)\d(\d)\d\d\d(\d\d\d\d\d\d\d\d\d\d\d)\d$/', $pago['Relacion']['Trabajador']['cbu'], $matchesTmp);
+									preg_match('/\d\d(\d\d\d)\d(\d)\d\d\d(\d\d\d\d\d\d\d\d\d\d\d)\d$/', $pago['Relacion']['Trabajador']['cbu'], $matchesTmp);
                                     $c[] = implode('', $matchesTmp);
-									$c[] = $pago['Relacion']['Trabajador']['cbu'];
+									$c[] = substr($pago['Relacion']['Trabajador']['cbu'], 0, 16) . '000000';
 									$c[] = '';
 									$c[] = '11'
 									;$c[] = $pago['Relacion']['Trabajador']['numero_documento'];
