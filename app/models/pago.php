@@ -339,8 +339,8 @@ class Pago extends AppModel {
                                     $c[] = implode('', $matchesTmp);
 									$c[] = $pago['Relacion']['Trabajador']['cbu'];
 									$c[] = '';
-									$c[] = '11'
-									;$c[] = $pago['Relacion']['Trabajador']['numero_documento'];
+									$c[] = '11';
+									$c[] = $pago['Relacion']['Trabajador']['numero_documento'];
                                     $c[] = $fechaAcreditacion;
                                     $c[] = $pago['Pago']['monto'];
                                     $rds[] = implode(',', $c);
