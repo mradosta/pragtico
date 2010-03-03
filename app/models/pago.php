@@ -335,8 +335,9 @@ class Pago extends AppModel {
 									$c[] = $pago['Relacion']['Trabajador']['apellido'] . ' ' . $pago['Relacion']['Trabajador']['nombre']; //nombre
 									//           1 2  3 4 5  6  7  8 9 1  2 3 4 5 6 7 8 9 1 2 3  4
 									preg_match('/\d\d(\d\d\d)\d(\d)\d\d\d(\d\d\d\d\d\d\d\d\d\d\d)\d$/', $pago['Relacion']['Trabajador']['cbu'], $matchesTmp);
+									unset($matchesTmp[0]);
                                     $c[] = implode('', $matchesTmp);
-									$c[] = substr($pago['Relacion']['Trabajador']['cbu'], 0, 16) . '000000';
+									$c[] = $pago['Relacion']['Trabajador']['cbu'];
 									$c[] = '';
 									$c[] = '11'
 									;$c[] = $pago['Relacion']['Trabajador']['numero_documento'];
