@@ -17,7 +17,31 @@
  */
 if (!empty($data)) {
 
-    $documento->create(array('password' => false, 'title' => 'Listado de Aportes Sindicales'));
+    $gridTitles['A'] = array('Cuil' => array('title' => '25'));
+    $gridTitles['B'] = array('Apellido' => array('title' => '30'));
+    $gridTitles['C'] = array('Nombre' => array('title' => '30'));
+    $gridTitles['D'] = array('Sexo' => array('title' => '20'));
+    $gridTitles['E'] = array('Estado Civil' => array('title' => '20'));
+    $gridTitles['F'] = array('F. Nacimiento' => array('title' => '15'));
+    $gridTitles['G'] = array('Direccion' => array('title' => '30'));
+    $gridTitles['H'] = array('Numero' => array('title' => '10'));
+    $gridTitles['I'] = array('Cod. Postal' => array('title' => '10'));
+    $gridTitles['J'] = array('Obra Social' => array('title' => '50'));
+	$gridTitles['L'] = array('Area' => array('title' => '35'));
+    $gridTitles['L'] = array('Empleador' => array('title' => '30'));
+    $gridTitles['M'] = array('F. Ingreso' => array('title' => '15'));
+    $gridTitles['N'] = array('F. Egreso' => array('title' => '15'));
+    $gridTitles['O'] = array('Categoria' => array('title' => '30'));
+    $gridTitles['O'] = array('Valor' => array('title' => '30'));
+    $gridTitles['Q'] = array('Concepto' => array('title' => '50'));
+    $gridTitles['R'] = array('Valor' => array('title' => '15'));
+    $gridTitles['S'] = array('Periodo' => array('title' => '15'));
+    $gridTitles['T'] = array('Dias Periodo' => array('title' => '10'));
+    $gridTitles['U'] = array('Remunerativo'=> array('title' => '20'));
+    $gridTitles['V'] = array('No Remunerativo' => array('title' => '20'));
+    $documento->create(array('password' => false, 'title' => 'Listado de Aportes Sindicales', 'gridTitles' => $gridTitles));
+
+/*
     $documento->setCellValue('A', 'Cuil', array('title' => '25'));
     $documento->setCellValue('B', 'Apellido', array('title' => '30'));
     $documento->setCellValue('C', 'Nombre', array('title' => '30'));
@@ -40,6 +64,7 @@ if (!empty($data)) {
     $documento->setCellValue('T', 'Dias Periodo', array('title' => '10'));
     $documento->setCellValue('U', 'Remunerativo', array('title' => '20'));
     $documento->setCellValue('V', 'No Remunerativo', array('title' => '20'));
+*/
 
     /** Body */
     foreach ($data as $k => $detail) {
