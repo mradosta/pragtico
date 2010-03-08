@@ -45,8 +45,15 @@ class DocumentoHelper extends AppHelper {
     var $activeSheet;
 
 
-    private $__currentRow = 1;
-    
+	private $__sheetsCount = 0;
+
+	private $__maxRow = 0;
+
+
+	private $__currentRow = 1;
+
+	private $__createOptions = array();
+
 /**
  * Constructor de la clase.
  * Instancia un objeto de la clase PHPExcel.
@@ -70,26 +77,53 @@ class DocumentoHelper extends AppHelper {
  *              Ej: $documento->create(array("password" => false));    -> no pass
  *              Ej: $documento->create(array("password" => ""));        -> generara un password
  * @return void.
- * @access public.  
+ * @access public.
  */
     function create($options = array()) {
 
-        $__defaults = array('password' => false, 'header' => true, 'orientation' => 'portrait', 'title' => '');
-        $options = array_merge($__defaults, $options);
+        $__defaults = array('password' => false, 'header' => true, 'orientation' => 'portrait', 'title' => '', 'gridTitles' => array());
+        $this->__createOptions = array_merge($__defaults, $options);
 
         $this->doc->getProperties()->setCreator('Pragtico')->setLastModifiedBy('Pragtico')->setTitle('Pragtico')->setSubject('Pragtico')->setDescription('Pragtico')->setKeywords('Pragtico')->setCategory('Pragtico');
-        $this->doc->setActiveSheetIndex(0);
-        $this->setActiveSheet();
-        $this->activeSheet->setShowGridlines(true);
-        $this->activeSheet->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
-        if ($options['orientation'] === 'portrait') {
+
+
+		$this->createNewSheet();
+		$this->__sheetsCount++;
+    }
+
+
+    function createNewSheet() {
+
+		if ($this->__sheetsCount > 0) {
+
+			$this->doc->createSheet();
+
+			$colsWidths = array();
+			for ($i = 'A'; $i <= $this->activeSheet->getHighestColumn(); $i++) {
+				$colsWidths[] = $this->activeSheet->getColumnDimension($i)->getWidth();
+			}
+
+
+			$this->__sheetsCount++;
+			$this->doc->setActiveSheetIndex(($this->__sheetsCount - 1));
+
+			foreach($colsWidths as $col => $width) {
+				$this->setWidth($col, $width);
+			}
+		}
+
+
+        $this->activeSheet = $this->doc->getActiveSheet();
+
+        if ($this->__createOptions['orientation'] === 'portrait') {
             $this->activeSheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_PORTRAIT);
         } else {
             $this->activeSheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
         }
 
+
         /** Protejo la hoja para que no me la modifiquen, excepto lo que realmente necesito que modifique que lo desbloqueo luego */
-        if ($options['password'] !== false) {
+        if ($this->__createOptions['password'] !== false) {
             if (is_string($options['password'])) {
                 $this->activeSheet->getProtection()->setPassword(substr($options['password'], 0, 10));
             } else {
@@ -104,17 +138,16 @@ class DocumentoHelper extends AppHelper {
         $this->activeSheet->getDefaultStyle()->getFont()->setSize(6);
         $this->activeSheet->getDefaultRowDimension()->setRowHeight(10);
 
-
-        if ($options['header'] !== false) {
+        if ($this->__createOptions['header'] !== false) {
             $header = '';
-            if (is_numeric($options['header'])) {
-                $groupParams = User::getGroupParams($options['header']);
-            } elseif (is_string($options['header'])) {
-                $header = $options['header'];
+            if (is_numeric($this->__createOptions['header'])) {
+                $groupParams = User::getGroupParams($this->__createOptions['header']);
+            } elseif (is_string($this->__createOptions['header'])) {
+                $header = $this->__createOptions['header'];
             } else {
                 $groupParams = User::getGroupParams();
             }
-            
+
             if (!empty($groupParams)) {
                 $header = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s&R%s\nPagina &P de &N",
                     $groupParams['nombre_fantasia'],
@@ -129,17 +162,21 @@ class DocumentoHelper extends AppHelper {
             $this->activeSheet->getHeaderFooter()->setOddHeader($header);
         }
 
-        if (!empty($options['title'])) {
-            $this->setCellValue('A1:E2', $options['title'], array(
+        if (!empty($this->__createOptions['title'])) {
+            $this->setCellValue('A1:E2', $this->__createOptions['title'], array(
                 'style' => array(
                     'font' => array('bold' => true, 'size' => 12))));
             $this->moveCurrentRow(7, false);
         }
-    }
-    
 
-    function setActiveSheet($activeSheetName = '') {
-        $this->activeSheet = $this->doc->getActiveSheet();
+		foreach ($this->__createOptions['gridTitles'] as $col => $colData) {
+			foreach ($colData as $name => $options) {
+				$this->setCellValue($col, $name, $options);
+			}
+        }
+
+        $this->activeSheet->setShowGridlines(true);
+        $this->activeSheet->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
     }
 
 
@@ -151,15 +188,17 @@ class DocumentoHelper extends AppHelper {
         }
         return $this->__currentRow;
     }
-    
+
+
     function setCurrentRow($row) {
         $this->__currentRow = $row;
     }
 
+
     function getCurrentRow() {
         return $this->__currentRow;
     }
-    
+
 
 /**
  * Forma un nombre de celda standar.
@@ -174,24 +213,43 @@ class DocumentoHelper extends AppHelper {
  * @access private. 
  */
     function __getCellName($cellName = null) {
-        
+
+
         if (preg_match('/^[A-Z]+$/', $cellName)) {
-            return $cellName . $this->getCurrentRow();
+            $return['cell'] = $cellName;
+			$return['row'] = $this->getCurrentRow();
         } elseif (is_numeric($cellName)) {
-            return PHPExcel_Cell::stringFromColumnIndex($cellName) . $this->getCurrentRow();
-        } elseif (preg_match('/^[A-Z]+[0-9]+$/', $cellName)) {
-            return $cellName;
+			$return['cell'] = PHPExcel_Cell::stringFromColumnIndex($cellName);
+            $return['row'] = $this->getCurrentRow();
+        } elseif (preg_match('/^([A-Z]+)([0-9]+)$/', $cellName, $matches)) {
+			$return['cell'] = $matches[1];
+			$return['row'] = $matches[2];
         } elseif (preg_match('/^([0-9]+)\,([0-9]+)$/', $cellName, $matches)) {
-            return PHPExcel_Cell::stringFromColumnIndex($matches[1]) . $matches[2];
+            $return['cell'] = PHPExcel_Cell::stringFromColumnIndex($matches[1]);
+			$return['row'] = $matches[2];
         } elseif (is_null($cellName)) {
-            /**
-            * Busco la proxima columna y fila libre.
-            */
-            return $this->activeSheet->getHighestColumn() . $this->doc->getActiveSheet()->getHighestRow();
+            /** Search for the next free coll and row. */
+			$return['cell'] = $this->activeSheet->getHighestColumn();
+            $return['row'] = $this->activeSheet->getHighestRow();
         } else {
             return '';
         }
+
+
+		if ($return['row'] > $this->__maxRow) {
+			$this->__maxRow = $return['row'];
+		}
+
+		if ($this->__maxRow >= 65000) {
+			$this->__maxRow = 0;
+			$this->createNewSheet();
+			$this->moveCurrentRow();
+			return $this->__getCellName($cellName);
+		} else {
+			return implode('', $return);
+		}
     }
+
 
 /**
  * Creates a formatted totals table.
@@ -220,7 +278,7 @@ class DocumentoHelper extends AppHelper {
             }
         }
     }
-    
+
 
     function setWidth($cellName, $value) {
         if (is_numeric($cellName)) {
