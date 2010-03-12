@@ -124,12 +124,12 @@ class DocumentoHelper extends AppHelper {
 
         /** Protejo la hoja para que no me la modifiquen, excepto lo que realmente necesito que modifique que lo desbloqueo luego */
         if ($this->__createOptions['password'] !== false) {
-            if (is_string($options['password'])) {
-                $this->activeSheet->getProtection()->setPassword(substr($options['password'], 0, 10));
+            if (is_string($this->__createOptions['password'])) {
+                $this->activeSheet->getProtection()->setPassword(substr($this->__createOptions['password'], 0, 10));
             } else {
-                $options['password'] = substr(Configure::read('Security.salt'), 0, 10);
+                $this->__createOptions['password'] = substr(Configure::read('Security.salt'), 0, 10);
             }
-            $this->activeSheet->getProtection()->setPassword($options['password']);
+            $this->activeSheet->getProtection()->setPassword($this->__createOptions['password']);
             $this->activeSheet->getProtection()->setSheet(true);
         }
 
