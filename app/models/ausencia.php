@@ -179,22 +179,22 @@ class Ausencia extends AppModel {
                     if (in_array($seguimiento['estado'], array('Confirmado', 'Liquidado'))) {
                         $acumulado += $seguimiento['dias'];
                     }
-                    
+
                     if ($seguimiento['estado'] === 'Confirmado') {
 
                         $endDate = Dates::dateAdd($ausencia['Ausencia']['desde'], $acumulado);
-                        
+
                         if ($endDate > $periodo['hasta']) {
 
                             $diasPeriodo = Dates::dateDiff($periodo['desde'], $periodo['hasta']);
                             if ($acumulado > $diasPeriodo['dias']) {
-                                $diff['dias'] = $diasPeriodo['dias'] + 1;
+                                $diff['dias'] = $diasPeriodo['dias'] + 1 - ($acumulado - $diasPeriodo['dias']);
                                 $acumulado = $diasPeriodo['dias'];
                             } else {
                                 $diff = Dates::dateDiff(Dates::dateAdd($ausencia['Ausencia']['desde'], ($acumulado - $seguimiento['dias'])), $periodo['hasta']);
+                            	$diff['dias']--;
                             }
-                            $diff['dias']--;
-                            
+
                             $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $diff['dias'];
                             $auxiliar = null;
                             $auxiliar['id'] = $seguimiento['id'];
@@ -202,7 +202,7 @@ class Ausencia extends AppModel {
                             $auxiliar['permissions'] = '288';
                             $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
                             $auxiliar['dias'] = $diff['dias'];
-                            
+
                             $auxiliares[] = array(	'save' 	=> serialize($auxiliar),
                                                     'model' => 'AusenciasSeguimiento');
 
@@ -216,7 +216,7 @@ class Ausencia extends AppModel {
                             break;
                         } else {
                             $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $seguimiento['dias'];
-                            
+
                             $auxiliar = null;
                             $auxiliar['id'] = $seguimiento['id'];
                             $auxiliar['estado'] = 'Liquidado';
@@ -247,7 +247,7 @@ class Ausencia extends AppModel {
                         array(  'relacion'          => $relacion,
                                 'codigoConcepto'    => 'ausencias_' . strtolower($type)));
             }
-                
+
 
             if (!empty($ausenciasArt)) {
                 if ($ausenciasArt['Ausencia']['desde'] < $periodo['desde']) {
@@ -319,8 +319,7 @@ class Ausencia extends AppModel {
             }
         }
 
-
-        /*
+		/*
         d(array('conceptos'    => $conceptos,
                      'variables'    => array(
         '#ausencias_accidente'                              => $ausencias['Accidente'],
@@ -336,8 +335,7 @@ class Ausencia extends AppModel {
         '#ausencias_injustificada'                          => $ausencias['Injustificada'],
         '#no_laborables_durante_ausencias_injustificada'    => $nonWorkingDays['Injustificada']),
                      'auxiliar'     => $auxiliares));
-        */
-
+		*/
 		return array('conceptos' 	=> $conceptos,
 					 'variables' 	=> array(
         '#ausencias_accidente'                              => $ausencias['Accidente'],
