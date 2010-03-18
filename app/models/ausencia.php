@@ -188,8 +188,15 @@ class Ausencia extends AppModel {
 
                             $diasPeriodo = Dates::dateDiff($periodo['desde'], $periodo['hasta']);
                             if ($acumulado > $diasPeriodo['dias']) {
-                                $diff['dias'] = $diasPeriodo['dias'] + 1 - ($acumulado - $diasPeriodo['dias']);
-                                $acumulado = $diasPeriodo['dias'];
+
+								$tmp = $seguimiento['dias'] - $ausencias[$ausencia['AusenciasMotivo']['tipo']];
+								if ($tmp > $diasPeriodo['dias']) {
+									$diff['dias'] = $diasPeriodo['dias'];
+								} else {
+									$diff['dias'] = $tmp;
+								}
+								$diff['dias']++;
+								$acumulado = $diff['dias'];
                             } else {
                                 $diff = Dates::dateDiff(Dates::dateAdd($ausencia['Ausencia']['desde'], ($acumulado - $seguimiento['dias'])), $periodo['hasta']);
                             	$diff['dias']--;
@@ -202,7 +209,6 @@ class Ausencia extends AppModel {
                             $auxiliar['permissions'] = '288';
                             $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
                             $auxiliar['dias'] = $diff['dias'];
-
                             $auxiliares[] = array(	'save' 	=> serialize($auxiliar),
                                                     'model' => 'AusenciasSeguimiento');
 
