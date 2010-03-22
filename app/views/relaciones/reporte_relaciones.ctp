@@ -37,14 +37,19 @@ if (!empty($data)) {
 
     /** Body */
     foreach ($data as $k => $record) {
-         $info = array( $record['Empleador']['cuit'],
-						$record['Empleador']['nombre'],
-						$record['Trabajador']['cuil'],
-						$record['Relacion']['ingreso'],
-						$record['Trabajador']['apellido'],
-						$record['Trabajador']['nombre'],
-						$record['Trabajador']['nacimiento'],
-						$record['Area']['nombre']);
+		if ($state == 'Historica' && empty($record['RelacionesHistorial'])) {
+			continue;
+		}
+		$info = array(
+				$record['Empleador']['cuit'],
+				$record['Empleador']['nombre'],
+				$record['Trabajador']['cuil'],
+				$record['Relacion']['ingreso'],
+				$record['Trabajador']['apellido'],
+				$record['Trabajador']['nombre'],
+				$record['Trabajador']['nacimiento'],
+				$record['Area']['nombre']);
+
 		if ($state == 'Historica') {
 			$info[] = $record['RelacionesHistorial'][0]['inicio'];
 			$info[] = $record['RelacionesHistorial'][0]['fin'];

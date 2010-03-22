@@ -213,7 +213,9 @@ class RelacionesController extends AppController {
 						'Area',
 						'RelacionesHistorial' => array(
 								'order' 	=> 'RelacionesHistorial.id DESC',
-								'limit'     => 1, 'EgresosMotivo'));
+								'limit'     => 1,
+							'conditions'    => array_merge($containConditions, array(
+								'RelacionesHistorial.estado' 	=> 'Confirmado')), 'EgresosMotivo'));
 				} else {
 					$conditions['Relacion.estado <>'] = 'Historica';
 
