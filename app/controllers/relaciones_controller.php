@@ -196,17 +196,31 @@ class RelacionesController extends AppController {
 				if ($this->data['Condicion']['Bar-state'] == 'Historica') {
 
                 	$conditions['Relacion.estado'] = 'Historica';
+					$containConditions = array();
 
 					/** For historical relations only */
 					if (!empty($this->data['Condicion']['Bar-desde'])) {
-						$conditions['RelacionesHistorial.inicio >='] = $this->data['Condicion']['Bar-desde'];
+						$containConditions['RelacionesHistorial.inicio >='] = $this->data['Condicion']['Bar-desde'];
 					}
 
 					if (!empty($this->data['Condicion']['Bar-hasta'])) {
-						$conditions['RelacionesHistorial.inicio <='] = $this->data['Condicion']['Bar-hasta'];
+						$containConditions['RelacionesHistorial.inicio <='] = $this->data['Condicion']['Bar-hasta'];
 					}
+
+					$contain = array(
+						'Trabajador' => array('ObrasSocial', 'Localidad' => 'Provincia'),
+						'Empleador',
+						'Area',
+						'RelacionesHistorial' => array(
+								'order' 	=> 'RelacionesHistorial.id DESC',
+								'limit'     => 1, 'EgresosMotivo'));
 				} else {
 					$conditions['Relacion.estado <>'] = 'Historica';
+
+					$contain = array(
+						'Trabajador' => array('ObrasSocial', 'Localidad' => 'Provincia'),
+						'Empleador',
+						'Area');
 				}
             }
 
@@ -233,20 +247,8 @@ class RelacionesController extends AppController {
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
             $this->set('state', $this->data['Condicion']['Bar-state']);
 
-            if (!empty($this->data['Condicion']['Bar-state']) && $this->data['Condicion']['Bar-state'] == 'Historica') {
-				$this->Relacion->contain(array(
-					'Trabajador' => array('ObrasSocial', 'Localidad' => 'Provincia'),
-					'Empleador',
-					'Area',
-					'RelacionesHistorial' => array(
-							'limit'     => 1,
-						'conditions'    => array(
-							'RelacionesHistorial.estado' => 'Confirmado'), 'EgresosMotivo')));
-			} else {
-				$this->Relacion->contain(array(
-					'Trabajador' => array('ObrasSocial', 'Localidad' => 'Provincia'),
-					'Empleador',
-					'Area'));
+            if (!empty($contain)) {
+				$this->Relacion->contain($contain);
 			}
 
             $this->set('data', $this->Relacion->find('all', array('conditions' => $conditions)));
