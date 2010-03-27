@@ -535,8 +535,8 @@ class LiquidacionesController extends AppController {
 			foreach ($relaciones as $relacion) {
 
                 if ($this->data['Condicion']['Liquidacion-tipo'] === 'final') {
-                    if ($relacion['RelacionesHistorial'][0]['liquidacion_final'] != 'Si'
-                    || empty($relacion['RelacionesHistorial'][0]['fin'])
+                    if (empty($relacion['RelacionesHistorial'][0]['fin'])
+                    || $relacion['RelacionesHistorial'][0]['liquidacion_final'] != 'Si'
                     || (!empty($relacion['RelacionesHistorial'][0]['fin'])
                         && $relacion['RelacionesHistorial'][0]['fin'] == '0000-00-00')) {
                         continue;
