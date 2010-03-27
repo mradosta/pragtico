@@ -89,9 +89,11 @@ class RelacionesHistorial extends AppModel {
         return parent::beforeSave($options);
     }
 
+
     function afterSave($created) {
         if (!empty($this->data['RelacionesHistorial']['relacion_id'])
             && !empty($this->data['RelacionesHistorial']['liquidacion_final'])
+			&& in_array($this->data['RelacionesHistorial']['liquidacion_final'], array('Suspender', 'No'))
             && !empty($this->data['RelacionesHistorial']['estado'])
             && $this->data['RelacionesHistorial']['estado'] == 'Confirmado') {
 
@@ -101,7 +103,7 @@ class RelacionesHistorial extends AppModel {
                 $state = 'Historica';
             }
 
-            if (!empty($state) && !$this->Relacion->save(array('Relacion' => array(
+            if (!$this->Relacion->save(array('Relacion' => array(
                 'estado'    => $state,
                 'id'        => $this->data['RelacionesHistorial']['relacion_id'])))) {
                 return false;
