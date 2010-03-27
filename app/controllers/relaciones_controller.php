@@ -200,11 +200,11 @@ class RelacionesController extends AppController {
 
 					/** For historical relations only */
 					if (!empty($this->data['Condicion']['Bar-desde'])) {
-						$conditions['Relacion.ingreso >='] = $this->data['Condicion']['Bar-desde'];
+						$containConditions['RelacionesHistorial.fin >='] = $this->data['Condicion']['Bar-desde'];
 					}
 
 					if (!empty($this->data['Condicion']['Bar-hasta'])) {
-						$containConditions['RelacionesHistorial.inicio <='] = $this->data['Condicion']['Bar-hasta'];
+						$containConditions['RelacionesHistorial.fin <='] = $this->data['Condicion']['Bar-hasta'];
 					}
 
 					$contain = array(
