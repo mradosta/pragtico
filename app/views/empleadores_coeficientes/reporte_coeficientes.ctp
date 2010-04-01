@@ -50,7 +50,7 @@ if (!empty($data)) {
                         	$coeficiente['valor'],
 							$valorEmpleador,
                         	$valorArea,
-                        	'=(E' . ($documento->getCurrentRow() + 1) . ' * (IF(G' . ($documento->getCurrentRow() + 1) . ' > 0, G' . ($documento->getCurrentRow() + 1) . ', F' . ($documento->getCurrentRow() + 1) . ') / 100'));
+                        	'=(E' . ($documento->getCurrentRow() + 1) . ' * (IF(G' . ($documento->getCurrentRow() + 1) . ' <> 0, G' . ($documento->getCurrentRow() + 1) . ', F' . ($documento->getCurrentRow() + 1) . ') / 100'));
         	}
 
 		}
