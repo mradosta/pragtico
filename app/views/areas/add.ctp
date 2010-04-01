@@ -40,6 +40,7 @@ if (!empty($centrosDeCosto)) {
 }
 $campos['Area.contacto'] = array();
 $campos['Area.direccion'] = array();
+$campos['Area.codigo_postal'] = array();
 $campos['Area.telefono'] = array();
 $campos['Area.fax'] = array();
 $fieldsets[] = array('campos' => $campos);
