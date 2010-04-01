@@ -17,34 +17,43 @@
  */
 if (!empty($data)) {
 
-    $documento->create(array('password' => false, 'title' => 'Coeficientes'));
+    $documento->create(array('password' => false, 'title' => 'Coeficientes', 'orientation' => 'landscape'));
     $documento->setCellValue('A', 'Cuit', array('title' => '20'));
     $documento->setCellValue('B', 'Empleador', array('title' => '30'));
-    $documento->setCellValue('C', 'Coeficiente', array('title' => '30'));
-    $documento->setCellValue('D', 'Valor', array('title' => '20'));
-    $documento->setCellValue('E', 'Porcentaje', array('title' => '20'));
-    $documento->setCellValue('F', 'Total', array('title' => '15'));
+	$documento->setCellValue('C', 'Area', array('title' => '30'));
+    $documento->setCellValue('D', 'Coeficiente', array('title' => '30'));
+    $documento->setCellValue('E', 'Valor', array('title' => '20'));
+    $documento->setCellValue('F', 'Porcentaje (Empleador)', array('title' => '20'));
+	$documento->setCellValue('G', 'Porcentaje (Area)', array('title' => '20'));
+    $documento->setCellValue('H', 'Total', array('title' => '15'));
 
     /** Body */
     foreach ($data as $record) {
 
-/*        $documento->setCellValueFromArray(
-            array(  array('value' => $record['Empleador']['cuit'], 'options' => 'bold'),
-                    array('value' => $record['Empleador']['nombre'], 'options' => 'bold'),
-                    '',
-                    '',
-                    '',
-                    ''));*/
-        
-        foreach ($record['Coeficiente'] as $detail) {
-            $documento->setCellValueFromArray(
-                array(  $record['Empleador']['cuit'],
-                        $record['Empleador']['nombre'],
-                        $detail['nombre'],
-                        $detail['valor'],
-                        (!empty($detail['EmpleadoresCoeficiente']['porcentaje']))?$detail['EmpleadoresCoeficiente']['porcentaje']:'0',
-                        '=D' . ($documento->getCurrentRow() + 1) . ' + (D' . ($documento->getCurrentRow() + 1) . ' * E' . ($documento->getCurrentRow() + 1). ' / 100)'));
-        }
+		foreach ($record['Area'] as $area) {
+
+        	foreach ($area['Coeficiente'] as $coeficiente) {
+
+				$valorEmpleador = $valorArea = 0;
+				if (!empty($coeficiente['AreasCoeficiente']['porcentaje'])) {
+					$valorArea = $coeficiente['AreasCoeficiente']['porcentaje'];
+				}
+				if (!empty($coeficiente['EmpleadoresCoeficiente']['porcentaje'])) {
+					$valorEmpleador = $coeficiente['EmpleadoresCoeficiente']['porcentaje'];
+				}
+
+            	$documento->setCellValueFromArray(
+                	array(  $record['Empleador']['cuit'],
+                        	$record['Empleador']['nombre'],
+							$area['nombre'],
+                        	$coeficiente['nombre'],
+                        	$coeficiente['valor'],
+							$valorEmpleador,
+                        	$valorArea,
+                        	'=(E' . ($documento->getCurrentRow() + 1) . ' * (IF(G' . ($documento->getCurrentRow() + 1) . ' > 0, G' . ($documento->getCurrentRow() + 1) . ', F' . ($documento->getCurrentRow() + 1) . ') / 100'));
+        	}
+
+		}
     }
 
     $documento->save($fileFormat);

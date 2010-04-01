@@ -37,18 +37,17 @@ class EmpleadoresCoeficientesController extends AppController {
                 $conditions['Empleador.id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
             }
 
-            $this->EmpleadoresCoeficiente->Empleador->contain(
-                array('Coeficiente' => array('order' => 'Coeficiente.nombre')));
-            $data = $this->EmpleadoresCoeficiente->Empleador->find('all', array('conditions' => $conditions));
+            $data = $this->EmpleadoresCoeficiente->Empleador->find('all', array(
+				'contain'		=> array('Area.Coeficiente', 'Coeficiente' => array('order' => 'Coeficiente.nombre')),
+				'conditions' 	=> $conditions));
 
             if (!empty($this->data['Condicion']['Bar-solo_con_valor']) && $this->data['Condicion']['Bar-solo_con_valor'] == 'No') {
-                
                 $coeficientes = Set::combine(
                     $this->EmpleadoresCoeficiente->Coeficiente->find('all', array(
                         'recursive' => -1,
-                        'order' => 'Coeficiente.nombre')),
+                        'order' 	=> 'Coeficiente.nombre')),
                             '{n}.Coeficiente.id', '{n}.Coeficiente');
-                
+
                 $ids = array_keys($coeficientes);
                 foreach ($data as $k => $record) {
                     foreach (array_diff($ids, Set::extract('/Coeficiente/id', $record)) as $missingId) {
@@ -56,12 +55,38 @@ class EmpleadoresCoeficientesController extends AppController {
                     }
                 }
             }
-            
+
+
+			$d = array();
+			foreach ($data as $k => $record) {
+
+				foreach ($record['Area'] as $k1 => $area) {
+					if (empty($area['Coeficiente'])) {
+						$data[$k]['Area'][$k1]['Coeficiente'] = $record['Coeficiente'];
+					} else {
+						$coeficientesEmpleador = Set::combine($record['Coeficiente'], '{n}.id', '{n}');
+						$coeficientesArea = Set::combine($data[$k]['Area'][$k1]['Coeficiente'], '{n}.id', '{n}');
+						//$data[$k]['Area'][$k1]['Coeficiente'] = array_merge($record['Coeficiente'], $data[$k]['Area'][$k1]['Coeficiente']);
+						foreach ($coeficientesArea as $kTmp => $vTmp) {
+							if (!empty($coeficientesEmpleador[$kTmp])) {
+								$tmp = $vTmp['AreasCoeficiente'];
+								$coeficientesEmpleador[$kTmp]['AreasCoeficiente'] = $tmp;
+							} else {
+								$coeficientesEmpleador[$kTmp] = $vTmp;
+							}
+						}
+						$data[$k]['Area'][$k1]['Coeficiente'] = $coeficientesEmpleador;
+					}
+				}
+
+			}
+
             $this->set('data', $data);
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
         }
     }
-        
+
+
     function add_rapido() {
         $empleadoresCoeficientes = Set::combine($this->EmpleadoresCoeficiente->find('all', array(
           'recursive'   => -1,
