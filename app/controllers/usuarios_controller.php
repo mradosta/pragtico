@@ -143,7 +143,7 @@ class UsuariosController extends AppController {
                         $this->requestAction('grupos/setear_grupo_default/' . $usuario['Grupo'][0]['id'] . '/true');
                     }
 
-                    $this->redirect(array('controller' => 'relaciones', 'action' => 'index'), null, true);
+                    $this->redirect(array('controller' => 'infos', 'action' => 'index'), null, true);
                 }
                 
             } else {
