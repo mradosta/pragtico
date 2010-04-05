@@ -13,7 +13,7 @@ $appForm->addScript("var bandaLimpiar = function() {ajaxGet('" . $href . "/limpi
 $iconos = $appForm->tag("p", $ocultar . $limpiar . $cerrar . $salir);
 $banda_izquierda = $appForm->tag("div", $appForm->tag("p", $appForm->getCrumbs()), array("class"=>"banda_izquierda"));
 $usuario = $session->read("__Usuario");
-$usuario = $appForm->tag("span", $usuario['Usuario']['nombre_completo']);
+$usuario = $appForm->tag("span", $usuario['Usuario']['nombre_completo'] . $appForm->link($appForm->image('infos.gif'), array('controller' => 'infos', 'action' => 'index'), array("title"=>__("Informaciones", true))));
 echo $appForm->tag("div", $banda_izquierda . $usuario . $iconos, array("class"=>"banda"));
 
 ?>

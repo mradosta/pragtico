@@ -246,6 +246,11 @@ div.banda span {
 	color: #FFFFFF;
 }
 
+div.banda span img {
+	width: 12px;
+	height: 12px;
+}
+
 div.banda span.bread_crumb_class {
 	color: #000000;
 	padding: 0;
