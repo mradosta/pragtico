@@ -27,11 +27,11 @@ $o[] = $appForm->tag('h2', 'Errores en Relaciones Activas');
 foreach ($relationErrors as $relationError) {
 
 	if (empty($relationError['Trabajador']['obra_social_id'])) {
-		$o[] = $html->link($relationError['Trabajador']['cuil'] . ' ' . $relationError['Trabajador']['apellido'] . ' ' . $relationError['Trabajador']['nombre'] . ' Sin Obra Social definida', array('controller' => 'trabajadores', 'action' => 'edit', $relationError['Trabajador']['id'])) . '<br/>';
+		$o[] = $html->link($relationError['Empleador']['cuit'] . ' ' . $relationError['Empleador']['nombre'] . ' - ' .  $relationError['Trabajador']['cuil'] . ' ' . $relationError['Trabajador']['apellido'] . ' ' . $relationError['Trabajador']['nombre'] . ' Sin Obra Social definida', array('controller' => 'trabajadores', 'action' => 'edit', $relationError['Trabajador']['id'])) . '<br/>';
 	}
 
 	if (empty($relationError['Trabajador']['localidad_id'])) {
-		$o[] = $html->link($relationError['Trabajador']['cuil'] . ' ' . $relationError['Trabajador']['apellido'] . ' ' . $relationError['Trabajador']['nombre'] . ' Sin Localidad definida', array('controller' => 'trabajadores', 'action' => 'edit', $relationError['Trabajador']['id'])) . '<br/>';
+		$o[] = $html->link($relationError['Empleador']['cuit'] . ' ' . $relationError['Empleador']['nombre'] . ' - ' . $relationError['Trabajador']['cuil'] . ' ' . $relationError['Trabajador']['apellido'] . ' ' . $relationError['Trabajador']['nombre'] . ' Sin Localidad definida', array('controller' => 'trabajadores', 'action' => 'edit', $relationError['Trabajador']['id'])) . '<br/>';
 	}
 
 }

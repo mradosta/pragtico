@@ -28,8 +28,6 @@ class Info extends AppModel {
 
 	function findRelationErrors() {
 		//$Relacion = ClassRegistry::init('Relacion');
-//			INNER JOIN	`empleadores` AS Empleador
-//				ON		(`Relacion`.`empleador_id` = `Empleador`.`id`)
 		
 		$sql = "
 			SELECT 		`Trabajador`.`id`,
@@ -38,10 +36,14 @@ class Info extends AppModel {
 						`Trabajador`.`apellido`,
 						`Trabajador`.`nombre`,
 						`Trabajador`.`obra_social_id`,
-						`Trabajador`.`localidad_id`
+						`Trabajador`.`localidad_id`,
+						`Empleador`.`cuit`,
+						`Empleador`.`nombre`
 			FROM		`relaciones` AS Relacion
 			INNER JOIN	`trabajadores` AS Trabajador
 				ON		(`Relacion`.`trabajador_id` = `Trabajador`.`id`)
+			INNER JOIN	`empleadores` AS Empleador
+				ON		(`Relacion`.`empleador_id` = `Empleador`.`id`)
 			WHERE		`Relacion`.`estado` = 'Activa'
 			AND
 				(`Trabajador`.`obra_social_id` IS NULL OR `Trabajador`.`localidad_id` IS NULL)
