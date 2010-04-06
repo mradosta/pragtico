@@ -27,8 +27,6 @@ class Info extends AppModel {
     var $useTable = false;
 
 	function findRelationErrors() {
-		//$Relacion = ClassRegistry::init('Relacion');
-		
 		$sql = "
 			SELECT 		`Trabajador`.`id`,
 						`Trabajador`.`cuil`,
@@ -48,6 +46,27 @@ class Info extends AppModel {
 			AND
 				(`Trabajador`.`obra_social_id` IS NULL OR `Trabajador`.`localidad_id` IS NULL)
 			ORDER BY	`Trabajador`.`apellido`, `Trabajador`.`nombre`
+			";
+
+		$Relacion = ClassRegistry::init('Relacion');
+		return $Relacion->query($sql);
+	}
+
+
+	function findInvoiceErrors() {
+		$sql = "
+			SELECT 		`Liquidacion`.`id`,
+						`Liquidacion`.`ano`,
+						`Liquidacion`.`mes`,
+						`Liquidacion`.`periodo`
+			FROM		`liquidaciones` AS Liquidacion
+			LEFT JOIN	`facturas` AS Factura
+				ON		(`Liquidacion`.`factura_id` = `Factura`.`id` AND `Factura`.`estado` = 'Confirmada')
+			WHERE		`Liquidacion`.`estado` = 'Confirmada'
+			AND			`Liquidacion`.`factura_id` IS NULL
+			ORDER BY	`Liquidacion`.`ano`,
+						`Liquidacion`.`mes`,
+						`Liquidacion`.`periodo`
 			";
 
 		$Relacion = ClassRegistry::init('Relacion');

@@ -120,6 +120,15 @@ class FacturasController extends AppController {
 	}
 	
 
+	function asignar_numero($facturaId, $number) {
+		if ($this->Factura->updateAll(array('Factura.numero' => $number), array('Factura.id' => $facturaId))) {
+			$this->set('data', 'ok');
+		} else {
+			$this->set('data', 'er');
+		}
+		$this->render('..' . DS . 'elements' . DS . 'string');
+	}
+
 	function prefacturar() {
 
         $condiciones = array();

@@ -38,8 +38,10 @@ foreach ($registros as $k => $v) {
 	$fila = null;
 	$fila[] = array('tipo' => 'accion', 'id' => $v['Factura']['id'],
 					'valor' => $appForm->link(
-						$appForm->image('resumen.gif', array('alt' => 'Reporte')),
+						$appForm->image('resumen.gif', array('alt' => 'Reporte', 'title' => 'Reporte')),
 						array('action' => 'reporte', 'id' => $v['Factura']['id'])));
+	$fila[] = array('tipo' => 'accion',
+					'valor' => $appForm->image('numero.gif', array('id' => $v['Factura']['id'], 'class' => 'asignar_numero', 'alt' => 'Asignar Numero', 'title' => 'Asignar Numero')));
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Factura']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'detalles.gif', 'alt' => 'Detalles'), 'url' => 'detalles');
 	$fila[] = array('model' => 'Factura', 'field' => 'id', 'valor' => $v['Factura']['id'], 'write' => $v['Factura']['write'], 'delete' => $v['Factura']['delete']);
 	$fila[] = array('model' => 'Factura', 'field' => 'fecha', 'valor' => $v['Factura']['fecha']);
@@ -63,6 +65,21 @@ echo $this->element('index/index', array(
 * Agrego el evento click asociado al boton confirmar.
 */
 $appForm->addScript('
+
+	jQuery(".asignar_numero").css("cursor", "pointer").click(
+		function() {
+			var number = prompt("Ingrese el numero de la factura");
+			if (number != "") {
+				jQuery.get("' . Router::url(array('controller' => 'facturas', 'action' => 'asignar_numero')) . '/" + jQuery(this).attr("id") + "/" + number, function(data) {
+					if (data == "ok") {
+						alert("El numero se asigno correctamente.");
+					} else {
+						alert("No fue posible asignar el numero a la factura.");
+					}
+				});
+			}
+		}
+	);
 
 	jQuery("#imprimir").click(
 		function() {
