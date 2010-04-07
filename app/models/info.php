@@ -54,23 +54,24 @@ class Info extends AppModel {
 
 
 	function findInvoiceErrors() {
-		$sql = "
-			SELECT 		`Liquidacion`.`id`,
-						`Liquidacion`.`ano`,
-						`Liquidacion`.`mes`,
-						`Liquidacion`.`periodo`
-			FROM		`liquidaciones` AS Liquidacion
-			LEFT JOIN	`facturas` AS Factura
-				ON		(`Liquidacion`.`factura_id` = `Factura`.`id` AND `Factura`.`estado` = 'Confirmada')
-			WHERE		`Liquidacion`.`estado` = 'Confirmada'
-			AND			`Liquidacion`.`factura_id` IS NULL
-			ORDER BY	`Liquidacion`.`ano`,
-						`Liquidacion`.`mes`,
-						`Liquidacion`.`periodo`
-			";
 
-		$Relacion = ClassRegistry::init('Relacion');
-		return $Relacion->query($sql);
+		$Liquidacion = ClassRegistry::init('Liquidacion');
+		return $Liquidacion->find('all', array(
+				'checkSecurity'	=> false,
+				'contain'		=> 'Factura',
+				'order'			=> array('Liquidacion.empleador_nombre'),
+				'fields'		=> array(
+					'Liquidacion.empleador_cuit',
+					'Liquidacion.empleador_nombre',
+					'SUM(Liquidacion.total) AS total'),
+				'group'			=> array('Liquidacion.empleador_cuit', 'Liquidacion.empleador_nombre'),
+				'conditions' 	=> array(
+					array('OR' => array(
+						'Liquidacion.factura_id' 	=> null,
+						array('AND' => array(
+							'Liquidacion.factura_id !=' => null,
+							'Factura.estado !=' 		=> 'Confirmada')))),
+					'Liquidacion.estado' 		=> 'Confirmada')));
 	}
 
 }	

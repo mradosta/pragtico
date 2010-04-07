@@ -26,6 +26,7 @@ class InfosController extends AppController {
 
 	function index() {
 
+		$this->set('invoiceErrors', $this->Info->findInvoiceErrors());
 		$this->set('relationErrors', $this->Info->findRelationErrors());
 
 		

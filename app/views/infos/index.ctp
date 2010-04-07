@@ -21,19 +21,27 @@ $appForm->addCrumb($this->name,
               'action'      => 'index'));
 $appForm->addCrumb(__('Detail', true));
 
-$o[] = $appForm->tag('h1', 'Errores / Informacion General');
+$o[] = $appForm->tag('h1', 'Errores / Alertas / Informacion General');
+
+
+$o[] = $appForm->tag('h2', 'Montos Liquidados sin Facturar');
+foreach ($invoiceErrors as $error) {
+
+	$o[] = $html->link($error['Liquidacion']['empleador_cuit'] . ' ' . $error['Liquidacion']['empleador_nombre'] . ' $' . $error['Liquidacion']['total'], array('controller' => 'facturas', 'action' => 'prefacturar')) . '<br/>';
+}
+
+
+
 $o[] = $appForm->tag('h2', 'Errores en Relaciones Activas');
+foreach ($relationErrors as $error) {
 
-foreach ($relationErrors as $relationError) {
-
-	if (empty($relationError['Trabajador']['obra_social_id'])) {
-		$o[] = $html->link($relationError['Empleador']['cuit'] . ' ' . $relationError['Empleador']['nombre'] . ' - ' .  $relationError['Trabajador']['cuil'] . ' ' . $relationError['Trabajador']['apellido'] . ' ' . $relationError['Trabajador']['nombre'] . ' Sin Obra Social definida', array('controller' => 'trabajadores', 'action' => 'edit', $relationError['Trabajador']['id'])) . '<br/>';
+	if (empty($error['Trabajador']['obra_social_id'])) {
+		$o[] = $html->link($error['Empleador']['cuit'] . ' ' . $error['Empleador']['nombre'] . ' - ' .  $error['Trabajador']['cuil'] . ' ' . $error['Trabajador']['apellido'] . ' ' . $error['Trabajador']['nombre'] . ' Sin Obra Social definida', array('controller' => 'trabajadores', 'action' => 'edit', $error['Trabajador']['id'])) . '<br/>';
 	}
 
-	if (empty($relationError['Trabajador']['localidad_id'])) {
-		$o[] = $html->link($relationError['Empleador']['cuit'] . ' ' . $relationError['Empleador']['nombre'] . ' - ' . $relationError['Trabajador']['cuil'] . ' ' . $relationError['Trabajador']['apellido'] . ' ' . $relationError['Trabajador']['nombre'] . ' Sin Localidad definida', array('controller' => 'trabajadores', 'action' => 'edit', $relationError['Trabajador']['id'])) . '<br/>';
+	if (empty($error['Trabajador']['localidad_id'])) {
+		$o[] = $html->link($error['Empleador']['cuit'] . ' ' . $error['Empleador']['nombre'] . ' - ' . $error['Trabajador']['cuil'] . ' ' . $error['Trabajador']['apellido'] . ' ' . $error['Trabajador']['nombre'] . ' Sin Localidad definida', array('controller' => 'trabajadores', 'action' => 'edit', $error['Trabajador']['id'])) . '<br/>';
 	}
-
 }
 
 $o[] = '<br/><br/><br/>';
