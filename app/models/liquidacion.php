@@ -26,6 +26,7 @@ class Liquidacion extends AppModel {
     var $permissions = array('permissions' => 448, 'group' => 'default', 'role' => 'all');
 
 	private $__formulas = null;
+	private $__notAllowedEmployers = null;
 
 
     /**
@@ -174,6 +175,56 @@ class Liquidacion extends AppModel {
         $this->setPeriod($period);
 
 
+		/** Check if there are no previous errors */
+		if ($this->getRelationship('Relacion', 'error') !== false) {
+			$this->__setError(array(    'tipo'                  => 'Liquidaciones sin facturar',
+										'gravedad'              => 'Alta',
+										'concepto'              => '',
+										'variable'              => '',
+										'formula'               => '',
+										'descripcion'           => 'No es posible realizar la liquidacion porque existen liquidaciones previas sin facturar para el Empleador.',
+										'recomendacion'         => 'Realice la facturacion del empleador antes de continuar.',
+										'descripcion_adicional' => ''));
+
+			return $this->__getSaveArray($this->__receiptType);
+		}
+
+
+		/** If there are previous receipts with no confirmed invoices, can't do a new receipt */
+		if ($options['permitir_liquidar_con_liquidaciones_no_facturadas'] == 'No') {
+			if (is_null($this->__notAllowedEmployers)) {
+				$this->__notAllowedEmployers = Set::extract('/Liquidacion/empleador_id',
+					$this->find('all', array(
+							'checkSecurity'	=> false,
+							'contain'		=> 'Factura',
+							'fields'		=> array('Factura.id', 'Liquidacion.empleador_id'),
+							'group'			=> array('Factura.id', 'Liquidacion.empleador_id'),
+							'conditions' 	=> array(
+								array('OR' => array(
+									'Liquidacion.factura_id' 	=> null,
+									array('AND' => array(
+										'Liquidacion.factura_id !=' => null,
+										'Factura.estado !=' 		=> 'Confirmada')))),
+								'Liquidacion.estado' 		=> 'Confirmada',
+								'Liquidacion.empleador_id' 	=> $options['empleadores']))));
+			}
+
+			if (in_array($this->getRelationship('Relacion', 'empleador_id'), $this->__notAllowedEmployers)) {
+
+				$this->__setError(array(    'tipo'                  => 'Liquidaciones sin facturar',
+											'gravedad'              => 'Alta',
+											'concepto'              => '',
+											'variable'              => '',
+											'formula'               => '',
+											'descripcion'           => 'No es posible realizar la liquidacion porque existen liquidaciones previas sin facturar para el Empleador.',
+											'recomendacion'         => 'Realice la facturacion del empleador antes de continuar.',
+											'descripcion_adicional' => ''));
+
+				return $this->__getSaveArray($this->__receiptType);
+			}
+		}
+
+
         /** Get novelties */
         $novedades = $this->Relacion->Novedad->getNovedades($this->getRelationship(), $this->getPeriod(), $this->__receiptType);
         foreach ($novedades['variables'] as $varName => $varValue) {
@@ -187,7 +238,17 @@ class Liquidacion extends AppModel {
 
             $jornada = $this->getRelationship('ConveniosCategoria', 'jornada');
             if (($period['periodo'] !== 'M' && $jornada === 'Mensual') || ($period['periodo'] === 'M' && $jornada === 'Por Hora')) {
-                return;
+
+				$this->__setError(array(    'tipo'                  => 'Error de Jornadas',
+											'gravedad'              => 'Alta',
+											'concepto'              => '',
+											'variable'              => '',
+											'formula'               => '',
+											'descripcion'           => 'No es posible realizar la liquidacion porque ha seleccionado un periodo que no concuerda con la jornada especificada en la relacion.',
+											'recomendacion'         => 'Verifique el periodo que esta liquidando.',
+											'descripcion_adicional' => ''));
+
+                return $this->__getSaveArray($this->__receiptType);
             }
 
             $this->setConcept(
@@ -220,7 +281,6 @@ class Liquidacion extends AppModel {
             $this->setConcept($ausencias['conceptos']);
 
 
-            //if ($this->__receiptType === 'especial') {
 			$noveltiesConcepts = array_keys(
 				am(
 					$ausencias['conceptos'],
@@ -235,7 +295,6 @@ class Liquidacion extends AppModel {
 			}
 
 			$this->setVar('#dias_vacaciones_confirmados', $this->Relacion->Vacacion->getDiasVacaciones($this->getRelationship(), $this->getPeriod()));
-            //}
         } elseif ($this->__receiptType === 'vacaciones') {
             $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
                     array(  'relacion'  => $relationship,
@@ -512,7 +571,8 @@ class Liquidacion extends AppModel {
          */
         if ($this->getRelationship('Empleador', 'redondear') === 'Si') {
             $redondeo = round($totales['total']) - $totales['total'];
-            if ($redondeo !== 0) {
+
+            if ($redondeo != 0) {
                 $conceptoRedondeo = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
                         array(    'relacion'             => $this->getRelationship(),
                                 'codigoConcepto'     => 'redondeo'));
@@ -543,7 +603,7 @@ class Liquidacion extends AppModel {
         foreach (array('remunerativo', 'no_remunerativo', 'deduccion', 'total_pesos', 'total_beneficios', 'total') as $total) {
             $totales[$total] = number_format($totales[$total], 3, '.', '');
         }
-    
+
         /**
         * Genero los pagos pendientes.
         * Diferencio en los diferentes tipos (beneficios o pesos).
@@ -565,10 +625,13 @@ class Liquidacion extends AppModel {
             $auxiliar['moneda'] = "Beneficios";
             $this->__setAuxiliar(array('save' => serialize($auxiliar), 'model' => 'Pago'));
         }
-    
-        $save['Liquidacion']            = array_merge($liquidacion, $totales);
-        $save['LiquidacionesDetalle']    = $detalle;
-    
+        $save['Liquidacion'] = array_merge($liquidacion, $totales);
+
+
+		if (!empty($detalle)) {
+        	$save['LiquidacionesDetalle']    = $detalle;
+		}
+
         $auxiliar = null;
         $auxiliar = $this->__getAuxiliar();
         if (!empty($auxiliar)) {
@@ -582,7 +645,6 @@ class Liquidacion extends AppModel {
         }
     
         $save['Liquidacion']            = array_merge($liquidacion, $totales);
-        $save['LiquidacionesDetalle']    = $detalle;
         return $this->saveAll($save);
     }
 
@@ -653,7 +715,7 @@ class Liquidacion extends AppModel {
                             }
                         } else {
                             $this->__setError(array(    'tipo'                  => 'Concepto Inexistente',
-                                                        'gravedad'              => 'Alta',
+                                                        'gravedad'              => 'Media',
                                                         'concepto'              => $concept,
                                                         'variable'              => '',
                                                         'formula'               => '',
@@ -835,30 +897,26 @@ class Liquidacion extends AppModel {
                         * Busco los conceptos que puedan estar faltandome.
                         * Los agrego al array de conceptos identificandolos y poniendoles el estado a no imprimir.
                         */
-                        //if ($this->getVarValue('#tipo_liquidacion') === 'especial') {
-                        //    $this->__resolvConceptToZero($match);
-                        //} else {
-                            $conceptoParaCalculo = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $this->getRelationship(), 'codigoConcepto' => $match));
-                            if (empty($conceptoParaCalculo)) {
-                                $this->__setError(array(    'tipo'                    => 'Concepto Inexistente',
-                                                            'gravedad'                => 'Alta',
-                                                            'concepto'                => $match,
-                                                            'variable'                => '',
-                                                            'formula'                => $formula,
-                                                            'descripcion'            => 'La formula requiere de un concepto inexistente.',
-                                                            'recomendacion'            => 'Verifique la formula y que todos los conceptos que esta utiliza existan.',
-                                                            'descripcion_adicional'    => 'verifique: ' . $concepto['codigo']));
-                            } else {
-                                if (substr($conceptoParaCalculo[$match]['imprimir'], -9) === '[Forzado]') {
-                                    $conceptoParaCalculo[$match]['imprimir'] = str_replace(' [Forzado]', '', $conceptoParaCalculo[$match]['imprimir']);
-                                } else {
-                                    $conceptoParaCalculo[$match]['imprimir'] = 'No';
-                                }
-                                $this->setConcept($conceptoParaCalculo);
-                            }
-                        //}
+						$conceptoParaCalculo = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $this->getRelationship(), 'codigoConcepto' => $match));
+						if (empty($conceptoParaCalculo)) {
+							$this->__setError(array(    'tipo'					=> 'Concepto Inexistente',
+														'gravedad'				=> 'Media',
+														'concepto'				=> $match,
+														'variable'				=> '',
+														'formula'				=> $formula,
+														'descripcion'			=> 'La formula requiere de un concepto inexistente.',
+														'recomendacion'			=> 'Verifique la formula y que todos los conceptos que esta utiliza existan.',
+														'descripcion_adicional'	=> 'verifique: ' . $concepto['codigo']));
+						} else {
+							if (substr($conceptoParaCalculo[$match]['imprimir'], -9) === '[Forzado]') {
+								$conceptoParaCalculo[$match]['imprimir'] = str_replace(' [Forzado]', '', $conceptoParaCalculo[$match]['imprimir']);
+							} else {
+								$conceptoParaCalculo[$match]['imprimir'] = 'No';
+							}
+							$this->setConcept($conceptoParaCalculo);
+						}
                     }
-    
+
                     /** If no value yet, must calculate it */
                     if (!isset($this->__conceptos[$match]['valor'])) {
                         if ($this->getVarValue('#tipo_liquidacion') === 'xespecialx') {
@@ -868,14 +926,14 @@ class Liquidacion extends AppModel {
                                 $resolucionCalculo = $this->__getConceptValue($this->__conceptos[$match]);
                                 $this->__conceptos[$match] = array_merge($resolucionCalculo, $this->__conceptos[$match]);
                             } else {
-                                $this->__setError(array(    'tipo'                    => 'Concepto Inexistente',
-                                                            'gravedad'                => 'Alta',
-                                                            'concepto'                => $match,
-                                                            'variable'                => '',
-                                                            'formula'                => $formula,
-                                                            'descripcion'            => 'La formula requiere de un concepto inexistente.',
-                                                            'recomendacion'            => 'Verifique la formula y que todos los conceptos que esta utiliza existan.',
-                                                            'descripcion_adicional'    => 'verifique: ' . $concepto['codigo']));
+                                $this->__setError(array(    'tipo'					=> 'Concepto Inexistente',
+                                                            'gravedad'				=> 'Media',
+                                                            'concepto'				=> $match,
+                                                            'variable'				=> '',
+                                                            'formula'				=> $formula,
+                                                            'descripcion'			=> 'La formula requiere de un concepto inexistente.',
+                                                            'recomendacion'			=> 'Verifique la formula y que todos los conceptos que esta utiliza existan.',
+                                                            'descripcion_adicional'	=> 'verifique: ' . $concepto['codigo']));
                             }
                         }
                     }
@@ -886,14 +944,14 @@ class Liquidacion extends AppModel {
                         $formula = str_replace('@' . $match, $resolucionCalculo['valor'], $formula);
                         $resolucionCalculo['debug'] = $formula;
                     } else {
-                        $this->__setError(array(    'tipo'                    => 'Concepto Inexistente',
-                                                    'gravedad'                => 'Alta',
-                                                    'concepto'                => $match,
-                                                    'variable'                => '',
-                                                    'formula'                => $formula,
-                                                    'descripcion'            => 'La formula requiere de un concepto inexistente.',
-                                                    'recomendacion'            => 'Verifique la formula y que todos los conceptos que esta utiliza existan.',
-                                                    'descripcion_adicional'    => 'verifique: ' . $concepto['codigo']));
+                        $this->__setError(array(    'tipo'					=> 'Concepto Inexistente',
+                                                    'gravedad'				=> 'Media',
+                                                    'concepto'				=> $match,
+                                                    'variable'				=> '',
+                                                    'formula'				=> $formula,
+                                                    'descripcion'			=> 'La formula requiere de un concepto inexistente.',
+                                                    'recomendacion'			=> 'Verifique la formula y que todos los conceptos que esta utiliza existan.',
+                                                    'descripcion_adicional'	=> 'verifique: ' . $concepto['codigo']));
                     }
                 }
             }
@@ -902,7 +960,7 @@ class Liquidacion extends AppModel {
 			$check = $this->__formulas->checkFormula($formula);
 			if ($check !== true) {
 				$this->__setError(array(    'tipo'                    => 'Error en la Formula',
-											'gravedad'                => 'Grave',
+											'gravedad'                => 'Media',
 											'concepto'                => $concepto['codigo'] . ' (' . $concepto['jerarquia'] . ')',
 											'variable'                => '',
 											'formula'                 => $concepto['formula'],
@@ -914,14 +972,14 @@ class Liquidacion extends AppModel {
             	$valor = $this->__formulas->resolver($formula);
 			}
         } elseif (empty($formula)) {
-            $this->__setError(array(    'tipo'                    => 'Formula de Concepto Inexistente',
-                                        'gravedad'                => 'Media',
-                                        'concepto'                => $concepto['codigo'],
-                                        'variable'                => '',
-                                        'formula'                => '',
-                                        'descripcion'            => 'El concepto no tiene definida una formula.',
-                                        'recomendacion'            => 'Ingrese la formula correspondiente al concepto en caso de que sea necesario. Para evitar este error ingrese como formula: =0',
-                                        'descripcion_adicional'    => 'Se asume como 0 (cero) el valor del concepto.'));
+            $this->__setError(array(    'tipo'					=> 'Formula de Concepto Inexistente',
+                                        'gravedad'				=> 'Media',
+                                        'concepto'				=> $concepto['codigo'],
+                                        'variable'				=> '',
+                                        'formula'				=> '',
+                                        'descripcion'			=> 'El concepto no tiene definida una formula.',
+                                        'recomendacion'			=> 'Ingrese la formula correspondiente al concepto en caso de que sea necesario. Para evitar este error ingrese como formula: =0',
+                                        'descripcion_adicional'	=> 'Se asume como 0 (cero) el valor del concepto.'));
             $valor = 0;
         } else {
             $valor = '#N/A';
@@ -970,8 +1028,8 @@ class Liquidacion extends AppModel {
             'nombre'            => $nombreConcepto,
             'errores'           => $errores);
     }
-    
-    
+
+
 /**
  * Busca el valor de una variable.
  *
@@ -1013,7 +1071,7 @@ class Liquidacion extends AppModel {
                             $formula = preg_replace('/(@' . $v . ')([\)\s\*\+\/\-\=\,]*(?!_))/', $tmp['valor'] . '$2', $formula);
                         } else {
                             $this->__setError(array(    'tipo'                  => 'Concepto Inexistente',
-                                                        'gravedad'              => 'Alta',
+                                                        'gravedad'              => 'Media',
                                                         'concepto'              => '',
                                                         'variable'              => $variable,
                                                         'formula'               => $formula,
@@ -1042,7 +1100,7 @@ class Liquidacion extends AppModel {
                 if ($valor === '#N/A') {
                     $valor = 0;
                     $this->__setError(array(    'tipo'                  => 'Variable No Resuelta',
-                                                'gravedad'              => 'Alta',
+                                                'gravedad'              => 'Media',
                                                 'concepto'              => '',
                                                 'variable'              => $variable,
                                                 'formula'               => $this->__variables[$variable]['formula'],
@@ -1068,7 +1126,7 @@ class Liquidacion extends AppModel {
                 } else {
                     $this->__setError(array(
                         'tipo'                  => 'Variable No Resuelta',
-                        'gravedad'              => 'Alta',
+                        'gravedad'              => 'Media',
                         'variable'              => $variable,
                         'formula_variable'      => $this->__variables[$variable]['formula'],
                         'descripcion'           => 'La formula intenta usar una variable que no es posible resolverla con los datos de la relacion.',
@@ -1118,7 +1176,7 @@ class Liquidacion extends AppModel {
                     if (!empty($this->__variables[$variable]['formula'])) {
                         $this->__setError(array(
                             'tipo'                  => 'Variable No Resuelta',
-                            'gravedad'              => 'Alta',
+                            'gravedad'              => 'Media',
                             'variable'              => $variable,
                             'formula_variable'      => $this->__variables[$variable]['formula'],
                             'descripcion'           => 'La formula intenta usar una variable que no es posible resolver.',
@@ -1133,16 +1191,17 @@ class Liquidacion extends AppModel {
             return $return;
         }
     }
-    
+
 
     function __setError($error) {
-        $error['concepto'] = $this->__getCurrentConcept('codigo');
-        if (empty($error['formula_concepto'])) {
-            $error['formula_concepto'] = $this->__getCurrentConcept('formula');
-        }
+		$error['concepto'] = $this->__getCurrentConcept('codigo');
+		if (empty($error['formula_concepto'])) {
+			$error['formula_concepto'] = $this->__getCurrentConcept('formula');
+		}
         $this->__receiptError[] = $error;
     }
-    
+
+
     function __getError() {
         return $this->__receiptError;
     }
@@ -1314,12 +1373,13 @@ class Liquidacion extends AppModel {
             return $this->__currentConcept[$key];
         }
     }
-    
+
 
     function resetRecursivity() {
         $this->__recursivityCounter = null;
     }
-    
+
+
     function checkRecursivity($match) {
         if (!isset($this->__recursivityCounter[$match])) {
             $this->__recursivityCounter[$match] = 1;
@@ -1328,7 +1388,6 @@ class Liquidacion extends AppModel {
         }
 
         if ($this->__recursivityCounter[$match] >= 10) {
-            //d($match . ' ' . $this->__recursivityCounter[$match]);
             return false;
         }
         return true;

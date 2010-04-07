@@ -528,27 +528,49 @@ class LiquidacionesController extends AppController {
 	 				'order' => false)), '{n}.Variable.nombre', '{n}.Variable');
 			$variables['#tipo_liquidacion']['valor'] = $this->data['Condicion']['Liquidacion-tipo'];
 
+
 			/** Make the liquidations if not done. */
 			$ids = null;
 			$opciones['variables'] = $variables;
 			$opciones['informaciones'] = $informaciones;
-			foreach ($relaciones as $relacion) {
+			$opciones['empleadores'] = Set::extract('/Empleador/id', $relaciones);
 
+			$groupParams = User::getGroupParams();
+			if (!empty($groupParams['liquidar_con_liquidaciones_no_facturadas'])) {
+ 				$opciones['permitir_liquidar_con_liquidaciones_no_facturadas'] = $groupParams['liquidar_con_liquidaciones_no_facturadas'];
+			} else {
+				$opciones['permitir_liquidar_con_liquidaciones_no_facturadas'] = 'Si';
+			}
+			
+
+			foreach ($relaciones as $k => $relacion) {
+
+				$relacion['Relacion']['error'] = false;
                 if ($this->data['Condicion']['Liquidacion-tipo'] === 'final') {
                     if (empty($relacion['RelacionesHistorial'][0]['fin'])
                     || $relacion['RelacionesHistorial'][0]['liquidacion_final'] != 'Si'
                     || (!empty($relacion['RelacionesHistorial'][0]['fin'])
                         && $relacion['RelacionesHistorial'][0]['fin'] == '0000-00-00')) {
-                        continue;
+
+						$relacion['Relacion']['error'] = array(
+							'tipo'                  => 'Liquidaciones Final sin Historial',
+							'gravedad'              => 'Alta',
+							'concepto'              => '',
+							'variable'              => '',
+							'formula'               => '',
+							'descripcion'           => 'No puede realizar una liquidacion final si no ha cargado la fecha fin en el historial de la Relacion.',
+							'recomendacion'         => 'Agregue el historial a la relacion.',
+							'descripcion_adicional' => '');
+
                     } else {
                         /** For finished relations, only allow last period receipt */
                         $periodo['hasta'] = $relacion['RelacionesHistorial'][0]['fin'];
                     }
                 }
 
-                
+
                 $conveniosCategoriasHistoricoCondition['ConveniosCategoriasHistorico.convenios_categoria_id'] = $relacion['ConveniosCategoria']['id'];
-                
+
                 if ($this->data['Condicion']['Liquidacion-tipo'] !== 'final') {
                     $conveniosCategoriasHistoricoCondition['ConveniosCategoriasHistorico.desde <='] = $periodo['desde'];
                     $conveniosCategoriasHistoricoCondition['OR'] = array(
@@ -560,7 +582,7 @@ class LiquidacionesController extends AppController {
                         'ConveniosCategoriasHistorico.hasta >=' => $relacion['RelacionesHistorial'][0]['fin'],
                         'ConveniosCategoriasHistorico.hasta'    => '0000-00-00');
                 }
-                
+
 				$historico = $this->Liquidacion->Relacion->ConveniosCategoria->ConveniosCategoriasHistorico->find('first',
 					array(
 						'recursive'	 	=> -1,

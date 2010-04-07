@@ -52,10 +52,12 @@ $cuerpo = null;
 $contain = urlencode(serialize(array('LiquidacionesDetalle' => array('conditions' => array('LiquidacionesDetalle.concepto_imprimir' => array('Si', 'Solo con valor'))))));
 foreach ($registros as $k=>$v) {
 	$fila = null;
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidaciones'), 'url' => 'recibo_html');
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidaciones (debug)'), 'url' => 'recibo_html_debug');
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'prefacturar.gif', 'alt' => 'Facturas'), 'url' => 'facturas');
-	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'observaciones.gif', 'alt' => 'Agregar Observacion'), 'url' => 'agregar_observacion');
+	if (!(!empty($v['LiquidacionesError'][0]['gravedad']) && $v['LiquidacionesError'][0]['gravedad'] == 'Alta')) {
+		$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidaciones'), 'url' => 'recibo_html');
+		$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidaciones (debug)'), 'url' => 'recibo_html_debug');
+		$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'prefacturar.gif', 'alt' => 'Facturas'), 'url' => 'facturas');
+		$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'observaciones.gif', 'alt' => 'Agregar Observacion'), 'url' => 'agregar_observacion');
+	}
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'id', 'valor' => $v['Liquidacion']['id'], 'write' => $v['Liquidacion']['write'], 'delete' => $v['Liquidacion']['delete']);
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => $v['Liquidacion']['tipo']);
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'estado', 'valor' => $v['Liquidacion']['estado']);
@@ -67,12 +69,23 @@ foreach ($registros as $k=>$v) {
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'no_remunerativo', 'valor'=>$v['Liquidacion']['no_remunerativo'], 'tipoDato' => 'moneda');
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'total', 'valor'=>$v['Liquidacion']['total'], 'tipoDato' => 'moneda');
 	
-	if($v['Liquidacion']['estado'] === 'Confirmada') {
+	if ($v['Liquidacion']['estado'] === 'Confirmada') {
 		$cuerpo[] = array('contenido'=>$fila, 'opciones' => array('title'=>'Ya se ha liquidado a esta Relacion para el periodo especificado.', 'class'=>'fila_resaltada', 'seleccionMultiple'=>false));
 	} else {
-		if(!empty($v['LiquidacionesError'])) {
+		if (!empty($v['LiquidacionesError'])) {
+
 			$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'update' => 'desglose4', 'imagen' => array('nombre' => 'error_icono.gif', 'alt' => 'Errores'), 'url' => 'errores');
-			$cuerpo[] = array('contenido'=>$fila, 'opciones' => array('title'=>'Se han encontrado errores en esta liquidacion.', 'class'=>'fila_resaltada', 'seleccionMultiple'=>true));
+
+			if (!empty($v['LiquidacionesError'][0]['gravedad']) && $v['LiquidacionesError'][0]['gravedad'] == 'Alta') {
+				$cuerpo[] = array(
+					'contenido' 	=> $fila,
+					'opciones' 		=> array(
+						'title' 			=> $v['LiquidacionesError'][0]['tipo'],
+						'class'				=> 'fila_resaltada',
+						'seleccionMultiple'	=> false));
+			} else {
+				$cuerpo[] = array('contenido'=>$fila, 'opciones' => array('title' => 'Se han encontrado errores en esta liquidacion.', 'class'=>'fila_resaltada', 'seleccionMultiple'=>true));
+			}
 		} else {
 			$cuerpo[] = $fila;
 		}
