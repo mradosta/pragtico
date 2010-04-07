@@ -93,13 +93,11 @@ class Descuento extends AppModel {
 
 /**
  * getDescuentos
- * TODO: Puede que haya dos conceptos de embargo concurrentes, entoces se pisarian.
- * Esto implica un gran cambio en el liquidador. Revisar.		   
  * Dada un ralacion XXXXXXXXXX.
  * @return array vacio si no hay nada que descontar.
  */
     function getDescuentos($relacion, $opciones) {
-        
+
         $conditions = array(array('OR'  => array(
             'Descuento.hasta'       => '0000-00-00',
             'Descuento.hasta >='    => $opciones['periodo']['hasta'])));
@@ -113,8 +111,7 @@ class Descuento extends AppModel {
 				}
 
 				if (!empty($opciones['periodo']['desde'])) {
-					$conditions = array_merge(array(
-						'DATE(CONCAT(YEAR(Descuento.desde), \'-\', MONTH(Descuento.desde), \'-' . array_pop(explode('-', $opciones['periodo']['desde'])) . '\')) <=' => $opciones['periodo']['desde']), $conditions);
+					$conditions = array_merge(array('Descuento.desde BETWEEN ? AND ?' => array($opciones['periodo']['desde'], $opciones['periodo']['hasta'])), $conditions);
 				}
 				break;
 			case 'sac':
@@ -131,7 +128,7 @@ class Descuento extends AppModel {
 				$descontar = 1;
 			break;
 		}
-        
+
 		$r = $this->find('all',
 			array(
 				  	'contain'		=> 'DescuentosDetalle',
@@ -157,7 +154,6 @@ class Descuento extends AppModel {
         $index['Cuota Alimentaria'] = 'a';
 
 		if (!empty($r)) {
-            
             $Concepto = ClassRegistry::init('Concepto');
 			foreach ($r as $k => $v) {
 
