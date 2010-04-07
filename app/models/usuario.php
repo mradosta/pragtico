@@ -167,9 +167,9 @@ class Usuario extends AppModel {
 			$conditions['Usuario.nombre'] = Sanitize::paranoid($condiciones['nombre']);
 			$conditions['Usuario.clave'] = Security::hash(Sanitize::paranoid($condiciones['clave']), 'md5', false);
 			$conditions['Usuario.estado'] = 'Activo';
-			$conditions['checkSecurity'] = false;
 
 			$usuario = $this->find('first', array(
+				'checkSecurity' => false,
 				'conditions'	=> $conditions,
 				'contain'		=>
 					array('Grupo'=>

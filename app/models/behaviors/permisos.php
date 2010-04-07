@@ -366,14 +366,11 @@ class PermisosBehavior extends ModelBehavior {
  */
 	function beforeFind(&$model, $queryData) {
 
-		if (!empty($model->access)) {
-			$securityAccess = $model->access;
-		} elseif (isset($queryData['checkSecurity'])) {
+		if (isset($queryData['checkSecurity'])) {
 			$securityAccess = $queryData['checkSecurity'];
 			unset($queryData['checkSecurity']);
-		} elseif (isset($queryData['conditions']) && !is_string($queryData['conditions']) && isset($queryData['conditions']['checkSecurity'])) {
-			$securityAccess = $queryData['conditions']['checkSecurity'];
-			unset($queryData['conditions']['checkSecurity']);
+		} elseif (!empty($model->access)) {
+			$securityAccess = $model->access;
 		} else {
 			$securityAccess = 'read';
 		}
