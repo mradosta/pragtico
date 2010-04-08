@@ -40,6 +40,15 @@ if (!empty($centrosDeCosto)) {
 }
 $campos['Area.contacto'] = array();
 $campos['Area.direccion'] = array();
+$campos['Area.ciudad'] = array();
+$campos['Area.provincia_id'] = array(
+	'empty'			=> true,
+	'options'		=> 'listable',
+	'recursive'		=> -1,
+	'order'			=> 'Provincia.nombre ASC',
+	'displayField'	=> 'Provincia.nombre',
+	'model'			=> 'Provincia');
+
 $campos['Area.codigo_postal'] = array();
 $campos['Area.telefono'] = array();
 $campos['Area.fax'] = array();
