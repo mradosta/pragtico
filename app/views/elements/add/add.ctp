@@ -33,7 +33,8 @@ if (!empty($bloqueAdicional)) {
 
 
 /** Add actions, permissions in mind */
-if (!empty($this->data)) {
+if (!empty($this->data) && $this->action == 'edit') {
+
     $edit = $delete = true;
     foreach ($this->data as $v) {
         if (!$v[$modelName]['write']) {
@@ -80,6 +81,12 @@ if (!empty($this->data)) {
             'opciones' => array('acciones' => array('cancelar')))));
         $appForm->addScript($js);
     }
+} else {
+	if (!isset($accionesExtra)) {
+		$bloques[] = $this->element('add/acciones');
+	} else {
+		$bloques[] = $this->element('add/acciones', array('accionesExtra' => $accionesExtra));
+	}
 }
 
 /**
