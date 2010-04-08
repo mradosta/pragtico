@@ -83,12 +83,12 @@ class AppFormHelper extends FormHelper {
  *
  * @param array $fieldsets Los campos que debe inlcuir el fieldset.
  * @param array $opcionesFs Las opciones con las que se dibujara el fieldset.
- *		- $opcionesFs['fieldset']['legend']	=> 	String con la leyenda que tendra el fieldset. Si se especifica 
- *												como !Leyenda, se tomara el string literalmente. En caso de que 
- *												no se especifique precedida por !, se le concatenara precedida por 
+ *		- $opcionesFs['fieldset']['legend']	=> 	String con la leyenda que tendra el fieldset. Si se especifica
+ *												como !Leyenda, se tomara el string literalmente. En caso de que
+ *												no se especifique precedida por !, se le concatenara precedida por
  *												la accion realizada en el momento.
  *												Si se deja en blanco se generara a partir de la accion y el model.
- *													
+ *
  * @return string El codigo HTML del fieldset.
  */
 	function pintarFieldsets($fieldsets, $opcionesFs = array()) {
@@ -547,7 +547,7 @@ class AppFormHelper extends FormHelper {
 									"id"		=> $vv1['valor'],
 									"imagen"	=> array('nombre'	=> 'permisos.gif',
 									"alt"		=> "Permisos"),
-									"url"		=> array(	'controller' 	=> strtolower(Inflector::pluralize(Inflector::underscore($vv1['model']))), 
+									"url"		=> array(	'controller' 	=> strtolower(Inflector::pluralize(Inflector::underscore($vv1['model']))),
 															'action' 		=> 'permisos'));
 								if ($contenido === true) {
 									array_unshift($datos['cuerpo'][$kk]['contenido'], $registroPermisos);
@@ -765,16 +765,16 @@ class AppFormHelper extends FormHelper {
 							}
 							
 							if ($opciones['modificar'] && (!(isset($opcionesFila['modificar']) && $opcionesFila['modificar'] === false))) {
+                                $urlLink = $controller . 'edit/' . $id;
 								if ($campo['write']) {
-									//$urlLink = $controller . "edit/" . $id . $origen;
-									$urlLink = $controller . "edit/" . $id;
 									if (isset($detailUrls['edit'])) {
 										$urlLink = $detailUrls['edit'];
 									}
-									array_unshift($acciones, $this->link($this->image('edit.gif', array("alt" => "Modifica este registro")), $urlLink));
+                                    $image = $this->image('edit.gif', array('alt' => 'Modifica este registro'));
 								} else {
-									array_unshift($acciones, $this->image('edit_disable.gif', array("alt" => "Modifica este registro")));
+                                    $image = $this->image('edit_disable.gif', array('alt' => 'Muestra este registro'));
 								}
+                                array_unshift($acciones, $this->link($image, $urlLink));
 							}
 							
 							/**
@@ -1416,7 +1416,8 @@ class AppFormHelper extends FormHelper {
 			* Manejo los tipos de datos date para que me arme el control seleccion de fechas.
 			*/
 			if ($tipoCampo === "soloLectura") {
-				return $this->tag("div", $this->label($options['label'], null, array("for"=>false)) . $this->tag("span", $valorCampo, array("class" => "solo_lectura")), array("class" => "input text"));
+				//return $this->tag("div", $this->label($options['label'], null, array("for"=>false)) . $this->tag("span", $valorCampo, array("class" => "solo_lectura")), array("class" => "input text"));
+                return $this->tag("div", $this->tag("span", $options['label'], array("class"=>'label')) . $this->tag("span", $valorCampo, array("class" => "solo_lectura")), array("class" => "input text"));
 			}
 			
 			/**
@@ -1845,7 +1846,7 @@ class AppFormHelper extends FormHelper {
 	
 /**
  * TODO: Change by jquery alternative (http://ui.jquery.com/demos/datepicker)
- */		   
+ */
 	function __inputFecha($tagName, $options = array(), $type = 'date') {
 		$this->setEntity($tagName);
 		$id = $this->domId(implode('.', array_filter(array($this->model(), $this->field()))));

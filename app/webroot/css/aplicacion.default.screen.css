@@ -1,11 +1,6 @@
 /*
  * GENERICOS
  */
-
-.seleccionar {
-    cursor:pointer;
-}
- 
 body {
 	max-width: 1000px;
 	margin: 2px;
@@ -41,6 +36,10 @@ li {
 li img {
 	height: 10px;
 	width: 10px;
+}
+
+.seleccionar {
+    cursor: pointer;
 }
 
 
@@ -474,10 +473,10 @@ div.session_flash span {
 /**
  * LABELS
  */
-label {
+label, .label {
 	text-align: right;
 	width: 120px;
-	padding: 0 3px;
+	padding: 2px 3px;
 	color: #000000;
 	float: left;
 }
@@ -655,10 +654,10 @@ div.tabla table a.desc_orden {
  * IMPUTS
  */
 div.input {
- 	padding: 3px 0 3px 0;
- 	margin-left: 5px;
- 	float: left;
- 	width: 365px;
+	padding: 3px 0 3px 0;
+	margin-left: 5px;
+	float: left;
+	width: 365px;
 }
 
 input, textarea, select {
@@ -667,11 +666,6 @@ input, textarea, select {
 	margin-right: 2px;
 	border: 0;
 	background: transparent url(img/text_input.gif) no-repeat;
-}
-
-input[disabled] {
-	background-color: #EAEAEA;
-	color: black;
 }
 
 input[type="file"] {
@@ -749,30 +743,33 @@ div.index textarea {
 }
 
 div.add div.textarea {
- 	padding: 3px 0 3px 0;
- 	margin-left: 5px;
- 	float: left;
- 	width: 720px;
+	padding: 3px 0 3px 0;
+	margin-left: 5px;
+	float: left;
+	width: 720px;
 }
 
-div.wysiwyg {                                                       
-	padding: 20px 0 3px 0;                                                         
+div.wysiwyg {
+	padding: 20px 0 3px 0;
 	margin-left: 15px;
     float: left;
-	width: 770px;                                            
-}                                                                                                                                                                           
+	width: 770px;
+}
 
 div.wysiwyg div.editor {
 	width: 560px;
-	float: left;                                            
-}                                                                                                                                                                           
+	float: left;
+}
+
 div.wysiwyg label {
 	width: 110px;
 }
 
 span.solo_lectura {
+    padding-top: 2px;
 	font-weight: bold;
 	color: #948B84;
+    float: left;
 }
 
 /**

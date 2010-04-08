@@ -214,13 +214,14 @@ class AppController extends Controller {
 				$this->{$this->modelClass}->contain($this->{$this->modelClass}->modificadores[$this->action]['contain']);
 			}
 
-            $this->{$this->modelClass}->setSecurityAccess('write');
+            //$this->{$this->modelClass}->setSecurityAccess('write');
 			$this->data = $this->{$this->modelClass}->find('all',
                     array('conditions' => array($this->modelClass . '.' . $this->{$this->modelClass}->primaryKey => $ids)));
+
             if (!empty($this->data)) {
                 $this->render('add');
             } else {
-                $this->Session->setFlash('El/los registro/s que desea modificar no se encuentran o usted no tiene acceso a el/ellos', 'error');
+                $this->Session->setFlash('El/los registro/s que desea ver/modificar no se encuentran o usted no tiene acceso a el/ellos', 'error');
                 $this->History->goBack();
             }
 		}
