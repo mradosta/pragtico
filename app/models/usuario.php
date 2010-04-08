@@ -108,7 +108,7 @@ class Usuario extends AppModel {
 		*/
 		$MenuItems = array();
 		if ((int)$usuario['Usuario']['roles'] & 1) {
-			$MenuItems = $this->RolesUsuario->Rol->RolesMenu->Menu->find('threaded', array('checkSecurity'=>false), null, 'Menu.orden');
+			$MenuItems = $this->RolesUsuario->Rol->RolesMenu->Menu->find('threaded', array('checkSecurity'=>false, 'order' => 'Menu.orden'));
 		} else {
 			$queryData = array(
 				'conditions'	=> array(	'Menu.estado'=> 'Activo'),
@@ -139,7 +139,7 @@ class Usuario extends AppModel {
 					'checkSecurity'	=> false,
 					'recursive'		=> -1,
 					'conditions'	=> array('Menu.id'=>Set::extract('/Menu/id', $menus)),
-					'order'			=> 'orden'));
+					'order'			=> 'Menu.orden'));
 			}
 		}
 		return $MenuItems;
