@@ -48,5 +48,5 @@
 /**
  * Agrego soporte para que parsee json.
  */
-	Router::parseExtensions('json');  
+	//Router::parseExtensions('json');  
 ?>

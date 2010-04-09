@@ -645,26 +645,11 @@ class AppController extends Controller {
  * Utilizar el auth component de cakePHP
  */
     function beforeFilter() {
-       
+
 		/** Save selected menu (actualMenu) in a cookie */
 		if (isset($this->passedArgs['am'])) {
             setcookie('menu_cookie', $this->passedArgs['am'], 0, '/');
 		}
-		
-		/**
-		* En accionesWhiteList llevo las acciones que no deben chquearse la seguridad.
-		if (!$this->Session->check('__Seguridad.accionesWhiteList')) {
-			$Accion = ClassRegistry::init('Accion');
-			$data = $Accion->find("all", array("checkSecurity"=>false, "contain" => "Controlador", "conditions"=>array("Accion.seguridad" => "No")));
-			$accionesWhiteList = array();
-			foreach ($data as $v) {
-				$accionesWhiteList[] = $v['Controlador']['nombre'] . '.' . $v['Accion']['nombre'];
-			}
-			$this->Session->write('__Seguridad.accionesWhiteList', $accionesWhiteList);
-		} else {
-			$accionesWhiteList = $this->Session->read('__Seguridad.accionesWhiteList');
-		}
-        */
 
         $accionesWhiteList = array(
             'Usuarios.login',
@@ -680,12 +665,17 @@ class AppController extends Controller {
             if (User::store($this->Session->read('__Usuario'))) {
 
                 /** Agrego soporte para que retorne json.*/
-                $this->RequestHandler->setContent('json', 'text/x-json');
-                
+                //$this->RequestHandler->setContent('json', 'text/x-json');
                 return true;
             } else {
-                $this->redirect(array(  'controller'    => 'usuarios',
-                                        'action'        => 'login'));
+				/** Check if it is installed */
+				if (!file_exists(APP . 'config' . DS . 'database.php')) {
+                	$this->redirect(array('controller'    => 'install'));
+				} else {
+                	$this->redirect(array(
+						'controller'    => 'usuarios',
+                        'action'        => 'login'));
+				}
             }
         }
     }
