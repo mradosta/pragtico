@@ -36,13 +36,31 @@ class NovedadesController extends AppController {
 	var $helpers = array('Documento');
 
 
+	function index($paymentIds = null) {
+        $this->set('paymentIds', $paymentIds);
+		parent::index();
+	}
+
+
+    function reporte_pagos_confirmados($paymentIds) {
+        $data = $this->Novedad->Relacion->Descuento->find('all', array(
+            'conditions'    => array('Descuento.id' => explode('|', $paymentIds)),
+            'contain'     	=> array('Relacion' => array('Empleador', 'Trabajador'))));
+        $this->set('data', $data);
+    }
+
+
 /**
  * Confirma las novedades seleccionadas.
  */
 	function confirmar() {
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'confirmar') {
-			if ($cantidad = $this->Novedad->confirmar($this->Util->extraerIds($this->data['seleccionMultiple']))) {
-				$this->Session->setFlash('Se confrmaron correctamente ' . $cantidad . ' novedades', 'ok');
+			$result = $this->Novedad->confirmar($this->Util->extraerIds($this->data['seleccionMultiple']));
+			if ($result) {
+				$this->Session->setFlash('Se confrmaron correctamente ' . $result['quantity'] . ' novedades', 'ok');
+				if (!empty($result['idByType']['Descuento'])) {
+					$this->redirect('index/' . implode('|', $result['idByType']['Descuento']));
+				}
 			} else {
 				$this->Session->setFlash('No fue posible confirmar las novedades', 'error');
 			}

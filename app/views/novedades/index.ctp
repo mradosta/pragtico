@@ -69,6 +69,14 @@ $confirmar = $appForm->link('Confirmar', null, array('class' => 'link_boton', 'i
 $accionesExtra['opciones'] = array('acciones' => array('nuevo', $confirmar, 'eliminar', $generar, $importar));
 echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, 'accionesExtra' => $accionesExtra));
 
+
+if (!empty($paymentIds)) {
+    $appForm->addScript('
+        window.location = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'reporte_pagos_confirmados/' . $paymentIds)) . '";
+    ');
+}
+
+
 $js = "
 	jQuery('#confirmar').bind('click', function() {
 		jQuery('#form').attr('action', '" . Router::url("/") . $this->params['controller'] . "/confirmar');

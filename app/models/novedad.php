@@ -340,6 +340,7 @@ class Novedad extends AppModel {
             foreach ($saves as $save) {
                 $keys = array_keys($save);
                 if (($keys[0] == 'VacacionesDetalle' && $this->Relacion->Vacacion->{$keys[0]}->appSave($save)) || $this->Relacion->{$keys[0]}->appSave($save)) {
+					$idByType[$keys[0]][] = $this->Relacion->{$keys[0]}->id;
                     $c++;
                 }
             }
@@ -350,7 +351,7 @@ class Novedad extends AppModel {
                 	$this->deleteAll(array('Novedad.id' => $diff), false, false, false);
 				}
 				$db->commit($this);
-				return $i;
+				return array('idByType' => $idByType, 'quantity' => $c);
             } else {
                 $db->rollback($this);
                 return false;
