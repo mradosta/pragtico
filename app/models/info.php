@@ -27,29 +27,19 @@ class Info extends AppModel {
     var $useTable = false;
 
 	function findRelationErrors() {
-		$sql = "
-			SELECT 		`Trabajador`.`id`,
-						`Trabajador`.`cuil`,
-						`Trabajador`.`nombre`,
-						`Trabajador`.`apellido`,
-						`Trabajador`.`nombre`,
-						`Trabajador`.`obra_social_id`,
-						`Trabajador`.`localidad_id`,
-						`Empleador`.`cuit`,
-						`Empleador`.`nombre`
-			FROM		`relaciones` AS Relacion
-			INNER JOIN	`trabajadores` AS Trabajador
-				ON		(`Relacion`.`trabajador_id` = `Trabajador`.`id`)
-			INNER JOIN	`empleadores` AS Empleador
-				ON		(`Relacion`.`empleador_id` = `Empleador`.`id`)
-			WHERE		`Relacion`.`estado` = 'Activa'
-			AND
-				(`Trabajador`.`obra_social_id` IS NULL OR `Trabajador`.`localidad_id` IS NULL)
-			ORDER BY	`Trabajador`.`apellido`, `Trabajador`.`nombre`
-			";
 
 		$Relacion = ClassRegistry::init('Relacion');
-		return $Relacion->query($sql);
+		return $Relacion->find('all', array(
+				'checkSecurity'	=> false,
+				'contain'		=> array('Empleador', 'Trabajador'),
+				'order'			=> array('Trabajador.apellido', 'Trabajador.nombre'),
+				'conditions' 	=> array(
+					'Relacion.estado' => 'Activa',
+					'(Relacion.group_id & ' . array_sum(array_keys(User::getUserGroups('all'))) . ') >' => 0,
+					'OR' => array(
+						'Trabajador.obra_social_id' => null,
+						'Trabajador.localidad_id' 	=> null))
+		));
 	}
 
 
@@ -66,6 +56,7 @@ class Info extends AppModel {
 					'SUM(Liquidacion.total) AS total'),
 				'group'			=> array('Liquidacion.empleador_cuit', 'Liquidacion.empleador_nombre'),
 				'conditions' 	=> array(
+					'(Liquidacion.group_id & ' . array_sum(array_keys(User::getUserGroups('all'))) . ') >' => 0,
 					array('OR' => array(
 						'Liquidacion.factura_id' 	=> null,
 						array('AND' => array(
