@@ -86,7 +86,8 @@ class User extends AppModel {
         } elseif ($filter === 'default') {
             $filter = User::get('/Usuario/preferencias/grupo_default_id');
         } elseif ($filter === 'all') {
-            return Set::combine(User::get('/Grupo'), '{n}.Grupo.id', '{n}.Grupo.nombre');
+			$groups = User::get('/Grupo', array('flatten' => false));
+            return Set::combine($groups, '{n}.Grupo.id', '{n}.Grupo.nombre');
         } elseif (!is_numeric($filter)) {
             trigger_error(__('Invalid filter option.', true), E_USER_WARNING);
         }
