@@ -87,18 +87,6 @@ $links[] = $appForm->link($appForm->image('firefox.png', array('alt' => 'Descarg
 $codigo_html[] = "\n\t\t\t\t" . implode("\n\t\t\t\t", $links);
 $codigo_html[] = "\n\t\t\t" . '</div>';
 $codigo_html[] = $cakeDebug;
-
-$codigo_html[] = "\n\t\t" . '<script type="text/javascript">
-			var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-			document.write(unescape("%3Cscript src=\'" + gaJsHost + "google-analytics.com/ga.js\' type=\'text/javascript\'%3E%3C/script%3E"));
-		</script>
-		<script type="text/javascript">
-			try {
-				var pageTracker = _gat._getTracker("UA-15734465-1");
-				pageTracker._trackPageview();
-			} catch(err) {}
-		</script>';
-
 $codigo_html[] = "\t" . '</body>';
 $codigo_html[] = '</html>';
 
