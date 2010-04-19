@@ -26,11 +26,8 @@ $flash = ob_get_clean();
 $codigo_html[] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 $codigo_html[] = '<html xmlns="http://www.w3.org/1999/xhtml">';
 $codigo_html[] = "\t" . '<head>';
-$codigo_html[] = "\t\t" . '<title>Pragtico - Sistema para la Liquidación de Sueldos y Haberes Open Source</title>';
+$codigo_html[] = "\t\t" . '<title>Pragtico - Sistema para la Liquidación de Sueldos y Jornales libre y gratuito</title>';
 $codigo_html[] = "\t\t" . '<meta http-equiv="content-type" content="text/html; charset=UTF-8">';
-$codigo_html[] = "\t\t" . '<meta name="Keywords" content="Open Source, Free, Gratis, Libre, Liquidacion de Sueldos, Liquidacion de Haberes, Sueldos, Recibos, Recursos Humanos, Software" />';
-$codigo_html[] = "\t\t" . '<meta name="description" content="Primer y unico software de liquidacion de sueldos gratuito y con licencia libre. Software de liquidacion de haberes multi-idioma y multi-empresa especialmente diseñado para estudios contables y empresas dedicadas a la contratacion de personal eventual">';
-
 $codigo_html[] = "\t\t" . '<link rel="icon" href="' . $this->webroot . 'favicon.ico" type="image/x-icon"/>';
 $codigo_html[] = "\t\t" . '<link rel="shortcut icon" href="' . $this->webroot . 'favicon.ico" type="image/x-icon"/>';
 
