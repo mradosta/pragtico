@@ -111,7 +111,8 @@ class Descuento extends AppModel {
 				}
 
 				if (!empty($opciones['periodo']['desde'])) {
-					$conditions = array_merge(array('Descuento.desde BETWEEN ? AND ?' => array($opciones['periodo']['desde'], $opciones['periodo']['hasta'])), $conditions);
+					$expression = $this->getDataSource()->expression('IF (`Descuento`.`tipo` = \'Vale\', `Descuento`.`desde` BETWEEN \'' . $opciones['periodo']['desde'] . '\' AND \'' . $opciones['periodo']['hasta'] . '\', 1=1)');
+					$conditions[] = $expression;
 				}
 				break;
 			case 'sac':
