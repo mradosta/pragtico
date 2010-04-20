@@ -138,7 +138,8 @@ class Ausencia extends AppModel {
             'contain'		=> array(
                 'AusenciasMotivo',
 				'AusenciasSeguimiento'	=> array(
-                    'conditions' => array(
+					'order'			=> array('AusenciasSeguimiento.estado' => 'DESC', 'AusenciasSeguimiento.modified' => 'DESC'),
+                    'conditions' 	=> array(
                         'AusenciasSeguimiento.estado' => array('Confirmado', 'Liquidado')))),
             'conditions'	=> array(
                 'Ausencia.relacion_id' 	=> $relacion['Relacion']['id'],
@@ -158,6 +159,7 @@ class Ausencia extends AppModel {
 		$nonWorkingDays['Injustificada'] = $ausencias['Injustificada'] = 0;
         $art = 0;
         $conceptos = $auxiliares = array();
+
 
         if (!empty($r)) {
             App::import('Vendor', 'dates', 'pragmatia');
@@ -182,6 +184,7 @@ class Ausencia extends AppModel {
 
                     if ($seguimiento['estado'] === 'Confirmado') {
 
+
                         $endDate = Dates::dateAdd($ausencia['Ausencia']['desde'], $acumulado);
 
                         if ($endDate > $periodo['hasta']) {
@@ -189,13 +192,13 @@ class Ausencia extends AppModel {
                             $diasPeriodo = Dates::dateDiff($periodo['desde'], $periodo['hasta']);
                             if ($acumulado > $diasPeriodo['dias']) {
 
-								$tmp = $seguimiento['dias'] - $ausencias[$ausencia['AusenciasMotivo']['tipo']];
+								$tmp = $diasPeriodo['dias'] - $ausencias[$ausencia['AusenciasMotivo']['tipo']];
+								//$tmp = $seguimiento['dias'] - $ausencias[$ausencia['AusenciasMotivo']['tipo']];
 								if ($tmp > $diasPeriodo['dias']) {
 									$diff['dias'] = $diasPeriodo['dias'];
 								} else {
 									$diff['dias'] = $tmp;
 								}
-								$diff['dias']++;
 								$acumulado = $diff['dias'];
                             } else {
                                 $diff = Dates::dateDiff(Dates::dateAdd($ausencia['Ausencia']['desde'], ($acumulado - $seguimiento['dias'])), $periodo['hasta']);
@@ -209,6 +212,7 @@ class Ausencia extends AppModel {
                             $auxiliar['permissions'] = '288';
                             $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
                             $auxiliar['dias'] = $diff['dias'];
+
                             $auxiliares[] = array(	'save' 	=> serialize($auxiliar),
                                                     'model' => 'AusenciasSeguimiento');
 
@@ -217,12 +221,13 @@ class Ausencia extends AppModel {
                             * con los dias que queron pendientes de este */
                             $seguimiento['id'] = null;
                             $seguimiento['dias'] = $seguimiento['dias'] - $auxiliar['dias'];
+
                             $auxiliares[] = array(	'save' 	=> serialize($seguimiento),
                                                     'model' => 'AusenciasSeguimiento');
                             break;
                         } else {
-                            $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $seguimiento['dias'];
 
+                            $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $seguimiento['dias'];
                             $auxiliar = null;
                             $auxiliar['id'] = $seguimiento['id'];
                             $auxiliar['estado'] = 'Liquidado';
@@ -237,6 +242,7 @@ class Ausencia extends AppModel {
                         }
                     }
                 }
+
 
                 if (isset($nonWorkingDays[$ausencia['AusenciasMotivo']['tipo']])) {
                     $tmpEndDate = Dates::dateAdd($ausencia['Ausencia']['desde'], $acumulado);
@@ -290,6 +296,7 @@ class Ausencia extends AppModel {
                 if ($fromDate < $relacion['Relacion']['ingreso']) {
                     $fromDate  = $relacion['Relacion']['ingreso'];
                 }
+
                 $diffDividendo = Dates::dateDiff($fromDate, $toDate);
                 $ausencias['Dias Anteriores Accidente'] = $diffDividendo['dias'];
 
@@ -325,7 +332,7 @@ class Ausencia extends AppModel {
             }
         }
 
-		/*
+/*		
         d(array('conceptos'    => $conceptos,
                      'variables'    => array(
         '#ausencias_accidente'                              => $ausencias['Accidente'],
@@ -341,7 +348,7 @@ class Ausencia extends AppModel {
         '#ausencias_injustificada'                          => $ausencias['Injustificada'],
         '#no_laborables_durante_ausencias_injustificada'    => $nonWorkingDays['Injustificada']),
                      'auxiliar'     => $auxiliares));
-		*/
+*/
 		return array('conceptos' 	=> $conceptos,
 					 'variables' 	=> array(
         '#ausencias_accidente'                              => $ausencias['Accidente'],
