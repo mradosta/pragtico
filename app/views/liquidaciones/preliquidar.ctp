@@ -38,7 +38,6 @@ $condiciones['Condicion.Relacion-area_id'] = array(
                                                     'Area.nombre')));
 
 $condiciones['Condicion.Liquidacion-tipo'] = array('label' => 'Tipo', 'type' => 'select');
-//$condiciones['Condicion.Liquidacion-estado'] = array('options' => array('Guardada' => 'Guardada', 'Sin Confirmar' => 'Sin Confirmar'));
 $condiciones['Condicion.Bar-periodo_largo'] = array('label' => 'Periodo Liquidacion', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'A'));
 $condiciones['Condicion.Liquidacion-estado'] = array('options' => $states, 'type' => 'select', 'multiple' => 'checkbox');
 $fieldsets[] = array('campos' => $condiciones);
@@ -61,12 +60,13 @@ foreach ($registros as $k=>$v) {
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'id', 'valor' => $v['Liquidacion']['id'], 'write' => $v['Liquidacion']['write'], 'delete' => $v['Liquidacion']['delete']);
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => $v['Liquidacion']['tipo']);
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'estado', 'valor' => $v['Liquidacion']['estado']);
+	$fila[] = array('model' => 'Liquidacion', 'field' => 'fecha', 'valor'=>$v['Liquidacion']['fecha']);
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'ano', 'valor' => $v['Liquidacion']['ano'] . str_pad($v['Liquidacion']['mes'], 2, '0' ,STR_PAD_LEFT) . $v['Liquidacion']['periodo'], 'nombreEncabezado'=>'Periodo');
 	$fila[] = array('model' => 'Empleador', 'field' => 'nombre', 'valor' => $v['Relacion']['Empleador']['nombre'], 'nombreEncabezado'=>'Empleador');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Relacion']['Trabajador']['apellido'] . ' ' . $v['Relacion']['Trabajador']['nombre'], 'nombreEncabezado'=>'Trabajador');
-	$fila[] = array('model' => 'Liquidacion', 'field' => 'remunerativo', 'valor'=>$v['Liquidacion']['remunerativo'], 'tipoDato' => 'moneda');
-	$fila[] = array('model' => 'Liquidacion', 'field' => 'deduccion', 'valor'=>$v['Liquidacion']['deduccion'], 'tipoDato' => 'moneda');
-	$fila[] = array('model' => 'Liquidacion', 'field' => 'no_remunerativo', 'valor'=>$v['Liquidacion']['no_remunerativo'], 'tipoDato' => 'moneda');
+	$fila[] = array('model' => 'Liquidacion', 'field' => 'remunerativo', 'valor'=>$v['Liquidacion']['remunerativo'], 'tipoDato' => 'moneda', 'nombreEncabezado' => 'Rem.');
+	$fila[] = array('model' => 'Liquidacion', 'field' => 'deduccion', 'valor'=>$v['Liquidacion']['deduccion'], 'tipoDato' => 'moneda', 'nombreEncabezado' => 'Ded.');
+	$fila[] = array('model' => 'Liquidacion', 'field' => 'no_remunerativo', 'valor'=>$v['Liquidacion']['no_remunerativo'], 'tipoDato' => 'moneda', 'nombreEncabezado' => 'No Rem.');
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'total', 'valor'=>$v['Liquidacion']['total'], 'tipoDato' => 'moneda');
 	
 	if ($v['Liquidacion']['estado'] === 'Confirmada') {
