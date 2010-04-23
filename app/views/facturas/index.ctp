@@ -44,6 +44,7 @@ foreach ($registros as $k => $v) {
 					'valor' => $appForm->image('numero.gif', array('id' => $v['Factura']['id'], 'class' => 'asignar_numero', 'alt' => 'Asignar Numero', 'title' => 'Asignar Numero')));
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Factura']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'detalles.gif', 'alt' => 'Detalles'), 'url' => 'detalles');
 	$fila[] = array('model' => 'Factura', 'field' => 'id', 'valor' => $v['Factura']['id'], 'write' => $v['Factura']['write'], 'delete' => $v['Factura']['delete']);
+	$fila[] = array('model' => 'Factura', 'field' => 'numero', 'valor' => $v['Factura']['numero'], 'class' => 'derecha');
 	$fila[] = array('model' => 'Factura', 'field' => 'fecha', 'valor' => $v['Factura']['fecha']);
 	$fila[] = array('model' => 'Factura', 'field' => 'tipo', 'valor' => $v['Factura']['tipo']);
 	$fila[] = array('model' => 'Factura', 'field' => 'ano', 'valor' => $v['Factura']['ano'] . str_pad($v['Factura']['mes'], 2, '0' ,STR_PAD_LEFT) . $v['Factura']['periodo'], 'nombreEncabezado'=>'Periodo');
