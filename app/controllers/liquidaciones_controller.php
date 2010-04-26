@@ -282,9 +282,9 @@ class LiquidacionesController extends AppController {
                     }
                     
                     $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
-                    $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Util');
                     $conditions['OR'] = array('LiquidacionesDetalle.concepto_imprimir' => 'Si', array('LiquidacionesDetalle.concepto_imprimir' => 'Solo con valor', 'ABS(LiquidacionesDetalle.valor) >' => 0));
-                    
+
+					$data = array();
                     if ($group_option === 'worker') {
                         $r = $this->Liquidacion->LiquidacionesDetalle->find('all', array(
                                 'conditions'    => $conditions,
@@ -334,7 +334,11 @@ class LiquidacionesController extends AppController {
                             $data[$record['LiquidacionesDetalle']['coeficiente_nombre']][] = $record;
                         }
                     }
-                    
+
+					if (empty($data)) {
+						$this->Session->setFlash('No se han encontrado datos segun los criterios especificados.', 'error');
+					}
+
                     if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
                         $this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Liquidacion-grupo_id']));
                     }
