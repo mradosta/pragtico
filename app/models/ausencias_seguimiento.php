@@ -49,16 +49,47 @@ class AusenciasSeguimiento extends AppModel {
 				'message'	=> 'Debe especificar un numero valido de dias.'),
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
-				'message'	=> 'Debe especificar la cantidad de dias.')
+				'message'	=> 'Debe especificar la cantidad de dias.'),
+			array(
+				'rule'		=> 'overlay',
+				'message'	=> 'Existe una ausencia cargada cuya duracion se superpondria con la cantidad de dias del seguimiento actual.')
         ),
-        'ausencia_id__' => array(
+        'ausencia_id' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY, 
 				'message'	=> 'Debe seleccionar la ausencia a la cual se le esta realizando el seguimiento.')
-        )        
+        )
 	);
 
 	var $belongsTo = array('Ausencia', 'Liquidacion');
+
+
+
+	function overlay($rule, $ruleParams) {
+
+		/** Avoid overlay of absences */
+		if (!empty($this->data['AusenciasSeguimiento']['ausencia_id'])
+			&& empty($this->data['AusenciasSeguimiento']['id'])) {
+			$sql = '
+				SELECT 		1 FROM (
+					SELECT 		Ausencia.desde,
+								ADDDATE(Ausencia.desde,
+									(SELECT 	SUM(dias) + ' . $this->data['AusenciasSeguimiento']['dias'] . '
+									FROM 		ausencias_seguimientos AusenciasSeguimiento
+									WHERE		AusenciasSeguimiento.ausencia_id = Ausencia.id)) AS fin
+					FROM		ausencias Ausencia INNER JOIN ausencias_seguimientos AusenciasSeguimiento
+						ON (Ausencia.id = AusenciasSeguimiento.ausencia_id)
+					WHERE 		Ausencia.id = ' . $this->data['AusenciasSeguimiento']['ausencia_id'] . ') AS sq
+				WHERE			sq.fin >= NOW()';
+
+			$r = $this->query($sql);
+			if (!empty($r)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 }
 ?>

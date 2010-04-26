@@ -51,7 +51,12 @@ class Ausencia extends AppModel {
 			array(
 				'rule'		=> 'date',
 				'message'	=> 'Debe especificar una fecha valida.',
-                'allowEmpty'=> false))
+                'allowEmpty'=> false),
+			array(
+				'rule'		=> 'overlay',
+				'message'	=> 'Existe una ausencia cargada cuya duracion se superpondria con la ausencia actual.')
+        ),
+
 	);
 
 	var $belongsTo = array(	'Relacion',
@@ -65,7 +70,35 @@ class Ausencia extends AppModel {
                               'foreignKey'   => 'ausencia_id'));
 
     var $breadCrumb = array('format' => '%s %s (%s)', 
-                            'fields' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));	
+                            'fields' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));
+
+
+	function overlay($rule, $ruleParams) {
+
+		/** Avoid overlay of absences */
+		if (!empty($this->data['Ausencia']['relacion_id'])
+			&& empty($this->data['Ausencia']['id'])) {
+			$sql = '
+				SELECT 		1 FROM (
+					SELECT 		Ausencia.desde,
+								ADDDATE(Ausencia.desde,
+									(SELECT 	SUM(dias)
+									FROM 		ausencias_seguimientos AusenciasSeguimiento
+									WHERE		AusenciasSeguimiento.ausencia_id = Ausencia.id)) AS fin
+					FROM		ausencias Ausencia
+					WHERE 		Ausencia.relacion_id = ' . $this->data['Ausencia']['relacion_id'] . ') AS sq
+				WHERE			sq.fin >= NOW()';
+
+			$r = $this->query($sql);
+			if (!empty($r)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+
 /**
  * Agrego un nuevo campo el calculo del total de dias que duro la ausencia 
  * (salen de la suma de los dias de seguimiento confirmados).
@@ -167,7 +200,7 @@ class Ausencia extends AppModel {
 
 			foreach ($r as $k => $ausencia) {
                 if ($ausencia['AusenciasMotivo']['tipo'] === 'Accidente') {
-                    if (count(Set::extract('/AusenciasMotivo[tipo=Accidente]/id', $ausencia)) > 1) {
+                    if (count(Set::extract('/AusenciasMotivo[tipo=Accidente]/id', $r)) > 1) {
                         /** TODO: Revisar esto y hacerlo de una forma mas elegante */
                         echo 'ERROR, mas de una ausencias de tipo accidente cargadas.';
                         die;
