@@ -193,9 +193,10 @@ class RelacionesController extends AppController {
             }
 
             if (!empty($this->data['Condicion']['Bar-state'])) {
-				if ($this->data['Condicion']['Bar-state'] == 'Historica') {
+				if (is_array($this->data['Condicion']['Bar-state'])) {
 
-                	$conditions['Relacion.estado'] = 'Historica';
+					$state = 'Historica';
+                	$conditions['Relacion.estado'] = $this->data['Condicion']['Bar-state'];
 					$containConditions = array();
 
 					/** For historical relations only */
@@ -217,6 +218,9 @@ class RelacionesController extends AppController {
 							'conditions'    => array_merge($containConditions, array(
 								'RelacionesHistorial.estado' 	=> 'Confirmado')), 'EgresosMotivo'));
 				} else {
+
+					$state = 'Activa';
+
 					$conditions['Relacion.estado <>'] = 'Historica';
 
 					$contain = array(
@@ -247,13 +251,15 @@ class RelacionesController extends AppController {
             }
 
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
-            $this->set('state', $this->data['Condicion']['Bar-state']);
+            $this->set('state', $state);
 
             if (!empty($contain)) {
 				$this->Relacion->contain($contain);
 			}
 
-            $this->set('data', $this->Relacion->find('all', array('conditions' => $conditions)));
+            $this->set('data', $this->Relacion->find('all', array(
+				'conditions' 	=> $conditions,
+				'order' 		=> array('Relacion.estado' => 'DESC'))));
         }
     }
 
