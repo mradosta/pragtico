@@ -159,18 +159,6 @@ class AusenciasController extends AppController {
         $this->Ausencia->contain(array('Relacion.Trabajador.Localidad'));
         $this->data = $this->Ausencia->read(null, $id);
     }
-    
-
-/**
-* Imprimir.
-*/    
-	function imprimir_deprecated() {
-		$this->Ausencia->contain(array("Relacion.Empleador", "Relacion.Trabajador"));
-		$condiciones = $this->Paginador->generarCondicion($this->data);
-		$registros = $this->Ausencia->findAll($condiciones, null, "Ausencia.desde, Relacion.id");
-		$this->set("registros", $registros);
-	}
-
 
 }
 ?>
