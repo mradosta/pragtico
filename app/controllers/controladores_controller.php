@@ -38,26 +38,28 @@ class ControladoresController extends AppController {
 	function actualizar_controladores() {
 		$controllerClasses = Configure::listObjects('controller');
         
-		$accionesPredefinidas[] = array("estado"	=> "Activo",
-										"nombre"	=> "add",
-										"etiqueta"	=> "Agregar");
-		$accionesPredefinidas[] = array("estado"	=> "Activo",
-										"nombre"	=> "edit",
-										"etiqueta"	=> "Modificar");
-		$accionesPredefinidas[] = array("estado"	=> "Activo",
-										"nombre"	=> "delete",
-										"etiqueta"	=> "Eliminar");
-		$accionesPredefinidas[] = array("estado"	=> "Activo",
-										"nombre"	=> "permisos",
-										"etiqueta"	=> "Permisos");
+		$accionesPredefinidas[] = array('estado'	=> 'Activo',
+										'nombre'	=> 'add',
+										'etiqueta'	=> 'Agregar');
+		$accionesPredefinidas[] = array('estado'	=> 'Activo',
+										'nombre'	=> 'edit',
+										'etiqueta'	=> 'Modificar');
+		$accionesPredefinidas[] = array('estado'	=> 'Activo',
+										'nombre'	=> 'delete',
+										'etiqueta'	=> 'Eliminar');
+		$accionesPredefinidas[] = array('estado'	=> 'Activo',
+										'nombre'	=> 'permisos',
+										'etiqueta'	=> 'Permisos');
 										
 		$accionesPredefinidas = null;
-		$accionesPredefinidas[] = "add";
-		$accionesPredefinidas[] = "edit";
-		$accionesPredefinidas[] = "delete";
-		$accionesPredefinidas[] = "deleteMultiple";
-		$accionesPredefinidas[] = "permisos";
-										
+		$accionesPredefinidas[] = 'index';
+		$accionesPredefinidas[] = 'add';
+		$accionesPredefinidas[] = 'edit';
+		$accionesPredefinidas[] = 'delete';
+		$accionesPredefinidas[] = 'deleteMultiple';
+		$accionesPredefinidas[] = 'permisos';
+
+		$parentActions = get_class_methods('AppController');
         foreach ($controllerClasses as $controller) {
             if ($controller != 'App' && $controller != 'Pages') {
                 $nombreArchivo = inflector::underscore($controller).'_controller.php';
@@ -71,12 +73,11 @@ class ControladoresController extends AppController {
                         unset($actions[$k]);
                     }
                 }
-                $parentActions = get_class_methods('AppController');
-                $controllersFs[] = am(array("archivo"=>$nombreArchivo, "nombre"=>str_replace(".php", "", $controller)), array("acciones"=>am($accionesPredefinidas, array_diff($actions, $parentActions))));
+                $controllersFs[] = am(array('archivo'=>$nombreArchivo, 'nombre'=>str_replace('.php', '', $controller)), array('acciones'=>am($accionesPredefinidas, array_diff($actions, $parentActions))));
             }
         }
 		
-		$controllersBase = $this->Controlador->find("list", array("fields"=>array("Controlador.id", "Controlador.archivo")));
+		$controllersBase = $this->Controlador->find('list', array('fields'=>array('Controlador.id', 'Controlador.archivo')));
 
 		/**
 		* En $controllersFs tengo todos los controladores que existen en el filesystem (codigo fuente).
@@ -93,18 +94,18 @@ class ControladoresController extends AppController {
 			* Si no esta en la base debo agregar el controlador y sus acciones relacionadas.
 			*/
 			if (!(in_array($controllerFs['archivo'], $controllersBase))) {
-				$controllerFs['estado'] = "Activo";
+				$controllerFs['estado'] = 'Activo';
 				$controllerFs['etiqueta'] = inflector::humanize(inflector::underscore($controllerFs['nombre']));
 				$acciones = array();
 				foreach ($controllerFs['acciones'] as $accion) {
-					$acciones[] = array("estado"	=> "Activo",
-										"nombre"	=> $accion,
-										"etiqueta"	=> inflector::humanize(inflector::underscore($accion)));
+					$acciones[] = array('estado'	=> 'Activo',
+										'nombre'	=> $accion,
+										'etiqueta'	=> inflector::humanize(inflector::underscore($accion)));
 				}
 				unset($controllerFs['acciones']);
 				
 				$this->Controlador->create();
-				$this->Controlador->save(array("Controlador"=>$controllerFs, "Accion"=>$acciones));
+				$this->Controlador->save(array('Controlador'=>$controllerFs, 'Accion'=>$acciones));
 			}
 				
 			/**
@@ -113,18 +114,18 @@ class ControladoresController extends AppController {
 			$controllersBaseFlip = array_flip($controllersBase);
 			if (isset($controllersBaseFlip[$controllerFs['archivo']])) {
 				$controlador_id = $controllersBaseFlip[$controllerFs['archivo']];
-				$actionsBase = Set::combine($this->Controlador->Accion->find("all", array("conditions"=>array("Accion.controlador_id"=>$controlador_id))), "{n}.Accion.id", "{n}.Accion.nombre");
+				$actionsBase = Set::combine($this->Controlador->Accion->find('all', array('conditions'=>array('Accion.controlador_id'=>$controlador_id))), '{n}.Accion.id', '{n}.Accion.nombre');
 				foreach ($controllerFs['acciones'] as $accion) {
 					/**
 					* Si la accion esta en el FS y no en la DB, la agrego.
 					*/
-					if (!(in_array($accion, $actionsBase))) {
-						$accion = array("estado"			=> "Activo",
-										"nombre"			=> $accion,
-										"controlador_id"	=> $controlador_id,
-										"etiqueta"			=> inflector::humanize(inflector::underscore($accion)));
+					if (!in_array($accion, $actionsBase)) {
+						$accion = array('estado'			=> 'Activo',
+										'nombre'			=> $accion,
+										'controlador_id'	=> $controlador_id,
+										'etiqueta'			=> inflector::humanize(inflector::underscore($accion)));
 						$this->Controlador->Accion->create();
-						$this->Controlador->Accion->save(array("Accion"=>$accion));
+						$this->Controlador->Accion->save(array('Accion'=>$accion));
 					}
 				}
 			
@@ -152,15 +153,6 @@ class ControladoresController extends AppController {
 			}
 		}
 		
-		/**
-		* Detecto si viene desde el actualizar de acciones, vuelvo a acciones...
-		if ($this->History->historia[count($this->History->historia)-2] == "/acciones/index/index") {
-			$this->redirect("../acciones/index");
-		}
-		else {
-			$this->redirect("index");
-		}
-		*/
 		$this->History->goBack();
 	}
 
