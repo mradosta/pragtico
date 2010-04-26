@@ -58,9 +58,11 @@ echo $this->element("add/add", array('fieldset' => $fieldset, "opcionesForm"=>ar
 $extraJs = array();
 if (!empty($this->data)) {
     foreach ($this->data as $ausencia) {
-        foreach ($ausencia['AusenciasSeguimiento'] as $k => $seguimiento) {
-            $extraJs[] = 'verifyStates(' . $k . ');';
-        }
+		if (!empty($ausencia['AusenciasSeguimiento'])) {
+			foreach ($ausencia['AusenciasSeguimiento'] as $k => $seguimiento) {
+				$extraJs[] = 'verifyStates(' . $k . ');';
+			}
+		}
     }
 }
 $appForm->addScript('
