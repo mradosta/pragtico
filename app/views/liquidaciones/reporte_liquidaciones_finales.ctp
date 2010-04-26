@@ -42,6 +42,7 @@ if (!empty($data)) {
     $documento->save($fileFormat);
 } else {
 
+	$conditions = null;
     $conditions['Condicion.Bar-liquidacion_final'] = array('options' => array('si' => 'Si', 'suspender' => 'Suspender'), 'multiple' => 'checkbox');
 
     $conditions['Condicion.Bar-desde'] = array('label' => 'Desde', 'type' => 'date');

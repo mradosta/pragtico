@@ -123,6 +123,7 @@ if (!empty($data)) {
     
 } else {
 
+	$conditions = null;
     $conditions['Condicion.Bar-empleador_id'] = array( 'lov' => array(
             'controller'        => 'empleadores',
             'seleccionMultiple' => 0,
@@ -157,6 +158,7 @@ if (!empty($data)) {
     $conditions['Condicion.Bar-estado'] = array('label' => 'Estado', 'multiple' => 'checkbox', 'type' => 'select', 'options' => $states);
 
     $options = array('title' => 'Resumen de Liquidacion');
+
     echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));
     
 

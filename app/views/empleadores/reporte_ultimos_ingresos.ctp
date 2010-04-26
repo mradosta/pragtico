@@ -40,11 +40,12 @@ if (!empty($data)) {
     $documento->save($fileFormat);
 } else {
 
+	$conditions = null;
     $conditions['Condicion.Bar-empleador_id'] = array( 'lov' => array(
             'controller'        => 'empleadores',
             'seleccionMultiple' => true,
             'camposRetorno'     => array('Empleador.cuit', 'Empleador.nombre')));
-    
+
     $options = array('title' => 'Ultimos Ingresos');
     echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));
 }

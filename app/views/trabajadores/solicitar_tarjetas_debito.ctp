@@ -70,6 +70,7 @@ if (!empty($data)) {
     $documento->save($fileFormat);
 } else {
 
+	$conditions = null;
     $conditions['Condicion.Bar-marcar'] = array('aclaracion' => 'Indica si deben marcarse como "Solicitud en Procesos" a aquellos trabajadores a los cuales se les solicite la Tarjeta de Debito.', 'type' => 'radio', 'options' => array('si' => 'Si', 'no' => 'No'), 'value' => 'si');
     $options = array('title' => 'Solicitud Tarjetas de Debito');
     echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));

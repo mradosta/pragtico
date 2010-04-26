@@ -45,21 +45,25 @@ $campos['Empleador.telefono'] = array();
 $campos['Empleador.fax'] = array();
 $campos['Empleador.pagina_web'] = array();
 $campos['Empleador.email'] = array();
-$fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => "Contacto", 'imagen' => 'contacto.gif')));
+$fieldsets[] = array('campos' => $campos, 'opciones' => array(
+	'fieldset' => array('legend' => 'Contacto', 'imagen' => 'contacto.gif')));
 
 $campos = null;
-$campos['Empleador.redondear'] = array('aclaracion' => "Indica si debe redondear la liquidacion.");
+$campos['Empleador.redondear'] = array('aclaracion' => 'Indica si debe redondear la liquidacion.');
 $campos['Empleador.pago'] = array();
 $campos['Empleador.facturar_por_area'] = array();
-$fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => "Informacion Adicional", 'imagen' => 'informacion_adicional.gif')));
+$campos['Empleador.auto_facturar'] = array('aclaracion' => 'Indica si al confirmar una liquidacion debe generar y confirmar la factura aosicada.');
+$fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => 'Informacion Adicional', 'imagen' => 'informacion_adicional.gif')));
 
 $campos = null;
-$campos['Empleador.corresponde_reduccion'] = array('aclaracion' => "Indica si corresponde reduccion (SIAP).");
-$campos['Empleador.actividad_id'] = array(	'aclaracion' =>  "Se refiere a la actividad (SIAP).",
-											"lov"		=>	array(	"controller"		=> 	"actividades",
-																"seleccionMultiple"	=> 	0,
-																	"camposRetorno"	=> 	array(	"Actividad.codigo",
-																								"Actividad.nombre")));
+$campos['Empleador.corresponde_reduccion'] = array('aclaracion' => 'Indica si corresponde reduccion (SIAP).');
+$campos['Empleador.actividad_id'] = array(	'aclaracion' 	=>  'Se refiere a la actividad (SIAP).',
+											'lov'			=>	array(
+												'controller'		=> 	'actividades',
+												'seleccionMultiple'	=> 	0,
+												'camposRetorno'		=> 	array(
+													'Actividad.codigo',
+													'Actividad.nombre')));
 $campos['Empleador.employers_type_id'] = array('label' => 'Tipo',
 											   'aclaracion' =>  "Se refiere al Tipo de Empleador (SIAP).",
 											"lov"		=>	array(	"controller"		=> 	"employers_types",

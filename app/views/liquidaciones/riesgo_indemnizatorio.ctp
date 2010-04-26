@@ -239,6 +239,7 @@ if (!empty($data)) {
     $documento->save($fileFormat);
 } else {
 
+	$conditions = null;
     $conditions['Condicion.Bar-relacion_id'] = array( 'lov' => array(
             'controller'        => 'relaciones',
             'seleccionMultiple' => true,
@@ -247,7 +248,7 @@ if (!empty($data)) {
                                             'Trabajador.cuil',
                                             'Trabajador.nombre',
                                             'Trabajador.apellido')));
-            
+
     $options = array('title' => 'Riesgo Indemnizatorio');
     echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));
 }

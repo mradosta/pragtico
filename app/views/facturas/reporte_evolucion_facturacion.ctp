@@ -25,7 +25,7 @@ if (!empty($data)) {
     $documento->setCellValue('E', 'Fact. ' . $periods[1], array('title' => '20'));
 
     $initialRow = $documento->getCurrentRow();
-    
+
     /** Body */
     foreach ($data as $cuit => $record) {
 
@@ -51,14 +51,15 @@ if (!empty($data)) {
     $documento->save($fileFormat);
 } else {
 
+	$conditions = null;
     $conditions['Condicion.Bar-empleador_id'] = array( 'lov' => array(
             'controller'        => 'empleadores',
             'seleccionMultiple' => true,
             'camposRetorno'     => array('Empleador.cuit', 'Empleador.nombre')));
-    
+
     $conditions['Condicion.Bar-periodo_largo_partida'] = array('label' => 'Periodo', 'type' => 'periodo', 'label' => 'Periodo Partida');
     $conditions['Condicion.Bar-periodo_largo_final'] = array('label' => 'Periodo', 'type' => 'periodo', 'label' => 'Periodo Final');
-    
+
     $options = array('title' => 'Evolucion de la Facturacion');
     echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));
 }

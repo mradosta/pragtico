@@ -144,6 +144,7 @@ if (!empty($data)) {
     $documento->save($fileFormat);
 } else {
 
+	$conditions = null;
     $conditions['Condicion.Bar-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('soloAAAAMM'));
 
     $conditions['Condicion.Bar-empleador_id'] = array( 'lov' => array(
