@@ -52,12 +52,7 @@ class AusenciasSeguimiento extends AppModel {
 				'message'	=> 'Debe especificar la cantidad de dias.'),
 			array(
 				'rule'		=> 'overlay',
-				'message'	=> 'Existe una ausencia cargada cuya duracion se superpondria con la cantidad de dias del seguimiento actual.')
-        ),
-        'ausencia_id' => array(
-			array(
-				'rule'		=> VALID_NOT_EMPTY, 
-				'message'	=> 'Debe seleccionar la ausencia a la cual se le esta realizando el seguimiento.')
+				'message'	=> 'Existe una ausencia cargada cuya duracion se superpondria con la cantidad de dias cargadas en seguimiento actual.')
         )
 	);
 
