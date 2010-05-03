@@ -675,7 +675,9 @@ class LiquidacionesController extends AppController {
 
         $this->Liquidacion->unbindModel(array('belongsTo' => array('Trabajador', 'Empleador', 'Relacion', 'Factura')));
         if ($this->Liquidacion->updateAll(
-				array('Liquidacion.estado'  => "'Guardada'"),
+				array(
+					'Liquidacion.estado'  		=> "'Guardada'",
+					'Liquidacion.permissions'  	=> '504'),
 				array('Liquidacion.id'      => $id))) {
 			$this->Session->setFlash(sprintf('Se guardaron correctamente %s liquidacion/es', count($id)), 'ok');
 		} else {
