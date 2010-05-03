@@ -65,20 +65,21 @@ class AusenciasSeguimiento extends AppModel {
 		/** Avoid overlay of absences */
 		if (!empty($this->data['AusenciasSeguimiento']['ausencia_id'])
 			&& empty($this->data['AusenciasSeguimiento']['id'])) {
+
 			$sql = '
 				SELECT 		1 FROM (
 					SELECT 		Ausencia.id,
 								Ausencia.desde,
+								MIN(AusenciaAux.desde) AS inicio_proxima,
 								ADDDATE(Ausencia.desde,
 									(SELECT 	SUM(dias) + ' . $this->data['AusenciasSeguimiento']['dias'] . '
 									FROM 		ausencias_seguimientos AusenciasSeguimiento
 									WHERE		AusenciasSeguimiento.ausencia_id = ' . $this->data['AusenciasSeguimiento']['ausencia_id'] . ')) AS fin
 					FROM		ausencias Ausencia INNER JOIN ausencias_seguimientos AusenciasSeguimiento
-						ON (Ausencia.id = AusenciasSeguimiento.ausencia_id)
+						ON (Ausencia.id = AusenciasSeguimiento.ausencia_id) LEFT JOIN ausencias AusenciaAux ON (Ausencia.relacion_id = AusenciaAux.relacion_id AND AusenciaAux.desde > Ausencia.desde)
 					WHERE 		Ausencia.id = ' . $this->data['AusenciasSeguimiento']['ausencia_id'] . '
 					GROUP BY	Ausencia.id) AS sq
-				WHERE			sq.id != ' . $this->data['AusenciasSeguimiento']['ausencia_id'] . '
-				AND				sq.fin >= NOW()';
+				WHERE			sq.fin >= sq.inicio_proxima';
 
 			$r = $this->query($sql);
 			if (!empty($r)) {

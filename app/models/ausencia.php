@@ -36,7 +36,7 @@ class Ausencia extends AppModel {
 								'edit'=>array('contain'=>array(	'Relacion'=>array('Empleador','Trabajador'),
 																'AusenciasSeguimiento' => array('order' => 'AusenciasSeguimiento.id'))));
 	
-	var $validate = array( 
+	var $validate = array(
         'relacion_id' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
@@ -79,20 +79,30 @@ class Ausencia extends AppModel {
 		if (!empty($this->data['Ausencia']['relacion_id'])
 			&& empty($this->data['Ausencia']['id'])) {
 			$sql = '
-				SELECT 		1 FROM (
 					SELECT 		Ausencia.desde,
 								ADDDATE(Ausencia.desde,
 									(SELECT 	SUM(dias)
 									FROM 		ausencias_seguimientos AusenciasSeguimiento
 									WHERE		AusenciasSeguimiento.ausencia_id = Ausencia.id)) AS fin
 					FROM		ausencias Ausencia
-					WHERE 		Ausencia.relacion_id = ' . $this->data['Ausencia']['relacion_id'] . ') AS sq
-				WHERE			sq.fin >= NOW()';
+					WHERE 		Ausencia.relacion_id = ' . $this->data['Ausencia']['relacion_id'];
 
-			$r = $this->query($sql);
-			if (!empty($r)) {
-				return false;
+			$overlaped = false;
+			App::import('Vendor', 'dates', 'pragmatia');
+			$endDate = Dates::dateAdd($this->data['Ausencia']['desde'], array_sum(Set::extract('/AusenciasSeguimiento/dias', $this->data)));
+			foreach ($this->query($sql) as $v) {
+				if (($v['Ausencia']['desde'] < $this->data['Ausencia']['desde'] &&
+					$v['0']['fin'] >= $this->data['Ausencia']['desde'])
+					||
+					($v['Ausencia']['desde'] > $this->data['Ausencia']['desde'] &&
+					$v['Ausencia']['desde'] <= $endDate)) {
+					
+					$overlaped = true;
+					break;
+				}
 			}
+
+			return !$overlaped;
 		}
 
 		return true;
