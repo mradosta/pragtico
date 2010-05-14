@@ -384,8 +384,8 @@ class UtilBehavior extends ContainableBehavior {
  * @return array Las condiciones para ser utilizados por el metodo find de cakePHP.
  * @access public
  */
-	function getConditions(&$model, $condiciones) {
-		return $this->__getConditions($condiciones);
+	function getConditions_deprecated(&$model, $condiciones) {
+		return $this->__getConditions_deprecated($condiciones);
 	}
 	
 	
@@ -397,7 +397,7 @@ class UtilBehavior extends ContainableBehavior {
  * @return array Las condiciones para ser utilizados por el metodo find de cakePHP.
  * @access private
  */
-	function __getConditions($condiciones) {
+	function __getConditions_deprecated($condiciones) {
 		$return = array();
 		if (!empty($condiciones['Condicion']) && is_array($condiciones['Condicion'])) {
 			foreach ($condiciones['Condicion'] as $k => $v) {
@@ -434,14 +434,14 @@ class UtilBehavior extends ContainableBehavior {
  *								If array of dates is specified, they'll used instead.
  * @return date 
  **/
-	function dateAddWorkingDays(&$Model, $startDate, $workingDays = 1, $nonWorkingDays = 'default') {
+	function dateAddWorkingDays_deprecated(&$Model, $startDate, $workingDays = 1, $nonWorkingDays = 'default') {
 		App::import('Vendor', 'dates', 'pragmatia');
 		$Dates = new Dates();
 		return $Dates->dateAddWorkingDays($startDate, $workingDays, $nonWorkingDays);
 	}
 
 
-    function getNonWorkingDays(&$Model, $startDate, $endDate, $options = array()) {
+    function getNonWorkingDays_deprecated(&$Model, $startDate, $endDate, $options = array()) {
         App::import('Vendor', 'dates', 'pragmatia');
         $Dates = new Dates();
         return $Dates->getNonWorkingDays($startDate, $endDate, $options);
@@ -552,7 +552,7 @@ class UtilBehavior extends ContainableBehavior {
  *
  */
 
-	function mapToKey(&$model, $datos, $opciones = array()) {
+	function mapToKey_deprecated(&$model, $datos, $opciones = array()) {
 
 		$return = false;
 		if (!empty($datos) && is_array($datos)) {
@@ -662,7 +662,7 @@ class UtilBehavior extends ContainableBehavior {
  * 					False en caso de que las fechas sean invalidas.
  * @access public
  */
-	function dateDiff(&$model, $fechaDesde, $fechaHasta = null) {
+	function dateDiff_deprecated(&$model, $fechaDesde, $fechaHasta = null) {
 		App::import("Vendor", "dates", "pragmatia");
 		$Dates = new Dates();
 		return $Dates->dateDiff($fechaDesde, $fechaHasta);
@@ -687,7 +687,7 @@ class UtilBehavior extends ContainableBehavior {
  * @return mixed La fecha en formato yyyy-mm-dd hh:mm:ss con el intervalo agregado, false si no fue posible realizar la operacion.
  * @access public
  */
-	function dateAdd(&$model, $fecha, $cantidad = 1, $intervalo = 'd') {
+	function dateAdd_deprecated(&$model, $fecha, $cantidad = 1, $intervalo = 'd') {
 		App::import('Vendor', 'dates', 'pragmatia');
 		$Dates = new Dates();
 		return $Dates->dateAdd($fecha, $cantidad, $intervalo);
@@ -703,7 +703,7 @@ class UtilBehavior extends ContainableBehavior {
  * @return array con los valores ingresados cuyas keys ahora son ponenecia de dos.
  * @access public
  */
-	function getValoresEnPotenciaDeDos(&$model, $valores) {
+	function getValoresEnPotenciaDeDos_deprecated(&$model, $valores) {
 		$return = array();
 		if (!empty($valores) && is_array($valores)) {
 			$key = 1;

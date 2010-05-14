@@ -475,13 +475,17 @@ class Concepto extends AppModel {
 			$order	= 'ORDER BY Concepto.nombre, Concepto.codigo';
 		}
 		
-		$sql = $this->generarSql(array(
-            'fields'        => $fields,
-            'table'         => $table,
-            'conditions'    =>$conditions,
-            'joins'         => $joins,
-            'order'         => $order));
-
+		$dbo = $this->getDataSource();
+		$sql = $dbo->buildStatement(array(
+			'fields'		=> $fields,
+			'table' 		=> $dbo->fullTableName($table),
+			'alias' 		=> Inflector::classify($table),
+			'conditions'	=> $conditions,
+			'limit' 		=> null,
+			'offset' 		=> null,
+			'order' 		=> $order,
+			'group' 		=> null,
+			'joins' 		=> $joins), $this);
 		$r = $this->query($sql);
 		
 		$conceptos = array();

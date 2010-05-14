@@ -108,29 +108,39 @@ class Usuario extends AppModel {
 		*/
 		$MenuItems = array();
 		if ((int)$usuario['Usuario']['roles'] & 1) {
-			$MenuItems = $this->RolesUsuario->Rol->RolesMenu->Menu->find('threaded', array('checkSecurity'=>false, 'order' => 'Menu.orden'));
+			$MenuItems = $this->RolesUsuario->Rol->RolesMenu->Menu->find('threaded', array(
+				'checkSecurity' => false,
+				'recursive'		=> -1,
+				'order' 		=> 'Menu.orden'));
 		} else {
-			$queryData = array(
-				'conditions'	=> array(	'Menu.estado'=> 'Activo'),
-				'checkSecurity'	=> false,
+
+			$dbo = $this->getDataSource();
+			$sql = $dbo->buildStatement(array(
+				'fields'		=> array('`Menu`.`id`'),
+				'table' 		=> $dbo->fullTableName($this),
+				'alias' 		=> 'Usuario',
+				'conditions'	=> array('Menu.estado' => 'Activo'),
+				'limit' 		=> null,
+				'offset' 		=> null,
+				'order' 		=> null,
+				'group' 		=> null,
 				'joins' 		=> array(
-									array(
-										'table' => 'roles_menus',
-										'type' 	=> 'INNER',
-										'conditions' => array(
-											array(	'RolesMenu.menu_id' => DboSource::identifier('Menu.id')),
-													'RolesMenu.estado' 	=> 'Activo')
-									),
-									array(
-										'table' => 'roles',
-										'type' 	=> 'INNER',
-										'conditions' => array(
-											array(	'RolesMenu.rol_id' 	=> DboSource::identifier('Rol.id'),
-													'Rol.estado' 		=> 'Activo',
-													'Rol.id'			=> Set::extract('/Rol/id', $usuario)))
-									)));
-								
-			$menus = $this->query($this->generarSql($queryData, $this->RolesUsuario->Rol->RolesMenu->Menu));
+					array(
+						'table' 		=> 'roles_menus',
+						'type' 			=> 'INNER',
+						'conditions' 	=> array(
+							array(	'RolesMenu.menu_id' => DboSource::identifier('Menu.id')),
+									'RolesMenu.estado' 	=> 'Activo')),
+					array(
+						'table' 		=> 'roles',
+						'type' 			=> 'INNER',
+						'conditions' 	=> array(
+							array(	'RolesMenu.rol_id' 	=> DboSource::identifier('Rol.id'),
+									'Rol.estado' 		=> 'Activo',
+									'Rol.id'			=> Set::extract('/Rol/id', $usuario))))
+				)), $this);
+			$menus = $this->query($sql);
+
 			/**
 			* Para entrar usando findAllThreaded debo conocer los ids porque no hace joins, entonces los busco.
 			*/
@@ -138,7 +148,7 @@ class Usuario extends AppModel {
 				$MenuItems = $this->RolesUsuario->Rol->RolesMenu->Menu->find('threaded', array(
 					'checkSecurity'	=> false,
 					'recursive'		=> -1,
-					'conditions'	=> array('Menu.id'=>Set::extract('/Menu/id', $menus)),
+					'conditions'	=> array('Menu.id' => Set::extract('/Menu/id', $menus)),
 					'order'			=> 'Menu.orden'));
 			}
 		}

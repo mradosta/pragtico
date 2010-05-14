@@ -167,7 +167,7 @@ class FacturasController extends AppController {
                     $this->redirect(array('action' => 'prefecturar'));
                 }
 
-                $this->Factura->Liquidacion->setSecurityAccess('readOwnerOnly');
+
                 if (!$this->Factura->getInvoice($condiciones, $groupId)) {
                     $this->Session->setFlash(__('Can\'t create invoices. Check search criterias', true), 'error');
                     $resultados['registros'] = array();

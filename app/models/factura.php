@@ -54,42 +54,49 @@ class Factura extends AppModel {
         return $return;
     }
 
-	function __createAndSave($employerId, $receiptIds, $areaId, $saveDatailsTmp, $conditions, $groupId) {
+	function __createAndSave($params) {
+
 		$total = 0;
-		foreach ($saveDatailsTmp as $tmp) {
+		foreach ($params['saveDatails'] as $tmp) {
 			$saveDatails[] = $tmp;
 			$total += $tmp['total'];
 		}
-		
-		$saveMaster['empleador_id'] = $employerId;
-		$saveMaster['area_id'] = $areaId;
+
+		$saveMaster['empleador_id'] = $params['employerId'];
+		$saveMaster['area_id'] = $params['areaId'];
 		$saveMaster['fecha'] = date('Y-m-d');
 		$saveMaster['estado'] = 'Sin Confirmar';
 		$saveMaster['total'] = $total;
 		$saveMaster['confirmable'] = 'No';
-		if ($conditions['Liquidacion.estado'] === 'Confirmada') {
+		if ($params['conditions']['Liquidacion.estado'] === 'Confirmada') {
 			$saveMaster['confirmable'] = 'Si';
 		}
-		$saveMaster['ano'] = $conditions['Liquidacion.ano'];
-		$saveMaster['mes'] = $conditions['Liquidacion.mes'];
+		$saveMaster['ano'] = $params['conditions']['Liquidacion.ano'];
+		$saveMaster['mes'] = $params['conditions']['Liquidacion.mes'];
 		$saveMaster['periodo'] = 'M';
-		if (!empty($conditions['Liquidacion.periodo like'])) {
-			$saveMaster['periodo'] = str_replace('%', '', $conditions['Liquidacion.periodo like']);
+		if (!empty($params['conditions']['Liquidacion.periodo like'])) {
+			$saveMaster['periodo'] = str_replace('%', '', $params['conditions']['Liquidacion.periodo like']);
 		}
-		$saveMaster['tipo'] = Inflector::humanize($conditions['Liquidacion.tipo']);
+		$saveMaster['tipo'] = Inflector::humanize($params['conditions']['Liquidacion.tipo']);
 
-        if (!empty($groupId)) {
-            $saveMaster['group_id'] = $groupId;
+        if (!empty($params['groupId'])) {
+            $saveMaster['group_id'] = $params['groupId'];
             foreach ($saveDatails as $k => $detail) {
-                $saveDatails[$k]['group_id'] = $groupId;
+                $saveDatails[$k]['group_id'] = $params['groupId'];
             }
         }
 
+		/** When atomic is false, means it's coming from auto-invoice, so must confirm the created invoice also */
+		if ($params['atomic'] === false) {
+			$saveMaster['estado'] = 'Confirmada';
+			$saveMaster['permissions'] = '288';
+		}
+
 		$save = array_merge(array('Factura' => $saveMaster), array('FacturasDetalle' => $saveDatails));
-		if ($this->saveAll($save)) {
+		if ($this->saveAll($save, array('atomic' => $params['atomic']))) {
 			$this->Liquidacion->unbindModel(array('belongsTo' => array(
 				'Convenio', 'Area', 'Relacion', 'Factura', 'Trabajador', 'Empleador')));
-			return $this->Liquidacion->updateAll(array('Liquidacion.factura_id' => $this->id), array('Liquidacion.id' => $receiptIds));
+			return $this->Liquidacion->updateAll(array('Liquidacion.factura_id' => $this->id), array('Liquidacion.id' => $params['receiptIds']));
 		} else {
 			return false;
 		}
@@ -105,76 +112,132 @@ class Factura extends AppModel {
         return false;
     }
     
-	function getInvoice($conditions = null, $groupId = null) {
+	function getInvoice($conditions = null, $groupId = null, $checkAutoInvoice = false) {
 
 		if (empty($conditions)) {
 			return false;
 		}
 
-        
 		$conditions = array_merge($conditions,
 			array(	'OR' => array(
 				'Liquidacion.factura_id' 	=> null,
 					array(	'Factura.estado' 				=> 'Sin Confirmar',
 							'Liquidacion.factura_id !=' 	=> null))));
 
-        $data = $this->Liquidacion->find('all',
+		$this->Liquidacion->setSecurityAccess('readOwnerOnly');
+        $r = $this->Liquidacion->find('all',
 			array(	'conditions' 	=> $conditions,
-					'order' 		=> array('Liquidacion.empleador_id', 'Liquidacion.relacion_area_id'),
-				 	'contain'		=> array('Empleador', 'LiquidacionesDetalle', 'Factura')));
+					'order' 		=> array(
+						'Liquidacion.empleador_id',
+						'Liquidacion.relacion_area_id'),
+				 	'contain'		=> array(
+						'Empleador',
+						'LiquidacionesDetalle',
+						'Factura')));
 
-        if (!empty($data)) {
-			
-			$saveMaster = $saveDatails = null;
-			$employerId = null;
-			$areaId = null;
-			$receiptIds = null;
-            $count = count($data) - 1;
-			foreach ($data as $k => $receipt) {
 
-                if ($receipt['Empleador']['facturar_por_area'] === 'No'
-                    && $employerId != $receipt['Liquidacion']['empleador_id']) {
-					$employerId = $receipt['Liquidacion']['empleador_id'];
-					$areaId = null;
-                    if ($k > 0) {
-						$this->__createAndSave($employerId, $receiptIds, $areaId, $saveDatails, $conditions, $groupId);
-						$saveMaster = $saveDatails = $receiptIds = null;
+        if (!empty($r)) {
+
+			foreach ($r as $receipt) {
+				$separatedData[$receipt['Liquidacion']['tipo']][] = $receipt;
+			}
+
+
+			foreach ($separatedData as $data) {
+
+				$saveMaster = $saveDatails = null;
+				$employerId = null;
+				$areaId = null;
+				$receiptIds = null;
+
+				foreach ($data as $k => $receipt) {
+
+					$atomic = true;
+					if ($checkAutoInvoice === true) {
+
+						$atomic = false;
+
+						if ($receipt['Empleador']['auto_facturar'] === 'No') {
+							continue;
+						} else {
+							$conditions = array_merge($conditions,
+								array(	'Liquidacion.estado' 	=> $receipt['Liquidacion']['estado'],
+										'Liquidacion.ano' 		=> $receipt['Liquidacion']['ano'],
+										'Liquidacion.mes' 		=> $receipt['Liquidacion']['mes'],
+										'Liquidacion.tipo' 		=> $receipt['Liquidacion']['tipo']));
+						}
 					}
-				} elseif ($receipt['Empleador']['facturar_por_area'] === 'Si'
-                    && $areaId != $receipt['Liquidacion']['relacion_area_id']) {
-                    if ($areaId != null && !empty($saveDatails)) {
-                        $this->__createAndSave($employerId, $receiptIds, $areaId, $saveDatails, $conditions, $groupId);
-                        $saveMaster = $saveDatails = $receiptIds = null;
-                    }
-                    $employerId = $receipt['Liquidacion']['empleador_id'];
-                    $areaId = $receipt['Liquidacion']['relacion_area_id'];
-                }
 
-                $receiptIds[] = $receipt['Liquidacion']['id'];
-                foreach ($receipt['LiquidacionesDetalle'] as $detail) {
-                    if ($detail['coeficiente_tipo'] !== 'No Facturable' && ($detail['concepto_imprimir'] === 'Si' || ($detail['concepto_imprimir'] === 'Solo con valor') && abs($detail['valor']) > 0)) {
-                        if (!isset($saveDatails[$detail['coeficiente_nombre']])) {
-                            $saveDatails[$detail['coeficiente_nombre']]['coeficiente_id'] = $detail['coeficiente_id'];
-                            $saveDatails[$detail['coeficiente_nombre']]['coeficiente_nombre'] = $detail['coeficiente_nombre'];
-                            $saveDatails[$detail['coeficiente_nombre']]['coeficiente_tipo'] = $detail['coeficiente_tipo'];
-                            $saveDatails[$detail['coeficiente_nombre']]['coeficiente_valor'] = $detail['coeficiente_valor'];
-                            $saveDatails[$detail['coeficiente_nombre']]['subtotal'] = $detail['valor'];
-                            $saveDatails[$detail['coeficiente_nombre']]['total'] = $detail['valor'] * $detail['coeficiente_valor'];
-                        } else {
-                            $saveDatails[$detail['coeficiente_nombre']]['subtotal'] += $detail['valor'];
-                            $saveDatails[$detail['coeficiente_nombre']]['total'] += $detail['valor'] * $detail['coeficiente_valor'];
-                        }
-                    }
-                }
 
-                if ($count === $k && !empty($saveDatails)) {
-                    $this->__createAndSave($employerId, $receiptIds, $areaId, $saveDatails, $conditions, $groupId);
-                    $saveMaster = $saveDatails = $receiptIds = null;
-                }
-            }
+					if ($receipt['Empleador']['facturar_por_area'] === 'No'
+						&& $employerId != $receipt['Liquidacion']['empleador_id']) {
+						$employerId = $receipt['Liquidacion']['empleador_id'];
+						$areaId = null;
+						if ($k > 0) {
+							$this->__createAndSave(array(
+								'employerId'		=> $employerId,
+								'receiptIds'		=> $receiptIds,
+								'areaId' 			=> $areaId,
+								'saveDatails'		=> $saveDatails,
+								'conditions' 		=> $conditions,
+								'groupId'			=> $groupId,
+								'atomic'			=> $atomic));
+							$saveMaster = $saveDatails = $receiptIds = null;
+						}
+					} elseif ($receipt['Empleador']['facturar_por_area'] === 'Si'
+						&& $areaId != $receipt['Liquidacion']['relacion_area_id']) {
+						if ($areaId != null && !empty($saveDatails)) {
+							$this->__createAndSave(array(
+								'employerId'		=> $employerId,
+								'receiptIds'		=> $receiptIds,
+								'areaId' 			=> $areaId,
+								'saveDatails'		=> $saveDatails,
+								'conditions' 		=> $conditions,
+								'groupId'			=> $groupId,
+								'atomic'			=> $atomic));
+							$saveMaster = $saveDatails = $receiptIds = null;
+						}
+						$employerId = $receipt['Liquidacion']['empleador_id'];
+						$areaId = $receipt['Liquidacion']['relacion_area_id'];
+					}
+
+
+					$receiptIds[] = $receipt['Liquidacion']['id'];
+					foreach ($receipt['LiquidacionesDetalle'] as $detail) {
+						if ($detail['coeficiente_tipo'] !== 'No Facturable' && ($detail['concepto_imprimir'] === 'Si' || ($detail['concepto_imprimir'] === 'Solo con valor') && abs($detail['valor']) > 0)) {
+							if (!isset($saveDatails[$detail['coeficiente_id']])) {
+								$saveDatails[$detail['coeficiente_id']]['coeficiente_id'] = $detail['coeficiente_id'];
+								$saveDatails[$detail['coeficiente_id']]['coeficiente_nombre'] = $detail['coeficiente_nombre'];
+								$saveDatails[$detail['coeficiente_id']]['coeficiente_tipo'] = $detail['coeficiente_tipo'];
+								$saveDatails[$detail['coeficiente_id']]['coeficiente_valor'] = $detail['coeficiente_valor'];
+								$saveDatails[$detail['coeficiente_id']]['subtotal'] = $detail['valor'];
+								$saveDatails[$detail['coeficiente_id']]['total'] = $detail['valor'] * $detail['coeficiente_valor'];
+							} else {
+								$saveDatails[$detail['coeficiente_id']]['subtotal'] += $detail['valor'];
+								$saveDatails[$detail['coeficiente_id']]['total'] += $detail['valor'] * $detail['coeficiente_valor'];
+							}
+						}
+					}
+				}
+
+				if (!empty($saveDatails)) {
+					$this->__createAndSave(array(
+						'employerId'		=> $employerId,
+						'receiptIds'		=> $receiptIds,
+						'areaId' 			=> $areaId,
+						'saveDatails'		=> $saveDatails,
+						'conditions' 		=> $conditions,
+						'groupId'			=> $groupId,
+						'atomic'			=> $atomic));
+				}
+			}
+
 			return true;
+
 		} else {
+
 			return false;
+
 		}
 	}
 	

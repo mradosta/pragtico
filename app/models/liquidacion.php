@@ -177,20 +177,11 @@ class Liquidacion extends AppModel {
 
 		/** Check if there are no previous errors */
 		if ($this->getRelationship('Relacion', 'error') !== false) {
-			$this->__setError(array(    'tipo'                  => 'Liquidaciones sin facturar',
-										'gravedad'              => 'Alta',
-										'concepto'              => '',
-										'variable'              => '',
-										'formula'               => '',
-										'descripcion'           => 'No es posible realizar la liquidacion porque existen liquidaciones previas sin facturar para el Empleador.',
-										'recomendacion'         => 'Realice la facturacion del empleador antes de continuar.',
-										'descripcion_adicional' => ''));
-
 			return $this->__getSaveArray($this->__receiptType);
 		}
 
 
-		/** If there are previous receipts with no confirmed invoices, can't do a new receipt */
+		/** If there are previous receipts with unconfirmed invoices, can't do a new receipt */
 		if ($options['permitir_liquidar_con_liquidaciones_no_facturadas'] == 'No') {
 			if (is_null($this->__notAllowedEmployers)) {
 				$this->__notAllowedEmployers = Set::extract('/Liquidacion/empleador_id',
@@ -474,6 +465,9 @@ class Liquidacion extends AppModel {
 
 
     function __getSaveArray($type) {
+
+		App::import('Vendor', 'dates', 'pragmatia');
+
         /**
         * Preparo el array para guardar la pre-liquidacion.
         * Lo guardo como una liquidacion con estado "Sin Confirmar".
@@ -486,7 +480,7 @@ class Liquidacion extends AppModel {
             list($liquidacion['ano'], $liquidacion['mes'], ) = explode('-', $relationship['RelacionesHistorial'][0]['fin']);
             $liquidacion['periodo'] = 'F';
             /** When final receipt, must pay whether two next days */
-            $liquidacion['pago'] = $this->dateAddWorkingDays($relationship['RelacionesHistorial'][0]['fin'], 2);
+            $liquidacion['pago'] = Dates::dateAddWorkingDays($relationship['RelacionesHistorial'][0]['fin'], 2);
         } else {
             $liquidacion['ano'] = $this->getPeriod('ano');
             $liquidacion['mes'] = $this->getPeriod('mes');
@@ -498,7 +492,7 @@ class Liquidacion extends AppModel {
 					$liquidacion['mes']	= 12;
 				}
 			}
-            $liquidacion['pago'] = $this->dateAddWorkingDays($this->getPeriod('hasta'), $this->getRelationship('Empleador', 'pago'));
+            $liquidacion['pago'] = Dates::dateAddWorkingDays($this->getPeriod('hasta'), $this->getRelationship('Empleador', 'pago'));
         }
         $liquidacion['tipo'] = $this->getVarValue('#tipo_liquidacion');
         $liquidacion['estado'] = 'Sin Confirmar';

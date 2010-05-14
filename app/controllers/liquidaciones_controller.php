@@ -267,14 +267,13 @@ class LiquidacionesController extends AppController {
                 }
 
                 $this->Liquidacion->Behaviors->detach('Permisos');
-                $this->Liquidacion->Behaviors->detach('Util');
                 $workers = $this->Liquidacion->find('all', array(
                         'conditions'    => $conditions,
                         'fields'        => array('COUNT(DISTINCT Liquidacion.trabajador_id) AS cantidad'),
                         'recursive'     => -1));
 
                 if (empty($workers[0]['Liquidacion']['cantidad'])) {
-                    $this->Session->setFlash('No se han encontrado liquidaciones segun los criterios especificados.', 'error');
+                    $this->Session->setFlash('No se han encontrado liquidaciones con los criterios especificados.', 'error');
                 } else {
 
                     if (!empty($this->data['Condicion']['Bar-concepto_id'])) {
@@ -283,6 +282,7 @@ class LiquidacionesController extends AppController {
                     
                     $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
                     $conditions['OR'] = array('LiquidacionesDetalle.concepto_imprimir' => 'Si', array('LiquidacionesDetalle.concepto_imprimir' => 'Solo con valor', 'ABS(LiquidacionesDetalle.valor) >' => 0));
+
 
 					$data = array();
                     if ($group_option === 'worker') {
@@ -335,13 +335,13 @@ class LiquidacionesController extends AppController {
                         }
                     }
 
-					if (empty($data)) {
-						$this->Session->setFlash('No se han encontrado datos segun los criterios especificados.', 'error');
-					}
-
                     if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
                         $this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Liquidacion-grupo_id']));
                     }
+
+					if (empty($data)) {
+						$this->Session->setFlash('No se han encontrado datos segun los criterios especificados.', 'error');
+					}
 
                     $this->set('data', $data);
                     $this->set('totalWorkers', $workers[0]['Liquidacion']['cantidad']);
@@ -795,7 +795,6 @@ class LiquidacionesController extends AppController {
             $conditions['Liquidacion.estado'] = 'Confirmada';
 
             $this->Liquidacion->Behaviors->detach('Permisos');
-            $this->Liquidacion->Behaviors->detach('Util');
 
             $this->set('data', $this->Liquidacion->find('all',
                     array(  'recursive'     => -1,
@@ -1234,8 +1233,8 @@ class LiquidacionesController extends AppController {
                     'Liquidacion.factura_id' => null));
                 $this->Paginador->removeCondition(array('Liquidacion.factura_id !='));
             }
-		} elseif (!array_key_exists('Liquidacion.factura_id', $prevFilter['condiciones'])
-			&& !array_key_exists('Liquidacion.factura_id !=', $prevFilter['condiciones'])) {
+		} elseif (!array_key_exists('Liquidacion.factura_id', (array)$prevFilter['condiciones'])
+			&& !array_key_exists('Liquidacion.factura_id !=', (array)$prevFilter['condiciones'])) {
             $this->data['Condicion']['Bar-facturado'] = array('Si', 'No');
             $this->Paginador->removeCondition(array('Liquidacion.factura_id !=', 'Liquidacion.factura_id'));
         }
@@ -1280,6 +1279,7 @@ class LiquidacionesController extends AppController {
  *		- Las liquidaciones cambian a estado "Liquidada".
  *		- Se generan los pagos pendientes.
  *		- Se agregan detalles de descuentos.
+ *		- En caso de que el empleador tenga marcado como auto_facturar en "Si", se realiza la pre-factura y se confirma.
  *
  * @return void.
  * @access public.
@@ -1290,17 +1290,19 @@ class LiquidacionesController extends AppController {
 		if (!empty($ids)) {
 
             $this->Liquidacion->setSecurityAccess('readOwnerOnly');
-            if ($this->Liquidacion->find('count', array(
+            $r = $this->Liquidacion->find('all', array(
+				'recursive'		=> -1,
                 'conditions'    => array(
                     'Liquidacion.id'        => $ids,
                     'Liquidacion.estado'    => array('Sin Confirmar', 'Guardada'),
-                    'Liquidacion.total >='  => 0))) != count($ids)) {
-                    
+                    'Liquidacion.total >='  => 0)));
+
+            if (count($r) != count($ids)) {
                 $this->Session->setFlash('Ha seleccionado liquidaciones para confirmar que no pueden ser confirmadas.', 'error');
                 $this->History->goBack();
             }
-            
-            
+
+
 			/**
 			* En la tabla auxiliares tengo un array de los datos listos para guardar.
 			* Puede haber campos que deben ser guardados y no tienen valor, estos debo ponerle valor actual,
@@ -1353,6 +1355,7 @@ class LiquidacionesController extends AppController {
                     }
                     unset($save['condition']);
                 }
+
 				$modelSave = ClassRegistry::init($model);
                 /** Just the owner and group can just read. Nobody can edit or delete it */
                 $save['permissions'] = '288';
@@ -1362,7 +1365,7 @@ class LiquidacionesController extends AppController {
 					$c++;
                 }
 			}
-                    
+
             /** If everything is ok, change state and permission so only owner and group can just read */
 			if ($c === count($auxiliares)) {
 				$this->Liquidacion->recursive = -1;
@@ -1371,15 +1374,22 @@ class LiquidacionesController extends AppController {
                     'permissions'   => "'288'",
                     'modified'      => 'NOW()'),
                         array('Liquidacion.id' => $ids))) {
-					/**
-					 * Borro de la tabla auxiliar.
-					 */
+
+					/** Deletes auxiliar table */
 					if (!empty($idsAuxiliares)) {
 						$this->Liquidacion->LiquidacionesAuxiliar->recursive = -1;;
 						$this->Liquidacion->LiquidacionesAuxiliar->deleteAll(array('LiquidacionesAuxiliar.id' => $idsAuxiliares));
 					}
-					$db->commit($this);
-                    $this->redirect('index/' . implode('|', $ids));
+
+					/** If employer is marked as auto_facturar = 'Si', must create and confirm invoices */
+					list($groupId, ) = array_keys(User::getUserGroups('default'));
+					if (!$this->Liquidacion->Factura->getInvoice(array('Liquidacion.id' => $ids), $groupId, true)) {
+						$db->rollback($this);
+						$this->Session->setFlash('Ocurrio un error al intentar generar las facturas.', 'error');
+					} else {
+						$db->commit($this);
+                    	$this->redirect('index/' . implode('|', $ids));
+					}
 				} else {
 					$db->rollback($this);
 					$this->Liquidacion->__buscarError();
