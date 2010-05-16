@@ -79,7 +79,7 @@ class GruposController extends AppController {
 			$this->Session->write('__Usuario', $usuario);
 
             /** Clear current filters */
-            $this->Session->del('filtros');
+            $this->Session->delete('filtros');
             
             if ($background === false) {
                 $this->Session->setFlash('El nuevo grupo por defecto se seteo correctamente.', 'ok');

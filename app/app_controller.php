@@ -689,7 +689,7 @@ class AppController extends Controller {
  * @access public
  */
 	function limpiar_busquedas() {
-		$this->Session->del("filtros");
+		$this->Session->delete('filtros');
 		$this->autoRender = false;
 	}
 	
