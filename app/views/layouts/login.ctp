@@ -16,13 +16,6 @@
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
  
-/**
-* Si hay algo que mostrar en la session, lo obtengo para mostralo luego.
-*/
-ob_start();
-$session->flash();
-$flash = ob_get_clean();
-
 $codigo_html[] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 $codigo_html[] = '<html xmlns="http://www.w3.org/1999/xhtml">';
 $codigo_html[] = "\t" . '<head>';
@@ -59,7 +52,7 @@ $codigo_html[] = "\t" . '</head>';
 $codigo_html[] = '';
 
 $codigo_html[] = "\t" . '<body>';
-$codigo_html[] = $flash;
+$codigo_html[] = $session->flash();
 $links = null;
 $links[] = "\t\t" . $appForm->link('Acerca de Pragtico', 'http://www.pragtico.com.ar/wiki', array('tabindex' => '50'));
 $links[] = "\t\t" . $appForm->link('Manual', 'http://www.pragtico.com.ar/wiki/index.php/Manual_de_Usuario', array('tabindex' => '51'));
@@ -83,7 +76,7 @@ $links[] = $appForm->link($appForm->image('cake.power.gif', array('alt' => 'Cake
 $links[] = $appForm->link($appForm->image('firefox.png', array('alt' => 'Descargar Firefox 3.5')), 'http://www.spreadfirefox.com/node&id=0&t=308');
 $codigo_html[] = "\n\t\t\t\t" . implode("\n\t\t\t\t", $links);
 $codigo_html[] = "\n\t\t\t" . '</div>';
-$codigo_html[] = $cakeDebug;
+$codigo_html[] = $this->element('sql_dump');
 $codigo_html[] = "\t" . '</body>';
 $codigo_html[] = '</html>';
 

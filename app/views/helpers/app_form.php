@@ -1085,6 +1085,7 @@ class AppFormHelper extends FormHelper {
 		if (strstr($title, '<img src="')) {
 			$escapeTitle = false;
 		}
+		$options['escape'] = $escapeTitle;
 		
 		if (isset($options['tipo']) && $options['tipo'] === "ajax") {
 			unset($options['tipo']);

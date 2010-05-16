@@ -39,7 +39,7 @@ class AppController extends Controller {
 	 * @var array
 	 * @access public
 	 */
-	var $components = array('Paginador', 'RequestHandler', 'History', 'Util');
+	var $components = array('Session', 'Paginador', 'RequestHandler', 'History', 'Util');
 
 
 /**

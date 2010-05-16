@@ -16,29 +16,27 @@
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
  
-
-$mensaje[0] = $appForm->tag("span", $appForm->link("Cerrar", null, array("class"=>"link_boton", "title"=>"Cerrar")));
+$mensaje[0] = $appForm->tag('span', $appForm->link('Cerrar', null, array('class'=>'link_boton', 'title'=>'Cerrar')));
 $mensaje[1] = $appForm->image('ok_icono_verde.gif');
-$mensaje[2] = $appForm->tag("span", $content_for_layout, array("class"=>"contenido"));
+$mensaje[2] = $appForm->tag('span', $message, array('class'=>'contenido'));
 
-if(!empty($warnings)) {
+if (!empty($warnings)) {
 	$mensaje[1] = $appForm->image('ok_icono_amarillo.gif');
-	foreach($warnings as $k=>$warning) {
+	foreach ($warnings as $k=>$warning) {
 		$textoWarnings = null;
-		foreach($warning as $w) {
+		foreach ($warning as $w) {
 			$textoWarnings[] = $w['warningDescripcion'];
 		}
-		if(count($warnings) > 1) {
-			array_unshift($textoWarnings, "Registro " . $k . ":");
+		if (count($warnings) > 1) {
+			array_unshift($textoWarnings, 'Registro ' . $k . ':');
 		}
-		$mensajeWarning[] = $appForm->tag("span", implode("<br />", $textoWarnings), array("class"=>"detalle"));
+		$mensajeWarning[] = $appForm->tag('span', implode('<br />', $textoWarnings), array('class'=>'detalle'));
 	}
-	echo $appForm->tag("div", $mensaje ,array("class"=>"session_flash session_flash_warning"));
-	array_unshift($mensajeWarning, $appForm->tag("span", "Detalles (No necesariamente significan errores, el registro se ha modificado)", array("class"=>"titulos")));
-	echo $appForm->tag("div", $mensajeWarning, array("class"=>"session_flash session_flash_warning_detalle"));
-}
-else {
-	echo $appForm->tag("div", $mensaje ,array("class"=>"session_flash session_flash_ok"));
+	echo $appForm->tag('div', $mensaje ,array('class'=>'session_flash session_flash_warning'));
+	array_unshift($mensajeWarning, $appForm->tag('span', 'Detalles (No necesariamente significan errores, el registro se ha modificado)', array('class' => 'titulos')));
+	echo $appForm->tag('div', $mensajeWarning, array('class'=>'session_flash session_flash_warning_detalle'));
+} else {
+	echo $appForm->tag('div', $mensaje ,array('class'=>'session_flash session_flash_ok'));
 }
 
 
@@ -61,5 +59,5 @@ else {
 }
 $js .= "jQuery('.session_flash .link_boton').bind('click', vOcultar);";
 
-$appForm->addScript($js);
+echo $appForm->codeBlock($js);
 ?>

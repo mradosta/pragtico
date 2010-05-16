@@ -54,6 +54,39 @@ define('VALID_NUMBER_MAYOR_A_CERO', '/^[1-9]+/');
 define('VALID_NUMBER_NULO', '/[0-9]*/');
 define('VALID_PERIODO', '/^(20\d\d)(0[1-9]|1[012])([12][qQ]|[12][sS]|[mM]|[aA]|[fF])$|^$/'); //200804M, 2007111Q, 2007092Q
 
+define('VALID_NOT_EMPTY', '/.+/');
+define('VALID_NUMBER', '/^[-+]?\\b[0-9]*\\.?[0-9]+\\b$/');
+define('VALID_EMAIL', "/^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,4}|museum|travel)$/i");
+
+Inflector::rules('plural', array(
+	'rules' 			=> array(
+		'/(.d)$/i' => '\1\2es',
+		'/(.n)$/i' => '\1\2es',
+		'/(.l)$/i' => '\1\2es',
+		'/(.r)$/i' => '\1\2es'),
+	'uninflected' 		=> array('suss'),
+    'irregular' 		=> array(
+		'zone'                      => 'zones',
+		'actividad'					=> 'actividades',
+		'novedad'					=> 'novedades',
+		'empleador'					=> 'empleadores',
+		'localidad'					=> 'localidades',
+		'trabajador'				=> 'trabajadores',
+		'condicion'					=> 'condiciones',
+		'controlador'				=> 'controladores',
+		'variable'					=> 'variables',
+		'coeficiente'				=> 'coeficientes',
+		'relacion'					=> 'relaciones',
+		'rol'						=> 'roles',
+		'vacacion'					=> 'vacaciones',
+		'liquidacion'				=> 'liquidaciones',
+		'modalidad'					=> 'modalidades',
+		'situacion'					=> 'situaciones',
+		'sucursal'					=> 'sucursales',
+		'accion'					=> 'acciones')
+));
+
+
 function d($var = 'x', $skipDebugMode = false) {
 	if (Configure::read() > 0 || $skipDebugMode === true) {
 		$calledFrom = debug_backtrace();
