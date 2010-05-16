@@ -67,6 +67,7 @@ Inflector::rules('plural', array(
 	'uninflected' 		=> array('suss'),
     'irregular' 		=> array(
 		'zone'                      => 'zones',
+		'familiar'                  => 'familiares',
 		'actividad'					=> 'actividades',
 		'novedad'					=> 'novedades',
 		'empleador'					=> 'empleadores',
