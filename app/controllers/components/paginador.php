@@ -90,7 +90,7 @@ class PaginadorComponent extends Object {
 
         /** Delete filters */
         if (isset($this->__controller->data['Formulario']['accion']) && $this->__controller->data['Formulario']['accion'] === 'limpiar') {
-            $this->__controller->Session->del('filtros.' . $this->__controller->name . '.' . $this->__controller->action);
+            $this->__controller->Session->delete('filtros.' . $this->__controller->name . '.' . $this->__controller->action);
             unset($this->__controller->data['Condicion']);
             $useSession = false;
         }
@@ -229,7 +229,7 @@ class PaginadorComponent extends Object {
         if ($reset === false) {
             $this->__conditions = array_merge($this->__conditions, (array)$conditions);
         } else {
-            $this->__controller->Session->del('filtros.' . $this->__controller->name . '.' . $this->__controller->action);
+            $this->__controller->Session->delete('filtros.' . $this->__controller->name . '.' . $this->__controller->action);
             $this->__controller->data = array();
             $this->__conditions = (array)$conditions;
         }

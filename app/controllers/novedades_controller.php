@@ -239,7 +239,7 @@ class NovedadesController extends AppController {
 					}
 				}
 			} elseif ($this->data['Formulario']['accion'] === "limpiar") {
-				$this->Session->del('filtros.' . $this->name . '.' . $this->action);
+				$this->Session->delete('filtros.' . $this->name . '.' . $this->action);
 				unset($this->data['Condicion']);
 			}
 		}
