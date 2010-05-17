@@ -44,11 +44,9 @@ class DocumentoHelper extends AppHelper {
  */
     var $activeSheet;
 
-
 	private $__sheetsCount = 0;
 
 	private $__maxRow = 0;
-
 
 	private $__currentRow = 1;
 
@@ -81,11 +79,16 @@ class DocumentoHelper extends AppHelper {
  */
     function create($options = array()) {
 
-        $__defaults = array('password' => false, 'header' => true, 'orientation' => 'portrait', 'title' => '', 'gridTitles' => array());
+        $__defaults = array(
+			'password' 		=> false,
+			'header' 		=> true,
+			'orientation' 	=> 'portrait',
+			'title' 		=> '',
+			'gridTitles' 	=> array());
+
         $this->__createOptions = array_merge($__defaults, $options);
 
         $this->doc->getProperties()->setCreator('Pragtico')->setLastModifiedBy('Pragtico')->setTitle('Pragtico')->setSubject('Pragtico')->setDescription('Pragtico')->setKeywords('Pragtico')->setCategory('Pragtico');
-
 
 		$this->createNewSheet();
 		$this->__sheetsCount++;
@@ -107,7 +110,7 @@ class DocumentoHelper extends AppHelper {
 			$this->__sheetsCount++;
 			$this->doc->setActiveSheetIndex(($this->__sheetsCount - 1));
 
-			foreach($colsWidths as $col => $width) {
+			foreach ($colsWidths as $col => $width) {
 				$this->setWidth($col, $width);
 			}
 		}
@@ -157,7 +160,7 @@ class DocumentoHelper extends AppHelper {
                     $groupParams['ciudad'],
                     $groupParams['pais'],
                     $groupParams['cuit'],
-                    date('Y-m-d'));
+                    date('Y-m-d H:i:s'));
             }
             $this->activeSheet->getHeaderFooter()->setOddHeader($header);
         }
@@ -390,9 +393,7 @@ class DocumentoHelper extends AppHelper {
                                     'style' => PHPExcel_Style_Border::BORDER_DOTTED)));
                             if (!empty($v)) {
                                 $this->setWidth(str_replace(array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), '', $cellName), $v);
-                            }/* else {
-                                $this->activeSheet->getColumnDimension(str_replace(array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), '', $cellName))->setAutoSize(true);
-                            }*/
+                            }
                         break;
                         case 'decimal':
                             $this->activeSheet->getStyle($cellName)->getNumberFormat()->setFormatCode('0.00');
