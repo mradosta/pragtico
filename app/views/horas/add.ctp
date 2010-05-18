@@ -21,24 +21,27 @@
 */
 $campos = null;
 $campos['Hora.id'] = array();
-$campos['Hora.periodo'] = array("type"=>"periodo");
-$campos['Hora.relacion_id'] = array(	"label"=>"Relacion",
-											"lov"=>array("controller"	=> 	"relaciones",
-													"seleccionMultiple"	=> 	0,
-														"camposRetorno"	=> 	array(	"Trabajador.nombre",
-																					"Trabajador.apellido",
-																					"Empleador.nombre")));
+$campos['Hora.periodo'] = array('type' => 'periodo');
+$campos['Hora.relacion_id'] = array(
+	'label' => 'Relacion',
+	'lov'	=> array(	'controller'		=> 	'relaciones',
+						'seleccionMultiple'	=> 	0,
+						'camposRetorno'		=> 	array(
+							'Trabajador.nombre',
+							'Trabajador.apellido',
+							'Empleador.nombre')));
 $campos['Hora.cantidad'] = array();
 $campos['Hora.tipo'] = array();
-$campos['Hora.estado'] = array("type" => "radio");
+$campos['Hora.estado'] = array('type' => 'radio');
 $campos['Hora.observacion'] = array();
-$fieldset = $appForm->pintarFieldsets(array(array('campos' => $campos)), array('div' => array('class' => 'unica'), 'fieldset' => array('legend' => "horas manual", 'imagen' => 'horas.gif')));
+$fieldset = $appForm->pintarFieldsets(
+	array(array('campos' => $campos)),
+	array('div' => array('class' => 'unica'),
+	'fieldset' => array('legend' => 'horas manual', 'imagen' => 'horas.gif')));
 
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-$miga = array('format' 	=> '%s %s (%s)', 
-			  'content' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));
-echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => $miga));
+echo $this->element('add/add', array('fieldset' => $fieldset));
 
 ?>

@@ -94,7 +94,11 @@ $fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array('cl
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('imagen' => 'trabajadores.gif')));
-echo $this->element('add/add', array('fieldset' => $fieldset, 'opcionesForm' => array('enctype' => 'multipart/form-data')));
+$fieldset = $appForm->pintarFieldsets($fieldsets,
+	array(	'div' => array('class' => 'unica'),
+			'fieldset' => array('imagen' => 'trabajadores.gif')));
+echo $this->element('add/add', array(
+	'fieldset' 		=> $fieldset,
+	'opcionesForm' 	=> array('enctype' => 'multipart/form-data')));
 
 ?>

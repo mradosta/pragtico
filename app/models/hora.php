@@ -68,13 +68,13 @@ class Hora extends AppModel {
 	var $belongsTo = array('Relacion');
 
     var $breadCrumb = array('format' => '%s %s (%s)', 
-                            'fields' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));    
+                            'fields' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));
 	
 /**
  * Before save callback
  *
  * @return boolean True if the operation should continue, false if it should abort
- */    
+ */
     function beforeSave() {
     	if (!empty($this->data['Hora']['periodo'])) {
     		$this->data['Hora']['periodo'] = strtoupper($this->data['Hora']['periodo']);
@@ -91,7 +91,8 @@ class Hora extends AppModel {
             ));
         return $result[0]['total'];
     }
-        
+
+
 /**
  * Dada un ralacion y un periodo retorna las horas trabajadas de todos los tipos que esten pendientes de liquidar pero confirmadas.
  *
@@ -165,7 +166,6 @@ class Hora extends AppModel {
 					$codigoConcepto = 'sueldo_basico';
 				}
 				$conceptos = array_merge($conceptos, $Concepto->findConceptos('ConceptoPuntual', array('relacion' => $relacion, 'codigoConcepto' => $codigoConcepto)));
-				//d($conceptos);
 			}
 			
 			/**
