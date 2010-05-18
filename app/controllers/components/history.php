@@ -121,24 +121,31 @@ class HistoryComponent extends Object {
     }
 
 
+    function pushUrl($url) {
+        $this->_addUrl($url);
+    }
+
+
 /**
  * Adds current url to history stack,
  *
  * @return void
  * @access private
  */
-	function _addUrl() {
+	function _addUrl($url = null) {
 		if (in_array($this->controller->action, $this->__blackListedActions)
             || $this->__skip
 			|| $this->controller->params['isAjax'] === true
 		    || (isset($this->controller->params['named']['layout']) && $this->controller->params['named']['layout'] === 'lov')) {
 			return;
 		}
-		
-		$url['controller'] = $this->controller->name;
-		$url['action'] = $this->controller->action;
-		$url = array_merge($url, $this->controller->params['pass']);
-		$url = array_merge($url, $this->controller->params['named']);
+
+		if (empty($url)) {
+			$url['controller'] = $this->controller->name;
+			$url['action'] = $this->controller->action;
+			$url = array_merge($url, $this->controller->params['pass']);
+			$url = array_merge($url, $this->controller->params['named']);
+		}
 
 		$history = $this->controller->Session->read('__history');
 		if (empty($history)) {
