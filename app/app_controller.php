@@ -279,8 +279,11 @@ class AppController extends Controller {
                     } else {
                         $message = sprintf(__('%s of %s records have been saved', true), $this->{$this->modelClass}->savedDataLog['totalRecordsSaved'], $this->{$this->modelClass}->savedDataLog['totalRecords']);
                     }
-                    $this->Session->setFlash($message, "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
-                    $this->History->goBack($back);
+
+					if ($this->afterSave()) {
+                    	$this->Session->setFlash($message, "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
+                    	$this->History->goBack($back);
+					}
                 } else {
 
                     /**
@@ -337,7 +340,14 @@ class AppController extends Controller {
         }
         $this->render('add');
     }
-    
+
+
+/**
+ * Callback executed after a save successful operation. 
+ */
+	function afterSave() {
+		return true;
+	}
 
 /**
  * Delete.
