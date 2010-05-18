@@ -36,7 +36,7 @@ class DescuentosController extends AppController {
 
 
     function reporte_vales_confirmados($paymentIds) {
-        $data = $this->Novedad->Relacion->Descuento->find('all', array(
+        $data = $this->Descuento->find('all', array(
             'conditions'    => array('Descuento.id' => explode('|', $paymentIds)),
             'contain'     	=> array('Relacion' => array('Empleador', 'Trabajador'))));
         $this->set('data', $data);
