@@ -57,6 +57,7 @@ class Factura extends AppModel {
 	function __createAndSave($params) {
 
 		$total = 0;
+		$saveDatails = array();
 		foreach ($params['saveDatails'] as $tmp) {
 			$saveDatails[] = $tmp;
 			$total += $tmp['total'];
@@ -92,7 +93,12 @@ class Factura extends AppModel {
 			$saveMaster['permissions'] = '288';
 		}
 
-		$save = array_merge(array('Factura' => $saveMaster), array('FacturasDetalle' => $saveDatails));
+		if (!empty($saveDatails)) {
+			$save = array_merge(array('Factura' => $saveMaster), array('FacturasDetalle' => $saveDatails));
+		} else {
+			$save = array('Factura' => $saveMaster);
+		}
+
 		if ($this->saveAll($save, array('atomic' => $params['atomic']))) {
 			$this->Liquidacion->unbindModel(array('belongsTo' => array(
 				'Convenio', 'Area', 'Relacion', 'Factura', 'Trabajador', 'Empleador')));
@@ -145,7 +151,7 @@ class Factura extends AppModel {
 
 			foreach ($separatedData as $data) {
 
-				$saveMaster = $saveDatails = null;
+				$saveMaster = $saveDatails = array();
 				$employerId = null;
 				$areaId = null;
 				$receiptIds = null;
@@ -182,7 +188,7 @@ class Factura extends AppModel {
 								'conditions' 		=> $conditions,
 								'groupId'			=> $groupId,
 								'atomic'			=> $atomic));
-							$saveMaster = $saveDatails = $receiptIds = null;
+							$saveMaster = $saveDatails = $receiptIds = array();
 						}
 					} elseif ($receipt['Empleador']['facturar_por_area'] === 'Si'
 						&& $areaId != $receipt['Liquidacion']['relacion_area_id']) {
@@ -195,7 +201,7 @@ class Factura extends AppModel {
 								'conditions' 		=> $conditions,
 								'groupId'			=> $groupId,
 								'atomic'			=> $atomic));
-							$saveMaster = $saveDatails = $receiptIds = null;
+							$saveMaster = $saveDatails = $receiptIds = array();
 						}
 						$employerId = $receipt['Liquidacion']['empleador_id'];
 						$areaId = $receipt['Liquidacion']['relacion_area_id'];
@@ -220,16 +226,14 @@ class Factura extends AppModel {
 					}
 				}
 
-				if (!empty($saveDatails)) {
-					$this->__createAndSave(array(
-						'employerId'		=> $employerId,
-						'receiptIds'		=> $receiptIds,
-						'areaId' 			=> $areaId,
-						'saveDatails'		=> $saveDatails,
-						'conditions' 		=> $conditions,
-						'groupId'			=> $groupId,
-						'atomic'			=> $atomic));
-				}
+				$this->__createAndSave(array(
+					'employerId'		=> $employerId,
+					'receiptIds'		=> $receiptIds,
+					'areaId' 			=> $areaId,
+					'saveDatails'		=> $saveDatails,
+					'conditions' 		=> $conditions,
+					'groupId'			=> $groupId,
+					'atomic'			=> $atomic));
 			}
 
 			return true;
