@@ -22,7 +22,7 @@ if (!empty($data)) {
     $total = 0;
     $flag = null;
     $inicio = 0;
-    $flagCoeficiente = null;    
+    $flagCoeficiente = null;
 
 
     $documento->setCellValue('A', 'Empleador', array('title' => 35));
@@ -33,7 +33,7 @@ if (!empty($data)) {
     $documento->setCellValue('F', 'Beneficios', array('title' => 15));
     $documento->setCellValue('G', 'Total', array('title' => 15));
     $documento->setCellValue('H', 'Cuenta', array('title' => 35));
-            
+
     /** Body */
     $startRow = $documento->getCurrentRow() + 1;
     foreach ($data as $detail) {
@@ -61,7 +61,7 @@ if (!empty($data)) {
     $t['Beneficios'] = sprintf('=SUM(F%s:F%s)', $startRow, $endRow);
     $t['Total'] = sprintf('=SUM(G%s:G%s)', $startRow, $endRow);
     $documento->setTotals($t);
-    
+
     $documento->moveCurrentRow(4);
     $documento->setCellValue('A', 'Observaciones:', 'bold');
     $documento->moveCurrentRow(1);
@@ -81,7 +81,7 @@ if (!empty($data)) {
             $documento->doc->getActiveSheet()->getStyle($i . $j)->getProtection()->setLocked(PHPExcel_Style_Protection::PROTECTION_UNPROTECTED);
         }
     }
-    
+
     $documento->save('Excel5');
 
 }

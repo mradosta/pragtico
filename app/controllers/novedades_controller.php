@@ -42,14 +42,6 @@ class NovedadesController extends AppController {
 	}
 
 
-    function reporte_pagos_confirmados($paymentIds) {
-        $data = $this->Novedad->Relacion->Descuento->find('all', array(
-            'conditions'    => array('Descuento.id' => explode('|', $paymentIds)),
-            'contain'     	=> array('Relacion' => array('Empleador', 'Trabajador'))));
-        $this->set('data', $data);
-    }
-
-
 /**
  * Confirma las novedades seleccionadas.
  */

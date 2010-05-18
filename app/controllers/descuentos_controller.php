@@ -35,6 +35,28 @@ class DescuentosController extends AppController {
     var $helpers = array('Documento');
 
 
+    function reporte_vales_confirmados($paymentIds) {
+        $data = $this->Novedad->Relacion->Descuento->find('all', array(
+            'conditions'    => array('Descuento.id' => explode('|', $paymentIds)),
+            'contain'     	=> array('Relacion' => array('Empleador', 'Trabajador'))));
+        $this->set('data', $data);
+    }
+
+
+	function afterSave() {
+		if (empty($this->data['Descuento']['id'])
+			&& !empty($this->data['Descuento']['tipo'])
+			&& $this->data['Descuento']['tipo'] == 'Vale') {
+			$this->redirect(array(
+				'controller' 	=> 'descuentos',
+				'action' 		=> 'reporte_vales_confirmados',
+				$this->Descuento->id));
+			return false;
+		} else {
+			return parent::afterSave();
+		}
+	}
+
     function reporte_vales_prestamos() {
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 

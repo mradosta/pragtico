@@ -16,7 +16,8 @@
  * @author          Martin Radosta <mradosta@pragmatia.com>
  */
 if (!empty($data)) {
-    $documento->create(array('password' => true, 'orientation' => 'landscape', 'title' => 'Listado de Descuentos Confirmados Ingresados como Novedades'));
+
+    $documento->create(array('password' => true, 'orientation' => 'landscape', 'title' => 'Listado de Descuentos Confirmados'));
 
     $total = 0;
     $flag = null;

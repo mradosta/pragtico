@@ -72,7 +72,7 @@ echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' =>
 
 if (!empty($paymentIds)) {
     $appForm->addScript('
-        window.location = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'reporte_pagos_confirmados/' . $paymentIds)) . '";
+        window.location = "' . Router::url(array('controller' => 'descuentos', 'action' => 'reporte_vales_confirmados', $paymentIds)) . '";
     ');
 }
 
