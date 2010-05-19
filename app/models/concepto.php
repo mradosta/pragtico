@@ -211,11 +211,7 @@ class Concepto extends AppModel {
 												'Coeficiente.valor');
 		$fieldEmpleadoresCoeficiente = 	array(	"EmpleadoresCoeficiente.porcentaje");
         $fieldAreasCoeficiente = array('Area.nombre', 'AreasCoefiente.porcentaje');
-		$order 		= "ORDER BY
-							CASE Concepto.tipo WHEN 'Remunerativo' THEN 0
-                                WHEN 'No Remunerativo' THEN 1
-								WHEN 'Deduccion' THEN 2
-                            END";
+		$order 		= "CASE Concepto.tipo WHEN 'Remunerativo' THEN 0 WHEN 'No Remunerativo' THEN 1 WHEN 'Deduccion' THEN 2 END";
 
 		if ($tipo === 'Relacion') {
 			$fields = am($fieldsRelaciones, $fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente, $fieldAreasCoeficiente);
@@ -472,10 +468,10 @@ class Concepto extends AppModel {
                 array('OR'	=> array(
                         'Concepto.hasta'      => '0000-00-00',
                         'Concepto.hasta >=' => $opciones['hasta'])));
-			$order	= 'ORDER BY Concepto.nombre, Concepto.codigo';
+			$order	= 'Concepto.nombre, Concepto.codigo';
 		}
 		
-		$dbo = $this->getDataSource();
+		$orderExpression = $this->getDataSource()->expression($order);
 		$sql = $dbo->buildStatement(array(
 			'fields'		=> $fields,
 			'table' 		=> $dbo->fullTableName($table),
@@ -483,13 +479,14 @@ class Concepto extends AppModel {
 			'conditions'	=> $conditions,
 			'limit' 		=> null,
 			'offset' 		=> null,
-			'order' 		=> $order,
+			'order' 		=> $orderExpression,
 			'group' 		=> null,
 			'joins' 		=> $joins), $this);
+
 		$r = $this->query($sql);
+
 		
 		$conceptos = array();
-
 		foreach ($r as $v) {
 
 			/**

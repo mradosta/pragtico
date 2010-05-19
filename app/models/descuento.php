@@ -130,17 +130,11 @@ class Descuento extends AppModel {
 			break;
 		}
 
+		$orderExpression = $this->getDataSource()->expression("case Descuento.tipo when 'Cuota Alimentaria' then 0 when 'Embargo' then 1 when 'Vale' then 2 when 'Prestamo' then 3 end, Descuento.alta");
 		$r = $this->find('all',
 			array(
 				  	'contain'		=> 'DescuentosDetalle',
-	   				'order'			=> "
-					order by	case Descuento.tipo
-									when 'Cuota Alimentaria' then 0
-									when 'Embargo' then 1
-									when 'Vale' then 2
-									when 'Prestamo' then 3
-								end,
-								Descuento.alta",
+	   				'order'			=> $orderExpression,
 				  	'checkSecurity'	=> false,
 					'conditions' 	=> array_merge($conditions, array(
  				'(Descuento.descontar & ' . $descontar . ') >' 	   => 0,
