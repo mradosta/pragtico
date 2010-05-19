@@ -698,12 +698,17 @@ class LiquidacionesController extends AppController {
 	}
 
 /**
- * recibo_html.
- * Muestra via desglose el recibo (detalle) de la preliquidacion.
  */
 	function imprimir($id = null) {
 
-        if ((!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'preimpreso')
+		if (empty($id) && !empty($this->params['named']['id'])) {
+			$id = $this->params['named']['id'];
+			if (!empty($this->params['named']['tipo']) && $this->params['named']['tipo'] == 'preimpreso') {
+				$render = 'recibo_excel_preimpreso';
+			} else {
+				$render = 'recibo_excel';
+			}
+        } elseif ((!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'preimpreso')
         || (!empty($this->params['named']['tipo']) && $this->params['named']['tipo'] === 'preimpreso')) {
             $render = 'recibo_excel_preimpreso';
         } else {
@@ -746,7 +751,7 @@ class LiquidacionesController extends AppController {
 			}
 		}
 
-        $this->render($render);        
+        $this->render($render);
 	}
 
 	
