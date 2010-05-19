@@ -118,13 +118,15 @@
             $fila+=2;
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('P') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['pago'], array('type' => 'date', 'format' => 'd-m-Y')) . ' ( CORDOBA )');
         }
-        
+
+		if ($receipt['Liquidacion']['estado'] != 'Confirmada') {
+			$documento->addImage('H' . ($fila - 40), 'invalid.png');
+			$documento->addImage('AE' .  ($fila - 40), 'invalid.png');
+		}
         $documento->activeSheet->setBreak('A' . $fila, PHPExcel_Worksheet::BREAK_ROW);
         $initialRow = $fila;
     }
 
-    //$documento->save('Excel2007', '/tmp/file');
-    //$documento->save('Excel5', '/tmp/ff');
     $documento->save('Excel5');
-    
+
 ?>

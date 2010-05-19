@@ -205,9 +205,13 @@
         }
 
         $fila+=2;
+		if ($receipt['Liquidacion']['estado'] != 'Confirmada') {
+			$documento->addImage('H' . ($fila - 40), 'invalid.png');
+			$documento->addImage('AE' .  ($fila - 40), 'invalid.png');
+		}
         $documento->activeSheet->setBreak('A' . $fila, PHPExcel_Worksheet::BREAK_ROW);
         $initialRow = $fila;
     }
     $documento->save('Excel5');
-    
+
 ?>

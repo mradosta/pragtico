@@ -422,6 +422,24 @@ class DocumentoHelper extends AppHelper {
     }
 
 
+	function addImage($cell, $image, $options = array()) {
+		$objDrawing = new PHPExcel_Worksheet_Drawing();
+		$objDrawing->setName('Pragtico Image');
+		$objDrawing->setDescription('Pragtico Image');
+		$objDrawing->setPath(IMAGES . $image);
+		$objDrawing->setCoordinates($cell);
+		/*
+		$objDrawing->setOffsetX(110);
+		if (!empty($options['rotation'])) {
+			$objDrawing->setRotation(25);
+		}
+		$objDrawing->getShadow()->setVisible(true);
+		$objDrawing->getShadow()->setDirection(45);
+		*/
+		$objDrawing->setWorksheet($this->activeSheet);
+	}
+
+
 /**
  * Setea una validacion especifica para una celda.
  *
