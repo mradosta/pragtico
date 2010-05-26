@@ -58,7 +58,15 @@ define('VALID_NOT_EMPTY', '/.+/');
 define('VALID_NUMBER', '/^[-+]?\\b[0-9]*\\.?[0-9]+\\b$/');
 define('VALID_EMAIL', "/^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,4}|museum|travel)$/i");
 
-Inflector::rules('plural', array(
+
+
+Inflector::rules(
+'singular', array(
+	'rules' 			=> array(
+		'/les$/i' => 'l')));
+
+Inflector::rules(
+'plural', array(
 	'rules' 			=> array(
 		'/(.d)$/i' => '\1\2es',
 		'/(.n)$/i' => '\1\2es',
@@ -87,17 +95,66 @@ Inflector::rules('plural', array(
 		'accion'					=> 'acciones')
 ));
 
+/**
+ * Debug and show SQL
+ */
+function ds($var = 'x') {
+	d($var, false, true);
+}
 
-function d($var = 'x', $skipDebugMode = false) {
+function d($var = 'x', $skipDebugMode = false, $showSql = false) {
 	if (Configure::read() > 0 || $skipDebugMode === true) {
 		$calledFrom = debug_backtrace();
 		echo '<strong>' . substr(str_replace(ROOT, '', $calledFrom[0]['file']), 1) . '</strong>';
 		echo ' (line <strong>' . $calledFrom[0]['line'] . '</strong>)';
 		echo "\n<pre class=\"cake-debug\">\n";
-	
 		$var = print_r($var, true);
+		if ($showSql) {
+			dsql();
+		}
 		echo $var . "\n</pre>\n";
 		die;
 	}
 }
+
+function dsql() {
+    $sources = ConnectionManager::sourceList();
+    if (!isset($logs)):
+        $logs = array();
+        foreach ($sources as $source):
+            $db =& ConnectionManager::getDataSource($source);
+            if (!$db->isInterfaceSupported('getLog')):
+                continue;
+            endif;
+            $logs[$source] = $db->getLog();
+        endforeach;
+    endif;
+
+	App::import('Vendor', 'Geshi');
+	$geshi = new GeSHi('', 'mysql');
+	$geshi->set_header_type(GESHI_HEADER_DIV);
+	$geshi->enable_keyword_links(false);
+
+    foreach ($logs as $source => $logInfo) {
+        $text = $logInfo['count'] > 1 ? 'queries' : 'query';
+        printf(
+            '<table class="cake-sql-log" id="cakeSqlLog_%s" summary="Cake SQL Log" cellspacing="0" border = "0">',
+            preg_replace('/[^A-Za-z0-9_]/', '_', uniqid(time(), true))
+        );
+        printf('<caption>(%s) %s %s took %s ms</caption>', $source, $logInfo['count'], $text, $logInfo['time']);
+        echo '
+            <thead>
+                <tr><th>Nr</th><th>Query</th><th>Error</th><th>Affected</th><th>Num. rows</th><th>Took (ms)</th></tr>
+            </thead>
+            <tbody>
+            ';
+        foreach ($logInfo['log'] as $k => $i) {
+			$geshi->set_source($i['query']);
+            echo "<tr><td>" . ($k + 1) . "</td><td>" . $geshi->parse_code() . "</td><td>{$i['error']}</td><td style = \"text-align: right\">{$i['affected']}</td><td style = \"text-align: right\">{$i['numRows']}</td><td style = \"text-align: right\">{$i['took']}</td></tr>\n";
+        }
+        echo '</tbody></table>';
+	}
+}
+
+
 ?>
