@@ -21,6 +21,12 @@
  */
 
 /**
+ * Default language: Spanish
+ * Comment this line if you want English as default language
+ */
+Configure::write('Config.language', 'spa');
+
+/**
  * CakePHP Debug Level:
  *
  * Production Mode:
