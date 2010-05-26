@@ -1,98 +1,93 @@
-# LANGUAGE translation of CakePHP Application
-# Copyright YEAR NAME <EMAIL@ADDRESS>
-#
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
+"Project-Id-Version: \n"
 "POT-Creation-Date: 2010-05-20 18:34+0000\n"
-"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
-"Last-Translator: NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: \n"
+"Last-Translator: mradosta <martinradosta@gmail.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: /app_controller.php:278
 msgid "The record has been saved"
-msgstr ""
+msgstr "Se guardo el registro correctamente"
 
 #: /app_controller.php:280
 msgid "%s of %s records have been saved"
-msgstr ""
+msgstr "% de % registros se han guardado correctamente"
 
 #: /app_controller.php:331;334
 msgid "The record could not be saved. Please verify errors and try again."
-msgstr ""
+msgstr "No fue posible guardar el registro. Verifique los errores e intente nuevamente."
 
 #: /app_controller.php:371
 msgid "Record deleted"
-msgstr ""
+msgstr "El registro se ha eliminado"
 
 #: /app_controller.php:373
 msgid "%s records deleted"
-msgstr ""
+msgstr "%s registros eliminados"
 
 #: /app_controller.php:377
 msgid "The record could not be deleted"
-msgstr ""
+msgstr "No fue posible eliminar el registro"
 
 #: /controllers/documentos_controller.php:93
 msgid "No document found. Please verify"
-msgstr ""
+msgstr "No se encontro el documento. Verifique."
 
 #: /controllers/facturas_controller.php:144
 msgid "Must enter a valid period"
-msgstr ""
+msgstr "Debe seleccionar un periodo valido"
 
 #: /controllers/facturas_controller.php:166
 msgid "Can't delete previous invoices. Call Administrator"
-msgstr ""
+msgstr "No fue posible eliminar las facturas previas. Comuniquese con el administrador."
 
 #: /controllers/facturas_controller.php:172
 msgid "Can't create invoices. Check search criterias"
-msgstr ""
+msgstr "No es posible crear la factura. Por favor, verifique los criterios"
 
 #: /controllers/install_controller.php:59
 msgid "Unable to connect to database."
-msgstr ""
+msgstr "No es posible conectarse a la base de datos."
 
 #: /controllers/install_controller.php:65
 msgid "Could not select database. Did you created it?"
-msgstr ""
+msgstr "No es posible seleccionar la base de datos. Ha sido creada ya?"
 
 #: /controllers/liquidaciones_controller.php:482
 msgid "Normal liquidation period should be of the form \"YYYYMM[1Q|2Q|M]\""
-msgstr ""
+msgstr "El periodo para un aliquidacion normal debe ser de la forma \"YYYYMM[1Q|2Q|M]\""
 
 #: /controllers/liquidaciones_controller.php:485
 msgid "Holliday liquidation period should be of the form \"YYYYMM[1Q|2Q|M]\""
-msgstr ""
+msgstr "El periodo para una liquidacion de vacaciones debe ser de la forma \"YYYYMM[1Q|2Q|M]\""
 
 #: /controllers/liquidaciones_controller.php:488
 msgid "Sac liquidation period should be of the form \"YYYY[12]S\""
-msgstr ""
+msgstr "El periodo de liquidacion para SAC debe ser de la forma \"YYYY[12]S\""
 
 #: /controllers/liquidaciones_controller.php:491
 msgid "Invalid Period"
-msgstr ""
+msgstr "Periodo invalido"
 
 #: /controllers/liquidaciones_controller.php:564
 msgid "Can't delete previous liquidations. Call Administrator"
-msgstr ""
+msgstr "No fue posible eliminar las liquidacion previas. Comuniquese con el administrador."
 
 #: /controllers/usuarios_controller.php:150
 msgid "Login failed. Invalid username or password."
-msgstr ""
+msgstr "Nombre de usuario o contraseña invalido."
 
 #: /models/user.php:33
 msgid "User not set."
-msgstr ""
+msgstr "El usuario no ha sido seteado."
 
 #: /models/user.php:92
 msgid "Invalid filter option."
-msgstr ""
+msgstr "Opcion de filtro no valida"
 
 #: /models/behaviors/permisos.php:147
 msgid "Role option not supported."
@@ -120,91 +115,91 @@ msgstr ""
 #: /views/recibos_conceptos/add_rapido.ctp:22
 #: /views/relaciones_conceptos/add_rapido.ctp:22
 msgid "Edit"
-msgstr ""
+msgstr "Modificar"
 
 #: /views/documentos/generar.ctp:23
 msgid "Document"
-msgstr ""
+msgstr "Documento"
 
 #: /views/elements/add/acciones.ctp:8
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: /views/elements/add/acciones.ctp:9
 msgid "Duplicate"
-msgstr ""
+msgstr "Duplicar"
 
 #: /views/elements/add/acciones.ctp:10
 #: /views/elements/index/acciones.ctp:18
 msgid "Delete"
-msgstr ""
+msgstr "Eliminar"
 
 #: /views/elements/add/acciones.ctp:11
 msgid "Save"
-msgstr ""
+msgstr "Guardar"
 
 #: /views/elements/add/add.ctp:12
 #: /views/elements/index/acciones.ctp:16
 #: /views/helpers/app_form.php:115
 msgid "New"
-msgstr ""
+msgstr "Nuevo"
 
 #: /views/elements/add/add.ctp:19
 msgid "%s Records"
-msgstr ""
+msgstr "%s Registros"
 
 #: /views/elements/index/acciones.ctp:15
 msgid "Edit selected records"
-msgstr ""
+msgstr "Modificar los registros seleccionados"
 
 #: /views/elements/index/acciones.ctp:17
 msgid "Insert a new record"
-msgstr ""
+msgstr "Agregar un nuevo registro"
 
 #: /views/elements/index/acciones.ctp:19
 msgid "Delete selected records"
-msgstr ""
+msgstr "Eliminar los registros seleccionados"
 
 #: /views/elements/index/buscadores.ctp:11;133
 msgid "Clear"
-msgstr ""
+msgstr "Limpiar"
 
 #: /views/elements/index/buscadores.ctp:12;134
 #: /views/helpers/app_form.php:117;1731
 msgid "Search"
-msgstr ""
+msgstr "Buscar"
 
 #: /views/elements/index/index.ctp:9
 msgid "Grid"
-msgstr ""
+msgstr "Grilla"
 
 #: /views/elements/index/paginador.ctp:35
 msgid "Show %s records"
-msgstr ""
+msgstr "Mostrar %s Registros"
 
 #: /views/elements/index/paginador.ctp:37;45
 msgid "A"
-msgstr ""
+msgstr "T"
 
 #: /views/elements/index/paginador.ctp:37
 msgid "Show all records"
-msgstr ""
+msgstr "Motrar todos los registros"
 
 #: /views/elements/index/paginador.ctp:47
 msgid "Show"
-msgstr ""
+msgstr "Mostrar"
 
 #: /views/elements/layout/barra.ctp:3
 msgid "Logout"
-msgstr ""
+msgstr "Salir"
 
 #: /views/elements/layout/barra.ctp:4
 msgid "Clean all searches"
-msgstr ""
+msgstr "Limpiar todas las busquedas"
 
 #: /views/elements/layout/barra.ctp:5
 msgid "Close all breakdowns"
-msgstr ""
+msgstr "Limpiar todos los desgloses"
 
 #: /views/elements/layout/barra.ctp:6
 msgid "Hide condition frame"
@@ -212,27 +207,27 @@ msgstr ""
 
 #: /views/helpers/app_form.php:357
 msgid "Non existing image"
-msgstr ""
+msgstr "Imagen inexistente"
 
 #: /views/helpers/app_form.php:638
 msgid "Show %s of %s"
-msgstr ""
+msgstr "Mostrar %s de %s"
 
 #: /views/helpers/app_form.php:641
 msgid "Show %s"
-msgstr ""
+msgstr "Mostrar %s"
 
 #: /views/helpers/app_form.php:752
 msgid "Select current record"
-msgstr ""
+msgstr "Seleccionar el registro actual"
 
 #: /views/helpers/app_form.php:1009
 msgid "The grid is empty. Enter some data or verify your search criterias."
-msgstr ""
+msgstr "No se encontraron resultado. Ingrese datos o verifique los criterios de busqueda"
 
 #: /views/helpers/app_form.php:1854
 msgid "Pick date"
-msgstr ""
+msgstr "Seleccione una fecha"
 
 #: /views/helpers/formato.php:744
 msgid "enero"
@@ -240,95 +235,95 @@ msgstr ""
 
 #: /views/helpers/formato.php:745
 msgid "febrero"
-msgstr ""
+msgstr "febrero"
 
 #: /views/helpers/formato.php:746
 msgid "marzo"
-msgstr ""
+msgstr "marzo"
 
 #: /views/helpers/formato.php:747
 msgid "abril"
-msgstr ""
+msgstr "abril"
 
 #: /views/helpers/formato.php:748
 msgid "mayo"
-msgstr ""
+msgstr "mayo"
 
 #: /views/helpers/formato.php:749
 msgid "junio"
-msgstr ""
+msgstr "junio"
 
 #: /views/helpers/formato.php:750
 msgid "julio"
-msgstr ""
+msgstr "julio"
 
 #: /views/helpers/formato.php:751
 msgid "agosto"
-msgstr ""
+msgstr "agosto"
 
 #: /views/helpers/formato.php:752
 msgid "septiembre"
-msgstr ""
+msgstr "septiembre"
 
 #: /views/helpers/formato.php:753
 msgid "octubre"
-msgstr ""
+msgstr "octubre"
 
 #: /views/helpers/formato.php:754
 msgid "noviembre"
-msgstr ""
+msgstr "noviembre"
 
 #: /views/helpers/formato.php:755
 msgid "diciembre"
-msgstr ""
+msgstr "diciembre"
 
 #: /views/helpers/paginador.php:49
 msgid "No order"
-msgstr ""
+msgstr "Sin Orden"
 
 #: /views/helpers/paginador.php:85
 msgid "page %page% of %pages%. %count% records."
-msgstr ""
+msgstr "página %page% de %pages%. %count% registros."
 
 #: /views/helpers/paginador.php:98
 msgid "Go to first page"
-msgstr ""
+msgstr "Ir a la primera página"
 
 #: /views/helpers/paginador.php:99
 msgid "Go to previews page"
-msgstr ""
+msgstr "Ir a la página anterior"
 
 #: /views/helpers/paginador.php:106
 msgid "Go to next page"
-msgstr ""
+msgstr "Ir a la siguiente página"
 
 #: /views/helpers/paginador.php:107
 msgid "Go to last page"
-msgstr ""
+msgstr "Ir a la última página"
 
 #: /views/infos/index.ctp:22
 msgid "Detail"
-msgstr ""
+msgstr "Detalle"
 
 #: /views/install/index.ctp:49
 msgid "Instalar"
-msgstr ""
+msgstr "Instalar"
 
 #: /views/zones/add.ctp:24
 msgid "Code"
-msgstr ""
+msgstr "Codigo"
 
 #: /views/zones/add.ctp:25
 msgid "Name"
-msgstr ""
+msgstr "Nombre"
 
 #: /views/zones/add.ctp:26
 msgid "Percentage"
-msgstr ""
+msgstr "Porcentage"
 
 #: /views/zones/index.ctp:25
 msgid "Zone"
-msgstr ""
+msgstr "Zona"
 
 #: /webroot/test.php:88
 msgid "Debug setting does not allow access to this url."
@@ -399,7 +394,9 @@ msgid "DebugKit Benchmark Shell"
 msgstr ""
 
 #: /plugins/debug_kit/vendors/shells/benchmark.php:155
-msgid "\tAllows you to obtain some rough benchmarking statistics \n\tabout a fully qualified URL."
+msgid ""
+"\tAllows you to obtain some rough benchmarking statistics \n"
+"\tabout a fully qualified URL."
 msgstr ""
 
 #: /plugins/debug_kit/vendors/shells/benchmark.php:157
@@ -415,15 +412,21 @@ msgid "\tParams:"
 msgstr ""
 
 #: /plugins/debug_kit/vendors/shells/benchmark.php:161
-msgid "\t\t-n Number of iterations to perform. Defaults to 10. \n\t\t   Must be an integer."
+msgid ""
+"\t\t-n Number of iterations to perform. Defaults to 10. \n"
+"\t\t   Must be an integer."
 msgstr ""
 
 #: /plugins/debug_kit/vendors/shells/benchmark.php:162
-msgid "\t\t-t Maximum total time for all iterations, in seconds. \n\t\t   Defaults to 100. Must be an integer."
+msgid ""
+"\t\t-t Maximum total time for all iterations, in seconds. \n"
+"\t\t   Defaults to 100. Must be an integer."
 msgstr ""
 
 #: /plugins/debug_kit/vendors/shells/benchmark.php:164
-msgid "\tIf a single iteration takes more than the \n\ttimeout specified, only one request will be made."
+msgid ""
+"\tIf a single iteration takes more than the \n"
+"\ttimeout specified, only one request will be made."
 msgstr ""
 
 #: /plugins/debug_kit/vendors/shells/benchmark.php:166
@@ -477,7 +480,7 @@ msgstr ""
 #: /plugins/debug_kit/views/elements/log_panel.ctp:28
 #: /plugins/debug_kit/views/elements/timer_panel.ctp:54
 msgid "Message"
-msgstr ""
+msgstr "Mensaje"
 
 #: /plugins/debug_kit/views/elements/log_panel.ctp:37
 msgid "There were no log entries made this request"
@@ -529,7 +532,7 @@ msgstr ""
 
 #: /plugins/debug_kit/views/elements/timer_panel.ctp:45
 msgid "%s (ms)"
-msgstr ""
+msgstr "%s (ms)"
 
 #: /plugins/debug_kit/views/elements/timer_panel.ctp:46
 msgid "Total Request Time:"
@@ -546,4 +549,15 @@ msgstr ""
 #: /plugins/debug_kit/views/elements/variables_panel.ctp:21
 msgid "View Variables"
 msgstr ""
+
+#~ msgid "Holliday liquidation period should be an Year"
+#~ msgstr "El periodo de liquidacion para vacaciones debe ser año"
+#~ msgid "january"
+#~ msgstr "enero"
+#~ msgid "Ascending order"
+#~ msgstr "Orden ascendente"
+#~ msgid "Descending order"
+#~ msgstr "Orden descendente"
+#~ msgid "Clean"
+#~ msgstr "Limpiar"
 
