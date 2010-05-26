@@ -470,8 +470,9 @@ class Concepto extends AppModel {
                         'Concepto.hasta >=' => $opciones['hasta'])));
 			$order	= 'Concepto.nombre, Concepto.codigo';
 		}
-		
-		$orderExpression = $this->getDataSource()->expression($order);
+
+		$dbo = $this->getDataSource();
+		$orderExpression = $dbo->expression($order);
 		$sql = $dbo->buildStatement(array(
 			'fields'		=> $fields,
 			'table' 		=> $dbo->fullTableName($table),
