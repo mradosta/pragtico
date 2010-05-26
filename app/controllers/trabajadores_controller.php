@@ -27,6 +27,20 @@ class TrabajadoresController extends AppController {
 	var $helpers = array('Documento');
 
 
+	function afterSave() {
+		if (empty($this->data['Trabajador']['id'])) {
+			$this->Session->setFlash('El Trabajador ha sido guardado, por favor ahora cree la relacion con un Empleador.', 'ok');
+			$this->redirect(array(
+				'controller' 				=> 'relaciones',
+				'action'					=> 'add',
+				'Relacion.trabajador_id'	=> $this->Trabajador->id));
+			return false;
+		} else {
+			return parent::afterSave();
+		}
+	}
+
+
     function importar_cbus() {
         if (!empty($this->data['Formulario']['accion'])) {
             if ($this->data['Formulario']['accion'] === 'importar') {
