@@ -141,6 +141,7 @@ class LiquidacionesController extends AppController {
 				$period = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
 				$conditions['Liquidacion.ano'] = $period['ano'];
 				$conditions['Liquidacion.mes'] = $period['mes'];
+				$conditions['Liquidacion.periodo'] = $period['periodo'];
 				$periodToShow = $this->data['Condicion']['Bar-periodo_largo'];
 			}
 
