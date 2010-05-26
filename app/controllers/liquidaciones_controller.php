@@ -39,6 +39,53 @@ class LiquidacionesController extends AppController {
 	var $helpers = array('Documento');
 
 
+
+	function reporte_totales_zonas() {
+
+		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
+
+            $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
+            $conditions['Liquidacion.estado'] = 'Confirmada';
+
+            if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
+                $conditions['Liquidacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
+            }
+
+            if (!empty($this->data['Condicion']['Bar-periodo_largo'])) {
+                $period = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
+                $conditions['Liquidacion.ano'] = $period['ano'];
+                $conditions['Liquidacion.mes'] = $period['mes'];
+            }
+
+			$this->Liquidacion->Behaviors->detach('Permisos');
+			$r = $this->Liquidacion->find('all', array(
+				'recursive'		=> -1,
+				'fields'		=> array('Zone.name, SUM(Liquidacion.total) AS total'),
+				'group'			=> array('Zone.name'),
+				'conditions'	=> $conditions,
+				'joins' 		=> array(
+					array(
+						'table' 		=> 'areas',
+						'alias' 		=> 'Area',
+						'type' 			=> 'INNER',
+						'foreignKey' 	=> false,
+						'conditions'	=> array('Liquidacion.relacion_area_id = Area.id')
+					),
+					array(
+						'table' 		=> 'zones',
+						'alias' 		=> 'Zone',
+						'type' 			=> 'INNER',
+						'foreignKey' 	=> false,
+						'conditions'	=> array('Zone.id = Area.zone_id')
+					)
+				)
+			));
+            $this->set('data', $r);
+            $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+		}
+	}
+
+
 	function reporte_liquidaciones_finales() {
 
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
