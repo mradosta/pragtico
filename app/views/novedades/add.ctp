@@ -36,7 +36,7 @@ $campos['Novedad.relacion_id'] = array(
                                                     'Trabajador.nombre',
                                                     'Trabajador.apellido')));
 $campos['Novedad.periodo'] = array('type' => 'periodo');
-$campos['Novedad.liquidacion_tipo'] = array('label' => 'Tipo Liquidacion');
+$campos['Novedad.liquidacion_tipo'] = array('label' => 'Tipo Liquidacion', 'aclaracion' => 'Indica para que tipo de liquidacion sera tenida en cuenta al momento de preliquidar');
 if (!empty($this->data[0]['Novedad']['concepto_id']) || empty($this->data)) {
     $campos['Novedad.concepto_id'] = array( "lov"=>array("controller"   =>  "conceptos",
                                                             "seleccionMultiple" =>  0,
