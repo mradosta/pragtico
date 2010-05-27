@@ -226,14 +226,17 @@ class Factura extends AppModel {
 					}
 				}
 
-				$this->__createAndSave(array(
-					'employerId'		=> $employerId,
-					'receiptIds'		=> $receiptIds,
-					'areaId' 			=> $areaId,
-					'saveDatails'		=> $saveDatails,
-					'conditions' 		=> $conditions,
-					'groupId'			=> $groupId,
-					'atomic'			=> $atomic));
+
+				if (!empty($receiptIds)) {
+					$this->__createAndSave(array(
+						'employerId'		=> $employerId,
+						'receiptIds'		=> $receiptIds,
+						'areaId' 			=> $areaId,
+						'saveDatails'		=> $saveDatails,
+						'conditions' 		=> $conditions,
+						'groupId'			=> $groupId,
+						'atomic'			=> $atomic));
+				}
 			}
 
 			return true;
