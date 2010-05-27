@@ -492,10 +492,11 @@ class LiquidacionesController extends AppController {
 				$message = __('Invalid Period', true);
 			}
 
-			if (empty($this->data['Condicion']['Relacion-empleador_id']) &&
-					empty($this->data['Condicion']['Relacion-trabajador_id']) &&
-					empty($this->data['Condicion']['Relacion-area_id'])) {
-						$message = "Debe seleccionar un Empleador, un Trabajador o un Area de la Relacion Laboral.";
+			if (empty($this->data['Condicion']['Relacion-empleador_id'])
+				&& empty($this->data['Condicion']['Relacion-trabajador_id'])
+				&& empty($this->data['Condicion']['Relacion-area_id'])) {
+
+				$message = 'Debe seleccionar un Empleador, un Trabajador o un Area de la Relacion Laboral.';
 			}
 
 			if (!empty($message)) {
