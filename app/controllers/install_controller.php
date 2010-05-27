@@ -51,18 +51,25 @@ class InstallController extends AppController {
 
 			if (!$canWrite) {
 				$this->Session->setFlash('Please check you have proper permissions on requiered files.');
+			} else {
+				if (!file_exists(CACHE . 'models')) {
+					@mkdir(CACHE . 'models');
+				}
+				if (!file_exists(CACHE . 'persistent')) {
+					@mkdir(CACHE . 'persistent');
+				}
 			}
 
 			/** Try connecting to the database */
 			$db = @mysql_connect($this->data['Install']['host'], $this->data['Install']['username'], $this->data['Install']['password']);
 			if (!$db) {
-				$this->Session->setFlash(__('Unable to connect to database.',true));
+				$this->Session->setFlash(__('Unable to connect to database.', true));
 			}
 
 			/** Try selecting the database */
 			$selected = @mysql_select_db($this->data['Install']['name'], $db);
 			if (!$selected) {
-				$this->Session->setFlash(__('Could not select database. Did you created it?',true));
+				$this->Session->setFlash(__('Could not select database. Did you created it?', true));
 			}
 				
 			$configData = '<?php
@@ -72,10 +79,10 @@ class DATABASE_CONFIG {
 	var $default = array(
 		\'driver\' => \'mysql\',
 		\'persistent\' => false,
-		\'host\' => \'' . $this->data['Install']['host'] . '\',
-		\'login\' => \'' . $this->data['Install']['username'] . '\',
-		\'password\' => \'' . $this->data['Install']['password'] . '\',
-		\'database\' => \'' . $this->data['Install']['name'] . '\',
+		\'host\' => \'' . trim($this->data['Install']['host']) . '\',
+		\'login\' => \'' . trim($this->data['Install']['username']) . '\',
+		\'password\' => \'' . trim($this->data['Install']['password']) . '\',
+		\'database\' => \'' . trim($this->data['Install']['name']) . '\',
 		\'prefix\' => \'\',
 		\'encoding\' => \'utf8\'
 	);
