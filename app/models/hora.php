@@ -103,6 +103,7 @@ class Hora extends AppModel {
  *
  * @param array $relacion La relacion.
  * @param array $periodo El periodo en el que buscare las horas.
+ * @param String $receiptType The type of receipt to be ussed for.
  * @return 	array de tres componentes:
  *				conceptos => Los conceptos que dieron lugar el tipo horas encontrado.
  *				variables => Las variables que podran ser usadas desde las formulas del liquidador.
@@ -110,11 +111,12 @@ class Hora extends AppModel {
  *			array con las tres componentes vacias si no hay horas para el periodo y la relacion especificada.
  * @access public.			
  */
-	function getHoras($relacion, $periodo) {
+	function getHoras($relacion, $periodo, $receiptType) {
 		
 		$conditions = array(
 			'conditions'=>	array(	'Hora.relacion_id' 		=> $relacion['Relacion']['id'],
 									'Hora.liquidacion_id' 	=> null,
+									'Hora.liquidacion_tipo' => $receiptType,
 									'Hora.periodo' 			=> $periodo['periodoCompleto'],
 									'Hora.estado'			=> 'Confirmada'),
 			'fields'	=>	array(	'Hora.tipo', 'sum(Hora.cantidad) as total'),

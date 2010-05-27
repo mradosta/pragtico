@@ -256,7 +256,7 @@ class Liquidacion extends AppModel {
             }
 
             /** Get hours */
-            $horas = $this->Relacion->Hora->getHoras($this->getRelationship(), $this->getPeriod());
+            $horas = $this->Relacion->Hora->getHoras($this->getRelationship(), $this->getPeriod(), $this->__receiptType);
             foreach ($horas['variables'] as $horaTipo => $horaValor) {
                 $this->setVar($horaTipo, $horaValor);
             }

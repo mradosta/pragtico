@@ -294,6 +294,7 @@ class Novedad extends AppModel {
 					$saves[$i]['Hora']['estado'] = 'Confirmada';
 					$saves[$i]['Hora']['relacion_id'] = $novedad['Novedad']['relacion_id'];
 					$saves[$i]['Hora']['periodo'] = $periodo['periodoCompleto'];
+					$saves[$i]['Hora']['liquidacion_tipo'] = $novedad['Novedad']['liquidacion_tipo'];
 					$saves[$i]['Hora']['observacion'] = 'Ingresado desde planilla. Confirmado el ' . date('Y-m-d');
 				break;
 				case 'Ausencias':
