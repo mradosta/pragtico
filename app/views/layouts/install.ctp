@@ -19,9 +19,6 @@
 /**
 * Si hay algo que mostrar en la session, lo obtengo para mostralo luego.
 */
-ob_start();
-$session->flash();
-$flash = ob_get_clean();
 
 $codigo_html[] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 $codigo_html[] = '<html xmlns="http://www.w3.org/1999/xhtml">';
@@ -62,7 +59,7 @@ $codigo_html[] = "\n\t\t\t" . '</div>';
 
 
 $links = null;
-$codigo_html[] = $cakeDebug;
+$codigo_html[] = $this->element('sql_dump');
 $codigo_html[] = "\t" . '</body>';
 $codigo_html[] = '</html>';
 
