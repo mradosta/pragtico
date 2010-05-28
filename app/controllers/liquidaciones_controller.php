@@ -1153,8 +1153,12 @@ class LiquidacionesController extends AppController {
                         } else {
                             $from = $periodo['desde'];
                         }
-                        if (!empty($liquidacion['Relacion']['egreso']) && $liquidacion['Relacion']['egreso'] !== '0000-00-00' && $liquidacion['Relacion']['egreso'] < $periodo['hasta']) {
-                            $to = $liquidacion['Relacion']['egreso'];
+
+                        if ($liquidacion['Relacion']['estado'] == 'Historica'
+							&& !empty($liquidacion['Relacion']['RelacionesHistorial'][0]['fin'])
+							&& $liquidacion['Relacion']['RelacionesHistorial'][0]['fin'] < $periodo['hasta']) {
+
+                            $to = $liquidacion['Relacion']['RelacionesHistorial'][0]['fin'];
                         } else {
                             $to = $periodo['hasta'];
                         }
