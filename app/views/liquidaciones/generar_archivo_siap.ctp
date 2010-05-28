@@ -26,7 +26,11 @@ $conditions['Condicion.Bar-empleador_id'] = array( 'lov' => array(
         'seleccionMultiple' => false,
         'camposRetorno'     => array('Empleador.cuit', 'Empleador.nombre')));
 
-$conditions['Condicion.Bar-version'] = array('options'  =>  'listable', 'model' => 'Siap', 'displayField' => array('Siap.version'));
+$conditions['Condicion.Bar-version'] = array(
+	'options'  		=>  'listable',
+	'model' 		=> 'Siap',
+	'order' 		=> array('Siap.version' => 'DESC'),
+	'displayField' 	=> array('Siap.version'));
 
 $options = array('title' => 'Generar archivo SICOSS', 'conditions' => array('Bar-file_format' => false));
 echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));
