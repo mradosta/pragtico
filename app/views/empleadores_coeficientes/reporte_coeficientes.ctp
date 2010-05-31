@@ -17,7 +17,11 @@
  */
 if (!empty($data)) {
 
-    $documento->create(array('password' => false, 'title' => 'Coeficientes', 'orientation' => 'landscape'));
+    $documento->create(array(
+		'password' 		=> false,
+		'title' 		=> 'Coeficientes',
+		'filters'		=> $documento->getReportFilters($this->data),
+		'orientation' 	=> 'landscape'));
     $documento->setCellValue('A', 'Cuit', array('title' => '20'));
     $documento->setCellValue('B', 'Empleador', array('title' => '30'));
 	$documento->setCellValue('C', 'Area', array('title' => '30'));

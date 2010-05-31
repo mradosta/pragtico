@@ -17,7 +17,10 @@
  */
  
 if (!empty($data)) {
-    $documento->create(array('password' => true, 'orientation' => 'landscape', 'title' => 'Listado de Liquidaciones Confirmadas'));
+    $documento->create(array(
+		'password' 		=> true,
+		'orientation' 	=> 'landscape',
+		'title' 		=> 'Listado de Liquidaciones Confirmadas'));
 
     $total = 0;
     $flag = null;

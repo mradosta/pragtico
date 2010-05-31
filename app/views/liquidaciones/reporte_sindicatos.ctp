@@ -39,32 +39,11 @@ if (!empty($data)) {
     $gridTitles['T'] = array('Dias Periodo' => array('title' => '10'));
     $gridTitles['U'] = array('Remunerativo'=> array('title' => '20'));
     $gridTitles['V'] = array('No Remunerativo' => array('title' => '20'));
-    $documento->create(array('password' => false, 'title' => 'Listado de Aportes Sindicales', 'gridTitles' => $gridTitles));
-
-/*
-    $documento->setCellValue('A', 'Cuil', array('title' => '25'));
-    $documento->setCellValue('B', 'Apellido', array('title' => '30'));
-    $documento->setCellValue('C', 'Nombre', array('title' => '30'));
-    $documento->setCellValue('D', 'Sexo', array('title' => '20'));
-    $documento->setCellValue('E', 'Estado Civil', array('title' => '20'));
-    $documento->setCellValue('F', 'F. Nacimiento', array('title' => '15'));
-    $documento->setCellValue('G', 'Direccion', array('title' => '30'));
-    $documento->setCellValue('H', 'Numero', array('title' => '10'));
-    $documento->setCellValue('I', 'Cod. Postal', array('title' => '10'));
-    $documento->setCellValue('J', 'Obra Social', array('title' => '50'));
-	$documento->setCellValue('L', 'Area', array('title' => '35'));
-    $documento->setCellValue('L', 'Empleador', array('title' => '30'));
-    $documento->setCellValue('M', 'F. Ingreso', array('title' => '15'));
-    $documento->setCellValue('N', 'F. Egreso', array('title' => '15'));
-    $documento->setCellValue('O', 'Categoria', array('title' => '30'));
-    $documento->setCellValue('O', 'Valor', array('title' => '30'));
-    $documento->setCellValue('Q', 'Concepto', array('title' => '50'));
-    $documento->setCellValue('R', 'Valor', array('title' => '15'));
-    $documento->setCellValue('S', 'Periodo', array('title' => '15'));
-    $documento->setCellValue('T', 'Dias Periodo', array('title' => '10'));
-    $documento->setCellValue('U', 'Remunerativo', array('title' => '20'));
-    $documento->setCellValue('V', 'No Remunerativo', array('title' => '20'));
-*/
+    $documento->create(array(
+		'password' 		=> false,
+		'title' 		=> 'Listado de Aportes Sindicales',
+		'filters'		=> $documento->getReportFilters($this->data),
+		'gridTitles' 	=> $gridTitles));
 
     /** Body */
     foreach ($data as $k => $detail) {

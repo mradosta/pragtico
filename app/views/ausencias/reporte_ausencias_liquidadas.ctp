@@ -17,7 +17,12 @@
  */
 if (!empty($data)) {
 
-    $documento->create(array('password' => false, 'orientation' => 'landscape', 'title' => 'Listado de Ausencias Liquidadas'));
+    $documento->create(array(
+		'password' 		=> false,
+		'orientation' 	=> 'landscape',
+		'filters'		=> $documento->getReportFilters($this->data),
+		'title' 		=> 'Listado de Ausencias Liquidadas'));
+
     $documento->setCellValue('A', 'Empleador', array('title' => '40'));
     $documento->setCellValue('B', 'Cuil', array('title' => '20'));
     $documento->setCellValue('C', 'Apellido', array('title' => '20'));

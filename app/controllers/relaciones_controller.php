@@ -242,19 +242,7 @@ class RelacionesController extends AppController {
     function reporte_relaciones_historicas() {
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 
-			if (in_array('Suspendida', $this->data['Condicion']['Bar-state'])) {
-				$liquidacion_final[] = 'Suspender';
-			}
-
-			if (in_array('Suspendida', $this->data['Condicion']['Bar-state'])) {
-				$liquidacion_final[] = 'Si';
-				$liquidacion_final[] = 'No';
-			}
-
-			if (!empty($lquidacion_final)) {
-				$conditions['RelacionesHistorial.liquidacion_final'] = $liquidacion_final;
-			}
-
+			$conditions['RelacionesHistorial.liquidacion_final'] = array('Si', 'No');
 			$conditions['RelacionesHistorial.estado'] = 'Confirmado';
 
 

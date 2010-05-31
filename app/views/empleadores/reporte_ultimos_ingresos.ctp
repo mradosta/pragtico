@@ -17,7 +17,10 @@
  */
 if (!empty($data)) {
 
-    $documento->create(array('password' => false, 'title' => 'Ultimos Ingresos'));
+    $documento->create(array(
+		'password' 		=> false,
+		'filters'		=> $documento->getReportFilters($this->data),
+		'title' 		=> 'Ultimos Ingresos'));
     
     $documento->setCellValue('A', 'Cuit', array('title' => 20));
     $documento->setCellValue('B', 'Empleador', array('title' => 35));

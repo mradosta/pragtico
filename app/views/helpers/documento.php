@@ -82,6 +82,7 @@ class DocumentoHelper extends AppHelper {
         $__defaults = array(
 			'password' 		=> false,
 			'header' 		=> true,
+			'filters' 		=> array(),
 			'orientation' 	=> 'portrait',
 			'title' 		=> '',
 			'gridTitles' 	=> array());
@@ -93,6 +94,38 @@ class DocumentoHelper extends AppHelper {
 		$this->createNewSheet();
 		$this->__sheetsCount++;
     }
+
+
+	function getReportFilters($data) {
+		unset($data['Condicion']['Bar-am']);
+		unset($data['Condicion']['Bar-file_format']);
+
+		if (!empty($data['Condicion']['Bar-grupo_id'])) {
+			$groups = User::getUserGroups();
+			foreach ((array)$data['Condicion']['Bar-grupo_id'] as $groupId) {
+				$data['Condicion']['grupo'][] = $groups[$groupId];
+			}
+		}
+
+		$return = array();
+		foreach ($data['Condicion'] as $k => $v) {
+			if (!empty($v)) {
+				$key = str_replace('Bar-', '', $k);
+				$key = str_replace('periodo_largo', 'periodo', $key);
+				$v = str_replace("\r", '', $v);
+				$key = ucfirst($key);
+
+				if (substr($key, -2) == '__') {
+					$return[Inflector::humanize(str_replace('_id__', '', $key))] = explode("\n", $v);
+				} elseif (substr($key, -3) == '_id') {
+					continue;
+				} else {
+					$return[Inflector::humanize($key)] = $v;
+				}
+			}
+		}
+		return $return;
+	}
 
 
     function createNewSheet() {
@@ -169,8 +202,24 @@ class DocumentoHelper extends AppHelper {
             $this->setCellValue('A1:E2', $this->__createOptions['title'], array(
                 'style' => array(
                     'font' => array('bold' => true, 'size' => 12))));
-            $this->moveCurrentRow(7, false);
+			$this->moveCurrentRow(3);
         }
+
+		if (!empty($this->__createOptions['filters'])) {
+
+			foreach ($this->__createOptions['filters'] as $key => $values) {
+				$this->setCellValue('A', $key . ': ', array('style' => array('font' => array('bold' => true))));
+				foreach ((array)$values as $value) {
+					$this->setCellValue('B', $value);
+					$this->moveCurrentRow();
+				}
+			}
+		}
+
+		if (!empty($this->__createOptions['title']) || !empty($this->__createOptions['filters'])) {
+			$this->moveCurrentRow(3);
+		}
+
 
 		foreach ($this->__createOptions['gridTitles'] as $col => $colData) {
 			foreach ($colData as $name => $options) {

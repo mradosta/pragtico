@@ -20,7 +20,11 @@ if (!empty($data)) {
     $gridTitles['A'] = array('Zona' => array('title' => '50'));
     $gridTitles['B'] = array('Total' => array('title' => '25'));
 
-    $documento->create(array('password' => false, 'title' => 'Totales Liquidados por Zona', 'gridTitles' => $gridTitles));
+    $documento->create(array(
+		'password' 		=> false,
+		'title' 		=> 'Totales Liquidados por Zona',
+		'filters'		=> $documento->getReportFilters($this->data),
+		'gridTitles' 	=> $gridTitles));
 
 
     /** Body */

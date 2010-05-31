@@ -18,7 +18,10 @@
  
 if (!empty($data)) {
 
-    $documento->create(array('password' => false, 'title' => 'Resumen de Liquidacion'));
+    $documento->create(array(
+		'password' 		=> false,
+		'filters'		=> $documento->getReportFilters($this->data),
+		'title' 		=> 'Resumen de Liquidacion'));
 
     /** Set array with definitios values. */
     $definitions = array(   array(  'width' => 60,

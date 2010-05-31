@@ -18,7 +18,12 @@
 
 if (!empty($data)) {
 
-    $documento->create(array('password' => false, 'title' => 'Listado de Familiares', 'orientation' => 'landscape'));
+    $documento->create(array(
+		'password' 		=> false,
+		'title' 		=> 'Listado de Familiares',
+		'filters'		=> $documento->getReportFilters($this->data),
+		'orientation' 	=> 'landscape'));
+
     $documento->setCellValue('A', 'Cuil', array('title' => '20'));
     $documento->setCellValue('B', 'Trabajador', array('title' => '25'));
     $documento->setCellValue('C', 'Parentezco', array('title' => '20'));

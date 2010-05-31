@@ -17,13 +17,14 @@
  */
 if (!empty($data)) {
 
-    $documento->create(array('password' => false, 'orientation' => 'landscape', 'title' => 'Listado de Liquidaciones'));
+    $documento->create(array(
+		'password' 		=> false,
+		'filters'		=> $documento->getReportFilters($this->data),
+		'orientation' 	=> 'landscape',
+		'title' 		=> 'Listado de Liquidaciones'));
 
-    $documento->moveCurrentRow(-4);
-    $documento->setCellValue('A', 'Periodo: ' . $period, 'bold');
-    $documento->moveCurrentRow(4);
-    $documento->setCellValue('A', 'CC', array('title' => '5'));
-    $documento->setCellValue('B', 'Emp.', array('title' => '10'));
+    $documento->setCellValue('A', 'CC', array('title' => '15'));
+    $documento->setCellValue('B', 'Empleador', array('title' => '15'));
     $documento->setCellValue('C', 'Area', array('title' => '45'));
     $documento->setCellValue('D', 'Trabaj.', array('title' => '10'));
     $documento->setCellValue('E', 'Remuner.', array('title' => '15'));

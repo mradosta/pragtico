@@ -17,7 +17,12 @@
  */
 if (!empty($data)) {
 
-    $documento->create(array('password' => false, 'title' => 'Listado de Liquidaciones Finales a Realizar', 'orientation' => 'landscape'));
+    $documento->create(array(
+		'password' 		=> false,
+		'title' 		=> 'Listado de Liquidaciones Finales a Realizar',
+		'filters'		=> $documento->getReportFilters($this->data),
+		'orientation' 	=> 'landscape'));
+
     $documento->setCellValue('A', 'Cuil', array('title' => '20'));
     $documento->setCellValue('B', 'Apellido', array('title' => '30'));
     $documento->setCellValue('C', 'Nombre', array('title' => '30'));

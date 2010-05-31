@@ -17,7 +17,10 @@
  */
 if (!empty($data)) {
 
-    $documento->create(array('password' => true, 'title' => 'Evolucion de la Facturacion'));
+    $documento->create(array(
+		'password' 		=> true,
+		'filters'		=> $documento->getReportFilters($this->data),
+		'title' 		=> 'Evolucion de la Facturacion'));
     $documento->setCellValue('A', 'Cuit', array('title' => '20'));
     $documento->setCellValue('B', 'Empleador', array('title' => '35'));
     $documento->setCellValue('C', 'Area', array('title' => '35'));

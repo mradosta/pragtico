@@ -18,7 +18,11 @@
  
 if (!empty($data)) {
 
-    $documento->create(array('password' => false, 'orientation' => 'landscape', 'title' => 'Relaciones Historicas'));
+    $documento->create(array(
+		'password' 		=> false,
+		'filters'		=> $documento->getReportFilters($this->data),
+		'orientation' 	=> 'landscape',
+		'title' 		=> 'Relaciones Historicas'));
 
     $documento->setCellValue('A', 'Cuit', array('title' => '15'));
     $documento->setCellValue('B', 'Empleador', array('title' => '30'));
@@ -80,8 +84,6 @@ if (!empty($data)) {
 
 	$conditions['Condicion.Bar-desde'] = array('label' => 'Desde', 'type' => 'date');
 	$conditions['Condicion.Bar-hasta'] = array('label' => 'Hasta', 'type' => 'date');
-
-	$conditions['Condicion.Bar-state'] = array('label' => 'Estado', 'default' => 'Historica', 'multiple' => 'checkbox', 'options' => array('Suspendida' => 'Suspendida', 'Historica' => 'Historica'));
 
     $options = array('title' => 'Relaciones Historicas');
     echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));
