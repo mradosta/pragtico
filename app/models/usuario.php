@@ -116,9 +116,9 @@ class Usuario extends AppModel {
 
 			$dbo = $this->getDataSource();
 			$sql = $dbo->buildStatement(array(
-				'fields'		=> array('`Menu`.`id`'),
-				'table' 		=> $dbo->fullTableName($this),
-				'alias' 		=> 'Usuario',
+				'fields'		=> array('Menu.id'),
+				'table' 		=> 'menus',
+				'alias' 		=> 'Menu',
 				'conditions'	=> array('Menu.estado' => 'Activo'),
 				'limit' 		=> null,
 				'offset' 		=> null,
@@ -127,12 +127,14 @@ class Usuario extends AppModel {
 				'joins' 		=> array(
 					array(
 						'table' 		=> 'roles_menus',
+						'alias' 		=> 'RolesMenu',
 						'type' 			=> 'INNER',
 						'conditions' 	=> array(
-							array(	'RolesMenu.menu_id' => DboSource::identifier('Menu.id')),
-									'RolesMenu.estado' 	=> 'Activo')),
+							array(	'RolesMenu.menu_id' => DboSource::identifier('Menu.id'),
+									'RolesMenu.estado' 	=> 'Activo'))),
 					array(
 						'table' 		=> 'roles',
+						'alias' 		=> 'Rol',
 						'type' 			=> 'INNER',
 						'conditions' 	=> array(
 							array(	'RolesMenu.rol_id' 	=> DboSource::identifier('Rol.id'),
