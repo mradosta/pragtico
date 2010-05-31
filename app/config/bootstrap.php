@@ -63,6 +63,9 @@ define('VALID_EMAIL', "/^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_
 Inflector::rules(
 'singular', array(
 	'rules' 			=> array(
+		'/des$/i' => 'd',
+		'/res$/i' => 'r',
+		'/nes$/i' => 'n',
 		'/les$/i' => 'l')));
 
 Inflector::rules(
