@@ -15,31 +15,32 @@
  * @lastmodified	$Date$
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
-  
-$codigo_html = "";
-$mensaje = "<p class='session_titulo_warning'>" . $appForm->image('warnings.gif') . " " . $content_for_layout . "</p>";
+ 
+$mensaje[0] = $appForm->tag('span', $appForm->link('Cerrar', null, array('class'=>'link_boton', 'title'=>'Cerrar')));
+$mensaje[1] = $appForm->image('ok_icono_amarillo.gif');
+$mensaje[2] = $appForm->tag('span', $message, array('class'=>'contenido'));
 
-$mensaje .= "<p class='session_aceptar'>" . $appForm->link("Aceptar", "#", array("onclick"=>"return ocultarSessionFlash();", "class"=>"link_boton", "title"=>"Aceptar")) . "</p>";
-$mensaje .= $appForm->bloque("", array('div' => array("class"=>"clear")));
-$codigo_html .= $appForm->bloque($mensaje, array("caja_redondeada"=>true));
-$codigo_html = $appForm->bloque($codigo_html, array('div' => array("id"=>"session_flash", "class"=>"session_flash", "style"=>"display:none;")));
-$codigo_html .= $javascript->codeBlock("centrarYMostrarSessionFlash();
-function centrarYMostrarSessionFlash(){
+echo $appForm->tag('div', $mensaje ,array('class'=>'session_flash session_flash_warning'));
 
-	var elDivDelFlash = document.getElementById('session_flash');
-	if (elDivDelFlash) {
-		var top=((screen.availHeight-elDivDelFlash.offsetHeight)/2)-200;
-		var left=((screen.availWidth-elDivDelFlash.offsetWidth)/2)-200;
 
-		elDivDelFlash.style.display = 'block';
-		elDivDelFlash.style.left = left;
-		elDivDelFlash.style.top = top;
-	}
+/**
+* Si no hay warning, hago que se desaparezca solo el cartel ed aviso, sino, debe hacerlo el usuario para
+* asegurarse de que leyo el mensaje de warning.
+*/
+if(empty($warnings)) {
+	$js = "setTimeout(vOcultar, 6000);";
+}
+else {
+	$js = "
+		jQuery('.session_flash img').attr('style', 'cursor:pointer');
+		jQuery('.session_flash img').attr('alt', 'Ver Detalle');
+		jQuery('.session_flash img').attr('title', 'Ver Detalle');
+		jQuery('.session_flash img').bind('click', function() {
+			jQuery('.session_flash_warning_detalle').fadeIn('slow');
+		});
+	";
+}
+$js .= "jQuery('.session_flash .link_boton').bind('click', vOcultar);";
 
-	setTimeout('ocultarSessionFlash()',6000);
-	return false;
-}	
-");
-
-echo $codigo_html;
+echo $appForm->codeBlock($js);
 ?>
