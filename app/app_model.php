@@ -72,9 +72,9 @@ class AppModel extends Model {
  * @var integer
  * @access protected
  */
-    protected $__permissions = "496";
-    
-    
+    protected $__permissions = '496';
+
+
 /**
  * Mantiene informacion de errores que se generen al intentar ejecutar consultas SQL.
  *
@@ -121,7 +121,7 @@ class AppModel extends Model {
         $dataCount = $c = 0;
         $validationErrors = null;
         foreach ($data as $k => $v) {
-            
+
             $dataCount++;
             $this->data = $v;
 
@@ -141,7 +141,7 @@ class AppModel extends Model {
 			if (!empty($this->data)) {
 				$data[$k] = array_merge($data[$k], $this->data);
 			}
-            
+
             /**
              * Must verify if all elements in the array belongs to the same model.
              * Maybe there're elements of a related model.
@@ -210,7 +210,7 @@ class AppModel extends Model {
                                     $postedDetailsId[] = $tv[$this->{$detailKey}->primaryKey];
                                 }
                             }
-                            
+
                             foreach (array_diff($originalDetailsId, $postedDetailsId) as $idToDelete) {
                                 if (!$this->{$detailKey}->del($idToDelete)) {
                                     $errorsDeletingDetails = true;
@@ -265,17 +265,6 @@ class AppModel extends Model {
     }
 
 
-/**
- * Cuando se genera un error, lo busco y lo dejo disponible.
- *
- * @return void.
- * @access public
-*/
-    function onError_deprecated() {
-        $this->__buscarError();
-    }
-
-    
     function del($id = null, $cascade = true) {
         
         $this->order = null;
@@ -306,6 +295,8 @@ class AppModel extends Model {
     function deleteAll($conditions, $cascade = true, $callbacks = false, $fkSave = false) {
 
        if ($fkSave === true) {
+
+
             $ids = Set::extract(
                 $this->find('all', array_merge(array(
                                 'fields'    => $this->alias . '.' . $this->primaryKey,
@@ -322,17 +313,20 @@ class AppModel extends Model {
                     $table = $db->name(Inflector::tableize($assoc));
                     $conditions = array($data['foreignKey'] => $ids);
                     $sql = sprintf('DELETE FROM %s %s', $table, $db->conditions($conditions));
+
                     $db->query($sql);
 
                     if (empty($db->error)) {
                         $c++;
                     }
                 }
-                
+
                 if (count($this->hasMany) === $c) {
-                    $sql = sprintf('DELETE FROM %s %s', $db->name($this->useTable), $db->conditions(array($this->primaryKey => $ids)));
+					$tableName = $db->name($this->useTable);
+                    $sql = sprintf('DELETE FROM %s%s', $tableName, $db->conditions(array($tableName . '.' . $this->primaryKey => $ids)));
                     $db->query($sql);
-                    if (empty($db->dbError)) {
+					$errors = $this->getError();
+                    if (empty($errors)) {
                         $db->commit($this);
                         return true;
                     } else {
@@ -350,26 +344,15 @@ class AppModel extends Model {
            return parent::deleteAll($conditions, $cascade, $callbacks);
        }
     }
-        
-    function deleteAll_deprecated($conditions, $cascade = true, $callbacks = false) {
-        
-        $this->begin();
-        if (parent::deleteAll($conditions, $cascade, $callbacks)) {
-            $this->commit();
-            return true;
-        } else {
-            $this->rollback();
-            return false;
-        }
-    }
-    
-    
+
+
 /**
- * Retorna la variable $this->dbError con los errores que puedan haber surgido de alguna query.
+ *
  *
  */
     function getError() {
-        return $this->dbError;
+		$db = ConnectionManager::getDataSource($this->useDbConfig);
+		return $db->error;
     }
 
 
