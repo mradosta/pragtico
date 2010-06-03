@@ -964,6 +964,18 @@ class Liquidacion extends AppModel {
 				$valor = 0;
 			} else {
             	$valor = $this->__formulas->resolver($formula);
+				if (!is_numeric($valor)) {
+					$valor = null;
+					$valor = 0;
+					$this->__setError(array(	'tipo'                    => 'Error en la Formula',
+												'gravedad'                => 'Media',
+												'concepto'                => $concepto['codigo'] . ' (' . $concepto['jerarquia'] . ')',
+												'variable'                => '',
+												'formula'                 => $concepto['formula'],
+												'descripcion'             => $check,
+												'recomendacion'           => 'Verifique la formula.',
+												'descripcion_adicional'   => $formula));
+				}
 			}
         } elseif (empty($formula)) {
             $this->__setError(array(    'tipo'					=> 'Formula de Concepto Inexistente',
