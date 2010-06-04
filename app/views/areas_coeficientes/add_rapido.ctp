@@ -44,7 +44,7 @@ $fila[] = array('type' => 'header', 'model' => 'Concepto', 'field' => 'delete', 
 $cuerpo[] = $fila;
 $datos['tabla']['simple'] = true;
 $datos['cuerpo'] = $cuerpo;
-$acciones = $appForm->tag('div', $this->renderElement('add/acciones'), array('class'=>'botones_tablas_from_to'));
+$acciones = $appForm->tag('div', $this->element('add/acciones'), array('class'=>'botones_tablas_from_to'));
 $add = $appForm->tag('div', $appForm->form($appForm->tabla($datos) . $acciones, array('action' => 'save')), array('class' => 'unica'));
 echo $appForm->tag('div', $add, array('class' => 'add'));
 

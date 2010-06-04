@@ -43,7 +43,7 @@ elseif($accion === "falta_confirmacion") {
 $accionesExtra['opciones'] = array("acciones"=>array("nuevo", $appForm->bloque($appForm->link("Importar Planilla", "importarPlanillas", array("class"=>"link_boton", "title"=>"Importa las planillas de ingreso masivo de horas")))));
 $botonesExtra['opciones']['botones'][] = $appForm->button("Cancelar", array("title"=>"Cancelar la asignacion", "class"=>"limpiar", "onclick"=>"document.getElementById('accion').value='cancelar';form.action='" . router::url("/") . $this->params['controller'] . "/asignar" . "';form.submit();"));
 $botonesExtra['opciones']['botones'][] = $appForm->submit($labelBoton, array("title"=>"Realizar la asignacion", "onclick"=>"document.getElementById('accion').value='" . $accion . "'"));
-$botones = $this->renderElement("index/buscadores", array("botonesExtra"=>$botonesExtra, "opcionesForm"=>array("action" => "asignar")));
+$botones = $this->element("index/buscadores", array("botonesExtra"=>$botonesExtra, "opcionesForm"=>array("action" => "asignar")));
 
 /**
 * Creo la tabla.
