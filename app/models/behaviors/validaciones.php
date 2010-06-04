@@ -505,19 +505,21 @@ class ValidacionesBehavior extends ModelBehavior {
 						}
 					}
 				} else {
-					foreach ($model->data[$k] as $kDetail=>$vDetail) {
-						foreach ($vDetail as $field=>$v) {
-							if (in_array($field, array('created', 'modified', 'user_id', 'group_id', 'rol_id', 'permissions'))) {
-								continue;
-							}
-							
-							$value = null;
-							if (isset($model->data[$k][$kDetail][$field])) {
-								$value = $model->data[$k][$kDetail][$field];
-							} if (empty($model->data[$k][$kDetail]['id'])) {
-								$model->data[$k][$kDetail][$field] = $this->__setDBFieldValue($model->{$k}->schema($field), $value);
-							} elseif (!is_null($value)){
-								$model->data[$k][$kDetail][$field] = $this->__setDBFieldValue($model->{$k}->schema($field), $value);
+					foreach ($model->data[$k] as $kDetail => $vDetail) {
+						if (is_array($vDetail)) {
+							foreach ($vDetail as $field=>$v) {
+								if (in_array($field, array('created', 'modified', 'user_id', 'group_id', 'rol_id', 'permissions'))) {
+									continue;
+								}
+								
+								$value = null;
+								if (isset($model->data[$k][$kDetail][$field])) {
+									$value = $model->data[$k][$kDetail][$field];
+								} if (empty($model->data[$k][$kDetail]['id'])) {
+									$model->data[$k][$kDetail][$field] = $this->__setDBFieldValue($model->{$k}->schema($field), $value);
+								} elseif (!is_null($value)){
+									$model->data[$k][$kDetail][$field] = $this->__setDBFieldValue($model->{$k}->schema($field), $value);
+								}
 							}
 						}
 					}
