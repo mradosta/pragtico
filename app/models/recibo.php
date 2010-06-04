@@ -48,7 +48,14 @@ class Recibo extends AppModel {
 		/** Search for concepts in receipt */
 		$this->contain('RecibosConcepto');
 		$receipt = $this->findById($receiptId);
-		$conceptsInReceipt = Set::extract('/RecibosConcepto/concepto_id', $receipt);
+
+		foreach ($receipt['RecibosConcepto'] as $v) {
+			if ($v['estado'] == 'Activo') {
+				$conceptsInReceipt[] = $v['concepto_id'];
+			} else {
+				$conceptsDeletedFromReceipt[] = $v['concepto_id'];
+			}
+		}
 
 		if (!empty($conceptsInReceipt)) {
 
@@ -56,52 +63,54 @@ class Recibo extends AppModel {
 			$this->Empleador->Relacion->contain(array(
 				'RelacionesConcepto'));
 			$relation = $this->Empleador->Relacion->findById($relationId);
+
 			$conceptsInRelaction =
-				Set::combine($relation, 'RelacionesConcepto{n}.id', 'RelacionesConcepto{n}.concepto_id');
-
-			/*
-			foreach ($relation['RelacionesConcepto'] as $concept) {
-				if ($concept['recibo_id'] == $receiptId) {
-					$conceptsInRelactionReceipt[$concept['id']] = $concept['concepto_id'];
-				}
-				$conceptsInRelaction[$concept['id']] = $concept['concepto_id'];
-			}
-			*/
-
+				Set::combine($relation, 'RelacionesConcepto.{n}.id', 'RelacionesConcepto.{n}.concepto_id');
 
 			$db = ConnectionManager::getDataSource($this->useDbConfig);
 			$db->begin($this);
 			$save = true;
 			$delete = true;
 
-
 			if (!empty($conceptsInRelaction)) {
 				$toAdd = array_diff($conceptsInReceipt, $conceptsInRelaction);
-				foreach ($toAdd as $conceptId) {
-					$save = $this->Empleador->Relacion->RelacionesConcepto->save(
-						array('RelacionesConcepto' => array(
-							'relacion_id' => $relationId,
-							'concepto_id' => $conceptId))
-					);
-					if (!$save) {
-						break;
+			} else {
+				$toAdd = $conceptsInReceipt;
+			}
+
+			foreach ($toAdd as $conceptId) {
+				$save = $this->Empleador->Relacion->RelacionesConcepto->save(
+					array('RelacionesConcepto' => array(
+						'relacion_id' => $relationId,
+						'concepto_id' => $conceptId))
+				);
+				if (!$save) {
+					break;
+				}
+			}
+
+
+			if (!empty($conceptsDeletedFromReceipt)) {
+				$toDelete = array_diff($conceptsDeletedFromReceipt, $conceptsInReceipt);
+				if (!empty($toDelete)) {
+					$tmp = array_flip($conceptsInRelaction);
+					$toDeleteIds = null;
+					foreach ($toDelete as $conceptId) {
+						if (!empty($tmp[$conceptId])) {
+							$toDeleteIds[] = $tmp[$conceptId];
+						}
+					}
+
+					if (!empty($toDeleteIds)) {
+						$delete = $this->Empleador->Relacion->RelacionesConcepto->deleteAll(
+							array('RelacionesConcepto.id' => $toDeleteIds),
+							true,
+							false,
+							true
+						);
 					}
 				}
 			}
-
-
-			if (!empty($conceptsInRelaction)) {
-				$toDelete = array_diff($conceptsInRelaction, $conceptsInReceipt);
-				if (!empty($toDelete)) {
-					$delete = $this->Empleador->Relacion->RelacionesConcepto->deleteAll(
-						array('RelacionesConcepto.id' => array_keys($toDelete)),
-						true,
-						false,
-						true
-					);
-				}
-			}
-
 
 			if ($save && $delete) {
 				$db->commit($this);

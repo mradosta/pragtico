@@ -31,6 +31,7 @@ class RecibosConceptosController extends AppController {
 
             $assignedConcepts = $this->__getAssignedConcepts($this->data['RecibosConcepto']['recibo_id'], true);
 
+			$add = $del = array();
             foreach ($this->data['Concepto'] as $k => $v) {
                 list($conceptId, $conceptCode) = explode('|', $k);
                 if ($v == 1 && !in_array($conceptCode, $assignedConcepts)) {
@@ -38,18 +39,37 @@ class RecibosConceptosController extends AppController {
                         'recibo_id'     => $this->data['RecibosConcepto']['recibo_id'],
                         'concepto_id'   => $conceptId));
                 } elseif ($v == 0 && in_array($conceptCode, $assignedConcepts)) {
-                    $del[] = $conceptId;
+					$data = $this->RecibosConcepto->find('first', array(
+						'recursive'		=> -1,
+						'fields'		=> array('RecibosConcepto.id'),
+						'conditions' 	=> array(
+							'recibo_id'     => $this->data['RecibosConcepto']['recibo_id'],
+                        	'concepto_id'   => $conceptId
+						)
+					));
+
+					if (!empty($data['RecibosConcepto']['id'])) {
+						$del[] = array('RecibosConcepto' => array(
+							'id'			=> $data['RecibosConcepto']['id'],
+							'estado'		=> 'Eliminado'
+						));
+					}
                 }
             }
 
-            if (!empty($add)) {
-                $this->RecibosConcepto->saveAll($add);
+			$save = array_merge($add, $del);
+            if (!empty($save)) {
+                $this->RecibosConcepto->appSave($save);
             }
+
+			/*
             if (!empty($del)) {
                 $this->RecibosConcepto->deleteAll(array(
                     'recibo_id'     => $this->data['RecibosConcepto']['recibo_id'],
                     'concepto_id'   => $del));
             }
+			*/
+
             $this->Session->setFlash('La operacion se realizo con exito.', 'ok');
             $this->redirect(array('controller' => 'recibos', 'action' => 'index'));
         } else {
