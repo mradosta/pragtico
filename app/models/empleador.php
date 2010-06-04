@@ -88,7 +88,7 @@ class Empleador extends AppModel {
 	
 	var $hasMany = array(	'Relacion',
                             'Area',
-							'Suss',                              
+							'Suss',
 							'Recibo',
 	   						'Cuenta');
 

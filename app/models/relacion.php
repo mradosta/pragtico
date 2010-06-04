@@ -37,6 +37,7 @@ class Relacion extends AppModel {
 												'Situacion',
 												'Modalidad',
 												'Actividad',
+												'Recibo',
 												'Area',
 												'ConveniosCategoria.Convenio')),
 								'add' => array(								
@@ -160,12 +161,20 @@ class Relacion extends AppModel {
 
 
 	function beforeSave() {
+
         /** When no record number is entered, assing same number as document */
         if (empty($this->data['Relacion']['legajo']) && !empty($this->data['Relacion']['trabajador_id'])) {
             $this->Trabajador->recursive = -1;
             $trabajador = $this->Trabajador->findById($this->data['Relacion']['trabajador_id']);
             $this->data['Relacion']['legajo'] = $trabajador['Trabajador']['numero_documento'];
         }
+
+		if (empty($this->data['Relacion']['id']) && !empty($this->data['Relacion']['recibo_id'])) {
+			if (!$this->Empleador->Recibo->sync(
+				$this->data['Relacion']['id'], $this->data['Relacion']['recibo_id'])) {
+				return false;
+			}
+		}
 
         return parent::beforeSave();
     }

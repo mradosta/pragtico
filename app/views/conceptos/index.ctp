@@ -39,8 +39,8 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Concepto']['id'], 'imagen' => array('nombre' => 'convenios.gif', 'alt' => 'Convenios'), 'url' => 'convenios');
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Concepto']['id'], 'imagen' => array('nombre' => 'empleadores.gif', 'alt' => 'Empleadores asociados al Concepto'), 'url' => 'empleadores');
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Concepto']['id'], 'imagen' => array('nombre' => 'relaciones.gif', 'alt' => 'Relaciones asociadas al Concepto'), 'url' => 'relaciones');
-	$fila[] = array('tipo' => 'accion', 'valor' => $appForm->link($appForm->image('asignar.gif', array('alt' => 'Asignar este concepto a todos los Trabajadores', 'title' => 'Asignar este concepto a todos los Trabajadores')), array('action' => 'manipular_concepto', 'agregar' => $v['Concepto']['id'])));
-	$fila[] = array('tipo' => 'accion', 'valor' => $appForm->link($appForm->image('quitar.gif', array('alt' => 'Quitara este concepto de todos los Trabajadores', 'title' => 'Quitara este concepto de todos los Trabajadores')), array('action' => 'manipular_concepto', 'quitar' => $v['Concepto']['id'])));
+	$fila[] = array('tipo' => 'accion', 'valor' => $appForm->link($appForm->image('asignar.gif', array('alt' => 'Asignar este concepto a todos los Trabajadores', 'title' => 'Asignar este concepto a todos los Trabajadores')), array('action' => 'manipular_concepto', 'agregar', 'concepto_id' => $v['Concepto']['id'])));
+	$fila[] = array('tipo' => 'accion', 'valor' => $appForm->link($appForm->image('quitar.gif', array('alt' => 'Quitara este concepto de todos los Trabajadores', 'title' => 'Quitara este concepto de todos los Trabajadores')), array('action' => 'manipular_concepto', 'quitar', 'concepto_id' => $v['Concepto']['id'])));
 	$fila[] = array('model' => 'Concepto', 'field' => 'id', 'valor' => $v['Concepto']['id'], 'write' => $v['Concepto']['write'], 'delete' => $v['Concepto']['delete']);
 	$fila[] = array('model' => 'Concepto', 'field' => 'codigo', 'valor' => $v['Concepto']['codigo']);
 	$fila[] = array('model' => 'Concepto', 'field' => 'nombre', 'valor' => $v['Concepto']['nombre']);

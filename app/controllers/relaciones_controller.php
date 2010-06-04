@@ -24,8 +24,6 @@
  */
 class RelacionesController extends AppController {
 
-//var $components = array('DebugKit.Toolbar');
-
     var $helpers = array('Documento');
 
 
@@ -314,9 +312,22 @@ class RelacionesController extends AppController {
  */
 	function recibos_relacionado($id) {
 		$c=0;
-		foreach ($this->Relacion->Empleador->Recibo->find('list', array('fields' => array('Recibo.nombre'), 'conditions'=>array('Recibo.empleador_id' => $id))) as $k => $v) {
-			$recibos[$c]['optionValue'] = $k;
-			$recibos[$c]['optionDisplay'] = $v;
+
+		foreach ($this->Relacion->Empleador->Recibo->find('all', array(
+				'recursive'		=> -1,
+				'order'			=> array('Recibo.convenio_id' => 'DESC'),
+				'conditions'	=> array('OR' => array(
+					'Recibo.empleador_id' 	=> $id,
+					'Recibo.convenio_id !=' => null)
+				)
+			)) as $v) {
+			if (!empty($v['Recibo']['convenio_id'])) {
+				$v['Recibo']['nombre'] = '(C.C.) ' . $v['Recibo']['nombre'];
+			} else {
+				$v['Recibo']['nombre'] = '(Emp.) ' . $v['Recibo']['nombre'];
+			}
+			$recibos[$c]['optionValue'] = $v['Recibo']['id'];
+			$recibos[$c]['optionDisplay'] = $v['Recibo']['nombre'];
 			$c++;
 		}
 		$this->set('data', $recibos);
@@ -327,6 +338,7 @@ class RelacionesController extends AppController {
  * Save.
  */
 	function save() {
+
 		/**
 		* Si esta grabando y selecciona un recibo del empleador, agrego a la relacion laboral,
 		* los conceptos que posea ese recibo.

@@ -24,24 +24,35 @@
 * Datos del trabajador.
 */
 $campos = null;
-$campos['Relacion.trabajador_id'] = array(	'lov'=>array('controller'		=> 	'trabajadores',
-														'seleccionMultiple'	=> 	0,
-															'camposRetorno'	=> 	array(	'Trabajador.cuil',
-																					 	'Trabajador.nombre',
-																					 	'Trabajador.apellido')));
+$campos['Relacion.trabajador_id'] = array(
+	'lov' 					=> array(
+		'controller'		=> 	'trabajadores',
+		'seleccionMultiple'	=> 	0,
+		'camposRetorno'		=> 	array(
+			'Trabajador.cuil',
+			'Trabajador.nombre',
+			'Trabajador.apellido')));
 
-$campos['Relacion.convenios_categoria_id'] = array(	'label'	=>	'Categoria',
-													'lov'	=>	array(	'controller'		=> 	'convenios_categorias',
-																		'seleccionMultiple'	=> 	0,
-																			'camposRetorno'	=> 	array(	'Convenio.nombre',
-																										'ConveniosCategoria.nombre')));
+$campos['Relacion.convenios_categoria_id'] = array(
+	'label'					=>	'Categoria',
+	'lov'					=>	array(
+		'controller'		=> 	'convenios_categorias',
+		'seleccionMultiple'	=> 	0,
+		'camposRetorno'		=> 	array(	'Convenio.nombre', 'ConveniosCategoria.nombre')));
 
 $campos['Relacion.ingreso'] = array();
 $campos['Relacion.horas'] = array('label' => 'Horas de Trabajo');
-$campos['Relacion.basico'] = array('label' => 'Basico $', 'aclaracion' => 'Si lo deja en cero, se utilizara el basico de convenio.');
+$campos['Relacion.basico'] = array(
+	'label' 				=> 'Basico $',
+	'aclaracion' 			=> 'Si lo deja en cero, se utilizara el basico de convenio.');
 $campos['Relacion.estado'] = array('type' => 'soloLectura');
 $campos['Relacion.antiguedad_reconocida'] = array();
-$fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array('class' => 'subset'), 'fieldset' => array('legend' => 'Trabajador', 'imagen' => 'trabajadores.gif')));
+$fieldsets[] = array(
+	'campos' 	=> $campos,
+	'opciones' 	=> array(
+		'div' 	=> array(
+			'class' => 'subset'),
+			'fieldset' => array('legend' => 'Trabajador', 'imagen' => 'trabajadores.gif')));
 
 
 /**
@@ -49,15 +60,27 @@ $fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array('cl
 */
 $campos = null;
 $campos['Relacion.id'] = array();
-$campos['Relacion.empleador_id'] = array(	'lov'=>array('controller'		=> 	'empleadores',
-														'seleccionMultiple'	=> 	0,
-														'camposRetorno'		=> 	array(	'Empleador.cuit',
-																						'Empleador.nombre')));
-$campos['Relacion.area_id'] = array('type' => 'relacionado', 'verificarRequerido' => 'forzado', 'valor'=>'Area.nombre', 'relacion'=>'Relacion.empleador_id', 'url'=>'relaciones/areas_relacionado');
-$campos['Relacion.legajo'] = array('aclaracion' => 'Si lo deja en blanco, se utilizara el numero de documento del Trabajador.');
-if($this->action == 'add') {
-	$campos['Relacion.recibo_id'] = array('type' => 'relacionado', 'valor' => 'Recibo.nombre', 'relacion' => 'Relacion.empleador_id', 'url' => 'relaciones/recibos_relacionado');
-}
+$campos['Relacion.empleador_id'] = array(
+	'lov'					=> array(
+		'controller'		=> 	'empleadores',
+		'seleccionMultiple'	=> 	0,
+		'camposRetorno'		=> 	array(
+			'Empleador.cuit', 'Empleador.nombre')));
+$campos['Relacion.area_id'] = array(
+	'type' 					=> 'relacionado',
+	'verificarRequerido' 	=> 'forzado',
+	'valor'					=> 'Area.nombre',
+	'relacion'				=> 'Relacion.empleador_id',
+	'url'					=> 'relaciones/areas_relacionado');
+$campos['Relacion.legajo'] = array(
+	'aclaracion' 			=> 'Si lo deja en blanco, se utilizara el numero de documento del Trabajador.');
+
+$campos['Relacion.recibo_id'] = array(
+	'type' 					=> 'relacionado',
+	'verificarRequerido' 	=> 'forzado',
+	'valor' 				=> 'Recibo.nombre',
+	'relacion' 				=> 'Relacion.empleador_id',
+	'url' 					=> 'relaciones/recibos_relacionado');
 $fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array('class' => 'subset'), 'fieldset' => array('legend' => 'Empleador', 'imagen' => 'empleadores.gif')));
 
 
@@ -92,7 +115,9 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' =
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('imagen' => 'trabajadores.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array(
+	'div' 		=> array('class' => 'unica'),
+	'fieldset' 	=> array('imagen' => 'trabajadores.gif')));
 echo $this->element('add/add', array('fieldset' => $fieldset));
 
 

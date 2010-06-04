@@ -75,7 +75,17 @@ class ConveniosController extends AppController {
 		$this->Convenio->contain(array("Concepto"));
 		$this->data = $this->Convenio->read(null, $id);
 	}
-	
+
+
+/**
+ * Recibos
+ * Muestra via desglose los Recibos de un convenio colectivo.
+ */
+	function recibos($id) {
+		$this->Convenio->contain(array('Recibo'));
+		$this->data = $this->Convenio->read(null, $id);
+	}
+
 
 /**
  * Informaciones.
@@ -101,8 +111,7 @@ class ConveniosController extends AppController {
 			$c = $this->Convenio->ConveniosCategoria->Relacion->RelacionesConcepto->Concepto->agregarQuitarConcepto($relaciones, array($this->params['named']['concepto_id']), array("accion"=>$accion));
 			if ($c > 0) {
 				$this->Session->setFlash("El concepto se pudo " . $accion . " correctamente a " . $c . " trabajadores.", "ok");
-			}
-			else {
+			} else {
 				$this->Session->setFlash("El concepto no se lo pudo " . $accion . " a ningun trabajador. Puede que ya haya estado asignado/quitado.", "warning");
 			}
 		}

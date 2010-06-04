@@ -28,12 +28,15 @@ class TrabajadoresController extends AppController {
 
 
 	function afterSave() {
-		if (empty($this->data['Trabajador']['id'])) {
+
+		if (empty($this->data['Trabajador']['id'])
+			&& !empty($params['Relacion.trabajador_id'])
+			&& $params['Relacion.trabajador_id'] == '##ID##') {
+
+			$params['Relacion.trabajador_id'] = $this->Trabajador->id;
 			$this->Session->setFlash('El Trabajador ha sido guardado, por favor ahora cree la relacion con un Empleador.', 'ok');
-			$this->redirect(array(
-				'controller' 				=> 'relaciones',
-				'action'					=> 'add',
-				'Relacion.trabajador_id'	=> $this->Trabajador->id));
+
+			$this->redirect($params);
 			return false;
 		} else {
 			return parent::afterSave();

@@ -97,8 +97,24 @@ $fieldsets[] = array('campos' => $campos, 'opciones' => array('div' => array('cl
 $fieldset = $appForm->pintarFieldsets($fieldsets,
 	array(	'div' => array('class' => 'unica'),
 			'fieldset' => array('imagen' => 'trabajadores.gif')));
+
+
+$accionesExtra['opciones']['acciones'][] = 'cancelar';
+
+if (empty($this->data['Trabajador']['id'])) {
+	$accionesExtra['opciones']['acciones'][] = $appForm->button('Guardar y Cont.', array(
+		'title'		=> 'Guardar y continuar creando la Relacion',
+		'onclick' 	=> "jQuery('#accion').val('grabar_continuar|controller:relaciones|action:add|Relacion.trabajador_id:##ID##');form.submit();"
+		)
+	);
+}
+$accionesExtra['opciones']['acciones'][] = 'grabar';
+
 echo $this->element('add/add', array(
-	'fieldset' 		=> $fieldset,
-	'opcionesForm' 	=> array('enctype' => 'multipart/form-data')));
+		'fieldset' 		=> $fieldset,
+		'accionesExtra' => $accionesExtra,
+		'opcionesForm' 	=> array('enctype' => 'multipart/form-data')
+	)
+);
 
 ?>

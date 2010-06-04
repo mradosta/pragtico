@@ -10,9 +10,9 @@
  * @package			pragtico
  * @subpackage		app.views
  * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
+ * @version			$Revision: 236 $
+ * @modifiedby		$LastChangedBy: mradosta $
+ * @lastmodified	$Date: 2009-01-27 11:26:49 -0200 (Tue, 27 Jan 2009) $
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
  
@@ -28,15 +28,13 @@ foreach ($this->data['Recibo'] as $k=>$v) {
 
 	$fila[] = array('tipo' => 'accion', 'valor' => $appForm->link($appForm->image('asignar.gif', array('alt' => 'Asignar este concepto a todos los Trabajadores', 'title' => 'Asignar este recibo a todos los Trabajadores')), array('controller' => 'recibos', 'action' => 'sync', $v['id']), array(), 'Sincronizara los conceptos del recibo ' . $v['nombre'] . ' en todas las relaciones que lo tengan asignado. Desea continuar?'));
 
-	//$fila[] = array("tipo"=>"accion", "valor"=>$appForm->link($appForm->image('asignar.gif', array('alt' => "Asignar este recibo a todos los Trabajadores", "title"=>"Asignar este recibo a todos los Trabajadores")), array("action"=>"asignar_recibo", "empleador_id"=>$this->data['Empleador']['id'], "recibo_id"=>$v['id']), array(), "Asignara los conceptos de este recibo a todos los trabajadores del empleador '" . $this->data['Empleador']['nombre'] . "'. Desea continuar?"));
 	$fila[] = array('model' => 'Recibo', 'field' => 'id', 'valor' => $v['id'], 'write' => $v['write'], 'delete' => $v['delete']);
 	$fila[] = array('model' => 'Recibo', 'field' => 'nombre', 'valor' => $v['nombre']);
 	$fila[] = array('model' => 'Recibo', 'field' => 'descripcion', 'valor' => $v['descripcion']);
 	$cuerpo[] = $fila;
 }
 
-$url = array('controller' => 'recibos', 'action' => 'add', 'Recibo.empleador_id' => $this->data['Empleador']['id']);
-
+$url = array('controller' => "recibos", 'action' => 'add', "Recibo.convenio_id"=>$this->data['Convenio']['id']);
 echo $this->element('desgloses/agregar', array('url' => $url, 'titulo' => "Recibos", 'cuerpo' => $cuerpo));
 
 ?>

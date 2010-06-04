@@ -636,7 +636,7 @@ class Concepto extends AppModel {
 							break 2;
 						}
 					} elseif (!empty($existe) && $opciones['accion'] === 'quitar') {
-						if ($this->RelacionesConcepto->del($existe['RelacionesConcepto']['id'])) {
+						if ($this->RelacionesConcepto->delete($existe['RelacionesConcepto']['id'])) {
 							$c++;
 						} else {
 							$error = true;

@@ -21,11 +21,32 @@
 */
 $campos = null;
 $campos['Recibo.id'] = array();
-$campos['Recibo.empleador_id'] = array(	"lov"=>array("controller"	=>	"empleadores",
-												"seleccionMultiple"	=> 	0,
-													"camposRetorno"	=>	array(	"Empleador.cuit",
-																				"Empleador.nombre")));
-$campos['Recibo.nombre'] = array();
+if (!empty($this->params['named']['Recibo.empleador_id'])) {
+	$campos['Recibo.empleador_id'] = array(
+		'lov'				=> array(
+			'controller'		=> 'empleadores',
+			'seleccionMultiple'	=> 0,
+			'camposRetorno'		=> array('Empleador.cuit', 'Empleador.nombre')
+		)
+	);
+}
+
+$defaultName = '';
+if (!empty($this->params['named']['Recibo.convenio_id'])) {
+
+	if (!empty($this->data['Convenio']['Convenio']['nombre'])) {
+		$defaultName = $this->data['Convenio']['Convenio']['nombre'];
+	}
+
+	$campos['Recibo.convenio_id'] = array(
+		'lov'				=> array(
+			'controller'		=> 'convenios',
+			'seleccionMultiple'	=> 0,
+			'camposRetorno'		=> array('Convenio.numero', 'Convenio.nombre')
+		)
+	);
+}
+$campos['Recibo.nombre'] = array('default' => $defaultName);
 $campos['Recibo.descripcion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
@@ -34,5 +55,14 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' =
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => 'Recibo.nombre'));
+
+$accionesExtra['opciones']['acciones'][] = 'cancelar';
+$accionesExtra['opciones']['acciones'][] = $appForm->button('Guardar y Cont.', array(
+	'title'		=> 'Guardar y continuar agregando los conceptos del recibo',
+	'onclick' 	=> "jQuery('#accion').val('grabar_continuar|controller:recibos_conceptos|action:add_rapido|RecibosConcepto.recibo_id:##ID##');form.submit();"
+	)
+);
+$accionesExtra['opciones']['acciones'][] = 'grabar';
+
+echo $this->element('add/add', array('fieldset' => $fieldset, 'accionesExtra' => $accionesExtra));
 ?>

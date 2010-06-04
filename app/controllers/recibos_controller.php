@@ -24,13 +24,45 @@
 class RecibosController extends AppController {
 
 
+	function afterSave($params) {
+		if (!empty($params['RecibosConcepto.recibo_id']) && $params['RecibosConcepto.recibo_id'] == '##ID##') {
+			$params['RecibosConcepto.recibo_id'] = $this->Recibo->id;
+			$this->Session->setFlash('El Recibo ha sido guardado, por favor ahora agregue los conceptos al recibo.', 'ok');
+			$this->redirect($params);
+			return false;
+		} else {
+			return parent::afterSave();
+		}
+	}
+
+
 /**
  * detalles.
  * Muestra via desglose los conceptos de un recibo.
  */
 	function conceptos($id) {
-		$this->Recibo->contain(array("RecibosConcepto", "RecibosConcepto.Concepto"));
+		$this->Recibo->contain(array('RecibosConcepto', 'RecibosConcepto.Concepto'));
 		$this->data = $this->Recibo->read(null, $id);
+	}
+
+
+	function sync($receiptId) {
+		$this->Recibo->Empleador->Relacion->recursive = -1;
+		$c = 0;
+		foreach ($this->Recibo->Empleador->Relacion->find('all', array(
+					'recursive'		=> -1,
+					'fields'		=> array('Relacion.id'),
+					'conditions'	=> array(
+						'Relacion.estado'		=> 'Activa',
+						'Relacion.recibo_id' 	=> $receiptId))) as $relation) {
+
+			if ($this->Recibo->sync($relation['Relacion']['id'], $receiptId)) {
+				$c++;
+			}
+		}
+
+		$this->Session->setFlash('Se actualizaron los conceptos de ' . $c . ' relaciones.', 'ok');
+		$this->redirect('index');
 	}
 
 
