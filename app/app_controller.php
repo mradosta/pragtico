@@ -254,12 +254,21 @@ class AppController extends Controller {
         }
 
         if (!empty($this->data['Form']['accion'])) {
-            if ($this->data['Form']['accion'] === 'duplicar') {
+            if ($this->data['Form']['accion'] == 'duplicar') {
                 unset($this->data[$this->modelClass][$this->{$this->modelClass}->primaryKey]);
                 $this->data['Form']['accion'] = 'grabar';
             }
-            
-            if ($this->data['Form']['accion'] === 'grabar') {
+
+            if (substr($this->data['Form']['accion'], 0, 6) == 'grabar') {
+
+				if (substr($this->data['Form']['accion'], 0, 16) == 'grabar_continuar') {
+					$params = array();
+					foreach (explode('|', str_replace('grabar_continuar|', '', $this->data['Form']['accion'])) as $tmpUrl) {
+						$tmp = explode(':', $tmpUrl);
+						$params[$tmp[0]] = $tmp[1];
+					}
+				}
+
                 $c = 0;
                 /**
                 * Saco lo que no tengo que grabar.
@@ -280,7 +289,7 @@ class AppController extends Controller {
                         $message = sprintf(__('%s of %s records have been saved', true), $this->{$this->modelClass}->savedDataLog['totalRecordsSaved'], $this->{$this->modelClass}->savedDataLog['totalRecords']);
                     }
 
-					if ($this->afterSave()) {
+					if ($this->afterSave($params)) {
                     	$this->Session->setFlash($message, "ok", array("warnings"=>$this->{$this->modelClass}->getWarning()));
                     	$this->History->goBack($back);
 					}
@@ -320,6 +329,9 @@ class AppController extends Controller {
                                             $this->data[$k][$model][$kDetail] = array_merge($this->data[$k][$model][$kDetail], $vDatail);
                                         }
                                     } else {
+										//if (!isset($this->data[$k][$model])) {
+										//	$this->data[0][$model] = array();
+										//}
                                         $this->data[$k][$model] = array_merge($this->data[$k][$model], $datos);
                                     }
                                 }
@@ -345,7 +357,7 @@ class AppController extends Controller {
 /**
  * Callback executed after a save successful operation. 
  */
-	function afterSave() {
+	function afterSave($params = array()) {
 		return true;
 	}
 
@@ -631,11 +643,10 @@ class AppController extends Controller {
 					break;
 			}
 		}
-		
-		$registro['Usuario'] = $usuario['Usuario'];
 		$registro['Grupo'] = $grupos;
 		$registro['Rol'] = $roles;
-		$registro['Usuario']['permisos'] = $pd;
+		$registro['Usuarios'] = $usuario['Usuario'];
+		$registro['Usuarios']['permisos'] = $pd;
 		$registro['Grupos']['permisos'] = $pg;
 		$registro['Otros']['permisos'] = $po;
 
