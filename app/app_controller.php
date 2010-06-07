@@ -168,7 +168,7 @@ class AppController extends Controller {
 				list($model, $field) = explode(".", $k);
 				$this->data[$model][$field] = $v;
 				if (substr($field, -3) === '_id') {
-					$modelAsociado = ucfirst(str_replace("_id", "", $field));
+					$modelAsociado = Inflector::classify(str_replace('_id', '', $field));
 					
 					/**
 					* Doy tratamiento al tipo especial de relacion con sigo mismo.
@@ -176,7 +176,11 @@ class AppController extends Controller {
 					if ($modelAsociado === 'Parent') {
 						$resultado = $this->{$model}->find('first', array('conditions' => array($model . "." . $this->{$model}->primaryKey => $v)));
 					} else {
-						$resultado = $this->{$model}->{$modelAsociado}->find('first', array('conditions' => array($modelAsociado . "." . $this->{$model}->{$modelAsociado}->primaryKey => $v)));
+						$resultado = $this->{$model}->{$modelAsociado}->find('first', array(
+							'conditions' 	=> array(
+								$modelAsociado . '.' . $this->{$model}->{$modelAsociado}->primaryKey => $v
+							)
+						));
 					}
 					$this->data[$modelAsociado] = $resultado;
 				} else {
