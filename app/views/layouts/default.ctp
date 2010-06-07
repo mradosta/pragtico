@@ -57,23 +57,18 @@ $js[] = 'jquery/jquery.simplemodal.min';
 $js[] = 'jquery/jquery.form.min';
 $js[] = 'jquery/jquery.sprintf.min';
 $js[] = 'default.min';
-$js[] = 'breakdowns.min';
-//$js[] = 'master_detail.min';
 $js[] = 'master_detail';
 $js[] = 'jscal/jscal2.min';
 $js[] = 'jscal/es.min';
 $js[] = 'jquery.flydom.min'; // lo usa en carga rapida de conceptos desde convenios
 $codigo_html[] = $javascript->link($js);
+$codigo_html[] = $scripts_for_layout;
 
 $View = ClassRegistry::getObject('view');
 if (!empty($View->__jsCodeForReady)) {
     $codigo_html[] = $javascript->codeBlock(sprintf('jQuery(document).ready(function($) {%s});', implode("\n", $View->__jsCodeForReady)));
 }
 $codigo_html[] = '</head>';
-
-if (!empty($View->__jsCodeForHeader)) {
-    $codigo_html[] = $javascript->codeBlock(sprintf('jQuery(document).ready(function($) {%s});', implode("\n", $View->__jsCodeForHeader)));
-}
 
 $codigo_html[] = '<body>';
 $codigo_html[] = '<input id="base_url" type="hidden" value="' . Router::url('/') . '" />';

@@ -100,5 +100,6 @@ echo $appForm->tag('div', $form, array('class' => 'index', 'id' => 'index'));
 $appForm->addScript('
 	jQuery("img.breakdown_icon").bind("click", breakdown);
 ');
+$javascript->link('breakdowns.min', false);
 
 ?>

@@ -289,26 +289,10 @@ class AppFormHelper extends FormHelper {
  * Agrega a una variable privada (mia) de la clase View codigos Js.
  * Los puede searar en tres posibles ubicaciones/tipos donde iran (siempre al header):
  *			- ready:	Va a la funcion ready de JS.
- *			- view:		Va en el header, pero no dentro de la funcion ready de js.
- *			- links:	Crea los links a arcihvos js.
  */
 	
-	function addScript($script, $location = 'ready', $order = 0) {
-        if ($location == 'ready') {
-            ClassRegistry::getObject('view')->__jsCodeForReady[] = $script;
-        } elseif ($location == 'header') {
-            ClassRegistry::getObject('view')->__jsCodeForHeader[] = $script;
-        }
-        //$this->Javascript->codeBlock($script, array('inline' => false));
-        /*
-		$view = ClassRegistry::getObject('view');
-        for ($i = 0; $i<100; $i++) {
-            if (!isset($view->__myScripts[$location][($order + $i)])) {
-                $view->__myScripts[$location][($order + $i)] = $script;
-                break;
-            }
-        }
-        */
+	function addScript($script) {
+		ClassRegistry::getObject('view')->__jsCodeForReady[] = $script;
 	}
 	
 
