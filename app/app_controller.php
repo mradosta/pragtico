@@ -261,6 +261,7 @@ class AppController extends Controller {
 
             if (substr($this->data['Form']['accion'], 0, 6) == 'grabar') {
 
+				$params = array();
 				if (substr($this->data['Form']['accion'], 0, 16) == 'grabar_continuar') {
 					$params = array();
 					foreach (explode('|', str_replace('grabar_continuar|', '', $this->data['Form']['accion'])) as $tmpUrl) {
