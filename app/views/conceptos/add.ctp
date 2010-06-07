@@ -31,6 +31,15 @@ $campos['Concepto.coeficiente_id'] = array(	'empty'			=> true,
 											'displayField'	=> 'Coeficiente.nombre',
 											'groupField'	=> 'Coeficiente.tipo',
 											'model'			=> 'Coeficiente');
+$campos['Concepto.conceptos_familia_id'] = array(
+	'label'			=> 'Familia',
+	'empty'			=> true,
+	'options'		=> 'listable',
+	'recursive'		=> -1,
+	'order'			=> 'ConceptosFamilia.nombre',
+	'displayField'	=> 'ConceptosFamilia.nombre',
+	'model'			=> 'ConceptosFamilia'
+);
 $campos['Concepto.liquidacion_tipo'] = array('label' => 'Tipo Liquidacion', 'multiple' => 'checkbox', 'aclaracion' => 'Indica para que tipo de liquidacion debe aplicar el concepto. En cualquier otro tipo de preliquidacion a los aqui especificados, se resolvera a cero.');
 $campos['Concepto.periodo'] = array();
 $campos['Concepto.tipo'] = array();

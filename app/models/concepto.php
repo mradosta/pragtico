@@ -81,7 +81,7 @@ class Concepto extends AppModel {
         )
 	);
 
-	var $belongsTo = array('Coeficiente');
+	var $belongsTo = array('Coeficiente', 'ConceptosFamilia');
 
 	var $hasAndBelongsToMany = array(	'Convenio' =>
 								array('with' => 'ConveniosConcepto'),

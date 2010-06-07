@@ -61,12 +61,16 @@ define('VALID_EMAIL', "/^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_
 
 
 Inflector::rules(
-'singular', array(
-	'rules' 			=> array(
-		'/des$/i' => 'd',
-		'/res$/i' => 'r',
-		'/nes$/i' => 'n',
-		'/les$/i' => 'l')));
+	'singular', array(
+		'rules' 			=> array(
+			'/des$/i' => 'd',
+			'/res$/i' => 'r',
+			'/nes$/i' => 'n',
+			'/les$/i' => 'l'),
+		'irregular' 		=> array(
+			'conceptos_familia'			=> 'conceptos_familia')
+		)
+);
 
 Inflector::rules(
 'plural', array(
