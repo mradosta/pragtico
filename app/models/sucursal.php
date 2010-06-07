@@ -33,7 +33,12 @@ class Sucursal extends AppModel {
 			array(
 				'rule'		=> VALID_NUMBER, 
 				'message'	=> 'El codigo de la sucursal del banco debe ser un numerico.')
-	    )
+	    ),
+        'direccion' => array(
+			array(
+				'rule'		=> VALID_NOT_EMPTY,
+				'message'	=> 'Debe especificar la direccion de la sucursal del banco.'),
+		)
 	);
 
 	var $belongsTo = array('Banco', 'Provincia');
