@@ -48,7 +48,7 @@ class Area extends AppModel {
 
 	var $hasAndBelongsToMany = array('Coeficiente');
 	var $belongsTo = array('Empleador', 'Zone', 'Provincia');
-	var $hasMany = array('Relacion', 'Liquidacion');
+	var $hasMany = array('Relacion', 'Liquidacion' => array('foreignKey' => 'relacion_area_id'));
 
 }
 ?>
