@@ -2860,7 +2860,7 @@ CREATE TABLE `roles_usuarios` (
   CONSTRAINT `roles_usuarios_ibfk_1` FOREIGN KEY (`rol_id`) REFERENCES `roles` (`id`),
   CONSTRAINT `roles_usuarios_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`),
   CONSTRAINT `roles_usuarios_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `usuarios` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2869,7 +2869,7 @@ CREATE TABLE `roles_usuarios` (
 
 LOCK TABLES `roles_usuarios` WRITE;
 /*!40000 ALTER TABLE `roles_usuarios` DISABLE KEYS */;
-INSERT INTO `roles_usuarios` VALUES (1,1,1,'Activo','0000-00-00 00:00:00','0000-00-00 00:00:00',1,1,0,508),(2,1,2,'Activo','0000-00-00 00:00:00','0000-00-00 00:00:00',1,1,0,508);
+INSERT INTO `roles_usuarios` VALUES (1,1,1,'Activo','0000-00-00 00:00:00','0000-00-00 00:00:00',1,1,0,508),(2,2,2,'Activo','0000-00-00 00:00:00','0000-00-00 00:00:00',1,1,0,508);
 /*!40000 ALTER TABLE `roles_usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3339,7 +3339,7 @@ CREATE TABLE `usuarios` (
   KEY `user_idx` (`user_id`),
   KEY `group_idx` (`group_id`),
   CONSTRAINT `usuarios_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `usuarios` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3348,7 +3348,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','Administrador','administrador@pragtico.com.ar','2010-06-10 13:02:17','Activo','2007-12-17 17:04:55','2010-06-10 13:02:17',1,1,0,508),(2,'liquidador','221b3a9e09a367bb69f7c7c1141c1dd9','Liquidador','liquidador@pragtico.com.ar','2010-06-10 13:14:12','Activo','2010-06-10 12:40:18','2010-06-10 13:14:12',1,1,0,508);
+INSERT INTO `usuarios` VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','Administrador','administrador@pragtico.com.ar','2010-06-08 12:04:31','Activo','2007-12-17 17:04:55','2010-06-08 12:04:31',1,1,0,508),(2,'liquidador','221b3a9e09a367bb69f7c7c1141c1dd9','Liquidador','liquidador@pragtico.com.ar','0000-00-00 00:00:00','Activo','2010-06-10 12:40:18','2010-06-10 12:40:18',1,1,0,508);
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3520,4 +3520,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-06-10 10:14:30
+-- Dump completed on 2010-06-10 10:56:15
