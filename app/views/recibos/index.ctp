@@ -48,6 +48,20 @@ foreach ($registros as $k => $v) {
 	$cuerpo[] = $fila;
 }
 
-echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo));
+$acciones[] = $appForm->link('Nuevo (Emp)', 'add/empleador',
+			array(	'class' 	=> 'link_boton',
+	 				'title' 	=> 'Nuevo Recibo para el Empleador'));
+$acciones[] = $appForm->link('Nuevo (Conv)', 'add/convenio',
+			array(	'class' 	=> 'link_boton',
+	 				'title' 	=> 'Nuevo Recibo para el Convenio'));
+$acciones[] = 'modificar';
+$acciones[] = 'eliminar';
+$accionesExtra['opciones'] = array('acciones' => $acciones);
+
+echo $this->element('index/index', array(
+	'condiciones' 	=> $fieldset,
+	'cuerpo' 		=> $cuerpo,
+	'accionesExtra' => $accionesExtra)
+);
 
 ?>

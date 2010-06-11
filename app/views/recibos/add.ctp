@@ -21,7 +21,8 @@
 */
 $campos = null;
 $campos['Recibo.id'] = array();
-if (!empty($this->params['named']['Recibo.empleador_id'])) {
+if (!empty($this->params['named']['Recibo.empleador_id'])
+	|| (!empty($this->params['pass'][0]) && $this->params['pass'][0] == 'empleador')) {
 	$campos['Recibo.empleador_id'] = array(
 		'lov'				=> array(
 			'controller'		=> 'empleadores',
@@ -32,7 +33,8 @@ if (!empty($this->params['named']['Recibo.empleador_id'])) {
 }
 
 $defaultName = '';
-if (!empty($this->params['named']['Recibo.convenio_id'])) {
+if (!empty($this->params['named']['Recibo.convenio_id'])
+	|| (!empty($this->params['pass'][0]) && $this->params['pass'][0] == 'convenio')) {
 
 	if (!empty($this->data['Convenio']['Convenio']['nombre'])) {
 		$defaultName = $this->data['Convenio']['Convenio']['nombre'];
