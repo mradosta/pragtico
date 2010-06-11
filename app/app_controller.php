@@ -165,7 +165,12 @@ class AppController extends Controller {
 		*/
 		if (!empty($this->passedArgs)) {
 			foreach ($this->passedArgs as $k => $v) {
-				list($model, $field) = explode(".", $k);
+
+				if (strpos($k, '.') === false) {
+					continue;
+				}
+
+				list($model, $field) = explode('.', $k);
 				$this->data[$model][$field] = $v;
 				if (substr($field, -3) === '_id') {
 					$modelAsociado = Inflector::classify(str_replace('_id', '', $field));
