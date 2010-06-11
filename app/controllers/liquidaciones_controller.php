@@ -265,7 +265,8 @@ class LiquidacionesController extends AppController {
         }
     }
 
-    function resumen() {
+
+    function reporte_resumen() {
 
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
             if (empty($this->data['Condicion']['Bar-empleador_id'])
@@ -311,7 +312,7 @@ class LiquidacionesController extends AppController {
                 if (!empty($this->data['Condicion']['Bar-group_option'])) {
                     $group_option = $this->data['Condicion']['Bar-group_option'];
                 } else {
-                    $group_option = 'coeficient';
+                    $group_option = 'coeficiente';
                 }
 
                 $this->Liquidacion->Behaviors->detach('Permisos');
@@ -400,7 +401,7 @@ class LiquidacionesController extends AppController {
                 }
             }
         }
-        $this->set('options', array('coeficient' => 'Coeficiente', 'worker' => 'Trabajador'));
+        $this->set('options', array('coeficiente' => 'Coeficiente', 'trabajador' => 'Trabajador'));
         $this->set('types', $this->Liquidacion->opciones['tipo']);
         $this->set('states', $this->Liquidacion->opciones['estado']);
     }

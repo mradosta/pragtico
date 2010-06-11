@@ -25,7 +25,7 @@ if (!empty($data)) {
 
     /** Set array with definitios values. */
     $definitions = array(   array(  'width' => 60,
-                                    'title' => ($group_option == 'worker')?'Trabajador':'Coeficiente' . ' / Concepto',
+                                    'title' => ($group_option == 'trabajador')?'Trabajador':'Coeficiente' . ' / Concepto',
                                     'option' => null),
                             array(  'width' => 15,
                                     'title' => 'Cant.',
@@ -40,23 +40,15 @@ if (!empty($data)) {
                                     'title' => 'Total',
                                     'option' => 'currency'));
 
-    $fila = 4;
-    $documento->setCellValue('A' . $fila, 'Empresa: ' . $conditions['Bar-empleador_id__'], 'bold');
-    $fila++;
-    $documento->setCellValue('A' . $fila, 'Periodo: ' . $conditions['Bar-periodo_largo_desde'], 'bold');
-
-
-    $fila+=2;
     /** Create headers */
     $column = 'A';
     foreach ($definitions as $definition) {
         /** Set title columns. */
-        $documento->setCellValue($column . $fila, $definition['title'], array('title' => $definition['width']));
+        $documento->setCellValue($column, $definition['title'], array('title' => $definition['width']));
         $column++;
     }
 
 
-    $fila = 7;
     $extraTotals['Remunerativo'] = 0;
     $extraTotals['No Remunerativo'] = 0;
     $extraTotals['Deduccion'] = 0;
@@ -65,65 +57,67 @@ if (!empty($data)) {
     /** Body */
     foreach ($data as $k => $detail) {
 
-        $fila++;
+        //$fila++;
         if (!empty($detail[0]['Liquidacion']['trabajador_cuil'])) {
-            $documento->setCellValue('A' . $fila, ($detail[0]['Liquidacion']['relacion_legajo']) . ' - ' . $detail[0]['Liquidacion']['trabajador_apellido'] . ', ' . $detail[0]['Liquidacion']['trabajador_nombre'], 'bold');
+            $documento->setCellValue('A', ($detail[0]['Liquidacion']['relacion_legajo']) . ' - ' . $detail[0]['Liquidacion']['trabajador_apellido'] . ', ' . $detail[0]['Liquidacion']['trabajador_nombre'], 'bold');
         } else {
-            $documento->setCellValue('A' . $fila, $k, 'bold');
+            $documento->setCellValue('A', $k, 'bold');
         }
-                
-        $beginRow = $fila;
+
+        $beginRow = $documento->getCurrentRow() + 1;
         foreach ($detail as $r) {
 
             $extraTotals[$r['LiquidacionesDetalle']['concepto_tipo']] += $r['LiquidacionesDetalle']['valor'];
-            
+
             if ($r['LiquidacionesDetalle']['concepto_tipo'] === 'Deduccion') {
                 $r['LiquidacionesDetalle']['valor'] = $r['LiquidacionesDetalle']['valor'] * -1;
             }
-            
-            $fila++;
+
+			$currentRow = $documento->getCurrentRow();
             $documento->setCellValueFromArray(
-                array(  '0,' . $fila => '    ' . $r['LiquidacionesDetalle']['concepto_nombre'],
-                        '1,' . $fila => $r['LiquidacionesDetalle']['suma_cantidad'],
-                        '2,' . $fila => array('value' => $r['LiquidacionesDetalle']['valor'], 'options' => 'currency'),
-                        '3,' . $fila => $r['LiquidacionesDetalle']['coeficiente_valor'],
-                        '4,' . $fila => array('value' => '=C' . $fila . '*' . 'D' . $fila, 'options' => 'currency')));
+                array(  '    ' . $r['LiquidacionesDetalle']['concepto_nombre'],
+                        $r['LiquidacionesDetalle']['suma_cantidad'],
+                        array('value' => $r['LiquidacionesDetalle']['valor'], 'options' => 'currency'),
+                        $r['LiquidacionesDetalle']['coeficiente_valor'],
+                        array('value' => '=C' . ($currentRow + 1). '*' . 'D' . ($currentRow + 1), 'options' => 'currency')
+				)
+			);
         }
-        $fila++;
-        $totals['C'][] = 'C' . $fila;
-        $totals['E'][] = 'E' . $fila;
+
+        $totals['C'][] = 'C' . ($currentRow + 2);
+        $totals['E'][] = 'E' . ($currentRow + 2);
         $documento->setCellValueFromArray(
-            array(  '2,' . $fila =>
-                array('value' => '=SUM(C' . $beginRow . ':C' . ($fila - 1) . ')', 'options' => 'total'),
-                    '4,' . $fila =>
-                array('value' => '=SUM(E' . $beginRow . ':E' . ($fila - 1) . ')', 'options' => 'total')));
+            array(  '2' => 
+                array('value' => '=SUM(C' . $beginRow . ':C' . ($currentRow + 1) . ')', 'options' => 'total'),
+                    '4' =>
+                array('value' => '=SUM(E' . $beginRow . ':E' . ($currentRow + 1) . ')', 'options' => 'total')
+			)
+		);
     }
 
-    $fila+=3;
-    $documento->setCellValue('A' . $fila . ':E' . $fila, 'TOTALES', 'title');
+	$currentRow = $documento->getCurrentRow() + 1;
+    $documento->setCellValue('A' . $currentRow . ':E' . $currentRow, 'TOTALES', 'title');
 
-    $fila++;
-    $documento->setCellValue('A' . $fila, 'Trabajadores', 'bold');
-    $documento->setCellValue('E' . $fila, $totalWorkers, 'bold');
-    
-    $fila++;
-    $documento->setCellValue('A' . $fila, 'Liquidado', 'bold');
-    $documento->setCellValue('E' . $fila, '=SUM('.implode('+', $totals['C']).')', 'total');
-    
+	$documento->moveCurrentRow(2);
+    $documento->setCellValue('A', 'Trabajadores', 'bold');
+    $documento->setCellValue('E', $totalWorkers, 'bold');
+	$documento->moveCurrentRow();
+    $documento->setCellValue('A', 'Liquidado', 'bold');
+    $documento->setCellValue('E', '=SUM('.implode('+', $totals['C']).')', 'total');
+
     foreach ($extraTotals as $t => $v) {
-        $fila++;
-        $documento->setCellValue('A' . $fila, '    ' . $t, 'bold');
-        $documento->setCellValue('E' . $fila, $v, 'total');
+		$documento->moveCurrentRow();
+        $documento->setCellValue('A', '    ' . $t, 'bold');
+        $documento->setCellValue('E', $v, 'total');
     }
-    
-    $fila++;
-    $documento->setCellValue('A' . $fila, 'A Facturar', 'bold');
-    $documento->setCellValue('E' . $fila, '=SUM('.implode('+', $totals['E']).')', 'total');
-    $fila++;
+
+	$documento->moveCurrentRow();
+    $documento->setCellValue('A', 'A Facturar', 'bold');
+    $documento->setCellValue('E', '=SUM('.implode('+', $totals['E']).')', 'total');
 
 
     $documento->save($fileFormat);
-    
+
 } else {
 
 	$conditions = null;
@@ -149,9 +143,9 @@ if (!empty($data)) {
             'controller'        => 'conceptos',
             'seleccionMultiple' => 1,
             'camposRetorno'     => array('Concepto.nombre')));
-    
-    $conditions['Condicion.Bar-group_option'] = array('type' => 'radio', 'options' => $options, 'label' => 'Opcion');
-    
+
+    $conditions['Condicion.Bar-group_option'] = array('type' => 'radio', 'default' => 'coeficiente', 'options' => $options, 'label' => 'Opcion');
+
     $conditions['Condicion.Bar-tipo'] = array('label' => 'Tipo', 'multiple' => 'checkbox', 'type' => 'select', 'options' => $types);
 
     $conditions['Condicion.Bar-periodo_largo_desde'] = array('label' => 'Periodo Desde', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'F'), 'aclaracion' => 'Si no desea especificar un rango, solo especifique el periodo desde.');
@@ -163,7 +157,6 @@ if (!empty($data)) {
     $options = array('title' => 'Resumen de Liquidacion');
 
     echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));
-    
 
 }
  
