@@ -101,14 +101,14 @@ class FacturasController extends AppController {
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
         }
     }
-    
-            
-	function reporte($facturaId, $state = 'Confirmada') {
+
+
+	function reporte_facturacion($facturaId, $state = 'Confirmada') {
 
         if ($state == 'Sin Confirmar') {
             $this->Factura->setSecurityAccess('readOwnerOnly');
         }
-        
+
 		$records = $this->Factura->report($facturaId);
 		if (empty($records)) {
 			$this->Session->setFlash('No se han encontrado facturas para el periodo seleccioando segun los criterios especificados.', 'error');

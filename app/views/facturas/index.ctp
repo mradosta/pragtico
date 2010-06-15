@@ -38,8 +38,8 @@ foreach ($registros as $k => $v) {
 	$fila = null;
 	$fila[] = array('tipo' => 'accion', 'id' => $v['Factura']['id'],
 					'valor' => $appForm->link(
-						$appForm->image('resumen.gif', array('alt' => 'Reporte', 'title' => 'Reporte')),
-						array('action' => 'reporte', 'id' => $v['Factura']['id'])));
+						$appForm->image('resumen.gif', array('alt' => 'Reporte Facturacion', 'title' => 'Reporte  Facturacion')),
+						array('action' => 'reporte_facturacion', $v['Factura']['id'])));
 	$fila[] = array('tipo' => 'accion',
 					'valor' => $appForm->image('numero.gif', array('id' => $v['Factura']['id'], 'class' => 'asignar_numero', 'alt' => 'Asignar Numero', 'title' => 'Asignar Numero')));
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Factura']['id'], 'update' => 'desglose1', 'imagen' => array('nombre' => 'detalles.gif', 'alt' => 'Detalles'), 'url' => 'detalles');

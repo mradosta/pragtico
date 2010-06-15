@@ -97,6 +97,11 @@ class DocumentoHelper extends AppHelper {
 
 
 	function getReportFilters($data) {
+
+		if (empty($data)) {
+			return array();
+		}
+
 		unset($data['Condicion']['Bar-am']);
 		unset($data['Condicion']['Bar-file_format']);
 
