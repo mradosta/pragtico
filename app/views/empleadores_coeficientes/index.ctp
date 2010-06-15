@@ -19,11 +19,11 @@
 /**
 * Especifico los campos para ingresar las condiciones.
 */
-$condiciones['Condicion.Relacion-empleador_id'] = array(	'lov'=>array('controller'	=>	'empleadores',
+$condiciones['Condicion.EmpleadoresCoeficiente-empleador_id'] = array(	'lov'=>array('controller'	=>	'empleadores',
 																		'camposRetorno'	=>array('Empleador.cuit',
 																								'Empleador.nombre')));
 $condiciones['Condicion.Coeficiente-nombre'] = array();
-$condiciones['Condicion.Coeficiente-tipo'] = array();
+$condiciones['Condicion.Coeficiente-tipo'] = array('type' => 'select', 'multiple' => 'checkbox');
 $fieldsets[] = array('campos' => $condiciones);
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Coeficientes de los Empleadores', 'imagen' => 'coeficientes.gif')));
 
