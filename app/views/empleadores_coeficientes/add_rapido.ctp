@@ -28,11 +28,11 @@ foreach($coefientes as $k => $v) {
 	$fila[] = array('model' => 'Concepto', 'field' => 'nombre', 'valor' => $v['Coeficiente']['nombre']);
     $fila[] = array('model' => 'Concepto', 'field' => 'valor', 'valor' => $v['Coeficiente']['valor'], 'opciones' => array('class' => 'derecha'));
     $fila[] = array('model' => 'Concepto', 'field' => 'valor', 'valor' =>
-        $appForm->input($k . '.EmpleadoresCoeficiente.id', array('type' => 'hidden', 'value' => $v['EmpleadoresCoeficiente']['id'])) .
-        $appForm->input($k . '.EmpleadoresCoeficiente.coeficiente_id', array('type' => 'hidden', 'value' => $v['Coeficiente']['id'])) .
-        $appForm->input($k . '.EmpleadoresCoeficiente.empleador_id', array('type' => 'hidden', 'value' => $this->params['named']['EmpleadoresCoeficiente.empleador_id'])) .
-        $appForm->input($k . '.EmpleadoresCoeficiente.porcentaje', array('label' => false, 'class' => 'derecha', 'value' => $v['EmpleadoresCoeficiente']['porcentaje'], 'after' => '%')));
-    $fila[] = array('model' => 'Concepto', 'field' => 'delete', 'valor' => $appForm->input($k . '.EmpleadoresCoeficiente.delete', array('type' => 'checkbox', 'label' => false, 'div' => false)));
+        $appForm->input('EmpleadoresCoeficiente.' . $k . '.id', array('type' => 'hidden', 'value' => $v['EmpleadoresCoeficiente']['id'])) .
+        $appForm->input('EmpleadoresCoeficiente.' . $k . '.coeficiente_id', array('type' => 'hidden', 'value' => $v['Coeficiente']['id'])) .
+        $appForm->input('EmpleadoresCoeficiente.' . $k . '.empleador_id', array('type' => 'hidden', 'value' => $this->params['named']['EmpleadoresCoeficiente.empleador_id'])) .
+        $appForm->input('EmpleadoresCoeficiente.' . $k . '.porcentaje', array('label' => false, 'class' => 'derecha', 'value' => $v['EmpleadoresCoeficiente']['porcentaje'], 'after' => '%')));
+    $fila[] = array('model' => 'Concepto', 'field' => 'delete', 'valor' => $appForm->input('EmpleadoresCoeficiente.' . $k . '.delete', array('type' => 'checkbox', 'label' => false, 'div' => false)));
 	$cuerpo[] = $fila;
 }
 $fila = null;

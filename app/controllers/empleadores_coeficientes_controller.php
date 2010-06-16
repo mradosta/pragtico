@@ -107,19 +107,23 @@ class EmpleadoresCoeficientesController extends AppController {
     }
 
     function save() {
+
         if (!empty($this->data['Form']['accion']) && $this->data['Form']['accion'] === 'grabar') {
-            foreach ($this->data as $k => $v) {
-                if (!empty($v['EmpleadoresCoeficiente']['delete']) && !empty($v['EmpleadoresCoeficiente']['id'])) {
-                    $delete[] = $v['EmpleadoresCoeficiente']['id'];
-                } elseif (!empty($v['EmpleadoresCoeficiente']['porcentaje'])) {
+
+            foreach ($this->data['EmpleadoresCoeficiente'] as $k => $v) {
+                if (!empty($v['delete']) && !empty($v['id'])) {
+                    $delete[] = $v['id'];
+                } elseif (!empty($v['porcentaje'])) {
                     $data[] = $v;
                 }
             }
+
             if (!empty($delete)) {
                 $this->EmpleadoresCoeficiente->deleteAll(array('EmpleadoresCoeficiente.id' => $delete));
             }
             $this->data['Form']['accion'] = 'grabar';
         }
+
         if (!empty($data)) {
             return parent::save($data);
         } else {
