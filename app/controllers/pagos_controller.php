@@ -28,7 +28,7 @@ class PagosController extends AppController {
 
     var $paginate = array(
         'order' => array(
-            'Pago.fecha' => 'desc'
+            'Liquidacion.trabajador_cbu' => 'DESC'
         )
     );
 

@@ -26,15 +26,16 @@ class LiquidacionesController extends AppController {
 
     var $paginate = array(
         'order' => array(
-            'Liquidacion.ano'       => 'desc',
-            'Liquidacion.mes'       => 'desc',
-            'Liquidacion.periodo'   => 'desc',
+            'Liquidacion.ano'       			=> 'DESC',
+            'Liquidacion.mes'       			=> 'DESC',
+            'Liquidacion.periodo'   			=> 'DESC',
+			'Liquidacion.trabajador_cbu'   		=> 'DESC',
             'Liquidacion.empleador_nombre',
             'Liquidacion.trabajador_apellido',
             'Liquidacion.trabajador_nombre'
         )
     );
-    
+
 	var $components = array('Formulador');
 	var $helpers = array('Documento');
 
