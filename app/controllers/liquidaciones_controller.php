@@ -539,7 +539,7 @@ class LiquidacionesController extends AppController {
                         'conditions'    => $condicionesLiquidacion));
                 $confirmadas = Set::extract('/Liquidacion/relacion_id', $liquidaciones);
                 if (!empty($confirmadas)) {
-                    $condiciones['NOT'] = array('Relacion.id' => $confirmadas);
+                    //$condiciones['NOT'] = array('Relacion.id' => $confirmadas);
                 }
             }
 
@@ -1442,14 +1442,14 @@ class LiquidacionesController extends AppController {
 					} else {
 						$db->commit($this);
 
-						/** Must create reports and zip them */
+						/** Must create reports and zip them
 						$this->Liquidacion->setSecurityAccess('readOwnerOnly');
 						$data = $this->Liquidacion->find('all', array(
 							'conditions'    => array('Liquidacion.id' => explode('|', $receiptIds)),
 							'order'         => array('Liquidacion.trabajador_apellido', 'Liquidacion.trabajador_nombre'),
 							'recursive'     => -1));
 						$this->set('data', $data);
-
+ 						*/
                     	$this->redirect('index/' . implode('|', $ids));
 					}
 				} else {
