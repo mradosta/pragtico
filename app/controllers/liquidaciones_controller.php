@@ -310,8 +310,8 @@ class LiquidacionesController extends AppController {
                     $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
                 }
 
-                if (!empty($this->data['Condicion']['Bar-group_option'])) {
-                    $group_option = $this->data['Condicion']['Bar-group_option'];
+                if (!empty($this->data['Condicion']['Bar-agrupamiento'])) {
+                    $group_option = $this->data['Condicion']['Bar-agrupamiento'];
                 } else {
                     $group_option = 'coeficiente';
                 }
@@ -335,7 +335,8 @@ class LiquidacionesController extends AppController {
 
 
 					$data = array();
-                    if ($group_option === 'worker') {
+                    if ($group_option === 'trabajador') {
+
                         $r = $this->Liquidacion->LiquidacionesDetalle->find('all', array(
                                 'conditions'    => $conditions,
                                 'contain'       => 'Liquidacion',
@@ -406,6 +407,7 @@ class LiquidacionesController extends AppController {
         $this->set('types', $this->Liquidacion->opciones['tipo']);
         $this->set('states', $this->Liquidacion->opciones['estado']);
     }
+
 
 	function libro_sueldos() {
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
@@ -1260,15 +1262,6 @@ class LiquidacionesController extends AppController {
     }
 
 
-    function reporte_liquidaciones_confirmadas($receiptIds) {
-        $this->Liquidacion->setSecurityAccess('readOwnerOnly');
-        $data = $this->Liquidacion->find('all', array(
-            'conditions'    => array('Liquidacion.id' => explode('|', $receiptIds)),
-            'order'         => array('Liquidacion.trabajador_apellido', 'Liquidacion.trabajador_nombre'),
-            'recursive'     => -1));
-        $this->set('data', $data);
-    }
-	
 	function index($receiptIds = null) {
 		if (!empty($this->data['Condicion']['Bar-periodo_largo'])) {
 			$periodo = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
@@ -1448,6 +1441,15 @@ class LiquidacionesController extends AppController {
 						$this->Session->setFlash('Ocurrio un error al intentar generar las facturas.', 'error');
 					} else {
 						$db->commit($this);
+
+						/** Must create reports and zip them */
+						$this->Liquidacion->setSecurityAccess('readOwnerOnly');
+						$data = $this->Liquidacion->find('all', array(
+							'conditions'    => array('Liquidacion.id' => explode('|', $receiptIds)),
+							'order'         => array('Liquidacion.trabajador_apellido', 'Liquidacion.trabajador_nombre'),
+							'recursive'     => -1));
+						$this->set('data', $data);
+
                     	$this->redirect('index/' . implode('|', $ids));
 					}
 				} else {
@@ -1462,6 +1464,50 @@ class LiquidacionesController extends AppController {
 		}
 		$this->History->goBack();
 	}
+
+
+
+	function libro_sueldos_x($receiptIds) {
+		$conditions = array(
+			'Liquidacion.id'		=> explode('|', $receiptIds),
+			'Liquidacion.estado'	=> 'Confirmada'
+		);
+
+		$this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
+		foreach ($this->Liquidacion->LiquidacionesDetalle->find('all',
+				array(  'contain'       => array('Liquidacion'),
+						'conditions'    => $conditions,
+						'order'         => array(
+							'Liquidacion.empleador_nombre',
+							'Liquidacion.periodo',
+							'LiquidacionesDetalle.concepto_tipo'))) as $k => $v) {
+
+			if (empty($liquidaciones[$v['Liquidacion']['id']]['Liquidacion'])) {
+				$liquidaciones[$v['Liquidacion']['id']]['Liquidacion'] = $v['Liquidacion'];
+			}
+			$liquidaciones[$v['Liquidacion']['id']]['LiquidacionesDetalle'][] = $v['LiquidacionesDetalle'];
+		}
+
+
+		$this->Liquidacion->Relacion->Empleador->recursive = -1;
+		$this->set('employer', $this->Liquidacion->Relacion->Empleador->findById($this->data['Condicion']['Bar-empleador_id']));
+
+		$this->set('startPage', $this->data['Condicion']['Bar-start_page']);
+		$this->set('periodo', $periodo['periodoCompleto']);
+		$this->set('data', $liquidaciones);
+		$this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+	}
+
+
+    function reporte_liquidaciones_confirmadas($receiptIds) {
+        $this->Liquidacion->setSecurityAccess('readOwnerOnly');
+        $data = $this->Liquidacion->find('all', array(
+            'conditions'    => array('Liquidacion.id' => explode('|', $receiptIds)),
+            'order'         => array('Liquidacion.trabajador_apellido', 'Liquidacion.trabajador_nombre'),
+            'recursive'     => -1));
+        $this->set('data', $data);
+    }
+
 	
 }
 ?>

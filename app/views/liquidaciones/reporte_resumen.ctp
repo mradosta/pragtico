@@ -144,7 +144,7 @@ if (!empty($data)) {
             'seleccionMultiple' => 1,
             'camposRetorno'     => array('Concepto.nombre')));
 
-    $conditions['Condicion.Bar-group_option'] = array('type' => 'radio', 'default' => 'coeficiente', 'options' => $options, 'label' => 'Opcion');
+    $conditions['Condicion.Bar-agrupamiento'] = array('type' => 'radio', 'default' => 'coeficiente', 'options' => $options, 'label' => 'Opcion');
 
     $conditions['Condicion.Bar-tipo'] = array('label' => 'Tipo', 'multiple' => 'checkbox', 'type' => 'select', 'options' => $types);
 
