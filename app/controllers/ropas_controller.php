@@ -26,12 +26,26 @@
 class RopasController extends AppController {
 
 
+	var $helpers = array("Pdf");
+
+
+
 /**
  * Prendas.
  * Muestra via desglose las prendas entregadas. 
  */
    	function prendas($id) {
-		$this->Ropa->contain('RopasDetalle');
+		$this->Ropa->contain("RopasDetalle");
+		$this->data = $this->Ropa->read(null, $id);
+   	}
+
+
+/**
+ * imprimirOrden.
+ * Genera una orden que el empleado pueda retirar la ropa.
+ */
+   	function imprimirOrden($id) {
+		$this->layout = 'pdf';
 		$this->data = $this->Ropa->read(null, $id);
    	}
 }
