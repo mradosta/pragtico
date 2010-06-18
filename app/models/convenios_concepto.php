@@ -43,6 +43,9 @@ class ConveniosConcepto extends AppModel {
         ),
         'formula' => array(
             array(
+                'rule'      => 'validFormulaStrings',
+                'message'   => 'La formula utiliza valores de texto no encerrados entre comillas simples (\') y que tampoco han sido marcados como variable (#) o como concepto (@).'),
+            array(
                 'rule'      => 'validFormulaParenthesis',
                 'message'   => 'La formula no abre y cierra la misma cantidad de parentesis.'),
             array(

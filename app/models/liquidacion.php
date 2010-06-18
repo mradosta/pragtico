@@ -1093,7 +1093,7 @@ class Liquidacion extends AppModel {
 					$this->__setError(array(    'tipo'                    => 'Error en la Formula',
 												'gravedad'                => 'Grave',
 												'concepto'                => '',
-												'variable'                => $variable,
+												'variable'                => '',
 												'formula'                 => $this->__variables[$variable]['formula'],
 												'descripcion'             => $check,
 												'recomendacion'           => 'Verifique la formula.',
@@ -1200,7 +1200,7 @@ class Liquidacion extends AppModel {
 
 
     function __setError($error) {
-		$error['concepto'] = $this->__getCurrentConcept('codigo');
+		$error['descripcion_adicional'] = 'Resolviendo concepto: ' . $this->__getCurrentConcept('codigo') . ' / ' . $error['descripcion_adicional'];
 		if (empty($error['formula_concepto'])) {
 			$error['formula_concepto'] = $this->__getCurrentConcept('formula');
 		}

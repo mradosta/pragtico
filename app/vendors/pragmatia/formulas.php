@@ -61,7 +61,43 @@ class Formulas {
 
 	function checkFormula($formula, $returnError = true) {
 		$this->formulaError = null;
-		$this->__cleanUp($formula);
+		$formula = substr($this->__cleanUp($formula), 1);
+
+
+		/** Search for vars and concepts */
+		preg_match_all('/[#|@][0-9a-z_]+/', $formula, $matchesA);
+
+		/** Search for strings */
+		preg_match_all('/[\'\"][a-z]+[\'\"]/', $formula, $matchesB);
+
+		/** Search for functions (based on phpexcel calculation regexp to identify formulas) */
+		preg_match_all('/@?([A-Z][A-Z0-9\.]*)[\s]*\(/i', $formula, $matchesC);
+
+		/** Replace all accepted string by numbers, if remaining string, means they are not accepted and are wrong */
+		$tmpSearchs = array_unique(array_merge($matchesA[0], $matchesB[0], $matchesC[1]));
+		$tmp = array();
+		foreach ($tmpSearchs as $k => $search) {
+			$tmp[strlen($search)][] = $search;
+		}
+		if (!empty($tmp)) {
+			ksort($tmp, SORT_NUMERIC);
+			foreach (array_reverse($tmp) as $v) {
+				foreach ($v as $v1) {
+					$searchs[] = $v1;
+				}
+			}
+		} else {
+			$searchs = $tmpSearchs;
+		}
+
+		$replacedFormula = str_ireplace($searchs, '0', $formula);
+
+		preg_match_all('/[a-z]+/', $replacedFormula, $matches);
+		if (!empty($matches[0])) {
+			return implode(' ', $matches[0]);
+		}
+
+
 		$this->__PHPExcel_Calculation->parseFormula($formula);
 		if (empty($this->formulaError)) {
 			return true;
