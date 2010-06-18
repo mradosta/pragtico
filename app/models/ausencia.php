@@ -181,16 +181,25 @@ class Ausencia extends AppModel {
             'contain'		=> array(
                 'AusenciasMotivo',
 				'AusenciasSeguimiento'	=> array(
-					'order'			=> array('AusenciasSeguimiento.estado' => 'DESC', 'AusenciasSeguimiento.modified' => 'DESC'),
                     'conditions' 	=> array(
-                        'AusenciasSeguimiento.estado' => array('Confirmado', 'Liquidado')))),
+                        'AusenciasSeguimiento.estado' => array('Confirmado', 'Liquidado')
+					),
+					'order'			=> array(
+						'AusenciasSeguimiento.estado' 	=> 'DESC',
+						'AusenciasSeguimiento.modified' => 'DESC'
+					),
+				)
+			),
             'conditions'	=> array(
                 'Ausencia.relacion_id' 	=> $relacion['Relacion']['id'],
                 array('OR' => array(
                     array(	'Ausencia.desde <='	=> $periodo['hasta'],
                             'Ausencia.id'		=> $ausenciaIds),
                     array(	'Ausencia.desde >='	=> $periodo['desde'],
-                            'Ausencia.desde <='	=> $periodo['hasta']))))));
+                            'Ausencia.desde <='	=> $periodo['hasta'])))
+			),
+			'order'			=> array('Ausencia.desde')
+		));
 
 		$ausencias['Accidente'] = 0;
         $ausencias['Accidente ART'] = 0;
@@ -209,13 +218,9 @@ class Ausencia extends AppModel {
 			$Concepto = ClassRegistry::init('Concepto');
 
 			foreach ($r as $k => $ausencia) {
-                if ($ausencia['AusenciasMotivo']['tipo'] === 'Accidente') {
-                    if (count(Set::extract('/AusenciasMotivo[tipo=Accidente]/id', $r)) > 1) {
-                        /** TODO: Revisar esto y hacerlo de una forma mas elegante */
-                        echo 'ERROR, mas de una ausencias de tipo accidente cargadas.';
-                        die;
-                    }
-                    $ausenciasArt = $ausencia;
+
+                if ($ausencia['AusenciasMotivo']['tipo'] === 'Accidente' && empty($ausenciasArt)) {
+					$ausenciasArt = $ausencia;
                 }
 
                 $acumulado = 0;
@@ -305,6 +310,7 @@ class Ausencia extends AppModel {
 
 
             if (!empty($ausenciasArt)) {
+
                 if ($ausenciasArt['Ausencia']['desde'] < $periodo['desde']) {
                     $diffTmp = Dates::dateDiff($ausenciasArt['Ausencia']['desde'], $periodo['desde']);
                     $daysBeforePeriod = $diffTmp['dias'] - 1;
@@ -375,7 +381,7 @@ class Ausencia extends AppModel {
             }
         }
 
-/*		
+/*
         d(array('conceptos'    => $conceptos,
                      'variables'    => array(
         '#ausencias_accidente'                              => $ausencias['Accidente'],
