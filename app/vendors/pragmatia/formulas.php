@@ -55,12 +55,13 @@ class Formulas {
  */
     function __construct() {
 		$this->__PHPExcel_Calculation = new MyPHPExcel_Calculation();
-		//$this->__PHPExcel_Calculation->suppressFormulaErrors = true;
 	}
 
 
 	function checkFormula($formula, $returnError = true) {
-		$this->formulaError = null;
+
+		$this->__PHPExcel_Calculation->formulaError = null;
+
 		$formula = substr($this->__cleanUp($formula), 1);
 
 
@@ -99,10 +100,10 @@ class Formulas {
 
 
 		$this->__PHPExcel_Calculation->parseFormula($formula);
-		if (empty($this->formulaError)) {
+		if (empty($this->__PHPExcel_Calculation->formulaError)) {
 			return true;
 		} elseif ($returnError) {
-			return $this->formulaError;
+			return $this->__PHPExcel_Calculation->formulaError;
 		} else {
 			return false;
 		}
@@ -147,7 +148,7 @@ class Formulas {
  */
 	function resolver($formula) {
 
-		$this->formulaError = null;
+		$this->__PHPExcel_Calculation->formulaError = null;
 		$formula = $this->__cleanUp($formula);
         $formula = preg_replace("/isblank\(\'?0000\-00\-00\'?\)/", 'true', $formula);
         $formula = preg_replace("/isblank\(\'?\d\d\d\d\-\d\d\-\d\d\'?\)/", 'false', $formula);
