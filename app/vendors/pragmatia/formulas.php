@@ -68,7 +68,7 @@ class Formulas {
 		preg_match_all('/[#|@][0-9a-z_]+/', $formula, $matchesA);
 
 		/** Search for strings */
-		preg_match_all('/[\'\"][a-z]+[\'\"]/', $formula, $matchesB);
+		preg_match_all('/[\'\"][a-z\s]+[\'\"]/i', $formula, $matchesB);
 
 		/** Search for functions (based on phpexcel calculation regexp to identify formulas) */
 		preg_match_all('/@?([A-Z][A-Z0-9\.]*)[\s]*\(/i', $formula, $matchesC);

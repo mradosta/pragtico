@@ -101,7 +101,7 @@ class ValidacionesBehavior extends ModelBehavior {
 		preg_match_all('/[#|@][0-9a-z_]+/', $value, $matchesA);
 
 		/** Search for strings */
-		preg_match_all('/[\'\"][a-z]+[\'\"]/', $value, $matchesB);
+		preg_match_all('/[\'\"][a-z\s]+[\'\"]/i', $value, $matchesB);
 
 		/** Search for functions (based on phpexcel calculation regexp to identify formulas) */
 		preg_match_all('/@?([A-Z][A-Z0-9\.]*)[\s]*\(/i', $value, $matchesC);
