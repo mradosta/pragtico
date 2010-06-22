@@ -35,14 +35,5 @@ class RopasController extends AppController {
 		$this->data = $this->Ropa->read(null, $id);
    	}
 
-
-/**
- * imprimirOrden.
- * Genera una orden que el empleado pueda retirar la ropa.
- */
-   	function imprimirOrden($id) {
-		$this->layout = 'pdf';
-		$this->data = $this->Ropa->read(null, $id);
-   	}
 }
 ?>
