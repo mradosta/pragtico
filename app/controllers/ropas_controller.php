@@ -26,10 +26,6 @@
 class RopasController extends AppController {
 
 
-	var $helpers = array("Pdf");
-
-
-
 /**
  * Prendas.
  * Muestra via desglose las prendas entregadas. 
