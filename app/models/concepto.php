@@ -158,8 +158,8 @@ class Concepto extends AppModel {
  */
 	function findConceptos($tipo = 'Relacion', $opciones = array()) {
 		
-		$default['hasta'] = "2000-01-01";
-		$default['desde'] = "2050-12-31";
+		$default['hasta'] = '2000-01-01';
+		$default['desde'] = '2050-12-31';
 		$default['condicionAdicional'] = ""; // de la forma string....
 		$opciones = array_merge($default, $opciones);
 
@@ -253,7 +253,7 @@ class Concepto extends AppModel {
                 array(
                     'alias' => 'Concepto',
                     'table' => 'conceptos',
-                    'type' 	=> 'LEFT',
+                    'type' 	=> 'INNER',
                     'conditions' => array(
                         array(	'RelacionesConcepto.concepto_id = Concepto.id'),
                         array('OR'  => array(
@@ -293,7 +293,7 @@ class Concepto extends AppModel {
                         array(	'Area.id = AreasCoefiente.area_id',
                                 'Coeficiente.id = AreasCoefiente.coeficiente_id'))
                 ));
-            
+
 			$conditions = array(
                 'RelacionesConcepto.relacion_id' => $opciones['relacion']['Relacion']['id'],
                 array('OR'	=> array(
@@ -325,7 +325,7 @@ class Concepto extends AppModel {
                 array(
                     'alias' => 'Concepto',
                     'table' => 'conceptos',
-                    'type' 	=> 'LEFT',
+                    'type' 	=> 'INNER',
                     'conditions' => array(
                         array(	'EmpleadoresConcepto.concepto_id = Concepto.id'))
                 ),
@@ -360,7 +360,7 @@ class Concepto extends AppModel {
                 array(
                     'alias' => 'Concepto',
                     'table' => 'conceptos',
-                    'type' 	=> 'LEFT',
+                    'type' 	=> 'INNER',
                     'conditions' => array(
                         array(	'ConveniosConcepto.concepto_id = Concepto.id'))
                 ),
@@ -452,14 +452,18 @@ class Concepto extends AppModel {
                                 'Coeficiente.id = AreasCoefiente.coeficiente_id'))
                 )
             );
+
 			$conditions = array(
-							'Concepto.codigo' => $opciones['codigoConcepto'],
-							array('OR'	=> array(	'Concepto.desde' => '0000-00-00',
-													'Concepto.desde <=' => $opciones['desde'])),
-							array('OR'	=> array(	'Concepto.hasta' => '0000-00-00',
-													'Concepto.hasta >=' => $opciones['hasta']))
-						);
-            
+				'Concepto.codigo' => $opciones['codigoConcepto'],
+				array('OR'	=> array(
+					'Concepto.desde' => '0000-00-00',
+					'Concepto.desde <=' => $opciones['desde'])
+				),
+				array('OR'	=> array(
+					'Concepto.hasta' => '0000-00-00',
+					'Concepto.hasta >=' => $opciones['hasta'])
+				)
+			);
 		} elseif ($tipo === 'Todos') {
 
 			$fields = $fieldsConceptos;
@@ -486,10 +490,16 @@ class Concepto extends AppModel {
 			'order' 		=> $orderExpression,
 			'group' 		=> null,
 			'joins' 		=> $joins), $this);
-
 		$r = $this->query($sql);
+/*
+		debug(Debugger::trace());
+		debug($sql);
+		if (!empty($opciones['codigoConcepto']) && $opciones['codigoConcepto'] == 'acuerdo_comercio_abril_2008') {
+			d($r);
+		}
+*/
 
-		
+
 		$conceptos = array();
 		foreach ($r as $v) {
 

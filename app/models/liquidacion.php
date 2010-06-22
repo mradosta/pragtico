@@ -62,7 +62,8 @@ class Liquidacion extends AppModel {
                               'foreignKey'     => 'liquidacion_id',
                               'dependent'    => true));
 
-    var $belongsTo = array(    'Trabajador' =>
+    var $belongsTo = array(	'LiquidacionesGrupo',
+							'Trabajador' =>
                         array('className'    => 'Trabajador',
                               'foreignKey'   => 'trabajador_id'),
                             'Relacion' =>
@@ -252,6 +253,8 @@ class Liquidacion extends AppModel {
             if (empty($this->__conceptos['antiguedad']) && $this->__receiptType === 'normal') {
                 $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
                         array(  'relacion'          => $this->getRelationship(),
+								'desde' 			=> $this->getPeriod('desde'),
+								'hasta' 			=> $this->getPeriod('hasta'),
                                 'codigoConcepto'    => 'antiguedad')));
             }
 
@@ -311,6 +314,8 @@ class Liquidacion extends AppModel {
 
             $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
                     array(  'relacion'          => $this->getRelationship(),
+							'desde' 			=> $this->getPeriod('desde'),
+							'hasta' 			=> $this->getPeriod('hasta'),
                             'codigoConcepto'    => 'plus_vacacional')));
 
 
@@ -400,6 +405,8 @@ class Liquidacion extends AppModel {
                 $this->setVar('#fecha_hasta_liquidacion', $period['hasta']);
                 $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
                         array(  'relacion'          => $this->getRelationship(),
+								'desde' 			=> $this->getPeriod('desde'),
+								'hasta' 			=> $this->getPeriod('hasta'),
                                 'codigoConcepto'    => 'vacaciones_no_gozadas')));
             }
 
@@ -422,6 +429,8 @@ class Liquidacion extends AppModel {
 
             $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
                     array(  'relacion'          => $this->getRelationship(),
+							'desde' 			=> $this->getPeriod('desde'),
+							'hasta' 			=> $this->getPeriod('hasta'),
                             'codigoConcepto'    => 'sac')));
             $this->__conceptos['sac'] = array_merge($this->__conceptos['sac'], $this->__getConceptValue($this->__conceptos['sac']));
         }
@@ -568,8 +577,10 @@ class Liquidacion extends AppModel {
 
             if ($redondeo != 0) {
                 $conceptoRedondeo = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
-                        array(    'relacion'             => $this->getRelationship(),
-                                'codigoConcepto'     => 'redondeo'));
+                        array( 	'relacion'			=> $this->getRelationship(),
+								'desde' 			=> $this->getPeriod('desde'),
+								'hasta' 			=> $this->getPeriod('hasta'),
+                                'codigoConcepto'	=> 'redondeo'));
                 $conceptoRedondeo['redondeo']['debug'] = '=' . round($totales['total']) . ' - ' . $totales['total'];
                 $conceptoRedondeo['redondeo']['valor_cantidad'] = '0';
 
@@ -637,7 +648,7 @@ class Liquidacion extends AppModel {
         if (!empty($error)) {
             $save['LiquidacionesError'] = $error;
         }
-    
+
         $save['Liquidacion']            = array_merge($liquidacion, $totales);
         return $this->saveAll($save);
     }
@@ -695,12 +706,16 @@ class Liquidacion extends AppModel {
             if (!empty($diff)) {
                 foreach ($diff as $concept) {
                     if ($this->getVarValue('#tipo_liquidacion') === 'especial') {
-                        //$tmpConcept = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' =>   $this->getRelationship(), 'codigoConcepto' => $concept));
-                        //$this->setConcept($tmpConcept);
                         $this->__resolvConceptToZero($concept);
                     } else {
-
-                        $tmpConcept = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $this->getRelationship(), 'codigoConcepto' => $concept));
+                        $tmpConcept = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
+							array(
+								'relacion' 			=> $this->getRelationship(),
+								'codigoConcepto' 	=> $concept,
+								'desde' 			=> $this->getPeriod('desde'),
+								'hasta' 			=> $this->getPeriod('hasta')
+							)
+						);
                         if (!empty($tmpConcept)) {
                             if (substr($tmpConcept[$concept]['imprimir'], -9) === '[Forzado]') {
                                 $tmpConcept[$concept]['imprimir'] = str_replace(' [Forzado]', '', $tmpConcept[$concept]['imprimir']);
@@ -881,17 +896,24 @@ class Liquidacion extends AppModel {
                         $orderredMatches[] = $t;
                     }
                 }
-                
+
                 foreach ($orderredMatches as $match) {
                     $match = substr($match, 1);
-    
+
                     /** Si no esta, lo busco */
                     if (!isset($this->__conceptos[$match])) {
                         /**
                         * Busco los conceptos que puedan estar faltandome.
                         * Los agrego al array de conceptos identificandolos y poniendoles el estado a no imprimir.
                         */
-						$conceptoParaCalculo = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual', array('relacion' => $this->getRelationship(), 'codigoConcepto' => $match));
+						$conceptoParaCalculo = $this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
+							array(
+								'relacion' 			=> $this->getRelationship(),
+								'desde' 			=> $this->getPeriod('desde'),
+								'hasta' 			=> $this->getPeriod('hasta'),
+								'codigoConcepto' 	=> $match
+							)
+						);
 						if (empty($conceptoParaCalculo)) {
 							$this->__setError(array(    'tipo'					=> 'Concepto Inexistente',
 														'gravedad'				=> 'Media',
@@ -1200,7 +1222,10 @@ class Liquidacion extends AppModel {
 
 
     function __setError($error) {
-		$error['descripcion_adicional'] = 'Resolviendo concepto: ' . $this->__getCurrentConcept('codigo') . ' / ' . $error['descripcion_adicional'];
+
+		$calledFrom = debug_backtrace();
+		$source = substr(str_replace(ROOT, '', $calledFrom[0]['file']), 1) . ' (line <strong>' . $calledFrom[0]['line'] . '</strong>)';
+		$error['descripcion_adicional'] = 'Resolviendo concepto: ' . $this->__getCurrentConcept('codigo') . ' ||| ' . $error['descripcion_adicional'] . ' ||| Source: ' . $source;
 		if (empty($error['formula_concepto'])) {
 			$error['formula_concepto'] = $this->__getCurrentConcept('formula');
 		}
