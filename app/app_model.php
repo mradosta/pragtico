@@ -296,11 +296,10 @@ class AppModel extends Model {
 
        if ($fkSave === true) {
 
-
             $ids = Set::extract(
                 $this->find('all', array_merge(array(
                                 'fields'    => $this->alias . '.' . $this->primaryKey,
-                                'recursive' => 0), compact('conditions'))),
+                                'recursive' => -1), compact('conditions'))),
                 '{n}.' . $this->alias . '.' . $this->primaryKey
             );
 
@@ -308,11 +307,9 @@ class AppModel extends Model {
                 $db = ConnectionManager::getDataSource($this->useDbConfig);
                 $c = 0;
                 $db->begin($this);
-                $relatedConditions = $db->conditions($conditions);
                 foreach ($this->hasMany as $assoc => $data) {
                     $table = $db->name(Inflector::tableize($assoc));
-                    $conditions = array($data['foreignKey'] => $ids);
-                    $sql = sprintf('DELETE FROM %s %s', $table, $db->conditions($conditions));
+                    $sql = sprintf('DELETE FROM %s %s', $table, $db->conditions(array($data['foreignKey'] => $ids)));
 
                     $db->query($sql);
 
