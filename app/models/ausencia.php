@@ -303,9 +303,9 @@ class Ausencia extends AppModel {
 			}
 
             foreach (array_unique(Set::extract('/AusenciasMotivo/tipo', $r)) as $type) {
-                $conceptos[] = $Concepto->findConceptos('ConceptoPuntual',
+                $conceptos = array_merge($conceptos, $Concepto->findConceptos('ConceptoPuntual',
                         array(  'relacion'          => $relacion,
-                                'codigoConcepto'    => 'ausencias_' . strtolower($type)));
+                                'codigoConcepto'    => 'ausencias_' . strtolower($type))));
             }
 
 
@@ -374,9 +374,9 @@ class Ausencia extends AppModel {
                         $ausencias['Accidente'] = 10 - $daysBeforePeriod;
                     }
 
-                    $conceptos[] = $Concepto->findConceptos('ConceptoPuntual',
+                    $conceptos = array_merge($conceptos, $Concepto->findConceptos('ConceptoPuntual',
                             array(  'relacion'          => $relacion,
-                                    'codigoConcepto'    => 'ausencias_accidente_art'));
+                                    'codigoConcepto'    => 'ausencias_accidente_art')));
                 }
             }
         }
