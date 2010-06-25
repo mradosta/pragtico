@@ -94,6 +94,33 @@ class ValidacionesBehavior extends ModelBehavior {
         return true;
     }
 
+    function validFormulaConcepts(&$model, $rule, $ruleParams) {
+        $value = $this->__getValue($rule);
+
+		/** Search for vars and concepts */
+		preg_match_all('/@([0-9a-z_]+)/', $value, $matchesA);
+
+		if (empty($matchesA[0])) {
+			return true;
+		} else {
+			$concepts = array_unique($matchesA[1]);
+			$Concepto = ClassRegistry::init('Concepto');
+			$Concepto->Behaviors->detach('Permisos');
+			$count = ClassRegistry::init('Concepto')->find('count',
+				array(
+					'recursive'		=> -1,
+					'conditions' 	=>
+					array('Concepto.codigo' => $concepts)
+				)
+			);
+			if (count($concepts) == $count) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+
     function validFormulaStrings(&$model, $rule, $ruleParams) {
         $value = $this->__getValue($rule);
 
