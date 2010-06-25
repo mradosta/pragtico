@@ -437,15 +437,16 @@ class Ausencia extends AppModel {
 
         foreach ($types as $type) {
             $ausencias[$type] = 0;
-        }        
+        }
+
         if (!empty($r)) {
 
 			App::import('Vendor', 'dates', 'pragmatia');
 
             foreach ($r as $k => $ausencia) {
-                        
+
                 if ($ausencia['Ausencia']['desde'] < $from) {
-                    $diff = Dates::dateDiff($from, $ausencia['Ausencia']['desde']);
+                    $diff = Dates::dateDiff($ausencia['Ausencia']['desde'], $from);
                 } else {
                     $diff = Dates::dateDiff($ausencia['Ausencia']['desde'], $to);
                 }
@@ -463,9 +464,10 @@ class Ausencia extends AppModel {
                 $ausencias[$ausencia['AusenciasMotivo']['tipo']] = $diff['dias'];
             }
         }
+
         return $ausencias;
     }
 
-    
+
 }
 ?>
