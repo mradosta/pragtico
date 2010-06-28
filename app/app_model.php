@@ -153,7 +153,7 @@ class AppModel extends Model {
                 $this->create($this->data);
                 if ($this->saveAll($this->data[$this->name], $options)) {
                     $c += count($this->data);
-                } else {
+                } elseif (!empty($this->validationErrors)) {
 					$validationErrors[$k] = $this->validationErrors;
 				}
                 continue;
@@ -251,14 +251,10 @@ class AppModel extends Model {
             'totalRecords'      => $dataCount,
             'totalRecordsSaved' => $c,
         );
-        //d($this->savedDataLog);
-        //$db =& ConnectionManager::getDataSource($this->useDbConfig);
-        //debug($db->_queriesLog);
-        //d($this->__getDbLog());
+
         if ($c === $dataCount) {
             return true;
         } else {
-            //$this->savedDataLog['errors'] = $this->__getErrors();
 			$this->validationErrors = $validationErrors;
             return false;
         }
