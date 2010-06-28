@@ -169,7 +169,7 @@ class Relacion extends AppModel {
             $this->data['Relacion']['legajo'] = $trabajador['Trabajador']['numero_documento'];
         }
 
-		if (empty($this->data['Relacion']['id']) && !empty($this->data['Relacion']['recibo_id'])) {
+		if (!empty($this->data['Relacion']['id']) && !empty($this->data['Relacion']['recibo_id'])) {
 			if (!$this->Empleador->Recibo->sync(
 				$this->data['Relacion']['id'], $this->data['Relacion']['recibo_id'])) {
 				return false;
