@@ -92,11 +92,15 @@ foreach ($registros as $k=>$v) {
 	}
 }
 
-$opcionesTabla =  array('tabla' => array(	'ordenEnEncabezados'=> false,
-											'modificar'			=> false,
-											'seleccionMultiple'	=> true,
-											'eliminar'			=> true,
-											'permisos'			=> false));
+$opcionesTabla =  array(
+	'tabla' => array(
+		'ordenEnEncabezados'=> false,
+		'modificar'			=> false,
+		'seleccionMultiple'	=> true,
+		'eliminar'			=> true,
+		'permisos'			=> false
+	)
+);
 
 $accionesExtra['opciones'] = array('acciones' => array(
     $appForm->link('Confirmar', null, array('class' => 'link_boton', 'id' => 'confirmar', 'title' => 'Confirma las preliquidaciones seleccionadas')),
@@ -181,6 +185,8 @@ $appForm->addScript('
 			var c = jQuery(".tabla :checkbox").checkbox("contar");
 			if (c > 0) {
 				if (jQuery(this).attr("id") == "confirmar") {
+					var observation = prompt("Por favor, agregue una observacion al grupo de liquidaciones", "");
+					jQuery("#form :first").append(jQuery("<input/>").attr("type", "hidden").val(observation).attr("name", "data[LiquidacionGrupo][observacion]"));
 					jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'confirmar')) . '";
 				} else if (jQuery(this).attr("id") == "guardar") {
 					jQuery("#form")[0].action = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'guardar')) . '";

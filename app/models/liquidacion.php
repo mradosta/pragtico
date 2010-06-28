@@ -1392,7 +1392,7 @@ class Liquidacion extends AppModel {
             foreach ($this->__recursivityCounter as $k => $v) {
                 debug($v . ') => @' . $k . ': ' . $this->__conceptos[$k]['formula'] . ' ('.$this->__conceptos[$k]['valor'].')');
             }
-            d('Corto por recursividad');
+            echo 'Corto por recursividad';die;
         }
         $this->__currentConcept = $concept;
     }

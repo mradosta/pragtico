@@ -82,9 +82,9 @@ echo $this->element('index/index', array(
 /**
 * Agrego el evento click asociado al boton confirmar.
 */
-if (!empty($receiptIds)) {
+if (!empty($zipFileName)) {
     $appForm->addScript('
-        window.location = "' . Router::url(array('controller' => $this->params['controller'], 'action' => 'reporte_liquidaciones_confirmadas/' . $receiptIds)) . '";
+        window.location = "' . Router::url('/', true) . 'files/tmp/' . $zipFileName . '";
     ');
 }
 

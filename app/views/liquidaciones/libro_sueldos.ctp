@@ -229,8 +229,12 @@ if (!empty($data)) {
 		}
 	}
 
-	$documento->save($fileFormat);
-	
+	if (!empty($fileName)) {
+		$documento->save($fileName);
+	} else {
+		$documento->save($fileFormat);
+	}
+
 } else {
 
     $conditions['Condicion.Bar-empleador_id'] = array( 'lov' => array(

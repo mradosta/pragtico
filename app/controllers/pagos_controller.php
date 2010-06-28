@@ -59,7 +59,13 @@ class PagosController extends AppController {
                     'Pago.descuento_id'         => null,
                     'Pago.liquidacion_id !='    => null));
             } else {
-                $this->Paginador->removeCondition(array('Pago.descuento_id', 'Pago.liquidacion_id !='));
+                $this->Paginador->removeCondition(
+					array(
+						'Pago.descuento_id',
+						'Pago.liquidacion_id !=',
+						'Liquidacion.liquidaciones_grupo_id'
+					)
+				);
                 $this->Paginador->setCondition(array(
                     'Pago.descuento_id !='      => null,
                     'Pago.liquidacion_id'       => null));
@@ -74,7 +80,11 @@ class PagosController extends AppController {
                 'recursive' => -1,
                 'fields'    => array('Banco.codigo', 'Banco.nombre'))));
             $filters = $this->Session->read('filtros.' . $this->name . '.' . $this->action);
-            if (!empty($filters['condiciones']['Liquidacion.ano']) && !empty($filters['condiciones']['Liquidacion.mes']) && !empty($filters['condiciones']['Liquidacion.periodo like'])) {
+
+            if (!empty($filters['condiciones']['Liquidacion.ano'])
+				&& !empty($filters['condiciones']['Liquidacion.mes'])
+				&& !empty($filters['condiciones']['Liquidacion.periodo like'])) {
+
                 $this->data['Condicion']['Liquidacion-periodo_completo'] = $filters['condiciones']['Liquidacion.ano'] . $filters['condiciones']['Liquidacion.mes'] . str_replace('%', '', $filters['condiciones']['Liquidacion.periodo like']);
             }
         }

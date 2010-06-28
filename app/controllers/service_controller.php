@@ -56,14 +56,29 @@ class ServiceController extends AppController {
             array("trace"=>1,
                     'uri'=>"http://localhost/servicioWeb"));
         */
-        $soapClient = new MSSoapClient("http://192.168.1.151/WsManager2/webService.asmx?wsdl",
+/*
+    request.setMethod("getEncuestas", "http://tempuri.org/");
+    request.addMethodArgument("strCountry", "", country);
+
+    http.setHost("danyluna.dyndns.org");
+    http.setAction("http://tempuri.org/getEncuestas");
+    http.submitRequest(request, "/Encuestas/Encuestas.asmx");
+*/
+        $soapClient = new MSSoapClient("http://danyluna.dyndns.org//Encuestas/Encuestas.asmx?wsdl",
             array("trace"=>1,
-                    'uri'=>"http://localhost/servicioWeb"));        
+                    'uri'=>"http://tempuri.org/"));
+
+        $soapClient = new SoapClient("http://190.106.98.75:7070/Encuesta/services/EncuestaManager?wsdl",
+            array("trace"=>1,
+                    'uri'=>"http://mooral"));
+
+
         try {
 
-            $request = new SoapVar(array('strGrupo' => '30-59083010-7', 'strCodigo' => '792001', 'strCUIT' => '30-54285183-6'), SOAP_ENC_OBJECT);
+            $request = new SoapVar(array('user' => 'juan', 'pass' => '1234'), SOAP_ENC_OBJECT);
         
-            d($soapClient->limites($request));
+            //d($soapClient->getEncuestas($request));
+			d($soapClient->IsUserValid($request));
         } catch(SoapFault $soapFault) {
             echo "Request :<br>", $client->__getLastRequest(), "<br>";
             echo "Response :<br>", $client->__getLastResponse(), "<br>";

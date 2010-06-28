@@ -116,7 +116,11 @@ if (!empty($data)) {
     $documento->setCellValue('E', '=SUM('.implode('+', $totals['E']).')', 'total');
 
 
-    $documento->save($fileFormat);
+	if (!empty($fileName)) {
+		$documento->save($fileName);
+	} else {
+		$documento->save($fileFormat);
+	}
 
 } else {
 

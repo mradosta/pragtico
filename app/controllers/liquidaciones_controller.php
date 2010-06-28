@@ -36,7 +36,7 @@ class LiquidacionesController extends AppController {
         )
     );
 
-	var $components = array('Formulador');
+	var $components = array('Formulador', 'Zip');
 	var $helpers = array('Documento');
 
 
@@ -386,10 +386,6 @@ class LiquidacionesController extends AppController {
                         }
                     }
 
-                    if (!empty($this->data['Condicion']['Liquidacion-grupo_id'])) {
-                        $this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Liquidacion-grupo_id']));
-                    }
-
 					if (empty($data)) {
 						$this->Session->setFlash('No se han encontrado datos segun los criterios especificados.', 'error');
 					}
@@ -455,7 +451,8 @@ class LiquidacionesController extends AppController {
 					$this->Session->setFlash('No se han encontrado liquidaciones confirmadas para el periodo seleccionado segun los criterios especificados.', 'error');
 				} else {
                     if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
-                        $this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Bar-grupo_id']));
+						$this->set('groupParams', User::getGroupParams($this->data['Condicion']['Bar-grupo_id']));
+                        //$this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Bar-grupo_id']));
                     }
                     if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
                         $this->Liquidacion->Relacion->Empleador->recursive = -1;
@@ -1262,7 +1259,7 @@ class LiquidacionesController extends AppController {
     }
 
 
-	function index($receiptIds = null) {
+	function index($zipFileName = null) {
 		if (!empty($this->data['Condicion']['Bar-periodo_largo'])) {
 			$periodo = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
 			if (!empty($periodo)) {
@@ -1297,7 +1294,7 @@ class LiquidacionesController extends AppController {
         }
         
         $this->Paginador->setCondition(array('Liquidacion.estado' => 'Confirmada'));
-        $this->set('receiptIds', $receiptIds);
+        $this->set('zipFileName', $zipFileName);
 		parent::index();
 	}
 
@@ -1338,6 +1335,7 @@ class LiquidacionesController extends AppController {
  * @access public.
  */
 	function confirmar() {
+
 		$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
 		
 		if (!empty($ids)) {
@@ -1421,41 +1419,63 @@ class LiquidacionesController extends AppController {
 
             /** If everything is ok, change state and permission so only owner and group can just read */
 			if ($c === count($auxiliares)) {
-				$this->Liquidacion->recursive = -1;
-				if ($this->Liquidacion->updateAll(array(
-                    'estado'        => "'Confirmada'",
-                    'permissions'   => "'288'",
-                    'modified'      => 'NOW()'),
-                        array('Liquidacion.id' => $ids))) {
 
-					/** Deletes auxiliar table */
-					if (!empty($idsAuxiliares)) {
-						$this->Liquidacion->LiquidacionesAuxiliar->recursive = -1;;
-						$this->Liquidacion->LiquidacionesAuxiliar->deleteAll(array('LiquidacionesAuxiliar.id' => $idsAuxiliares));
-					}
+				if (empty($this->data['LiquidacionGrupo']['observacion'])) {
+					$this->data['LiquidacionGrupo']['observacion'] = '';
+				}
 
-					/** If employer is marked as auto_facturar = 'Si', must create and confirm invoices */
-					list($groupId, ) = array_keys(User::getUserGroups('default'));
-					if (!$this->Liquidacion->Factura->getInvoice(array('Liquidacion.id' => $ids), $groupId, true)) {
-						$db->rollback($this);
-						$this->Session->setFlash('Ocurrio un error al intentar generar las facturas.', 'error');
+				if ($this->Liquidacion->LiquidacionesGrupo->save(array(
+					'LiquidacionesGrupo' => array(
+						'observacion' 	=> $this->data['LiquidacionGrupo']['observacion'],
+						'fecha'			=> date('Y-m-d'))))) {
+
+					if ($this->Liquidacion->updateAll(array(
+						'liquidaciones_grupo_id'	=> $this->Liquidacion->LiquidacionesGrupo->id,
+						'estado'        			=> "'Confirmada'",
+						'permissions'   			=> "'288'",
+						'modified'      			=> 'NOW()'),
+							array('Liquidacion.id' => $ids))) {
+
+						/** Deletes auxiliar table */
+						if (!empty($idsAuxiliares)) {
+							$this->Liquidacion->LiquidacionesAuxiliar->recursive = -1;;
+							$this->Liquidacion->LiquidacionesAuxiliar->deleteAll(array('LiquidacionesAuxiliar.id' => $idsAuxiliares));
+						}
+
+						/** If employer is marked as auto_facturar = 'Si', must create and confirm invoices */
+						list($groupId, ) = array_keys(User::getUserGroups('default'));
+						if (!$this->Liquidacion->Factura->getInvoice(array('Liquidacion.id' => $ids), $groupId, true)) {
+							$db->rollback($this);
+							$this->Session->setFlash('Ocurrio un error al intentar generar las facturas.', 'error');
+						} else {
+							$db->commit($this);
+
+							$suffix = '_' . $this->Liquidacion->LiquidacionesGrupo->id . '.xls';
+							$f0 = 'reporte_resumen' . $suffix;
+							$this->reporte_resumen_confirmadas($ids, TMP . $f0);
+							$f1 = 'liquidaciones_confirmadas' . $suffix;
+							$this->reporte_liquidaciones_confirmadas($ids, TMP . $f1);
+							$f2 = 'libro_sueldos' . $suffix;
+							$this->libro_sueldos_confirmadas($ids, TMP . $f2);
+
+							$zip = new ZipArchive();
+							$zipFileName = 'confirmacion_' . $this->Liquidacion->LiquidacionesGrupo->id . '.zip';
+							$zip->open(WWW_ROOT . 'files' . DS . 'tmp' . DS . $zipFileName, ZIPARCHIVE::CREATE);
+							$zip->addFile(TMP . $f0, $f0);
+							$zip->addFile(TMP . $f1, $f1);
+							$zip->addFile(TMP . $f2, $f2);
+							$zip->close();
+
+							$this->redirect('index/' . $zipFileName);
+						}
 					} else {
-						$db->commit($this);
-
-						/** Must create reports and zip them
-						$this->Liquidacion->setSecurityAccess('readOwnerOnly');
-						$data = $this->Liquidacion->find('all', array(
-							'conditions'    => array('Liquidacion.id' => explode('|', $receiptIds)),
-							'order'         => array('Liquidacion.trabajador_apellido', 'Liquidacion.trabajador_nombre'),
-							'recursive'     => -1));
-						$this->set('data', $data);
- 						*/
-                    	$this->redirect('index/' . implode('|', $ids));
+						$db->rollback($this);
+						$this->Liquidacion->__buscarError();
+						$this->Session->setFlash('Ocurrio un error al intentar confirmar las liquidaciones.', 'error');
 					}
 				} else {
 					$db->rollback($this);
-					$this->Liquidacion->__buscarError();
-					$this->Session->setFlash('Ocurrio un error al intentar confirmar las liquidaciones.', 'error');
+					$this->Session->setFlash('Ocurrio un error al intentar crear el grupo de liquidaciones.', 'error');
 				}
 			} else {
 				$db->rollback($this);
@@ -1465,18 +1485,15 @@ class LiquidacionesController extends AppController {
 		$this->History->goBack();
 	}
 
-
-
-	function libro_sueldos_x($receiptIds) {
-		$conditions = array(
-			'Liquidacion.id'		=> explode('|', $receiptIds),
-			'Liquidacion.estado'	=> 'Confirmada'
-		);
+	function libro_sueldos_confirmadas($receiptIds, $fileName) {
 
 		$this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
 		foreach ($this->Liquidacion->LiquidacionesDetalle->find('all',
 				array(  'contain'       => array('Liquidacion'),
-						'conditions'    => $conditions,
+						'conditions'    => array(
+							'Liquidacion.id'		=> $receiptIds,
+							'Liquidacion.estado'	=> 'Confirmada'
+						),
 						'order'         => array(
 							'Liquidacion.empleador_nombre',
 							'Liquidacion.periodo',
@@ -1486,28 +1503,106 @@ class LiquidacionesController extends AppController {
 				$liquidaciones[$v['Liquidacion']['id']]['Liquidacion'] = $v['Liquidacion'];
 			}
 			$liquidaciones[$v['Liquidacion']['id']]['LiquidacionesDetalle'][] = $v['LiquidacionesDetalle'];
+
+			$periods[] = $v['Liquidacion']['ano'] . str_pad($v['Liquidacion']['mes'], 2, 0, STR_PAD_LEFT) . $v['Liquidacion']['periodo'];
 		}
+		$this->Liquidacion->LiquidacionesDetalle->Behaviors->attach('Permisos');
+		$periods = array_unique($periods);
 
 
+		$this->set('groupParams', User::getGroupParams());
+
+		/**
+		TODO: Must check if not used by group
+		*/
+		/*
 		$this->Liquidacion->Relacion->Empleador->recursive = -1;
 		$this->set('employer', $this->Liquidacion->Relacion->Empleador->findById($this->data['Condicion']['Bar-empleador_id']));
-
-		$this->set('startPage', $this->data['Condicion']['Bar-start_page']);
-		$this->set('periodo', $periodo['periodoCompleto']);
+		*/
+		$this->set('startPage', 1);
+		$this->set('periodo', trim(implode(' ', $periods)));
+		$this->set('fileName', $fileName);
 		$this->set('data', $liquidaciones);
-		$this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+		$this->set('fileFormat', 'Excel5');
+		$this->render('libro_sueldos');
 	}
 
 
-    function reporte_liquidaciones_confirmadas($receiptIds) {
+    function reporte_liquidaciones_confirmadas($receiptIds, $fileName) {
         $this->Liquidacion->setSecurityAccess('readOwnerOnly');
         $data = $this->Liquidacion->find('all', array(
-            'conditions'    => array('Liquidacion.id' => explode('|', $receiptIds)),
-            'order'         => array('Liquidacion.trabajador_apellido', 'Liquidacion.trabajador_nombre'),
+            'conditions'    => array('Liquidacion.id' => $receiptIds),
+            'order'         => array(
+				'Liquidacion.trabajador_cbu' => 'DESC',
+				'Liquidacion.trabajador_apellido',
+				'Liquidacion.trabajador_nombre'),
             'recursive'     => -1));
         $this->set('data', $data);
+		$this->set('fileName', $fileName);
+		$this->render('reporte_liquidaciones_confirmadas');
     }
 
-	
+
+
+    function reporte_resumen_confirmadas($receiptIds, $fileName) {
+
+
+		$this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
+		$conditions['Liquidacion.id'] = $receiptIds;
+		$conditions['OR'] = array(
+			'LiquidacionesDetalle.concepto_imprimir' => 'Si',
+			array(
+				'LiquidacionesDetalle.concepto_imprimir' => 'Solo con valor',
+				'ABS(LiquidacionesDetalle.valor) >' => 0
+			)
+		);
+
+		$data = array();
+		$r = $this->Liquidacion->LiquidacionesDetalle->find('all', array(
+				'conditions'    => $conditions,
+				'contain'       => 'Liquidacion',
+				'order'         => 'Liquidacion.relacion_id, LiquidacionesDetalle.concepto_orden',
+				'fields'        => array(
+					'Liquidacion.relacion_legajo',
+					'Liquidacion.trabajador_cuil',
+					'Liquidacion.trabajador_nombre',
+					'Liquidacion.trabajador_apellido',
+					'LiquidacionesDetalle.concepto_nombre',
+					'LiquidacionesDetalle.concepto_tipo',
+					'LiquidacionesDetalle.coeficiente_valor',
+					'LiquidacionesDetalle.coeficiente_nombre',
+					'COUNT(LiquidacionesDetalle.concepto_nombre) AS cantidad',
+					'SUM(LiquidacionesDetalle.valor_cantidad) AS suma_cantidad',
+					'SUM(LiquidacionesDetalle.valor) AS valor'),
+				'group'         => array(
+					'Liquidacion.relacion_id',
+					'Liquidacion.relacion_legajo',
+					'Liquidacion.trabajador_cuil',
+					'Liquidacion.trabajador_nombre',
+					'Liquidacion.trabajador_apellido',
+					'LiquidacionesDetalle.concepto_nombre',
+					'LiquidacionesDetalle.concepto_tipo',
+					'LiquidacionesDetalle.coeficiente_valor',
+					'LiquidacionesDetalle.coeficiente_nombre')));
+		foreach ($r as $record) {
+			$data[$record['Liquidacion']['trabajador_cuil']][] = $record;
+		}
+
+		$this->Liquidacion->LiquidacionesDetalle->Behaviors->attach('Permisos');
+		$this->Liquidacion->Behaviors->detach('Permisos');
+		$workers = $this->Liquidacion->find('all', array(
+				'conditions'    => array('Liquidacion.id' => $receiptIds),
+				'fields'        => array('COUNT(DISTINCT Liquidacion.trabajador_id) AS cantidad'),
+				'recursive'     => -1));
+		$this->Liquidacion->Behaviors->attach('Permisos');
+
+		$this->set('data', $data);
+		$this->set('totalWorkers', $workers[0]['Liquidacion']['cantidad']);
+		$this->set('fileName', $fileName);
+		$this->set('group_option', 'trabajador');
+		$this->data = array();
+		$this->render('reporte_resumen');
+    }
+
 }
 ?>
