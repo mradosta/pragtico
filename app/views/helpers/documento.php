@@ -563,17 +563,32 @@ class DocumentoHelper extends AppHelper {
 /**
  * Genera el documentos y lo envia al browser para la descarga o lo guarda en una ubicacion del servidor.
  *
- * @param string $formato El formato del archivo a crear:
+ * @param string $formato
+ * 		File format to be created. Suported types are:
  *          - Excel2007
  *          - Excel5
  *          - PDF
  *          - HTML
- * @param string $archivo La ruta y el nombre del archivo donde crearlo.
- * En caso de ser null, se envia al browser para la descarga
+ *		File name to be created (must be set with the path also).
+ * @param string $archivo 	File name to be created (must be set with the path also).
+ * 							If null, file will be send to browser for download.
  * @return void.
- * @access public.  
+ * @access public.
  */
     function save($formato = 'Excel2007', $archivo = null) {
+
+		if (!in_array($formato, array('Excel2007', 'Excel5'))
+			&& $archivo == null
+			&& preg_match('/(.+)\.(xlsx?)$/', $formato, $matches)) {
+
+			if ($matches[2] == 'xlsx') {
+				$formato = 'Excel2007';
+			} else {
+				$formato = 'Excel5';
+			}
+			$archivo = $matches[1];
+		}
+
         $objPHPExcelWriter = PHPExcel_IOFactory::createWriter($this->doc, $formato);
 
         if ($formato === 'Excel2007') {
@@ -607,12 +622,16 @@ class DocumentoHelper extends AppHelper {
             header('Content-Type: application/download');
             header('Content-Disposition: attachment;filename=file.' . $extension);
             header('Content-Transfer-Encoding: binary');
+
+			Configure::write('debug', 0);
+			$objPHPExcelWriter->save($archivo);
+			exit();
+
         } else {
             $archivo .= '.' . $extension;
+			$objPHPExcelWriter->save($archivo);
         }
-        Configure::write('debug', 0);
-        $objPHPExcelWriter->save($archivo);
-        exit();
+
     }
 
 }
