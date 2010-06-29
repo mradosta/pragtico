@@ -28,11 +28,11 @@ foreach ($coefientes as $k => $v) {
 	$fila[] = array('model' => 'Concepto', 'field' => 'nombre', 'valor' => $v['Coeficiente']['nombre']);
     $fila[] = array('model' => 'Concepto', 'field' => 'valor', 'valor' => $v['Coeficiente']['valor'], 'opciones' => array('class' => 'derecha'));
     $fila[] = array('model' => 'Concepto', 'field' => 'valor', 'valor' =>
-        $appForm->input($k . '.AreasCoeficiente.id', array('type' => 'hidden', 'value' => $v['AreasCoeficiente']['id'])) .
-        $appForm->input($k . '.AreasCoeficiente.coeficiente_id', array('type' => 'hidden', 'value' => $v['Coeficiente']['id'])) .
-        $appForm->input($k . '.AreasCoeficiente.area_id', array('type' => 'hidden', 'value' => $this->params['named']['AreasCoeficiente.area_id'])) .
-        $appForm->input($k . '.AreasCoeficiente.porcentaje', array('label' => false, 'class' => 'derecha', 'value' => $v['AreasCoeficiente']['porcentaje'], 'after' => '%')));
-    $fila[] = array('model' => 'Concepto', 'field' => 'delete', 'valor' => $appForm->input($k . '.AreasCoeficiente.delete', array('type' => 'checkbox', 'label' => false, 'div' => false)));
+	$appForm->input('AreasCoeficiente.' . $k . '.id', array('type' => 'hidden', 'value' => $v['AreasCoeficiente']['id'])) .
+    $appForm->input('AreasCoeficiente.' . $k . '.coeficiente_id', array('type' => 'hidden', 'value' => $v['Coeficiente']['id'])) .
+    $appForm->input('AreasCoeficiente.' . $k . '.area_id', array('type' => 'hidden', 'value' => $this->params['named']['AreasCoeficiente.area_id'])) .
+    $appForm->input('AreasCoeficiente.' . $k . '.porcentaje', array('label' => false, 'class' => 'derecha', 'value' => $v['AreasCoeficiente']['porcentaje'], 'after' => '%')));
+    $fila[] = array('model' => 'Concepto', 'field' => 'delete', 'valor' => $appForm->input( 'AreasCoeficiente.' . $k . '.delete', array('type' => 'checkbox', 'label' => false, 'div' => false)));
 	$cuerpo[] = $fila;
 }
 $fila = null;

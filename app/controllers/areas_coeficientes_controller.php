@@ -47,10 +47,11 @@ class AreasCoeficientesController extends AppController {
 
     function save() {
         if (!empty($this->data['Form']['accion']) && $this->data['Form']['accion'] === 'grabar') {
-            foreach ($this->data as $k => $v) {
-                if (!empty($v['AreasCoeficiente']['delete']) && !empty($v['AreasCoeficiente']['id'])) {
-                    $delete[] = $v['AreasCoeficiente']['id'];
-                } elseif (!empty($v['AreasCoeficiente']['porcentaje'])) {
+
+            foreach ($this->data['AreasCoeficiente'] as $k => $v) {
+                if (!empty($v['delete']) && !empty($v['id'])) {
+                    $delete[] = $v['id'];
+                } elseif (!empty($v['porcentaje'])) {
                     $data[] = $v;
                 }
             }
@@ -59,6 +60,7 @@ class AreasCoeficientesController extends AppController {
             }
             $this->data['Form']['accion'] = 'grabar';
         }
+
         if (!empty($data)) {
             return parent::save($data);
         } else {
