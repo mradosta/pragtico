@@ -23,6 +23,7 @@
  */
 class VacacionesDetallesController extends AppController {
 
+	var $uses = 'VacacionesDetalle';
 
 }
 ?>
