@@ -36,7 +36,7 @@ class LiquidacionesController extends AppController {
         )
     );
 
-	var $components = array('Formulador', 'Zip');
+	var $components = array('Formulador');
 	var $helpers = array('Documento');
 
 
