@@ -289,6 +289,20 @@ class Liquidacion extends AppModel {
 			}
 
 			$this->setVar('#dias_vacaciones_confirmados', $this->Relacion->Vacacion->getDiasVacaciones($this->getRelationship(), $this->getPeriod()));
+
+			$year = $this->getPeriod('ano');
+			if ($this->getPeriod('mes') <= 6) {
+				$from = $year . '-01-01';
+				$to = $year . '-06-30';
+			} else {
+				$from = $year . '-07-01';
+				$to = $year . '-12-31';
+			}
+
+            $ausencias = $this->Relacion->Ausencia->getAbsencesByType(array('Accidente', 'Maternidad'), $relationship['Relacion']['id'], $from, $to);
+            $this->setVar('#total_dias_ausencias_accidente_semestre', $ausencias['Accidente']);
+            $this->setVar('#total_dias_ausencias_maternidad_semestre', $ausencias['Maternidad']);
+
         } elseif ($this->__receiptType === 'vacaciones') {
             $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
                     array(  'relacion'  => $relationship,
