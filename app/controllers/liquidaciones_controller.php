@@ -777,7 +777,7 @@ class LiquidacionesController extends AppController {
 		$this->data = null;
 		$this->Liquidacion->contain('LiquidacionesDetalle');
 		$this->Liquidacion->Empleador->Suss->contain('Banco');
-		foreach ($this->Liquidacion->find('all', array('order' => array('Liquidacion.trabajador_apellido', 'Liquidacion.trabajador_nombre'), 'conditions' => array('Liquidacion.id' => $id))) as $receipt) {
+		foreach ($this->Liquidacion->find('all', array('order' => array('Liquidacion.trabajador_cbu' => 'DESC', 'Liquidacion.trabajador_apellido', 'Liquidacion.trabajador_nombre'), 'conditions' => array('Liquidacion.id' => $id))) as $receipt) {
 
             $ano = $receipt['Liquidacion']['ano'];
             $mes = $receipt['Liquidacion']['mes'];
