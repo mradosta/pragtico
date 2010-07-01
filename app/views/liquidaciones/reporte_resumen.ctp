@@ -52,12 +52,13 @@ if (!empty($data)) {
     $extraTotals['Remunerativo'] = 0;
     $extraTotals['No Remunerativo'] = 0;
     $extraTotals['Deduccion'] = 0;
-    
-            
+
+
     /** Body */
     foreach ($data as $k => $detail) {
 
-        //$fila++;
+		$documento->moveCurrentRow();
+
         if (!empty($detail[0]['Liquidacion']['trabajador_cuil'])) {
             $documento->setCellValue('A', ($detail[0]['Liquidacion']['relacion_legajo']) . ' - ' . $detail[0]['Liquidacion']['trabajador_apellido'] . ', ' . $detail[0]['Liquidacion']['trabajador_nombre'], 'bold');
         } else {
