@@ -61,7 +61,7 @@ $js[] = 'master_detail';
 $js[] = 'jscal/jscal2.min';
 $js[] = 'jscal/es.min';
 $js[] = 'jquery.flydom.min'; // lo usa en carga rapida de conceptos desde convenios
-$codigo_html[] = $javascript->link($js);
+$codigo_html[] = $html->script($js);
 $codigo_html[] = $scripts_for_layout;
 
 $View = ClassRegistry::getObject('view');

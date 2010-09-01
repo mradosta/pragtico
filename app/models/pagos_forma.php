@@ -141,7 +141,6 @@ class PagosForma extends AppModel {
 				if (empty($this->data['PagosForma']['cuenta_id'])) {
 					$this->invalidate('cuenta_id', 'Debe seleccionar la Cuenta Emisora del Cheque.');
 				}
-				unset($this->data['PagosForma']['cheque_numero']);
 				break;
 		}
 		if (($this->data['PagosForma']['pago_acumulado'] + $this->data['PagosForma']['monto']) > $this->data['PagosForma']['pago_monto']) {
@@ -159,7 +158,7 @@ class PagosForma extends AppModel {
 		* Permiso de solo lectura.
 		*/
 		$this->data['PagosForma']['permissions'] = '292';
-		return parent::beforeSave();
+		return parent::beforeValidate($options);
 	}
 
 

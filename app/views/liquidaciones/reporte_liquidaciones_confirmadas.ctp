@@ -18,7 +18,7 @@
  
 if (!empty($data)) {
     $documento->create(array(
-		'password' 		=> true,
+//		'password' 		=> true,
 		'orientation' 	=> 'landscape',
 		'title' 		=> 'Listado de Liquidaciones Confirmadas'));
 
@@ -39,22 +39,22 @@ if (!empty($data)) {
 
     /** Body */
     $startRow = $documento->getCurrentRow() + 1;
-    foreach ($data as $detail) {
+    foreach ($data['Liquidacion'] as $detail) {
 
         $account = '';
-        if (preg_match('/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d/', $detail['Liquidacion']['trabajador_cbu'], $matches)) {
+        if (preg_match('/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d/', $detail['trabajador_cbu'], $matches)) {
             unset($matches[0]);
             $account = implode(' ', $matches);
         }
 
         $documento->setCellValueFromArray(
-            array(  $detail['Liquidacion']['empleador_nombre'],
-                    array('value' => $formato->format($detail['Liquidacion'], 'periodo'), 'options' => 'center'),
-                    array('value' => $detail['Liquidacion']['trabajador_cuil'], 'options' => 'center'),
-                    $detail['Liquidacion']['trabajador_apellido'] . ', ' . $detail['Liquidacion']['trabajador_nombre'],
-                    array('value' => $detail['Liquidacion']['total_pesos'], 'options' => 'currency'),
-                    array('value' => $detail['Liquidacion']['total_beneficios'], 'options' => 'currency'),
-                    array('value' => $detail['Liquidacion']['total'], 'options' => 'currency'),
+            array(  $detail['empleador_nombre'],
+                    array('value' => $formato->format($detail, 'periodo'), 'options' => 'center'),
+                    array('value' => $detail['trabajador_cuil'], 'options' => 'center'),
+                    $detail['trabajador_apellido'] . ', ' . $detail['trabajador_nombre'],
+                    array('value' => $detail['total_pesos'], 'options' => 'currency'),
+                    array('value' => $detail['total_beneficios'], 'options' => 'currency'),
+                    array('value' => $detail['total'], 'options' => 'currency'),
                     array('value' => $account, 'options' => 'center')));
     }
     $endRow = $documento->getCurrentRow();
@@ -68,22 +68,37 @@ if (!empty($data)) {
     $documento->moveCurrentRow(4);
     $documento->setCellValue('A', 'Observaciones:', 'bold');
     $documento->moveCurrentRow(1);
+
     $styleArray = array(
-        'font'      => array('size' => 11, 'bold' => true),
-        'borders'   => array(
+		'alignment' => array(
+			'vertical' => PHPExcel_Style_Alignment::VERTICAL_TOP,
+		),
+		'borders'   => array(
             'outline' => array(
                 'style' => PHPExcel_Style_Border::BORDER_DOTTED,
                 'color' => array('argb' => '00000000'),
             ),
         ),
     );
-    $documento->activeSheet->getStyle('A' . $documento->getCurrentRow() . ':H' . ($documento->getCurrentRow() + 6))->applyFromArray($styleArray);
+	$obsRow = $documento->getCurrentRow() + 1;
+	$documento->activeSheet->getRowDimension($obsRow)->setRowHeight(45);
+	$documento->activeSheet->mergeCells('A' . $obsRow . ':H' . $obsRow);
+    $documento->activeSheet->getStyle('A' . $obsRow . ':H' . $obsRow)->applyFromArray($styleArray);
+	$documento->activeSheet->setCellValue('A' . $obsRow, $data['LiquidacionesGrupo']['observacion']);
+	$documento->activeSheet->getStyle('A' . $obsRow . ':H' . $obsRow)->getAlignment()->setWrapText(true);
+
+	if ($reprinted) {
+		$documento->addImage('D6', 're-printed.png');
+	}
+
+	/*
     for ($i = 'A'; $i <= 'H'; $i++) {
         for ($j = $documento->getCurrentRow(); $j <= $documento->getCurrentRow() + 6; $j++) {
             $documento->doc->getActiveSheet()->getRowDimension($j)->setRowHeight(15);
             $documento->doc->getActiveSheet()->getStyle($i . $j)->getProtection()->setLocked(PHPExcel_Style_Protection::PROTECTION_UNPROTECTED);
         }
     }
+	*/
 
     $documento->save($fileName);
 

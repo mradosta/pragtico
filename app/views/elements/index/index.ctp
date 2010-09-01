@@ -15,9 +15,6 @@ $appForm->addCrumb(__('Grid', true));
 if(!isset($botonesExtra)) {
 	$botonesExtra = array();
 }
-if(!isset($accionesExtra)) {
-	$accionesExtra = array();
-}
 if(!isset($separadorRetorno)) {
 	$separadorRetorno = '';
 }
@@ -47,7 +44,14 @@ $bloques[] = $appForm->tag('div', $condiciones . $botones, array('class' => 'uni
  * por cada controlador.
  */
 //$acciones = $this->element('index/acciones', array('cache'=>'+30 day', $this->name=>'name', 'accionesExtra'=>$accionesExtra));
-$acciones = $this->element('index/acciones', array('accionesExtra' => $accionesExtra));
+if (isset($accionesExtra) && $accionesExtra === false) {
+	$acciones = '';
+} else {
+	if (!isset($accionesExtra)) {
+		$accionesExtra = array();
+	}
+	$acciones = $this->element('index/acciones', array('accionesExtra' => $accionesExtra));
+}
 
 
 if (!isset($opcionesTabla)) {

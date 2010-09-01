@@ -19,7 +19,7 @@ if (!empty($this->params['isAjax'])) {
     $options['update'] = 'lov';
     $options['tipo'] = 'ajax';
 }
-                
+
 $bloque_paginador[] = $appForm->tag('div', $paginador->paginador('navegacion', array('url' => $url)), array('class' => 'navegacion'));
 $bloque_paginador[] = $appForm->tag('div', $paginador->paginador('posicion'), array('class' => 'posicion'));
 
@@ -47,5 +47,6 @@ if (isset($paginador->params['paging'][Inflector::classify($paginador->params['c
 	$bloque_paginador[] = $appForm->tag('div', __('Show', true) . ': ' . implode('/', $show), array('class' => 'cantidad_a_mostrar'));
 }
 
-echo implode('', $bloque_paginador);
+echo implode('', $bloque_paginador) . $this->Js->writeBuffer();
+;
 ?>

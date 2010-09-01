@@ -90,7 +90,7 @@ class PaginadorHelper extends AppHelper {
 				$out = null;
 
                 if (!empty($this->Paginator->params['isAjax'])) {
-                    $this->Paginator->options['update'] = 'lov';
+                    $this->Paginator->options['update'] = '#lov';
                 }
                 
                 $opciones['escape'] = false;

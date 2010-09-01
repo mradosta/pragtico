@@ -781,12 +781,10 @@ class AppFormHelper extends FormHelper {
 							*/
 							if ($opciones['mostrarIds'] && !empty($acciones)) {
 								if (empty($atributos['class'])) {
-									$atributos['class'] = "derecha";
+									$atributos['class'] = 'derecha';
 								}
-								$cellsOut[] = array($id, $atributos);
-							}
-							else {
-								$valor = "NO PINTAR";
+							} else {
+								$valor = 'NO PINTAR';
 							}
 						}
 					}

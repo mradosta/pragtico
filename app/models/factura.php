@@ -102,7 +102,12 @@ class Factura extends AppModel {
 		if ($this->saveAll($save, array('atomic' => $params['atomic']))) {
 			$this->Liquidacion->unbindModel(array('belongsTo' => array(
 				'Convenio', 'Area', 'Relacion', 'Factura', 'Trabajador', 'Empleador')));
-			return $this->Liquidacion->updateAll(array('Liquidacion.factura_id' => $this->id), array('Liquidacion.id' => $params['receiptIds']));
+			
+			if ($this->Liquidacion->updateAll(array('Liquidacion.factura_id' => $this->id), array('Liquidacion.id' => $params['receiptIds']))) {
+				return $this->id;
+			} else {
+				return false;
+			}
 		} else {
 			return false;
 		}
@@ -123,6 +128,8 @@ class Factura extends AppModel {
 		if (empty($conditions)) {
 			return false;
 		}
+
+		$createdInvoicesIds = array();
 
 		$conditions = array_merge($conditions,
 			array(	'OR' => array(
@@ -180,7 +187,7 @@ class Factura extends AppModel {
 						$employerId = $receipt['Liquidacion']['empleador_id'];
 						$areaId = null;
 						if ($k > 0) {
-							$this->__createAndSave(array(
+							$createdInvoicesIds[] = $this->__createAndSave(array(
 								'employerId'		=> $employerId,
 								'receiptIds'		=> $receiptIds,
 								'areaId' 			=> $areaId,
@@ -193,7 +200,7 @@ class Factura extends AppModel {
 					} elseif ($receipt['Empleador']['facturar_por_area'] === 'Si'
 						&& $areaId != $receipt['Liquidacion']['relacion_area_id']) {
 						if ($areaId != null && !empty($saveDatails)) {
-							$this->__createAndSave(array(
+							$createdInvoicesIds[] = $this->__createAndSave(array(
 								'employerId'		=> $employerId,
 								'receiptIds'		=> $receiptIds,
 								'areaId' 			=> $areaId,
@@ -228,7 +235,7 @@ class Factura extends AppModel {
 
 
 				if (!empty($receiptIds)) {
-					$this->__createAndSave(array(
+					$createdInvoicesIds[] = $this->__createAndSave(array(
 						'employerId'		=> $employerId,
 						'receiptIds'		=> $receiptIds,
 						'areaId' 			=> $areaId,
@@ -239,7 +246,7 @@ class Factura extends AppModel {
 				}
 			}
 
-			return true;
+			return $createdInvoicesIds;
 
 		} else {
 

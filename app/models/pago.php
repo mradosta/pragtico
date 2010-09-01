@@ -72,7 +72,7 @@ class Pago extends AppModel {
 /**
  *
  */
-	function registrarPago($ids, $tipo) {
+	function registrarPago($ids, $tipo, $savePago = array()) {
 
 		$retorno = true;
 		$tipo = ucfirst($tipo);
@@ -83,14 +83,14 @@ class Pago extends AppModel {
 			$this->contain('PagosForma');
 		}
 		$pagosTmp = $this->find('all',
-            array('conditions'=>array('Pago.id' => $ids, 'Pago.estado' => 'Pendiente')));
+            array('conditions'=>array('Pago.id' => $ids, 'Pago.estado' => array('Pendiente', 'En Soporte'))));
 
 		$ids = array();
 		foreach ($pagosTmp as $pago) {
 			$pagos[$pago['Pago']['id']] = $pago;
 			$ids[] = $pago['Pago']['id'];
 		}
-        
+
 		$c = 0;
 		foreach ($ids as $id) {
 			if (($pagos[$id]['Pago']['moneda'] === 'Beneficios' && $tipo === 'Beneficios')
@@ -122,7 +122,17 @@ class Pago extends AppModel {
 				if ($tipo === 'Deposito') {
 					$save['cbu_numero'] = $pagos[$id]['Relacion']['Trabajador']['cbu'];
 				}
-				
+
+
+				/** Try to get the account id */
+				if ($pagos[$id]['Pago']['estado'] == 'En Soporte') {
+					$tmp = explode('|', $pagos[$id]['Pago']['identificador']);
+					if (count($tmp) == 2 && is_numeric($tmp[0])) {
+						$save['cuenta_id'] = $tmp[0];
+					}
+				}
+
+
 				/**
 				* Cuando un pago esta imputado, ya no permito que sea borrado o modificado.
 				*/
@@ -130,9 +140,11 @@ class Pago extends AppModel {
 				$savePago['estado'] = 'Imputado';
 				$savePago['id'] = $id;
 				
-				if ($this->appSave(	array('Pago' 		=> $savePago,
-					 						'PagosForma'	=> array($save)),
-										array('validate' => false))) {
+				if ($this->appSave(array(
+						'Pago' 			=> $savePago,
+					 	'PagosForma'	=> array($save)),
+						array('validate' => false))) {
+
                     $c++;
                 }
 			}
@@ -235,8 +247,7 @@ class Pago extends AppModel {
 
 			$conditions = array(
 					'Pago.estado'		=> 'Pendiente',
-	 				'Pago.id'			=> $opciones['pago_id'],
-					'Relacion.estado'	=> 'Activa');
+	 				'Pago.id'			=> $opciones['pago_id']);
 	  				
 			$pagos =  $this->find('all', 
 			  		array(	'contain'		=> array('Relacion.Trabajador'),
@@ -395,7 +406,7 @@ class Pago extends AppModel {
                         'belongsTo' => array_keys($this->belongsTo)
                     ));
                     $this->updateAll(
-                            array(  'Pago.identificador'    => '\'' . date('Y-m-d H:i:s') . '\'',
+                            array(  'Pago.identificador'    => '\'' . $opciones['cuenta_id'] . '|' . date('Y-m-d H:i:s') . '\'',
                                     'Pago.estado'           => '\'En Soporte\''),
                             array(  'Pago.id'               => $pagosIds));
                 }

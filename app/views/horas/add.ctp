@@ -32,7 +32,7 @@ $campos['Hora.relacion_id'] = array(
 							'Empleador.nombre')));
 $campos['Hora.cantidad'] = array();
 $campos['Hora.tipo'] = array();
-$campos['Novedad.liquidacion_tipo'] = array('label' => 'Tipo Liquidacion', 'aclaracion' => 'Indica para que tipo de liquidacion sera tenida en cuenta al momento de preliquidar');
+$campos['Hora.liquidacion_tipo'] = array('label' => 'Tipo Liquidacion', 'aclaracion' => 'Indica para que tipo de liquidacion sera tenida en cuenta al momento de preliquidar');
 $campos['Hora.estado'] = array('type' => 'radio');
 $campos['Hora.observacion'] = array();
 $fieldset = $appForm->pintarFieldsets(

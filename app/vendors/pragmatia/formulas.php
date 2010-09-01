@@ -69,13 +69,17 @@ class Formulas {
 		preg_match_all('/[#|@][0-9a-z_]+/', $formula, $matchesA);
 
 		/** Search for strings */
-		preg_match_all('/[\'\"][a-z\s]+[\'\"]/i', $formula, $matchesB);
+		preg_match_all('/[\'\"]{1}[a-zA-Z0-9\s]+[\'\"]{1}/i', $formula, $matchesB);
 
 		/** Search for functions (based on phpexcel calculation regexp to identify formulas) */
 		preg_match_all('/@?([A-Z][A-Z0-9\.]*)[\s]*\(/i', $formula, $matchesC);
 
+		/** Search for reserved words */
+		preg_match_all('/Remunerativo|Deduccion|No\sRemunerativo+/', $formula, $matchesD);
+
+
 		/** Replace all accepted string by numbers, if remaining string, means they are not accepted and are wrong */
-		$tmpSearchs = array_unique(array_merge($matchesA[0], $matchesB[0], $matchesC[1]));
+		$tmpSearchs = array_unique(array_merge($matchesA[0], $matchesB[0], $matchesC[1], $matchesD[0]));
 		$tmp = array();
 		foreach ($tmpSearchs as $k => $search) {
 			$tmp[strlen($search)][] = $search;

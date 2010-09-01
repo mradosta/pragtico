@@ -24,5 +24,29 @@
 class LiquidacionesGruposController extends AppController {
 
 
+    var $paginate = array(
+        'order' => array(
+            'LiquidacionesGrupo.id'       			=> 'DESC'
+		)
+	);
+
+
+	function reprint() {
+
+		$this->redirect(
+			array(
+				'controller'		=> 'liquidaciones',
+				'action'			=> 'reporte_liquidaciones_confirmadas',
+				$this->params['named']['id']
+			)
+		);
+	}
+
+
+	function liquidaciones($id) {
+		$this->LiquidacionesGrupo->contain(array('Liquidacion' => array('Empleador', 'Trabajador')));
+		$this->data = $this->LiquidacionesGrupo->findById($id);
+	}
+
 }	
 ?>

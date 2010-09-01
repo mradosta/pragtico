@@ -52,6 +52,7 @@ $campos['Area.provincia_id'] = array(
 $campos['Area.codigo_postal'] = array();
 $campos['Area.telefono'] = array();
 $campos['Area.fax'] = array();
+$campos['Area.pago'] = array('empty' => true);
 $fieldsets[] = array('campos' => $campos);
 
 $fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' => 'unica'), 'fieldset' => array('imagen' => 'areas.gif')));

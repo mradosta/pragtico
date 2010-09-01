@@ -23,7 +23,7 @@
  */
 class LiquidacionesGrupo extends AppModel {
 
-    var $permissions = array('permissions' => 448, 'group' => 'default', 'role' => 'all');
+    var $permissions = array('permissions' => 292, 'group' => 'default', 'role' => 'all');
 
 
 	var $hasMany = array('Liquidacion');

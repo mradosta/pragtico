@@ -26,9 +26,14 @@
 class PagosController extends AppController {
 
 
+	var $helpers = array('Documento');
+
     var $paginate = array(
         'order' => array(
-            'Liquidacion.trabajador_cbu' => 'DESC'
+			'Pago.fecha'							=> 'DESC',
+            'IF(Liquidacion.trabajador_cbu="",0,1)' => 'DESC',
+			'Liquidacion.trabajador_apellido',
+			'Liquidacion.trabajador_nombre'
         )
     );
 
@@ -149,14 +154,15 @@ class PagosController extends AppController {
  * @access public
  */
     function registrar_pago_masivo($tipo) {
+
         if (!empty($tipo) && is_string($tipo) && in_array($tipo, array('efectivo', 'beneficios', 'deposito'))) {
+
             $ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
 
             $cantidad = $this->Pago->registrarPago($ids, $tipo);
             if ($cantidad) {
                 $this->Session->setFlash('Se confirmaron correctamente ' . $cantidad . ' de ' . count($ids) . ' pagos con ' . ucfirst($tipo) . '.', 'ok');
-            }
-            else {
+            } else {
                 $this->Session->setFlash('Ocurrio un error al intentar confirmar los pagos con ' . ucfirst($tipo) . '.', 'error');
             }
         }
@@ -165,16 +171,18 @@ class PagosController extends AppController {
 
 
     function confirmar_soporte_magnetico() {
+
         if (!empty($this->data['seleccionMultiple'])) {
             $this->set('ids', serialize($this->Util->extraerIds($this->data['seleccionMultiple'])));
         }
         if (!empty($this->data['Soporte']['pago_id'])
             && !empty($this->data['Soporte']['identificador'])) {
 
-            $this->Pago->updateAll(
-                    array(  'Pago.identificador'    => '\'' . $this->data['Soporte']['identificador'] . '\'',
-                            'Pago.estado'           => '\'Imputado\''),
-                    array(  'Pago.id'               => unserialize($this->data['Soporte']['pago_id'])));
+			$ids = unserialize($this->data['Soporte']['pago_id']);
+			$this->Pago->registrarPago($ids, 'Deposito',
+				array('identificador' 	=> $this->data['Soporte']['identificador'])
+			);
+
             $this->redirect(array('controller' => 'pagos', 'action' => 'index'));
         }
     }
@@ -213,7 +221,14 @@ class PagosController extends AppController {
                 }
             } else {
                 $this->set('fecha_acreditacion', $opciones['fecha_acreditacion']);
-                $this->set('confirmar', $this->Pago->generarSoporteMagnetico($opciones, false));
+
+				$confirmation = $this->Pago->generarSoporteMagnetico($opciones, false);
+				if (!empty($confirmation)) {
+                	$this->set('confirmar', $confirmation);
+				} else {
+					$this->Session->setFlash('Ocurrio un error al intentar generar el soporte magnetico. Ningun pago seleccionado es valido.', 'error');
+					$this->redirect(array('controller' => 'pagos', 'action' => 'index'));
+				}
             }
         } elseif (isset($this->data['seleccionMultiple'])) {
             $ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
@@ -226,5 +241,18 @@ class PagosController extends AppController {
         }
     }
 
+
+	function reporte_recibos($id = null) {
+		$pagos = $this->Pago->find('all',
+			array(
+				'contain' 		=> array('PagosForma', 'Relacion' => array('Trabajador', 'Empleador')),
+				'conditions'	=> array(
+					'Pago.id' 		=> $id,
+					'Pago.moneda' 	=> 'Pesos',
+				)
+			)
+		);
+		$this->set('data', $pagos);
+	}
 }
 ?>

@@ -93,7 +93,7 @@ class Liquidacion extends AppModel {
 		'especial'      => 16);
 
 /**
- * I must overwrite default cakePHP deleteAll method because it's not performant when there're many 
+ * I must overwrite default cakePHP deleteAll method because it's not performant when there're many
  * relations and many records.
  * I also add transaccional behavior and a better error check.
  * TODO:
@@ -515,7 +515,14 @@ class Liquidacion extends AppModel {
 					$liquidacion['mes']	= 12;
 				}
 			}
-            $liquidacion['pago'] = Dates::dateAddWorkingDays($this->getPeriod('hasta'), $this->getRelationship('Empleador', 'pago'));
+			$paymentAreaDay = $this->getRelationship('Area', 'pago');
+			$paymentEmployerDay = $this->getRelationship('Empleador', 'pago');
+			if (!empty($paymentAreaDay)) {
+				$paymentDay = $paymentAreaDay;
+			} else {
+				$paymentDay = $paymentEmployerDay;
+			}
+            $liquidacion['pago'] = Dates::dateAddWorkingDays($this->getPeriod('hasta'), $paymentDay);
         }
         $liquidacion['tipo'] = $this->getVarValue('#tipo_liquidacion');
         $liquidacion['estado'] = 'Sin Confirmar';
@@ -1279,14 +1286,22 @@ class Liquidacion extends AppModel {
 
     function getRelationship($model = null, $field = null) {
         if (!is_null($model) && !is_null($field)) {
-            return $this->__relationship[$model][$field];
+			if (isset($this->__relationship[$model]) && isset($this->__relationship[$model][$field])) {
+            	return $this->__relationship[$model][$field];
+			} else {
+				return null;
+			}
         } elseif (!is_null($model)) {
-            return $this->__relationship[$model];
+			if (isset($this->__relationship[$model])) {
+            	return $this->__relationship[$model];
+			} else {
+				return null;
+			}	
         } else {
             return $this->__relationship;
         }
     }
-    
+
     function setVar($var, $value = null) {
         if (is_string($var) && !is_null($value)) {
             $this->__variables[$var]['valor'] = $value;

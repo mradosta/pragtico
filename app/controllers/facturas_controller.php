@@ -114,8 +114,6 @@ class FacturasController extends AppController {
 			$this->Session->setFlash('No se han encontrado facturas para el periodo seleccioando segun los criterios especificados.', 'error');
 		} else {
 			$this->set('data', $records);
-			$this->set('groupParams', ClassRegistry::init('Grupo')->getParams($records['invoice']['group_id']));
-			$this->layout = 'ajax';
 		}
 	}
 	

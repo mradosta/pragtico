@@ -26,10 +26,10 @@ class LiquidacionesController extends AppController {
 
     var $paginate = array(
         'order' => array(
-            'Liquidacion.ano'       			=> 'DESC',
-            'Liquidacion.mes'       			=> 'DESC',
-            'Liquidacion.periodo'   			=> 'DESC',
-			'Liquidacion.trabajador_cbu'   		=> 'DESC',
+            'Liquidacion.ano'       				=> 'DESC',
+            'Liquidacion.mes'       				=> 'DESC',
+            'Liquidacion.periodo'   				=> 'DESC',
+			'IF(Liquidacion.trabajador_cbu="",0,1)' => 'DESC',
             'Liquidacion.empleador_nombre',
             'Liquidacion.trabajador_apellido',
             'Liquidacion.trabajador_nombre'
@@ -134,6 +134,7 @@ class LiquidacionesController extends AppController {
             }
             
             $conditions['(Liquidacion.group_id & ' . array_sum($this->data['Condicion']['Bar-grupo_id']) . ') >'] = 0;
+			$conditions['(Area.group_id & ' . array_sum($this->data['Condicion']['Bar-grupo_id']) . ') >'] = 0;
             foreach ($this->data['Condicion']['Bar-grupo_id'] as $groupId) {
                 $groupParams[$groupId] = User::getGroupParams($groupId);
             }
@@ -536,7 +537,7 @@ class LiquidacionesController extends AppController {
                         'conditions'    => $condicionesLiquidacion));
                 $confirmadas = Set::extract('/Liquidacion/relacion_id', $liquidaciones);
                 if (!empty($confirmadas)) {
-                    //$condiciones['NOT'] = array('Relacion.id' => $confirmadas);
+                    $condiciones['NOT'] = array('Relacion.id' => $confirmadas);
                 }
             }
 
@@ -544,6 +545,7 @@ class LiquidacionesController extends AppController {
 			$relaciones = $this->Liquidacion->Relacion->find('all',
 					array(	'contain'		=> array(	'ConveniosCategoria',
                                                         'Modalidad',
+														'Area',
                                                         'RelacionesHistorial' => array(
                                                                 'limit'     => 1,
                                                             'conditions'    => array(
@@ -777,7 +779,7 @@ class LiquidacionesController extends AppController {
 		$this->data = null;
 		$this->Liquidacion->contain('LiquidacionesDetalle');
 		$this->Liquidacion->Empleador->Suss->contain('Banco');
-		foreach ($this->Liquidacion->find('all', array('order' => array('Liquidacion.trabajador_cbu' => 'DESC', 'Liquidacion.trabajador_apellido', 'Liquidacion.trabajador_nombre'), 'conditions' => array('Liquidacion.id' => $id))) as $receipt) {
+		foreach ($this->Liquidacion->find('all', array('order' => array('IF(Liquidacion.trabajador_cbu="",0,1)' => 'DESC', 'Liquidacion.trabajador_apellido', 'Liquidacion.trabajador_nombre'), 'conditions' => array('Liquidacion.id' => $id))) as $receipt) {
 
             $ano = $receipt['Liquidacion']['ano'];
             $mes = $receipt['Liquidacion']['mes'];
@@ -1450,26 +1452,36 @@ class LiquidacionesController extends AppController {
 
 						/** If employer is marked as auto_facturar = 'Si', must create and confirm invoices */
 						list($groupId, ) = array_keys(User::getUserGroups('default'));
-						if (!$this->Liquidacion->Factura->getInvoice(array('Liquidacion.id' => $ids), $groupId, true)) {
+						$createdInvoicesIds = $this->Liquidacion->Factura->getInvoice(array('Liquidacion.id' => $ids), $groupId, 	true);
+						if ($createdInvoicesIds === false) {
 							$db->rollback($this);
 							$this->Session->setFlash('Ocurrio un error al intentar generar las facturas.', 'error');
 						} else {
 							$db->commit($this);
 
+
 							$suffix = '_' . $this->Liquidacion->LiquidacionesGrupo->id . '.xls';
-							$f0 = 'reporte_resumen' . $suffix;
-							$this->reporte_resumen_confirmadas($ids, TMP . $f0);
-							$f1 = 'liquidaciones_confirmadas' . $suffix;
-							$this->reporte_liquidaciones_confirmadas($ids, TMP . $f1);
-							$f2 = 'libro_sueldos' . $suffix;
-							$this->libro_sueldos_confirmadas($ids, TMP . $f2);
+							$f = array();
+							$f[] = 'reporte_resumen' . $suffix;
+							$this->reporte_resumen_confirmadas($ids, TMP . $f[0]);
+							$f[] = 'liquidaciones_confirmadas' . $suffix;
+							$this->reporte_liquidaciones_confirmadas($this->Liquidacion->LiquidacionesGrupo->id, TMP . $f[1], false);
+							$f[] = 'libro_sueldos' . $suffix;
+							$this->libro_sueldos_confirmadas($ids, TMP . $f[2]);
+
+							foreach ($createdInvoicesIds as $invoiceId) {
+								$tmpF = 'reporte_facturacion_' . $invoiceId . $suffix;
+								$this->reporte_facturacion_confirmadas($invoiceId, TMP . $tmpF);
+								$f[] = $tmpF;
+							}
+
 
 							$zip = new ZipArchive();
 							$zipFileName = 'confirmacion_' . $this->Liquidacion->LiquidacionesGrupo->id . '.zip';
 							$zip->open(WWW_ROOT . 'files' . DS . 'tmp' . DS . $zipFileName, ZIPARCHIVE::CREATE);
-							$zip->addFile(TMP . $f0, $f0);
-							$zip->addFile(TMP . $f1, $f1);
-							$zip->addFile(TMP . $f2, $f2);
+							foreach ($f as $file) {
+								$zip->addFile(TMP . $file, $file);
+							}
 							$zip->close();
 
 							$this->redirect('index/' . $zipFileName);
@@ -1490,6 +1502,15 @@ class LiquidacionesController extends AppController {
 		}
 		$this->History->goBack();
 	}
+
+
+	function reporte_facturacion_confirmadas($facturaId, $fileName) {
+		$records = $this->Liquidacion->Factura->report($facturaId);
+		$this->set('data', $records);
+		$this->set('fileName', $fileName);
+		$this->render('../facturas/reporte_facturacion');
+	}
+
 
 	function libro_sueldos_confirmadas($receiptIds, $fileName) {
 
@@ -1534,17 +1555,24 @@ class LiquidacionesController extends AppController {
 	}
 
 
-    function reporte_liquidaciones_confirmadas($receiptIds, $fileName) {
-        $this->Liquidacion->setSecurityAccess('readOwnerOnly');
-        $data = $this->Liquidacion->find('all', array(
-            'conditions'    => array('Liquidacion.id' => $receiptIds),
-            'order'         => array(
-				'Liquidacion.trabajador_cbu' => 'DESC',
-				'Liquidacion.trabajador_apellido',
-				'Liquidacion.trabajador_nombre'),
-            'recursive'     => -1));
+    function reporte_liquidaciones_confirmadas($receiptsGroupId, $fileName = 'Excel5', $reprinted = true) {
+
+		$this->Liquidacion->LiquidacionesGrupo->contain(array('Liquidacion' =>
+			array(
+				'order' =>
+					array(
+						'IF(Liquidacion.trabajador_cbu="",0,1)' => 'DESC',
+						'Liquidacion.trabajador_apellido',
+						'Liquidacion.trabajador_nombre'
+					)
+				)
+			)
+		);
+		$data = $this->Liquidacion->LiquidacionesGrupo->findById($receiptsGroupId);
+
         $this->set('data', $data);
 		$this->set('fileName', $fileName);
+		$this->set('reprinted', $reprinted);
 		$this->render('reporte_liquidaciones_confirmadas');
     }
 

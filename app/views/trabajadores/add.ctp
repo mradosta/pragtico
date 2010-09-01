@@ -57,7 +57,8 @@ $campos = null;
 $campos['Trabajador.solicitar_tarjeta_debito'] = array();
 $campos['Trabajador.tipo_cuenta'] = array('label' => 'Tipo');
 $campos['Trabajador.cbu'] = array('aclaracion' => 'Ingrese sin guiones ni barras.');
-if($this->action === 'edit') {
+$campos['Trabajador.deposita'] = array('aclaracion' => 'Indica si debe depositarsele el sueldo en la cuenta especificada.', 'div' => array('id' => 'divDeposita'));
+if ($this->action === 'edit') {
 	$campos['Trabajador.banco'] = array('type' => 'soloLectura');
 	$campos['Trabajador.sucursal'] = array('type' => 'soloLectura');
 	$campos['Trabajador.cuenta'] = array('type' => 'soloLectura');
@@ -117,4 +118,19 @@ echo $this->element('add/add', array(
 	)
 );
 
+$appForm->addScript("
+
+	if (jQuery('#TrabajadorCbu').val().length == 22) {
+		jQuery('#divDeposita').show();
+	} else {
+		jQuery('#divDeposita').hide();
+	}
+	jQuery('#TrabajadorCbu').bind('keyup', function() {
+		if (jQuery('#TrabajadorCbu').val().length == 22) {
+			jQuery('#divDeposita').show();
+		} else {
+			jQuery('#divDeposita').hide();
+		}
+	});
+");
 ?>

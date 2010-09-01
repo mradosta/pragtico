@@ -53,6 +53,15 @@ $cuerpo = null;
 foreach ($registros as $k => $v) {
 	$fila = null;
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Pago']['id'], 'imagen'=>array('nombre' => 'pagos_formas.gif', 'alt' => 'Formas de Pago'), 'url'=>'formas');
+
+	$fila[] = array('tipo' => 'accion', 'valor' =>
+			$appForm->link($appForm->image('print.gif'),
+					array(	'controller'			=> 'pagos',
+							'action'				=> 'reporte_recibos',
+							$v['Pago']['id']),
+					array(	'title' 				=> 'Imprimir Recibo'))
+	);
+
 	if ($v['Pago']['estado'] === 'Pendiente' && $v['Pago']['moneda'] === 'Pesos') {
 		$fila[] = array('tipo' => 'accion', 'valor' => 
 				$appForm->link($appForm->image('cheques.gif'), 

@@ -128,13 +128,17 @@ class ValidacionesBehavior extends ModelBehavior {
 		preg_match_all('/[#|@][0-9a-z_]+/', $value, $matchesA);
 
 		/** Search for strings */
-		preg_match_all('/[\'\"][a-z\s]+[\'\"]/i', $value, $matchesB);
+		preg_match_all('/[\'\"]{1}[a-zA-Z0-9\s]+[\'\"]{1}/i', $value, $matchesB);
 
 		/** Search for functions (based on phpexcel calculation regexp to identify formulas) */
 		preg_match_all('/@?([A-Z][A-Z0-9\.]*)[\s]*\(/i', $value, $matchesC);
 
+		/** Search for reserved words */
+		preg_match_all('/Remunerativo|Deduccion|No\sRemunerativo+/', $value, $matchesD);
+
+
 		/** Replace all accepted string by numbers, if remaining string, means they are not accepted and are wrong */
-		$tmpSearchs = array_unique(array_merge($matchesA[0], $matchesB[0], $matchesC[1]));
+		$tmpSearchs = array_unique(array_merge($matchesA[0], $matchesB[0], $matchesC[1], $matchesD[0]));
 		$tmp = array();
 		foreach ($tmpSearchs as $k => $search) {
 			$tmp[strlen($search)][] = $search;
@@ -152,7 +156,7 @@ class ValidacionesBehavior extends ModelBehavior {
 
 		$replacedFormula = str_ireplace($searchs, '0', $value);
 
-		preg_match_all('/[a-z]+/', $replacedFormula, $matches);
+		preg_match_all('/[a-zA-Z]+/', $replacedFormula, $matches);
 		if (!empty($matches[0])) {
 			return false;
 		}

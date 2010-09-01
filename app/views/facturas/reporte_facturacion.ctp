@@ -108,6 +108,10 @@ $fila++;
 $documento->setCellValue('B' . $fila . ':D' . $fila, 'Total Liquidado', 'bold');
 $documento->setCellValue('E' . $fila . ':F' . $fila, $data['totals']['Total Liquidado'], 'total');
 
-$fileFormat = 'Excel5';
-$documento->save($fileFormat);
+if (!empty($fileName)) {
+	$documento->save($fileName);
+} else {
+	$documento->save('Excel5');
+}
+
 ?>

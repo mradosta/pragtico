@@ -25,6 +25,14 @@ class Area extends AppModel {
 
     var $permissions = array('permissions' => 496, 'group' => 'default', 'role' => 'all');
 
+	var $opciones = array('pago' => array(	'1' => 'Ultimo Dia Habil del Periodo',
+											'2' => 'Primer Dia Habil',
+											'3' => 'Segundo Dia Habil',
+											'4' => 'Tercer Dia Habil',
+											'5' => 'Cuarto Dia Habil',
+											'6' => 'Quinto Dia Habil'));
+
+
 	var $validate = array(
         'nombre' => array(
 			array(
