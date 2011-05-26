@@ -18,7 +18,10 @@
 if (!empty($data)) {
 
     $gridTitles['A'] = array('Zona' => array('title' => '50'));
-    $gridTitles['B'] = array('Total' => array('title' => '25'));
+    $gridTitles['B'] = array('Total Rem.' => array('title' => '20'));
+	$gridTitles['C'] = array('Total No Rem.' => array('title' => '20'));
+	$gridTitles['D'] = array('Total Deduc.' => array('title' => '20'));
+	$gridTitles['E'] = array('Total' => array('title' => '20'));
 
     $documento->create(array(
 		'password' 		=> false,
@@ -33,16 +36,23 @@ if (!empty($data)) {
     foreach ($data as $detail) {
 
         $documento->setCellValueFromArray(
-            array(  $detail['Zone']['name'],
-                    array('value' => $detail['Liquidacion']['total'], 'options' => 'currency'),
+            array(
+				$detail['Zone']['name'],
+				array('value' => $detail['Liquidacion']['total_remunerativo'], 'options' => 'currency'),
+				array('value' => $detail['Liquidacion']['total_no_remunerativo'], 'options' => 'currency'),
+				array('value' => $detail['Liquidacion']['total_deduccion'], 'options' => 'currency'),
+				array('value' => $detail['Liquidacion']['total'], 'options' => 'currency'),
 			));
     }
 	$end = $documento->getCurrentRow();
 
 	$documento->moveCurrentRow(3);
-	$documento->setCellValue('A' . $documento->getCurrentRow() . ':B' . $documento->getCurrentRow(), 'TOTALES', 'title');
+	$documento->setCellValue('A' . $documento->getCurrentRow() . ':E' . $documento->getCurrentRow(), 'TOTALES', 'title');
 	$documento->moveCurrentRow();
 	$documento->setCellValue('B', '=SUM(B' . ($start + 1). ':B' . $end . ')', 'total');
+	$documento->setCellValue('C', '=SUM(C' . ($start + 1). ':C' . $end . ')', 'total');
+	$documento->setCellValue('D', '=SUM(D' . ($start + 1). ':D' . $end . ')', 'total');
+	$documento->setCellValue('E', '=SUM(E' . ($start + 1). ':E' . $end . ')', 'total');
     $documento->save($fileFormat);
 
 } else {
@@ -55,8 +65,13 @@ if (!empty($data)) {
             'seleccionMultiple' => true,
             'camposRetorno'     => array('Empleador.cuit', 'Empleador.nombre')));
 
-    $options = array('title' => 'Totales Liquidados por Zona');
+
+	$options = array(
+		'title' => 'Totales Liquidados por Zona',
+		'conditions' => array('Bar-grupo_id' => 'multiple')
+	);
+
     echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));
 }
- 
+
 ?>

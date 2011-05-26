@@ -205,12 +205,17 @@ Source Location: /PHPExcel/Worksheet/PageSetup.php<br /><br />
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#constPAPERSIZE_TABLOID">PAPERSIZE_TABLOID</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#constPAPERSIZE_TABLOID_EXTRA_PAPER">PAPERSIZE_TABLOID_EXTRA_PAPER</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#constPAPERSIZE_US_STANDARD_FANFOLD">PAPERSIZE_US_STANDARD_FANFOLD</a></li>
+    <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#constSETPRINTRANGE_INSERT">SETPRINTRANGE_INSERT</a></li>
+    <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#constSETPRINTRANGE_OVERWRITE">SETPRINTRANGE_OVERWRITE</a></li>
   </ul>
 </td>
 
 <td valign="top">
 <h3><a href="#class_methods">Methods</a></h3>
 <ul>
+    <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#methodaddPrintArea">addPrintArea</a></li>
+    <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#methodaddPrintAreaByColumnAndRow">addPrintAreaByColumnAndRow</a></li>
+    <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#methodclearPrintArea">clearPrintArea</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#methodgetColumnsToRepeatAtLeft">getColumnsToRepeatAtLeft</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#methodgetFirstPageNumber">getFirstPageNumber</a></li>
     <li><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#methodgetFitToHeight">getFitToHeight</a></li>
@@ -351,8 +356,152 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
 <div class="tags">
 
   <hr />
+	<a name="methodaddPrintArea"></a>
+	<h3>method addPrintArea <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a716">716</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html">PHPExcel_Worksheet_PageSetup</a> addPrintArea(
+string
+$value, [int
+$index = -1])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Add a new print area (e.g. 'A1:D10' or 'A1:D10,G5:M20') to the list of print areas<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>Exception</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$value</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$index</b>&nbsp;&nbsp;</td>
+        <td>Identifier for a specific print area range allowing several ranges to be set                             A positive index will insert after that indexed entry in the print areas list, while a                                 negative index will insert before the indexed entry.                                 Specifying an index value of 0, will always append the new print range at the end of the                                 list.                             Print areas are numbered from 1</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodaddPrintAreaByColumnAndRow"></a>
+	<h3>method addPrintAreaByColumnAndRow <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a764">764</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html">PHPExcel_Worksheet_PageSetup</a> addPrintAreaByColumnAndRow(
+int
+$column1, int
+$row1, int
+$column2, int
+$row2, [int
+$index = -1])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Add a new print area to the list of print areas<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>Exception</td>
+  </tr>
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$column1</b>&nbsp;&nbsp;</td>
+        <td>Column 1</td>
+      </tr>
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$row1</b>&nbsp;&nbsp;</td>
+        <td>Row 1</td>
+      </tr>
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$column2</b>&nbsp;&nbsp;</td>
+        <td>Column 2</td>
+      </tr>
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$row2</b>&nbsp;&nbsp;</td>
+        <td>Row 2</td>
+      </tr>
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$index</b>&nbsp;&nbsp;</td>
+        <td>Identifier for a specific print area range allowing several ranges to be set                                 A positive index will insert after that indexed entry in the print areas list, while a                                     negative index will insert before the indexed entry.                                     Specifying an index value of 0, will always append the new print range at the end of the                                     list.                                 Print areas are numbered from 1</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodclearPrintArea"></a>
+	<h3>method clearPrintArea <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a624">624</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html">PHPExcel_Worksheet_PageSetup</a> clearPrintArea(
+[int
+$index = 0])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Clear a print area<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$index</b>&nbsp;&nbsp;</td>
+        <td>Identifier for a specific print area range if several ranges have been set                             Default behaviour, or an index value of 0, will clear all print ranges that are set                             Otherwise, the range identified by the value of $index will be removed from the series                             Print areas are numbered from 1</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodgetColumnsToRepeatAtLeft"></a>
-	<h3>method getColumnsToRepeatAtLeft <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a454">454</a>]</span></h3>
+	<h3>method getColumnsToRepeatAtLeft <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a459">459</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -380,7 +529,7 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
   </div>
   <hr />
 	<a name="methodgetFirstPageNumber"></a>
-	<h3>method getFirstPageNumber <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a627">627</a>]</span></h3>
+	<h3>method getFirstPageNumber <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a774">774</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -405,7 +554,7 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
   </div>
   <hr />
 	<a name="methodgetFitToHeight"></a>
-	<h3>method getFitToHeight <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a391">391</a>]</span></h3>
+	<h3>method getFitToHeight <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a396">396</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -430,7 +579,7 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
   </div>
   <hr />
 	<a name="methodgetFitToPage"></a>
-	<h3>method getFitToPage <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a371">371</a>]</span></h3>
+	<h3>method getFitToPage <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a376">376</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -455,7 +604,7 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
   </div>
   <hr />
 	<a name="methodgetFitToWidth"></a>
-	<h3>method getFitToWidth <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a415">415</a>]</span></h3>
+	<h3>method getFitToWidth <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a420">420</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -480,7 +629,7 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
   </div>
   <hr />
 	<a name="methodgetHorizontalCentered"></a>
-	<h3>method getHorizontalCentered <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a537">537</a>]</span></h3>
+	<h3>method getHorizontalCentered <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a542">542</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -505,7 +654,7 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
   </div>
   <hr />
 	<a name="methodgetOrientation"></a>
-	<h3>method getOrientation <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a317">317</a>]</span></h3>
+	<h3>method getOrientation <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a322">322</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -530,7 +679,7 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
   </div>
   <hr />
 	<a name="methodgetPaperSize"></a>
-	<h3>method getPaperSize <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a297">297</a>]</span></h3>
+	<h3>method getPaperSize <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a302">302</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -555,12 +704,13 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
   </div>
   <hr />
 	<a name="methodgetPrintArea"></a>
-	<h3>method getPrintArea <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a577">577</a>]</span></h3>
+	<h3>method getPrintArea <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a587">587</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>string getPrintArea(
-)</code>
+[int
+$index = 0])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
@@ -569,6 +719,9 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>Exception</td>
+  </tr>
+  <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
 </table>
@@ -576,11 +729,21 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
 <br /><br />
 
 	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$index</b>&nbsp;&nbsp;</td>
+        <td>Identifier for a specific print area range if several ranges have been set                             Default behaviour, or a index value of 0, will return all ranges as a comma-separated string                             Otherwise, the specific range identified by the value of $index will be returned                             Print areas are numbered from 1</td>
+      </tr>
+        </table>
+    </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodgetRowsToRepeatAtTop"></a>
-	<h3>method getRowsToRepeatAtTop <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a503">503</a>]</span></h3>
+	<h3>method getRowsToRepeatAtTop <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a508">508</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -608,7 +771,7 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
   </div>
   <hr />
 	<a name="methodgetScale"></a>
-	<h3>method getScale <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a337">337</a>]</span></h3>
+	<h3>method getScale <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a342">342</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -633,7 +796,7 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
   </div>
   <hr />
 	<a name="methodgetVerticalCentered"></a>
-	<h3>method getVerticalCentered <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a557">557</a>]</span></h3>
+	<h3>method getVerticalCentered <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a562">562</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -658,7 +821,7 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
   </div>
   <hr />
 	<a name="methodisColumnsToRepeatAtLeftSet"></a>
-	<h3>method isColumnsToRepeatAtLeftSet <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a439">439</a>]</span></h3>
+	<h3>method isColumnsToRepeatAtLeftSet <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a444">444</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -683,12 +846,13 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
   </div>
   <hr />
 	<a name="methodisPrintAreaSet"></a>
-	<h3>method isPrintAreaSet <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a586">586</a>]</span></h3>
+	<h3>method isPrintAreaSet <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a607">607</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>boolean isPrintAreaSet(
-)</code>
+[int
+$index = 0])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
@@ -704,11 +868,21 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
 <br /><br />
 
 	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$index</b>&nbsp;&nbsp;</td>
+        <td>Identifier for a specific print area range if several ranges have been set                             Default behaviour, or an index value of 0, will identify whether any print range is set                             Otherwise, existence of the range identified by the value of $index will be returned                             Print areas are numbered from 1</td>
+      </tr>
+        </table>
+    </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodisRowsToRepeatAtTopSet"></a>
-	<h3>method isRowsToRepeatAtTopSet <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a488">488</a>]</span></h3>
+	<h3>method isRowsToRepeatAtTopSet <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a493">493</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -733,7 +907,7 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
   </div>
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a275">275</a>]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a280">280</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -758,7 +932,7 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
   </div>
   <hr />
 	<a name="methodresetFirstPageNumber"></a>
-	<h3>method resetFirstPageNumber <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a647">647</a>]</span></h3>
+	<h3>method resetFirstPageNumber <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a794">794</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -783,7 +957,7 @@ PHPExcel_Worksheet_PageSetup<br /><br /><p><ol><li><div class="src-line">&nbsp;<
   </div>
   <hr />
 	<a name="methodsetColumnsToRepeatAtLeft"></a>
-	<h3>method setColumnsToRepeatAtLeft <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a464">464</a>]</span></h3>
+	<h3>method setColumnsToRepeatAtLeft <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a469">469</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -819,7 +993,7 @@ $pValue = null])</code>
   </div>
   <hr />
 	<a name="methodsetColumnsToRepeatAtLeftByStartAndEnd"></a>
-	<h3>method setColumnsToRepeatAtLeftByStartAndEnd <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a478">478</a>]</span></h3>
+	<h3>method setColumnsToRepeatAtLeftByStartAndEnd <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a483">483</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -861,7 +1035,7 @@ $pEnd = 'A'])</code>
   </div>
   <hr />
 	<a name="methodsetFirstPageNumber"></a>
-	<h3>method setFirstPageNumber <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a637">637</a>]</span></h3>
+	<h3>method setFirstPageNumber <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a784">784</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -897,7 +1071,7 @@ $value = null])</code>
   </div>
   <hr />
 	<a name="methodsetFitToHeight"></a>
-	<h3>method setFitToHeight <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a402">402</a>]</span></h3>
+	<h3>method setFitToHeight <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a407">407</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -939,7 +1113,7 @@ $pUpdate = true])</code>
   </div>
   <hr />
 	<a name="methodsetFitToPage"></a>
-	<h3>method setFitToPage <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a381">381</a>]</span></h3>
+	<h3>method setFitToPage <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a386">386</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -975,7 +1149,7 @@ $pValue = true])</code>
   </div>
   <hr />
 	<a name="methodsetFitToWidth"></a>
-	<h3>method setFitToWidth <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a426">426</a>]</span></h3>
+	<h3>method setFitToWidth <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a431">431</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1017,7 +1191,7 @@ $pUpdate = true])</code>
   </div>
   <hr />
 	<a name="methodsetHorizontalCentered"></a>
-	<h3>method setHorizontalCentered <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a547">547</a>]</span></h3>
+	<h3>method setHorizontalCentered <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a552">552</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1053,7 +1227,7 @@ $value = false])</code>
   </div>
   <hr />
 	<a name="methodsetOrientation"></a>
-	<h3>method setOrientation <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a327">327</a>]</span></h3>
+	<h3>method setOrientation <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a332">332</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1089,7 +1263,7 @@ $pValue = PHPExcel_Worksheet_PageSetup::ORIENTATION_DEFAULT])</code>
   </div>
   <hr />
 	<a name="methodsetPaperSize"></a>
-	<h3>method setPaperSize <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a307">307</a>]</span></h3>
+	<h3>method setPaperSize <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a312">312</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1125,17 +1299,19 @@ $pValue = PHPExcel_Worksheet_PageSetup::PAPERSIZE_LETTER])</code>
   </div>
   <hr />
 	<a name="methodsetPrintArea"></a>
-	<h3>method setPrintArea <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a597">597</a>]</span></h3>
+	<h3>method setPrintArea <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a658">658</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html">PHPExcel_Worksheet_PageSetup</a> setPrintArea(
 string
-$value)</code>
+$value, [int
+$index = 0], [string
+$method = self::SETPRINTRANGE_OVERWRITE])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Set print area. E.g. 'A1:D10' or 'A1:D10,G5:M20'<br /><br /><br /><br />
+		Set print area. e.g. 'A1:D10' or 'A1:D10,G5:M20'<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -1158,13 +1334,23 @@ $value)</code>
         <td><b>$value</b>&nbsp;&nbsp;</td>
         <td></td>
       </tr>
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$index</b>&nbsp;&nbsp;</td>
+        <td>Identifier for a specific print area range allowing several ranges to be set                             When the method is &quot;O&quot;verwrite, then a positive integer index will overwrite that indexed                                 entry in the print areas list; a negative index value will identify which entry to                                 overwrite working bacward through the print area to the list, with the last entry as -1.                                 Specifying an index value of 0, will overwrite <strong>all</strong> existing print ranges.                             When the method is &quot;I&quot;nsert, then a positive index will insert after that indexed entry in                                 the print areas list, while a negative index will insert before the indexed entry.                                 Specifying an index value of 0, will always append the new print range at the end of the                                 list.                             Print areas are numbered from 1</td>
+      </tr>
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$method</b>&nbsp;&nbsp;</td>
+        <td>Determines the method used when setting multiple print areas                             Default behaviour, or the &quot;O&quot; method, overwrites existing print area                             The &quot;I&quot; method, inserts the new print area before any specified index, or at the end of the list</td>
+      </tr>
         </table>
     </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodsetPrintAreaByColumnAndRow"></a>
-	<h3>method setPrintAreaByColumnAndRow <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a617">617</a>]</span></h3>
+	<h3>method setPrintAreaByColumnAndRow <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a743">743</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1173,7 +1359,9 @@ int
 $column1, int
 $row1, int
 $column2, int
-$row2)</code>
+$row2, [int
+$index = 0], [string
+$method = self::SETPRINTRANGE_OVERWRITE])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
@@ -1181,6 +1369,9 @@ $row2)</code>
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>Exception</td>
+  </tr>
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
@@ -1212,13 +1403,23 @@ $row2)</code>
         <td><b>$row2</b>&nbsp;&nbsp;</td>
         <td>Row 2</td>
       </tr>
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$index</b>&nbsp;&nbsp;</td>
+        <td>Identifier for a specific print area range allowing several ranges to be set                             When the method is &quot;O&quot;verwrite, then a positive integer index will overwrite that indexed                                 entry in the print areas list; a negative index value will identify which entry to                                 overwrite working bacward through the print area to the list, with the last entry as -1.                                 Specifying an index value of 0, will overwrite <strong>all</strong> existing print ranges.                             When the method is &quot;I&quot;nsert, then a positive index will insert after that indexed entry in                                 the print areas list, while a negative index will insert before the indexed entry.                                 Specifying an index value of 0, will always append the new print range at the end of the                                 list.                             Print areas are numbered from 1</td>
+      </tr>
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$method</b>&nbsp;&nbsp;</td>
+        <td>Determines the method used when setting multiple print areas                             Default behaviour, or the &quot;O&quot; method, overwrites existing print area                             The &quot;I&quot; method, inserts the new print area before any specified index, or at the end of the list</td>
+      </tr>
         </table>
     </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodsetRowsToRepeatAtTop"></a>
-	<h3>method setRowsToRepeatAtTop <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a513">513</a>]</span></h3>
+	<h3>method setRowsToRepeatAtTop <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a518">518</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1254,7 +1455,7 @@ $pValue = null])</code>
   </div>
   <hr />
 	<a name="methodsetRowsToRepeatAtTopByStartAndEnd"></a>
-	<h3>method setRowsToRepeatAtTopByStartAndEnd <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a527">527</a>]</span></h3>
+	<h3>method setRowsToRepeatAtTopByStartAndEnd <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a532">532</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1296,7 +1497,7 @@ $pEnd = 1])</code>
   </div>
   <hr />
 	<a name="methodsetScale"></a>
-	<h3>method setScale <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a352">352</a>]</span></h3>
+	<h3>method setScale <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a357">357</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1341,7 +1542,7 @@ $pUpdate = true])</code>
   </div>
   <hr />
 	<a name="methodsetVerticalCentered"></a>
-	<h3>method setVerticalCentered <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a567">567</a>]</span></h3>
+	<h3>method setVerticalCentered <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a572">572</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1377,7 +1578,7 @@ $value = false])</code>
   </div>
   <hr />
 	<a name="method__clone"></a>
-	<h3>method __clone <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a654">654</a>]</span></h3>
+	<h3>method __clone <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a801">801</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -1889,11 +2090,25 @@ $value = false])</code>
   
   <br />
 	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="constSETPRINTRANGE_INSERT"></a>
+	<p></p>
+	<h4>SETPRINTRANGE_INSERT = <span class="value">&nbsp;'I'</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a184">184</a>]</p>
+  
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="constSETPRINTRANGE_OVERWRITE"></a>
+	<p></p>
+	<h4>SETPRINTRANGE_OVERWRITE = <span class="value">&nbsp;'O'</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPExcel_Worksheet__PHPExcelWorksheetPageSetup.php.html#a183">183</a>]</p>
+  
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
 </div><br />
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Tue, 01 Jun 2010 17:05:29 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Thu, 26 Aug 2010 17:43:49 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

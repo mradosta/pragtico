@@ -4,14 +4,14 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
  * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.cake.tests.libs
  * @since         CakePHP(tm) v 1.2.0.4667
@@ -63,6 +63,10 @@ class CakeTestDispatcher extends Dispatcher {
  */
 	function _invoke(&$controller, $params, $missingAction = false) {
 		$this->controller =& $controller;
+
+		if (array_key_exists('layout', $params)) {
+			$this->controller->layout = $params['layout'];
+		}
 
 		if (isset($this->testCase) && method_exists($this->testCase, 'startController')) {
 			$this->testCase->startController($this->controller, $params);
@@ -829,4 +833,3 @@ class CakeTestCase extends UnitTestCase {
 		}
 	}
 }
-?>

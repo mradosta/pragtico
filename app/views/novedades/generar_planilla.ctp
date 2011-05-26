@@ -193,7 +193,13 @@ if(!empty($registros)) {
         $documento->setCellValue('C' . $fila, $registro['Relacion']['legajo'] . ' - ' . $registro['Trabajador']['apellido'] . ' ' . $registro['Trabajador']['nombre']);
         $documento->setCellValue('D' . $fila, $registro['ConveniosCategoria']['nombre']);
         $documento->setCellValue('E' . $fila, $registro['Relacion']['ingreso']);
-        $documento->setCellValue('F' . $fila, (!empty($registro['RelacionesHistorial'][0]['fin']))?$registro['RelacionesHistorial'][0]['fin']:'');
+		if (!empty($registro['RelacionesHistorial'][0]['fin'])
+		&& ($registro['RelacionesHistorial'][0]['fin'] > $registro['Relacion']['ingreso'])) {
+			$egreso = $registro['RelacionesHistorial'][0]['fin'];
+		} else {
+			$egreso = '';
+		}
+        $documento->setCellValue('F' . $fila, $egreso);
 		$documento->setCellValue('G' . $fila, '');
 		$documento->setCellValue('H' . $fila, '');
 

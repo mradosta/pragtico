@@ -52,8 +52,15 @@ class ConveniosController extends AppController {
  * Muestra via desglose las categorias de los convenios colectivos.
  */
 	function categorias($id) {
-		$this->Convenio->contain(array("ConveniosCategoria.ConveniosCategoriasHistorico"));
+		$this->Convenio->contain(array('ConveniosCategoria.ConveniosCategoriasHistorico'));
 		$this->data = $this->Convenio->read(null, $id);
+
+		foreach ($this->data['ConveniosCategoria'] as $k => $v) {
+			if (isset($v['ConveniosCategoriasHistorico'])) {
+				$this->data['ConveniosCategoria'][$k]['costo'] = $this->Convenio->ConveniosCategoria->__getCosto($v['ConveniosCategoriasHistorico']);
+			}
+		}
+
 	}
 
 

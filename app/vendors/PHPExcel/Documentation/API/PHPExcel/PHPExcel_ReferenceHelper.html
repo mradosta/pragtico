@@ -207,6 +207,15 @@ Source Location: /PHPExcel/ReferenceHelper.php<br /><br />
 </td>
 
 
+<td valign="top">
+<h3><a href="#class_consts">Constants</a></h3>
+<ul>
+    <li><a href="../PHPExcel/PHPExcel_ReferenceHelper.html#constREFHELPER_REGEXP_CELLRANGE">REFHELPER_REGEXP_CELLRANGE</a></li>
+    <li><a href="../PHPExcel/PHPExcel_ReferenceHelper.html#constREFHELPER_REGEXP_CELLREF">REFHELPER_REGEXP_CELLREF</a></li>
+    <li><a href="../PHPExcel/PHPExcel_ReferenceHelper.html#constREFHELPER_REGEXP_COLRANGE">REFHELPER_REGEXP_COLRANGE</a></li>
+    <li><a href="../PHPExcel/PHPExcel_ReferenceHelper.html#constREFHELPER_REGEXP_ROWRANGE">REFHELPER_REGEXP_ROWRANGE</a></li>
+  </ul>
+</td>
 
 <td valign="top">
 <h3><a href="#class_methods">Methods</a></h3>
@@ -257,7 +266,7 @@ PHPExcel_ReferenceHelper (Singleton)<br /><br /><br /><br />
 <div class="tags">
   <hr />
 	<a name="methodgetInstance"></a>
-	<h3>static method getInstance <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a50">50</a>]</span></h3>
+	<h3>static method getInstance <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a57">57</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -283,7 +292,7 @@ PHPExcel_ReferenceHelper (Singleton)<br /><br /><br /><br />
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a61">61</a>]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a68">68</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -308,7 +317,7 @@ PHPExcel_ReferenceHelper (Singleton)<br /><br /><br /><br />
   </div>
   <hr />
 	<a name="methodinsertNewBefore"></a>
-	<h3>method insertNewBefore <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a72">72</a>]</span></h3>
+	<h3>method insertNewBefore <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a79">79</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -365,7 +374,7 @@ $pSheet = null])</code>
   </div>
   <hr />
 	<a name="methodupdateCellReference"></a>
-	<h3>method updateCellReference <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a398">398</a>]</span></h3>
+	<h3>method updateCellReference <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a481">481</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -425,7 +434,7 @@ $pNumRows = 0])</code>
   </div>
   <hr />
 	<a name="methodupdateFormulaReferences"></a>
-	<h3>method updateFormulaReferences <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a343">343</a>]</span></h3>
+	<h3>method updateFormulaReferences <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a348">348</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -434,7 +443,8 @@ $pNumRows = 0])</code>
 $pFormula = ''], [int
 $pBefore = 'A1'], [int
 $pNumCols = 0], [int
-$pNumRows = 0])</code>
+$pNumRows = 0], [
+$sheetName = ''])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
@@ -479,13 +489,18 @@ $pNumRows = 0])</code>
         <td><b>$pNumRows</b>&nbsp;&nbsp;</td>
         <td>Number of rows to insert</td>
       </tr>
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$sheetName</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
         </table>
     </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodupdateNamedFormulas"></a>
-	<h3>method updateNamedFormulas <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a422">422</a>]</span></h3>
+	<h3>method updateNamedFormulas <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a505">505</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -533,7 +548,7 @@ $newName = ''])</code>
   </div>
   <hr />
 	<a name="method__clone"></a>
-	<h3>method __clone <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a528">528</a>]</span></h3>
+	<h3>method __clone <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a611">611</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -561,10 +576,43 @@ $newName = ''])</code>
   </div>
 </div><br />
 
+<hr />
+<a name="class_consts"></a>
+<h3>Class Constants</h3>
+<div class="tags">
+	<a name="constREFHELPER_REGEXP_CELLRANGE"></a>
+	<p></p>
+	<h4>REFHELPER_REGEXP_CELLRANGE = <span class="value">&nbsp;'((\w*|\'[^!]*\')!)?(\$?[a-z]{1,3}\$?\d+):(\$?[a-z]{1,3}\$?\d+)'</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a41">41</a>]</p>
+  
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="constREFHELPER_REGEXP_CELLREF"></a>
+	<p></p>
+	<h4>REFHELPER_REGEXP_CELLREF = <span class="value">&nbsp;'((\w*|\'[^!]*\')!)?(?&lt;![:a-z\$])(\$?[a-z]{1,3}\$?\d+)(?=[^:!\d\'])'</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a40">40</a>]</p>
+  Regular Expressions<br /><br />
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="constREFHELPER_REGEXP_COLRANGE"></a>
+	<p></p>
+	<h4>REFHELPER_REGEXP_COLRANGE = <span class="value">&nbsp;'((\w*|\'[^!]*\')!)?(\$?[a-z]{1,3}):(\$?[a-z]{1,3})'</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a43">43</a>]</p>
+  
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="constREFHELPER_REGEXP_ROWRANGE"></a>
+	<p></p>
+	<h4>REFHELPER_REGEXP_ROWRANGE = <span class="value">&nbsp;'((\w*|\'[^!]*\')!)?(\$?\d+):(\$?\d+)'</span></h4>
+	<p>[line <a href="../__filesource/fsource_PHPExcel__PHPExcelReferenceHelper.php.html#a42">42</a>]</p>
+  
+  <br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+</div><br />
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Tue, 01 Jun 2010 17:05:50 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Thu, 26 Aug 2010 17:44:10 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

@@ -481,7 +481,7 @@ class DocumentoHelper extends AppHelper {
 		$objDrawing->setName('Pragtico Image');
 		$objDrawing->setDescription('Pragtico Image');
 		$objDrawing->setPath(IMAGES . $image);
-		$objDrawing->setCoordinates($cell);
+		$objDrawing->setCoordinates($this->__getCellName($cell));
 		/*
 		$objDrawing->setOffsetX(110);
 		if (!empty($options['rotation'])) {

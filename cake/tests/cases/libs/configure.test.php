@@ -6,14 +6,14 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
  * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.5432
@@ -461,6 +461,26 @@ class AppImportTest extends CakeTestCase {
 	}
 
 /**
+ * test that pluginPath can find paths for plugins.
+ *
+ * @return void
+ */
+	function testThemePath() {
+		App::build(array(
+			'views' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views' . DS)
+		));
+		$path = App::themePath('test_theme');
+		$expected = TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views' . DS . 'themed' . DS . 'test_theme' . DS;
+		$this->assertEqual($path, $expected);
+
+		$path = App::themePath('TestTheme');
+		$expected = TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views' . DS . 'themed' . DS . 'test_theme' . DS;
+		$this->assertEqual($path, $expected);
+
+		App::build();
+	}
+
+/**
  * testClassLoading method
  *
  * @access public
@@ -555,7 +575,15 @@ class AppImportTest extends CakeTestCase {
 			$this->assertTrue($file);
 			$this->assertTrue(class_exists('DboSource'));
 		}
+		App::build();
+	}
 
+/**
+ * test import() with plugins
+ *
+ * @return void
+ */
+	function testPluginImporting() {
 		App::build(array(
 			'libs' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'libs' . DS),
 			'plugins' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS)
@@ -577,10 +605,15 @@ class AppImportTest extends CakeTestCase {
 		$result = App::import('Helper', 'TestPlugin.OtherHelper');
 		$this->assertTrue($result);
 		$this->assertTrue(class_exists('OtherHelperHelper'));
+		
+		$result = App::import('Helper', 'TestPlugin.TestPluginApp');
+		$this->assertTrue($result);
+		$this->assertTrue(class_exists('TestPluginAppHelper'));
 
 		$result = App::import('Datasource', 'TestPlugin.TestSource');
 		$this->assertTrue($result);
 		$this->assertTrue(class_exists('TestSource'));
+		
 		App::build();
 	}
 
@@ -798,4 +831,3 @@ class AppImportTest extends CakeTestCase {
 		$this->assertEqual($text, 'This is the welcome.php file in test_plugin/vendors directory');
 	}
 }
-?>

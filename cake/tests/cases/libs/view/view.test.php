@@ -4,14 +4,14 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
  * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.4206
@@ -812,6 +812,36 @@ class ViewTest extends CakeTestCase {
 	}
 
 /**
+ * Test that render() will remove the cake:nocache tags when only the cachehelper is present.
+ *
+ * @return void
+ */
+	function testRenderStrippingNoCacheTagsOnlyCacheHelper() {
+		Configure::write('Cache.check', false);
+		$View =& new View($this->PostsController);
+		$View->set(array('superman' => 'clark', 'variable' => 'var'));
+		$View->helpers = array('Html', 'Form', 'Cache');
+		$View->layout = 'cache_layout';
+		$result = $View->render('index');
+		$this->assertNoPattern('/cake:nocache/', $result);
+	}
+
+/**
+ * Test that render() will remove the cake:nocache tags when only the Cache.check is true.
+ *
+ * @return void
+ */
+	function testRenderStrippingNoCacheTagsOnlyCacheCheck() {
+		Configure::write('Cache.check', true);
+		$View =& new View($this->PostsController);
+		$View->set(array('superman' => 'clark', 'variable' => 'var'));
+		$View->helpers = array('Html', 'Form');
+		$View->layout = 'cache_layout';
+		$result = $View->render('index');
+		$this->assertNoPattern('/cake:nocache/', $result);
+	}
+
+/**
  * testRenderNocache method
  *
  * @access public
@@ -874,6 +904,12 @@ class ViewTest extends CakeTestCase {
 
 		$View->set(array('key3' => 'value3'));
 		$this->assertIdentical($View->getVar('key3'), 'value3');
+		
+		$View->viewVars = array();
+		$View->set(array(3 => 'three', 4 => 'four'));
+		$View->set(array(1 => 'one', 2 => 'two'));
+		$expected = array(3 => 'three', 4 => 'four', 1 => 'one', 2 => 'two');
+		$this->assertEqual($View->viewVars, $expected);
 	}
 
 /**
@@ -891,6 +927,23 @@ class ViewTest extends CakeTestCase {
 		$View->association = 'Comment';
 		$View->field = 'user_id';
 		$this->assertEqual($View->entity(), array('Comment', 'user_id'));
+		
+		$View->model = 0;
+		$View->association = null;
+		$View->field = 'Node';
+		$View->fieldSuffix = 'title';
+		$View->entityPath = '0.Node.title';
+		$expected = array(0, 'Node', 'title');
+		$this->assertEqual($View->entity(), $expected);
+		
+		$View->model = 'HelperTestTag';
+		$View->field = 'HelperTestTag';
+		$View->modelId = null;
+		$View->association = null;
+		$View->fieldSuffix = null;
+		$View->entityPath = 'HelperTestTag';
+		$expected = array('HelperTestTag', 'HelperTestTag');
+		$this->assertEqual($View->entity(), $expected);
 	}
 
 /**
@@ -920,4 +973,3 @@ class ViewTest extends CakeTestCase {
 		$this->assertPattern("/<div id=\"content\">posts index<\/div>/", $result);
 	}
 }
-?>

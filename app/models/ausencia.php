@@ -241,11 +241,17 @@ class Ausencia extends AppModel {
                             if ($acumulado > $diasPeriodo['dias']) {
 
 								$tmp = $diasPeriodo['dias'] - $ausencias[$ausencia['AusenciasMotivo']['tipo']];
-								//$tmp = $seguimiento['dias'] - $ausencias[$ausencia['AusenciasMotivo']['tipo']];
 								if ($tmp > $diasPeriodo['dias']) {
 									$diff['dias'] = $diasPeriodo['dias'];
 								} else {
-									$diff['dias'] = $tmp;
+
+									if ($ausencia['Ausencia']['desde'] >= $periodo['desde']
+									&& $ausencia['Ausencia']['desde'] <= $periodo['hasta']) {
+										$tmpDiff = Dates::dateDiff($ausencia['Ausencia']['desde'], $periodo['hasta']);
+										$diff['dias'] = $tmpDiff['dias'];
+									} else {
+										$diff['dias'] = $tmp;
+									}
 								}
 								$acumulado = $diff['dias'];
                             } else {
@@ -304,8 +310,8 @@ class Ausencia extends AppModel {
 
             foreach (array_unique(Set::extract('/AusenciasMotivo/tipo', $r)) as $type) {
                 $conceptos = array_merge($conceptos, $Concepto->findConceptos('ConceptoPuntual',
-                        array(  'relacion'          => $relacion,
-                                'codigoConcepto'    => 'ausencias_' . strtolower($type))));
+					array(  'relacion'          => $relacion,
+							'codigoConcepto'    => 'ausencias_' . strtolower($type))));
             }
 
 
@@ -381,23 +387,7 @@ class Ausencia extends AppModel {
             }
         }
 
-/*
-        d(array('conceptos'    => $conceptos,
-                     'variables'    => array(
-        '#ausencias_accidente'                              => $ausencias['Accidente'],
-        '#ausencias_maternidad'                             => $ausencias['Maternidad'],
-        '#no_laborables_durante_ausencias_maternidad'       => $nonWorkingDays['Maternidad'],
-        '#ausencias_accidente_art'                          => $ausencias['Accidente ART'],
-        '#acumulado_remunerativo_accidente'                 => $ausencias['Acumulado Remunerativo Accidente'],
-        '#dias_anteriores_accidente'                        => $ausencias['Dias Anteriores Accidente'],
-        '#ausencias_enfermedad'                             => $ausencias['Enfermedad'],
-        '#no_laborables_durante_ausencias_enfermedad'       => $nonWorkingDays['Enfermedad'],
-        '#ausencias_licencia'                               => $ausencias['Licencia'],
-        '#no_laborables_durante_ausencias_licencia'         => $nonWorkingDays['Licencia'],
-        '#ausencias_injustificada'                          => $ausencias['Injustificada'],
-        '#no_laborables_durante_ausencias_injustificada'    => $nonWorkingDays['Injustificada']),
-                     'auxiliar'     => $auxiliares));
-*/
+
 		return array('conceptos' 	=> $conceptos,
 					 'variables' 	=> array(
         '#ausencias_accidente'                              => $ausencias['Accidente'],

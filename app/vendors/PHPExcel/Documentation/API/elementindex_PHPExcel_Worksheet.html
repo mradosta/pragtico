@@ -234,6 +234,10 @@
 		<dl>
 							<dt><b>addImage</b></dt>
 				<dd>in file HeaderFooter.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_HeaderFooter.html#methodaddImage">PHPExcel_Worksheet_HeaderFooter::addImage()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Add header/footer image</dd>
+							<dt><b>addPrintArea</b></dt>
+				<dd>in file PageSetup.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#methodaddPrintArea">PHPExcel_Worksheet_PageSetup::addPrintArea()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Add a new print area (e.g. 'A1:D10' or 'A1:D10,G5:M20') to the list of print areas</dd>
+							<dt><b>addPrintAreaByColumnAndRow</b></dt>
+				<dd>in file PageSetup.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#methodaddPrintAreaByColumnAndRow">PHPExcel_Worksheet_PageSetup::addPrintAreaByColumnAndRow()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Add a new print area to the list of print areas</dd>
 					</dl>
 	</div>
 	<a href="elementindex_PHPExcel_Worksheet.html#top">top</a><br>
@@ -266,14 +270,16 @@
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet.html#methodcellExists">PHPExcel_Worksheet::cellExists()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Cell at a specific coordinate exists?</dd>
 							<dt><b>cellExistsByColumnAndRow</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet.html#methodcellExistsByColumnAndRow">PHPExcel_Worksheet::cellExistsByColumnAndRow()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Cell at a specific coordinate by using numeric cell coordinates exists?</dd>
+							<dt><b>clearPrintArea</b></dt>
+				<dd>in file PageSetup.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#methodclearPrintArea">PHPExcel_Worksheet_PageSetup::clearPrintArea()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Clear a print area</dd>
 							<dt><b>conditionalStylesExists</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet.html#methodconditionalStylesExists">PHPExcel_Worksheet::conditionalStylesExists()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Do conditional styles exist for this cell?</dd>
 							<dt><b>copy</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet.html#methodcopy">PHPExcel_Worksheet::copy()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Copy worksheet (!= clone!)</dd>
 							<dt><b>current</b></dt>
-				<dd>in file CellIterator.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_CellIterator.html#methodcurrent">PHPExcel_Worksheet_CellIterator::current()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Current PHPExcel_Cell</dd>
-							<dt><b>current</b></dt>
 				<dd>in file RowIterator.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_RowIterator.html#methodcurrent">PHPExcel_Worksheet_RowIterator::current()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Current PHPExcel_Worksheet_Row</dd>
+							<dt><b>current</b></dt>
+				<dd>in file CellIterator.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_CellIterator.html#methodcurrent">PHPExcel_Worksheet_CellIterator::current()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Current PHPExcel_Cell</dd>
 							<dt><b>CellIterator.php</b></dt>
 				<dd>procedural page <a href="PHPExcel_Worksheet/_PHPExcel---Worksheet---CellIterator.php.html">CellIterator.php</a></dd>
 							<dt><b>ColumnDimension.php</b></dt>
@@ -1105,19 +1111,23 @@
 							<dt><b>setPivotTables</b></dt>
 				<dd>in file Protection.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_Protection.html#methodsetPivotTables">PHPExcel_Worksheet_Protection::setPivotTables()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set PivotTables</dd>
 							<dt><b>setPrintArea</b></dt>
-				<dd>in file PageSetup.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#methodsetPrintArea">PHPExcel_Worksheet_PageSetup::setPrintArea()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set print area. E.g. 'A1:D10' or 'A1:D10,G5:M20'</dd>
+				<dd>in file PageSetup.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#methodsetPrintArea">PHPExcel_Worksheet_PageSetup::setPrintArea()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set print area. e.g. 'A1:D10' or 'A1:D10,G5:M20'</dd>
 							<dt><b>setPrintAreaByColumnAndRow</b></dt>
 				<dd>in file PageSetup.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#methodsetPrintAreaByColumnAndRow">PHPExcel_Worksheet_PageSetup::setPrintAreaByColumnAndRow()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set print area</dd>
 							<dt><b>setPrintGridlines</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet.html#methodsetPrintGridlines">PHPExcel_Worksheet::setPrintGridlines()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set print gridlines</dd>
+							<dt><b>SETPRINTRANGE_INSERT</b></dt>
+				<dd>in file PageSetup.php, class constant <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#constSETPRINTRANGE_INSERT">PHPExcel_Worksheet_PageSetup::SETPRINTRANGE_INSERT</a></dd>
+							<dt><b>SETPRINTRANGE_OVERWRITE</b></dt>
+				<dd>in file PageSetup.php, class constant <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_PageSetup.html#constSETPRINTRANGE_OVERWRITE">PHPExcel_Worksheet_PageSetup::SETPRINTRANGE_OVERWRITE</a></dd>
 							<dt><b>setProtection</b></dt>
 				<dd>in file Worksheet.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet.html#methodsetProtection">PHPExcel_Worksheet::setProtection()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set Protection</dd>
 							<dt><b>setRenderingFunction</b></dt>
 				<dd>in file MemoryDrawing.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_MemoryDrawing.html#methodsetRenderingFunction">PHPExcel_Worksheet_MemoryDrawing::setRenderingFunction()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set rendering function</dd>
 							<dt><b>setResizeProportional</b></dt>
-				<dd>in file BaseDrawing.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#methodsetResizeProportional">PHPExcel_Worksheet_BaseDrawing::setResizeProportional()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set ResizeProportional</dd>
-							<dt><b>setResizeProportional</b></dt>
 				<dd>in file HeaderFooterDrawing.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_HeaderFooterDrawing.html#methodsetResizeProportional">PHPExcel_Worksheet_HeaderFooterDrawing::setResizeProportional()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set ResizeProportional</dd>
+							<dt><b>setResizeProportional</b></dt>
+				<dd>in file BaseDrawing.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#methodsetResizeProportional">PHPExcel_Worksheet_BaseDrawing::setResizeProportional()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set ResizeProportional</dd>
 							<dt><b>setRight</b></dt>
 				<dd>in file PageMargins.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_PageMargins.html#methodsetRight">PHPExcel_Worksheet_PageMargins::setRight()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set Right</dd>
 							<dt><b>setRightToLeft</b></dt>
@@ -1185,9 +1195,9 @@
 							<dt><b>setWidth</b></dt>
 				<dd>in file BaseDrawing.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#methodsetWidth">PHPExcel_Worksheet_BaseDrawing::setWidth()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set Width</dd>
 							<dt><b>setWidthAndHeight</b></dt>
-				<dd>in file BaseDrawing.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#methodsetWidthAndHeight">PHPExcel_Worksheet_BaseDrawing::setWidthAndHeight()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set width and height with proportional resize</dd>
-							<dt><b>setWidthAndHeight</b></dt>
 				<dd>in file HeaderFooterDrawing.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_HeaderFooterDrawing.html#methodsetWidthAndHeight">PHPExcel_Worksheet_HeaderFooterDrawing::setWidthAndHeight()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set width and height with proportional resize</dd>
+							<dt><b>setWidthAndHeight</b></dt>
+				<dd>in file BaseDrawing.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#methodsetWidthAndHeight">PHPExcel_Worksheet_BaseDrawing::setWidthAndHeight()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set width and height with proportional resize</dd>
 							<dt><b>setWorksheet</b></dt>
 				<dd>in file BaseDrawing.php, method <a href="PHPExcel_Worksheet/PHPExcel_Worksheet_BaseDrawing.html#methodsetWorksheet">PHPExcel_Worksheet_BaseDrawing::setWorksheet()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set Worksheet</dd>
 							<dt><b>setXfIndex</b></dt>
@@ -1263,7 +1273,7 @@
 	<a href="elementindex_PHPExcel_Worksheet.html#top">top</a><br>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Tue, 01 Jun 2010 17:00:35 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Thu, 26 Aug 2010 17:39:00 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

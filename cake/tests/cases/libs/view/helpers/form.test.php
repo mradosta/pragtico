@@ -4,14 +4,14 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
  * Copyright 2006-2010, Cake Software Foundation, Inc.
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2006-2010, Cake Software Foundation, Inc.
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.view.helpers
  * @since         CakePHP(tm) v 1.2.0.4206
@@ -109,8 +109,12 @@ class Contact extends CakeTestModel {
 		'imrequiredtoo' => array('rule' => 'notEmpty'),
 		'required_one' => array('required' => array('rule' => array('notEmpty'))),
 		'imnotrequired' => array('required' => false, 'rule' => 'alphaNumeric', 'allowEmpty' => true),
-		'imalsonotrequired' => array('alpha' => array('rule' => 'alphaNumeric','allowEmpty' => true),
-		'between' => array('rule' => array('between', 5, 30))));
+		'imalsonotrequired' => array(
+			'alpha' => array('rule' => 'alphaNumeric','allowEmpty' => true),
+			'between' => array('rule' => array('between', 5, 30)),
+		),
+		'imnotrequiredeither' => array('required' => true, 'rule' => array('between', 5, 30), 'allowEmpty' => true),
+	);
 
 /**
  * schema method
@@ -309,6 +313,7 @@ class UserForm extends CakeTestModel {
 		'other' => array('type' => 'text', 'null' => true, 'default' => null, 'length' => null),
 		'stuff' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 10),
 		'something' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 255),
+		'active' => array('type' => 'boolean', 'null' => false, 'default' => false),
 		'created' => array('type' => 'date', 'null' => '1', 'default' => '', 'length' => ''),
 		'updated' => array('type' => 'datetime', 'null' => '1', 'default' => '', 'length' => null)
 	);
@@ -744,6 +749,17 @@ class FormHelperTest extends CakeTestCase {
 		$result = $this->Form->create('Contact', array('url' => '/contacts/add', 'id' => 'MyForm'));
 		$expected['form']['id'] = 'MyForm';
 		$this->assertTags($result, $expected);
+	}
+
+/**
+ * test that create() clears the fields property so it starts fresh
+ *
+ * @return void
+ */
+	function testCreateClearingFields() {
+		$this->Form->fields = array('model_id');
+		$this->Form->create('Contact');
+		$this->assertEqual($this->Form->fields, array());
 	}
 
 /**
@@ -1825,6 +1841,41 @@ class FormHelperTest extends CakeTestCase {
 		);
 		$this->assertTags($result, $expected);
 	}
+
+/**
+ * test input() with checkbox creation
+ *
+ * @return void
+ */
+	function testInputCheckbox() {
+		$result = $this->Form->input('User.active', array('label' => false, 'checked' => true));
+		$expected = array(
+			'div' => array('class' => 'input checkbox'),
+			'input' => array('type' => 'hidden', 'name' => 'data[User][active]', 'value' => '0', 'id' => 'UserActive_'),
+			array('input' => array('type' => 'checkbox', 'name' => 'data[User][active]', 'value' => '1', 'id' => 'UserActive', 'checked' => 'checked')),
+			'/div'
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Form->input('User.active', array('label' => false, 'checked' => 1));
+		$expected = array(
+			'div' => array('class' => 'input checkbox'),
+			'input' => array('type' => 'hidden', 'name' => 'data[User][active]', 'value' => '0', 'id' => 'UserActive_'),
+			array('input' => array('type' => 'checkbox', 'name' => 'data[User][active]', 'value' => '1', 'id' => 'UserActive', 'checked' => 'checked')),
+			'/div'
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Form->input('User.active', array('label' => false, 'checked' => '1'));
+		$expected = array(
+			'div' => array('class' => 'input checkbox'),
+			'input' => array('type' => 'hidden', 'name' => 'data[User][active]', 'value' => '0', 'id' => 'UserActive_'),
+			array('input' => array('type' => 'checkbox', 'name' => 'data[User][active]', 'value' => '1', 'id' => 'UserActive', 'checked' => 'checked')),
+			'/div'
+		);
+		$this->assertTags($result, $expected);
+	}
+
 /**
  * test form->input() with datetime, date and time types
  *
@@ -1948,6 +1999,7 @@ class FormHelperTest extends CakeTestCase {
 		));
 		$this->assertPattern('/for\="created-month"/', $result);
 	}
+
 /**
  * Test generating checkboxes in a loop.
  *
@@ -1968,6 +2020,20 @@ class FormHelperTest extends CakeTestCase {
 			$this->assertTags($result, $expected);
 		}
 	}
+
+/**
+ * test input name with leading integer, ensure attributes are generated correctly.
+ *
+ * @return void
+ */
+	function testInputWithLeadingInteger() {
+		$result = $this->Form->text('0.Node.title');
+		$expected = array(
+			'input' => array('name' => 'data[0][Node][title]', 'id' => '0NodeTitle', 'type' => 'text')
+		);
+		$this->assertTags($result, $expected);
+	}
+
 /**
  * test form->input() with select type inputs.
  *
@@ -2115,6 +2181,29 @@ class FormHelperTest extends CakeTestCase {
 	}
 
 /**
+ * test that input() and a non standard primary key makes a hidden input by default.
+ *
+ * @return void
+ */
+	function testInputWithNonStandardPrimaryKeyMakesHidden() {
+		$this->Form->create('User');
+		$this->Form->fieldset = array(
+			'User' => array(
+				'fields' => array(
+					'model_id' => array('type' => 'integer')
+				),
+				'validates' => array(),
+				'key' => 'model_id'
+			)
+		);
+		$result = $this->Form->input('model_id');
+		$expected = array(
+			'input' => array('type' => 'hidden', 'name' => 'data[User][model_id]', 'id' => 'UserModelId'),
+		);
+		$this->assertTags($result, $expected);
+	}
+
+/**
  * test that overriding the magic select type widget is possible
  *
  * @return void
@@ -2157,6 +2246,33 @@ class FormHelperTest extends CakeTestCase {
 		$view->viewVars['users'] = array('value' => 'good', 'other' => 'bad');
 		$result = $this->Form->input('Model.user_id', array('type' => 'radio'));
 		$this->assertPattern('/input type="radio"/', $result);
+	}
+
+/**
+ * fields with the same name as the model should work.
+ *
+ * @return void
+ */
+	function testInputWithMatchingFieldAndModelName() {
+		$this->Form->create('User');
+		$this->Form->fieldset = array(
+			'User' => array(
+				'fields' => array(
+					'User' => array('type' => 'text')
+				),
+				'validates' => array(),
+				'key' => 'id'
+			)
+		);
+		$this->Form->data['User']['User'] = 'ABC, Inc.';
+		$result = $this->Form->input('User', array('type' => 'text'));
+		$expected = array(
+			'div' => array('class' => 'input text'),
+			'label' => array('for' => 'UserUser'), 'User', '/label',
+			'input' => array('name' => 'data[User][User]', 'type' => 'text', 'id' => 'UserUser', 'value' => 'ABC, Inc.'),
+			'/div'
+		);
+		$this->assertTags($result, $expected);
 	}
 
 /**
@@ -2386,6 +2502,18 @@ class FormHelperTest extends CakeTestCase {
 			'/div',
 		);
 		$this->assertTags($result, $expected);
+
+		$result = $this->Form->select('Model.multi_field', array('1/2' => 'half'), null, array('multiple' => 'checkbox'));
+		$expected = array(
+			'input' => array('type' => 'hidden', 'name' => 'data[Model][multi_field]', 'value' => '', 'id' => 'ModelMultiField'),
+			array('div' => array('class' => 'checkbox')),
+			array('input' => array('type' => 'checkbox', 'name' => 'data[Model][multi_field][]', 'value' => '1/2', 'id' => 'ModelMultiField12')),
+			array('label' => array('for' => 'ModelMultiField12')),
+			'half',
+			'/label',
+			'/div',
+		);
+		$this->assertTags($result, $expected);
 	}
 
 /**
@@ -2571,6 +2699,16 @@ class FormHelperTest extends CakeTestCase {
 			array('input' => array('type' => 'radio', 'name' => 'data[Model][field]', 'value' => '0', 'id' => 'ModelField0')),
 			'label' => array('for' => 'ModelField0'),
 			'option A',
+			'/label'
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Form->radio('Model.field', array('1/2' => 'half'));
+		$expected = array(
+			'input' => array('type' => 'hidden', 'name' => 'data[Model][field]', 'value' => '', 'id' => 'ModelField_'),
+			array('input' => array('type' => 'radio', 'name' => 'data[Model][field]', 'value' => '1/2', 'id' => 'ModelField12')),
+			'label' => array('for' => 'ModelField12'),
+			'half',
 			'/label'
 		);
 		$this->assertTags($result, $expected);
@@ -2978,6 +3116,47 @@ class FormHelperTest extends CakeTestCase {
 	}
 
 /**
+ * test that select() with optiongroups listens to the escape param.
+ *
+ * @return void
+ */
+	function testSelectOptionGroupEscaping() {
+		$options = array(
+			'>< Key' => array(
+				1 => 'One',
+				2 => 'Two'
+			)
+		);
+		$result = $this->Form->select('Model.field', $options, null, array('empty' => false));
+		$expected = array(
+			'select' => array('name' => 'data[Model][field]', 'id' => 'ModelField'),
+			'optgroup' => array('label' => '&gt;&lt; Key'),
+			array('option' => array('value' => '1')), 'One', '/option',
+			array('option' => array('value' => '2')), 'Two', '/option',
+			'/optgroup',
+			'/select'
+		);
+		$this->assertTags($result, $expected);
+		
+		$options = array(
+			'>< Key' => array(
+				1 => 'One',
+				2 => 'Two'
+			)
+		);
+		$result = $this->Form->select('Model.field', $options, null, array('empty' => false, 'escape' => false));
+		$expected = array(
+			'select' => array('name' => 'data[Model][field]', 'id' => 'ModelField'),
+			'optgroup' => array('label' => '>< Key'),
+			array('option' => array('value' => '1')), 'One', '/option',
+			array('option' => array('value' => '2')), 'Two', '/option',
+			'/optgroup',
+			'/select'
+		);
+		$this->assertTags($result, $expected);
+	}
+
+/**
  * Tests that FormHelper::select() allows null to be passed in the $attributes parameter
  *
  * @access public
@@ -3330,6 +3509,50 @@ class FormHelperTest extends CakeTestCase {
 	}
 
 /**
+ * test multiple checkboxes with div styles.
+ *
+ * @return void
+ */
+	function testSelectMultipleCheckboxDiv() {
+		$result = $this->Form->select(
+			'Model.tags', 
+			array('first', 'second'),
+			null,
+			array('multiple' => 'checkbox', 'class' => 'my-class')
+		);
+		$expected = array(
+			'input' => array(
+				'type' => 'hidden', 'name' => 'data[Model][tags]', 'value' => '', 'id' => 'ModelTags'
+			),
+			array('div' => array('class' => 'my-class')),
+			array('input' => array(
+				'type' => 'checkbox', 'name' => 'data[Model][tags][]',
+				'value' => '0', 'id' => 'ModelTags0'
+			)),
+			array('label' => array('for' => 'ModelTags0')), 'first', '/label',
+			'/div',
+
+			array('div' => array('class' => 'my-class')),
+			array('input' => array(
+				'type' => 'checkbox', 'name' => 'data[Model][tags][]',
+				'value' => '1', 'id' => 'ModelTags1'
+			)),
+			array('label' => array('for' => 'ModelTags1')), 'second', '/label',
+			'/div'
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Form->input('Model.tags', array(
+			'options' => array('first', 'second'),
+			'multiple' => 'checkbox', 
+			'class' => 'my-class',
+			'div' => false,
+			'label' => false
+		));
+		$this->assertTags($result, $expected);
+	}
+
+/**
  * Checks the security hash array generated for multiple-input checkbox elements
  *
  * @access public
@@ -3359,7 +3582,10 @@ class FormHelperTest extends CakeTestCase {
  * @return void
  */
 	function testInputMultipleCheckboxes() {
-		$result = $this->Form->input('Model.multi_field', array('options' => array('first', 'second', 'third'), 'multiple' => 'checkbox'));
+		$result = $this->Form->input('Model.multi_field', array(
+			'options' => array('first', 'second', 'third'),
+			'multiple' => 'checkbox'
+		));
 		$expected = array(
 			array('div' => array('class' => 'input select')),
 			array('label' => array('for' => 'ModelMultiField')),
@@ -3388,7 +3614,10 @@ class FormHelperTest extends CakeTestCase {
 		);
 		$this->assertTags($result, $expected);
 
-		$result = $this->Form->input('Model.multi_field', array('options' => array('a' => 'first', 'b' => 'second', 'c' => 'third'), 'multiple' => 'checkbox'));
+		$result = $this->Form->input('Model.multi_field', array(
+			'options' => array('a' => 'first', 'b' => 'second', 'c' => 'third'),
+			'multiple' => 'checkbox'
+		));
 		$expected = array(
 			array('div' => array('class' => 'input select')),
 			array('label' => array('for' => 'ModelMultiField')),
@@ -3417,7 +3646,12 @@ class FormHelperTest extends CakeTestCase {
 		);
 		$this->assertTags($result, $expected);
 
-		$result = $this->Form->input('Model.multi_field', array('options' => array('1' => 'first'), 'multiple' => 'checkbox', 'label' => false, 'div' => false));
+		$result = $this->Form->input('Model.multi_field', array(
+			'options' => array('1' => 'first'),
+			'multiple' => 'checkbox',
+			'label' => false,
+			'div' => false
+		));
 		$expected = array(
 			'input' => array('type' => 'hidden', 'name' => 'data[Model][multi_field]', 'value' => '', 'id' => 'ModelMultiField'),
 			array('div' => array('class' => 'checkbox')),
@@ -3429,7 +3663,12 @@ class FormHelperTest extends CakeTestCase {
 		);
 		$this->assertTags($result, $expected);
 
-		$result = $this->Form->input('Model.multi_field', array('options' => array('2' => 'second'), 'multiple' => 'checkbox', 'label' => false, 'div' => false));
+		$result = $this->Form->input('Model.multi_field', array(
+			'options' => array('2' => 'second'),
+			'multiple' => 'checkbox',
+			'label' => false,
+			'div' => false
+		));
 		$expected = array(
 			'input' => array('type' => 'hidden', 'name' => 'data[Model][multi_field]', 'value' => '', 'id' => 'ModelMultiField'),
 			array('div' => array('class' => 'checkbox')),
@@ -3437,6 +3676,34 @@ class FormHelperTest extends CakeTestCase {
 			array('label' => array('for' => 'ModelMultiField2')),
 			'second',
 			'/label',
+			'/div'
+		);
+		$this->assertTags($result, $expected);
+	}
+
+/**
+ * test that select() with multiple = checkbox works with overriding name attribute.
+ *
+ * @return void
+ */
+	function testSelectCheckboxMultipleOverrideName() {
+		$result = $this->Form->input('category', array(
+			'type' => 'select',
+			'multiple' => 'checkbox',
+			'name' => 'data[fish]',
+			'options' => array('1', '2'),
+			'div' => false,
+			'label' => false,
+		));
+		$expected = array(
+			'input' => array('type' => 'hidden', 'name' => 'data[fish]', 'value' => '', 'id' => 'category'),
+			array('div' => array('class' => 'checkbox')),
+				array('input' => array('type' => 'checkbox', 'name' => 'data[fish][]', 'value' => '0', 'id' => 'Category0')),
+				array('label' => array('for' => 'Category0')), '1', '/label',
+			'/div',
+			array('div' => array('class' => 'checkbox')),
+				array('input' => array('type' => 'checkbox', 'name' => 'data[fish][]', 'value' => '1', 'id' => 'Category1')),
+				array('label' => array('for' => 'Category1')), '2', '/label',
 			'/div'
 		);
 		$this->assertTags($result, $expected);
@@ -3512,6 +3779,20 @@ class FormHelperTest extends CakeTestCase {
 		$this->assertTags($result, $expected);
 
 		$result = $this->Form->checkbox('Model.field', array('checked' => 'checked'));
+		$expected = array(
+			'input' => array('type' => 'hidden', 'name' => 'data[Model][field]', 'value' => '0', 'id' => 'ModelField_'),
+			array('input' => array('type' => 'checkbox', 'name' => 'data[Model][field]', 'value' => '1', 'id' => 'ModelField', 'checked' => 'checked'))
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Form->checkbox('Model.field', array('checked' => 1));
+		$expected = array(
+			'input' => array('type' => 'hidden', 'name' => 'data[Model][field]', 'value' => '0', 'id' => 'ModelField_'),
+			array('input' => array('type' => 'checkbox', 'name' => 'data[Model][field]', 'value' => '1', 'id' => 'ModelField', 'checked' => 'checked'))
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Form->checkbox('Model.field', array('checked' => true));
 		$expected = array(
 			'input' => array('type' => 'hidden', 'name' => 'data[Model][field]', 'value' => '0', 'id' => 'ModelField_'),
 			array('input' => array('type' => 'checkbox', 'name' => 'data[Model][field]', 'value' => '1', 'id' => 'ModelField', 'checked' => 'checked'))
@@ -4131,6 +4412,25 @@ class FormHelperTest extends CakeTestCase {
 			)
 		);
 		$result = $this->Form->dateTime('Contact.date', 'DMY', '12', null, array('empty' => false));
+	}
+
+/**
+ * test that datetime() and default values work.
+ *
+ * @return void
+ */
+	function testDatetimeWithDefault() {
+		$result = $this->Form->dateTime('Contact.updated', 'DMY', '12', null, array('value' => '2009-06-01 11:15:30'));
+		$this->assertPattern('/<option[^<>]+value="2009"[^<>]+selected="selected"[^>]*>2009<\/option>/', $result);
+		$this->assertPattern('/<option[^<>]+value="01"[^<>]+selected="selected"[^>]*>1<\/option>/', $result);
+		$this->assertPattern('/<option[^<>]+value="06"[^<>]+selected="selected"[^>]*>June<\/option>/', $result);
+
+		$result = $this->Form->dateTime('Contact.updated', 'DMY', '12', null, array(
+			'default' => '2009-06-01 11:15:30'
+		));
+		$this->assertPattern('/<option[^<>]+value="2009"[^<>]+selected="selected"[^>]*>2009<\/option>/', $result);
+		$this->assertPattern('/<option[^<>]+value="01"[^<>]+selected="selected"[^>]*>1<\/option>/', $result);
+		$this->assertPattern('/<option[^<>]+value="06"[^<>]+selected="selected"[^>]*>June<\/option>/', $result);
 	}
 
 /**
@@ -5327,6 +5627,61 @@ class FormHelperTest extends CakeTestCase {
 	}
 
 /**
+ * test that create() doesn't cause errors by multiple id's being in the primary key
+ * as could happen with multiple select or checkboxes.
+ *
+ * @return void
+ */
+	function testCreateWithMultipleIdInData() {
+		$encoding = strtolower(Configure::read('App.encoding'));
+
+		$this->Form->data['Contact']['id'] = array(1, 2);
+		$result = $this->Form->create('Contact');
+		$expected = array(
+			'form' => array(
+				'id' => 'ContactAddForm',
+				'method' => 'post',
+				'action' => '/contacts/add',
+				'accept-charset' => $encoding
+			),
+			'div' => array('style' => 'display:none;'),
+			'input' => array('type' => 'hidden', 'name' => '_method', 'value' => 'POST'),
+			'/div'
+		);
+		$this->assertTags($result, $expected);
+	}
+
+/**
+ * test that create() doesn't add in extra passed params.
+ *
+ * @return void
+ */
+	function testCreatePassedArgs() {
+		$encoding = strtolower(Configure::read('App.encoding'));
+		$this->Form->data['Contact']['id'] = 1;
+		$result = $this->Form->create('Contact', array(
+			'type' => 'post',
+			'escape' => false,
+			'url' => array(
+				'action' => 'edit',
+				'myparam'
+			)
+		));
+		$expected = array(
+			'form' => array(
+				'id' => 'ContactAddForm',
+				'method' => 'post',
+				'action' => '/contacts/edit/myparam',
+				'accept-charset' => $encoding
+			),
+			'div' => array('style' => 'display:none;'),
+			'input' => array('type' => 'hidden', 'name' => '_method', 'value' => 'POST'),
+			'/div'
+		);
+		$this->assertTags($result, $expected, true);
+	}
+
+/**
  * test creating a get form, and get form inputs.
  *
  * @access public
@@ -5588,6 +5943,20 @@ class FormHelperTest extends CakeTestCase {
 			'input' => array(
 				'type' => 'text', 'name' => 'data[Contact][imalsonotrequired]',
 				'id' => 'ContactImalsonotrequired'
+			),
+			'/div'
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Form->input('Contact.imnotrequiredeither');
+		$expected = array(
+			'div' => array('class' => 'input text'),
+			'label' => array('for' => 'ContactImnotrequiredeither'),
+			'Imnotrequiredeither',
+			'/label',
+			'input' => array(
+				'type' => 'text', 'name' => 'data[Contact][imnotrequiredeither]',
+				'id' => 'ContactImnotrequiredeither'
 			),
 			'/div'
 		);
@@ -6247,4 +6616,3 @@ class FormHelperTest extends CakeTestCase {
 		$this->assertTags($result, $expected);
 	}
 }
-?>

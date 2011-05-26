@@ -53,7 +53,7 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidaciones'), 'url' => 'recibo_html');
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'liquidaciones.gif', 'alt' => 'liquidaciones (debug)'), 'url' => 'recibo_html_debug');
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'imagen' => array('nombre' => 'pagos.gif', 'alt' => 'Pagos'), 'url' => 'pagos');
-	$fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('excel.gif', array('alt' => 'Generar Recibo para Pre-impreso', 'title' => 'Generar Recibo para Pre-impreso')), array('action' => 'imprimir', 'tipo' => 'preimpreso', 'id' => $v['Liquidacion']['id'])));
+	$fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('excel.gif', array('alt' => 'Generar Recibo Completo', 'title' => 'Generar Recibo Completo')), array('action' => 'imprimir', 'tipo' => 'preimpreso', 'id' => $v['Liquidacion']['id'])));
     $fila[] = array('tipo'=>'accion', 'valor' => $appForm->link($appForm->image('documentos.gif', array('alt' => 'Generar Recibo para Impresion', 'title' => 'Generar Recibo para Impresion')), array('action' => 'imprimir', 'id' => $v['Liquidacion']['id'])));
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'id', 'valor' => $v['Liquidacion']['id'], 'write' => $v['Liquidacion']['write'], 'delete' => $v['Liquidacion']['delete']);
 	$fila[] = array('model' => 'Liquidacion', 'field' => 'tipo', 'valor' => $v['Liquidacion']['tipo']);
@@ -68,8 +68,8 @@ foreach ($registros as $k => $v) {
 	$cuerpo[] = $fila;
 }
 $accionesExtra['opciones'] = array('acciones' => array(
-    $appForm->link('Impr. (Preimpr)', null, array('class' => 'link_boton', 'id' => 'imprimir_preimpreso', 'title' => 'Imprime las preliquidaciones seleccionadas')),
-    $appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas'))));
+    $appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir_preimpreso', 'title' => 'Imprime las preliquidaciones seleccionadas')),
+    $appForm->link('Impr. Simple', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas'))));
 
 
 echo $this->element('index/index', array(

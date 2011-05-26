@@ -974,11 +974,16 @@ class Liquidacion extends AppModel {
                             }
                         }
                     }
-    
+
                     /** Replace concept by it's value. */
                     if (isset($this->__conceptos[$match])) {
                         $resolucionCalculo['valor'] = $this->__conceptos[$match]['valor'];
-                        $formula = str_replace('@' . $match, $resolucionCalculo['valor'], $formula);
+                        //$formula = str_replace('@' . $match, $resolucionCalculo['valor'], $formula);
+						$formula = preg_replace(
+							'/@' . $match . '(\W)|' . $match . '$/',
+							$resolucionCalculo['valor'] . '$1',
+							$formula
+						);
                         $resolucionCalculo['debug'] = $formula;
                     } else {
                         $this->__setError(array(    'tipo'					=> 'Concepto Inexistente',

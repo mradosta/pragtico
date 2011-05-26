@@ -75,10 +75,16 @@ class EmpleadoresController extends AppController {
  * Muestra via desglose las Relaciones Laborales existentes entre un trabajador y un empleador.
  */
 	function relaciones($id) {
-		$this->Empleador->contain(array("Trabajador"));
+		$this->Empleador->contain(
+			array(
+				'Trabajador' => array(
+					'conditions' => array('Relacion.estado' => array('Activa', 'Suspendida'))
+				)
+			)
+		);
 		$this->data = $this->Empleador->read(null, $id);
 	}
-	
+
 
 /**
  * Conceptos.

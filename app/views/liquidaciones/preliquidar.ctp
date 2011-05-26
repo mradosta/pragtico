@@ -76,6 +76,7 @@ foreach ($registros as $k=>$v) {
 
 			$fila[] = array('tipo' => 'desglose', 'id' => $v['Liquidacion']['id'], 'update' => 'desglose4', 'imagen' => array('nombre' => 'error_icono.gif', 'alt' => 'Errores'), 'url' => 'errores');
 
+			/*
 			if (!empty($v['LiquidacionesError'][0]['gravedad']) && $v['LiquidacionesError'][0]['gravedad'] == 'Alta') {
 				$cuerpo[] = array(
 					'contenido' 	=> $fila,
@@ -86,6 +87,10 @@ foreach ($registros as $k=>$v) {
 			} else {
 				$cuerpo[] = array('contenido'=>$fila, 'opciones' => array('title' => 'Se han encontrado errores en esta liquidacion.', 'class'=>'fila_resaltada', 'seleccionMultiple'=>true));
 			}
+			*/
+
+			$cuerpo[] = array('contenido'=>$fila, 'opciones' => array('title' => 'Se han encontrado errores en esta liquidacion.', 'class'=>'fila_resaltada', 'seleccionMultiple'=>true));
+			
 		} else {
 			$cuerpo[] = $fila;
 		}
@@ -105,8 +110,8 @@ $opcionesTabla =  array(
 $accionesExtra['opciones'] = array('acciones' => array(
     $appForm->link('Confirmar', null, array('class' => 'link_boton', 'id' => 'confirmar', 'title' => 'Confirma las preliquidaciones seleccionadas')),
     $appForm->link('Guardar', null, array('class' => 'link_boton', 'id' => 'guardar', 'title' => 'Guarda las preliquidaciones seleccionadas')),
-    $appForm->link('Impr. (Preimpr)', null, array('class' => 'link_boton', 'id' => 'imprimir_preimpreso', 'title' => 'Imprime las preliquidaciones seleccionadas')),
-    $appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas')),
+    $appForm->link('Imprimir', null, array('class' => 'link_boton', 'id' => 'imprimir_preimpreso', 'title' => 'Imprime las preliquidaciones seleccionadas')),
+    $appForm->link('Impr. Simple', null, array('class' => 'link_boton', 'id' => 'imprimir', 'title' => 'Imprime las preliquidaciones seleccionadas')),
     'eliminar'));
 $botonesExtra[] = 'limpiar';
 $botonesExtra[] = 'buscar';

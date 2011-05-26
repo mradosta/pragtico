@@ -138,11 +138,13 @@ Source Location: /PHPExcel/CachedObjectStorage/CacheBase.php<br /><br />
 <h3><a href="#class_methods">Methods</a></h3>
 <ul>
     <li><a href="../PHPExcel_CachedObjectStorage/PHPExcel_CachedObjectStorage_CacheBase.html#method__construct">__construct</a></li>
+    <li><a href="../PHPExcel_CachedObjectStorage/PHPExcel_CachedObjectStorage_CacheBase.html#methodcopyCellCollection">copyCellCollection</a></li>
     <li><a href="../PHPExcel_CachedObjectStorage/PHPExcel_CachedObjectStorage_CacheBase.html#methoddeleteCacheData">deleteCacheData</a></li>
     <li><a href="../PHPExcel_CachedObjectStorage/PHPExcel_CachedObjectStorage_CacheBase.html#methodgetCellList">getCellList</a></li>
     <li><a href="../PHPExcel_CachedObjectStorage/PHPExcel_CachedObjectStorage_CacheBase.html#methodgetSortedCellList">getSortedCellList</a></li>
     <li><a href="../PHPExcel_CachedObjectStorage/PHPExcel_CachedObjectStorage_CacheBase.html#methodisDataSet">isDataSet</a></li>
     <li><a href="../PHPExcel_CachedObjectStorage/PHPExcel_CachedObjectStorage_CacheBase.html#methodupdateCacheData">updateCacheData</a></li>
+    <li><a href="../PHPExcel_CachedObjectStorage/PHPExcel_CachedObjectStorage_CacheBase.html#method_getUniqueID">_getUniqueID</a></li>
   </ul>
 </td>
 
@@ -381,6 +383,64 @@ $parent)</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodcopyCellCollection"></a>
+	<h3>method copyCellCollection <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_CachedObjectStorage__PHPExcelCachedObjectStorageCacheBase.php.html#a167">167</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void copyCellCollection(
+
+$parent)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Clone the cell collection<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	<p>Overridden in child classes as:<br />
+		<dl>
+	<dt><a href="../PHPExcel_CachedObjectStorage/PHPExcel_CachedObjectStorage_APC.html#methodcopyCellCollection">PHPExcel_CachedObjectStorage_APC::copyCellCollection()</a></dt>
+		<dd>Clone the cell collection</dd>
+	</dl>
+		<dl>
+	<dt><a href="../PHPExcel_CachedObjectStorage/PHPExcel_CachedObjectStorage_DiscISAM.html#methodcopyCellCollection">PHPExcel_CachedObjectStorage_DiscISAM::copyCellCollection()</a></dt>
+		<dd>Clone the cell collection</dd>
+	</dl>
+		<dl>
+	<dt><a href="../PHPExcel_CachedObjectStorage/PHPExcel_CachedObjectStorage_Memcache.html#methodcopyCellCollection">PHPExcel_CachedObjectStorage_Memcache::copyCellCollection()</a></dt>
+		<dd>Clone the cell collection</dd>
+	</dl>
+		<dl>
+	<dt><a href="../PHPExcel_CachedObjectStorage/PHPExcel_CachedObjectStorage_PHPTemp.html#methodcopyCellCollection">PHPExcel_CachedObjectStorage_PHPTemp::copyCellCollection()</a></dt>
+		<dd>Clone the cell collection</dd>
+	</dl>
+		<dl>
+	<dt><a href="../PHPExcel_CachedObjectStorage/PHPExcel_CachedObjectStorage_Wincache.html#methodcopyCellCollection">PHPExcel_CachedObjectStorage_Wincache::copyCellCollection()</a></dt>
+		<dd>Clone the cell collection</dd>
+	</dl>
+	</p>
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type"><a href="../PHPExcel_Worksheet/PHPExcel_Worksheet.html">PHPExcel_Worksheet</a>&nbsp;&nbsp;</td>
+        <td><b>$parent</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methoddeleteCacheData"></a>
 	<h3>method deleteCacheData <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_CachedObjectStorage__PHPExcelCachedObjectStorageCacheBase.php.html#a113">113</a>]</span></h3>
 	<div class="function">
@@ -575,12 +635,37 @@ $cell)</code>
     </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
+  <hr />
+	<a name="method_getUniqueID"></a>
+	<h3>method _getUniqueID <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_CachedObjectStorage__PHPExcelCachedObjectStorageCacheBase.php.html#a153">153</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void _getUniqueID(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		<br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>protected</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
 </div><br />
 
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Tue, 01 Jun 2010 17:02:15 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Thu, 26 Aug 2010 17:40:38 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

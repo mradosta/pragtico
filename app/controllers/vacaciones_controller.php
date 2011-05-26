@@ -69,6 +69,9 @@ class VacacionesController extends AppController {
                     $conditions['Relacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
                 }
 
+
+				$conditions['Relacion.ingreso <'] = $this->data['Condicion']['Bar-periodo_largo'] . '-01-01';
+
                 /*
                 $conditions['NOT'] = array('Relacion.id' =>
                     Set::extract('/Relacion/id', $this->Vacacion->find('all', array(
@@ -83,8 +86,12 @@ class VacacionesController extends AppController {
                 $Formulas = new Formulas();
 
                 foreach ($this->Vacacion->Relacion->find('all', array(
-                    'contain'       => array('Vacacion' => array(
-                        'conditions' => array('Vacacion.periodo' => $this->data['Condicion']['Bar-periodo_largo']))),
+                    'contain'       => array(
+						'Vacacion' => array(
+							'conditions' => array(
+								'Vacacion.periodo' => $this->data['Condicion']['Bar-periodo_largo'])
+							)
+					),
                     'conditions'    => $conditions)) as $relation) {
 
                     $formula = str_replace('#fecha_ingreso', 'date(' . str_replace('-', ',', $relation['Relacion']['ingreso']) . ')', $baseFormula);
@@ -142,7 +149,8 @@ class VacacionesController extends AppController {
 				INNER JOIN	relaciones Relacion ON (Relacion.id = Vacacion.relacion_id)
 				INNER JOIN	empleadores Empleador ON (Empleador.id = Relacion.empleador_id)
 				INNER JOIN	trabajadores Trabajador ON (Trabajador.id = Relacion.trabajador_id)
-				WHERE		' . implode(' AND ', $conditions);
+				WHERE		' . implode(' AND ', $conditions) . '
+				ORDER BY	Empleador.nombre, VacacionesDetalle.desde';
 
             $this->set('data', $this->Vacacion->query($sql));
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);

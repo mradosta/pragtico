@@ -4,14 +4,14 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
  * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.cache
  * @since         CakePHP(tm) v 1.2.0.5434
@@ -19,6 +19,20 @@
  */
 if (!class_exists('Cache')) {
 	require LIBS . 'cache.php';
+}
+App::import('Core', 'cache/Memcache');
+
+
+class TestMemcacheEngine extends MemcacheEngine {
+/**
+ * public accessor to _parseServerString
+ *
+ * @param string $server 
+ * @return array
+ */
+	function parseServerString($server) {
+		return $this->_parseServerString($server);
+	}
 }
 
 /**
@@ -135,6 +149,38 @@ class MemcacheEngineTest extends CakeTestCase {
 	}
 
 /**
+ * test connecting to an ipv6 server.
+ *
+ * @return void
+ */
+	function testConnectIpv6() {
+		$Memcache =& new MemcacheEngine();
+		$result = $Memcache->init(array(
+			'prefix' => 'cake_',
+			'duration' => 200,
+			'engine' => 'Memcache',
+			'servers' => array(
+				'[::1]:11211'
+			)
+		));
+		$this->assertTrue($result);
+	}
+
+/**
+ * test non latin domains.
+ *
+ * @return void
+ */
+	function testParseServerStringNonLatin() {
+		$Memcache =& new TestMemcacheEngine();
+		$result = $Memcache->parseServerString('schülervz.net:13211');
+		$this->assertEqual($result, array('schülervz.net', '13211'));
+
+		$result = $Memcache->parseServerString('sülül:1111');
+		$this->assertEqual($result, array('sülül', '1111'));
+	}
+
+/**
  * testReadAndWriteCache method
  *
  * @access public
@@ -194,7 +240,7 @@ class MemcacheEngineTest extends CakeTestCase {
 		$result = Cache::read('other_test');
 		$this->assertFalse($result);
 
-		Cache::config('memcache', array('duration' => '+31 day'));
+		Cache::config('memcache', array('duration' => '+29 days'));
 		$data = 'this is a test of the emergency broadcasting system';
 		$result = Cache::write('long_expiry_test', $data);
 		$this->assertTrue($result);
@@ -203,9 +249,6 @@ class MemcacheEngineTest extends CakeTestCase {
 		$result = Cache::read('long_expiry_test');
 		$expecting = $data;
 		$this->assertEqual($result, $expecting);
-
-		$result = Cache::read('long_expiry_test');
-		$this->assertTrue($result);
 
 		Cache::config('memcache', array('duration' => 3600));
 	}
@@ -306,5 +349,19 @@ class MemcacheEngineTest extends CakeTestCase {
 		Cache::delete('short_duration_test', 'short_memcache');
 	}
 
+/**
+ * test that a 0 duration can succesfully write.
+ *
+ * @return void
+ */
+	function testZeroDuration() {
+		Cache::config('memcache', array('duration' => 0));
+		$result = Cache::write('test_key', 'written!', 'memcache');
+
+		$this->assertTrue($result, 'Could not write with duration 0');
+		$result = Cache::read('test_key', 'memcache');
+		$this->assertEqual($result, 'written!');
+		
+	}
+
 }
-?>

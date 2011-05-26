@@ -22,8 +22,9 @@ if ($options['conditions']['Bar-grupo_id'] !== false) {
     }
 
     if ($options['conditions']['Bar-grupo_id'] === 'multiple') {
-        $conditions['Condicion.Bar-grupo_id']['multiple'] = 'checkbox';
-    }   
+        $conditions['Condicion.Bar-grupo_id']['type'] = 'select';
+    	$conditions['Condicion.Bar-grupo_id']['multiple'] = 'checkbox';
+    }
 }
 
 foreach ($this->params['named'] as $k => $v) {

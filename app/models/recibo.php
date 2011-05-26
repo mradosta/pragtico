@@ -68,7 +68,12 @@ class Recibo extends AppModel {
 				Set::combine($relation, 'RelacionesConcepto.{n}.id', 'RelacionesConcepto.{n}.concepto_id');
 
 			$db = ConnectionManager::getDataSource($this->useDbConfig);
-			$db->begin($this);
+			if ($db->_transactionStarted) {
+				$transactionInProgress = true;
+			} else {
+				$transactionInProgress = false;
+				$db->begin($this);
+			}
 			$save = true;
 			$delete = true;
 
@@ -113,12 +118,18 @@ class Recibo extends AppModel {
 			}
 
 			if ($save && $delete) {
-				$db->commit($this);
+				if (!$transactionInProgress) {
+					$db->commit($this);
+				}
+				return true;
 			} else {
-				$db->rollback($this);
+				if (!$transactionInProgress) {
+					$db->rollback($this);
+				}
 				return false;
 			}
 		}
+
 		return true;
 	}
  

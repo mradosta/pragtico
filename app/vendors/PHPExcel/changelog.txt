@@ -19,8 +19,43 @@
 *
 * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
 * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
-* @version    1.7.3c, 2010-06-01
+* @version    1.7.4, 2010-08-26
 **************************************************************************************
+
+
+2010-08-26 (v1.7.4):
+
+
+2010-08-26 (v1.7.4):
+- Bugfix:   (Progi1984) Workitem 7895 - Excel5 : Formula : Power
+- Bugfix:   (Progi1984) Workitem 7895 - Excel5 : Formula : Unary plus
+- Bugfix:   (Progi1984) Excel5 : Just write the Escher stream if necessary in Worksheet
+- Bugfix:   (MBaker) Work item 13433 - Syntax errors in memcache.php 1.7.3c
+- Bugfix:   (MBaker) Work item 13450 - Standard Deviation functions returning DIV/0 Error when Standard Deviation is zero
+- Feature:  (MBaker) Support for print area with several ranges in the Excel2007 reader, and improved features for editing print area with several ranges
+- Feature:  (MBaker) Work item 13769 - Improved Cell Exception Reporting
+- Feature:  (MBaker) Support for row or column ranges in the calculation engine, e.g. =SUM(C:C) or =SUM(1:2)
+					 Also support in the calculation engine for absolute row or column ranges e.g. =SUM($C:$E) or =SUM($3:5)
+- Bugfix:   (ET) Work item 13455 - Picture problem with Excel 2003
+- Bugfix:   (MBaker) Work item 13484 - Wrong variable used in addExternalSheet in PHPExcel.php
+- Bugfix:   (MBaker) Work item 13515 - "Invalid cell coordinate" error when formula access data from an other sheet
+- Bugfix:   (MBaker) (related to Work item 13515) Calculation engine confusing cell range worksheet when referencing cells in a different worksheet to the formula
+- Bugfix:   (MBaker) Work item 13752 - Wrong var naming in Worksheet->garbageCollect()
+- Bugfix:   (MBaker) Work item 13764 - PHPExcel_Style_*::__clone() methods cause cloning loops?
+- Bugfix:   (MBaker) Work item 11488 - Recent builds causing problems loading xlsx files? (ZipArchive issue?)
+- Bugfix:   (MBaker) Work item 13856 - cache_to_apc causes fatal error when processing large data sets
+- Bugfix:   (MBaker) Work item 13880 - OOCalc reader misses first line if it's a 'table-header-row'
+- Bugfix:   (MBaker) Work item 14011 - using cache with copy or clone bug?
+										Fixed $worksheet->copy() or clone $worksheet when using cache_in_memory, cache_in_memory_gzip, cache_in_memory_serialized, cache_to_discISAM, cache_to_phpTemp, cache_to_apc and cache_to_memcache;
+										Fixed but untested when using cache_to_wincache.
+- Bugfix:   (MBaker) Fixed problems with reading Excel2007 Properties
+- General:  (MB) Applied patch 6324 - PHP Strict Standards: Non-static method PHPExcel_Shared_String::utf16_decode() should not be called statically
+- General:  (MBaker) Applied patch 6360 - Array functions were ignored when loading an existing file containing them, and as a result, they would lose their 'cse' status.
+- General:  (MBaker) Minor memory tweaks to Excel2007 Writer
+- General:  (MBaker) Modified ReferenceHelper updateFormulaReferences() method to handle updates to row and column cell ranges (including absolute references e.g. =SUM(A:$E) or =SUM($5:5), and range/cell references that reference a worksheet by name), and to provide both performance and memory improvements.
+- General:  (MBaker) Modified Excel2007 Reader so that ReferenceHelper class is instantiated only once rather than for every shared formula in a workbook.
+- General:  (MBaker) Correct handling for additional (synonym) formula tokens in Excel5 Reader
+- General:  (MBaker) Additional reading of some Excel2007 Extended Properties (Company, Manager)
 
 
 2010-06-01 (v1.7.3c):

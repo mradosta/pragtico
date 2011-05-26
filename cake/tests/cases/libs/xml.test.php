@@ -4,14 +4,14 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
  * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.5432
@@ -110,6 +110,24 @@ class XmlTest extends CakeTestCase {
 		);
 		$result =& new Xml($data, array('format' => 'tags'));
 		$expected = '<statuses><status><id>1</id></status><status><id>2</id></status></statuses>';
+		$this->assertIdentical($result->toString(), $expected);
+	}
+
+/**
+ * testSerializeCapsWithoutSlug method
+ *
+ * @access public
+ * @return void
+ */
+	function testSerializeCapsWithoutSlug() {
+		$data = array(
+			'USERS' => array(
+				array('USER' => array('ID' => 1)),
+				array('USER' => array('ID' => 2))
+			)
+		);
+		$result =& new Xml($data, array('format' => 'tags', 'slug' => false));
+		$expected = '<USERS><USER><ID>1</ID></USER><USER><ID>2</ID></USER></USERS>';
 		$this->assertIdentical($result->toString(), $expected);
 	}
 
@@ -1417,4 +1435,3 @@ class XmlTest extends CakeTestCase {
 		$this->assertWithinMargin($start, $end, 3600, 'Memory leaked %s');
 	}
 }
-?>

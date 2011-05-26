@@ -452,7 +452,13 @@ class FormatoHelper extends AppHelper {
                         $tmp['desde'] = $fechaDesde;
                         $tmp['hasta'] = $fechaHasta;
                         $return = $tmp;
+
+					} else if (is_numeric($valor) && $valor > 2000 && $valor < 2035) {
+
+                        $return = array('desde' => $valor . '-01-01', 'hasta' => $valor . '-12-31');
+
                     } else {
+						
                         $return = false;
                     }
                 }

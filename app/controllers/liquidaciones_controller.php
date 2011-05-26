@@ -45,12 +45,16 @@ class LiquidacionesController extends AppController {
 
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 
-            $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
+
+			$conditions['(Liquidacion.group_id & ' . array_sum($this->data['Condicion']['Bar-grupo_id']) . ') >'] = 0;
+
             $conditions['Liquidacion.estado'] = 'Confirmada';
+
 
             if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
                 $conditions['Liquidacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
             }
+
 
             if (!empty($this->data['Condicion']['Bar-periodo_largo'])) {
                 $period = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
@@ -61,7 +65,13 @@ class LiquidacionesController extends AppController {
 			$this->Liquidacion->Behaviors->detach('Permisos');
 			$r = $this->Liquidacion->find('all', array(
 				'recursive'		=> -1,
-				'fields'		=> array('Zone.name, SUM(Liquidacion.total) AS total'),
+				'fields'		=> array(
+					'Zone.name,
+					SUM(Liquidacion.remunerativo) AS total_remunerativo,
+					SUM(Liquidacion.no_remunerativo) AS total_no_remunerativo,
+					SUM(Liquidacion.deduccion) AS total_deduccion,
+					SUM(Liquidacion.total) AS total'
+				),
 				'group'			=> array('Zone.name'),
 				'conditions'	=> $conditions,
 				'joins' 		=> array(
@@ -81,6 +91,7 @@ class LiquidacionesController extends AppController {
 					)
 				)
 			));
+
             $this->set('data', $r);
             $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
 		}
@@ -453,7 +464,6 @@ class LiquidacionesController extends AppController {
 				} else {
                     if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
 						$this->set('groupParams', User::getGroupParams($this->data['Condicion']['Bar-grupo_id']));
-                        //$this->set('groupParams', ClassRegistry::init('Grupo')->getParams($this->data['Condicion']['Bar-grupo_id']));
                     }
                     if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
                         $this->Liquidacion->Relacion->Empleador->recursive = -1;
@@ -803,6 +813,7 @@ class LiquidacionesController extends AppController {
 			}
 		}
 
+		$this->set('groupParams', User::getGroupParams());
         $this->render($render);
 	}
 
@@ -1343,14 +1354,29 @@ class LiquidacionesController extends AppController {
 		if (!empty($ids)) {
 
             $this->Liquidacion->setSecurityAccess('readOwnerOnly');
-            $r = $this->Liquidacion->find('all', array(
+
+			/** First, count all but special types, can be just one per type per period */
+            $r1 = $this->Liquidacion->find('all', array(
 				'recursive'		=> -1,
                 'conditions'    => array(
                     'Liquidacion.id'        => $ids,
                     'Liquidacion.estado'    => array('Sin Confirmar', 'Guardada'),
-                    'Liquidacion.total >='  => 0)));
+					'Liquidacion.tipo !='	=> 'Especial',
+                    'Liquidacion.total >='  => 0),
+				'group'			=> array('relacion_id', 'tipo', 'ano', 'mes', 'periodo')
+			));
 
-            if (count($r) != count($ids)) {
+			/** Second, count only special types, can be multiple special receipts by period */
+            $r2 = $this->Liquidacion->find('all', array(
+				'recursive'		=> -1,
+                'conditions'    => array(
+                    'Liquidacion.id'        => $ids,
+                    'Liquidacion.estado'    => array('Sin Confirmar', 'Guardada'),
+					'Liquidacion.tipo'		=> 'Especial',
+                    'Liquidacion.total >='  => 0)
+			));
+
+            if ((count($r1) + count($r2)) != count($ids)) {
                 $this->Session->setFlash('Ha seleccionado liquidaciones para confirmar que no pueden ser confirmadas.', 'error');
                 $this->History->goBack();
             }

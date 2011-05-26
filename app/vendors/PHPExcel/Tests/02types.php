@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * PHPExcel
  *
@@ -22,11 +22,13 @@
  * @package    PHPExcel
  * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.7.3c, 2010-06-01
+ * @version    1.7.4, 2010-08-26
  */
 
 /** Error reporting */
 error_reporting(E_ALL);
+
+date_default_timezone_set('Europe/London');
 
 /** PHPExcel */
 require_once '../Classes/PHPExcel.php';
@@ -54,9 +56,36 @@ $objPHPExcel->getDefaultStyle()->getFont()->setSize(10);
 // Add some data, resembling some different data types
 echo date('H:i:s') . " Add some data\n";
 $objPHPExcel->getActiveSheet()->setCellValue('A1', 'String');
-$objPHPExcel->getActiveSheet()->setCellValue('A2', 12);
-$objPHPExcel->getActiveSheet()->setCellValue('A3', true);
-$objPHPExcel->getActiveSheet()->setCellValue('A4', false);
+$objPHPExcel->getActiveSheet()->setCellValue('B1', 'Simple');
+$objPHPExcel->getActiveSheet()->setCellValue('C1', 'PHPExcel');
+
+$objPHPExcel->getActiveSheet()->setCellValue('A2', 'String');
+$objPHPExcel->getActiveSheet()->setCellValue('B2', 'Symbols');
+$objPHPExcel->getActiveSheet()->setCellValue('C2', '!+&=()~§±æþ');
+
+$objPHPExcel->getActiveSheet()->setCellValue('A3', 'String');
+$objPHPExcel->getActiveSheet()->setCellValue('B3', 'UTF-8');
+$objPHPExcel->getActiveSheet()->setCellValue('C3', 'Создать MS Excel Книги из PHP скриптов');
+
+$objPHPExcel->getActiveSheet()->setCellValue('A4', 'Number');
+$objPHPExcel->getActiveSheet()->setCellValue('B4', 'Integer');
+$objPHPExcel->getActiveSheet()->setCellValue('C4', 12);
+
+$objPHPExcel->getActiveSheet()->setCellValue('A5', 'Number');
+$objPHPExcel->getActiveSheet()->setCellValue('B5', 'Float');
+$objPHPExcel->getActiveSheet()->setCellValue('C5', 34.56);
+
+$objPHPExcel->getActiveSheet()->setCellValue('A6', 'Number');
+$objPHPExcel->getActiveSheet()->setCellValue('B6', 'Negative');
+$objPHPExcel->getActiveSheet()->setCellValue('C6', -7.89);
+
+$objPHPExcel->getActiveSheet()->setCellValue('A7', 'Boolean');
+$objPHPExcel->getActiveSheet()->setCellValue('B7', 'True');
+$objPHPExcel->getActiveSheet()->setCellValue('C7', true);
+
+$objPHPExcel->getActiveSheet()->setCellValue('A8', 'Boolean');
+$objPHPExcel->getActiveSheet()->setCellValue('B8', 'False');
+$objPHPExcel->getActiveSheet()->setCellValue('C8', false);
 
 // Rename sheet
 echo date('H:i:s') . " Rename sheet\n";

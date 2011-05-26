@@ -140,8 +140,10 @@ Source Location: /PHPExcel/Writer/Excel5/Worksheet.php<br /><br />
     <li><a href="../PHPExcel_Writer_Excel5/PHPExcel_Writer_Excel5_Worksheet.html#method__construct">__construct</a></li>
     <li><a href="../PHPExcel_Writer_Excel5/PHPExcel_Writer_Excel5_Worksheet.html#methodclose">close</a></li>
     <li><a href="../PHPExcel_Writer_Excel5/PHPExcel_Writer_Excel5_Worksheet.html#methodgetData">getData</a></li>
+    <li><a href="../PHPExcel_Writer_Excel5/PHPExcel_Writer_Excel5_Worksheet.html#methodgetEscher">getEscher</a></li>
     <li><a href="../PHPExcel_Writer_Excel5/PHPExcel_Writer_Excel5_Worksheet.html#methodinsertBitmap">insertBitmap</a></li>
     <li><a href="../PHPExcel_Writer_Excel5/PHPExcel_Writer_Excel5_Worksheet.html#methodprintRowColHeaders">printRowColHeaders</a></li>
+    <li><a href="../PHPExcel_Writer_Excel5/PHPExcel_Writer_Excel5_Worksheet.html#methodsetEscher">setEscher</a></li>
     <li><a href="../PHPExcel_Writer_Excel5/PHPExcel_Writer_Excel5_Worksheet.html#methodsetOutline">setOutline</a></li>
   </ul>
 </td>
@@ -516,7 +518,7 @@ PHPExcel_Writer_Excel5_Worksheet<br /><br /><br /><br />
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5__PHPExcelWriterExcel5Worksheet.php.html#a199">199</a>]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5__PHPExcelWriterExcel5Worksheet.php.html#a206">206</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -618,7 +620,7 @@ $tempDir)</code>
   </div>
   <hr />
 	<a name="methodclose"></a>
-	<h3>method close <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5__PHPExcelWriterExcel5Worksheet.php.html#a269">269</a>]</span></h3>
+	<h3>method close <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5__PHPExcelWriterExcel5Worksheet.php.html#a276">276</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -646,7 +648,7 @@ $tempDir)</code>
   </div>
   <hr />
 	<a name="methodgetData"></a>
-	<h3>method getData <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5__PHPExcelWriterExcel5Worksheet.php.html#a542">542</a>]</span></h3>
+	<h3>method getData <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5__PHPExcelWriterExcel5Worksheet.php.html#a549">549</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -670,8 +672,33 @@ $tempDir)</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodgetEscher"></a>
+	<h3>method getEscher <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5__PHPExcelWriterExcel5Worksheet.php.html#a2708">2708</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code><a href="../PHPExcel_Shared_Escher/PHPExcel_Shared_Escher.html">PHPExcel_Shared_Escher</a> getEscher(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Get Escher object<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodinsertBitmap"></a>
-	<h3>method insertBitmap <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5__PHPExcelWriterExcel5Worksheet.php.html#a2352">2352</a>]</span></h3>
+	<h3>method insertBitmap <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5__PHPExcelWriterExcel5Worksheet.php.html#a2359">2359</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -743,7 +770,7 @@ $scale_y = 1])</code>
   </div>
   <hr />
 	<a name="methodprintRowColHeaders"></a>
-	<h3>method printRowColHeaders <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5__PHPExcelWriterExcel5Worksheet.php.html#a562">562</a>]</span></h3>
+	<h3>method printRowColHeaders <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5__PHPExcelWriterExcel5Worksheet.php.html#a569">569</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -778,8 +805,44 @@ $print = 1])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodsetEscher"></a>
+	<h3>method setEscher <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5__PHPExcelWriterExcel5Worksheet.php.html#a2718">2718</a>]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void setEscher(
+[
+$pValue = null])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Set Escher object<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type"><a href="../PHPExcel_Shared_Escher/PHPExcel_Shared_Escher.html">PHPExcel_Shared_Escher</a>&nbsp;&nbsp;</td>
+        <td><b>$pValue</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodsetOutline"></a>
-	<h3>method setOutline <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5__PHPExcelWriterExcel5Worksheet.php.html#a576">576</a>]</span></h3>
+	<h3>method setOutline <span class="smalllinenumber">[line <a href="../__filesource/fsource_PHPExcel_Writer_Excel5__PHPExcelWriterExcel5Worksheet.php.html#a583">583</a>]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -827,7 +890,7 @@ $auto_style = false])</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Tue, 01 Jun 2010 17:08:39 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Thu, 26 Aug 2010 17:47:02 +0200 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

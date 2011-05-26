@@ -4,14 +4,14 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
  * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.view.helpers
  * @since         CakePHP(tm) v 1.2.0.4206
@@ -789,6 +789,7 @@ class AjaxHelperTest extends CakeTestCase {
 		$expected = "if (confirm('Are you sure?')) { new Ajax.Updater('myDiv','/', {asynchronous:true, evalScripts:true, requestHeaders:['X-Update', 'myDiv']}); } else { event.returnValue = false; return false; }";
 		$this->assertEqual($result, $expected);
 	}
+
 /**
  * testDiv method
  *
@@ -796,7 +797,7 @@ class AjaxHelperTest extends CakeTestCase {
  * @return void
  */
 	function testDiv() {
-		ob_flush();
+		ob_start();
 		$oldXUpdate = env('HTTP_X_UPDATE');
 
 		$result = $this->Ajax->div('myDiv');
@@ -828,6 +829,7 @@ class AjaxHelperTest extends CakeTestCase {
  * @return void
  */
 	function testAfterRender() {
+		ob_start();
 		$oldXUpdate = env('HTTP_X_UPDATE');
 		$this->Ajax->Javascript =& new TestJavascriptHelper();
 
@@ -906,4 +908,3 @@ class AjaxHelperTest extends CakeTestCase {
 		$this->assertTags($result, $expected);
 	}
 }
-?>
