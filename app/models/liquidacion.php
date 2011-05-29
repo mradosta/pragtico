@@ -229,19 +229,33 @@ class Liquidacion extends AppModel {
         if (in_array($this->__receiptType, array('normal', 'especial'))) {
 
             $jornada = $this->getRelationship('ConveniosCategoria', 'jornada');
-            if (($period['periodo'] !== 'M' && $jornada === 'Mensual') || ($period['periodo'] === 'M' && $jornada === 'Por Hora')) {
+
+            if ($period['periodo'] != 'M' && $jornada == 'Mensual') {
 
 				$this->__setError(array(    'tipo'                  => 'Error de Jornadas',
 											'gravedad'              => 'Alta',
 											'concepto'              => '',
 											'variable'              => '',
 											'formula'               => '',
-											'descripcion'           => 'No es posible realizar la liquidacion porque ha seleccionado un periodo que no concuerda con la jornada especificada en la relacion.',
+											'descripcion'           => 'No es posible realizar la liquidacion porque la jornada especificada en la categoria del convenio indica que debe liquidarse periodos mensuales.',
 											'recomendacion'         => 'Verifique el periodo que esta liquidando.',
 											'descripcion_adicional' => ''));
 
                 return $this->__getSaveArray($this->__receiptType);
+
+            } else if ($period['periodo'] == 'M' && $jornada == 'Por Hora') {
+
+				$this->__setError(array(    'tipo'                  => 'Error de Jornadas',
+											'gravedad'              => 'Media',
+											'concepto'              => '',
+											'variable'              => '',
+											'formula'               => '',
+											'descripcion'           => 'La jornada especificada en la categoria del convenio indica que debe liquidarse periodos quincenales',
+											'recomendacion'         => 'Verifique el periodo que esta liquidando.',
+											'descripcion_adicional' => ''));
+
             }
+
 
             $this->setConcept(
                 $this->Relacion->RelacionesConcepto->Concepto->findConceptos('Relacion',
