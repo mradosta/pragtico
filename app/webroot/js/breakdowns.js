@@ -11,7 +11,7 @@ var buildTable = function(clickedRowId, url, table) {
 			function() {
 				newTbody.append(this);
 				if (clickedRowId == jQuery(this).attr("charoff")) {
-					var td = jQuery("<td/>").attr("colspan", "12");
+					var td = jQuery("<td/>").attr("colspan", "20");
 					td.append(jQuery("<div/>").attr("class", "desglose").load(url,
 						function() {
 							jQuery("img.breakdown_icon", this).bind("click", breakdown);
@@ -31,7 +31,7 @@ var buildTable = function(clickedRowId, url, table) {
 				newTbody.append(this);
 
 				if (clickedRowId == jQuery(this).attr("charoff")) {
-					var td = jQuery("<td/>").attr("colspan", "10");
+					var td = jQuery("<td/>").attr("colspan", "20");
 					td.append(jQuery("<div/>").attr("class", "desglose").load(url,
 						function() {
 							jQuery("img.breakdown_icon", this).bind("click", breakdown);
