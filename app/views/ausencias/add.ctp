@@ -42,11 +42,12 @@ $campos['AusenciasSeguimiento.id'] = array();
 $campos['AusenciasSeguimiento.dias'] = array();
 $campos['AusenciasSeguimiento.comprobante'] = array("label"=>"Presento Comprobante");
 
+
 $hours = $appForm->link($appForm->image('convert.gif'), null, array('class' => 'hours_to_days', 'title' => 'Convertir a dias', 'escape' => false));
-$campos['Bar.foo'] = array('after' => $hours, 'label' => 'Horas', 'aclaracion' => 'Para la liquidacion solo se tendra el campo dias. Este valor solo simplifica la conversion de horas a dias para jornadas de 8 horas');
+$campos['AusenciasSeguimiento.foo'] = array('after' => $hours, 'label' => 'Horas', 'aclaracion' => 'Para la liquidacion solo se tendra el campo dias. Este valor solo simplifica la conversion de horas a dias para jornadas de 8 horas');
 
 $minutes = $appForm->link($appForm->image('convert.gif'), null, array('class' => 'minutes_to_days', 'title' => 'Convertir a dias', 'escape' => false));
-$campos['Bar.foo1'] = array('after' => $minutes, 'label' => 'Minutos', 'aclaracion' => 'Para la liquidacion solo se tendra el campo dias. Este valor solo simplifica la conversion de minutos a dias para jornadas de 8 horas');
+$campos['AusenciasSeguimiento.foo1'] = array('after' => $minutes, 'label' => 'Minutos', 'aclaracion' => 'Para la liquidacion solo se tendra el campo dias. Este valor solo simplifica la conversion de minutos a dias para jornadas de 8 horas');
 
 $campos['AusenciasSeguimiento.archivo'] = array("label"=>"Comprobante", "type"=>"file", "descargar"=>true, "mostrar"=>true);
 $campos['AusenciasSeguimiento.estado'] = array('type' => 'radio');
@@ -74,7 +75,7 @@ if (!empty($this->data)) {
 }
 $appForm->addScript('
 
-	
+
 	jQuery(".hours_to_days").click(
 		function() {
 			var e = jQuery("input", jQuery(this).parent());
