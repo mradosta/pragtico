@@ -317,7 +317,7 @@ CREATE TABLE `ausencias_motivos` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `situacion_id` int(11) unsigned DEFAULT NULL,
   `motivo` varchar(50) NOT NULL,
-  `tipo` enum('Enfermedad','Licencia','Accidente','Maternidad','Injustificada') NOT NULL DEFAULT 'Enfermedad',
+  `tipo` enum('Enfermedad','Licencia','Accidente','Maternidad','Injustificada','Suspension') NOT NULL DEFAULT 'Enfermedad',
   `created` datetime NOT NULL,
   `modified` datetime NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
