@@ -70,7 +70,7 @@ class VacacionesController extends AppController {
                 }
 
 
-				$conditions['Relacion.ingreso <'] = $this->data['Condicion']['Bar-periodo_largo'] . '-01-01';
+				//$conditions['Relacion.ingreso <'] = $this->data['Condicion']['Bar-periodo_largo'] . '-01-01';
 
                 /*
                 $conditions['NOT'] = array('Relacion.id' =>
@@ -80,13 +80,21 @@ class VacacionesController extends AppController {
                             'Vacacion.periodo' => $this->data['Condicion']['Bar-periodo_largo']))))));
                 */
 
-                $baseFormula = str_replace('#fecha_hasta_periodo_vacacional', 'date(' . str_replace('-', ',', $this->data['Condicion']['Bar-periodo_largo'] . '-12-31') . ')',  '=if(and(month(#fecha_ingreso)>6,year(#fecha_ingreso)=year(#fecha_hasta_periodo_vacacional),day(#fecha_ingreso)>=1),int(if(networkdays(#fecha_ingreso,#fecha_hasta_periodo_vacacional)=132,14,networkdays(#fecha_ingreso,#fecha_hasta_periodo_vacacional)/20)),if(and(month(#fecha_ingreso)<6,year(#fecha_ingreso)=year(#fecha_hasta_periodo_vacacional)),14,if((year(#fecha_hasta_periodo_vacacional)-year(#fecha_ingreso))<=5,14,if((year(#fecha_hasta_periodo_vacacional)-year(#fecha_ingreso))<=10,21,if((year(#fecha_hasta_periodo_vacacional)-year(#fecha_ingreso))<=20,28,35)))))');
+
+                $baseFormulaMensual = str_replace('#fecha_hasta_periodo_vacacional', 'date(' . str_replace('-', ',', $this->data['Condicion']['Bar-periodo_largo'] . '-12-31') . ')',  '=if(and(month(#fecha_ingreso)>6,year(#fecha_ingreso)=year(#fecha_hasta_periodo_vacacional),day(#fecha_ingreso)>=1),int(if(networkdays(#fecha_ingreso,#fecha_hasta_periodo_vacacional)=132,14,networkdays(#fecha_ingreso,#fecha_hasta_periodo_vacacional)/20)),if(and(month(#fecha_ingreso)<6,year(#fecha_ingreso)=year(#fecha_hasta_periodo_vacacional)),14,if((year(#fecha_hasta_periodo_vacacional)-year(#fecha_ingreso))<=5,14,if((year(#fecha_hasta_periodo_vacacional)-year(#fecha_ingreso))<=10,21,if((year(#fecha_hasta_periodo_vacacional)-year(#fecha_ingreso))<=20,28,35)))))');
+
+
+                $baseFormulaPorHora = str_replace('#fecha_hasta_periodo_vacacional', 'date(' . str_replace('-', ',', $this->data['Condicion']['Bar-periodo_largo'] . '-12-31') . ')',  '=if(and(month(#fecha_ingreso)>6,year(#fecha_ingreso)=year(#fecha_hasta_periodo_vacacional),day(#fecha_ingreso)>=1),int(if(datedif(#fecha_ingreso,#fecha_hasta_periodo_vacacional)=132,14,datedif(#fecha_ingreso,#fecha_hasta_periodo_vacacional)/20)),if(and(month(#fecha_ingreso)<6,year(#fecha_ingreso)=year(#fecha_hasta_periodo_vacacional)),14,if((year(#fecha_hasta_periodo_vacacional)-year(#fecha_ingreso))<=5,14,if((year(#fecha_hasta_periodo_vacacional)-year(#fecha_ingreso))<=10,21,if((year(#fecha_hasta_periodo_vacacional)-year(#fecha_ingreso))<=20,28,35)))))');
+
+
+
 
                 App::import('Vendor', 'formulas', 'pragmatia');
                 $Formulas = new Formulas();
 
                 foreach ($this->Vacacion->Relacion->find('all', array(
                     'contain'       => array(
+						'ConveniosCategoria',
 						'Vacacion' => array(
 							'conditions' => array(
 								'Vacacion.periodo' => $this->data['Condicion']['Bar-periodo_largo'])
@@ -94,7 +102,15 @@ class VacacionesController extends AppController {
 					),
                     'conditions'    => $conditions)) as $relation) {
 
-                    $formula = str_replace('#fecha_ingreso', 'date(' . str_replace('-', ',', $relation['Relacion']['ingreso']) . ')', $baseFormula);
+					if ($relation['ConveniosCategoria']['jornada'] == 'Mensual') {
+
+                    	$formula = str_replace('#fecha_ingreso', 'date(' . str_replace('-', ',', $relation['Relacion']['ingreso']) . ')', $baseFormulaMensual);
+
+					} else {
+
+                    	$formula = str_replace('#fecha_ingreso', 'date(' . str_replace('-', ',', $relation['Relacion']['ingreso']) . ')', $baseFormulaPorHora);
+
+					}
 
                     if (empty($relation['Vacacion'])) {
                         $id = null;
