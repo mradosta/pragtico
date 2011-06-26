@@ -19,14 +19,15 @@
 if (!empty($data)) {
 
     if (empty($groupParams)) {
-        $left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s",
+        $left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s\n%s",
             $employer['Empleador']['nombre'],
             $employer['Empleador']['direccion'],
             $employer['Empleador']['barrio'],
             $employer['Empleador']['codigo_postal'],
             $employer['Empleador']['ciudad'],
             $employer['Empleador']['pais'],
-            $employer['Empleador']['cuit']);
+            $employer['Empleador']['cuit'],
+			$employer['Actividad']['nombre']);
         $center = "&CLibro Especial de Sueldos - Art. 52 Ley 20744";
     } else {
         $left = sprintf("&L%s\n%s - %s\nCP: %s - %s - %s\nCUIT: %s",

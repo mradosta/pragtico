@@ -466,7 +466,7 @@ class LiquidacionesController extends AppController {
 						$this->set('groupParams', User::getGroupParams($this->data['Condicion']['Bar-grupo_id']));
                     }
                     if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
-                        $this->Liquidacion->Relacion->Empleador->recursive = -1;
+                        $this->Liquidacion->Relacion->Empleador->contain(array('Actividad'));
                         $this->set('employer', $this->Liquidacion->Relacion->Empleador->findById($this->data['Condicion']['Bar-empleador_id']));
                     }
                     $this->set('startPage', $this->data['Condicion']['Bar-start_page']);
