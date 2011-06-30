@@ -125,7 +125,7 @@ class ValidacionesBehavior extends ModelBehavior {
         $value = $this->__getValue($rule);
 
 		/** Search for vars and concepts */
-		preg_match_all('/[#|@][0-9a-z_]+/', $value, $matchesA);
+		preg_match_all('/[#|@][0-9a-z_\/]+/', $value, $matchesA);
 
 		/** Search for strings */
 		preg_match_all('/[\'\"]{1}[a-zA-Z0-9\s]+[\'\"]{1}/i', $value, $matchesB);

@@ -914,6 +914,40 @@ class Liquidacion extends AppModel {
         */
         elseif (substr($formula, 0, 1) === '=') {
 
+
+			/**
+			 * Search for historical concepts in formula
+			 */ 
+			if (preg_match_all('/@([a-z_]+)\/([0-9]{6}[M|1Q|2Q]+)\/+/', $formula, $matches)) {
+
+                foreach (array_unique($matches[1]) as $k => $match) {
+
+					$value = $this->getHistoricalConceptValue($match, $matches[2][$k]);
+
+					if ($value == null) {
+						$this->__setError(array(
+							'tipo'					=> 'Concepto Inexistente',
+							'gravedad'				=> 'Media',
+							'concepto'				=> $match,
+							'variable'				=> '',
+							'formula'				=> $formula,
+							'descripcion'			=> 'La formula requiere de un concepto historico inexistente.',
+							'recomendacion'			=> 'Verifique la formula y que todos los conceptos que esta utiliza existan en la historia de liquidaciones de la relacion.',
+							'descripcion_adicional'	=> 'verifique: ' . $matches[0][$k]));
+
+						$value = 0;
+
+					}
+
+					$formula = str_replace($matches[0][$k], $value, $formula);
+
+                }
+
+			}
+
+
+
+
             /**
             * Verifico que tenga calculado todos los conceptos que esta formula me pide.
             * Si aun no lo tengo, lo calculo.
@@ -1259,6 +1293,35 @@ class Liquidacion extends AppModel {
             return $return;
         }
     }
+
+
+
+	function getHistoricalConceptValue($conceptCode, $longPeriod) {
+
+		$period = $this->format($longPeriod, 'periodo');
+
+		$sql = "
+			select 	valor
+			from 	liquidaciones_detalles ld
+				inner join liquidaciones l
+					on (ld.liquidacion_id = l.id)
+			where 	l.estado = 'Confirmada'
+			and 	l.ano = %s
+			and 	l.mes = %s
+			and 	l.periodo = '%s'
+			and 	ld.concepto_codigo = '%s'
+			and 	l.relacion_id = %s
+		";
+
+		$sql = sprintf($sql, $period['ano'], $period['mes'], $period['periodo'], $conceptCode, $this->getRelationship('Relacion', 'id'));
+
+		$resolv = $this->query($sql);
+		if (empty($resolv)) {
+			return null;
+		} else {
+			return $resolv[0]['ld']['valor'];
+		}
+	}
 
 
     function __setError($error) {
