@@ -10,9 +10,9 @@
  * @package			pragtico
  * @subpackage		app.views
  * @since			Pragtico v 1.0.0
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
+ * @version			$Revision: 1141 $
+ * @modifiedby		$LastChangedBy: mradosta $
+ * @lastmodified	$Date: 2009-11-17 15:16:21 -0300 (Tue, 17 Nov 2009) $
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
  
@@ -20,11 +20,9 @@
 * Especifico los campos de ingreso de datos.
 */
 $campos = null;
-$campos['Novedad.periodo'] = array('type' => 'periodo', 'aclaracion' => 'Tomara este periodo para los datos ingresados desde la planilla.', 'verificarRequerido' => false);
-$campos['Novedad.liquidacion_tipo'] = array('type' => 'radio', 'options' => $liquidacion_tipo, 'label' => 'Tipo Liquidacion');
-$campos['Novedad.planilla'] = array('type' => 'file');
+$campos['ConveniosCategoria.planilla'] = array('type' => 'file');
 
-$fieldset = $appForm->pintarFieldsets(array(array('campos' => $campos)), array('fieldset' => array('legend' => 'Importar novedades desde planilla', 'imagen' => 'excel.gif')));
+$fieldset = $appForm->pintarFieldsets(array(array('campos' => $campos)), array('fieldset' => array('legend' => 'Importar actualizacion de catgeorias desde planilla', 'imagen' => 'excel.gif')));
 
 
 $botonesExtra[] = $appForm->button('Cancelar', array('title' => 'Cancelar', 'class' => 'limpiar', 'onclick' => 'document.getElementById("accion").value="cancelar";form.submit();'));

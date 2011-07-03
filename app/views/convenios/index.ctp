@@ -58,6 +58,10 @@ foreach ($registros as $k => $v) {
 	$cuerpo[] = $fila;
 }
 
-echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo));
+
+$generar = $appForm->link('Generar Planilla', 'generar_planilla', array('title' => 'Genera las planillas para de actualizacion de Categorias', 'class' => 'link_boton'));
+$importar = $appForm->link('Importar Planilla', 'importar_planilla', array('class' => 'link_boton', 'title' => 'Importa las planillas de actualizacion de Categorias'));
+$accionesExtra['opciones'] = array('acciones' => array('nuevo', 'modificar', 'eliminar', $generar, $importar));
+echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, 'accionesExtra' => $accionesExtra));
 
 ?>

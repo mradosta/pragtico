@@ -33,6 +33,8 @@ class ConveniosController extends AppController {
     );
 
 
+	var $helpers = array('Documento');
+
 /**
  * Permite descargar el archivo del convenio colectivo.
  */
@@ -69,7 +71,7 @@ class ConveniosController extends AppController {
  * Muestra via desglose las antiguedades de los convenios colectivos.
  */
 	function antiguedades($id) {
-		$this->Convenio->contain(array("ConveniosAntiguedad"));
+		$this->Convenio->contain(array('ConveniosAntiguedad'));
 		$this->data = $this->Convenio->read(null, $id);
 	}
 
@@ -79,7 +81,7 @@ class ConveniosController extends AppController {
  * Muestra via desglose los conceptos asociados a este convenio colectivo.
  */
 	function conceptos($id) {
-		$this->Convenio->contain(array("Concepto"));
+		$this->Convenio->contain(array('Concepto'));
 		$this->data = $this->Convenio->read(null, $id);
 	}
 
@@ -122,7 +124,104 @@ class ConveniosController extends AppController {
 				$this->Session->setFlash("El concepto no se lo pudo " . $accion . " a ningun trabajador. Puede que ya haya estado asignado/quitado.", "warning");
 			}
 		}
-		$this->redirect("index");
+		$this->redirect('index');
 	}
+
+
+/**
+ * Genera una planilla en formato Excel2007 o Excel5 para el ingreso de actualizaciones de escalas en las categorias.
+ *
+ * @access public.
+ * @return void.
+ */
+	function generar_planilla() {
+		if (!empty($this->data['Formulario']['accion'])) {
+			if ($this->data['Formulario']['accion'] === 'buscar') {
+
+				if (!empty($this->data['Condicion']['ConveniosCategoria-convenio_id'])) {
+
+					$conditions['ConveniosCategoria.convenio_id'] = explode('**||**', $this->data['Condicion']['ConveniosCategoria-convenio_id']);
+
+					$registros = $this->Convenio->ConveniosCategoria->find('all',
+						array(
+							'contain'		=> array('Convenio'),
+							'order'     	=> array('Convenio.nombre', 'ConveniosCategoria.nombre'),
+							'conditions'	=> $conditions
+						)
+					);
+
+
+					if (!empty($registros)) {
+						$this->set('fileFormat', $this->data['Condicion']['Novedad-formato']);
+						$this->set('registros', $registros);
+						$this->layout = 'ajax';
+					} else {
+						$this->Session->setFlash('No se encontraron categorias cargadas para el convenio seleccionado. Por favor verifique.', 'error');
+					}
+
+				} else {
+					$this->Session->setFlash('Debe seleccionar por lo menos un convenio', 'error');
+				}
+
+			} elseif ($this->data['Formulario']['accion'] === 'limpiar') {
+				$this->Session->delete('filtros.' . $this->name . '.' . $this->action);
+				unset($this->data['Condicion']);
+			}
+		}
+
+		/** Fijo lo que viene preseleccionado */
+		$this->data['Condicion']['Novedad-formato'] = "Excel2007";
+	}
+
+
+/**
+ * Importa una planilla en formato Excel2007 o Excel5 con las actualizaciones de las escalas en las categorias.
+ */
+	function importar_planilla() {
+		if (!empty($this->data['Formulario']['accion'])) {
+			if ($this->data['Formulario']['accion'] === 'importar') {
+				if (!empty($this->data['ConveniosCategoria']['planilla']['tmp_name'])) {
+
+					set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes');
+					App::import('Vendor', 'IOFactory', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'IOFactory.php');
+					
+					if (preg_match("/.*\.xls$/", $this->data['ConveniosCategoria']['planilla']['name'])) {
+						$objReader = PHPExcel_IOFactory::createReader('Excel5');
+					} elseif (preg_match("/.*\.xlsx$/", $this->data['ConveniosCategoria']['planilla']['name'])) {
+						$objReader = PHPExcel_IOFactory::createReader('Excel2007');
+					}
+                    $objReader->setReadDataOnly(true);
+					$objPHPExcel = $objReader->load($this->data['ConveniosCategoria']['planilla']['tmp_name']);
+
+					App::import('Vendor', 'dates', 'pragmatia');	
+					for ($i = 10; $i <= $objPHPExcel->getActiveSheet()->getHighestRow() - 1; $i++) {
+
+						$values[] = array(
+							'ConveniosCategoriasHistorico' => array(
+								'convenios_categoria_id' => $objPHPExcel->getActiveSheet()->getCellByColumnAndRow(0, $i)->getValue(),
+								'desde' => $this->Util->format(Dates::dateAdd('1970-01-01', $objPHPExcel->getActiveSheet()->getCellByColumnAndRow(3, $i)->getValue() - 25569, 'd', array('fromInclusive' => false)), 'date'),
+								'hasta' =>
+								$this->Util->format(Dates::dateAdd('1970-01-01', $objPHPExcel->getActiveSheet()->getCellByColumnAndRow(4, $i)->getValue() - 25569, 'd', array('fromInclusive' => false)), 'date'),
+								'costo' =>
+								$objPHPExcel->getActiveSheet()->getCellByColumnAndRow(5, $i)->getValue()
+							)
+						);
+					}
+
+					if (!empty($values)) {
+						if ($this->Convenio->ConveniosCategoria->ConveniosCategoriasHistorico->saveAll($values)) {
+							$this->Session->setFlash('Se importaron correctamente las categorias', 'error');
+							$this->redirect('convenios');
+						} else {
+							$this->Session->setFlash('No fue posible importar las categorias. Verifique la planilla', 'error');
+						}
+					}
+
+				}
+			}
+		}
+	}
+
+
 }
 ?>
