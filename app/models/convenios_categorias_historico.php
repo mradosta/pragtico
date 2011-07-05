@@ -30,6 +30,23 @@ class ConveniosCategoriasHistorico extends AppModel {
 	*/
 	var $modificadores = array('index' 	=> array('contain' => array('ConveniosCategoria.Convenio')),
 							   'edit' 	=> array('contain' => array('ConveniosCategoria.Convenio')));
+
+	var $validate = array(
+        'desde' => array(
+			array(
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe especificar la vigencia de la categoria.'),
+			array(
+				'rule'		=> VALID_DATE,
+				'message'	=> 'La fecha no es valida.'),
+        ),
+        'costo' => array(
+			array(
+				'rule'		=> VALID_NOT_EMPTY, 
+				'message'	=> 'Debe especificar el costo de la categoria.')
+        ),
+	);
+
 	
 	var $breadCrumb = array('format' 	=> '%s (%s)',
 							'fields' 	=> array('ConveniosCategoria.nombre', 'ConveniosCategoria.Convenio.nombre'));
