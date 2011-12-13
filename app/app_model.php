@@ -150,7 +150,7 @@ class AppModel extends Model {
             unset($tmp[$this->name]);
             $sameModel = empty($tmp);
             if ($sameModel === true) {
-                $this->create($this->data);
+                //$this->create($this->data);
                 if ($this->saveAll($this->data[$this->name], $options)) {
                     $c += count($this->data);
                 } elseif (!empty($this->validationErrors)) {
