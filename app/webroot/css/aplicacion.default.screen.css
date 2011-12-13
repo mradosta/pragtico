@@ -43,6 +43,26 @@ li img {
 }
 
 
+.align_left {
+	text-align:left;
+}
+
+.align_right {
+	text-align:right;
+}
+
+.floar_left {
+	float:left;
+}
+
+.float_right {
+	float:right;
+}
+
+.bold {
+	font-weight:bold;
+}
+
 /*
  * LOGIN
  */
@@ -857,6 +877,13 @@ div.tablasFromTo tbody td.quitar {
 	cursor: pointer;
 }
 
+
+/*
+ * TABLAS SIMPLE
+ */
+table.simple {
+	width: 95%;
+}
 
 /*
  * DESGLOSES
