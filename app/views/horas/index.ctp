@@ -74,5 +74,23 @@ $fila[] = array('model' => 'Hora', 'field' => 'tipo', 'valor' => '');
 $fila[] = array('model' => 'Hora', 'field' => 'estado', 'valor' => '');
 
 $pie[] = $fila;
-echo $this->element('index/index', array('condiciones' => $fieldset, 'cuerpo' => $cuerpo, 'pie'=>$pie));
+
+
+$acciones[] = 'nuevo';
+$acciones[] = 'modificar';
+$acciones[] = 'eliminar';
+$acciones[] = $appForm->link('Imp. Reloj', array('controller' => 'horas', 'action' => 'importar_reloj'),
+			array(	'class' 	=> 'link_boton',
+	 				'title' 	=> 'Importa horas desde un reloj para control de acceso'));
+$accionesExtra['opciones'] = array('acciones' => $acciones);
+
+echo $this->element('index/index',
+	array(
+		'condiciones' 	=> $fieldset,
+		'accionesExtra' => $accionesExtra,
+		'cuerpo' 		=> $cuerpo,
+		'pie'			=> $pie
+	)
+);
+
 ?>
