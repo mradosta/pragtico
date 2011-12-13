@@ -38,18 +38,23 @@ class HorasController extends AppController {
 
 
 				foreach ($this->data['Hora'] as $k => $v) {
-					$relacionId = array_pop(explode('_', $k));
 
-					$saveAll[] = array(
-						'relacion_id' 		=> $relacionId,
-						'tipo' 				=> $this->data['Form']['tipo'],
-						'liquidacion_tipo' 	=> $this->data['Form']['liquidacion_tipo'],
-						'periodo' 			=> $this->data['Form']['periodo'],
-						'estado'			=> 'Confirmada',
-						'cantidad' 			=> $v,
-						'observacion' 		=> 'Ingresado desde archivo de reloj. Confirmado el ' . date('Y-m-d'),
-					);
+					$relationId = array_pop(explode('_', $k));
+
+					if (!empty($this->data['Control']['relation_selected_' . $relationId])) {
+						$saveAll[] = array(
+							'relacion_id' 		=> $relationId,
+							'tipo' 				=> $this->data['Form']['tipo'],
+							'liquidacion_tipo' 	=> $this->data['Form']['liquidacion_tipo'],
+							'periodo' 			=> $this->data['Form']['periodo'],
+							'estado'			=> 'Confirmada',
+							'cantidad' 			=> $v,
+							'observacion' 		=> 'Ingresado desde archivo de reloj. Confirmado el ' . date('Y-m-d'),
+						);
+					}
+
 				}
+
 
 				if (!empty($saveAll)) {
 

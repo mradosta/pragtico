@@ -104,7 +104,7 @@ if (!empty($data)) {
 			$fila[] = array('valor' => Dates::secondsToHMS($time), 'opciones' => array('class' => 'align_right bold'));
 
 			$value = $appForm->input('Hora.relacion_' . $v['Relacion']['id'], array('type' => 'hidden', 'value' => $time / 60 / 60));
-			$fila[] = array('valor' => $appForm->input('Hora.relacion_' . $v['Relacion']['id'], array('type' => 'checkbox', 'div' => false, 'checked' => true, 'label' => false, 'class' => 'float_right')) . $value);
+			$fila[] = array('valor' => $appForm->input('Control.relation_selected_' . $v['Relacion']['id'], array('type' => 'checkbox', 'div' => false, 'checked' => true, 'label' => false, 'class' => 'float_right')) . $value);
 			$cuerpo[] = $fila;
 		}
 
