@@ -49,7 +49,7 @@ class NovedadesController extends AppController {
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'confirmar') {
 			$result = $this->Novedad->confirmar($this->Util->extraerIds($this->data['seleccionMultiple']));
 			if ($result) {
-				$this->Session->setFlash('Se confrmaron correctamente ' . $result['quantity'] . ' novedades', 'ok');
+				$this->Session->setFlash('Se confirmaron correctamente ' . $result['quantity'] . ' novedades', 'ok');
 				if (!empty($result['idByType']['Descuento'])) {
 					$this->redirect('index/' . implode('|', $result['idByType']['Descuento']));
 				}
