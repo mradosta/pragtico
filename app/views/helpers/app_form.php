@@ -463,10 +463,10 @@ class AppFormHelper extends FormHelper {
 						$columna['opciones'] = array();
 					}
 					
-					if ($columna['type'] === "header") {
+					if ($columna['type'] === 'header') {
 						$headers[] = array($columna['valor'], $columna['opciones']);
 					}
-					elseif ($columna['type'] === "cell") {
+					elseif ($columna['type'] === 'cell') {
 						$cells[] = array($columna['valor'], $columna['opciones']);
 					}
 				}
@@ -484,8 +484,11 @@ class AppFormHelper extends FormHelper {
 			* La funcion tableHeaders del framework no maneja multiples rows de header, por eso uso la funcion
 			* tableCells y reemplazo los tds por ths.
 			*/
-			$out[] = str_replace("td", "th", $this->Html->tableCells($filaHeaders));
+			$out[] = str_replace('td', 'th', $this->Html->tableCells($filaHeaders));
 			$out[] = $this->Html->tableCells($filaCells);
+			if (empty($opcionesHtml['class'])) {
+				$opcionesHtml['class'] = 'simple';
+			}
 			return $this->output("\n\n<table " . $this->_parseAttributes($opcionesHtml, null, '', '') . ">" . $this->output(join("\n", $out)) . "\n</table>\n\n");
 			
 		}
