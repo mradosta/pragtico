@@ -36,6 +36,7 @@ foreach ($registros as $k => $v) {
 	$fila = null;
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Trabajador']['id'], 'imagen' => array('nombre' => 'empleadores.gif', 'alt' => 'Empleadores'), 'url' => 'relaciones');
     $fila[] = array('tipo' => 'desglose', 'id' => $v['Trabajador']['id'], 'imagen' => array('nombre' => 'familiares.gif', 'alt' => 'Familiares'), 'url' => 'familiares');
+    $fila[] = array('tipo' => 'desglose', 'id' => $v['Trabajador']['id'], 'imagen' => array('nombre' => 'documentos.gif', 'alt' => 'Documentos'), 'url' => 'documentos');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'id', 'valor' => $v['Trabajador']['id'], 'write' => $v['Trabajador']['write'], 'delete' => $v['Trabajador']['delete']);
 	$fila[] = array('model' => 'Trabajador', 'field' => 'cuil', 'valor' => $v['Trabajador']['cuil'], 'class' => 'centro');
 	$fila[] = array('model' => 'Trabajador', 'field' => 'apellido', 'valor' => $v['Trabajador']['apellido']);

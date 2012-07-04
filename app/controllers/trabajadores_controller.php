@@ -154,5 +154,16 @@ class TrabajadoresController extends AppController {
         $this->Trabajador->contain('Familiar');
         $this->data = $this->Trabajador->read(null, $id);
     }
+    
+
+/**
+ * Informaciones.
+ * Muestra via desglose las informaciones de los trabajadores.
+ */
+    function documentos($id) {
+        $this->Trabajador->contain('TrabajadoresDocumento');
+        $this->data = $this->Trabajador->read(null, $id);
+    }
+    
 }
 ?>
