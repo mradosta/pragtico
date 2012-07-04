@@ -138,6 +138,9 @@ class NovedadesController extends AppController {
 
 					for ($i = 10; $i <= $objPHPExcel->getActiveSheet()->getHighestRow() - 1; $i++) {
 						$relacionId = $objPHPExcel->getActiveSheet()->getCell('A' . $i)->getValue();
+						if (empty($relacionId)) {
+							break;
+						}
 
 						/** Try to get period out of file */
 						$tmp = $objPHPExcel->getActiveSheet()->getCell('G' . $i)->getValue();
