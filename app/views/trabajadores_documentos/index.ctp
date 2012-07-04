@@ -21,7 +21,7 @@
 */
 $condiciones['Condicion.TrabajadoresDocumento-nombre'] = array();
 $fieldsets[] = array('campos' => $condiciones);
-$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "Documentos", 'imagen' => 'buscar.gif')));
+$fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => "Documentos", 'imagen' => 'documentos.gif')));
 
 
 /**
@@ -30,9 +30,9 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('leg
 $cuerpo = null;
 foreach ($registros as $k => $v) {
 	$fila = null;
-	$fila[] = array('model' => 'TrabajadoresDocumento', 'field' => 'id', 'valor' => $v['TrabajadoresDocumento']['id'], 'write' => $v['AusenciasSeguimiento']['write'], 'delete' => $v['AusenciasSeguimiento']['delete']);
+	$fila[] = array('model' => 'TrabajadoresDocumento', 'field' => 'id', 'valor' => $v['TrabajadoresDocumento']['id'], 'write' => $v['TrabajadoresDocumento']['write'], 'delete' => $v['TrabajadoresDocumento']['delete']);
 	$fila[] = array('model' => 'TrabajadoresDocumento', 'field' => 'nombre', 'valor' => $v['TrabajadoresDocumento']['nombre']);
-	$fila[] = array('model' => 'TrabajadoresDocumento', 'field' => 'observacion', 'valor' => $v['TrabajadoresDocumento']['observacion']);
+	$fila[] = array('model' => 'TrabajadoresDocumento', 'field' => 'descripcion', 'valor' => $v['TrabajadoresDocumento']['descripcion']);
 	$fila[] = array('model' => 'TrabajadoresDocumento', 'field' => 'created', 'valor' => $v['TrabajadoresDocumento']['created']);
 	$cuerpo[] = $fila;
 }
