@@ -3511,6 +3511,37 @@ INSERT INTO `variables` VALUES (1,'#contratacion','[ConveniosCategoria][jornada]
 /*!40000 ALTER TABLE `variables` ENABLE KEYS */;
 UNLOCK TABLES;
 
+
+--
+-- Table structure for table `trabajadores_documentos`
+--
+
+CREATE TABLE IF NOT EXISTS `trabajadores_documentos` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `trabajador_id` int(11) unsigned NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `file_size` int(11) NOT NULL,
+  `file_type` varchar(255) NOT NULL,
+  `file_data` mediumblob NOT NULL,
+  `descripcion` text NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  `permissions` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `trabajador_nombre_uk` (`trabajador_id`,`nombre`),
+  KEY `trabajador_id` (`trabajador_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+
+--
+-- Constraints for table `trabajadores_documentos`
+--
+ALTER TABLE `trabajadores_documentos`
+  ADD CONSTRAINT `trabajadores_documentos_ibfk_1` FOREIGN KEY (`trabajador_id`) REFERENCES `trabajadores` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
 --
 -- Table structure for table `zones`
 --
