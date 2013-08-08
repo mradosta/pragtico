@@ -5,12 +5,12 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
@@ -114,23 +114,31 @@ class Configure extends Object {
 				if (!class_exists('Debugger')) {
 					require LIBS . 'debugger.php';
 				}
-				$reporting = E_ALL & ~E_DEPRECATED;
+				$reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT;
 				if (function_exists('ini_set')) {
 					ini_set('display_errors', 1);
 				}
+				$callback = array('Debugger', 'getInstance');
 			} elseif (function_exists('ini_set')) {
 				ini_set('display_errors', 0);
 			}
 
 			if (isset($_this->log) && $_this->log) {
-				if (!class_exists('CakeLog')) {
-					require LIBS . 'cake_log.php';
-				}
 				if (is_integer($_this->log) && !$_this->debug) {
 					$reporting = $_this->log;
 				} else {
-					$reporting = E_ALL & ~E_DEPRECATED;
+					$reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT;
 				}
+				error_reporting($reporting);
+				if (!class_exists('CakeLog')) {
+					require LIBS . 'cake_log.php';
+				}
+				if (empty($callback)) {
+					$callback = array('CakeLog', 'getInstance');
+				}
+			}
+			if (!empty($callback) && !defined('DISABLE_DEFAULT_ERROR_HANDLING') && class_exists('Debugger')) {
+				Debugger::invoke(call_user_func($callback));
 			}
 			error_reporting($reporting);
 		}
@@ -580,14 +588,6 @@ class App extends Object {
 	var $return = false;
 
 /**
- * Determines if $__maps and $__paths cache should be written.
- *
- * @var boolean
- * @access private
- */
-	var $__cache = false;
-
-/**
  * Holds key/value pairs of $type => file path.
  *
  * @var array
@@ -836,7 +836,7 @@ class App extends Object {
 			}
 
 			if ($cache === true) {
-				$_this->__cache = true;
+				$_this->__resetCache(true);
 			}
 			$_this->__objects[$name] = $objects;
 		}
@@ -932,7 +932,7 @@ class App extends Object {
 					return true;
 				} else {
 					$_this->__remove($name . $ext['class'], $type, $plugin);
-					$_this->__cache = true;
+					$_this->__resetCache(true);
 				}
 			}
 			if (!empty($search)) {
@@ -963,7 +963,7 @@ class App extends Object {
 			}
 
 			if ($directory !== null) {
-				$_this->__cache = true;
+				$_this->__resetCache(true);
 				$_this->__map($directory . $file, $name . $ext['class'], $type, $plugin);
 				$_this->__overload($type, $name . $ext['class'], $parent);
 
@@ -1064,8 +1064,8 @@ class App extends Object {
 		}
 		if (file_exists($file)) {
 			if (!$this->return) {
-				require($file);
 				$this->__loaded[$file] = true;
+				require($file);
 			}
 			return true;
 		}
@@ -1292,6 +1292,21 @@ class App extends Object {
 		}
 		return $items;
 	}
+	
+/**
+ * Determines if $__maps, $__objects and $__paths cache should be reset.
+ *
+ * @param boolean $reset 
+ * @return boolean
+ * @access private
+ */	
+	function __resetCache($reset = null) {
+		static $cache = array();
+		if (!$cache && $reset === true) {
+			$cache = true;	
+		}
+		return $cache;
+	}
 
 /**
  * Object destructor.
@@ -1302,7 +1317,7 @@ class App extends Object {
  * @access private
  */
 	function __destruct() {
-		if ($this->__cache) {
+		if ($this->__resetCache() === true) {
 			$core = App::core('cake');
 			unset($this->__paths[rtrim($core[0], DS)]);
 			Cache::write('dir_map', array_filter($this->__paths), '_cake_core_');
