@@ -106,13 +106,14 @@ class ValidacionesBehavior extends ModelBehavior {
 			$concepts = array_unique($matchesA[1]);
 			$Concepto = ClassRegistry::init('Concepto');
 			$Concepto->Behaviors->detach('Permisos');
-			$count = ClassRegistry::init('Concepto')->find('count',
+			$count = $Concepto->find('count',
 				array(
 					'recursive'		=> -1,
 					'conditions' 	=>
 					array('Concepto.codigo' => $concepts)
 				)
 			);
+			$Concepto->Behaviors->attach('Permisos');
 			if (count($concepts) == $count) {
 				return true;
 			} else {
