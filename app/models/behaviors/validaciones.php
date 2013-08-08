@@ -444,17 +444,17 @@ class ValidacionesBehavior extends ModelBehavior {
             $upload_info = array_shift($data);
 
             // No file uploaded.
-            if ($required && $upload_info[’size’] == 0) {
+            if ($required && $upload_info['size'] == 0) {
                     return false;
             }
 
             // Check for Basic PHP file errors.
-            if ($upload_info[‘error’] !== 0) {
+            if ($upload_info['error'] !== 0) {
                     return false;
             }
 
             // Finally, use PHP’s own file validation method.
-            return is_uploaded_file($upload_info[‘tmp_name’]);
+            return is_uploaded_file($upload_info['tmp_name']);
     }
 
     

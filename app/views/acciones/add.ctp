@@ -35,5 +35,5 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('div' => array('class' =
 /**
 * Pinto el element add con todos los fieldsets que he definido.
 */
-echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => 'Accion.nombre');
+echo $this->element('add/add', array('fieldset' => $fieldset, 'miga' => 'Accion.nombre'));
 ?>

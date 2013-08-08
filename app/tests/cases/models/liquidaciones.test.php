@@ -24,7 +24,7 @@ App::import("Model", array("Liquidacion"));
  * @package app.tests
  * @subpackage app.tests.models
  */
-class LiquidacionTest-borrar extends Liquidacion {
+class LiquidacionTest_borrar extends Liquidacion {
 
 	
 /**

@@ -82,7 +82,7 @@ class UtilBehavior extends ContainableBehavior {
  * @access public
  */
 	function getPeriodo(&$model, $periodo) {
-		return $this->traerPeriodo(&$model, $periodo);
+		return $this->traerPeriodo($model, $periodo);
 	}
 
 /**
