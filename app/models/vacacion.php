@@ -87,16 +87,9 @@ class Vacacion extends AppModel {
  */
     function getDiasVacaciones($relacion, $periodo) {
 
-		if ($periodo['mes'] < 6) {
-			$anos = array($periodo['ano'], ($periodo['ano'] - 1));
-		} else {
-			$anos = $periodo['ano'];
-		}
-
         $vacaciones = $this->VacacionesDetalle->find('all',
                 array('conditions'  => array(
-							'Vacacion.periodo'				=> $anos,
-                            'VacacionesDetalle.desde <='    => $periodo['hasta'],
+                            'VacacionesDetalle.desde >='    => $periodo['desde'],
                             'VacacionesDetalle.estado'      => array('Confirmado', 'Liquidado'),
                             'Vacacion.relacion_id'          => $relacion['Relacion']['id']),
                       'contain'   => 'Vacacion'));
