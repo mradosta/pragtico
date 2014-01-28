@@ -60,25 +60,15 @@ class VacacionesController extends AppController {
                 $this->Session->setFlash('El periodo seleccionado no es correcto.', 'error');
                 $this->History->goBack();
             } else {
-                
+
                 if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
                     $conditions['(Relacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
                 }
-                
+
                 if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
                     $conditions['Relacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
                 }
-
-
-				//$conditions['Relacion.ingreso <'] = $this->data['Condicion']['Bar-periodo_largo'] . '-01-01';
-
-                /*
-                $conditions['NOT'] = array('Relacion.id' =>
-                    Set::extract('/Relacion/id', $this->Vacacion->find('all', array(
-                        'contain'       => 'Relacion',
-                        'conditions'    => array_merge($conditions, array(
-                            'Vacacion.periodo' => $this->data['Condicion']['Bar-periodo_largo']))))));
-                */
+                $conditions['Relacion.ingreso <='] = sprintf('%s-12-31', $this->data['Condicion']['Bar-periodo_largo']);
 
 
                 $baseFormulaMensual = str_replace('#fecha_hasta_periodo_vacacional', 'date(' . str_replace('-', ',', $this->data['Condicion']['Bar-periodo_largo'] . '-12-31') . ')',  '=if(and(month(#fecha_ingreso)>6,year(#fecha_ingreso)=year(#fecha_hasta_periodo_vacacional),day(#fecha_ingreso)>=1),int(if(networkdays(#fecha_ingreso,#fecha_hasta_periodo_vacacional)=132,14,networkdays(#fecha_ingreso,#fecha_hasta_periodo_vacacional)/20)),if(and(month(#fecha_ingreso)<6,year(#fecha_ingreso)=year(#fecha_hasta_periodo_vacacional)),14,if((year(#fecha_hasta_periodo_vacacional)-year(#fecha_ingreso))<=5,14,if((year(#fecha_hasta_periodo_vacacional)-year(#fecha_ingreso))<=10,21,if((year(#fecha_hasta_periodo_vacacional)-year(#fecha_ingreso))<=20,28,35)))))');
