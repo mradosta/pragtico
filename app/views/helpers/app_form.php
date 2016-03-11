@@ -25,7 +25,7 @@ App::import('Helper', 'Form');
  * @subpackage  app.views.helpers
  */
 class AppFormHelper extends FormHelper {
-	
+
 /**
  * Los helpers que utilizare.
  *
@@ -33,8 +33,8 @@ class AppFormHelper extends FormHelper {
  * @access public.
  */
 	var $helpers = array('Html', 'Ajax', 'Session', 'Javascript', 'Paginador', 'Formato');
-	
-	
+
+
 /**
  * Adds a link to the breadcrumbs array.
  *
@@ -45,8 +45,8 @@ class AppFormHelper extends FormHelper {
 	function addCrumb($name, $link = null, $options = null) {
 		$this->Html->addCrumb($name, $link, $options);
 	}
-	
-	
+
+
 /**
  * Returns the breadcrumb trail as a sequence of &raquo;-separated links.
  *
@@ -57,8 +57,8 @@ class AppFormHelper extends FormHelper {
 	function getCrumbs($separator = '&nbsp;&raquo;&nbsp;', $startText = false) {
 		return $this->Html->getCrumbs($separator, $startText);
 	}
-	
-	
+
+
 /**
  * Returns a formatted block tag, i.e DIV, SPAN, P.
  *
@@ -76,8 +76,8 @@ class AppFormHelper extends FormHelper {
 		$out = $this->Html->tag($name, $text, $attributes, $escape);
 		return $out;
 	}
-	
-	
+
+
 /**
  * Genera el codigo HTML correspondiente a un fieldset.
  *
@@ -98,7 +98,7 @@ class AppFormHelper extends FormHelper {
 		* Por esto, tomo el recaudo y los desseteo, por si a caso....
 		*/
 		unset($this->data['Form']);
-		
+
 		/**
 		* Busco el nombre de la clase del model a partir del controller,
 		* que es con lo que cuento dentro del helper.
@@ -141,7 +141,7 @@ class AppFormHelper extends FormHelper {
 			if (empty($fieldset['opciones'])) {
 				$fieldset['opciones'] = array();
 			}
-			
+
 			if (empty($fieldset['opciones']['fieldset']['class']) || strpos('master', $fieldset['opciones']['fieldset']['class']) !== false) {
 				if (empty($fieldset['opciones']['fieldset']['class'])) {
 					$fieldset['opciones']['fieldset']['class'] = 'master';
@@ -212,7 +212,7 @@ class AppFormHelper extends FormHelper {
 							list($modelDetail, $fieldDetail) = explode(".", $campo);
 							$modelsDetail[$modelDetail] = $modelDetail;
 						}
-						
+
 						foreach ($modelsDetail as $modelDetail) {
 							/**
 							* Cuando sea un nuevo registro, esto estara vacio. Lo creo vacio para que de una vuelta.
@@ -220,7 +220,7 @@ class AppFormHelper extends FormHelper {
 							if (empty($v[$modelDetail])) {
 								$v[$modelDetail] = array(array());
 							}
-							
+
 							foreach ($v[$modelDetail] as $kDetail=>$vDetail) {
 								$this->data = $vDetail;
 								foreach ($fieldset['campos'] as $campo=>$opcionesCampoDetail) {
@@ -261,7 +261,7 @@ class AppFormHelper extends FormHelper {
 				$legend = $opcionesFs['fieldset']['legend'] . " (Registro ##NUMERO## de " . count($fsMaster) . ")";
 			}
 		}
-		
+
 		$salida = null;
 		foreach ($fsMaster as $k=>$v) {
 			$return = null;
@@ -290,11 +290,11 @@ class AppFormHelper extends FormHelper {
  * Los puede searar en tres posibles ubicaciones/tipos donde iran (siempre al header):
  *			- ready:	Va a la funcion ready de JS.
  */
-	
+
 	function addScript($script) {
 		ClassRegistry::getObject('view')->__jsCodeForReady[] = $script;
 	}
-	
+
 
 /**
  * Returns a JavaScript script tag.
@@ -311,7 +311,7 @@ class AppFormHelper extends FormHelper {
 		if (isset($options['script']) && $options['script'] === false) {
 			return $script;
 		}
-		
+
 		return $this->Javascript->codeBlock($script, true, false);
 	}
 
@@ -352,8 +352,8 @@ class AppFormHelper extends FormHelper {
 
 		return $this->Html->image($path, $htmlAttributes);
     }
-    
-    
+
+
 /**
  * Crea una tabla html. Esta tabla tiene multiples opciones.
  *
@@ -430,7 +430,7 @@ class AppFormHelper extends FormHelper {
 							'simple'			=> false);
 
 		$tabla = "";
-		
+
 		if (!empty($datos['tabla'])) {
 			$opciones = array_merge($opciones, $datos['tabla']);
 		}
@@ -438,7 +438,7 @@ class AppFormHelper extends FormHelper {
 		if (isset($this->params['named']['seleccionMultiple']) && $this->params['named']['seleccionMultiple'] == 0) {
 			$opciones['seleccionMultiple'] = false;
 		}
-		
+
 		$opcionesHtmlValidas = array('class', 'colspan', 'id');
 		$opcionesHtml = array();
 		foreach ($opcionesHtmlValidas as $v) {
@@ -462,7 +462,7 @@ class AppFormHelper extends FormHelper {
 					if (empty($columna['opciones'])) {
 						$columna['opciones'] = array();
 					}
-					
+
 					if ($columna['type'] === 'header') {
 						$headers[] = array($columna['valor'], $columna['opciones']);
 					}
@@ -470,16 +470,16 @@ class AppFormHelper extends FormHelper {
 						$cells[] = array($columna['valor'], $columna['opciones']);
 					}
 				}
-				
+
 				if (!empty($headers)) {
 					$filaHeaders[] = $headers;
 				}
-				
+
 				if (!empty($cells)) {
 					$filaCells[] = $cells;
 				}
 			}
-			
+
 			/**
 			* La funcion tableHeaders del framework no maneja multiples rows de header, por eso uso la funcion
 			* tableCells y reemplazo los tds por ths.
@@ -490,21 +490,21 @@ class AppFormHelper extends FormHelper {
 				$opcionesHtml['class'] = 'simple';
 			}
 			return $this->output("\n\n<table " . $this->_parseAttributes($opcionesHtml, null, '', '') . ">" . $this->output(join("\n", $out)) . "\n</table>\n\n");
-			
+
 		}
-		
+
 		$encabezados = array();
 		if (!empty($datos['encabezado'])) {
 			$encabezados = $datos['encabezado'];
 		}
-		
+
 		if (!empty($datos['cuerpo'])) {
 			$cuerpo = array();
 			$view = ClassRegistry::getObject('view');
 			$modelName = Inflector::classify($this->params['controller']);
 			$Model = ClassRegistry::getObject($modelName);
-			
-			
+
+
 			if ($opciones['permisos']) {
 				/**
 				* Lo agrego al array del cuerpo de la tabla.
@@ -546,7 +546,7 @@ class AppFormHelper extends FormHelper {
 					}
 				}
 			}
-			
+
 			foreach ($datos['cuerpo'] as $k => $v) {
 				/**
 				* El contenido de la fila puede venir como un array puro o dentro del elemento contenido.
@@ -561,12 +561,12 @@ class AppFormHelper extends FormHelper {
 					if (isset($this->params['named']['seleccionMultiple']) && $this->params['named']['seleccionMultiple'] == 0) {
 						$opcionesFila['opciones']['seleccionMultiple'] = false;
 					}
-					
+
 				}
 				if (!empty($v['contenido'])) {
 					$v = $v['contenido'];
 				}
-				
+
 				$cellsOut = array();
 				$outDesgloses = array();
 
@@ -574,11 +574,11 @@ class AppFormHelper extends FormHelper {
 				foreach ($v as $campo) {
 					$valor = "&nbsp;";
 					$atributosCelda = null;
-					
-					if (isset($campo['valor']) && $campo['valor'] !== '0') {
+
+					if (isset($campo['valor']) && ($campo['valor'] !== '0' || ($campo['valor'] === '0' && isset($campo['tipoDato']) && $campo['tipoDato'] === "integer"))) {
 						$valor = $campo['valor'];
 					}
-					
+
 					if (!isset($campo['tipo']) || $campo['tipo'] === "datos") {
 						$tipoCelda = "datos";
 						if (isset($campo['model'])) {
@@ -606,7 +606,7 @@ class AppFormHelper extends FormHelper {
 							$nombre = $campo['imagen']['nombre'];
 							unset($campo['imagen']['nombre']);
 						}
-						
+
 						$url = null;
 						if (is_string($campo['url'])) {
 							$url['controller'] = $this->params['controller'];
@@ -615,7 +615,7 @@ class AppFormHelper extends FormHelper {
 							$url = $campo['url'];
 						}
 						$url[] = $campo['id'];
-						
+
 						if (!isset($campo['bread_crumb'])) {
 							$campo['bread_crumb'] = '';
 						}
@@ -627,16 +627,16 @@ class AppFormHelper extends FormHelper {
 							$breadCrumbData = '';
 							$title = sprintf(__('Show %s', true), $campo['imagen']['alt']);
 						}
-		
+
 						$acciones[] = $this->image($nombre, array_merge($campo['imagen'], array(
 								'title'		=> $title,
 								'alt'		=> $breadCrumbData,
 								'class'		=> 'breakdown_icon',
 								'longdesc'	=> Router::url($url))));
-						
+
 						continue;
 					}
-					
+
 					$atributos = array();
 					foreach ($opcionesHtmlValidas as $opcionHtml) {
 						if (isset($campo[$opcionHtml])) {
@@ -661,7 +661,7 @@ class AppFormHelper extends FormHelper {
 							} else {
 								$nombre = Inflector::humanize($nombreCampo);
 							}
-							
+
 							if (!($nombreCampo === 'id' && !$opciones['mostrarIds'])) {
 								if (isset($campo['orden']) && $campo['orden'] === false) {
 									$encabezados[] = $nombre;
@@ -721,7 +721,7 @@ class AppFormHelper extends FormHelper {
 								$atributos = array('class' => $campo['class'] . ' ' . $clase);
 							}
 						}
-						
+
 						if ($nombreCampo === 'id') {
 							$id = $valor;
 
@@ -738,7 +738,7 @@ class AppFormHelper extends FormHelper {
                             if ($this->params['isAjax'] === true) {
                                 $acciones[] = $this->image('seleccionar.gif', array('class' => 'seleccionar', 'alt' => __('Select current record', true)));
                             }
-							
+
 							if ($opciones['eliminar'] && (!(isset($opcionesFila['eliminar']) && $opcionesFila['eliminar'] === false))) {
 								if ($campo['delete']) {
 									$urlLink = $controller . "delete/" . $id;
@@ -750,7 +750,7 @@ class AppFormHelper extends FormHelper {
 									array_unshift($acciones, $this->image('delete_disable.gif', array("alt" => "Elimina este registro")));
 								}
 							}
-							
+
 							if ($opciones['modificar'] && (!(isset($opcionesFila['modificar']) && $opcionesFila['modificar'] === false))) {
                                 $urlLink = $controller . 'edit/' . $id;
 								if ($campo['write']) {
@@ -763,7 +763,7 @@ class AppFormHelper extends FormHelper {
 								}
                                 array_unshift($acciones, $this->link($image, $urlLink));
 							}
-							
+
 							/**
 							* Puede que la tabla indique seleccion multiple, pero esta fila particular no.
 							*/
@@ -778,7 +778,7 @@ class AppFormHelper extends FormHelper {
                                                         'class' => 'selection_lov',
                                                         'div'   => false)));
 							}
-							
+
 							/**
 							* Si debo mostrar los Ids y tengo alguna accion debo agregar una columna
 							*/
@@ -791,7 +791,7 @@ class AppFormHelper extends FormHelper {
 							}
 						}
 					}
-					
+
 					/**
 					* Fuerzo $valor a string, porque si $valor = 0, no evaluara.
 					*/
@@ -806,7 +806,7 @@ class AppFormHelper extends FormHelper {
 				if (!empty($acciones)) {
 					array_unshift($cellsOut, array(implode("", $acciones), array("class" => "acciones")));
 				}
-				
+
 				/**
 				* Utilizo el atributo charoff de html para guardar el id del registro.
 				* Lo uso porque este atributo es valido por la w3c (si pusiera un atributo id, por ejemplo,
@@ -836,10 +836,10 @@ class AppFormHelper extends FormHelper {
 				*/
 			}
 		}
-		
+
 		if (!empty($encabezados) && $opciones['mostrarEncabezados']) {
 			if ($opciones['eliminar'] || $opciones['modificar'] || $opciones['seleccionMultiple'] || $opciones['seleccionLov'] || !empty($acciones)) {
-			
+
 				if ($opciones['seleccionMultiple']) {
 					$seleccion[] = $this->link("T", null, array("class" => "seleccionarTodos")) . " ";
 					$seleccion[] = $this->link("N", null, array("class" => "deseleccionarTodos")) . " ";
@@ -890,7 +890,7 @@ class AppFormHelper extends FormHelper {
 				$tabla .= "\n<tfoot>\n" . implode("", $out) . "\n</tfoot>";
 			}
 		}
-		
+
 		if (!empty($tabla)) {
 			$tabla = $this->tag("table", $tabla, $opcionesHtml);
 		}
@@ -924,7 +924,7 @@ class AppFormHelper extends FormHelper {
 					return false;
 				}
 			);
-			
+
 			jQuery("#eliminar").click(
 				function() {
 					var c = jQuery(".tabla :checkbox").checkbox("contar");
@@ -948,7 +948,7 @@ class AppFormHelper extends FormHelper {
 				}
 			);
 		';
-		
+
 		$jsTabla = "";
 		if (($opciones['zebra'] || $opciones['seleccionMultiple'] || !empty($jsDesglose)) && !empty($tabla)) {
 			//d($jsDesglose);
@@ -967,7 +967,7 @@ class AppFormHelper extends FormHelper {
 				else {
 					$hidden = "document.getElementById('" . $opciones['seleccionLov']['retornarA'] . "')";
 				}
-				
+
 				$jsSeleccionLov = '
 					var seleccionMultipleId = ' . $hidden . ';
 					var ids = new Array();
@@ -1010,7 +1010,7 @@ class AppFormHelper extends FormHelper {
 	function _fila($celdas, $trOptions = null) {
 
         /** TODO: http://book.cakephp.org/bg/view/206/Inserting-Well-Formatted-elements */
-		
+
 		static $count = 0;
 		$out = null;
 		foreach ($celdas as $celda) {
@@ -1027,7 +1027,7 @@ class AppFormHelper extends FormHelper {
 				$out[] = $this->tag("td", $celda);
 			}
 		}
-		
+
 		/**
 		* Las filas de desglose y las resaltadas, no las cuento para la zebra.
 		*/
@@ -1043,7 +1043,7 @@ class AppFormHelper extends FormHelper {
 			}
 			$count++;
 		}
-		
+
 		/**
 		* Las filas de desglose, no las cuento para la zebra.
 		if (!(!empty($trOptions['tipo']) && $trOptions['tipo'] == "desglose")) {
@@ -1063,7 +1063,7 @@ class AppFormHelper extends FormHelper {
 		if (empty($href)) {
 			$href = "javascript:void(0);";
 		}
-		
+
 		/**
 		* Detecto si viene una imagen, hay que escarparlo.
 		*/
@@ -1071,7 +1071,7 @@ class AppFormHelper extends FormHelper {
 			$escapeTitle = false;
 		}
 		$options['escape'] = $escapeTitle;
-		
+
 		if (isset($options['tipo']) && $options['tipo'] === "ajax") {
 			unset($options['tipo']);
 			return $this->output($this->Ajax->link($title, $href, $options, $confirm, $escapeTitle));
@@ -1113,7 +1113,7 @@ class AppFormHelper extends FormHelper {
 			$fieldset = sprintf($this->Html->tags['fieldset'], $attr, $legend . $codigo_html);
 			$codigo_html = $fieldset;
 		}
-		
+
 		if (!empty($opciones['div'])) {
 			if (!isset($opciones['fieldset'])) {
 				$codigo_html = "\n\n" . $this->Html->div(null,"\n" . $codigo_html . "\n", $opciones['div'], false);
@@ -1124,8 +1124,8 @@ class AppFormHelper extends FormHelper {
 		}
 		return $this->output($codigo_html);
 	}
-    
-	
+
+
 /**
  * Crea un tag form de html con contenido html dentro.
  *
@@ -1142,11 +1142,11 @@ class AppFormHelper extends FormHelper {
 		if (!isset($opciones['action']) && isset($this->data) && $this->action === "edit") {
 			$opciones['action'] = "saveMultiple";
 		}
-		
+
 		if (!isset($opciones['id'])) {
 			$opciones['id'] = "form";
 		}
-		
+
 		$form = "\n" . parent::create(null, $opciones);
 		if (is_array($contenido)) {
 			$form .= implode("\n", $contenido);
@@ -1157,7 +1157,7 @@ class AppFormHelper extends FormHelper {
 		return $this->output($form);
 	}
 
-	
+
 /**
  * Generates a form input element complete with label and wrapper div
  *
@@ -1189,7 +1189,7 @@ class AppFormHelper extends FormHelper {
 			$verificarRequerido = $options['verificarRequerido'];
 			unset($options['verificarRequerido']);
 		}
-		
+
 		/**
 		* En caso de ser un campo de condiciones (los filtros),
 		* si no me cargo el valor de label para el campo, lo saco del nombre del campo.
@@ -1199,11 +1199,11 @@ class AppFormHelper extends FormHelper {
 			* A las condiciones no las marco como requeridas. No me interesa esto.
 			*/
 			$verificarRequerido = false;
-			
+
 			$tmpName = $tagName;
 			$tmpName = preg_replace('/^Condicion\./', '', $tmpName);
 			list($model, $field) = explode('-', $tmpName);
-			
+
 			$tmpName = str_replace('-', '.', $tmpName);
 			if (strpos($tmpName, '.') !== false) {
 				list( , $texto) = preg_split('/[\.]+/', $tmpName);
@@ -1218,7 +1218,7 @@ class AppFormHelper extends FormHelper {
 			if (empty($options['value']) && !empty($this->data['Condicion'][$model . '-' . $field])) {
 				$options['value'] = $this->data['Condicion'][$model . '-' . $field];
 			}
-			
+
 			if (substr($field, strlen($field) - 7) === '__desde') {
 				$field = str_replace('__desde', '', $field);
 			} elseif (substr($field, strlen($field) - 7) === '__hasta') {
@@ -1229,11 +1229,11 @@ class AppFormHelper extends FormHelper {
 		if (!isset($model) && !isset($field)) {
 			list($model, $field) = explode(".", $tagName);
 		}
-		
+
 		if (!isset($options['label'])) {
 			$options['label'] = Inflector::humanize(str_replace('_id', '', $field));
 		}
-		
+
 		/**
 		* Busco que tipo de campo es.
 		*/
@@ -1246,7 +1246,7 @@ class AppFormHelper extends FormHelper {
 		elseif (!empty($options['lov']) && is_array($options['lov'])) {
 			$tipoCampo = "lov";
 		}
-		
+
 		if (ClassRegistry::isKeySet($model) &&
 			!(!empty($options['options']) && is_string($options['options']) && $options['options'] === "listable")) {
 			$modelClass =& ClassRegistry::getObject($model);
@@ -1257,7 +1257,7 @@ class AppFormHelper extends FormHelper {
 					$tipoCampo = "checkboxMultiple";
 				}
 			}
-			
+
 			/**
 			* Determino si es un campo requerido para marcarlo con el (*).
 			* Esto lo hago si es que no viene dado ningun "after" en las opciones.
@@ -1298,11 +1298,11 @@ class AppFormHelper extends FormHelper {
 				else {
 					$tipo = $tableInfo[$field]['type'];
 				}
-				
+
 				if (empty($tipoCampo)) {
 					$mapeoTipos['string'] = "text";
 					$mapeoTipos['enum'] = "radio";
-					
+
 					if (isset($mapeoTipos[$tipo])) {
 						$tipoCampo = $mapeoTipos[$tipo];
 					}
@@ -1363,11 +1363,11 @@ class AppFormHelper extends FormHelper {
 			else {
 				$valorCampo = null;
 			}
-			
+
 			if (!empty($options['format'])) {
 				$valorCampo = $this->Formato->format($valorCampo, $options['format']);
 			}
-			
+
 			/**
 			* Wysiwyg control based on FCKEditor.
 			* Isolate vendors code in js/vendors/fckeditor for easily later upgrade.
@@ -1397,7 +1397,7 @@ class AppFormHelper extends FormHelper {
 				$label = $this->tag('label', $options['label']);
 				return $this->tag('div', $label . $this->tag('div', $out, array('class' => 'editor')), array('class' => 'wysiwyg'));
 			}
-			
+
 			/**
 			* Manejo los tipos de datos date para que me arme el control seleccion de fechas.
 			*/
@@ -1405,7 +1405,7 @@ class AppFormHelper extends FormHelper {
 				//return $this->tag("div", $this->label($options['label'], null, array("for"=>false)) . $this->tag("span", $valorCampo, array("class" => "solo_lectura")), array("class" => "input text"));
                 return $this->tag("div", $this->tag("span", $options['label'], array("class"=>'label')) . $this->tag("span", $valorCampo, array("class" => "solo_lectura")), array("class" => "input text"));
 			}
-			
+
 			/**
 			* Manejo los tipos de datos date para que me arme el control seleccion de fechas.
 			*/
@@ -1449,7 +1449,7 @@ class AppFormHelper extends FormHelper {
 				unset($options['descargar']);
 				unset($options['mostrar']);
 			}
-			
+
 			/**
 			* Manejo los campos periodo.
 			*/
@@ -1496,12 +1496,12 @@ class AppFormHelper extends FormHelper {
 				}
 				$options['after'] = $after . $options['after'];
 			}
-			
+
 			elseif ($tipoCampo === "radio") {
 				$options['type'] = "radio";
 				$options['legend'] = false;
 				$options['before'] = $this->label(null, $options['label'], array("for"=>false));
-				
+
 				/**
 				* Pongo todas las opciones dentro de un div para poder asignarles estilos.
 				*/
@@ -1553,7 +1553,7 @@ class AppFormHelper extends FormHelper {
 					*/
 					$options['after'] .= $this->input("Bar.foo", array("value"=>$id . "|" . $valueId, 'id' => $idHiddenRelacionadoTmp, "type" => "hidden"));
 				}
-				
+
 				$jsParametros = "";
 				if (!empty($options['parametros'])) {
 					foreach ($options['parametros'] as $parametro) {
@@ -1564,7 +1564,7 @@ class AppFormHelper extends FormHelper {
 					}
 					$jsParametros ="parametros = {" . implode(", ", $jsParametrosArray) . "};";
 				}
-				
+
 				$requestAjax = '
 					jQuery("#' . $id . '").bind("click", function () {
 						var valor = jQuery("#' . $idHiddenRelacionado . '").val();
@@ -1574,7 +1574,7 @@ class AppFormHelper extends FormHelper {
 						jQuery.each(parametros, function(key, value) {
    							parametrosAdicionales = parametrosAdicionales + key + ":" + value + "/";
  						});
- 						
+
 						var reg = new RegExp("^[0-9]+$");
 						if (!reg.test(valor)) {
 							alert("Antes de continuar debe seleccionar un valor para ' . str_replace(" Id", "", Inflector::humanize($tmp[1])) . '");
@@ -1602,7 +1602,7 @@ class AppFormHelper extends FormHelper {
 								*/
 								jQuery("#form").append("<input id=\'' . $idHiddenRelacionadoTmp . '\' type=\'hidden\' value=\'" + jQuery(this).attr("id") + "|" + valor + "\' >");
 							}
-						
+
 
 							/**
 							* Hago el request via jSon.
@@ -1618,7 +1618,7 @@ class AppFormHelper extends FormHelper {
 							);
 						}
 					})';
-				
+
 				$this->addScript($requestAjax);
 				$options = am($options, array("type" => "select"), array("options"=>$value), array("maxlength"=>false));
 				unset($options['url']);
@@ -1645,7 +1645,7 @@ class AppFormHelper extends FormHelper {
 				}
                 $options['before'] = $this->label(null, $options['label'], array("for"=>false));
                 $options['label'] = false;
-				
+
 				if (!empty($this->data)) {
 					$parent = array_shift(array_keys($this->data));
 					if (!empty($this->data[$model])) {
@@ -1659,7 +1659,7 @@ class AppFormHelper extends FormHelper {
 						}
 					}
 				}
-				
+
 				/**
 				 * Try to find bitwise.
 				 */
@@ -1670,10 +1670,10 @@ class AppFormHelper extends FormHelper {
 						}
 					}
 				}
-				
+
 				$options = array_merge(array('after'=>$seleccionString, 'div'=>array('id' =>$id, 'class'=>'input'), 'type' => 'select', 'multiple' => 'checkbox'), $options);
 			}
-		
+
 			elseif ($tipoCampo === 'lov'
 					&& !empty($options['lov']['controller'])
                     && is_string($options['lov']['controller'])) {
@@ -1700,7 +1700,7 @@ class AppFormHelper extends FormHelper {
                         }
                     }
                 }
-				
+
 				$options['lov'] = array_merge(array(  'action'    => 'index',
 										              'retornarA' => $id), $options['lov']);
                 if (empty($options['lov']['mask'])) {
@@ -1758,7 +1758,7 @@ class AppFormHelper extends FormHelper {
 					}
 					$options['title'] = $options['value'];
 				}
-				
+
 				/**
 				* Busco una etiqueta que vera el usuario.
 				if (!isset($options['label'])) {
@@ -1813,7 +1813,7 @@ class AppFormHelper extends FormHelper {
 		return $return;
 	}
 
-	
+
 /**
  * Creates a button tag.
  *
@@ -1829,7 +1829,7 @@ class AppFormHelper extends FormHelper {
 		return $this->tag('div', $return, array('class' => 'submit'));
 	}
 
-	
+
 /**
  * TODO: Change by jquery alternative (http://ui.jquery.com/demos/datepicker)
  */
@@ -1879,7 +1879,7 @@ class AppFormHelper extends FormHelper {
                 });'
             );
 		}
-        
+
 		return $codigo_html;
 	}
 

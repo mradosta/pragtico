@@ -70,7 +70,7 @@ class NovedadesController extends AppController {
 		$this->set("data", unserialize($data['Novedad']['data']));
 	}
 
-	
+
 /**
  * Importa una planilla en formato Excel2007 o Excel5 con las novedades.
  */
@@ -80,7 +80,7 @@ class NovedadesController extends AppController {
 				if (!empty($this->data['Novedad']['planilla']['tmp_name'])) {
 					set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes');
 					App::import('Vendor', 'IOFactory', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'IOFactory.php');
-					
+
 					if (preg_match("/.*\.xls$/", $this->data['Novedad']['planilla']['name'])) {
 						$objReader = PHPExcel_IOFactory::createReader('Excel5');
 					} elseif (preg_match("/.*\.xlsx$/", $this->data['Novedad']['planilla']['name'])) {
@@ -88,7 +88,7 @@ class NovedadesController extends AppController {
 					}
                     $objReader->setReadDataOnly(true);
 					$objPHPExcel = $objReader->load($this->data['Novedad']['planilla']['tmp_name']);
-					
+
 					/**
 					* Vuelvo 10 columnas antes del final, ya que puede haber validaciones, siempre estan la final.
 					*/
@@ -97,7 +97,7 @@ class NovedadesController extends AppController {
 						if (empty($value)) {
 							break;
 						}
-						
+
 						if ($value === 'Horas') {
 							$mapeo['Horas']['Normal']						= $i;
 							$mapeo['Horas']['Extra 50%']					= $i+1;
@@ -158,20 +158,29 @@ class NovedadesController extends AppController {
 						} else {
 							$relacionId .= '|' . $this->data['Novedad']['liquidacion_tipo'];
 						}
-						
+
 						foreach ($mapeo as $k => $v) {
 							foreach ($v as $k1 => $v1) {
 								$valor = $objPHPExcel->getActiveSheet()->getCellByColumnAndRow($v1, $i)->getValue();
-								if (!empty($valor) && !empty($relacionId)) {
-									$datos[$relacionId][trim($k)][$k1] = $valor;
-								}
+                if (!empty($relacionId)) {
+                  if (!empty($valor) || $valor == '0') {
+                    $datos[$relacionId][trim($k)][$k1] = $valor;
+                  }
+                }
 							}
 						}
 					}
 
-					if ($this->Novedad->grabar($datos)) {
-						$this->redirect('index');
+          if (empty($datos)) {
+            $this->Session->setFlash('No fue posible importar datos de la planilla.', 'error');
+          } else {
+					  if ($this->Novedad->grabar($datos)) {
+              $this->Session->setFlash('La planilla se importo correctamente novedades', 'ok');
+            } else {
+              $this->Session->setFlash('Ocurrio un error al guardar los datos de la planilla.', 'error');
+            }
 					}
+          $this->redirect('index');
 				}
 			} elseif ($this->data['Formulario']['accion'] === 'cancelar') {
 				$this->redirect('index');
@@ -180,8 +189,8 @@ class NovedadesController extends AppController {
         $this->set('liquidacion_tipo', $this->Novedad->Liquidacion->opciones['tipo']);
 		$this->data['Novedad']['formato'] = 'Excel2007';
 	}
-	
-	
+
+
 /**
  * Genera una planilla en formato Excel2007 o Excel5 para el ingreso de novedades.
  * El contenido de la planilla son las relaciones especificadas por los criterios, mas los conceptos seleccionados.
@@ -209,7 +218,7 @@ class NovedadesController extends AppController {
                         $contain = array('Vacacion' => array('conditions' => array('Vacacion.periodo' => $this->data['Condicion']['Novedad-periodo_vacacional'])));
                         unset($this->data['Condicion']['Novedad-periodo_vacacional']);
                     }
-                    
+
 					$conditions = $this->Paginador->generarCondicion(false);
                     $conditions['Relacion.estado'] = 'Activa';
 
@@ -247,12 +256,12 @@ class NovedadesController extends AppController {
 		}
 		$this->set('tiposIngreso', $tiposIngresoKey);
 	}
-	
+
 
     function delete($id = null, $goBack = 0) {
         $this->Novedad->setSecurityAccess('readOwnerOnly');
         return parent::delete($id, $goBack);
     }
-        
+
 }
 ?>
