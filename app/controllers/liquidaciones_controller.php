@@ -143,7 +143,7 @@ class LiquidacionesController extends AppController {
                 $this->Session->setFlash('Debe seleccionar por lo menos un grupo.', 'error');
                 $this->History->goBack();
             }
-            
+
             $conditions['(Liquidacion.group_id & ' . array_sum($this->data['Condicion']['Bar-grupo_id']) . ') >'] = 0;
 			$conditions['(Area.group_id & ' . array_sum($this->data['Condicion']['Bar-grupo_id']) . ') >'] = 0;
             foreach ($this->data['Condicion']['Bar-grupo_id'] as $groupId) {
@@ -174,9 +174,9 @@ class LiquidacionesController extends AppController {
                 $conditions['Liquidacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
             }
 
-            
+
             $conditions['Liquidacion.estado'] = 'Confirmada';
-            
+
             $data = array();
             $this->Liquidacion->Behaviors->detach('Permisos');
             $this->Liquidacion->contain('Area');
@@ -197,7 +197,7 @@ class LiquidacionesController extends AppController {
                             `Factura`.`total` AS facturado
             FROM            `areas` AS `Area`, `liquidaciones` AS `Liquidacion`
             LEFT JOIN       `facturas` AS `Factura`
-            ON              (`Factura`.`id` = `Liquidacion`.`factura_id` AND `Factura`.`estado` = \'Confirmada\')' . "\n" . 
+            ON              (`Factura`.`id` = `Liquidacion`.`factura_id` AND `Factura`.`estado` = \'Confirmada\')' . "\n" .
 			ConnectionManager::getDataSource('default')->conditions($conditions) . ' AND `Area`.`id` = `Liquidacion`.`relacion_area_id`
             GROUP BY		`Factura`.`id`,
 							`Liquidacion`.`empleador_id`,
@@ -250,12 +250,12 @@ class LiquidacionesController extends AppController {
         }
     }
 
-    
+
     function reporte_sindicatos() {
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 
             $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
-            
+
             if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
                 $conditions['Liquidacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
             }
@@ -269,7 +269,7 @@ class LiquidacionesController extends AppController {
             }
             $conditions['LiquidacionesDetalle.concepto_retencion_sindical'] = 'Si';
             $conditions['LiquidacionesDetalle.valor >'] = 0;
-            
+
             $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
             $this->Liquidacion->LiquidacionesDetalle->contain(array('Liquidacion' => array(
 				'Trabajador' => 'ObrasSocial', 'Area')));
@@ -341,7 +341,7 @@ class LiquidacionesController extends AppController {
                     if (!empty($this->data['Condicion']['Bar-concepto_id'])) {
                         $conditions['LiquidacionesDetalle.concepto_id'] = explode('**||**', $this->data['Condicion']['Bar-concepto_id']);
                     }
-                    
+
                     $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
                     $conditions['OR'] = array('LiquidacionesDetalle.concepto_imprimir' => 'Si', array('LiquidacionesDetalle.concepto_imprimir' => 'Solo con valor', 'ABS(LiquidacionesDetalle.valor) >' => 0));
 
@@ -431,7 +431,7 @@ class LiquidacionesController extends AppController {
                                     'Liquidacion.periodo'       => $periodo['periodo'],
                                     'Liquidacion.ano'           => $periodo['ano'],
                                     'Liquidacion.mes'           => $periodo['mes']);
-                
+
                 if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
                     $conditions['Liquidacion.empleador_id'] = explode('**||**', $this->data['Condicion']['Bar-empleador_id']);
                 }
@@ -439,7 +439,7 @@ class LiquidacionesController extends AppController {
                 if (!empty($this->data['Condicion']['Bar-area_id'])) {
                     $conditions['Liquidacion.relacion_area_id'] = explode('**||**', $this->data['Condicion']['Bar-area_id']);
                 }
-                
+
                 if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
                     $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
                 }
@@ -487,7 +487,7 @@ class LiquidacionesController extends AppController {
 
 		$periodo = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
-			
+
 			if ($periodo !== false) {
 				$message = null;
 				if ($this->data['Condicion']['Liquidacion-tipo'] === 'normal' &&
@@ -529,7 +529,7 @@ class LiquidacionesController extends AppController {
             if ($this->data['Condicion']['Liquidacion-tipo'] !== 'final') {
                 $condiciones['Relacion.ingreso <='] = $periodo['hasta'];
             }
-            
+
             $condiciones['Relacion.estado'] = 'Activa';
             if ($this->data['Condicion']['Liquidacion-tipo'] !== 'especial') {
                 /**
@@ -607,7 +607,7 @@ class LiquidacionesController extends AppController {
 			} else {
 				$opciones['permitir_liquidar_con_liquidaciones_no_facturadas'] = 'Si';
 			}
-			
+
 
 			foreach ($relaciones as $k => $relacion) {
 
@@ -664,7 +664,7 @@ class LiquidacionesController extends AppController {
 				$this->Liquidacion->getReceipt($relacion, $periodo, $variables['#tipo_liquidacion']['valor'], $opciones);
 			}
 			$condiciones = array('Liquidacion.estado' => 'Sin Confirmar');
-			$this->data['Condicion']['Liquidacion-estado'] = 'Sin Confirmar';			
+			$this->data['Condicion']['Liquidacion-estado'] = 'Sin Confirmar';
 		} else {
 			$condiciones = array();
 			if ($periodo !== false) {
@@ -673,7 +673,7 @@ class LiquidacionesController extends AppController {
 				$condiciones['Liquidacion.periodo'] = $periodo['periodo'];
 			}
 		}
-        
+
 		/** Take care of filtering saved or unconfirmed receipt */
         if (empty($condiciones)) {
             $condiciones = $this->Paginador->generarCondicion();
@@ -715,7 +715,7 @@ class LiquidacionesController extends AppController {
 				$id = $this->Util->extraerIds($this->params['data']['seleccionMultiple']);
 			}
 		}
-        
+
         foreach ($this->Liquidacion->find('all', array(
             'recursive'     => -1,
             'conditions'    => array('Liquidacion.id' => $id))) as $receipt) {
@@ -782,7 +782,7 @@ class LiquidacionesController extends AppController {
 				$id = $this->Util->extraerIds($this->params['data']['seleccionMultiple']);
 			}
 		}
-        
+
         if (strstr($this->referer(), 'preliquidar')) {
             $this->Liquidacion->setSecurityAccess('readOwnerOnly');
         }
@@ -800,7 +800,7 @@ class LiquidacionesController extends AppController {
                 $mes--;
             }
             $mes = str_pad($mes, 2, '0', STR_PAD_LEFT);
-            
+
 			$suss = $this->Liquidacion->Empleador->Suss->find('first',
 				array('conditions' => array(
 					'Suss.empleador_id' => $receipt['Liquidacion']['empleador_id'],
@@ -817,7 +817,7 @@ class LiquidacionesController extends AppController {
         $this->render($render);
 	}
 
-	
+
 /**
  * recibo_html_debug.
  * Muestra via desglose el recibo (detalle) de la preliquidacion con informacion de debug.
@@ -838,10 +838,10 @@ class LiquidacionesController extends AppController {
 		$this->Liquidacion->contain(array('LiquidacionesError'));
 		$this->data = $this->Liquidacion->read(null, $id);
 	}
-	
-	
-	
-	
+
+
+
+
 	function agregar_observacion($id) {
 		/**
 		* Agrego una url a la History para que vuelva bien a donde debe, ya que no uso un edit  comun.
@@ -855,7 +855,7 @@ class LiquidacionesController extends AppController {
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 
             $conditions['(Liquidacion.group_id & ' . $this->data['Condicion']['Bar-grupo_id'] . ') >'] = 0;
-            
+
             if (!empty($this->data['Condicion']['Bar-relacion_id'])) {
                 $conditions['Liquidacion.relacion_id'] = $this->data['Condicion']['Bar-relacion_id'];
             }
@@ -910,7 +910,7 @@ class LiquidacionesController extends AppController {
                 $this->Session->setFlash('Debe especificar un periodo valido de la forma AAAAMM.', 'error');
             } else {
                 $periodo = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
-                
+
                 $conditions = array('Liquidacion.estado'        => 'Confirmada',
                                     'Liquidacion.ano'           => $periodo['ano'],
                                     'OR'						=> array(
@@ -952,7 +952,7 @@ class LiquidacionesController extends AppController {
                     $r = $this->Liquidacion->find('all',
                             array(  'checkSecurity' => false,
                                     'limit' => $step . ',' . 100,
-                                    'contain'       => array_merge($contain, array( 
+                                    'contain'       => array_merge($contain, array(
                                             'LiquidacionesDetalle' => array('conditions' => array('OR' => array('LiquidacionesDetalle.concepto_imprimir' => 'Si', array('LiquidacionesDetalle.concepto_imprimir' => 'Solo con valor', 'ABS(LiquidacionesDetalle.valor) >' => 0)))),
                                             'Relacion'      => array(
                                                 'RelacionesHistorial' => array(
@@ -972,7 +972,7 @@ class LiquidacionesController extends AppController {
                     }
 
                     $opcionesConcepto = $this->Liquidacion->LiquidacionesDetalle->Concepto->opciones;
-                            
+
                     $ausenciasMotivo = $this->Liquidacion->Relacion->Ausencia->AusenciasMotivo->find('all',
 						 array('conditions' => array('NOT' => array('AusenciasMotivo.situacion_id' => null))));
                     $ausenciasMotivo = Set::combine($ausenciasMotivo, '{n}.AusenciasMotivo.id', '{n}.Situacion');
@@ -1050,7 +1050,7 @@ class LiquidacionesController extends AppController {
                         }
                         $campos['c7']['valor'] = $liquidacion['Relacion']['Actividad']['codigo'];
                         $campos['c8']['valor'] = $liquidacion['Trabajador']['Localidad']['codigo_zona'];
-                        
+
                         if (!empty($liquidacion['Relacion']['modalidad_id'])) {
                             $campos['c10']['valor'] = $liquidacion['Relacion']['Modalidad']['codigo'];
                         }
@@ -1065,13 +1065,13 @@ class LiquidacionesController extends AppController {
                         $campos['c20']['valor'] = $liquidacion['Trabajador']['Localidad']['nombre'];
                         $campos['c21']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 2'];
                         $campos['c22']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 3'];
-                        
+
                         $campos['c23']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 4'];
-                        
+
                         if (!empty($liquidacion['Trabajador']['siniestrado_id'])) {
                             $campos['c24']['valor'] = $liquidacion['Trabajador']['Siniestrado']['codigo'];
                         }
-                        
+
                         if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
                             if ($liquidacion['Empleador']['corresponde_reduccion'] === 'Si') {
                                 $campos['c25']['valor'] = 'S';
@@ -1081,20 +1081,20 @@ class LiquidacionesController extends AppController {
                         } else {
                             $campos['c25']['valor'] = $groupParams['siap_corresponde_reduccion'];
                         }
-                        
+
                         if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
                             $campos['c27']['valor'] = $liquidacion['Empleador']['EmployersType']['code'];
                         } else {
                             $campos['c27']['valor'] = $groupParams['siap_tipo_empleador'];
                         }
-                        
+
                         if ($liquidacion['Trabajador']['jubilacion'] === 'Reparto') {
                             $campos['c29']['valor'] = '1';
                         } else {
                             $campos['c29']['valor'] = '0';
                         }
-                        
-                        
+
+
                         $camposTmp = null;
                         $camposTmp[0]['situacion'] = '1';
                         $camposTmp[0]['dia'] = '01';
@@ -1155,7 +1155,7 @@ class LiquidacionesController extends AppController {
                                 $campos['c5']['valor'] = $tmp['situacion'];
                             }
                         }
-                        
+
                         $campos['c36']['valor'] = $compone[$liquidacion['Liquidacion']['trabajador_cuil']]['Sueldo'];
                         $campos['c37']['valor'] = $compone[$liquidacion['Liquidacion']['trabajador_cuil']]['SAC'];
                         $campos['c38']['valor'] = $compone[$liquidacion['Liquidacion']['trabajador_cuil']]['Importe Horas Extras'];
@@ -1236,8 +1236,8 @@ class LiquidacionesController extends AppController {
         }
     }
 
-	
-	
+
+
 /**
  * Genera una linea del archivo para importar en SIAP.
  *
@@ -1301,11 +1301,11 @@ class LiquidacionesController extends AppController {
             $this->data['Condicion']['Bar-facturado'] = array('Si', 'No');
             $this->Paginador->removeCondition(array('Liquidacion.factura_id !=', 'Liquidacion.factura_id'));
         }
-        
+
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] == 'limpiar') {
             $this->Paginador->removeCondition(array('Liquidacion.factura_id !=', 'Liquidacion.factura_id'));
         }
-        
+
         $this->Paginador->setCondition(array('Liquidacion.estado' => 'Confirmada'));
         $this->set('zipFileName', $zipFileName);
 		parent::index();
@@ -1320,7 +1320,7 @@ class LiquidacionesController extends AppController {
 			}
 		}
 	}
-	
+
 
 /**
  * pagos.
@@ -1350,7 +1350,7 @@ class LiquidacionesController extends AppController {
 	function confirmar() {
 
 		$ids = $this->Util->extraerIds($this->data['seleccionMultiple']);
-		
+
 		if (!empty($ids)) {
 
             $this->Liquidacion->setSecurityAccess('readOwnerOnly');
@@ -1405,7 +1405,7 @@ class LiquidacionesController extends AppController {
 				$model = $v['LiquidacionesAuxiliar']['model'];
 				$idsAuxiliares[] = $v['LiquidacionesAuxiliar']['id'];
 				$save = unserialize($v['LiquidacionesAuxiliar']['save']);
-				
+
                 foreach ($save as $campo => $valor) {
 					preg_match('/^##MACRO:([a-z_]+)##(.*)$/', $valor, $matches);
 					if (!empty($matches[1])) {
@@ -1485,7 +1485,7 @@ class LiquidacionesController extends AppController {
 						} else {
 							$db->commit($this);
 
-
+              /*
 							$suffix = '_' . $this->Liquidacion->LiquidacionesGrupo->id . '.xls';
 							$f = array();
 							$f[] = 'reporte_resumen' . $suffix;
@@ -1511,6 +1511,8 @@ class LiquidacionesController extends AppController {
 							$zip->close();
 
 							$this->redirect('index/' . $zipFileName);
+              */
+              $this->redirect('index');
 						}
 					} else {
 						$db->rollback($this);
