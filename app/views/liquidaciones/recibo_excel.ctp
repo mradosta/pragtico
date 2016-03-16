@@ -186,7 +186,9 @@
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['total_pesos'], array('type' => 'numeroEnLetras', 'case' => 'ucfirst')));
 
             if ($receipt['Liquidacion']['trabajador_deposita'] == 'Si') {
-              $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, 'Acreditación en ' + $receipt['Liquidacion']['trabajador_tipo_cuenta'] + ' N. ' + $receipt['Liquidacion']['trabajador_cbu'], $styleLeftBold);
+              $fila+=2;
+              $ctaTxt = 'Acreditacion en ' . $receipt['Liquidacion']['trabajador_tipo_cuenta'] . ' N. ' . $receipt['Liquidacion']['trabajador_cbu'];
+              $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, $ctaTxt, $styleLeftBold);
             }
 
             $fila+=2;
