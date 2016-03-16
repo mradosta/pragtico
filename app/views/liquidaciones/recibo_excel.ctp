@@ -187,7 +187,7 @@
 
             if ($receipt['Liquidacion']['trabajador_deposita'] == 'Si') {
               $fila+=2;
-              $ctaTxt = 'Acreditacion en ' . $receipt['Liquidacion']['trabajador_tipo_cuenta'] . ' N. ' . $receipt['Liquidacion']['trabajador_cbu'];
+              $ctaTxt = 'Acreditacion en ' . $receipt['Liquidacion']['trabajador_tipo_cuenta'] . ' CBU: ' . $receipt['Liquidacion']['trabajador_cbu'];
               $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, $ctaTxt, $styleLeftBold);
             }
 
