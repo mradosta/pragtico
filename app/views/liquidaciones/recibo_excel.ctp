@@ -21,7 +21,7 @@
     $documento->setActiveSheet();
     $documento->activeSheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
     $documento->activeSheet->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
-    
+
     //$documento->activeSheet->getDefaultStyle()->getFont()->setName('Courier New');
     $documento->activeSheet->getDefaultRowDimension()->setRowHeight(10);
 */
@@ -41,28 +41,28 @@
         'borders' => array( 'bottom'     => array('style' => PHPExcel_Style_Border::BORDER_THIN))));
     $styleBorderTop = array('style' => array(
         'borders' => array( 'top'     => array('style' => PHPExcel_Style_Border::BORDER_THIN))));
-    
+
     $styleLeft = array('style' => array(
         'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT)));
-    
+
     $styleLeftBold = array('style' => array(
         'font'      => array('bold' => true),
         'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT)));
-    
+
     $styleRight = array('style' => array(
         'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT)));
-    
+
     $styleRightBold = array('style' => array(
         'font'      => array('bold' => true),
         'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT)));
-    
+
     $styleCenter = array('style' => array(
         'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER)));
 
     $styleCenterBold = array('style' => array(
         'font'      => array('bold' => true),
         'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER)));
-    
+
     $initialRow = 0;
     foreach ($this->data as $receipt) {
 
@@ -72,11 +72,19 @@
             for ($ti = 0; $ti <= 21; $ti++) {
                 $documento->setCellValue($ti + ($i * 23) . ',' . $fila, '', $styleBorderTop);
             }
+
             $fila++;
+            $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, 'RECIBO DE HABERES LEY N. 20.744', $styleLeftBold);
+            if ($i === 0) {
+              $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('R') -1 + ($i * 23)) . ',' . $fila, 'Original', $styleLeftBold);
+            } else {
+              $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('R') -1 + ($i * 23)) . ',' . $fila, 'Duplicado', $styleLeftBold);
+            }
+            $fila+=2;
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, $receipt['Liquidacion']['empleador_nombre'], $styleLeftBold);
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('N') -1 + ($i * 23)) . ',' . $fila, 'Liquidacion:', $styleLeftBold);
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('R') -1 + ($i * 23)) . ',' . $fila, ucfirst($receipt['Liquidacion']['tipo']));
-            
+
             $fila++;
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, $receipt['Liquidacion']['empleador_direccion'], $styleLeftBold);
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('N') -1 + ($i * 23)) . ',' . $fila, 'Periodo:', $styleLeftBold);
@@ -93,7 +101,7 @@
             for ($ti = 0; $ti <= 21; $ti++) {
                 $documento->setCellValue($ti + ($i * 23) . ',' . $fila, '', $styleBorderBottom);
             }
-            
+
 
             $fila+=4;
             for ($ti = 0; $ti <= 21; $ti++) {
@@ -118,8 +126,8 @@
             for ($ti = 0; $ti <= 21; $ti++) {
                 $documento->setCellValue($ti + ($i * 23) . ',' . $fila, '', $styleBorderBottom);
             }
-            
-            
+
+
 
             $fila+=2;
             for ($ti = 0; $ti <= 21; $ti++) {
@@ -155,7 +163,7 @@
             for ($ti = 0; $ti <= 21; $ti++) {
                 $documento->setCellValue($ti + ($i * 23) . ',' . $fila, '', $styleBorderTop);
             }
-            
+
             $fila++;
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, 'TOTALES:', $styleLeftBold);
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('K') -1 + ($i * 23)) . ',' . $fila, 'No Remunerativo', $styleRightBold);
@@ -167,7 +175,7 @@
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('O') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['remunerativo'], 'currency'), $styleRight);
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('S') -1 + ($i * 23)) . ',' . $fila, $formato->format(($receipt['Liquidacion']['remunerativo'] + $receipt['Liquidacion']['no_remunerativo']), 'currency'), $styleRight);
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('V') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['deduccion'], 'currency'), $styleRight);
-            
+
             $fila+=2;
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('S') -1 + ($i * 23)) . ',' . $fila, 'Neto:', $styleLeftBold);
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('V') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['total_pesos'], 'currency'), $styleRightBold);
@@ -176,7 +184,11 @@
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, 'Son Pesos:', $styleLeftBold);
             $fila++;
             $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, $formato->format($receipt['Liquidacion']['total_pesos'], array('type' => 'numeroEnLetras', 'case' => 'ucfirst')));
-            
+
+            if ($receipt['Liquidacion']['trabajador_deposita'] == 'Si') {
+              $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, 'Acreditación en ' + $receipt['Liquidacion']['trabajador_tipo_cuenta'] + ' N. ' + $receipt['Liquidacion']['trabajador_cbu'], $styleLeftBold);
+            }
+
             $fila+=2;
             if (!empty($receipt['Suss'])) {
                 $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('M') -1 + ($i * 23)) . ',' . $fila, 'Ultimo Periodo Aporte Jubilatorio:', $styleLeftBold);
@@ -197,7 +209,7 @@
             } else {
                 $documento->setCellValue((PHPExcel_Cell::columnIndexFromString('B') -1 + ($i * 23)) . ',' . $fila, 'Firma Empleador');
             }
-            
+
             $fila++;
             for ($ti = 0; $ti <= 21; $ti++) {
                 $documento->setCellValue($ti + ($i * 23) . ',' . $fila, '', $styleBorderBottom);

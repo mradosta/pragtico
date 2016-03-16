@@ -43,7 +43,7 @@ class Liquidacion extends AppModel {
             'Confirmada'        => 'Confirmada',
             'Sin Confirmar'     => 'Sin Confirmar',
             'Guardada'          => 'Guardada'));
-    
+
     var $hasMany = array(    'LiquidacionesDetalle' =>
                         array('className'   => 'LiquidacionesDetalle',
                               'foreignKey'     => 'liquidacion_id',
@@ -557,6 +557,8 @@ class Liquidacion extends AppModel {
         $liquidacion['trabajador_nombre'] = $this->getRelationship('Trabajador', 'nombre');
         $liquidacion['trabajador_apellido'] = $this->getRelationship('Trabajador', 'apellido');
         $liquidacion['trabajador_cbu'] = $this->getRelationship('Trabajador', 'cbu');
+        $liquidacion['trabajador_tipo_cuenta'] = $this->getRelationship('Trabajador', 'tipo_cuenta');
+        $liquidacion['trabajador_deposita'] = $this->getRelationship('Trabajador', 'deposita');
         $liquidacion['empleador_id'] = $this->getRelationship('Empleador', 'id');
         $liquidacion['empleador_cuit'] = $this->getRelationship('Empleador', 'cuit');
         $liquidacion['empleador_nombre'] = $this->getRelationship('Empleador', 'nombre');
@@ -735,7 +737,7 @@ class Liquidacion extends AppModel {
                 }
             }
         }
-        
+
         if (!empty($allNecesaryConcepts) && !empty($this->__conceptos)) {
             $diff = array_diff($allNecesaryConcepts, array_keys($this->__conceptos));
             if (!empty($diff)) {
@@ -795,10 +797,10 @@ class Liquidacion extends AppModel {
         if (isset($concepto['valor'])) {
             return $concepto;
         }
-        
+
         //debug($concepto['nombre'] . ' ' . $concepto['formula']);
         $this->__setCurrentConcept($concepto);
-        
+
         $valor = null;
         $errores = array();
         $formula = $concepto['formula'];
@@ -852,7 +854,7 @@ class Liquidacion extends AppModel {
         /** Verifico si el nombre que se muestra del concepto es una formula, la resuelvo. */
         if (!empty($concepto['nombre_formula'])) {
             $nombreConcepto = $concepto['nombre_formula'];
-    
+
             /**
             * Si en el nombre hay variables, busco primero estos valores.
             */
@@ -866,7 +868,7 @@ class Liquidacion extends AppModel {
                     $nombreConcepto = preg_replace("/".$v."(\W)|".$v."$/", $this->getVarValue($v) . "$1", $nombreConcepto);
                 }
             }
-    
+
             if (substr($nombreConcepto, 0, 3) === '=if') {
                 $nombreConcepto = $this->__formulas->resolver($nombreConcepto);
             } elseif (in_array(substr($nombreConcepto, 0, 1), array('#', '='))) {
@@ -883,7 +885,7 @@ class Liquidacion extends AppModel {
             $conceptosNot = explode(',', str_replace('@', '', str_replace(' ', '', $matches[1])));
             $formula = str_replace('(,', '(', str_replace(str_replace(' ', '', $matches[0]), '', str_replace(' ', '', $formula)));
         }
-    
+
 
         /**
         * Veo si es una formula, que me indica la suma del remunerativo, de las deducciones o del no remunerativo.
@@ -892,7 +894,7 @@ class Liquidacion extends AppModel {
             if (!isset($conceptosNot)) {
                 $conceptosNot = array();
             }
-            
+
             $valor = 0;
             $this->__getAllNecessaryConcepts();
             foreach ($this->__conceptos as $conceptoTmp) {
@@ -917,7 +919,7 @@ class Liquidacion extends AppModel {
 
 			/**
 			 * Search for historical concepts in formula
-			 */ 
+			 */
 			if (preg_match_all('/@([a-z_]+)\/([0-9]{6}[M|1Q|2Q]+)\/+/', $formula, $matches)) {
 
                 foreach (array_unique($matches[1]) as $k => $match) {
@@ -953,7 +955,7 @@ class Liquidacion extends AppModel {
             * Si aun no lo tengo, lo calculo.
             */
             if (preg_match_all('/(@[\w]+)/', $formula, $matches)) {
-                
+
                 /** Must order array before replacing because of non exact replace of str_replace */
                 $tmp = null;
                 foreach (array_unique($matches[1]) as $match) {
@@ -1213,8 +1215,8 @@ class Liquidacion extends AppModel {
                 $this->setVar($variable, $valor);
                 return $valor;
             }
-            
-            
+
+
             /**
             * Busco si es una variable que viene dada por la relacion.
             * Depende de recursive, puede venir $data[model1][model2][campo] 0 $data[model1][campo]
@@ -1234,10 +1236,10 @@ class Liquidacion extends AppModel {
                         'descripcion'           => 'La formula intenta usar una variable que no es posible resolverla con los datos de la relacion.',
                         'recomendacion'         => 'Verifique que la relacion tenga cargados todos los datos necesarios.',
                         'descripcion_adicional' => ''));
-                    
+
                     $valor = 0;
                 }
-                
+
                 switch($this->__variables[$variable]['formato']) {
                     case 'Minuscula':
                         $valor = strtolower($valor);
@@ -1253,7 +1255,7 @@ class Liquidacion extends AppModel {
                 $this->setVar($variable, $valor);
                 return $valor;
             }
-            
+
 
             switch ($variable) {
                 case '#mes_liquidacion':
@@ -1350,9 +1352,9 @@ class Liquidacion extends AppModel {
             $this->__period = $period;
         }
     }
-    
+
     function getPeriod($option = '') {
-        
+
         if (isset($this->__period[$option])) {
             return $this->__period[$option];
         } elseif (empty($option)) {
@@ -1378,7 +1380,7 @@ class Liquidacion extends AppModel {
             	return $this->__relationship[$model];
 			} else {
 				return null;
-			}	
+			}
         } else {
             return $this->__relationship;
         }
@@ -1398,8 +1400,8 @@ class Liquidacion extends AppModel {
             }
         }
     }
-    
-    
+
+
 /**
  * Agrega datos que seran guardados en la tabla liquidaciones_auxiliares.
  *
@@ -1420,11 +1422,11 @@ class Liquidacion extends AppModel {
         }
     }
 
-    
+
     function __getAuxiliar() {
         return $this->__saveAuxiliar;
     }
-    
+
 
 /**
  * Agrega conceptos al array de conceptos de su tipo.
@@ -1534,6 +1536,6 @@ class Liquidacion extends AppModel {
         }
         return true;
     }
-    
+
 }
 ?>
