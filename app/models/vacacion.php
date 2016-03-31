@@ -129,6 +129,7 @@ class Vacacion extends AppModel {
         $days = 0;
         if (!empty($vacaciones)) {
 
+            $daysInPeriod = $this->getDiasVacaciones($relacion, $periodo['periodo']);
             foreach ($vacaciones as $vacacion) {
 
                 $days += $vacacion['VacacionesDetalle']['dias'];
@@ -138,6 +139,18 @@ class Vacacion extends AppModel {
                 $auxiliar['permissions'] = '288';
                 $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
                 $auxiliares[] = array('save'=>serialize($auxiliar), 'model' => 'VacacionesDetalle');
+
+                if ($daysInPeriod < $vacacion['VacacionesDetalle']['dias']) {
+                  $auxiliar = $vacacion['VacacionesDetalle'];
+                  $auxiliar['vacacion_id'] = $vacacion['Vacacion']['id'];
+                  $auxiliar['estado'] = 'Liquidado';
+                  $auxiliar['permissions'] = '288';
+                  $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
+                  $auxiliar['dias'] = $vacacion['VacacionesDetalle']['dias'] - $daysInPeriod;
+                  $auxiliar['desde'] = Dates::dateAdd($periodo['periodo']['hasta'], +2);
+                  $auxiliares[] = array('save'=>serialize($auxiliar), 'model' => 'VacacionesDetalle');
+                }
+
 
                 $auxiliar = null;
                 $auxiliar['id'] = $vacacion['Vacacion']['id'];
