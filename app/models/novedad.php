@@ -33,7 +33,7 @@ class Novedad extends AppModel {
  * @var array
  * @access public
 */
-	var $modificadores = array(	'index'	=> 
+	var $modificadores = array(	'index'	=>
 			array('contain'	=> array('Relacion' => array('Empleador', 'Trabajador'))),
 								'edit'	=>
 			array('contain'	=> array('Concepto', 'Relacion'	=> array('Empleador', 'Trabajador'))));
@@ -45,11 +45,11 @@ class Novedad extends AppModel {
  * @access public
  */
 	var $opciones = array('formato'=>array('Excel5' => 'Excel', 'Excel2007' => 'Excel 2007'));
-	
+
 	var $belongsTo = array('Relacion', 'Concepto', 'Liquidacion');
 
-    var $breadCrumb = array('format' => '%s %s (%s)', 
-                            'fields' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));    
+    var $breadCrumb = array('format' => '%s %s (%s)',
+                            'fields' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));
 
 /**
  * Based on novelty type, mark the existance of a previewsly informed novelty.
@@ -60,7 +60,7 @@ class Novedad extends AppModel {
 				$existe = false;
 				if (isset($v['Novedad']['tipo'])) {
 					if ($v['Novedad']['tipo'] === 'Concepto') {
-						
+
 						$conditions = null;
 						$conditions['relacion_id'] = $results[$k]['Novedad']['relacion_id'];
 						$conditions['tipo'] = $results[$k]['Novedad']['tipo'];
@@ -70,7 +70,7 @@ class Novedad extends AppModel {
 						if ($this->hasAny($conditions) > 1) {
 							$existe = true;
 						}
-						
+
 						$results[$k]['Novedad']['subtipo'] = array_pop(explode(':', $v['Novedad']['subtipo']));
 					} elseif ($v['Novedad']['tipo'] === 'Horas') {
 						$Hora = ClassRegistry::init('Hora');
@@ -88,7 +88,7 @@ class Novedad extends AppModel {
 						$find['Ausencia.desde >='] = $periodo['desde'];
 						$find['Ausencia.desde <='] = $periodo['hasta'];
 						$find['Ausencia.relacion_id'] = $v['Novedad']['relacion_id'];
-						$existe = $Ausencia->find('first', array(	'recursive' 	=> -1, 
+						$existe = $Ausencia->find('first', array(	'recursive' 	=> -1,
 											 						'checkSecurity'	=> false,
 											 						'conditions' 	=> $find));
                     } elseif ($v['Novedad']['tipo'] === 'Vacaciones') {
@@ -107,7 +107,7 @@ class Novedad extends AppModel {
 						$find['Descuento.desde >='] = $periodo['desde'];
 						$find['Descuento.desde <='] = $periodo['hasta'];
 						$find['Descuento.relacion_id'] = $v['Novedad']['relacion_id'];
-						$existe = $Descuento->find('first', array(	'recursive' 	=> -1, 
+						$existe = $Descuento->find('first', array(	'recursive' 	=> -1,
 											 						'checkSecurity'	=> false,
 											 						'conditions' 	=> $find));
 					}
@@ -120,19 +120,19 @@ class Novedad extends AppModel {
 		}
 		return parent::afterFind($results, $primary);
 	}
-	
+
 /**
  * Graba las novedades provenientes desde la planilla.
  * Maneja transacciones.
  *
  * @param array $datos Los datos a grabar.
  * @return boolean True si fue posible guardar las novedades ingresadas, false en otro caso
- * @access public 
+ * @access public
  */
  	function grabar($datos) {
 
         App::import('Vendor', 'dates', 'pragmatia');
-        
+
 		$predefinidos = $this->getIngresosPosibles('predefinidos');
 		foreach ($datos as $r => $data) {
 			$tmp = explode('|', $r);
@@ -142,7 +142,7 @@ class Novedad extends AppModel {
 
 			foreach ($data as $tipo => $registros) {
 				foreach ($registros as $subTipo => $registro) {
-				
+
 					$save = null;
 					$save['Novedad']['id'] = null;
 					$save['Novedad']['periodo'] = $periodo;
@@ -150,7 +150,7 @@ class Novedad extends AppModel {
 					$save['Novedad']['alta'] = date('Y-m-d');
 					$save['Novedad']['estado'] = 'Pendiente';
 					$save['Novedad']['relacion_id'] = $relacion_id;
-					
+
 					if (!in_array($tipo, $predefinidos)) {
 						/**
 						* Busco el id del concepto correspondiente al nombre que importe desde la planilla.
@@ -169,7 +169,7 @@ class Novedad extends AppModel {
 						$save['Novedad']['tipo'] = $tipo;
 						$save['Novedad']['subtipo'] = $subTipo;
 						$save['Novedad']['data'] = $registro;
-						
+
 						/**
 						* Le doy un tratamiento especial a las ausencias, para ya dejar el motivo
 						* especificado.
@@ -254,7 +254,7 @@ class Novedad extends AppModel {
 		return array('conceptos' => $conceptos, 'variables' => $variables, 'auxiliar' => $auxiliares);
 	}
 
-	
+
 /**
  * Distribuye las novedades en las diferentes tablas (horas, ausencias, descuentos).
  *
@@ -264,7 +264,7 @@ class Novedad extends AppModel {
  */
 	function confirmar($ids) {
 		$novedades = $this->find('all',
-				array('conditions' 	=> array('Novedad.id' => $ids), 
+				array('conditions' 	=> array('Novedad.id' => $ids),
 					  'recursive'	=> -1));
 		$c = $i = $ii = 0;
 
@@ -340,7 +340,7 @@ class Novedad extends AppModel {
             $db->begin($this);
             foreach ($saves as $save) {
                 $keys = array_keys($save);
-                if (($keys[0] == 'VacacionesDetalle' && $this->Relacion->Vacacion->{$keys[0]}->appSave($save)) || $this->Relacion->{$keys[0]}->appSave($save)) {
+                if ($keys[0] == 'VacacionesDetalle' && $this->Relacion->Vacacion->{$keys[0]}->appSave($save)) {
 					$idByType[$keys[0]][] = $this->Relacion->{$keys[0]}->id;
                     $c++;
                 }
@@ -402,7 +402,7 @@ class Novedad extends AppModel {
             }
 			return array_merge($predefinidos, $conceptos);
 		} elseif ($tipo === 'predefinidos') {
-			return $predefinidos;	
+			return $predefinidos;
 		}
 	}
 
