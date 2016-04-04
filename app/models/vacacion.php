@@ -142,6 +142,7 @@ class Vacacion extends AppModel {
 
                 if ($daysInPeriod < $vacacion['VacacionesDetalle']['dias']) {
                   $auxiliar = $vacacion['VacacionesDetalle'];
+                  $auxiliar['id'] = null;
                   $auxiliar['vacacion_id'] = $vacacion['Vacacion']['id'];
                   $auxiliar['estado'] = 'Liquidado';
                   $auxiliar['permissions'] = '288';
