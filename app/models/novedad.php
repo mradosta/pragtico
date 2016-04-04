@@ -340,8 +340,8 @@ class Novedad extends AppModel {
             $db->begin($this);
             foreach ($saves as $save) {
                 $keys = array_keys($save);
-                if ($keys[0] == 'VacacionesDetalle' && $this->Relacion->Vacacion->{$keys[0]}->appSave($save)) {
-					$idByType[$keys[0]][] = $this->Relacion->{$keys[0]}->id;
+                if (($keys[0] == 'VacacionesDetalle' && $this->Relacion->Vacacion->{$keys[0]}->appSave($save)) || $this->Relacion->{$keys[0]}->appSave($save)) {
+					          $idByType[$keys[0]][] = $this->Relacion->{$keys[0]}->id;
                     $c++;
                 }
             }
