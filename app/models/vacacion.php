@@ -136,6 +136,7 @@ class Vacacion extends AppModel {
                 $auxiliar = null;
                 $auxiliar['id'] = $vacacion['VacacionesDetalle']['id'];
                 $auxiliar['estado'] = 'Liquidado';
+                $auxiliar['dias'] = $daysInPeriod;
                 $auxiliar['permissions'] = '288';
                 $auxiliar['liquidacion_id'] = '##MACRO:liquidacion_id##';
                 $auxiliares[] = array('save'=>serialize($auxiliar), 'model' => 'VacacionesDetalle');
