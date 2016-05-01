@@ -193,6 +193,7 @@ class ConveniosController extends AppController {
                     $objReader->setReadDataOnly(true);
 					$objPHPExcel = $objReader->load($this->data['ConveniosCategoria']['planilla']['tmp_name']);
 
+
 					App::import('Vendor', 'dates', 'pragmatia');
 					for ($i = 10; $i <= $objPHPExcel->getActiveSheet()->getHighestRow(); $i++) {
 
