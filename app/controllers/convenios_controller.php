@@ -104,7 +104,7 @@ class ConveniosController extends AppController {
 		$this->Convenio->contain(array("ConveniosInformacion.Informacion"));
 		$this->data = $this->Convenio->read(null, $id);
 	}
-	
+
 /**
  * Asigna un concepto a todos los trabajadores de todos los empleadores de un convenio.
  */
@@ -115,7 +115,7 @@ class ConveniosController extends AppController {
 			$this->Convenio->ConveniosCategoria->contain();
 			$conveniosCategoria = $this->Convenio->ConveniosCategoria->find("list", array("conditions"=>array("ConveniosCategoria.convenio_id"=>$this->params['named']['convenio_id'])));
 			$this->Convenio->ConveniosCategoria->Relacion->contain();
-			
+
 			$relaciones = $this->Convenio->ConveniosCategoria->Relacion->find("list", array("fields"=>array("Relacion.id"), "conditions"=>array("Relacion.convenios_categoria_id"=>array_values($conveniosCategoria))));
 			$c = $this->Convenio->ConveniosCategoria->Relacion->RelacionesConcepto->Concepto->agregarQuitarConcepto($relaciones, array($this->params['named']['concepto_id']), array("accion"=>$accion));
 			if ($c > 0) {
@@ -184,7 +184,7 @@ class ConveniosController extends AppController {
 
 					set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes');
 					App::import('Vendor', 'IOFactory', true, array(APP . 'vendors' . DS . 'PHPExcel' . DS . 'Classes' . DS . 'PHPExcel'), 'IOFactory.php');
-					
+
 					if (preg_match("/.*\.xls$/", $this->data['ConveniosCategoria']['planilla']['name'])) {
 						$objReader = PHPExcel_IOFactory::createReader('Excel5');
 					} elseif (preg_match("/.*\.xlsx$/", $this->data['ConveniosCategoria']['planilla']['name'])) {
@@ -193,8 +193,8 @@ class ConveniosController extends AppController {
                     $objReader->setReadDataOnly(true);
 					$objPHPExcel = $objReader->load($this->data['ConveniosCategoria']['planilla']['tmp_name']);
 
-					App::import('Vendor', 'dates', 'pragmatia');	
-					for ($i = 10; $i <= $objPHPExcel->getActiveSheet()->getHighestRow() - 1; $i++) {
+					App::import('Vendor', 'dates', 'pragmatia');
+					for ($i = 10; $i <= $objPHPExcel->getActiveSheet()->getHighestRow(); $i++) {
 
 						$values[] = array(
 							'ConveniosCategoriasHistorico' => array(
@@ -210,8 +210,8 @@ class ConveniosController extends AppController {
 
 					if (!empty($values)) {
 						if ($this->Convenio->ConveniosCategoria->ConveniosCategoriasHistorico->saveAll($values)) {
-							$this->Session->setFlash('Se importaron correctamente las categorias', 'error');
-							$this->redirect('convenios');
+							$this->Session->setFlash('Se importaron correctamente las categorias', 'ok');
+							$this->redirect('index');
 						} else {
 							$this->Session->setFlash('No fue posible importar las categorias. Verifique la planilla', 'error');
 						}
