@@ -230,7 +230,7 @@ class Liquidacion extends AppModel {
 
             $jornada = $this->getRelationship('ConveniosCategoria', 'jornada');
 
-            if ($period['periodo'] != 'M' && $jornada == 'Mensual') {
+            if ($period['periodo'] != '1S' && $period['periodo'] != '2S' && $period['periodo'] != 'M' && $jornada == 'Mensual') {
 
 				$this->__setError(array(    'tipo'                  => 'Error de Jornadas',
 											'gravedad'              => 'Alta',
