@@ -23,7 +23,8 @@
  */
 class Area extends AppModel {
 
-    var $permissions = array('permissions' => 496, 'group' => 'default', 'role' => 'all');
+	var $modificadores = array('index'      => array('contain' => array('Empleador')));
+	var $permissions = array('permissions' => 496, 'group' => 'default', 'role' => 'all');
 
 	var $opciones = array('pago' => array(	'1' => 'Ultimo Dia Habil del Periodo',
 											'2' => 'Primer Dia Habil',
