@@ -192,7 +192,9 @@ class Concepto extends AppModel {
 												'ConveniosConcepto.concepto_id',
 												'ConveniosConcepto.desde',
 												'ConveniosConcepto.hasta',
-												'ConveniosConcepto.formula');
+												'ConveniosConcepto.formula',
+												'ConveniosConcepto.nombre_formula',
+												'ConveniosConcepto.cantidad');
 		$fieldsConceptos = 				array(	'Concepto.id',
 												'Concepto.codigo',
 												'Concepto.nombre',
@@ -603,6 +605,22 @@ class Concepto extends AppModel {
 			} elseif (!empty($v['ConveniosConcepto']['formula'])) {
 				$conceptos[$v['Concepto']['codigo']]['formula'] = $v['ConveniosConcepto']['formula'];
 				$conceptos[$v['Concepto']['codigo']]['jerarquia'] = 'Convenio';
+			} else {
+				$conceptos[$v['Concepto']['codigo']]['jerarquia'] = 'Concepto';
+			}
+
+
+			if (!empty($v['ConveniosConcepto']['nombre_formula'])) {
+				$conceptos[$v['Concepto']['codigo']]['nombre_formula'] = $v['ConveniosConcepto']['nombre_formula'];
+				$conceptos[$v['Concepto']['codigo']]['jerarquia'] = 'ConveniosConcepto';
+			} else {
+				$conceptos[$v['Concepto']['codigo']]['jerarquia'] = 'Concepto';
+			}
+
+
+			if (!empty($v['ConveniosConcepto']['cantidad'])) {
+				$conceptos[$v['Concepto']['codigo']]['cantidad'] = $v['ConveniosConcepto']['cantidad'];
+				$conceptos[$v['Concepto']['codigo']]['jerarquia'] = 'ConveniosConcepto';
 			} else {
 				$conceptos[$v['Concepto']['codigo']]['jerarquia'] = 'Concepto';
 			}

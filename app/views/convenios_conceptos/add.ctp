@@ -38,6 +38,9 @@ $campos['ConveniosConcepto.concepto_id'] = array(
 $campos['ConveniosConcepto.desde'] = array();
 $campos['ConveniosConcepto.hasta'] = array();
 $campos['ConveniosConcepto.formula'] = array();
+$campos['ConveniosConcepto.nombre_formula'] = array('aclaracion' => 'Utilizara este valor en las impresiones.');
+$campos['ConveniosConcepto.cantidad'] = array('aclaracion' => 'Indica desde que variable se sacara la cantidad que se mostrara');
+
 $campos['ConveniosConcepto.observacion'] = array();
 
 $fieldset = $appForm->pintarFieldsets(array(array('campos' => $campos)), array(

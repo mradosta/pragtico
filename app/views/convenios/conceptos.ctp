@@ -69,33 +69,87 @@ foreach ($this->data['Concepto'] as $k=>$v) {
 		'field' => 'nombre',
 		'valor' => $v['nombre']
 	);
-	
-    if (!empty($v['ConveniosConcepto']['formula'])) {
-        $fila[] = array(
+
+	if (!empty($v['ConveniosConcepto']['formula'])) {
+		$fila[] = array(
 			'model' 			=> 'Bar',
 			'field' 			=> 'foo',
 			'valor' 			=> 'Convenio',
 			'nombreEncabezado' 	=> 'Jerarquia',
 			'ordenEncabezado' 	=> false
 		);
-        $fila[] = array(
+		$fila[] = array(
 			'model' => 'ConveniosConcepto',
 			'field' => 'formula',
 			'valor' => $v['ConveniosConcepto']['formula']
 		);
-    } else {
-        $fila[] = array(
+	} else {
+		$fila[] = array(
 			'model' 			=> 'Bar',
 			'field' 			=> 'foo',
 			'valor' 			=> 'Concepto',
 			'nombreEncabezado' 	=> 'Jerarquia',
 			'ordenEncabezado' 	=> false);
-        $fila[] = array(
+		$fila[] = array(
 			'model' => 'Concepto',
 			'field' => 'formula',
 			'valor' => $v['formula']
 		);
-    }
+	}
+
+	if (!empty($v['ConveniosConcepto']['nombre_formula'])) {
+		$fila[] = array(
+			'model' 			=> 'Bar',
+			'field' 			=> 'foo',
+			'valor' 			=> 'Convenio',
+			'nombreEncabezado' 	=> 'Jerarquia',
+			'ordenEncabezado' 	=> false
+		);
+		$fila[] = array(
+			'model' => 'ConveniosConcepto',
+			'field' => 'nombre_formula',
+			'valor' => $v['ConveniosConcepto']['nombre_formula']
+		);
+	} else {
+		$fila[] = array(
+			'model' 			=> 'Bar',
+			'field' 			=> 'foo',
+			'valor' 			=> 'Concepto',
+			'nombreEncabezado' 	=> 'Jerarquia',
+			'ordenEncabezado' 	=> false);
+		$fila[] = array(
+			'model' => 'Concepto',
+			'field' => 'nombre_formula',
+			'valor' => $v['nombre_formula']
+		);
+	}
+
+	if (!empty($v['ConveniosConcepto']['cantidad'])) {
+		$fila[] = array(
+			'model' 			=> 'Bar',
+			'field' 			=> 'foo',
+			'valor' 			=> 'Convenio',
+			'nombreEncabezado' 	=> 'Jerarquia',
+			'ordenEncabezado' 	=> false
+		);
+		$fila[] = array(
+			'model' => 'ConveniosConcepto',
+			'field' => 'cantidad',
+			'valor' => $v['ConveniosConcepto']['cantidad']
+		);
+	} else {
+		$fila[] = array(
+			'model' 			=> 'Bar',
+			'field' 			=> 'foo',
+			'valor' 			=> 'Concepto',
+			'nombreEncabezado' 	=> 'Jerarquia',
+			'ordenEncabezado' 	=> false);
+		$fila[] = array(
+			'model' => 'Concepto',
+			'field' => 'cantidad',
+			'valor' => $v['cantidad']
+		);
+	}	
 	$cuerpo[] = $fila;
 }
 
