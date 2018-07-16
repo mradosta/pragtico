@@ -388,7 +388,8 @@ class Liquidacion extends AppModel {
             unset($options['informaciones']);
 
             $conditions['Liquidacion.relacion_id'] = $relationship['Relacion']['id'];
-            $conditions['Liquidacion.tipo !='] = 'Sac';
+            //$conditions['Liquidacion.tipo !='] = 'Sac';
+            $conditions['Liquidacion.tipo'] = 'Normal';
             $conditions['Liquidacion.estado'] = 'Confirmada';
             $options['year'] = $conditions['Liquidacion.ano'] = $period['ano'];
             if ($period['periodo'] == '1S') {
