@@ -15,7 +15,7 @@
  * @lastmodified	$Date$
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
- 
+
 /**
 * Especifico los campos para ingresar las condiciones.
 */
@@ -31,6 +31,12 @@ $condiciones['Condicion.Relacion-id'] = array(	'label'	=> 'Relacion',
 												'lov'	=> array(	'controller'	=> 'relaciones',
 																	'camposRetorno'	=> array(	'Empleador.nombre',
 																								'Trabajador.apellido')));
+$condiciones['Condicion.Relacion-area_id'] = array(
+	'label' => 'Area',
+	'mask' =>  '%s, %s',
+	'lov'	=> array('controller'	=> 'areas', 'camposRetorno'	=> array(   'Empleador.nombre', 'Area.nombre'))
+);
+
 $condiciones['Condicion.Novedad-tipo'] = array('type' => 'select', 'multiple' => 'checkbox');
 $condiciones['Condicion.Novedad-periodo'] = array('type' => 'periodo');
 $condiciones['Condicion.Novedad-estado'] = array('type' => 'select', 'multiple' => 'checkbox');
