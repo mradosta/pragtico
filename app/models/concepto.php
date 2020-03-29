@@ -148,7 +148,8 @@ class Concepto extends AppModel {
             'Importe Horas Extras'      => 'Importe Horas Extras',
             'SAC'                       => 'SAC',
             'Vacaciones'                => 'Vacaciones',
-            'Plus Zona Desfavorable'    => 'Plus Zona Desfavorable'));
+            'Plus Zona Desfavorable'    => 'Plus Zona Desfavorable',
+            'Conceptos No remunerativos'=> 'Conceptos No remunerativos'));
 
 /**
  * descontar field is bitwise, must sum values then.
