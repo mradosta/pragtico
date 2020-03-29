@@ -157,7 +157,10 @@ class Concepto extends AppModel {
     function beforeSave($options = array()) {
         if (isset($this->data['Concepto']['remuneracion']) && is_array($this->data['Concepto']['remuneracion'])) {
             $this->data['Concepto']['remuneracion'] = array_sum($this->data['Concepto']['remuneracion']);
-        }
+				}
+        if (isset($this->data['Concepto']['cotizaciones']) && is_array($this->data['Concepto']['cotizaciones'])) {
+					$this->data['Concepto']['cotizaciones'] = array_sum($this->data['Concepto']['cotizaciones']);
+				}
         if (isset($this->data['Concepto']['liquidacion_tipo']) && is_array($this->data['Concepto']['liquidacion_tipo'])) {
             $this->data['Concepto']['liquidacion_tipo'] = array_sum($this->data['Concepto']['liquidacion_tipo']);
         }
