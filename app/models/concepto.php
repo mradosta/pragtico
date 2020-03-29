@@ -24,14 +24,14 @@
 class Concepto extends AppModel {
 
     var $permissions = array('permissions' => 508, 'group' => 'none', 'role' => 'higher');
-    
+
 	var $breadCrumb = array('format' 	=> '(%s) %s',
 							'fields' 	=> array('Concepto.codigo', 'Concepto.nombre'));
-	
+
 	var $validate = array(
         'nombre' => array(
 			array(
-				'rule'		=> VALID_NOT_EMPTY, 
+				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe especificar el nombre del concepto.')
         ),
         'codigo' => array(
@@ -42,17 +42,28 @@ class Concepto extends AppModel {
 				'rule'		=> array('minLength', 3),
 				'message'	=> 'El codigo del concepto debe tener al menos 4 caracteres.'),
 			array(
-				'rule'		=> VALID_NOT_EMPTY, 
+				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe especificar el codigo del concepto.')
-        ),
+				),
+			'codigo_afip' => array(
+			array(
+				'rule'		=> '/^[0-9]+$/',
+				'message'	=> 'El codigo Afip del concepto solo puede contener numeros.'),
+			array(
+				'rule'		=> array('minLength', 6),
+				'message'	=> 'El codigo del concepto debe tener 6 caracteres.'),
+			array(
+				'rule'		=> array('maxLength', 6),
+				'message'	=> 'El codigo del concepto debe tener 6 caracteres.'),
+			),
         'tipo' => array(
 			array(
-				'rule'		=> VALID_NOT_EMPTY, 
+				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe seleccionar el tipo de concepto.')
         ),
         'coeficiente_id' => array(
 			array(
-				'rule'		=> VALID_NOT_EMPTY, 
+				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe seleccionar un coeficiente.')
         ),
         'desde' => array(
@@ -111,8 +122,25 @@ class Concepto extends AppModel {
             '16'    => 'Remuneracion 5',
             '32'    => 'Remuneracion 6',
             '64'    => 'Remuneracion 7',
-            '128'   => 'Remuneracion 8',
-			'256'   => 'Remuneracion 9'),
+						'128'   => 'Remuneracion 8',
+						'256'   => 'Remuneracion 9',
+						'512'   => 'Remuneracion 10'),
+				'cotizaciones'      => array(
+					'1'     	=> 'SIPA - Aportes',
+					'2'     	=> 'SIPA - Contribuciones',
+					'4'     	=> 'INSSJyP - Aportes',
+					'8'     	=> 'INSSJyP - Contribuciones',
+					'16'    	=> 'Obra social - Aportes',
+					'32'    	=> 'Obra social - Contribuciones',
+					'64'    	=> 'Fondo Solidario de Redistribución - Aportes',
+					'128'   	=> 'Fondo Solidario de Redistribución - Contribuciones',
+					'256'   	=> 'RENATRE - Aportes',
+					'256'   	=> 'RENATRE - Contribuciones',
+					'512'   	=> 'Asignaciones Familiares - Contribuciones',
+					'1024'   	=> 'Fondo Nacional de Empleo - Contribuciones',
+					'2048'   	=> 'Ley de Riesgos del Trabajo - Contribuciones',
+					'4096'   	=> 'Regímenes especiales - Aportes',
+				),
         'compone'           => array(
             'Sueldo'                    => 'Sueldo',
             'Adicionales'               => 'Adicionales',
@@ -160,21 +188,21 @@ class Concepto extends AppModel {
 						Concepto.
  */
 	function findConceptos($tipo = 'Relacion', $opciones = array()) {
-		
+
 		$default['hasta'] = '2000-01-01';
 		$default['desde'] = '2050-12-31';
 		$default['condicionAdicional'] = ""; // de la forma string....
 		$opciones = array_merge($default, $opciones);
 
 
-		
-		
+
+
 		if (!empty($opciones['condicionAdicional'])) {
 			$condicionAdicional = ' and ' . $opciones['condicionAdicional'] . ' ';
 		} else {
 			$condicionAdicional = '';
 		}
-		
+
 		$fieldsRelaciones =				array(	'RelacionesConcepto.id',
 												'RelacionesConcepto.relacion_id',
 												'RelacionesConcepto.concepto_id',
@@ -393,7 +421,7 @@ class Concepto extends AppModel {
                             array('OR'	=> array(
                                 'ConveniosConcepto.hasta'       => '0000-00-00',
                                 'ConveniosConcepto.hasta >='    => $opciones['hasta'])));
-            
+
 		} elseif ($tipo === 'ConceptoPuntual') {
 			$fields = am($fieldsRelaciones, $fieldsEmpleadoresConcepto, $fieldsConveniosConcepto, $fieldsConceptos, $fieldCoeficientes, $fieldEmpleadoresCoeficiente, $fieldAreasCoeficiente);
 			$table 	= 	'conceptos';
@@ -519,7 +547,7 @@ class Concepto extends AppModel {
 			/**
 			* Descarto por las fechas de vigencias.
 			*/
-			
+
 			/**
 			* De la relacion.
 			*/
@@ -529,7 +557,7 @@ class Concepto extends AppModel {
 			if (!empty($v['RelacionesConcepto']['hasta']) && $v['RelacionesConcepto']['hasta'] != '0000-00-00' && $v['RelacionesConcepto']['hasta'] < $opciones['hasta']) {
 				continue;
 			}
-			
+
 			/**
 			* Del empleador.
 			*/
@@ -549,7 +577,7 @@ class Concepto extends AppModel {
 			if (!empty($v['ConveniosConcepto']['hasta']) && $v['ConveniosConcepto']['hasta'] != '0000-00-00' && $v['ConveniosConcepto']['hasta'] < $opciones['hasta']) {
 				continue;
 			}
-			
+
 			/**
 			* Del concepto.
 			*/
@@ -624,7 +652,7 @@ class Concepto extends AppModel {
 			} else {
 				$conceptos[$v['Concepto']['codigo']]['jerarquia'] = 'Concepto';
 			}
-			
+
 			/**
 			* Sobreescribo ids.
 			*/

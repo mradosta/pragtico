@@ -15,7 +15,7 @@
  * @lastmodified	$Date$
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
- 
+
 /**
 * Especifico los campos de ingreso de datos.
 */
@@ -50,7 +50,9 @@ $campos['Concepto.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 
 $campos = null;
+$campos['Concepto.codigo_afip'] = array();
 $campos['Concepto.compone'] = array('type' => 'radio');
+$campos['Concepto.cotizaciones'] = array('type' => 'select', 'multiple' => 'checkbox');
 $campos['Concepto.remuneracion'] = array('type' => 'select', 'multiple' => 'checkbox');
 $fieldsets[] = array('campos' => $campos, 'opciones' => array('fieldset' => array('legend' => 'Afip', 'imagen' => 'afip.gif')));
 
