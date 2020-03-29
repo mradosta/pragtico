@@ -45,17 +45,6 @@ class Concepto extends AppModel {
 				'rule'		=> VALID_NOT_EMPTY,
 				'message'	=> 'Debe especificar el codigo del concepto.')
 				),
-			'codigo_afip' => array(
-			array(
-				'rule'		=> '/^[0-9]+$/',
-				'message'	=> 'El codigo Afip del concepto solo puede contener numeros.'),
-			array(
-				'rule'		=> array('minLength', 6),
-				'message'	=> 'El codigo del concepto debe tener 6 caracteres.'),
-			array(
-				'rule'		=> array('maxLength', 6),
-				'message'	=> 'El codigo del concepto debe tener 6 caracteres.'),
-			),
         'tipo' => array(
 			array(
 				'rule'		=> VALID_NOT_EMPTY,
