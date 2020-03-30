@@ -15,7 +15,7 @@
  * @lastmodified    $Date$
  * @author          Martin Radosta <mradosta@pragmatia.com>
  */
- 
+
 /**
 * Especifico los campos para ingresar las condiciones.
 */
@@ -32,7 +32,7 @@ $conditions['Condicion.Bar-version'] = array(
 	'order' 		=> array('Siap.version' => 'DESC'),
 	'displayField' 	=> array('Siap.version'));
 
-$options = array('title' => 'Generar archivo SICOSS', 'conditions' => array('Bar-file_format' => false));
+$options = array('title' => 'Generar archivo SICOSS / Libro Sueldo Digital', 'conditions' => array('Bar-file_format' => false));
 echo $this->element('reports/conditions', array('aditionalConditions' => $conditions, 'options' => $options));
 
 ?>

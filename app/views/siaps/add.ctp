@@ -15,13 +15,14 @@
  * @lastmodified	$Date$
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
- 
+
 /**
 * Especifico los campos de ingreso de datos.
 */
 $campos = null;
 $campos['Siap.id'] = array();
 $campos['Siap.version'] = array();
+$campos['Siap.tipo'] = array();
 $campos['Siap.observacion'] = array();
 $fieldsets[] = array('campos' => $campos);
 

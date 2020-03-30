@@ -15,7 +15,7 @@
  * @lastmodified	$Date$
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
- 
+
 /**
 * Especifico los campos para ingresar las condiciones.
 */
@@ -33,6 +33,7 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Siap', 'field' => 'id', 'valor' => $v['Siap']['id'], 'write' => $v['Siap']['write'], 'delete' => $v['Siap']['delete']);
 	$fila[] = array('tipo' => 'desglose', 'id' => $v['Siap']['id'], 'imagen' => array('nombre' => 'siap_detalle.gif', 'alt' => "Detalles"), 'url' => 'detalles');
 	$fila[] = array('model' => 'Siap', 'field' => 'version', 'valor' => $v['Siap']['version']);
+	$fila[] = array('model' => 'Siap', 'field' => 'tipo', 'valor' => $v['Siap']['tipo']);
 	$fila[] = array('model' => 'Siap', 'field' => 'observacion', 'valor' => $v['Siap']['observacion']);
 	$cuerpo[] = $fila;
 }

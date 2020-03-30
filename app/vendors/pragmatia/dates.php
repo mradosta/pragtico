@@ -31,11 +31,11 @@ class Dates {
  * @access public
  */
 	function __construct() {
-        
+
         if (!defined('DAY_IN_SECONDS')) {
             define('DAY_IN_SECONDS', 86400);
         }
-        
+
 		if (!defined('VALID_DATE_MYSQL')) {
 			define('VALID_DATE_MYSQL', '/(19\d\d|20\d\d)[\-](0[1-9]|1[012])[\-](0[1-9]|[12][0-9]|3[01])|^$/');
 		}
@@ -44,7 +44,13 @@ class Dates {
 		}
 	}
 
-	
+
+
+	function firstDateOfNextMonth($year, $month) {
+		// $firstDayNextMonth = date('Y-m-d', strtotime('first day of next month'));
+		// $firstDayNextMonth = date('Y-m-d', strtotime('first day of -1 month'));
+		// $firstDayNextMonth = date('Y-m-d', strtotime('first day of +3 month'));
+	}
 
 	function daysInMonth($year, $month) {
 		return( date( "t", mktime( 0, 0, 0, $month, 1, $year) ) );
@@ -54,12 +60,12 @@ class Dates {
     function getDay($date) {
         return array_pop(explode('-', $date));
     }
-    
+
     function getMonth($date) {
         list(,$month) = explode('-', $date);
         return $month;
     }
-    
+
     function getYear($date) {
         return array_shift(explode('-', $date));
     }
@@ -72,7 +78,7 @@ class Dates {
  *
  */
     function getPeriods($fromDate = null, $toDate = null, $options = array()) {
-        
+
         $defaults = array(  'fromInclusive' => true,
                             'toInclusive'   => true);
         $options = array_merge($defaults, $options);
@@ -80,7 +86,7 @@ class Dates {
         if (!empty($options['month'])) {
             $fromDate = Dates::dateAdd($toDate, $options['month'], 'm', array('fromInclusive' => false));
         }
-        
+
         if ($options['fromInclusive'] === false) {
             $fromDate = Dates::dateAdd($fromDate, 1, 'd', array('fromInclusive' => false));
         }
@@ -111,7 +117,7 @@ class Dates {
  * @param string $fromDate Starting date.
  * @param string $toDate End date. If empty, current date will be used instead.
  * @param array $options
- *          fromInclusive: (default: true). Means that lower limit will be included in calculations.         
+ *          fromInclusive: (default: true). Means that lower limit will be included in calculations.
  *          toInclusive: (default: true). Means that upper limit will be included in calculations.
  *
  * @return int Number of non working days.
@@ -122,7 +128,7 @@ class Dates {
         $defaults = array(  'fromInclusive' => true,
                             'toInclusive'   => true);
         $options = array_merge($defaults, $options);
-        
+
         if (empty($toDate)) {
             $toDate = date('Y-m-d');
         }
@@ -138,7 +144,7 @@ class Dates {
         return $count;
     }
 
-	
+
 /**
  * Calculates difference between two dates.
  *
@@ -164,13 +170,13 @@ class Dates {
 		if (substr($fromDate, 0, 10) <= '2007-12-31' && substr($toDate, 0, 10) >= '2007-12-31') {
 			$options['2007Bug'] = true;
 		}
-		
+
 		if ($fromDate = Dates::__getValidDateTime($fromDate)) {
 			$fromDate = strtotime($fromDate);
 		} else {
 			return false;
 		}
-		
+
 		if ($toDate = Dates::__getValidDateTime($toDate)) {
 			$toDate = strtotime($toDate);
 		} else {
@@ -230,12 +236,12 @@ class Dates {
         if ($options['fromInclusive'] === true) {
             $cantidad--;
         }
-        
+
 		$validIntervalo = array('y', 'q', 'm', 'w', 'd', 'h', 'n', 's');
 		if (!in_array($intervalo, $validIntervalo) || !is_numeric($cantidad)) {
 			return false;
 		}
-		
+
 		if ($fecha = Dates::__getValidDateTime($fecha)) {
 			$fecha = strtotime($fecha);
 		} else {
@@ -276,12 +282,12 @@ class Dates {
 				$s += $cantidad;
 				break;
 		}
-		
+
 		//return date('Y-m-d h:i:s', mktime($h ,$n, $s, $m ,$d, $y));
 		return date('Y-m-d', mktime($h ,$n, $s, $m ,$d, $y));
 	}
-	
-	
+
+
 /**
  * Creates a date based on a starting date adding n working days.
  *
@@ -289,15 +295,15 @@ class Dates {
  * @param integer $workingDays The number of days to add.
  * @param mixed $nonWorkingDays If string default, Argentina non working days will be used.
  *								If array of dates is specified, they'll used instead.
- * @return date 
+ * @return date
  **/
 	function dateAddWorkingDays($startDate, $workingDays = 1, $nonWorkingDays = 'default') {
- 
+
         /** Separo la fecha en dia month y año */
         $day = date('d',strtotime($startDate));
         $month = date('m',strtotime($startDate));
         $year = date('Y',strtotime($startDate));
-        
+
 		/** Arreglo con los feriados de Argentina Ver http://www.mininterior.gov.ar/servicios/feriados2008.asp */
 		$feriados = array();
 		if ($nonWorkingDays === 'default') {
@@ -318,13 +324,13 @@ class Dates {
 		} elseif (is_array($nonWorkingDays)) {
 			$feriados = $nonWorkingDays;
 		}
-        
+
 		/** calculo el timonthtamp de la fechainicial ($desde) */
         $mkDesde    = mktime(0, 0, 0,$month, $day, $year);
 
 		/** Calculo el timonthtamp de la fechainicial ($desde) + los dias que tiene que correrse */
         $mkResult    = mktime(0, 0, 0, $month, $day + $workingDays, $year);
- 
+
         /** Realizo la correccion correspondiente por el fin de semana */
         switch (date('N', $mkResult)) {
             case 1: //Lunes
@@ -344,17 +350,17 @@ class Dates {
             $mkResult += (86400*2);//le agrego 2 dias
             break;
         }
- 
+
         /** Convierto las fechas en timonthtap para poder compararlos */
         $mkFeriados = array_map('strtotime', $feriados);
- 
+
         /** Recorro los feriados para ver si mis fechas coinciden con alguno y si lo es hago la correccion necesaria. */
         foreach ($mkFeriados as $mkFecha){
             if(($mkDesde <= $mkFecha) and ($mkResult >= $mkFecha)){
                 $mkResult += 86400;//le agrego 1 dia
             }
         }
- 
+
         /** devuelvo el resultado en el formato deseado
         * $resultado = strftime('%A %e %B %Y',$mkResult);
 		*/
@@ -368,28 +374,28 @@ function secondsToHMS ($sec, $padHours = true) {
 
     // start with a blank string
     $hms = "";
-    
+
     // do the hours first: there are 3600 seconds in an hour, so if we divide
     // the total number of seconds by 3600 and throw away the remainder, we're
     // left with the number of hours in those seconds
-    $hours = intval(intval($sec) / 3600); 
+    $hours = intval(intval($sec) / 3600);
 
     // add hours to $hms (with a leading 0 if asked for)
-    $hms .= ($padHours) 
+    $hms .= ($padHours)
           ? str_pad($hours, 2, "0", STR_PAD_LEFT). ":"
           : $hours. ":";
-    
+
     // dividing the total seconds by 60 will give us the number of minutes
     // in total, but we're interested in *minutes past the hour* and to get
     // this, we have to divide by 60 again and then use the remainder
-    $minutes = intval(($sec / 60) % 60); 
+    $minutes = intval(($sec / 60) % 60);
 
     // add minutes to $hms (with a leading 0 if needed)
     $hms .= str_pad($minutes, 2, "0", STR_PAD_LEFT). ":";
 
     // seconds past the minute are found by dividing the total number of seconds
     // by 60 and using the remainder
-    $seconds = intval($sec % 60); 
+    $seconds = intval($sec % 60);
 
     // add seconds to $hms (with a leading 0 if needed)
     $hms .= str_pad($seconds, 2, "0", STR_PAD_LEFT);
@@ -417,7 +423,7 @@ function secondsToHMS ($sec, $padHours = true) {
 		} else {
 			$fecha = trim($fecha);
 		}
-		
+
 		if(preg_match(VALID_DATETIME_MYSQL, $fecha, $matches) || preg_match(VALID_DATE_MYSQL, $fecha, $matches)) {
 			if(!isset($matches[4])) {
 				$matches[4] = '00';
