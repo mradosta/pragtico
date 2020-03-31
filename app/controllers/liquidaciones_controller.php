@@ -1020,17 +1020,21 @@ class LiquidacionesController extends AppController {
     function generar_archivo_siap() {
 
         if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar' && !empty($this->data['Condicion']['Bar-version'])) {
-            if (empty($this->data['Condicion']['Bar-periodo_largo']) || !preg_match('/^(20\d\d)(0[1-9]|1[012])$/', $this->data['Condicion']['Bar-periodo_largo'])) {
+            // if (empty($this->data['Condicion']['Bar-periodo_largo']) || !preg_match('/^(20\d\d)(0[1-9]|1[012])$/', $this->data['Condicion']['Bar-periodo_largo'])) {
+            if (empty($this->data['Condicion']['Bar-periodo_largo'])) {
                 $this->Session->setFlash('Debe especificar un periodo valido de la forma AAAAMM.', 'error');
+            } else if (empty($this->data['Condicion']['Bar-empleador_id'])) {
+                $this->Session->setFlash('Debe seleccionar el empleador.', 'error');
             } else {
                 $periodo = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
 
                 $conditions = array('Liquidacion.estado'        => 'Confirmada',
+                                    'Liquidacion.tipo'           => $this->data['Condicion']['Liquidacion-tipo'],
                                     'Liquidacion.ano'           => $periodo['ano'],
-                                    'OR'						=> array(
-										'Liquidacion.mes'	=> $periodo['mes'],
-										array(	'Liquidacion.mes'	=> 0,
-												'Liquidacion.tipo'	=> 'Final')));
+                                    'Liquidacion.mes'	        => $periodo['mes']);
+                if (!empty($periodo['periodo'])) {
+                    $conditions['Liquidacion.periodo'] = $periodo['periodo'];
+                }
 
                 if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
                     $conditions['Liquidacion.empleador_id'] = $this->data['Condicion']['Bar-empleador_id'];
@@ -1109,6 +1113,7 @@ class LiquidacionesController extends AppController {
                         if (!isset($remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']])) {
 
                             $remunerativo[$liquidacion['Liquidacion']['trabajador_cuil']] = 0;
+                            $noRemunerativo[$liquidacion['Liquidacion']['trabajador_cuil']] = 0;
                             $cantidadHorasExtras[$liquidacion['Liquidacion']['trabajador_cuil']] = 0;
 							$cantidadSueldo[$liquidacion['Liquidacion']['trabajador_cuil']] = 0;
 							$horas[$liquidacion['Liquidacion']['trabajador_cuil']] = 0;
@@ -1124,6 +1129,7 @@ class LiquidacionesController extends AppController {
                             }
                         }
                         $remunerativo[$liquidacion['Liquidacion']['trabajador_cuil']] += $liquidacion['Liquidacion']['remunerativo'];
+                        $noRemunerativo[$liquidacion['Liquidacion']['trabajador_cuil']] += $liquidacion['Liquidacion']['no_remunerativo'];
 
                         foreach ($liquidacion['LiquidacionesDetalle'] as $detalle) {
                             if ($detalle['concepto_codigo'] == 'horas') {
@@ -1172,6 +1178,9 @@ class LiquidacionesController extends AppController {
 
                     foreach ($remunerativo as $k => $v) {
                         $remunerativo[$k] = $this->Util->format($v, array('type' => 'number', 'decimals' => ''));
+                    }
+                    foreach ($noRemunerativo as $k => $v) {
+                        $noRemunerativo[$k] = $this->Util->format($v, array('type' => 'number', 'decimals' => ''));
                     }
 
                     foreach ($remuneraciones as $cuit => $remuneracion) {
@@ -1264,7 +1273,7 @@ class LiquidacionesController extends AppController {
                             $campos['r4c5']['valor'] = $liquidacion['Relacion']['ConveniosCategoria']['Convenio']['numero']=='0'?'0':'1'; // Marca CCT
                             //$campos['r4c6']['valor'] = ''; // Marca SCVO
                             // $campos['r4c7']['valor'] = ''; // Marca corresponde reducción
-                            $campos['r4c8']['valor'] = $liquidacion['Empleador']['employers_type_id']; // Tipo empresa
+                            $campos['r4c8']['valor'] = $liquidacion['Empleador']['EmployersType']['code']; // Tipo empresa
                             // $campos['r4c9']['valor'] = ''; // Tipo de operación
                             $campos['r4c10']['valor'] = $liquidacion['Relacion']['Situacion']['codigo']; // Código situación
                             $campos['r4c11']['valor'] = $liquidacion['Trabajador']['Condicion']['codigo']; // Código condición
@@ -1283,7 +1292,7 @@ class LiquidacionesController extends AppController {
                             $campos['r4c22']['valor'] = $liquidacion['Liquidacion']['convenio_categoria_jornada'] == 'Mensual'?30:0; // Cant. días trabajados
                             $campos['r4c23']['valor'] = $liquidacion['Liquidacion']['convenio_categoria_jornada'] == 'Por Hora'?$horas[$liquidacion['Liquidacion']['trabajador_cuil']]:0; // Horas trabajadas
                             // $campos['r4c24']['valor'] = ''; // Porcentaje aporte adicional SS
-                            $campos['r4c25']['valor'] = $liquidacion['Trabajador']['Condicion']['codigo'] == '5'?'5':'0'; // Contribución tarea diferencial
+                            $campos['r4c25']['valor'] = $liquidacion['Trabajador']['Condicion']['codigo'] == '5'?'500':'0'; // Contribución tarea diferencial
                             $campos['r4c26']['valor'] = $liquidacion['Trabajador']['ObrasSocial']['codigo']; // Código Obra social
                             $campos['r4c27']['valor'] = $liquidacion['Trabajador']['adherentes_os']; // Cantidad adherentes
                             $campos['r4c28']['valor'] = str_replace('.', '', $liquidacion['Trabajador']['aporte_adicional_os']); // Aporte Adicional OS
@@ -1295,7 +1304,7 @@ class LiquidacionesController extends AppController {
                             // debug($remuneraciones);
                             // debug(round($remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1'], 2));
 
-                            $campos['r4c34']['valor'] = $remunerativo[$liquidacion['Liquidacion']['trabajador_cuil']]; // Remuneración bruta
+                            $campos['r4c34']['valor'] = $remunerativo[$liquidacion['Liquidacion']['trabajador_cuil']] + $noRemunerativo[$liquidacion['Liquidacion']['trabajador_cuil']]; // Remuneración bruta
                             $campos['r4c35']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1']; // Base imponible 1
                             $campos['r4c36']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 2']; // Base imponible 2
                             $campos['r4c37']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 3']; // Base imponible 3
@@ -1307,7 +1316,11 @@ class LiquidacionesController extends AppController {
                             $campos['r4c43']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 9']; // Base imponible 9
                             // $campos['r4c44']['valor'] = ''; // Base para el cálculo diferencial de aporte de Seg. Social
                             // $campos['r4c45']['valor'] = ''; // Base para el cálculo diferencial de contribuciones de Seg. Social
-                            $aDetraer = 7003.68 / 8 * floatval($liquidacion['Liquidacion']['relacion_horas']);
+                            if ($liquidacion['Liquidacion']['tipo'] == 'normal') {
+                                $aDetraer = 7003.68 / 8 * floatval($liquidacion['Liquidacion']['relacion_horas']);
+                            } else {
+                                $aDetraer = 0;
+                            }
                             // d($aDetraer);
                             // $aDetraer = number_format($aDetraer, 2, ',', '');
                             // debug($liquidacion['Liquidacion']['trabajador_cuil']);
@@ -1546,16 +1559,16 @@ class LiquidacionesController extends AppController {
                 } while (!empty($r));
             }
 
-            $lineasFinales = [ ];
-            foreach ($lineas as $tipos) {
-                foreach ($tipos as $linea) {
-                    $lineasFinales[] = $linea;
-                }
-            }
-            $lineas = $lineasFinales;
-
-//die;
             if (!empty($lineas)) {
+
+                $lineasFinales = [ ];
+                foreach ($lineas as $tipos) {
+                    foreach ($tipos as $linea) {
+                        $lineasFinales[] = $linea;
+                    }
+                }
+                $lineas = $lineasFinales;
+
                 $this->set('archivo', array(
                     'contenido' => implode("\r\n", $lineas),
                     'nombre'    => $data['Siap']['tipo'] == 'Siap'?'SICOSS_':'Libro_Sueldo_Digital_' . $periodo['ano'] . '-' . $periodo['mes'] . '.txt'));
