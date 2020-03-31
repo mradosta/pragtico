@@ -1066,6 +1066,7 @@ class LiquidacionesController extends AppController {
                 $step = 0;
                 do {
                     // $conditions['Liquidacion.id'] = 134546;
+                    // $conditions['Liquidacion.id'] = 135465; //colazo
                     // $conditions['Liquidacion.id'] = [134543, 134538];
                     // $conditions['Liquidacion.trabajador_cuil'] = '20381830064';
                     $r = $this->Liquidacion->find('all',
@@ -1145,6 +1146,7 @@ class LiquidacionesController extends AppController {
 									$cantidadSueldo[$liquidacion['Liquidacion']['trabajador_cuil']] += $detalle['valor_cantidad'];
 								}
                             }
+                            // debug($detalle);
                             if (!empty($detalle['concepto_remuneracion'])) {
                                 foreach ($opcionesConcepto['remuneracion'] as $k => $v) {
                                     if ($detalle['concepto_remuneracion'] & (int)$k) {
@@ -1186,7 +1188,7 @@ class LiquidacionesController extends AppController {
 
                         }
                     }
-
+// debug($remuneraciones);
                     $lineas = null;
                     foreach ($liquidaciones as $liquidacion) {
                         $campos = $detalles;
@@ -1277,7 +1279,8 @@ class LiquidacionesController extends AppController {
                             $campos['r4c20']['valor'] = '0'; // Situación de Revista 3
                             $campos['r4c21']['valor'] = '0'; // Día inicio Situación de Revista 3
                             // d($liquidacion);
-                            $campos['r4c22']['valor'] = $liquidacion['Liquidacion']['convenio_categoria_jornada'] == 'Mensual'?$dias[$liquidacion['Liquidacion']['trabajador_cuil']]:0; // Cant. días trabajados
+                            // $campos['r4c22']['valor'] = $liquidacion['Liquidacion']['convenio_categoria_jornada'] == 'Mensual'?$dias[$liquidacion['Liquidacion']['trabajador_cuil']]:0; // Cant. días trabajados
+                            $campos['r4c22']['valor'] = $liquidacion['Liquidacion']['convenio_categoria_jornada'] == 'Mensual'?30:0; // Cant. días trabajados
                             $campos['r4c23']['valor'] = $liquidacion['Liquidacion']['convenio_categoria_jornada'] == 'Por Hora'?$horas[$liquidacion['Liquidacion']['trabajador_cuil']]:0; // Horas trabajadas
                             // $campos['r4c24']['valor'] = ''; // Porcentaje aporte adicional SS
                             $campos['r4c25']['valor'] = $liquidacion['Trabajador']['Condicion']['codigo'] == '5'?'5':'0'; // Contribución tarea diferencial
@@ -1307,7 +1310,11 @@ class LiquidacionesController extends AppController {
                             $aDetraer = 7003.68 / 8 * floatval($liquidacion['Liquidacion']['relacion_horas']);
                             // d($aDetraer);
                             // $aDetraer = number_format($aDetraer, 2, ',', '');
-                            $campos['r4c46']['valor'] = $this->Util->format(floatval($remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 2']) - $aDetraer, array('type' => 'number', 'decimals' => '')); // Base imponible 10
+                            // debug($liquidacion['Liquidacion']['trabajador_cuil']);
+                            // debug($remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 2']);
+                            // debug($aDetraer);
+                            // d(($remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 2'] / 100) - $aDetraer);
+                            $campos['r4c46']['valor'] = $this->Util->format(($remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 2'] / 100) - $aDetraer, array('type' => 'number', 'decimals' => '')); // Base imponible 10
                             $campos['r4c47']['valor'] = str_replace('.', '', $aDetraer); // Importe a detraer
 
                             // d($campos);
