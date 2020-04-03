@@ -9,7 +9,7 @@ if (!empty($options['conditions'])) {
 
 $conditions = array();
 if ($options['conditions']['Bar-grupo_id'] !== false) {
-    
+
     $groups = User::getUserGroups();
     $defaultGroup = User::get('/Usuario/preferencias/grupo_default_id');
     if (count($groups) > 1 && isset($groups[$defaultGroup])) {
@@ -47,6 +47,11 @@ $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('leg
 $accionesExtra['opciones'] = array('acciones' => array());
 $botonesExtra[] = $appForm->button('Limpiar', array('id' => 'cleanup_report', 'title' => 'Limpiar', 'onclick' => 'location.replace("' . $this->action . '")'));
 $botonesExtra[] = $appForm->submit('Generar', array('title' => $options['title'], 'onclick' => 'document.getElementById("accion").value="generar"'));
+
+if (!empty($options['botonesExtra'])) {
+    $botonesExtra = array_merge($botonesExtra, $options['botonesExtra']);
+}
+
 echo $this->element('index/index', array(
                     'opcionesTabla' => array('tabla' => array('omitirMensajeVacio' => true)),
                     'botonesExtra'  => array('opciones' => array('botones' => $botonesExtra)),
