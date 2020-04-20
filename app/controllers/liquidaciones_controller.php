@@ -1547,13 +1547,15 @@ class LiquidacionesController extends AppController {
 
             if (!empty($lineas)) {
 
-                $lineasFinales = [ ];
-                foreach ($lineas as $tipos) {
-                    foreach ($tipos as $linea) {
-                        $lineasFinales[] = $linea;
+                if ($data['Siap']['tipo'] == 'Libro Sueldo Digital') {
+                    $lineasFinales = [ ];
+                    foreach ($lineas as $tipos) {
+                        foreach ($tipos as $linea) {
+                            $lineasFinales[] = $linea;
+                        }
                     }
+                    $lineas = $lineasFinales;
                 }
-                $lineas = $lineasFinales;
 
                 $this->set('archivo', array(
                     'contenido' => implode("\r\n", $lineas),
