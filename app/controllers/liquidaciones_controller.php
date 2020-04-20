@@ -1559,7 +1559,7 @@ class LiquidacionesController extends AppController {
 
                 $this->set('archivo', array(
                     'contenido' => implode("\r\n", $lineas),
-                    'nombre'    => $data['Siap']['tipo'] == 'Siap'?'SICOSS_':'Libro_Sueldo_Digital_' . $periodo['ano'] . '-' . $periodo['mes'] . '.txt'));
+                    'nombre'    => ($data['Siap']['tipo'] == 'Siap'?'SICOSS_':'Libro_Sueldo_Digital_') . $periodo['ano'] . '-' . $periodo['mes'] . '.txt'));
                 $this->render('..' . DS . 'elements' . DS . 'txt', 'txt');
             } else {
                 $this->Session->setFlash('No se han encontrado liquidaciones confirmadas para el periodo seleccioando segun los criterios especificados.', 'error');
