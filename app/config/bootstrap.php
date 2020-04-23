@@ -66,11 +66,11 @@ Inflector::rules(
 			'/des$/i' => 'd',
 			'/res$/i' => 'r',
 			'/nes$/i' => 'n',
-			// '/les$/i' => 'l',
+			'/lles$/i' => 'lle',
+			'/les$/i' => 'l',
 		),
 		'irregular' 		=> array(
 			'conceptos_familia'			=> 'conceptos_familia',
-			// 'siaps_detalle'			=> 'siaps_detalles'
 		)
 		)
 );
