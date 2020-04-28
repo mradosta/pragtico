@@ -418,7 +418,6 @@ class LiquidacionesController extends AppController {
 
 
 	function libro_sueldos() {
-
 		if (!empty($this->data['Formulario']['accion']) && $this->data['Formulario']['accion'] === 'generar') {
 			if (empty($this->data['Condicion']['Bar-empleador_id'])
 				&& empty($this->data['Condicion']['Bar-grupo_id'])) {
@@ -463,125 +462,23 @@ class LiquidacionesController extends AppController {
 				if (empty($liquidaciones)) {
 					$this->Session->setFlash('No se han encontrado liquidaciones confirmadas para el periodo seleccionado segun los criterios especificados.', 'error');
 				} else {
-
-                    $campos = array();
-                    foreach ($liquidaciones as $liquidacion) {
-
-                        // d($liquidacion);
-
-                        $periodo = $this->Util->format($this->data['Condicion']['Bar-periodo_largo'], 'periodo');
-
-                        $campos['r1c1']['valor'] = '1'; //Identificador de registro
-                        $campos['r1c2']['valor'] = str_replace('-', '', $liquidacion['Liquidacion']['empleador_cuit']); //CUIT
-                        $campos['r1c3']['valor'] = 'SJ'; //Identificación del envío
-                        $campos['r1c4']['valor'] = $periodo['ano'] + $periodo['mes']; //Período
-                        $campos['r1c5']['valor'] = $periodo['periodo']; //Tipo liquidación
-                        $campos['r1c6']['valor'] = 1; // TODO:ver lote   //Número de liquidación
-                        $campos['r1c7']['valor'] = 30; // Días base
-                        $campos['r1c8']['valor'] = count($liquidaciones); // Cantidad Registros 04
-
-
-                        $campos['r2c1']['valor'] = '2'; //Identificador de registro
-                        $campos['r2c2']['valor'] = str_replace('-', '', $liquidacion['Liquidacion']['trabajador_cuil']); //CUIL
-                        $campos['r2c3']['valor'] = $liquidacion['Liquidacion']['relacion_legajo']; //Legajo
-                        $campos['r2c4']['valor'] = $liquidacion['Liquidacion']['relacion_area_id']; //Dependencia de Revista
-                        $campos['r2c5']['valor'] = $liquidacion['Liquidacion']['trabajador_cbu']; //CBU
-                        $campos['r2c6']['valor'] = 0; //TODO: ver liq final //Cant. de días para proporcionar el tope
-                        $campos['r2c7']['valor'] = ''; //TODO: ver fecha pago //Fecha de pago
-                        $campos['r2c8']['valor'] = ''; //TODO: ver Fecha de rúbrica //Fecha de rúbrica
-                        $campos['r2c9']['valor'] = '1'; //TODO: ver Forma de pago //Forma de pago
-
-                        d($liquidacion);
-                        foreach ($liquidacion['LiquidacionesDetalle'] as $detalle) {
-                            $detalles = array();
-                            $detalles['r3c1']['valor'] = '3'; //Identificador de registro
-                            $detalles['r3c2']['valor'] = str_replace('-', '', $liquidacion['Liquidacion']['trabajador_cuil']); //CUIL
-                            $detalles['r3c3']['valor'] = $detalle['concepto_id']; // Código Concepto
-                            $detalles['r3c4']['valor'] = $detalle['valor_cantidad']; // Cantidad
-                            $detalles['r3c5']['valor'] = ''; // Unidades
-                            $detalles['r3c6']['valor'] = $detalle['valor']; // Importe
-                            $detalles['r3c7']['valor'] = ($detalle['concepto_tipo'] == 'Deduccion')?'D':'C'; // Débito Crédito
-                            $detalles['r3c8']['valor'] = ''; // Período ajuste
-
-                            $detalles = array();
-                            $detalles['r4c1']['valor'] = '4'; //Identificador de registro
-                            $detalles['r4c2']['valor'] = str_replace('-', '', $liquidacion['Liquidacion']['trabajador_cuil']); //CUIL
-                            $detalles['r4c3']['valor'] = ''; //TODO ver conyugue // Cónyuge
-                            $detalles['r4c4']['valor'] = ''; // Cantidad de hijos
-                            $detalles['r4c5']['valor'] = ''; // Marca CCT
-                            $detalles['r4c6']['valor'] = ''; // Marca SCVO
-                            $detalles['r4c7']['valor'] = ''; // Marca corresponde reducción
-                            $detalles['r4c8']['valor'] = ''; // Tipo empresa
-                            $detalles['r4c9']['valor'] = ''; // Tipo de operación
-                            $detalles['r4c10']['valor'] = ''; // Código situación
-                            $detalles['r4c11']['valor'] = ''; // Código condición
-                            $detalles['r4c12']['valor'] = ''; // Código actividad
-                            $detalles['r4c13']['valor'] = ''; // Código modalidad contratación
-                            $detalles['r4c14']['valor'] = ''; // Código siniestrado
-                            $detalles['r4c15']['valor'] = ''; // Código de Localidad
-                            $detalles['r4c16']['valor'] = ''; // Situación de Revista 1
-                            $detalles['r4c17']['valor'] = ''; // Día inicio Situación de Revista 1
-                            $detalles['r4c18']['valor'] = ''; // Situación de Revista 2
-                            $detalles['r4c19']['valor'] = ''; // Día inicio Situación de Revista 2
-                            $detalles['r4c20']['valor'] = ''; // Situación de Revista 3
-                            $detalles['r4c21']['valor'] = ''; // Día inicio Situación de Revista 3
-                            $detalles['r4c22']['valor'] = ''; // Cant. días trabajados
-                            $detalles['r4c23']['valor'] = ''; // Horas trabajadas
-                            $detalles['r4c24']['valor'] = ''; // Porcentaje aporte adicional SS
-                            $detalles['r4c25']['valor'] = ''; // Contribución tarea diferencial
-                            $detalles['r4c26']['valor'] = ''; // Código Obra social
-                            $detalles['r4c27']['valor'] = ''; // Cantidad adherentes
-                            $detalles['r4c28']['valor'] = ''; // Aporte Adicional OS
-                            $detalles['r4c29']['valor'] = ''; // Contribución Adicional OS
-                            $detalles['r4c30']['valor'] = ''; // Base cálculo Diferencial Aportes OS y FSR
-                            $detalles['r4c31']['valor'] = ''; // Base cálculo Diferencial OS y FSR
-                            $detalles['r4c32']['valor'] = ''; // Base cálculo Diferencial LRT
-                            $detalles['r4c33']['valor'] = ''; // Remuneración Maternidad ANSeS
-                            $detalles['r4c34']['valor'] = ''; // Remuneración bruta
-                            $detalles['r4c35']['valor'] = ''; // Base imponible 1
-                            $detalles['r4c36']['valor'] = ''; // Base imponible 2
-                            $detalles['r4c37']['valor'] = ''; // Base imponible 3
-                            $detalles['r4c38']['valor'] = ''; // Base imponible 4
-                            $detalles['r4c39']['valor'] = ''; // Base imponible 5
-                            $detalles['r4c40']['valor'] = ''; // Base imponible 6
-                            $detalles['r4c41']['valor'] = ''; // Base imponible 7
-                            $detalles['r4c42']['valor'] = ''; // Base imponible 8
-                            $detalles['r4c43']['valor'] = ''; // Base imponible 9
-                            $detalles['r4c44']['valor'] = ''; // Base para el cálculo diferencial de aporte de Seg. Social
-                            $detalles['r4c45']['valor'] = ''; // Base para el cálculo diferencial de contribuciones de Seg. Social
-                            $detalles['r4c46']['valor'] = ''; // Base imponible 10
-                            $detalles['r4c47']['valor'] = ''; // Importe a detraer
-
-                        }
-
-                        $campos['r5c1']['valor'] = '5'; //Identificador de registro
-                        $campos['r5c2']['valor'] = str_replace('-', '', $liquidacion['Liquidacion']['trabajador_cuil']); //CUIL
-                        $campos['r5c3']['valor'] = ''; // Categoría profesional
-                        $campos['r5c4']['valor'] = ''; // Puesto desempeñado
-                        $campos['r5c5']['valor'] = ''; // Fecha de ingreso
-                        $campos['r5c6']['valor'] = ''; // Fecha de egreso
-                        $campos['r5c7']['valor'] = ''; // Remuneración
-                        $campos['r5c8']['valor'] = str_replace('-', '', $liquidacion['Liquidacion']['empleador_cuit']); //CUIT
+                    if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
+						$this->set('groupParams', User::getGroupParams($this->data['Condicion']['Bar-grupo_id']));
                     }
-
-                    echo 'x';die;
-
-                    // if (!empty($this->data['Condicion']['Bar-grupo_id'])) {
-					// 	$this->set('groupParams', User::getGroupParams($this->data['Condicion']['Bar-grupo_id']));
-                    // }
-                    // if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
-                    //     $this->Liquidacion->Relacion->Empleador->contain(array('Actividad'));
-                    //     $this->set('employer', $this->Liquidacion->Relacion->Empleador->findById($this->data['Condicion']['Bar-empleador_id']));
-                    // }
-                    // $this->set('startPage', $this->data['Condicion']['Bar-start_page']);
-                    // $this->set('periodo', $periodo['periodoCompleto']);
-					// $this->set('data', $liquidaciones);
-					// $this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
+                    if (!empty($this->data['Condicion']['Bar-empleador_id'])) {
+                        $this->Liquidacion->Relacion->Empleador->contain(array('Actividad'));
+                        $this->set('employer', $this->Liquidacion->Relacion->Empleador->findById($this->data['Condicion']['Bar-empleador_id']));
+                    }
+                    $this->set('startPage', $this->data['Condicion']['Bar-start_page']);
+                    $this->set('periodo', $periodo['periodoCompleto']);
+					$this->set('data', $liquidaciones);
+					$this->set('fileFormat', $this->data['Condicion']['Bar-file_format']);
 				}
 			}
 		}
 		$this->set('types', $this->Liquidacion->opciones['tipo']);
 	}
+
 
 /**
  * PreLiquidar.
