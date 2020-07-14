@@ -31,11 +31,11 @@ class Ausencia extends AppModel {
 	var $modificadores = array(	'index'=>array('contain'=>array('Relacion' => array('Empleador', 'Trabajador'),
 																'AusenciasMotivo',
 																'AusenciasSeguimiento')),
-								'add'  	=> array(								
+								'add'  	=> array(
 										'valoresDefault'=>array('desde' => array('date' => 'Y-m-d'))),
 								'edit'=>array('contain'=>array(	'Relacion'=>array('Empleador','Trabajador'),
 																'AusenciasSeguimiento' => array('order' => 'AusenciasSeguimiento.id'))));
-	
+
 	var $validate = array(
         'relacion_id' => array(
 			array(
@@ -69,7 +69,7 @@ class Ausencia extends AppModel {
 							  'dependent'	 => true,
                               'foreignKey'   => 'ausencia_id'));
 
-    var $breadCrumb = array('format' => '%s %s (%s)', 
+    var $breadCrumb = array('format' => '%s %s (%s)',
                             'fields' => array('Relacion.Trabajador.apellido', 'Relacion.Trabajador.nombre', 'Relacion.Empleador.nombre'));
 
 
@@ -96,7 +96,7 @@ class Ausencia extends AppModel {
 					||
 					($v['Ausencia']['desde'] > $this->data['Ausencia']['desde'] &&
 					$v['Ausencia']['desde'] <= $endDate)) {
-					
+
 					$overlaped = true;
 					break;
 				}
@@ -110,7 +110,7 @@ class Ausencia extends AppModel {
 
 
 /**
- * Agrego un nuevo campo el calculo del total de dias que duro la ausencia 
+ * Agrego un nuevo campo el calculo del total de dias que duro la ausencia
  * (salen de la suma de los dias de seguimiento confirmados).
  * El seguimiento son los dias adicionales que agrega un medico, por ejemplo.
  *
@@ -119,7 +119,7 @@ class Ausencia extends AppModel {
  *						   es generada por otra (recursive > 1)
  * @return array array $results Los mismos resultados que ingresaron con el campo dias (campo calculado).
  * @access public
- */	
+ */
 	function afterFind($results, $primary = false) {
 		if ($primary) {
 			foreach ($results as $k => $ausencia) {
@@ -135,9 +135,9 @@ class Ausencia extends AppModel {
 					foreach ($v as $k1 => $v1) {
 						foreach ($v1 as $k2 => $ausencia) {
 							if (!isset($ausencia['AusenciasSeguimiento'])) {
-								$ausenciasSeguimiento = $this->AusenciasSeguimiento->find('all', 
-																array(	'recursive'	=> -1, 
-																		'conditions'=> 
+								$ausenciasSeguimiento = $this->AusenciasSeguimiento->find('all',
+																array(	'recursive'	=> -1,
+																		'conditions'=>
 																				array(	'AusenciasSeguimiento.ausencia_id'	=> $ausencia['id'],
 																						'AusenciasSeguimiento.estado'		=> array('Confirmado', 'Liquidado'))));
 							}
@@ -149,7 +149,7 @@ class Ausencia extends AppModel {
 		}
 		return parent::afterFind($results, $primary);
 	}
-	
+
 
 
 /**
@@ -176,7 +176,7 @@ class Ausencia extends AppModel {
             group by    Ausencia.id
         ";
 		$ausenciaIds = Set::extract('/Ausencia/id', $this->query($sql));
-							
+
 		$r = $this->find('all', array(
             'contain'		=> array(
                 'AusenciasMotivo',
@@ -410,7 +410,7 @@ class Ausencia extends AppModel {
 			'auxiliar' 	=> $auxiliares
 		);
 	}
-	
+
 
     function getAbsencesByType($types, $relacionId, $from, $to) {
 
@@ -448,11 +448,17 @@ class Ausencia extends AppModel {
                 }
 
                 foreach ($ausencia['AusenciasSeguimiento'] as $diasSeguimiento) {
+                    $endDate = Dates::dateAdd($ausencia['Ausencia']['desde'], $diasSeguimiento);
+                    if ($endDate < $from) {
+                        continue;
+                    }
+
                     if ($diasSeguimiento > $diff['dias']) {
                         $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $diff['dias'];
                     }
                     $ausencias[$ausencia['AusenciasMotivo']['tipo']] += $diasSeguimiento;
                 }
+
             }
 
             $diff = Dates::dateDiff($from, $to);
