@@ -131,15 +131,15 @@
 
 
 			$documento->moveCurrentRow();
-			$row = ($documento->getCurrentRow() + 1);
-			if ($i == 0) {
-				$documento->activeSheet->mergeCells('A' . $row . ':AA' . $row);
-				$documento->activeSheet->getStyle('A' . $row . ':AA' . $row)->applyFromArray($styleBorders);
+			// $row = ($documento->getCurrentRow() + 1);
+			// if ($i == 0) {
+			// 	$documento->activeSheet->mergeCells('A' . $row . ':AA' . $row);
+			// 	$documento->activeSheet->getStyle('A' . $row . ':AA' . $row)->applyFromArray($styleBorders);
 
-			} else {
-				$documento->activeSheet->mergeCells('AC' . $row . ':BC' . $row);
-				$documento->activeSheet->getStyle('AC' . $row . ':BC' . $row)->applyFromArray($styleBorders);
-			}
+			// } else {
+			// 	$documento->activeSheet->mergeCells('AC' . $row . ':BC' . $row);
+			// 	$documento->activeSheet->getStyle('AC' . $row . ':BC' . $row)->applyFromArray($styleBorders);
+			// }
 
 
 			$documento->moveCurrentRow();
