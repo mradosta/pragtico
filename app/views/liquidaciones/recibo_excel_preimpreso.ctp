@@ -17,26 +17,26 @@
  */
 
 	$documento->create(array('header' => false, 'orientation' => 'landscape'));
-    $documento->activeSheet->getDefaultStyle()->getFont()->setName('Arial');
-    $documento->activeSheet->getDefaultStyle()->getFont()->setSize(8);
+	$documento->activeSheet->getDefaultStyle()->getFont()->setName('Arial');
+	$documento->activeSheet->getDefaultStyle()->getFont()->setSize(8);
 	$documento->activeSheet->getDefaultRowDimension()->setRowHeight(17);
 	$documento->activeSheet->getDefaultColumnDimension()->setWidth(3.35);
 
-    $pageMargins = $documento->activeSheet->getPageMargins();
-    $pageMargins->setTop(0.2);
-    $pageMargins->setBottom(0.2);
-    $pageMargins->setLeft(0.05);
-    $pageMargins->setRight(0.2);
+	$pageMargins = $documento->activeSheet->getPageMargins();
+	$pageMargins->setTop(0.2);
+	$pageMargins->setBottom(0.2);
+	$pageMargins->setLeft(0.05);
+	$pageMargins->setRight(0.2);
 
 
-    $styleBorderBottom = array('style' => array(
-        'borders' => array( 'bottom'     => array('style' => PHPExcel_Style_Border::BORDER_THIN))));
-    $styleBorderTop = array('style' => array(
-        'borders' => array( 'top'     => array('style' => PHPExcel_Style_Border::BORDER_THIN))));
+	$styleBorderBottom = array('style' => array(
+			'borders' => array( 'bottom'     => array('style' => PHPExcel_Style_Border::BORDER_THIN))));
+	$styleBorderTop = array('style' => array(
+			'borders' => array( 'top'     => array('style' => PHPExcel_Style_Border::BORDER_THIN))));
 	$styleBorderRight = array('style' => array(
-        'borders' => array( 'right'     => array('style' => PHPExcel_Style_Border::BORDER_THIN))));
+			'borders' => array( 'right'     => array('style' => PHPExcel_Style_Border::BORDER_THIN))));
 	$styleBorderLeft = array('style' => array(
-        'borders' => array( 'left'     => array('style' => PHPExcel_Style_Border::BORDER_THIN))));
+      'borders' => array( 'left'     => array('style' => PHPExcel_Style_Border::BORDER_THIN))));
 
 	$styleThinBlackBorderOutline = array(
 		'borders' => array(
@@ -64,14 +64,14 @@
 			),
 		),
 	);
-	
+
     $styleRight = array('style' => array(
         'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT)));
-    
+
     $styleRightBold = array('style' => array(
         'font'      => array('bold' => true),
         'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT)));
-    
+
     $styleCenter = array('style' => array(
         'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER)));
 
@@ -134,7 +134,7 @@
 			if ($i == 0) {
 				$documento->activeSheet->mergeCells('A' . $row . ':AA' . $row);
 				$documento->activeSheet->getStyle('A' . $row . ':AA' . $row)->applyFromArray($styleBorders);
-				
+
 			} else {
 				$documento->activeSheet->mergeCells('AC' . $row . ':BC' . $row);
 				$documento->activeSheet->getStyle('AC' . $row . ':BC' . $row)->applyFromArray($styleBorders);
@@ -179,10 +179,11 @@
 			$documento->moveCurrentRow();
 			$row = $documento->getCurrentRow() + 1;
 			$documento->activeSheet->getRowDimension($row)->setRowHeight(10);
-			$documento->setCellValue(($spaces + 1) . ',' . $row . ':'. ($spaces + 15) .',' . $row, 'Cantidad / Concepto', $styleRowGrey);
+			$documento->setCellValue(($spaces + 1) . ',' . $row . ':'. ($spaces + 19) .',' . $row, 'Cantidad / Concepto', $styleRowGrey);
 			//$documento->setWidth(($spaces + 1), 9);
-			
-			$documento->setCellValue(($spaces + 16) . ',' . $row . ':'. ($spaces + 19) .',' . $row, 'Valor Unitario', $styleRowGrey);
+
+			// $documento->setCellValue(($spaces + 16) . ',' . $row . ':'. ($spaces + 19) .',' . $row, 'Valor Unitario', $styleRowGrey);
+			$documento->setCellValue(($spaces + 16) . ',' . $row . ':'. ($spaces + 19) .',' . $row, '', $styleRowGrey);
 			//$documento->setWidth(($spaces + 16), 6);
 			$documento->setCellValue(($spaces + 20) . ',' . $row . ':'. ($spaces + 23) .',' . $row, 'Haberes', $styleRowGrey);
 			$documento->setCellValue(($spaces + 24) . ',' . $row . ':'. ($spaces + 27) .',' . $row, 'Deducciones', $styleRowGrey);
@@ -215,8 +216,9 @@
 						$documento->setCellValue(($spaces + 1) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 4) . ',' . $documento->getCurrentRow(), ' ');
 					}
 
-                    $documento->setCellValue(($spaces + 5) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 15) . ',' . $documento->getCurrentRow(), $detail['concepto_nombre']);
-					$documento->setCellValue(($spaces + 16) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 19) . ',' . $documento->getCurrentRow(), $detail['valor']);
+                    $documento->setCellValue(($spaces + 5) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 19) . ',' . $documento->getCurrentRow(), $detail['concepto_nombre']);
+					// $documento->setCellValue(($spaces + 16) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 19) . ',' . $documento->getCurrentRow(), $detail['valor']);
+					$documento->setCellValue(($spaces + 16) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 19) . ',' . $documento->getCurrentRow(), '');
                     if ($detail['concepto_tipo'] !== 'Deduccion') {
                         $documento->setCellValue(($spaces + 20) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 23) . ',' . $documento->getCurrentRow(), $detail['valor'], 'currency');
 						$documento->setCellValue(($spaces + 24) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 27) . ',' . $documento->getCurrentRow(), ' ');
@@ -238,8 +240,8 @@
 
 				$documento->activeSheet->getRowDimension($documento->getCurrentRow())->setRowHeight(10);
 				$documento->setCellValue(($spaces + 1) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 4) . ',' . $documento->getCurrentRow(), ' ');
-				$documento->setCellValue(($spaces + 5) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 15) . ',' . $documento->getCurrentRow(), ' ');
-				$documento->setCellValue(($spaces + 16) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 19) . ',' . $documento->getCurrentRow(), ' ');
+				$documento->setCellValue(($spaces + 5) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 19) . ',' . $documento->getCurrentRow(), ' ');
+				// $documento->setCellValue(($spaces + 16) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 19) . ',' . $documento->getCurrentRow(), ' ');
 				$documento->setCellValue(($spaces + 20) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 23) . ',' . $documento->getCurrentRow(), ' ');
 				$documento->setCellValue(($spaces + 24) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 27) . ',' . $documento->getCurrentRow(), ' ');
 
@@ -251,12 +253,12 @@
 
 
 			$documento->activeSheet->getRowDimension($documento->getCurrentRow())->setRowHeight(10);
-			$documento->setCellValue(($spaces + 1) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 4) . ',' . $documento->getCurrentRow(), ' ', $styleRowGrey);
-			$documento->setCellValue(($spaces + 5) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 10) . ',' . $documento->getCurrentRow(), 'Asignaciones Fliares', $styleRowGrey);
-			$documento->setCellValue(($spaces + 11) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 15) . ',' . $documento->getCurrentRow(), 'No suj. a deducción', $styleRowGrey);
-			$documento->setCellValue(($spaces + 16) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 19) . ',' . $documento->getCurrentRow(), 'Suj. a deducción', $styleRowGrey);
-			$documento->setCellValue(($spaces + 20) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 23) . ',' . $documento->getCurrentRow(), 'Total Haberes', $styleRowGrey);
-			$documento->setCellValue(($spaces + 24) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 27) . ',' . $documento->getCurrentRow(), 'Total Deducciones', $styleRowGrey);
+			$documento->setCellValue(($spaces + 1) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 10) . ',' . $documento->getCurrentRow(), ' ', $styleRowGrey);
+			// $documento->setCellValue(($spaces + 5) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 10) . ',' . $documento->getCurrentRow(), 'Asignaciones Fliares', $styleRowGrey);
+			$documento->setCellValue(($spaces + 11) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 15) . ',' . $documento->getCurrentRow(), 'No Rem.', $styleRowGrey);
+			$documento->setCellValue(($spaces + 16) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 19) . ',' . $documento->getCurrentRow(), 'Remun', $styleRowGrey);
+			$documento->setCellValue(($spaces + 20) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 23) . ',' . $documento->getCurrentRow(), 'Tot. Haberes', $styleRowGrey);
+			$documento->setCellValue(($spaces + 24) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 27) . ',' . $documento->getCurrentRow(), 'Deducciones', $styleRowGrey);
 
 			if ($i == 0) {
 				$documento->activeSheet->getStyle('A' . $documento->getCurrentRow() . ':AA' . $documento->getCurrentRow())->applyFromArray($styleBorders);
@@ -290,9 +292,10 @@
 			}
 
 
-			$documento->moveCurrentRow(2);
+			$documento->moveCurrentRow();
 			$documento->setCellValue(($spaces + 1) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 2) . ',' . $documento->getCurrentRow(), 'Son:');
-			$documento->setCellValue(($spaces + 3) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 13) . ',' . $documento->getCurrentRow(), ' ');
+			$documento->setCellValue(($spaces + 3) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 27) . ',' . $documento->getCurrentRow(), $formato->format($receipt['Liquidacion']['total_pesos'], array('type' => 'numeroEnLetras', 'case' => 'ucfirst')));
+			$documento->moveCurrentRow();
 			$documento->setCellValue(($spaces + 14) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 27) . ',' . $documento->getCurrentRow(), 'Último Depósito Aporte Jubilatorio');
 
 			$documento->moveCurrentRow();
@@ -336,28 +339,28 @@
 			}
 
 			$documento->moveCurrentRow();
-			$documento->setCellValue(($spaces + 14) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 16) . ',' . $documento->getCurrentRow(), 'Lugar', $styleRightBold);
-			$documento->setCellValue(($spaces + 17) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 27) . ',' . $documento->getCurrentRow(), ' ');
-			if ($i == 0) {
-				$documento->activeSheet->getStyle('N' . $documento->getCurrentRow() . ':P' . $documento->getCurrentRow())->applyFromArray($styleBorderRight['style']);
-			} else {
-				$documento->activeSheet->getStyle('AP' . $documento->getCurrentRow() . ':AR' . $documento->getCurrentRow())->applyFromArray($styleBorderRight['style']);
-			}
+			// $documento->setCellValue(($spaces + 14) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 16) . ',' . $documento->getCurrentRow(), 'Lugar', $styleRightBold);
+			// $documento->setCellValue(($spaces + 17) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 27) . ',' . $documento->getCurrentRow(), ' ');
+			// if ($i == 0) {
+			// 	$documento->activeSheet->getStyle('N' . $documento->getCurrentRow() . ':P' . $documento->getCurrentRow())->applyFromArray($styleBorderRight['style']);
+			// } else {
+			// 	$documento->activeSheet->getStyle('AP' . $documento->getCurrentRow() . ':AR' . $documento->getCurrentRow())->applyFromArray($styleBorderRight['style']);
+			// }
 
 
 			$documento->moveCurrentRow();
-			$documento->setCellValue(($spaces + 14) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 16) . ',' . $documento->getCurrentRow(), 'Fecha', $styleRightBold);
-			$documento->setCellValue(($spaces + 17) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 27) . ',' . $documento->getCurrentRow(), ' ');
-			if ($i == 0) {
-				$documento->activeSheet->getStyle('N' . $documento->getCurrentRow() . ':P' . $documento->getCurrentRow())->applyFromArray($styleBorderRight['style']);
-				$documento->activeSheet->getStyle('Q' . $documento->getCurrentRow() . ':AA' . $documento->getCurrentRow())->applyFromArray($styleBorderBottom['style']);
-			} else {
-				$documento->activeSheet->getStyle('AP' . $documento->getCurrentRow() . ':AR' . $documento->getCurrentRow())->applyFromArray($styleBorderRight['style']);
-				$documento->activeSheet->getStyle('AS' . $documento->getCurrentRow() . ':BC' . $documento->getCurrentRow())->applyFromArray($styleBorderBottom['style']);
-			}
+			// $documento->setCellValue(($spaces + 14) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 16) . ',' . $documento->getCurrentRow(), 'Fecha', $styleRightBold);
+			// $documento->setCellValue(($spaces + 17) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 27) . ',' . $documento->getCurrentRow(), ' ');
+			// if ($i == 0) {
+			// 	$documento->activeSheet->getStyle('N' . $documento->getCurrentRow() . ':P' . $documento->getCurrentRow())->applyFromArray($styleBorderRight['style']);
+			// 	$documento->activeSheet->getStyle('Q' . $documento->getCurrentRow() . ':AA' . $documento->getCurrentRow())->applyFromArray($styleBorderBottom['style']);
+			// } else {
+			// 	$documento->activeSheet->getStyle('AP' . $documento->getCurrentRow() . ':AR' . $documento->getCurrentRow())->applyFromArray($styleBorderRight['style']);
+			// 	$documento->activeSheet->getStyle('AS' . $documento->getCurrentRow() . ':BC' . $documento->getCurrentRow())->applyFromArray($styleBorderBottom['style']);
+			// }
 
 
-			$documento->addImage('AF' . ($documento->getCurrentRow() - 2), 'sign_consultores.png');
+			$documento->addImage('AF' . ($documento->getCurrentRow() - 2), $groupParams['firma']);
 			$documento->moveCurrentRow();
 			$documento->setCellValue(($spaces + 2) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 12) . ',' . $documento->getCurrentRow(), '_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _');
 
@@ -375,7 +378,7 @@
 //			$spaces = 40;
 //			$documento->setCellValue(($spaces + 1) . ':' . ($spaces + 5), $receipt['Liquidacion']['trabajador_cuil']);
 //			$documento->activeSheet->mergeCells('A' . $fila . ':E' . $fila);
-			
+
 			/***************/
 			$spaces += 28;
 			$row = $documento->getCurrentRow();
@@ -390,7 +393,7 @@
 
 
         $documento->activeSheet->setBreak('A' . $documento->getCurrentRow(), PHPExcel_Worksheet::BREAK_ROW);
-		
+
     }
 	//d($documento->getCurrentRow());
 
