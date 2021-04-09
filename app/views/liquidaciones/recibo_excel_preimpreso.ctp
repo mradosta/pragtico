@@ -111,7 +111,7 @@
 
 			$documento->setCurrentRow($prevLastRow);
 			// $documento->addImage(($spaces + 2) . ',' . ($documento->getCurrentRow() + 1), $groupParams['logo']);
-			$documento->addImage(($spaces + 2) . ',' . ($documento->getCurrentRow() + 1), 'logo_' . $receipt['Liquidacion']['empleador_cuil'] . '.png');
+			$documento->addImage(($spaces + 2) . ',' . ($documento->getCurrentRow() + 1), 'logo_' . $receipt['Liquidacion']['empleador_cuit'] . '.png');
 			$documento->moveCurrentRow();
 			$documento->activeSheet->getRowDimension(($documento->getCurrentRow() + 1))->setRowHeight(10);
 			$row = ($documento->getCurrentRow() + 1);
