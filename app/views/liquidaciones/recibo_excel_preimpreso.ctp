@@ -102,7 +102,7 @@
 	);
 
 
-	$prevLastRow = 0;
+	$prevLastRow = 1;
     foreach ($this->data as $receipt) {
 
 		$spaces = -1;
