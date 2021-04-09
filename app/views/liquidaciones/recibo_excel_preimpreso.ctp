@@ -115,19 +115,20 @@
 			$documento->moveCurrentRow();
 			$documento->activeSheet->getRowDimension(($documento->getCurrentRow() + 1))->setRowHeight(10);
 			$row = ($documento->getCurrentRow() + 1);
-			$documento->setCellValue(($spaces + 16) . ',' . $row . ':'. ($spaces + 26) .',' . $row, $groupParams['direccion']);
+			$documento->setCellValue(($spaces + 16) . ',' . $row . ':'. ($spaces + 26) .',' . $row, $receipt['Liquidacion']['empleador_direccion']);
 			$documento->moveCurrentRow();
 			$documento->activeSheet->getRowDimension(($documento->getCurrentRow() + 1))->setRowHeight(10);
 			$row = ($documento->getCurrentRow() + 1);
-			$documento->setCellValue(($spaces + 16) . ',' . $row . ':'. ($spaces + 26) .',' . $row, $groupParams['codigo_postal'] . ' – ' . $groupParams['ciudad']);
+			$documento->setCellValue(($spaces + 16) . ',' . $row . ':'. ($spaces + 26) .',' . $row, 'C.U.I.T.: ' . $receipt['Liquidacion']['empleador_cuit']);
+			// $documento->setCellValue(($spaces + 16) . ',' . $row . ':'. ($spaces + 26) .',' . $row, $groupParams['codigo_postal'] . ' – ' . $groupParams['ciudad']);
 			$documento->moveCurrentRow();
 			$documento->activeSheet->getRowDimension(($documento->getCurrentRow() + 1))->setRowHeight(10);
 			$row = ($documento->getCurrentRow() + 1);
-			$documento->setCellValue(($spaces + 16) . ',' . $row . ':'. ($spaces + 26) .',' . $row, 'Tel/Fax: ' . $groupParams['telefono']);
+			// $documento->setCellValue(($spaces + 16) . ',' . $row . ':'. ($spaces + 26) .',' . $row, 'Tel/Fax: ' . $groupParams['telefono']);
 			$documento->moveCurrentRow();
 			$documento->activeSheet->getRowDimension(($documento->getCurrentRow() + 1))->setRowHeight(10);
 			$row = ($documento->getCurrentRow() + 1);
-			$documento->setCellValue(($spaces + 16) . ',' . $row . ':'. ($spaces + 26) .',' . $row, 'C.U.I.T.: ' . $groupParams['cuit']);
+			// $documento->setCellValue(($spaces + 16) . ',' . $row . ':'. ($spaces + 26) .',' . $row, 'C.U.I.T.: ' . $receipt['Liquidacion']['empleador_cuit']);
 
 
 			$documento->moveCurrentRow();
@@ -156,7 +157,7 @@
 			$documento->setCellValue(($spaces + 1) . ',' . $row . ':' . ($spaces + 4) .',' . $row, $formato->format($receipt['Liquidacion']['ano'] . str_pad($receipt['Liquidacion']['mes'], 2, '0', STR_PAD_LEFT) . $receipt['Liquidacion']['periodo'], array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')));
 			$documento->setCellValue(($spaces + 5) . ',' . $row . ':' . ($spaces + 8) .',' . $row, $formato->format($receipt['Liquidacion']['pago'], 'date'));
 			$documento->setCellValue(($spaces + 9) . ',' . $row . ':' . ($spaces + 17) .',' . $row, sprintf('%s, %s', $receipt['Liquidacion']['trabajador_apellido'], $receipt['Liquidacion']['trabajador_nombre']));
-			$documento->setCellValue(($spaces + 18) . ',' . $row . ':' . ($spaces + 21) .',' . $row, ' ');
+			$documento->setCellValue(($spaces + 18) . ',' . $row . ':' . ($spaces + 21) .',' . $row, $receipt['Liquidacion']['trabajador_dni']);
 			$documento->setCellValue(($spaces + 22) . ',' . $row . ':' . ($spaces + 27) .',' . $row, $receipt['Liquidacion']['relacion_legajo']);
 
 			$documento->moveCurrentRow();
