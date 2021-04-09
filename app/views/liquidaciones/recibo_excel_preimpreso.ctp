@@ -102,7 +102,7 @@
 	);
 
 
-	$prevLastRow = 1;
+	$prevLastRow = 0;
     foreach ($this->data as $receipt) {
 
 		$spaces = -1;
@@ -111,7 +111,7 @@
 
 			$documento->setCurrentRow($prevLastRow);
 			// $documento->addImage(($spaces + 2) . ',' . ($documento->getCurrentRow() + 1), $groupParams['logo']);
-			$documento->addImage(($spaces + 2) . ',' . ($documento->getCurrentRow() + 1), 'logo_' . $receipt['Liquidacion']['empleador_cuit'] . '.png');
+			$documento->addImage(($spaces + 0) . ',' . ($documento->getCurrentRow() + 1), 'logo_' . $receipt['Liquidacion']['empleador_cuit'] . '.png');
 			$documento->moveCurrentRow();
 			$documento->activeSheet->getRowDimension(($documento->getCurrentRow() + 1))->setRowHeight(10);
 			$row = ($documento->getCurrentRow() + 1);
@@ -360,8 +360,9 @@
 			// 	$documento->activeSheet->getStyle('AS' . $documento->getCurrentRow() . ':BC' . $documento->getCurrentRow())->applyFromArray($styleBorderBottom['style']);
 			// }
 
-
-			$documento->addImage('AF' . ($documento->getCurrentRow() - 2), $groupParams['firma']);
+			if ($i > 0) {
+				$documento->addImage('AF' . ($documento->getCurrentRow() - 2), $groupParams['firma']);
+			}
 			$documento->moveCurrentRow();
 			$documento->setCellValue(($spaces + 2) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 12) . ',' . $documento->getCurrentRow(), '_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _');
 
