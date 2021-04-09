@@ -361,7 +361,7 @@
 			// }
 
 			if ($i > 0) {
-				$documento->addImage('AI' . ($documento->getCurrentRow() + 1), $groupParams['firma']);
+				$documento->addImage('AI' . ($documento->getCurrentRow() - 1), $groupParams['firma']);
 			}
 			$documento->moveCurrentRow();
 			$documento->setCellValue(($spaces + 2) . ',' . $documento->getCurrentRow() . ':'. ($spaces + 12) . ',' . $documento->getCurrentRow(), '_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _');
