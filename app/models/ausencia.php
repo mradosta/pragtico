@@ -210,7 +210,7 @@ class Ausencia extends AppModel {
 		$nonWorkingDays['Licencia'] = $ausencias['Licencia'] = 0;
 		$nonWorkingDays['Injustificada'] = $ausencias['Injustificada'] = 0;
 		$nonWorkingDays['Suspension'] = $ausencias['Suspension'] = 0;
-		$nonWorkingDays['Sin Goce de Sueldo'] = $ausencias['Sin Goce de Sueldo'] = 0;
+		$nonWorkingDays['Sin Goce De Sueldo'] = $ausencias['Sin Goce De Sueldo'] = 0;
         $art = 0;
         $conceptos = $auxiliares = array();
 
