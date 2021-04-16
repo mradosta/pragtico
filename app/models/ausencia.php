@@ -407,7 +407,7 @@ class Ausencia extends AppModel {
 				'#no_laborables_durante_ausencias_injustificada'    => $nonWorkingDays['Injustificada'],
 				'#ausencias_suspension'                             => $ausencias['Suspension'],
 				'#no_laborables_durante_ausencias_suspension'       => $nonWorkingDays['Suspension'],
-				'#sin_goce_de_sueldo'                               => $nonWorkingDays['nonWorkingDays']
+				'#sin_goce_de_sueldo'                               => $nonWorkingDays['Sin Goce De Sueldo']
 			),
 			'auxiliar' 	=> $auxiliares
 		);
