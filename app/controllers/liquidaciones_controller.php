@@ -1114,6 +1114,7 @@ class LiquidacionesController extends AppController {
                     foreach ($remuneraciones as $cuit => $remuneracion) {
                         foreach ($remuneracion as $k => $v) {
                             $remuneraciones[$cuit][$k] = $this->Util->format($v, array('type' => 'numero', 'decimals' => ''));
+                            $remuneraciones[$cuit][$k] = $remuneraciones[$cuit][$k] / 100;
                             if ($remuneraciones[$cuit][$k] - $bruto[$cuit] == 1) {
                                 $remuneraciones[$cuit][$k] = $bruto[$cuit];
                             }
@@ -1226,7 +1227,7 @@ class LiquidacionesController extends AppController {
                                 $campos['r4c35']['valor_maximo'] = $campos['r4c35']['valor_maximo'] / 2;
                             }
                             $tmp_tope = ($campos['r4c35']['valor_maximo'] / $dias_totales_a_proporcionar * $dias[$liquidacion['Liquidacion']['trabajador_cuil']]);
-                            $campos['r4c35']['valor'] = ($tmp_tope > $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1']/100?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1']:$tmp_tope * 100); // Base imponible 1
+                            $campos['r4c35']['valor'] = ($tmp_tope > $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1']?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1']:$tmp_tope * 100); // Base imponible 1
 
                             // echo '<br/>dias: ' . $dias[$liquidacion['Liquidacion']['trabajador_cuil']];
                             // echo '<br/>rem 1: ' . $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1'];
@@ -1245,14 +1246,14 @@ class LiquidacionesController extends AppController {
                                 $campos['r4c38']['valor_maximo'] = $campos['r4c38']['valor_maximo'] / 2;
                             }
                             $tmp_tope = ($campos['r4c38']['valor_maximo'] / $dias_totales_a_proporcionar * $dias[$liquidacion['Liquidacion']['trabajador_cuil']]);
-                            $campos['r4c38']['valor'] = ($tmp_tope > $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 4']/100?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 4']:$tmp_tope * 100); // Base imponible 4
+                            $campos['r4c38']['valor'] = ($tmp_tope > $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 4']?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 4']:$tmp_tope * 100); // Base imponible 4
 
 
                             if ($dias_totales_a_proporcionar == 180) {
                                 $campos['r4c39']['valor_maximo'] = $campos['r4c39']['valor_maximo'] / 2;
                             }
                             $tmp_tope = ($campos['r4c39']['valor_maximo'] / $dias_totales_a_proporcionar * $dias[$liquidacion['Liquidacion']['trabajador_cuil']]);
-                            $campos['r4c39']['valor'] = ($tmp_tope > $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 5']/100?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 5']:$tmp_tope * 100); // Base imponible 5
+                            $campos['r4c39']['valor'] = ($tmp_tope > $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 5']?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 5']:$tmp_tope * 100); // Base imponible 5
 
 
 
