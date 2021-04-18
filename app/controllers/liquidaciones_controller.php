@@ -1035,8 +1035,19 @@ class LiquidacionesController extends AppController {
                             if ($detalle['concepto_codigo'] == 'horas') {
                                 $horas[$liquidacion['Liquidacion']['trabajador_cuil']] = $detalle['valor_cantidad'];
                             }
-                            if ($detalle['concepto_codigo'] == 'sueldo_basico' || $detalle['concepto_codigo'] == 'vacaciones' || $detalle['concepto_codigo'] == 'sac') {
-                                $dias[$liquidacion['Liquidacion']['trabajador_cuil']] = $detalle['valor_cantidad'];
+                            if ($detalle['concepto_codigo'] == 'sueldo_basico'
+                                || $detalle['concepto_codigo'] == 'sac'
+                                || $detalle['concepto_codigo'] == 'vacaciones'
+                                || $detalle['concepto_codigo'] == 'ausencias_enfermedad'
+                                || $detalle['concepto_codigo'] == 'ausencias_enfermedad_familiar'
+                                || $detalle['concepto_codigo'] == 'ausencias_maternidad'
+                                || $detalle['concepto_codigo'] == 'ausencias_licencia'
+                                || $detalle['concepto_codigo'] == 'ausencias_accidente'
+                                || $detalle['concepto_codigo'] == 'ausencias_accidente_art'
+                                || $detalle['concepto_codigo'] == 'ausencias_permiso_gremial'
+                                || $detalle['concepto_codigo'] == 'suspension_art_223_bis'
+                            ) {
+                                $dias[$liquidacion['Liquidacion']['trabajador_cuil']] += $detalle['valor_cantidad'];
                             }
 
                             if (!empty($detalle['concepto_compone'])) {
@@ -1234,14 +1245,14 @@ class LiquidacionesController extends AppController {
                                 $campos['r4c38']['valor_maximo'] = $campos['r4c38']['valor_maximo'] / 2;
                             }
                             $tmp_tope = ($campos['r4c38']['valor_maximo'] / $dias_totales_a_proporcionar * $dias[$liquidacion['Liquidacion']['trabajador_cuil']]);
-                            $campos['r4c38']['valor'] = ($tmp_tope > $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 4']?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 4']:$tmp_tope * 100); // Base imponible 1
+                            $campos['r4c38']['valor'] = ($tmp_tope > $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 4']?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 4']:$tmp_tope * 100); // Base imponible 4
 
 
                             if ($dias_totales_a_proporcionar == 180) {
                                 $campos['r4c39']['valor_maximo'] = $campos['r4c39']['valor_maximo'] / 2;
                             }
                             $tmp_tope = ($campos['r4c39']['valor_maximo'] / $dias_totales_a_proporcionar * $dias[$liquidacion['Liquidacion']['trabajador_cuil']]);
-                            $campos['r4c39']['valor'] = ($tmp_tope > $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 5']?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 5']:$tmp_tope * 100); // Base imponible 1
+                            $campos['r4c39']['valor'] = ($tmp_tope > $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 5']?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 5']:$tmp_tope * 100); // Base imponible 5
 
 
 
