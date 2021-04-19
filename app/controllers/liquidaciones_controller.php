@@ -961,6 +961,7 @@ class LiquidacionesController extends AppController {
 
                 App::import('Vendor', 'dates', 'pragmatia');
                 $remuneraciones = null;
+                $remuneracionesDelPeriodo = null;
                 $compone = null;
                 $cantidadSueldo = $cantidadHorasExtras = $dias = $horas = null;
 
@@ -972,7 +973,7 @@ class LiquidacionesController extends AppController {
                 do {
                     $r = $this->Liquidacion->find('all',
                             array(  'checkSecurity' => false,
-                                    'limit' => $step . ',' . 200,
+                                    'limit' => $step . ',' . 500,
                                     'contain'       => array_merge($contain, array(
                                             'LiquidacionesDetalle' => array('Concepto', 'conditions' => array('OR' => array('LiquidacionesDetalle.concepto_imprimir' => 'Si', array('LiquidacionesDetalle.concepto_imprimir' => 'Solo con valor', 'ABS(LiquidacionesDetalle.valor) >' => 0)))),
                                             'Relacion'      => array(
@@ -987,7 +988,7 @@ class LiquidacionesController extends AppController {
                                                 'Modalidad'),
                                             'Trabajador'    => array('ObrasSocial', 'Condicion', 'Siniestrado', 'Localidad'))),
                                     'conditions'    => $conditions));
-                    $step+=200;
+                    $step+=500;
                     if (empty($r)) {
                         break;
                     }
@@ -1026,6 +1027,7 @@ class LiquidacionesController extends AppController {
 
                             foreach ($opcionesConcepto['remuneracion'] as $k => $v) {
                                 $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']][$v] = 0;
+                                $remuneracionesDelPeriodo[$liquidacion['Liquidacion']['trabajador_cuil']][$v] = 0;
                             }
 
                             foreach ($opcionesConcepto['compone'] as $k => $v) {
@@ -1068,6 +1070,7 @@ class LiquidacionesController extends AppController {
                                 foreach ($opcionesConcepto['remuneracion'] as $k => $v) {
                                     if ($detalle['Concepto']['remuneracion'] & (int)$k) {
                                         $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']][$v] += $detalle['valor'];
+                                        $remuneracionesDelPeriodo[$liquidacion['Liquidacion']['trabajador_cuil']][$v] += $detalle['valor'];
                                     }
                                 }
                             }
@@ -1234,7 +1237,7 @@ class LiquidacionesController extends AppController {
                                 $tope = $tope / 2;
                             }
                             $tmp_tope = ($tope / $dias_totales_a_proporcionar * $dias[$liquidacion['Liquidacion']['trabajador_cuil']]);
-                            $campos['r4c35']['valor'] = ($tmp_tope > $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1']?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1']:$tmp_tope); // Base imponible 1
+                            $campos['r4c35']['valor'] = ($tmp_tope > $remuneracionesDelPeriodo[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1']?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1']:$tmp_tope); // Base imponible 1
 
                             // echo '<br/>dias: ' . $dias[$liquidacion['Liquidacion']['trabajador_cuil']];
                             // echo '<br/>rem 1: ' . $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1'];
@@ -1249,10 +1252,10 @@ class LiquidacionesController extends AppController {
                             $campos['r4c37']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 3']; // Base imponible 3
 
 
-                            $campos['r4c38']['valor'] = ($tmp_tope > $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 4']?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 4']:$tmp_tope); // Base imponible 4
+                            $campos['r4c38']['valor'] = ($tmp_tope > $remuneracionesDelPeriodo[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 4']?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 4']:$tmp_tope); // Base imponible 4
 
 
-                            $campos['r4c39']['valor'] = ($tmp_tope > $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 5']?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 5']:$tmp_tope); // Base imponible 5
+                            $campos['r4c39']['valor'] = ($tmp_tope > $remuneracionesDelPeriodo[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 5']?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 5']:$tmp_tope); // Base imponible 5
 
 
 
