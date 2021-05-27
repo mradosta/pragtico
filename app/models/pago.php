@@ -27,17 +27,17 @@ class Pago extends AppModel {
 
 	var $modificadores = array(	'index' =>
 			array('contain'	=> array('Descuento', 'Liquidacion', 'PagosForma', 'Relacion'	=> array('Empleador', 'Trabajador'))));
-	
+
 	var $validate = array(
         'fecha' => array(
 			array(
-				'rule'		=> VALID_DATE, 
+				'rule'		=> VALID_DATE,
 				'message'	=> 'Debe especificar una fecha valida.')
         )
 	);
 
 	var $belongsTo = array('Relacion', 'Liquidacion', 'Descuento');
-                              
+
 	var $hasMany = array(	'PagosForma' =>
                         array('className'    => 'PagosForma',
                               'foreignKey'   => 'pago_id'));
@@ -54,7 +54,7 @@ class Pago extends AppModel {
 		}
 		return $results;
 	}
-	
+
 
     function getTotal($conditions = array()) {
         $this->unbindModel(array(
@@ -76,7 +76,7 @@ class Pago extends AppModel {
 
 		$retorno = true;
 		$tipo = ucfirst($tipo);
-			
+
 		if ($tipo === 'Deposito') {
 			$this->contain(array('PagosForma', 'Relacion.Trabajador'));
 		} else {
@@ -96,7 +96,7 @@ class Pago extends AppModel {
 			if (($pagos[$id]['Pago']['moneda'] === 'Beneficios' && $tipo === 'Beneficios')
 				|| ($pagos[$id]['Pago']['moneda'] === 'Pesos' && $tipo !== 'Beneficios')) {
 
-				
+
 				$acumulado = $this->__getPartialPayments($pagos[$id]);
 				/**
 				* Determino si tiene la pagos parciales.
@@ -118,7 +118,7 @@ class Pago extends AppModel {
 				*/
 				$save['pago_monto'] = $pagos[$id]['Pago']['monto'];
 				$save['pago_acumulado'] = $acumulado;
-				
+
 				if ($tipo === 'Deposito') {
 					$save['cbu_numero'] = $pagos[$id]['Relacion']['Trabajador']['cbu'];
 				}
@@ -139,7 +139,7 @@ class Pago extends AppModel {
 				$savePago['permissions'] = '292';
 				$savePago['estado'] = 'Imputado';
 				$savePago['id'] = $id;
-				
+
 				if ($this->appSave(array(
 						'Pago' 			=> $savePago,
 					 	'PagosForma'	=> array($save)),
@@ -158,35 +158,35 @@ class Pago extends AppModel {
  *
  * @param mixed $payment The payment with all it's partial payments or the paymentId.
  * @return 	double The sum of partial payments.
- *	
+ *
  * @access private
- */	
+ */
 	function __getPartialPayments($payment) {
 		if (!is_array($payment)) {
 			$this->contain('PagosForma');
 			$payment = $this->findById($payment);
-		} 
+		}
 		return array_sum(Set::extract('/PagosForma/monto', $payment));
 	}
 
-	
+
 /**
  * Sets the payment state.
  *
  * @param array $payment The payment id.
  * @return 	boolean True on success, false in other case.
- *	
+ *
  * @access public
- */	
+ */
 	function updateState($paymentId) {
 		$save = null;
-		
+
 		/**
 		 * Cuando un pago esta imputado, ya no permito que sea borrado o modificado.
 		 */
 		$save['id'] = $paymentId;
 		$save['permissions'] = '292';
-		
+
 		$this->contain('PagosForma');
 		$payment = $this->findById($paymentId);
 		if ($payment['Pago']['monto'] == $this->__getPartialPayments($payment)) {
@@ -199,8 +199,8 @@ class Pago extends AppModel {
 		}
 		return false;
 	}
-	
-	
+
+
 /**
  * Permite revertir un pago.
  */
@@ -213,7 +213,7 @@ class Pago extends AppModel {
 		$save['observacion'] = 'Este pago ha sido revertido';
 		$save['fecha'] = date('Y-m-d');
 		$save['pago_id'] = $id;
-		
+
 		$this->begin();
 		if ($this->PagosForma->save(array('PagosForma' => $save), false) && $this->updateState($id)) {
 			$this->commit();
@@ -221,9 +221,9 @@ class Pago extends AppModel {
 		}
 		$this->rollBack();
 		return false;
-	}	
-	
-	
+	}
+
+
 /**
  * Genera el contenido del archivo para presentar en los bancos para la acreditacion de haberes.
  *
@@ -242,41 +242,75 @@ class Pago extends AppModel {
 	function generarSoporteMagnetico($opciones, $confirm = false) {
 
 		$contenido = false;
-		
+
 		if (!empty($opciones['cuenta_id']) && !empty($opciones['pago_id'])) {
 
 			$conditions = array(
 					'Pago.estado'		=> 'Pendiente',
 	 				'Pago.id'			=> $opciones['pago_id']);
-	  				
-			$pagos =  $this->find('all', 
+
+			$pagos =  $this->find('all',
 			  		array(	'contain'		=> array('Relacion.Trabajador'),
 						  	'conditions' 	=> $conditions));
-			
+
 			if (!empty($pagos)) {
 
                 App::import('Vendor', 'utils', 'pragmatia');
-                
+
                 $this->Relacion->Empleador->Cuenta->contain(array('Empleador', 'Sucursal.Banco'));
                 $cuenta = $this->Relacion->Empleador->Cuenta->findById($opciones['cuenta_id']);
                 $bankCode = str_pad($cuenta['Sucursal']['Banco']['codigo'], 3, '0', STR_PAD_LEFT);
-                
+
+                $date = new DateTime();
+
+                if ($bankCode == '017') {
+                    if (!empty($opciones['fecha_acreditacion']) && preg_match(VALID_DATE, $opciones['fecha_acreditacion'], $matchesDate)) {
+                        $fechaAcreditacion = str_replace('-', '', $matchesDate);
+                    } else {
+                        $fechaAcreditacion = $date->format('Ymd');
+                    }
+
+                    $c = null;
+                    $c[] = '*U*'; // Tipo De registro. Contiene (*U*)
+                    $c[] = $cuenta['Cuenta']['cbu']; // CBU
+                    $c[] = 'D'; // Indicador de Débito o Crédito. Ingrese �~@~\D�~@~] o �~@~\C�~@~]
+                    $c[] = $fechaAcreditacion[0]; // Fecha de solicitud en formato AAAAMMDD
+                    $c[] = 'S'; // Marca de consolidado. Indique �~@~\S�~@~] o �~@~\N�~@~]. Esta marca debe coincidir con lo que posteriormente indicará en la pantalla de confección de la transferencia.
+                    $c[] = str_pad('', 61, ' ', STR_PAD_LEFT); // Observación del lote
+                    $c[] = '000'; // Ingrese 000 (triple cero)
+                    $c[] = '00'; // Nro. de cuenta corto según formato Datanet. Ingrese siempre 00 (doble cero).
+                    $c[] = $date->format('m/d/y'); //Fecha del archivo en formato MM/DD/YY
+                    $c[] = str_pad('', 8, ' ', STR_PAD_LEFT); // Nro. de secuencia del archivo. Este dato es opcional, y puede ser útil para evitarr importar el mismo archivo dos veces.
+                    $c[] = str_pad('', 123, ' ', STR_PAD_LEFT); // Espacios en blanco
+                    $rds[] = implode('', $c);
+                }
+
 				$total = 0;
 				$pagosIds = array();
 				foreach ($pagos as $pago) {
-                    
+
 					if (preg_match('/(\d\d\d)(\d\d\d\d)\d(\d\d\d\d\d\d\d\d\d\d\d\d\d)\d$/', $pago['Relacion']['Trabajador']['cbu'], $matches)) {
 
                         /** Avoid creating a deposit where origin and target accounts are fron different banks */
-                        if ($matches[1] != $bankCode) {
-                            continue;
-                        }
+                        // if ($matches[1] != $bankCode) {
+                        //     continue;
+                        // }
 
                         $pagosIds[] = $pago['Pago']['id'];
                         $total += number_format($pago['Pago']['monto'], 2, '.', '');
-                        
+
                         if ($confirm === true) {
                             switch ($bankCode) {
+                                case '017': //BBVA
+                                    $c = null;
+                                    $c[] = '*M*'; // Tipo De registro. Contiene (*M*)
+                                    $c[] = $pago['Relacion']['Trabajador']['cbu']; // Número de CBU
+                                    $c[] = Utils::normalizeText(number_format($pago['Pago']['monto'], 2, '', ''), 17, 'number'); //importe
+                                    $c[] = str_pad(substr($pago['Relacion']['Trabajador']['apellido'] . ' ' . $pago['Relacion']['Trabajador']['nombre'], 0, 60), 60, ' ', STR_PAD_RIGHT); // Observaciones (Opcional)
+                                    $c[] = '00'; // Nro. de cuenta corto según formato Datanet. Ingrese siempre 00 (doble cero).
+                                    $c[] = str_pad('', 136, ' ', STR_PAD_LEFT); // Espacios en blanco
+                                    $rds[] = implode('', $c);
+                                    break;
                                 case '072': //Rio
                                     if ($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Cta. Cte.') {
                                         $tipoCuentaTrabajador = '2';
@@ -299,7 +333,7 @@ class Pago extends AppModel {
                                     } elseif ($pago['Relacion']['Trabajador']['tipo_cuenta'] === 'Caja de Ahorro') {
                                         $tipoCuentaTrabajador = '4';
                                     }
-                                    
+
                                     $rd = null;
                                     $rd[] = 'D';
                                     $rd[] = str_pad($cuenta['Cuenta']['convenio'], 5, '0', STR_PAD_LEFT); //Numero de empresa (convenio)
@@ -321,7 +355,7 @@ class Pago extends AppModel {
                                         $fechaAcreditacion = date('dmy');
                                     }
                                     $c = null;
-                                    
+
                                     $c[] = $matches[2]; // Sucursal
                                     $c[] = substr($matches[3], -10); // Nro cuenta
                                     $c[] = '141'; // nadie sabe que es, pero debe ir este valor
@@ -364,6 +398,7 @@ class Pago extends AppModel {
                 if ($confirm === true) {
                     if (!empty($rds)) {
                         switch ($bankCode) {
+                            case '017':
                             case '072':
                             case '011':
 							case '044':
