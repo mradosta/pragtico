@@ -1124,10 +1124,9 @@ class LiquidacionesController extends AppController {
                     foreach ($remuneraciones as $cuit => $remuneracion) {
                         foreach ($remuneracion as $k => $v) {
                             $remuneraciones[$cuit][$k] = $this->Util->format($v, array('type' => 'numero', 'decimals' => ''));
-                            if ($remuneraciones[$cuit][$k] - $bruto[$cuit] == 1) {
+                            if ($remuneraciones[$cuit][$k] - $bruto[$cuit] <= 9) {
                                 $remuneraciones[$cuit][$k] = $bruto[$cuit];
                             }
-
                         }
                     }
 
