@@ -1044,7 +1044,7 @@ class LiquidacionesController extends AppController {
                             if (!isset($valores[$liquidacion['Liquidacion']['trabajador_cuil']][$detalle['concepto_id']])) {
                                 $valores[$liquidacion['Liquidacion']['trabajador_cuil']][$detalle['concepto_id']] = 0;
                             }
-                            $valores[$liquidacion['Liquidacion']['trabajador_cuil']][$detalle['concepto_id']] += $detalle['valor'];
+                            $valores[$liquidacion['Liquidacion']['trabajador_cuil']][$detalle['concepto_id']] += 1 * str_replace('.', '', $detalle['valor']);
                             if ($detalle['concepto_codigo'] == 'horas') {
                                 $horas[$liquidacion['Liquidacion']['trabajador_cuil']] = $detalle['valor_cantidad'];
                             }
@@ -1160,6 +1160,12 @@ class LiquidacionesController extends AppController {
                     }
 
 
+                    $variables = Set::combine(ClassRegistry::init('Variable')->find('all', array(
+                        'recursive' => -1,
+                        'conditions' => array('Variable.nombre' => '#tope_maximo_aportes'),
+                        'order' => false)), '{n}.Variable.nombre', '{n}.Variable');
+                        // debug($variables);die;
+
                     $lineas = null;
                     foreach ($liquidaciones as $liquidacion) {
                         $campos = $detalles;
@@ -1211,7 +1217,7 @@ class LiquidacionesController extends AppController {
                                 $campos['r3c4']['valor'] = str_replace('.', '', $detalle['valor_cantidad']); // Cantidad
                                 $campos['r3c5']['valor'] = ''; // Unidades
                                 // $campos['r3c6']['valor'] = str_replace('.', '', $detalle['valor']); // Importe
-                                $campos['r3c6']['valor'] = str_replace('.', '', $valores[$liquidacion['Liquidacion']['trabajador_cuil']][$detalle['concepto_id']]) * 100; // Importe
+                                $campos['r3c6']['valor'] = str_replace('.', '', $valores[$liquidacion['Liquidacion']['trabajador_cuil']][$detalle['concepto_id']]); // Importe
 
                                 $campos['r3c7']['valor'] = ($detalle['concepto_tipo'] == 'Deduccion')?'D':'C'; // Débito Crédito
                                 $campos['r3c8']['valor'] = ''; // Período ajuste
@@ -1261,7 +1267,8 @@ class LiquidacionesController extends AppController {
                             // $campos['r4c33']['valor'] = '0'; // Remuneración Maternidad ANSeS
                             $campos['r4c34']['valor'] = $bruto[$liquidacion['Liquidacion']['trabajador_cuil']]; // Remuneración bruta
 
-                            $tope = 22517169;
+                            // $tope = 22517169;
+                            $tope = str_replace('.', '', $variables['#tope_maximo_aportes']['formula']);
                             if ($dias_totales_a_proporcionar == 180) {
                                 $tope = $tope / 2;
                             }
