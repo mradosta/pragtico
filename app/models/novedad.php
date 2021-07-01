@@ -240,8 +240,13 @@ class Novedad extends AppModel {
 			$Concepto = ClassRegistry::init('Concepto');
 			foreach ($novedades as $novedad) {
 				$conceptoCodigo = array_pop(explode(':', $novedad['Novedad']['subtipo']));
-				$variables['#' . $conceptoCodigo] = $novedad['Novedad']['data'];
-                $conceptos = array_merge($conceptos, $Concepto->findConceptos('ConceptoPuntual', array('relacion' => $relacion, 'codigoConcepto' => $conceptoCodigo)));
+				if (!isset($variables['#' . $conceptoCodigo])) {
+					$variables['#' . $conceptoCodigo] = $novedad['Novedad']['data'];
+				} else {
+					$variables['#' . $conceptoCodigo] = (1 * $variables['#' . $conceptoCodigo]) + (1 * $novedad['Novedad']['data']);
+				}
+
+				$conceptos = array_merge($conceptos, $Concepto->findConceptos('ConceptoPuntual', array('relacion' => $relacion, 'codigoConcepto' => $conceptoCodigo)));
 
 				$auxiliar = null;
 				$auxiliar['id'] = $novedad['Novedad']['id'];
