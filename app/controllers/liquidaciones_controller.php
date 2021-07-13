@@ -1162,7 +1162,7 @@ class LiquidacionesController extends AppController {
 
                     $variables = Set::combine(ClassRegistry::init('Variable')->find('all', array(
                         'recursive' => -1,
-                        'conditions' => array('Variable.nombre' => '#tope_maximo_aportes'),
+                        'conditions' => array('Variable.nombre' => array('#tope_maximo_aportes', '#a_detraer')),
                         'order' => false)), '{n}.Variable.nombre', '{n}.Variable');
                         // debug($variables);die;
 
@@ -1322,8 +1322,9 @@ class LiquidacionesController extends AppController {
 
                             // $campos['r4c44']['valor'] = ''; // Base para el cálculo diferencial de aporte de Seg. Social
                             // $campos['r4c45']['valor'] = ''; // Base para el cálculo diferencial de contribuciones de Seg. Social
-                            if (($remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 2'] / 100) > 7003.68) {
-                                $aDetraer = 7003.68 / 8 * floatval($liquidacion['Liquidacion']['relacion_horas']);
+                            $aDetraer = $variables['#a_detraer']['formula'];
+                            if (($remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 2'] / 100) > $aDetraer) {
+                                $aDetraer = $aDetraer / 8 * floatval($liquidacion['Liquidacion']['relacion_horas']);
                                 $campos['r4c46']['valor'] = $this->Util->format(($remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 2'] / 100) - $aDetraer, array('type' => 'number', 'decimals' => '')); // Base imponible 10
                                 $campos['r4c47']['valor'] = str_replace('.', '', $aDetraer); // Importe a detraer
                             }
