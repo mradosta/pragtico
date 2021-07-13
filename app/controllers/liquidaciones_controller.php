@@ -1268,7 +1268,7 @@ class LiquidacionesController extends AppController {
                             $campos['r4c34']['valor'] = $bruto[$liquidacion['Liquidacion']['trabajador_cuil']]; // Remuneración bruta
 
                             // $tope = 22517169;
-                            $tope = str_replace('.', '', $variables['#tope_maximo_aportes']['formula']);
+                            $tope = trim(str_replace('=', '', str_replace('.', '', $variables['#tope_maximo_aportes']['formula'])));
                             if ($dias_totales_a_proporcionar == 180) {
                                 $tope = $tope / 2;
                             }
@@ -1322,7 +1322,7 @@ class LiquidacionesController extends AppController {
 
                             // $campos['r4c44']['valor'] = ''; // Base para el cálculo diferencial de aporte de Seg. Social
                             // $campos['r4c45']['valor'] = ''; // Base para el cálculo diferencial de contribuciones de Seg. Social
-                            $aDetraer = $variables['#a_detraer']['formula'];
+                            $aDetraer = trim(str_replace('=', '', $variables['#a_detraer']['formula']));
                             if (($remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 2'] / 100) > $aDetraer) {
                                 $aDetraer = $aDetraer / 8 * floatval($liquidacion['Liquidacion']['relacion_horas']);
                                 $campos['r4c46']['valor'] = $this->Util->format(($remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 2'] / 100) - $aDetraer, array('type' => 'number', 'decimals' => '')); // Base imponible 10
