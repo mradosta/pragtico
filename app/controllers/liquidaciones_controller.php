@@ -1051,7 +1051,7 @@ class LiquidacionesController extends AppController {
                                 $horas[$liquidacion['Liquidacion']['trabajador_cuil']] = $detalle['valor_cantidad'];
                             }
                             if ($detalle['concepto_codigo'] == 'aporte_adicional_obra_social' || $detalle['concepto_codigo'] == 'adherente_obra_social') {
-                                $aporteAdicionalObraSocial[$liquidacion['Liquidacion']['trabajador_cuil']] = $detalle['valor'];
+                                $aporteAdicionalObraSocial[$liquidacion['Liquidacion']['trabajador_cuil']] += $detalle['valor'];
                             }
                             if ($detalle['concepto_codigo'] == 'sueldo_basico'
                                 || $detalle['concepto_codigo'] == 'sac'
