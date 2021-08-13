@@ -963,11 +963,12 @@ class LiquidacionesController extends AppController {
                 $remuneraciones = null;
                 // $remuneracionesDelPeriodo = null;
                 $compone = null;
-                $cantidadSueldo = $cantidadHorasExtras = $dias = $horas = null;
+                $cantidadSueldo = $cantidadHorasExtras = $dias = $horas = $aporteAdicionalObraSocial = null;
 
                     // $conditions['Liquidacion.id'] = 188379;
                     // $conditions['Liquidacion.id'] = [177315, 177312, 177345,175515];
                     // $conditions['Liquidacion.id'] = [175516];
+                    // $conditions['Trabajador.cuit'] = '20-25280294-1';
 
                 $step = 0;
                 do {
@@ -1018,6 +1019,7 @@ class LiquidacionesController extends AppController {
 							$cantidadSueldo[$liquidacion['Liquidacion']['trabajador_cuil']] = 0;
 							$horas[$liquidacion['Liquidacion']['trabajador_cuil']] = 0;
 							$dias[$liquidacion['Liquidacion']['trabajador_cuil']] = 0;
+							$aporteAdicionalObraSocial[$liquidacion['Liquidacion']['trabajador_cuil']] = 0;
                             if ($liquidacion['Liquidacion']['tipo'] == 'Normal') {
                                 $dias_totales_a_proporcionar = 30;
                             } else if ($liquidacion['Liquidacion']['tipo'] == 'Sac' || $liquidacion['Liquidacion']['tipo'] == 'Final') {
@@ -1047,6 +1049,9 @@ class LiquidacionesController extends AppController {
                             $valores[$liquidacion['Liquidacion']['trabajador_cuil']][$detalle['concepto_id']] += 1 * str_replace('.', '', $detalle['valor']);
                             if ($detalle['concepto_codigo'] == 'horas') {
                                 $horas[$liquidacion['Liquidacion']['trabajador_cuil']] = $detalle['valor_cantidad'];
+                            }
+                            if ($detalle['concepto_codigo'] == 'aporte_adicional_obra_social' || $detalle['concepto_codigo'] == 'adherente_obra_social') {
+                                $aporteAdicionalObraSocial[$liquidacion['Liquidacion']['trabajador_cuil']] = $detalle['valor'];
                             }
                             if ($detalle['concepto_codigo'] == 'sueldo_basico'
                                 || $detalle['concepto_codigo'] == 'sac'
@@ -1197,7 +1202,10 @@ class LiquidacionesController extends AppController {
                             $campos['r2c4']['valor'] = $liquidacion['Liquidacion']['relacion_area_id']; //TODO, area nombre //Dependencia de Revista
                             $campos['r2c5']['valor'] = ''; //CBU
                             // $campos['r2c5']['valor'] = $liquidacion['Liquidacion']['trabajador_cbu']; //CBU
-                            $campos['r2c6']['valor'] = $dias[$liquidacion['Liquidacion']['trabajador_cuil']]; //TODO: ver liq final //Cant. de días para proporcionar el tope
+                            // $campos['r2c6']['valor'] = 0;
+                            if ($dias[$liquidacion['Liquidacion']['trabajador_cuil']] != $dias_totales_a_proporcionar) {
+                                $campos['r2c6']['valor'] = $dias[$liquidacion['Liquidacion']['trabajador_cuil']]; //TODO: ver liq final //Cant. de días para proporcionar el tope
+                            }
                             $campos['r2c7']['valor'] = str_replace('-', '', $liquidacion['Liquidacion']['pago']);
                             // $campos['r2c8']['valor'] = ''; //TODO: ver Fecha de rúbrica //Fecha de rúbrica
                             // $campos['r2c9']['valor'] = '1'; //TODO: ver Forma de pago //Forma de pago
@@ -1259,7 +1267,8 @@ class LiquidacionesController extends AppController {
                             $campos['r4c25']['valor'] = $liquidacion['Trabajador']['Condicion']['codigo'] == '5'?'500':'0'; // Contribución tarea diferencial
                             $campos['r4c26']['valor'] = $liquidacion['Trabajador']['ObrasSocial']['codigo']; // Código Obra social
                             $campos['r4c27']['valor'] = $liquidacion['Trabajador']['adherentes_os']; // Cantidad adherentes
-                            $campos['r4c28']['valor'] = str_replace('.', '', $liquidacion['Trabajador']['aporte_adicional_os']); // Aporte Adicional OS
+                            // $campos['r4c28']['valor'] = str_replace('.', '', $liquidacion['Trabajador']['aporte_adicional_os']); // Aporte Adicional OS
+                            $campos['r4c28']['valor'] = str_replace('.', '', $aporteAdicionalObraSocial[$liquidacion['Liquidacion']['trabajador_cuil']]); // Aporte Adicional OS
                             // $campos['r4c29']['valor'] = '0'; // Contribución Adicional OS
                             // $campos['r4c30']['valor'] = '0'; // Base cálculo Diferencial Aportes OS y FSR
                             // $campos['r4c31']['valor'] = '0'; // Base cálculo Diferencial OS y FSR
@@ -1270,23 +1279,23 @@ class LiquidacionesController extends AppController {
                             // $tope = 22517169;
                             $tope = trim(str_replace('=', '', str_replace('.', '', $variables['#tope_maximo_aportes']['formula'])));
                             if ($dias_totales_a_proporcionar == 180) {
-                                $tope = $tope / 2;
+                                $tope = $tope * 1.5;
                             }
                             $tmp_tope = (int)($tope / $dias_totales_a_proporcionar * $dias[$liquidacion['Liquidacion']['trabajador_cuil']]);
+                            // $tmp_tope = $tope;
                             $campos['r4c35']['valor'] = ($tmp_tope > $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1']?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1']:$tmp_tope); // Base imponible 1
 
 
-                            // $campos['r4c35']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1']; // Base imponible 2
                             $campos['r4c36']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 2']; // Base imponible 2
                             $campos['r4c37']['valor'] = $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 3']; // Base imponible 3
 
                             $campos['r4c38']['valor'] = ($tmp_tope > $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 4']?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 4']:$tmp_tope); // Base imponible 4
                             $campos['r4c39']['valor'] = ($tmp_tope > $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 5']?$remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 5']:$tmp_tope); // Base imponible 5
 
-                            // if ($liquidacion['Liquidacion']['trabajador_cuil'] == '23-32768723-9') {
+                            // if ($liquidacion['Liquidacion']['trabajador_cuil'] == '20-25280294-1') {
                             //     echo '<br/>rem 1: ' . $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1'];
-                            //     echo '<br/>rem 4: ' . $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1'];
-                            //     echo '<br/>rem 5: ' . $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 1'];
+                            //     echo '<br/>rem 4: ' . $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 4'];
+                            //     echo '<br/>rem 5: ' . $remuneraciones[$liquidacion['Liquidacion']['trabajador_cuil']]['Remuneracion 5'];
 
                             //     echo '<br/>val 1: ' . $campos['r4c35']['valor'];
                             //     echo '<br/>val 4: ' . $campos['r4c38']['valor'];
@@ -1299,7 +1308,7 @@ class LiquidacionesController extends AppController {
                             //     echo '<br/>$tope: ' . $tope;
                             //     echo '<br/>$tmp_tope: ' . $tmp_tope;
                             //     echo '<br/>$bruto: ' . $bruto[$liquidacion['Liquidacion']['trabajador_cuil']];
-                            //     debug($remuneraciones);
+                            //     // debug($remuneraciones);
                             //     echo '<br/>$dias_totales_a_proporcionar: ' . $dias_totales_a_proporcionar;
                             //     echo '<br/>res: ' . $campos['r4c35']['valor'];die;
                             // }
