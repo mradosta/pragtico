@@ -59,19 +59,18 @@ class Familiar extends AppModel {
     );
 
     var $opciones = array('parentezco' => array(
-        'padre'     => 'Padre',
-        'madre'     => 'Madre',
-        'tio'       => 'Tio',
-        'cunado'    => 'Cuñado',
-        'hermano'   => 'Hermano',
-        'hijo'      => 'Hijo',
-        'sobrino'   => 'Sobrino',
-        'otro'      => 'Otro'));
-    
+        'Conyuge'                                   => 'Conyuge',
+        'Hijo/a menor 18 años'                      => 'Hijo/a menor 18 años',
+        'Hijo/a incapacitado para el trabajo'       => 'Hijo/a incapacitado para el trabajo',
+        'Hijastro/a incapacitado para el trabajo'   => 'Hijastro/a incapacitado para el trabajo',
+        'Union convivencial'                        => 'Union convivencial',
+        'Otros'                                     => 'Otros'
+    ));
+
     var $belongsTo = array('Trabajador');
 
     var $breadCrumb = array('format'    => '%s, %s',
                             'fields'    => array('Familiar.nombre', 'Familiar.apellido'));
-    
+
 }
 ?>

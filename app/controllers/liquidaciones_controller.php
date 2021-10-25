@@ -963,7 +963,7 @@ class LiquidacionesController extends AppController {
                 $remuneraciones = null;
                 // $remuneracionesDelPeriodo = null;
                 $compone = null;
-                $cantidadSueldo = $cantidadHorasExtras = $dias = $horas = $aporteAdicionalObraSocial = null;
+                $cantidadSueldo = $cantidadHorasExtras = $dias = $diasLiquidacionActual = $horas = $aporteAdicionalObraSocial = null;
 
                     // $conditions['Liquidacion.id'] = 188379;
                     // $conditions['Liquidacion.id'] = [177315, 177312, 177345,175515];
@@ -1019,6 +1019,7 @@ class LiquidacionesController extends AppController {
 							$cantidadSueldo[$liquidacion['Liquidacion']['trabajador_cuil']] = 0;
 							$horas[$liquidacion['Liquidacion']['trabajador_cuil']] = 0;
 							$dias[$liquidacion['Liquidacion']['trabajador_cuil']] = 0;
+							$diasLiquidacionActual[$liquidacion['Liquidacion']['trabajador_cuil']] = 0;
 							$aporteAdicionalObraSocial[$liquidacion['Liquidacion']['trabajador_cuil']] = 0;
                             if ($liquidacion['Liquidacion']['tipo'] == 'Normal') {
                                 $dias_totales_a_proporcionar = 30;
@@ -1065,6 +1066,7 @@ class LiquidacionesController extends AppController {
                                 || $detalle['concepto_codigo'] == 'suspension_art_223_bis'
                             ) {
                                 $dias[$liquidacion['Liquidacion']['trabajador_cuil']] += $detalle['valor_cantidad'];
+                                $diasLiquidacionActual[$liquidacion['Liquidacion']['trabajador_cuil']] += $detalle['valor_cantidad'];
                             }
 
                             if (!empty($detalle['concepto_compone'])) {
@@ -1204,7 +1206,7 @@ class LiquidacionesController extends AppController {
                             // $campos['r2c5']['valor'] = $liquidacion['Liquidacion']['trabajador_cbu']; //CBU
                             // $campos['r2c6']['valor'] = 0;
                             if ($dias[$liquidacion['Liquidacion']['trabajador_cuil']] != $dias_totales_a_proporcionar) {
-                                $campos['r2c6']['valor'] = $dias[$liquidacion['Liquidacion']['trabajador_cuil']]; //TODO: ver liq final //Cant. de días para proporcionar el tope
+                                $campos['r2c6']['valor'] = $dias[$liquidacion['Liquidacion']['trabajador_cuil']] - $diasLiquidacionActual[$liquidacion['Liquidacion']['trabajador_cuil']]; //TODO: ver liq final //Cant. de días para proporcionar el tope
                             }
                             $campos['r2c7']['valor'] = str_replace('-', '', $liquidacion['Liquidacion']['pago']);
                             // $campos['r2c8']['valor'] = ''; //TODO: ver Fecha de rúbrica //Fecha de rúbrica
@@ -1268,7 +1270,7 @@ class LiquidacionesController extends AppController {
                             $campos['r4c26']['valor'] = $liquidacion['Trabajador']['ObrasSocial']['codigo']; // Código Obra social
                             $campos['r4c27']['valor'] = $liquidacion['Trabajador']['adherentes_os']; // Cantidad adherentes
                             // $campos['r4c28']['valor'] = str_replace('.', '', $liquidacion['Trabajador']['aporte_adicional_os']); // Aporte Adicional OS
-                            $campos['r4c28']['valor'] = str_replace('.', '', $aporteAdicionalObraSocial[$liquidacion['Liquidacion']['trabajador_cuil']]); // Aporte Adicional OS
+                            $campos['r4c28']['valor'] = str_replace('.', '', $aporteAdicionalObraSocial[$liquidacion['Liquidacion']['trabajador_cuil']]) * 100; // Aporte Adicional OS
                             // $campos['r4c29']['valor'] = '0'; // Contribución Adicional OS
                             // $campos['r4c30']['valor'] = '0'; // Base cálculo Diferencial Aportes OS y FSR
                             // $campos['r4c31']['valor'] = '0'; // Base cálculo Diferencial OS y FSR
@@ -1341,7 +1343,7 @@ class LiquidacionesController extends AppController {
                             $tmp = array();
                             foreach ($campos as $k => $campo) {
                                 if (substr($k, 0, 2) == 'r4') {
-                                    $tmp[] =$campo;
+                                    $tmp[] = $campo;
                                 }
                             }
                             $lineas['r4'][] = $this->__generarRegistro($tmp);
