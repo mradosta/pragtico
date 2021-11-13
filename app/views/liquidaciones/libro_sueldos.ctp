@@ -67,8 +67,12 @@ if (!empty($data)) {
     $fila = 0;
 	$employerFlag = null;
 	$pageCount = $startPage - 1;
-    $recordCount = 0;
-    $k = 0;
+	$recordCount = 0;
+	$k = 0;
+	$extraTotals['Remunerativo'] = 0;
+	$extraTotals['No Remunerativo'] = 0;
+	$extraTotals['Deduccion'] = 0;
+
 	foreach ($data as $record) {
         $k++;
 
@@ -151,12 +155,12 @@ if (!empty($data)) {
 				} else if ($c == 3) {
 					$letter = 'I';
 				}
-				$documento->setCellValue($letter . $fila, $family['nombre'] . ' ' . $family['nombre'] . ', ' . $family['numero_documento'] . ', ' . $family['parentezco']);
+				$documento->setCellValue($letter . $fila, $family['nombre'] . ' ' . $family['apellido'] . ', ' . $family['tipo_documento'] . ' ' . $family['numero_documento'] . ', ' . $family['parentezco']);
 			}
 		}
 
 
-        $fila++;
+    $fila++;
 		$documento->setCellValue('A' . $fila . ':C' . $fila, 'Remunerativo', array('title' => 30));
 		$documento->setCellValue('B' . $fila, '');
 		$documento->setCellValue('C' . $fila, '');
@@ -183,8 +187,8 @@ if (!empty($data)) {
 		$detailFlag = null;
 		$initialRow = $fila;
 		$maxCount['Remunerativo'] = 0;
-        $maxCount['Deduccion'] = 0;
-        $maxCount['No Remunerativo'] = 0;
+		$maxCount['Deduccion'] = 0;
+		$maxCount['No Remunerativo'] = 0;
 		foreach ($record['LiquidacionesDetalle'] as $detail) {
 
 			if($detail['concepto_imprimir'] === 'Si' || ($detail['concepto_imprimir'] === 'Solo con valor' && abs($detail['valor']) > 0)) {
@@ -207,21 +211,25 @@ if (!empty($data)) {
 					$documento->setCellValue('J' . $fila, $detail['valor_cantidad']);
 					$documento->setCellValue('K' . $fila, $detail['valor'], 'currency');
 				}
-                $maxCount[$detail['concepto_tipo']]++;
+        $maxCount[$detail['concepto_tipo']]++;
 			}
 		}
 
-        $count = 0;
-        foreach ($maxCount as $c) {
-            if ($c > $count) {
-                $count = $c;
-            }
-        }
+		$count = 0;
+		foreach ($maxCount as $c) {
+			if ($c > $count) {
+				$count = $c;
+			}
+		}
 		$fila = $initialRow + $count + 1;
 		$documento->setCellValue('A' . $fila, 'Totales', 'bold');
 		$documento->setCellValue('C' . $fila, $record['Liquidacion']['remunerativo'], 'total');
 		$documento->setCellValue('G' . $fila, $record['Liquidacion']['deduccion'], 'total');
 		$documento->setCellValue('K' . $fila, $record['Liquidacion']['no_remunerativo'], 'total');
+		$extraTotals['Remunerativo'] += $record['Liquidacion']['remunerativo'];
+		$extraTotals['No Remunerativo'] += $record['Liquidacion']['no_remunerativo'];
+		$extraTotals['Deduccion'] += $record['Liquidacion']['deduccion'];
+
 
         $fila++;
 		$documento->setCellValue('J' . $fila, 'Total Neto:', array('bold', 'right'));
@@ -251,6 +259,24 @@ if (!empty($data)) {
             $fila++;
 		}
 	}
+
+
+	$currentRow = $documento->getCurrentRow() + 2;
+  $documento->setCellValue('A' . $currentRow . ':E' . $currentRow, 'TOTALES', 'title');
+
+	$documento->moveCurrentRow(2);
+	$documento->setCellValue('A', 'Trabajadores', 'bold');
+	$documento->setCellValue('E', count($data), 'bold');
+	$documento->moveCurrentRow();
+	$documento->setCellValue('A', 'Liquidado', 'bold');
+	// $documento->setCellValue('E', '=SUM('.implode('+', $totals['C']).')', 'total');
+
+	foreach ($extraTotals as $t => $v) {
+		$documento->moveCurrentRow();
+		$documento->setCellValue('A', '    ' . $t, 'bold');
+		$documento->setCellValue('I', $v, 'total');
+	}
+
 
 	if (!empty($fileName)) {
 		$documento->save($fileName);
