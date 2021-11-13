@@ -64,7 +64,7 @@ if (!empty($data)) {
 	$documento->setWidth('K', 13);
 
 
-    $fila = 0;
+  $fila = 0;
 	$employerFlag = null;
 	$pageCount = $startPage - 1;
 	$recordCount = 0;
@@ -261,20 +261,19 @@ if (!empty($data)) {
 	}
 
 
-	$currentRow = $documento->getCurrentRow() + 2;
-  $documento->setCellValue('A' . $currentRow . ':E' . $currentRow, 'TOTALES', 'title');
-
-	$documento->moveCurrentRow(2);
-	$documento->setCellValue('A', 'Trabajadores', 'bold');
-	$documento->setCellValue('E', count($data), 'bold');
-	$documento->moveCurrentRow();
-	$documento->setCellValue('A', 'Liquidado', 'bold');
+	$fila+=3;
+  $documento->setCellValue('A' . $fila . ':E' . $fila, 'TOTALES', 'bold');
+	$fila+=3;
+	$documento->setCellValue('A' . $fila, 'Trabajadores', 'bold');
+	$documento->setCellValue('E' . $fila, count($data), 'bold');
+	$fila++;
+	$documento->setCellValue('A' . $fila, 'Liquidado', 'bold');
 	// $documento->setCellValue('E', '=SUM('.implode('+', $totals['C']).')', 'total');
 
 	foreach ($extraTotals as $t => $v) {
-		$documento->moveCurrentRow();
-		$documento->setCellValue('A', '    ' . $t, 'bold');
-		$documento->setCellValue('I', $v, 'total');
+		$fila++;
+		$documento->setCellValue('A' . $fila, '    ' . $t, 'bold');
+		$documento->setCellValue('I' . $fila, $v, 'total');
 	}
 
 
