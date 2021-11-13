@@ -155,7 +155,7 @@ if (!empty($data)) {
 				} else if ($c == 3) {
 					$letter = 'I';
 				}
-				$documento->setCellValue($letter . $fila, $family['nombre'] . ' ' . $family['apellido'] . ', ' . $family['tipo_documento'] . ' ' . $family['numero_documento'] . ', ' . $family['parentezco']);
+				$documento->setCellValue($letter . $fila, trim($family['Familiar']['nombre']) . ' ' . trim($family['Familiar']['apellido']) . ', ' . $family['Familiar']['tipo_documento'] . ' ' . $family['Familiar']['numero_documento'] . ', ' . $family['Familiar']['parentezco']);
 			}
 		}
 
