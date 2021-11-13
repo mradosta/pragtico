@@ -414,6 +414,10 @@ class Liquidacion extends AppModel {
                 return array('error' => sprintf('Wrong period (%s). Only "1" for the first_half or "2" for the second_half allowed for type %s.', $options['period'], $this->__receiptType));
             }
 
+            // TODO:
+            // hay que sumar a los recibos normales los de vacaciones, 
+            // pero proporcionar por mes segun corresponda a cada mes
+            //$conditions['Liquidacion.tipo'] = [ 'vacaciones', 'normal' ];
             $r = $this->find('all', array(
                     'recursive'     => -1,
                     'checkSecurity' => false,
