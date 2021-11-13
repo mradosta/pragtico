@@ -273,7 +273,7 @@ if (!empty($data)) {
 	foreach ($extraTotals as $t => $v) {
 		$fila++;
 		$documento->setCellValue('A' . $fila, '    ' . $t, 'bold');
-		$documento->setCellValue('I' . $fila, $v, 'total');
+		$documento->setCellValue('E' . $fila, $v, 'total');
 	}
 
 
