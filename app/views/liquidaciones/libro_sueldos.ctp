@@ -140,9 +140,9 @@ if (!empty($data)) {
 
 
 		// family
-		if (isset($record['Liquidacion']['Relacion']['Trabajador']['Familiar'])) {
+		if (isset($record['Familiar'])) {
 			$c = 0;
-			foreach ($record['Liquidacion']['Relacion']['Trabajador']['Familiar'] as $family) {
+			foreach ($record['Familiar'] as $family) {
 				if ($c % 3 == 0) {
 					$c = 0;
 					$fila++;

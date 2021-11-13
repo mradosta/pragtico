@@ -446,17 +446,20 @@ class LiquidacionesController extends AppController {
 
                 $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
                 foreach ($this->Liquidacion->LiquidacionesDetalle->find('all',
-                        array(  'contain'       => array('Liquidacion.Relacion.Trabajador.Familiar'),
+                        array(  'contain'       => array('Liquidacion'),
                                 'conditions'    => $conditions,
                                 'order'         => array(
                                     'Liquidacion.empleador_nombre',
                                     'Liquidacion.periodo',
                                     'LiquidacionesDetalle.concepto_tipo'))) as $k => $v) {
 
+
                     if (empty($liquidaciones[$v['Liquidacion']['id']]['Liquidacion'])) {
                         $liquidaciones[$v['Liquidacion']['id']]['Liquidacion'] = $v['Liquidacion'];
                     }
                     $liquidaciones[$v['Liquidacion']['id']]['LiquidacionesDetalle'][] = $v['LiquidacionesDetalle'];
+                    $liquidaciones[$v['Liquidacion']['id']]['Familiar'] = $this->Liquidacion->Relacion->Trabajador->Familiar->find('all', array('conditions' => array('trabajador_id' => $v['Liquidacion']['trabajador_id'])));
+
                 }
 
 				if (empty($liquidaciones)) {
