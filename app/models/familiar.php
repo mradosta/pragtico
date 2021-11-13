@@ -60,9 +60,9 @@ class Familiar extends AppModel {
 
     var $opciones = array('parentezco' => array(
         'Conyuge'                                   => 'Conyuge',
-        'Hijo/a menor 18 años'                      => 'Hijo/a menor 18 años',
-        'Hijo/a incapacitado para el trabajo'       => 'Hijo/a incapacitado para el trabajo',
-        'Hijastro/a incapacitado para el trabajo'   => 'Hijastro/a incapacitado para el trabajo',
+        'Hijo/a'                                    => 'Hijo/a',
+        'Hijo/a incapacitado'                       => 'Hijo/a incapacitado',
+        'Hijastro/a incapacitado'                   => 'Hijastro/a incapacitado',
         'Union convivencial'                        => 'Union convivencial',
         'Otros'                                     => 'Otros'
     ));

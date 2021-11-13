@@ -15,7 +15,7 @@
  * @lastmodified	$Date: 2009-01-27 11:26:49 -0200 (mar, 27 ene 2009) $
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
- 
+
 if (!empty($data)) {
 
     if (empty($groupParams)) {
@@ -50,7 +50,7 @@ if (!empty($data)) {
 	$styleBorderBottom = array('style' => array(
 		'borders' => array( 'bottom'     => array('style' => PHPExcel_Style_Border::BORDER_DASHDOT))));
 
-	
+
 	$documento->setWidth('A', 30);
 	$documento->setWidth('B', 7);
 	$documento->setWidth('C', 13);
@@ -63,7 +63,7 @@ if (!empty($data)) {
 	$documento->setWidth('J', 7);
 	$documento->setWidth('K', 13);
 
-        
+
     $fila = 0;
 	$employerFlag = null;
 	$pageCount = $startPage - 1;
@@ -71,7 +71,7 @@ if (!empty($data)) {
     $k = 0;
 	foreach ($data as $record) {
         $k++;
-        
+
         /** Must print emplyer only when group is selected */
 		if ($employerFlag !== $record['Liquidacion']['empleador_cuit']) {
 			$employerFlag = $record['Liquidacion']['empleador_cuit'];
@@ -87,15 +87,15 @@ if (!empty($data)) {
                 $documento->setCellValue('A' . $fila, 'Empresa Usuario:');
                 $documento->setCellValue('B' . $fila, $record['Liquidacion']['empleador_nombre'], 'bold');
                 $documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), 'bold');
-                
+
                 $fila++;
                 $documento->setCellValue('A' . $fila, 'CUIT:');
                 $documento->setCellValue('B' . $fila, $record['Liquidacion']['empleador_cuit'], 'bold');
-                
+
                 $fila++;
                 $documento->setCellValue('A' . $fila, 'Direccion:');
                 $documento->setCellValue('B' . $fila, $record['Liquidacion']['empleador_direccion']);
-                
+
                 $fila+=2;
             } else {
                 $documento->setCellValue('I' . $fila, 'Periodo: ' . $formato->format($periodo, array('type' => 'periodoEnLetras', 'short' => true, 'case' => 'ucfirst')), 'bold');
@@ -103,7 +103,7 @@ if (!empty($data)) {
             }
 		}
 		$recordCount++;
-		
+
         $fila++;
 		$documento->setCellValue('A' . $fila, 'CUIL: ' . $record['Liquidacion']['trabajador_cuil'] . ' / Legajo: ' . $record['Liquidacion']['relacion_legajo']);
 		$documento->setCellValue('E' . $fila, 'Apellido y Nombre: ' . $record['Liquidacion']['trabajador_apellido'] . ' ' . $record['Liquidacion']['trabajador_nombre']);
@@ -133,7 +133,29 @@ if (!empty($data)) {
 			$documento->setCellValue('I' . $fila, 'Estado: Inactivo');
 		}
 
-		
+
+
+		// family
+		if (isset($record['Liquidacion']['Relacion']['Trabajador']['Familiar'])) {
+			$c = 0;
+			foreach ($record['Liquidacion']['Relacion']['Trabajador']['Familiar'] as $family) {
+				if ($c % 3 == 0) {
+					$c = 0;
+					$fila++;
+				}
+				$c++;
+				if ($c == 1) {
+					$letter = 'A';
+				} else if ($c == 2) {
+					$letter = 'E';
+				} else if ($c == 3) {
+					$letter = 'I';
+				}
+				$documento->setCellValue($letter . $fila, $family['nombre'] . ' ' . $family['nombre'] . ', ' . $family['numero_documento'] . ', ' . $family['parentezco']);
+			}
+		}
+
+
         $fila++;
 		$documento->setCellValue('A' . $fila . ':C' . $fila, 'Remunerativo', array('title' => 30));
 		$documento->setCellValue('B' . $fila, '');
@@ -144,16 +166,16 @@ if (!empty($data)) {
 		$documento->setCellValue('I' . $fila . ':K' . $fila, 'No Remunerativo', array('title' => 30));
 		$documento->setCellValue('J' . $fila, '');
 		$documento->setCellValue('K' . $fila, '');
-		
+
 		$fila++;
 		$documento->setCellValue('A' . $fila, 'Descripcion');
 		$documento->setCellValue('B' . $fila, 'Cant.', 'right');
 		$documento->setCellValue('C' . $fila, 'Importe', 'right');
-		
+
 		$documento->setCellValue('E' . $fila, 'Descripcion');
 		$documento->setCellValue('F' . $fila, 'Cant.', 'right');
 		$documento->setCellValue('G' . $fila, 'Importe', 'right');
-		
+
 		$documento->setCellValue('I' . $fila, 'Descripcion');
 		$documento->setCellValue('J' . $fila, 'Cant.', 'right');
 		$documento->setCellValue('K' . $fila, 'Importe', 'right');
@@ -249,7 +271,7 @@ if (!empty($data)) {
             'lov'   => array('controller'   => 'areas',
                             'camposRetorno' => array(   'Empleador.nombre',
                                                         'Area.nombre')));
-    
+
     $conditions['Condicion.Bar-tipo'] = array('label' => 'Tipo', 'multiple' => 'checkbox', 'type' => 'select', 'options' => $types);
     $conditions['Condicion.Bar-periodo_largo'] = array('label' => 'Periodo', 'type' => 'periodo', 'periodo' => array('1Q', '2Q', 'M', '1S', '2S', 'F'));
 
@@ -259,5 +281,5 @@ if (!empty($data)) {
 
 
 }
- 
+
 ?>

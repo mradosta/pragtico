@@ -446,7 +446,7 @@ class LiquidacionesController extends AppController {
 
                 $this->Liquidacion->LiquidacionesDetalle->Behaviors->detach('Permisos');
                 foreach ($this->Liquidacion->LiquidacionesDetalle->find('all',
-                        array(  'contain'       => array('Liquidacion'),
+                        array(  'contain'       => array('Liquidacion.Relacion.Trabajador.Familiar'),
                                 'conditions'    => $conditions,
                                 'order'         => array(
                                     'Liquidacion.empleador_nombre',
