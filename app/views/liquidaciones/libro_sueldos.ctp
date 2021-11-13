@@ -263,7 +263,7 @@ if (!empty($data)) {
 
 	$fila+=3;
   $documento->setCellValue('A' . $fila . ':E' . $fila, 'TOTALES', 'bold');
-	$fila+=3;
+	$fila++;
 	$documento->setCellValue('A' . $fila, 'Trabajadores', 'bold');
 	$documento->setCellValue('E' . $fila, count($data), 'bold');
 	$fila++;
