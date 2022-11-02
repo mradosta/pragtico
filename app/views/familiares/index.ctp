@@ -15,7 +15,7 @@
  * @lastmodified	$Date: 2009-09-29 19:51:14 -0300 (Tue, 29 Sep 2009) $
  * @author      	Martin Radosta <mradosta@pragmatia.com>
  */
- 
+
 /**
 * Especifico los campos para ingresar las condiciones.
 */
@@ -37,8 +37,8 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Familiar', 'field' => 'parentezco', 'valor' => $v['Familiar']['parentezco']);
 	$fila[] = array('model' => 'Familiar', 'field' => 'apellido', 'valor' => $v['Familiar']['apellido']);
 	$fila[] = array('model' => 'Familiar', 'field' => 'nombre', 'valor' => $v['Familiar']['nombre']);
-	$fila[] = array('model' => 'Familiar', 'field' => 'telefono', 'valor' => $v['Familiar']['telefono']);
-	$fila[] = array('model' => 'Familiar', 'field' => 'celular', 'valor' => $v['Familiar']['celular']);
+	$fila[] = array('model' => 'Familiar', 'field' => 'tipo_documento', 'valor' => $v['Familiar']['tipo_documento']);
+	$fila[] = array('model' => 'Familiar', 'field' => 'celnumero_documentoular', 'valor' => $v['Familiar']['numero_documento']);
 	$cuerpo[] = $fila;
 }
 
