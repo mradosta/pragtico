@@ -38,7 +38,7 @@ foreach ($registros as $k => $v) {
 	$fila[] = array('model' => 'Familiar', 'field' => 'apellido', 'valor' => $v['Familiar']['apellido']);
 	$fila[] = array('model' => 'Familiar', 'field' => 'nombre', 'valor' => $v['Familiar']['nombre']);
 	$fila[] = array('model' => 'Familiar', 'field' => 'tipo_documento', 'valor' => $v['Familiar']['tipo_documento']);
-	$fila[] = array('model' => 'Familiar', 'field' => 'celnumero_documentoular', 'valor' => $v['Familiar']['numero_documento']);
+	$fila[] = array('model' => 'Familiar', 'field' => 'numero_documento', 'valor' => $v['Familiar']['numero_documento']);
 	$cuerpo[] = $fila;
 }
 
