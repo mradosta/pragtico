@@ -211,8 +211,8 @@
 
 
 			if ($receipt['Liquidacion']['estado'] != 'Confirmada') {
-				$documento->addImage('H' . ($documento->getCurrentRow() + 5), 'invalid.png');
-				$documento->addImage('AJ' .  ($documento->getCurrentRow() + 5), 'invalid.png');
+				// $documento->addImage('H' . ($documento->getCurrentRow() + 5), 'invalid.png');
+				// $documento->addImage('AJ' .  ($documento->getCurrentRow() + 5), 'invalid.png');
 			}
 
 
