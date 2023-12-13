@@ -50,20 +50,20 @@ class Numbers_Words_es extends Numbers_Words
      * @access public
      */
     var $locale      = 'es';
-    
+
     /**
      * Language name in English
      * @var string
      * @access public
      */
     var $lang        = 'Spanish';
-    
+
     /**
      * Native language name
      * @var string
      * @access public
      */
-    var $lang_native = 'Español';
+    var $lang_native = 'Espaï¿½ol';
 
     /**
      * The word for the minus sign
@@ -80,16 +80,16 @@ class Numbers_Words_es extends Numbers_Words
     var $_exponent = array(
         0 => array('',''),
         3 => array('mil','mil'),
-        6 => array('millón','millones'),
-       12 => array('billón','billones'),
-       18 => array('trilón','trillones'),
-       24 => array('cuatrillón','cuatrillones'),
-       30 => array('quintillón','quintillones'),
-       36 => array('sextillón','sextillones'),
-       42 => array('septillón','septillones'),
-       48 => array('octallón','octallones'),
-       54 => array('nonallón','nonallones'),
-       60 => array('decallón','decallones'),
+        6 => array('millon','millones'),
+       12 => array('billon','billones'),
+       18 => array('trilon','trillones'),
+       24 => array('cuatrillon','cuatrillones'),
+       30 => array('quintillon','quintillones'),
+       36 => array('sextillon','sextillones'),
+       42 => array('septillon','septillones'),
+       48 => array('octallon','octallones'),
+       54 => array('nonallon','nonallones'),
+       60 => array('decallon','decallones'),
         );
     /**
      * The array containing the digits (indexed by the digits themselves).
@@ -246,7 +246,7 @@ class Numbers_Words_es extends Numbers_Words
                 }
                 else {
                     if (($power > 0) and ($d == 1)) {
-                        $ret .= $this->_sep . 'veintiún';
+                        $ret .= $this->_sep . 'veintiï¿½n';
                     }
                     else {
                         $ret .= $this->_sep . 'veinti' . $this->_digits[$d];

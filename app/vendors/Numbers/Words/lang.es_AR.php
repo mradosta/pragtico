@@ -19,8 +19,8 @@
 // +----------------------------------------------------------------------+
 // $Id: lang.es_AR.php,v 1.3 2005/09/18 19:52:22 makler Exp $
 //
-// Numbers_Words class extension to spell numbers in Argentinian Spanish 
-// 
+// Numbers_Words class extension to spell numbers in Argentinian Spanish
+//
 //
 
 /**
@@ -53,20 +53,20 @@ class Numbers_Words_es_AR extends Numbers_Words
      * @access public
      */
     var $locale      = 'es_AR';
-    
+
     /**
      * Language name in English
      * @var string
      * @access public
      */
     var $lang        = 'Spanish';
-    
+
     /**
      * Native language name
      * @var string
      * @access public
      */
-    var $lang_native = 'Español';
+    var $lang_native = 'Espaï¿½ol';
 
     /**
      * The word for the minus sign
@@ -83,16 +83,16 @@ class Numbers_Words_es_AR extends Numbers_Words
     var $_exponent = array(
         0 => array('',''),
         3 => array('mil','mil'),
-        6 => array('millón','millones'),
-       12 => array('billón','billones'),
-       18 => array('trilón','trillones'),
-       24 => array('cuatrillón','cuatrillones'),
-       30 => array('quintillón','quintillones'),
-       36 => array('sextillón','sextillones'),
-       42 => array('septillón','septillones'),
-       48 => array('octallón','octallones'),
-       54 => array('nonallón','nonallones'),
-       60 => array('decallón','decallones'),
+        6 => array('millon','millones'),
+       12 => array('billon','billones'),
+       18 => array('trilon','trillones'),
+       24 => array('cuatrillon','cuatrillones'),
+       30 => array('quintillon','quintillones'),
+       36 => array('sextillon','sextillones'),
+       42 => array('septillon','septillones'),
+       48 => array('octallon','octallones'),
+       54 => array('nonallon','nonallones'),
+       60 => array('decallon','decallones'),
         );
     /**
      * The array containing the digits (indexed by the digits themselves).
@@ -109,7 +109,7 @@ class Numbers_Words_es_AR extends Numbers_Words
      * @access private
      */
     var $_sep = ' ';
-    
+
     /**
      * The currency names (based on the below links,
      * informations from central bank websites and on encyclopedias)
@@ -140,7 +140,7 @@ class Numbers_Words_es_AR extends Numbers_Words
       'HRK' => array(array('Croatian kuna'), array('lipa')),
       'HUF' => array(array('forint'), array('filler')),
       'ILS' => array(array('new sheqel','new sheqels'), array('agora','agorot')),
-      'ISK' => array(array('Icelandic króna'), array('aurar')),
+      'ISK' => array(array('Icelandic krï¿½na'), array('aurar')),
       'JPY' => array(array('yen'), array('sen')),
       'LTL' => array(array('litas'), array('cent')),
       'LVL' => array(array('lat'), array('sentim')),
@@ -153,7 +153,7 @@ class Numbers_Words_es_AR extends Numbers_Words
       'SEK' => array(array('Swedish krona'), array('oere')),
       'SIT' => array(array('Tolar'), array('stotinia')),
       'SKK' => array(array('Slovak koruna'), array()),
-      'TRL' => array(array('lira'), array('kuruþ')),
+      'TRL' => array(array('lira'), array('kuruï¿½')),
       'UAH' => array(array('hryvna'), array('cent')),
       'USD' => array(array('dollar'), array('cent')),
       'YUM' => array(array('dinars'), array('para')),
@@ -166,7 +166,7 @@ class Numbers_Words_es_AR extends Numbers_Words
      * @access public
      */
     var $def_currency = 'ARS'; // Argentinian Peso
-    
+
     // }}}
     // {{{ toWords()
     /**
@@ -311,7 +311,7 @@ class Numbers_Words_es_AR extends Numbers_Words
                 }
                 else {
                     if (($power > 0) and ($d == 1)) {
-                        $ret .= $this->_sep . 'veintiún';
+                        $ret .= $this->_sep . 'veintiï¿½n';
                     }
                     else {
                         $ret .= $this->_sep . 'veinti' . $this->_digits[$d];
@@ -405,7 +405,7 @@ class Numbers_Words_es_AR extends Numbers_Words
             $dec = $this->toWords(trim($dec));
             $ret.= ' con ' . trim ($dec);
         }
-        
+
         return $ret;
     }
     // }}}
@@ -446,7 +446,7 @@ class Numbers_Words_es_AR extends Numbers_Words
             $ret = $curr_names[0][0];
         }
         $ret .= $this->_sep . trim($this->toWords($decimal));
-      
+
         if ($fraction !== false) {
             if ($convert_fraction) {
                 $ret .= $this->_sep .'con'. $this->_sep . trim($this->toWords($fraction));
@@ -469,6 +469,6 @@ class Numbers_Words_es_AR extends Numbers_Words
     // }}}
 
 
-    
+
 }
 ?>

@@ -15,11 +15,11 @@
  * @lastmodified    $Date: 2011-05-26 12:17:44 -0300 (Thu, 26 May 2011) $
  * @author          Martin Radosta <mradosta@pragmatia.com>
  */
- 
+
 if (!empty($registros)) {
 
     $documento->create(array(
-		'password' 		=> true,
+		'password' 		=> false,
 		'filters'		=> $documento->getReportFilters($this->data),
 		'title' 		=> 'Ingreso de actualizaciones de escala del convenio'));
 
@@ -45,8 +45,8 @@ if (!empty($registros)) {
 		$row = $documento->getCurrentRow();
 		$documento->setDataValidation('D' . $row, 'date');
 		$documento->setDataValidation('E' . $row, 'date');
-		$documento->setDataValidation('F' . $row, 'decimal');
-		
+		// $documento->setDataValidation('F' . $row, 'decimal');
+
     }
 
 
@@ -73,7 +73,7 @@ if (!empty($registros)) {
 
     $condiciones['Condicion.Novedad-formato'] = array('type' => 'radio');
     $fieldsets[] = array('campos' => $condiciones);
-    
+
     $fieldset = $appForm->pintarFieldsets($fieldsets, array('fieldset' => array('legend' => 'Categorias', 'imagen' => 'categorias.gif')));
     $opcionesTabla['tabla']['omitirMensajeVacio'] = true;
     $accionesExtra['opciones'] = array('acciones'=>array($appForm->link('Generar', null, array('class' => 'link_boton', 'id' => 'confirmar', 'title' => 'Confirma las liquidaciones seleccionadas'))));
