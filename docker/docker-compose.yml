@@ -1,0 +1,19 @@
+version: '2'
+services:
+
+  app:
+    container_name: pragtico-app
+    restart: unless-stopped
+    build: .
+    # Shares the host's network namespace: Apache reaches the VPS's own
+    # MySQL at 127.0.0.1:3306, no bridge/firewall rules needed. Apache
+    # itself listens on 8080 (see Dockerfile) since nginx already owns 80/443.
+    network_mode: host
+    environment:
+      PHP_UPLOAD_MAX_FILESIZE: 10M
+      PHP_POST_MAX_SIZE: 10M
+    volumes:
+      # Whole repo root, matching what app/webroot/index.php expects
+      # (app/, cake/, vendors/ as siblings). Edit any file on the host
+      # and it's live immediately - no rebuild/restart needed.
+      - ..:/var/www/html
