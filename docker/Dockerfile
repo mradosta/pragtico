@@ -1,29 +1,21 @@
-FROM ubuntu:trusty
-MAINTAINER Fernando Mayo <fernando@tutum.co>, Feng Honglin <hfeng@tutum.co>
+FROM php:5.6-apache
 
-# ubuntu:trusty is EOL, its packages were moved off the regular mirrors
-RUN sed -i \
-  -e 's|archive.ubuntu.com|old-releases.ubuntu.com|g' \
-  -e 's|security.ubuntu.com|old-releases.ubuntu.com|g' \
-  /etc/apt/sources.list
-
-# Install packages (no mysql-server / phpmyadmin: DB now lives outside the container)
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && \
-  apt-get -y install apache2 libapache2-mod-php5 php5-mysql pwgen php-apc php5-mcrypt && \
-  echo "ServerName localhost" >> /etc/apache2/apache2.conf
-
-# Add image configuration and scripts
-ADD start-apache2.sh /start-apache2.sh
-ADD run.sh /run.sh
-RUN chmod 755 /*.sh
+# mysqli/pdo_mysql compile from the source already bundled in this image
+# against the built-in mysqlnd driver - no apt-get / package mirrors needed
+# (ubuntu:trusty's mirrors are gone, this sidesteps that entirely).
+RUN docker-php-ext-install mysql mysqli pdo_mysql \
+  && docker-php-ext-enable opcache \
+  && a2enmod rewrite
 
 # config to enable .htaccess
 ADD apache_default /etc/apache2/sites-available/000-default.conf
-RUN a2enmod rewrite
 
 # Apache listens on 8080: the VPS nginx (host network) already owns 80/443
 RUN sed -i 's/^Listen 80$/Listen 8080/' /etc/apache2/ports.conf
+
+ADD run.sh /run.sh
+RUN chmod 755 /run.sh
+RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 #Environment variables to configure php
 ENV PHP_UPLOAD_MAX_FILESIZE 10M
