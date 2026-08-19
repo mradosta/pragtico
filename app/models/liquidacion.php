@@ -414,6 +414,15 @@ class Liquidacion extends AppModel {
                 return array('error' => sprintf('Wrong period (%s). Only "1" for the first_half or "2" for the second_half allowed for type %s.', $options['period'], $this->__receiptType));
             }
 
+            /**
+            * For 'final'/'sac', $period only ever carried ano/mes/periodo (set at construction
+            * time, before these semester bounds were known) - getPeriod('desde'/'hasta') would
+            * return '' otherwise, which every findConceptos() call below feeds straight into a
+            * SQL date comparison.
+            */
+            $period['desde'] = $from;
+            $this->setPeriod($period);
+
             // TODO:
             // hay que sumar a los recibos normales los de vacaciones, 
             // pero proporcionar por mes segun corresponda a cada mes
