@@ -438,8 +438,8 @@ class Liquidacion extends AppModel {
                 $this->setVar('#fecha_hasta_liquidacion', $period['hasta']);
                 $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
                         array(  'relacion'          => $this->getRelationship(),
-								'desde' 			=> $this->getPeriod('desde'),
-								'hasta' 			=> $this->getPeriod('hasta'),
+								'desde' 			=> $this->getVarValue('#fecha_desde_liquidacion'),
+								'hasta' 			=> $this->getVarValue('#fecha_hasta_liquidacion'),
                                 'codigoConcepto'    => 'vacaciones_no_gozadas')));
             }
 
