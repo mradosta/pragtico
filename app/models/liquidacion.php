@@ -462,10 +462,12 @@ class Liquidacion extends AppModel {
 
             $this->setConcept($this->Relacion->RelacionesConcepto->Concepto->findConceptos('ConceptoPuntual',
                     array(  'relacion'          => $this->getRelationship(),
-							'desde' 			=> $this->getPeriod('desde'),
-							'hasta' 			=> $this->getPeriod('hasta'),
+							'desde' 			=> $this->getVarValue('#fecha_desde_liquidacion'),
+							'hasta' 			=> $this->getVarValue('#fecha_hasta_liquidacion'),
                             'codigoConcepto'    => 'sac')));
-            $this->__conceptos['sac'] = array_merge($this->__conceptos['sac'], $this->__getConceptValue($this->__conceptos['sac']));
+            if (!empty($this->__conceptos['sac'])) {
+                $this->__conceptos['sac'] = array_merge($this->__conceptos['sac'], $this->__getConceptValue($this->__conceptos['sac']));
+            }
         }
 
         /** Get discounts */
