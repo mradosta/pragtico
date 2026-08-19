@@ -15,20 +15,23 @@ REMOTE_USER="${PRAGTICO_DEPLOY_USER:-mradosta}"
 REMOTE_PATH="${PRAGTICO_DEPLOY_PATH:-/home/mradosta/pragtico}"
 BRANCH="master"
 RESTART_CONTAINER=0
+BUILD_CONTAINER=0
 
 for arg in "$@"; do
     case "$arg" in
         --restart) RESTART_CONTAINER=1 ;;
+        --build) BUILD_CONTAINER=1 ;;
         *) echo "Unknown option: $arg" >&2; exit 1 ;;
     esac
 done
 
 echo "==> Deploying on $REMOTE_HOST"
-ssh "${REMOTE_USER}@${REMOTE_HOST}" bash -s -- "$REMOTE_PATH" "$BRANCH" "$RESTART_CONTAINER" <<'REMOTE_SCRIPT'
+ssh "${REMOTE_USER}@${REMOTE_HOST}" bash -s -- "$REMOTE_PATH" "$BRANCH" "$RESTART_CONTAINER" "$BUILD_CONTAINER" <<'REMOTE_SCRIPT'
 set -euo pipefail
 REMOTE_PATH="$1"
 BRANCH="$2"
 RESTART_CONTAINER="$3"
+BUILD_CONTAINER="$4"
 
 cd "$REMOTE_PATH"
 git fetch github
@@ -37,7 +40,10 @@ git merge --ff-only "github/$BRANCH"
 
 echo "==> Now running: $(git log -1 --format='%h %s (%ci)')"
 
-if [[ "$RESTART_CONTAINER" == "1" ]]; then
+if [[ "$BUILD_CONTAINER" == "1" ]]; then
+    echo "==> Rebuilding and restarting container (Dockerfile changed)"
+    (cd docker && docker compose up -d --build app)
+elif [[ "$RESTART_CONTAINER" == "1" ]]; then
     echo "==> Restarting container"
     (cd docker && docker compose restart app)
 fi
